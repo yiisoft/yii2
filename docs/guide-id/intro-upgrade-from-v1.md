@@ -292,7 +292,7 @@ Silakan lihat bagian [Console Commands](tutorial-console.md) untuk lebih jelasny
 I18N
 ----
 
-Yii 2,0 menghilangkan formater tanggal dan angka terpasang bagian dari [PECL modul intl PHP](http://pecl.php.net/package/intl).
+Yii 2,0 menghilangkan formater tanggal dan angka terpasang bagian dari [PECL modul intl PHP](https://pecl.php.net/package/intl).
 
 Penterjemahan pesan sekarang dilakukan melalui komponen aplikasi `i18n`.
 Komponen ini mengelola satu set sumber pesan, yang memungkinkan Anda untuk menggunakan pesan yang berbeda

@@ -291,7 +291,7 @@ Por favor consulta la sección [Comandos de Consola](tutorial-console.md) para m
 I18N
 ----
 
-Yii 2.0 remueve el formateador de fecha y números previamente incluido en favor del [módulo de PHP PECL intl](http://pecl.php.net/package/intl).
+Yii 2.0 remueve el formateador de fecha y números previamente incluido en favor del [módulo de PHP PECL intl](https://pecl.php.net/package/intl).
 
 La traducción de mensajes ahora es ejecutada vía el componente `i18n` de la aplicación.
 Este componente maneja un grupo de mensajes origen, lo que te permite utilizar diferentes mensajes

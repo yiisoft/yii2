@@ -293,7 +293,7 @@ Reportez-vous à la section [Commandes console](tutorial-console.md) pour plus d
 I18N
 ----
 
-Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](http://pecl.php.net/package/intl).
+Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](https://pecl.php.net/package/intl).
 
 La traduction des messages est désormais effectuée via le composant d'application `i18n`.
 Ce composant gère un ensemble de sources de messages, ce qui vous permet d'utiliser différentes

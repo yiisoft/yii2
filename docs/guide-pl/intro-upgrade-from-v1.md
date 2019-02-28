@@ -275,7 +275,7 @@ Aby dowiedzieć się więcej na ten temat, przejdź do sekcji [Komendy konsolowe
 I18N
 ----
 
-Yii 2.0 usunął wbudowany formater dat i liczb na rzecz [modułu PECL intl PHP](http://pecl.php.net/package/intl).
+Yii 2.0 usunął wbudowany formater dat i liczb na rzecz [modułu PECL intl PHP](https://pecl.php.net/package/intl).
 
 Tłumaczenia wiadomości odbywają się teraz poprzez komponent aplikacji `i18n`, w którym można ustalić zestaw źródeł treści, 
 dzięki czemu możliwy jest ich wybór dla różnych kategorii wiadomości.

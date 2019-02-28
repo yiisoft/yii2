@@ -285,7 +285,7 @@ Fai riferimento alla sezione [Console Commands](tutorial-console.md) per ulterio
 I18N
 ----
 
-Yii 2.0 ha rimosso la formattazione interna di date e numeri in favore del [modulo PECL di PHP](http://pecl.php.net/package/intl).
+Yii 2.0 ha rimosso la formattazione interna di date e numeri in favore del [modulo PECL di PHP](https://pecl.php.net/package/intl).
 
 La traduzione dei messaggi viene effettuata dal componente `i18n`.
 Questo componente gestisce una serie di sorgenti di messaggi, il che ti consente di usare diverse sorgenti di messaggio basate sulle

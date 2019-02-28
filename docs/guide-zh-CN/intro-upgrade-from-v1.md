@@ -292,7 +292,7 @@ Yii 2.0 支持基于代码注释自动生成相的关命令行帮助（help）�
 国际化（I18N）
 ------------
 
-Yii 2.0 移除了原来内置的日期格式器和数字格式器，为了支持 [PECL intl PHP module](http://pecl.php.net/package/intl)（PHP 的国际化扩展）的使用。
+Yii 2.0 移除了原来内置的日期格式器和数字格式器，为了支持 [PECL intl PHP module](https://pecl.php.net/package/intl)（PHP 的国际化扩展）的使用。
 
 消息翻译现在由 `i18n` 应用组件执行。
 该组件管理一系列消息源，

@@ -327,7 +327,7 @@ I18N
 ----
 
 O Yii 2.0 remove os formatadores de data e número embutidos em favor do módulo
-[intl do PECL do PHP](http://pecl.php.net/package/intl).
+[intl do PECL do PHP](https://pecl.php.net/package/intl).
 
 A tradução de mensagens agora é realizada pelo componente `i18n` da aplicação.
 Este componente gerencia um conjunto de fontes de mensagens, o  que permite a você usar diferentes fontes de mensagens baseadas em categorias de mensagens.

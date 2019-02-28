@@ -832,4 +832,4 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 これに加えて、ICU ライブラリとともに出荷されるタイム・ゾーン・データベースの情報も古くなっている可能性があります。
 タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) を参照してください。
 出力の書式設定には ICU タイム・ゾーン・データベースが使用されますが、PHP によって使われるタイム・ゾーン・データベースも影響する可能性があります。
-PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](http://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。
+PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](https://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。

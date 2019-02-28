@@ -292,7 +292,7 @@ Please refer to the [Console Commands](tutorial-console.md) section for more det
 I18N
 ----
 
-Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](http://pecl.php.net/package/intl).
+Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](https://pecl.php.net/package/intl).
 
 Message translation is now performed via the `i18n` application component.
 This component manages a set of message sources, which allows you to use different message
