@@ -368,7 +368,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
      * @throws InvalidArgumentException if the parameters are incomplete.
-     * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+     * @see https://secure.php.net/manual/en/function.session-set-cookie-params.php
      */
     public function setCookieParams(array $value)
     {
@@ -379,7 +379,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Sets the session cookie parameters.
      * This method is called by [[open()]] when it is about to open the session.
      * @throws InvalidArgumentException if the parameters are incomplete.
-     * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+     * @see https://secure.php.net/manual/en/function.session-set-cookie-params.php
      */
     private function setCookieParamsInternal()
     {

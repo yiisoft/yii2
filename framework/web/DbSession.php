@@ -167,7 +167,7 @@ class DbSession extends MultiFieldSession
     public function writeSession($id, $data)
     {
         // exception must be caught in session write handler
-        // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
+        // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             $fields = $this->composeFields($id, $data);
             $fields = $this->typecastFields($fields);
