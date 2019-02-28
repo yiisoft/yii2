@@ -96,8 +96,8 @@ eliminara una propiedad, se puede especificar como una cadena de texto.
 
 
 Para que el contenido se muestre correctamente y de forma segura con caracteres especiales HTML el contenido debe ser
-codificado. En PHP esto se hace con [htmlspecialchars](http://www.php.net/manual/es/function.htmlspecialchars.php) y
-[htmlspecialchars_decode](http://www.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
+codificado. En PHP esto se hace con [htmlspecialchars](https://secure.php.net/manual/es/function.htmlspecialchars.php) y
+[htmlspecialchars_decode](https://secure.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
 de estos métodos directamente es que se tiene que especificar la codificación y opciones extra cada vez. Ya que las
 opciones siempre son las mismas y la codificación debe coincidir con la de la aplicación para prevenir problemas de
 seguridad, Yii proporciona dos métodos simples y compactos:

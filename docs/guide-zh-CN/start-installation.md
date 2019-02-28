@@ -173,7 +173,7 @@ http://localhost:8080/
   ```
 
 你需要配置好 PHP 安装环境，使其符合 Yii 的最小需求。主要是需要 PHP 5.4 或 以上版本。
-如果应用需要用到数据库，那还要安装 [PDO PHP 扩展](http://www.php.net/manual/zh/pdo.installation.php) 
+如果应用需要用到数据库，那还要安装 [PDO PHP 扩展](https://secure.php.net/manual/zh/pdo.installation.php) 
 和相应的数据库驱动（例如访问 MySQL 数据库所需的 `pdo_mysql`）。
 
 

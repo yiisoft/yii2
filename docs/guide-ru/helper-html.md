@@ -155,8 +155,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### Экранирование контента <span id="encoding-and-decoding-content"></span>
 
 Для корректного и безопасного отображения контента специальные символы в HTML-коде должны быть экранированы. В чистом
-PHP это осуществляется с помощью функций [htmlspecialchars](http://www.php.net/manual/ru/function.htmlspecialchars.php)
-и [htmlspecialchars_decode](http://www.php.net/manual/ru/function.htmlspecialchars-decode.php). Проблема использования
+PHP это осуществляется с помощью функций [htmlspecialchars](https://secure.php.net/manual/ru/function.htmlspecialchars.php)
+и [htmlspecialchars_decode](https://secure.php.net/manual/ru/function.htmlspecialchars-decode.php). Проблема использования
 этих функций заключается в том, что приходится указывать кодировку и дополнительные флаги во время каждого вызова.
 Поскольку флаги всё время одинаковы, а кодировка остаётся одной и той же в пределах приложения, Yii в целях
 безопасности предоставляет два компактных и простых в использовании метода:

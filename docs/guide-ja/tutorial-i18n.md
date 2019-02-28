@@ -241,7 +241,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: パラメータのフォーマットには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
+> Note: パラメータのフォーマットには、[intl PHP 拡張](https://secure.php.net/manual/ja/intro.intl.php) のインストールが必要です。
 
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 

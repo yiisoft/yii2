@@ -60,7 +60,7 @@ Puedes acceder a la conexión DB mediante la expresión `Yii::$app->db`.
 
 Cuando configuras una conexión DB, deberías siempre especificar el Nombre de Origen de Datos (DSN) mediante la
 propiedad [[yii\db\Connection::dsn|dsn]]. El formato del DSN varia para cada diferente base de datos. Por favor consulte el
-[manual de PHP](http://www.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
+[manual de PHP](https://secure.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`

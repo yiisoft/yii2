@@ -174,7 +174,7 @@ http://localhost:8080/
 
 Yii の最低必要条件を満たすように PHP のインストールを構成しなければなりません。
 最も重要なことは、PHP 5.4 以上でなければならないということです。最新の PHP 7 なら理想的です。
-また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](http://www.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
+また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](https://secure.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
 ウェブ・サーバを構成する <span id="configuring-web-servers"></span>

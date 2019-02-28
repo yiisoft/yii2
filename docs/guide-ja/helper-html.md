@@ -147,8 +147,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### コンテントをエンコードおよびデコードする <span id="encoding-and-decoding-content"></span>
 
 コンテントが適切かつ安全に HTML として表示されるためには、コンテント内の特殊文字がエンコードされなければなりません。
-特殊文字のエンコードとデコードは、PHP では [htmlspecialchars](http://www.php.net/manual/ja/function.htmlspecialchars.php) と
-[htmlspecialchars_decode](http://www.php.net/manual/ja/function.htmlspecialchars-decode.php) によって行われます。
+特殊文字のエンコードとデコードは、PHP では [htmlspecialchars](https://secure.php.net/manual/ja/function.htmlspecialchars.php) と
+[htmlspecialchars_decode](https://secure.php.net/manual/ja/function.htmlspecialchars-decode.php) によって行われます。
 これらのメソッドを直接使用する場合の問題は、文字エンコーディングと追加のフラグを毎回指定しなければならないことです。
 フラグは毎回同じものであり、文字エンコーディングはセキュリティ問題を防止するためにアプリケーションのそれと一致すべきものですから、
 Yii は二つのコンパクトかつ使いやすいメソッドを用意しました。

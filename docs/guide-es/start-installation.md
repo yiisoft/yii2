@@ -131,7 +131,7 @@ de PHP satisfaga los requerimientos de Yii. Esto puedes hacerlo usando cualquier
   ```
   
 Deberías configurar tu instalación de PHP para que satisfaga los requisitos mínimos de Yii. Lo que es más importante,
-debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](http://www.php.net/manual/es/pdo.installation.php)
+debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](https://secure.php.net/manual/es/pdo.installation.php)
 y el correspondiente driver de base de datos (como `pdo_mysql` para bases de datos MySQL), si tu aplicación lo necesitara.
 
 

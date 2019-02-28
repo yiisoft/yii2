@@ -106,7 +106,7 @@ di Yii. Puoi verificare le richieste in due modi:
   ```
 
 Devi configurare la tua installazione di PHP in modo che soddisfi le richieste minime di Yii. E' molto importante che tu stia usando 
-PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](http://www.php.net/manual/en/pdo.installation.php) e un driver
+PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](https://secure.php.net/manual/en/pdo.installation.php) e un driver
 di database di PDO (come ad esempio `pdo_mysql` per i database MySQL), se la tua applicazione richiede un database.
 
 

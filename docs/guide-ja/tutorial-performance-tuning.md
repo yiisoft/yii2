@@ -217,7 +217,7 @@ composer dumpautoload -o
 
 - [Yii のデバッグ・ツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
 - [Blackfire](https://blackfire.io/)
-- [XHProf](http://www.php.net/manual/ja/book.xhprof.php)
+- [XHProf](https://secure.php.net/manual/ja/book.xhprof.php)
 - [XDebug プロファイラ](http://xdebug.org/docs/profiler)
 
 ## アプリケーションをスケーラブルなものにする覚悟を決める

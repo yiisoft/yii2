@@ -1,7 +1,7 @@
 データベース・アクセス・オブジェクト
 ====================================
 
-[PDO](http://www.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベース・アクセス・オブジェクト) は、
+[PDO](https://secure.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベース・アクセス・オブジェクト) は、
 リレーショナル・データベースにアクセスするためのオブジェクト指向 API を提供するものです。
 これは、データベースにアクセスする他のもっと高度な方法、例えば [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) の基礎でもあります。
 
@@ -68,7 +68,7 @@ return [
 
 DB 接続を構成するときは、つねに [[yii\db\Connection::dsn|dsn]] プロパティによってデータ・ソース名 (DSN) を指定しなければなりません。
 DSN の形式はデータベースによってさまざまに異なります。
-詳細は [PHP マニュアル](http://www.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。下記にいくつかの例を挙げます。
+詳細は [PHP マニュアル](https://secure.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。下記にいくつかの例を挙げます。
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`

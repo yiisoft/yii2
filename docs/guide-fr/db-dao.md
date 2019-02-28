@@ -1,7 +1,7 @@
 Objets d'accès aux bases de données
 ===================================
 
-Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](http://www.php.net/manual/en/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
+Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](https://secure.php.net/manual/en/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
 
 Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous manipulez des requêtes SQL et des tableaux PHP. En conséquence, cela reste le moyen le plus efficace pour accéder aux bases de données. Néanmoins, étant donné que la syntaxe du langage SQL varie selon le type de base de données, l'utilisation des objets d'accès aux bases de données de Yii signifie également que vous avez à faire un travail supplémentaire pour créer une application indifférente au type de base de données. 
 
@@ -59,7 +59,7 @@ Vous pouvez ensuite accéder à la base de données via l'expression `Yii::$app-
 
 > Tip: vous pouvez configurer plusieurs composants d'application « base de données » si votre application a besoin d'accéder à plusieurs bases de données. 
 
-Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](http://www.php.net/manual/en/function.PDO-construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
+Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](https://secure.php.net/manual/en/function.PDO-construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`

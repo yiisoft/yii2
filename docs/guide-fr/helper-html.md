@@ -134,8 +134,8 @@ accepte un tableau de propriétés à retirer. S'il s'agit d'une propriété uni
 
 ### Encodage et décodage du contenu <span id="encoding-and-decoding-content"></span>
 
-Pour que le contenu puisse être affiché en HTML de manière propre et en toute sécurité, les caractères spéciaux du contenu doivent être encodés. En PHP, cela s'obtient avec [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) et 
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). Le problème rencontré en utilisant ces méthodes directement est que vous devez spécifier l'encodage et des options supplémentaires tout le temps. Comme ces options restent toujours les mêmes et que l'encodage doit correspondre à celui de l'application pour éviter les problèmes de sécurité, Yii fournit deux méthodes compactes et faciles à utiliser :
+Pour que le contenu puisse être affiché en HTML de manière propre et en toute sécurité, les caractères spéciaux du contenu doivent être encodés. En PHP, cela s'obtient avec [htmlspecialchars](https://secure.php.net/manual/en/function.htmlspecialchars.php) et 
+[htmlspecialchars_decode](https://secure.php.net/manual/en/function.htmlspecialchars-decode.php). Le problème rencontré en utilisant ces méthodes directement est que vous devez spécifier l'encodage et des options supplémentaires tout le temps. Comme ces options restent toujours les mêmes et que l'encodage doit correspondre à celui de l'application pour éviter les problèmes de sécurité, Yii fournit deux méthodes compactes et faciles à utiliser :
 
 ```php
 $userName = Html::encode($user->name);

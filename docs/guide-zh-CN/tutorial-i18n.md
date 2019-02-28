@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
 
-> Note: 参数的格式化需要安装 [intl PHP 扩展](http://www.php.net/manual/en/intro.intl.php)。
+> Note: 参数的格式化需要安装 [intl PHP 扩展](https://secure.php.net/manual/en/intro.intl.php)。
 
 可以使用缩写的形式或完整的形式来格式化占位符：
 

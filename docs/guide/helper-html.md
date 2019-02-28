@@ -147,8 +147,8 @@ method accepts an array of properties to remove. If it's a single property, it c
 ### Encoding and Decoding Content <span id="encoding-and-decoding-content"></span>
 
 In order for content to be displayed properly and securely in HTML, special characters in the content should be encoded.
-In PHP this is done with [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) and
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). The issue with using
+In PHP this is done with [htmlspecialchars](https://secure.php.net/manual/en/function.htmlspecialchars.php) and
+[htmlspecialchars_decode](https://secure.php.net/manual/en/function.htmlspecialchars-decode.php). The issue with using
 these methods directly is that you have to specify encoding and extra flags all the time. Since these flags are the same
 all the time and the encoding should match the one of the application in order to prevent security issues, Yii provides two
 compact and simple-to-use methods:

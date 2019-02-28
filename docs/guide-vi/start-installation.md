@@ -110,7 +110,7 @@ Các yêu cầu Yii. Bạn có thể kiểm tra xem các yêu cầu tối thiể
   ```
 
 Bạn nên cấu hình cài đặt PHP của bạn để nó đáp ứng các yêu cầu tối thiểu của Yii. Diều quan trọng nhất, bạn nên có PHP 5.4 hoặc hơn. Bạn cũng nên cài đặt
-các gói [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
+các gói [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
 (như là `pdo_mysql` cho CSDL MySQL), nếu ứng dụng của bạn cần thao tác với CSLD.
 
 

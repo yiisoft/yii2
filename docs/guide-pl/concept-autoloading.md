@@ -1,7 +1,7 @@
 Autoładowanie klas
 ==================
 
-Yii opiera się na [mechanizmie automatycznego ładowania klas](http://www.php.net/manual/pl/language.oop5.autoload.php) służącym do 
+Yii opiera się na [mechanizmie automatycznego ładowania klas](https://secure.php.net/manual/pl/language.oop5.autoload.php) służącym do 
 zlokalizowania i dołączenia wszystkich wymaganych plików klas. Wbudowany wysoce wydajny autoloader klas, zgodny ze 
 [standardem PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md), jest instalowany po załączeniu 
 pliku `Yii.php`.

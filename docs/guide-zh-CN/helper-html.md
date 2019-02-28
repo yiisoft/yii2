@@ -147,8 +147,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### 标签内容的转码和解码（Encoding and Decoding Content） <span id="encoding-and-decoding-content"></span>
 
 为了让内容能够正确安全的显示，一些 HTML 特殊字符应该被转码。在 PHP 中，
-这个操作由 [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) 和
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php) 完成。
+这个操作由 [htmlspecialchars](https://secure.php.net/manual/en/function.htmlspecialchars.php) 和
+[htmlspecialchars_decode](https://secure.php.net/manual/en/function.htmlspecialchars-decode.php) 完成。
 直接使用这些方法的问题是，你总是需要指定转码所需的额外标志。由于标志一般总是不变的，而内容转码的过程为了避免一些安全问题，
 需要和应用的默认过程匹配，
 Yii 提供了两个简单可用的对 PHP 原生方法的封装：

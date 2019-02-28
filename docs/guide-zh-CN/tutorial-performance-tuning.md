@@ -217,7 +217,7 @@ composer dumpautoload -o
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
-- [XHProf](http://www.php.net/manual/en/book.xhprof.php)
+- [XHProf](https://secure.php.net/manual/en/book.xhprof.php)
 - [XDebug profiler](http://xdebug.org/docs/profiler)
 
 ## 准备扩展应用程序
