@@ -11,7 +11,7 @@ use yii\base\BaseObject;
 use yii\helpers\StringHelper;
 
 /**
- * ColumnSchema class describes the metadata of a column in a database table.
+ * ColumnSchema 类描述了数据库表中的列的元数据。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -19,72 +19,72 @@ use yii\helpers\StringHelper;
 class ColumnSchema extends BaseObject
 {
     /**
-     * @var string name of this column (without quotes).
+     * @var string 此列的名称（不带引号）。
      */
     public $name;
     /**
-     * @var bool whether this column can be null.
+     * @var bool 此列是否可以为空。
      */
     public $allowNull;
     /**
-     * @var string abstract type of this column. Possible abstract types include:
-     * char, string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
-     * timestamp, time, date, binary, and money.
+     * @var string 此列的抽象类型。可能的抽象类型包括：
+     * char，string，text，boolean，smallint，integer，bigint，float，decimal，datetime，
+     * timestamp，time，date，binary 和 money。
      */
     public $type;
     /**
-     * @var string the PHP type of this column. Possible PHP types include:
-     * `string`, `boolean`, `integer`, `double`, `array`.
+     * @var string 此列的 PHP 类型。可能的 PHP 类型包括：
+     * `string`，`boolean`，`integer`，`double`，`array`。
      */
     public $phpType;
     /**
-     * @var string the DB type of this column. Possible DB types vary according to the type of DBMS.
+     * @var string 此列的 DB 类型。可能的 DB 类型因 DBMS 的类型而异。
      */
     public $dbType;
     /**
-     * @var mixed default value of this column
+     * @var mixed 列的默认值
      */
     public $defaultValue;
     /**
-     * @var array enumerable values. This is set only if the column is declared to be an enumerable type.
+     * @var array 可枚举值。仅当列声明为可枚举类型时才设置此值。
      */
     public $enumValues;
     /**
-     * @var int display size of the column.
+     * @var int 列的显示大小。
      */
     public $size;
     /**
-     * @var int precision of the column data, if it is numeric.
+     * @var int 列数据的精度，如果为数字。
      */
     public $precision;
     /**
-     * @var int scale of the column data, if it is numeric.
+     * @var int 列数据的小数位数，如果为数字。
      */
     public $scale;
     /**
-     * @var bool whether this column is a primary key
+     * @var bool 此列是否为主键
      */
     public $isPrimaryKey;
     /**
-     * @var bool whether this column is auto-incremental
+     * @var bool 此列是否自增长
      */
     public $autoIncrement = false;
     /**
-     * @var bool whether this column is unsigned. This is only meaningful
-     * when [[type]] is `smallint`, `integer` or `bigint`.
+     * @var bool 列是否为无符号。
+     * 仅在 [[type]] 为 `smallint`，`integer` 或 `bigint`　有效。
      */
     public $unsigned;
     /**
-     * @var string comment of this column. Not all DBMS support this.
+     * @var string 此列的注释。并非所有的 DBMS 都支持。
      */
     public $comment;
 
 
     /**
-     * Converts the input value according to [[phpType]] after retrieval from the database.
-     * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
-     * @return mixed converted value
+     * 从数据库检索后，根据　[[phpType]] 转换为输入值。
+     * 如果值为空或为 [[Expression]]，则不会转换。
+     * @param mixed $value 输入值
+     * @return mixed 转换后的值
      */
     public function phpTypecast($value)
     {
@@ -92,24 +92,24 @@ class ColumnSchema extends BaseObject
     }
 
     /**
-     * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
-     * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
-     * @return mixed converted value. This may also be an array containing the value as the first element
-     * and the PDO type as the second element.
+     * 根据 [[type]] 和 [[dbType]] 转换为输入值，以便在数据库查询中使用。
+     * 如果值为 null 或为 [[Expression]]，则不会转换。
+     * @param mixed $value 输入值
+     * @return mixed 转换的值。这也可以是一个数组，其中值作为第一个元素，
+     * PDO 类型作为第二个元素。
      */
     public function dbTypecast($value)
     {
-        // the default implementation does the same as casting for PHP, but it should be possible
-        // to override this with annotation of explicit PDO type.
+        // 默认的实现与 PHP 强制转换相同，
+        // 但是可以使用显式 PDO 类型的注释来覆盖它。
         return $this->typecast($value);
     }
 
     /**
-     * Converts the input value according to [[phpType]] after retrieval from the database.
-     * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
-     * @return mixed converted value
+     * 从数据库检索后，根据 [[phpType]] 转换为输入值。
+     * 如果值为 null 或 [[Expression]]，则不会转换。
+     * @param mixed $value 输入值
+     * @return mixed 转换的值
      * @since 2.0.3
      */
     protected function typecast($value)
@@ -169,7 +169,7 @@ class ColumnSchema extends BaseObject
     }
 
     /**
-     * @return int[] array of numbers that represent possible PDO parameter types
+     * @return int[] 表示可能的 PDO 参数类型的数字数组
      */
     private function getPdoParamTypes()
     {
