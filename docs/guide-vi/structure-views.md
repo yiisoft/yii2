@@ -590,7 +590,7 @@ at the place where you call [[yii\web\View::head()]] in the layout:
 <meta name="keywords"
 ``` content="yii, framework, php">
 
-Note that if you call [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
+Lưu ý rằng nếu bạn gọi phương thức [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
 regardless whether the meta tags are the same or not.
 
 To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
