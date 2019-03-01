@@ -39,6 +39,13 @@ class Fixture extends Component
 
 
     /**
+     * @var array the fixtures that this fixture depends on. This must be a list of the dependent
+     * fixture instances.
+     */
+    public $dependInstances = [];
+
+
+    /**
      * Loads the fixture.
      * This method is called before performing every test method.
      * You should override this method with concrete implementation about how to set up the fixture.
