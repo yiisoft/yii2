@@ -76,6 +76,19 @@ class ActiveFixture extends BaseActiveFixture
         $this->data = [];
         $table = $this->getTableSchema();
         foreach ($this->getData() as $alias => $row) {
+            foreach ($row as $key => $value) {
+                if (is_array($value)) {
+                    list($modelClass, $modelAlias, $property) = $value;
+                    if (!key_exists($modelClass, $this->dependInstances)) {
+                        throw new \Exception("Missing fixture data " . $modelClass);
+                    }
+                    $model = $this->dependInstances[$modelClass]->getModel($modelAlias);
+                    if ($model === null) {
+                        throw new \Exception("Missing fixture data " . $modelAlias . " of " . $modelClass);
+                    }
+                    $row[$key] = $this->dependInstances[$modelClass]->getModel($modelAlias)->$property;
+                }
+            }
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
         }
