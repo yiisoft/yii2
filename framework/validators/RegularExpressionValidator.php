@@ -14,9 +14,9 @@ use yii\helpers\Json;
 use yii\web\JsExpression;
 
 /**
- * RegularExpressionValidator validates that the attribute value matches the specified [[pattern]].
+ * RegularExpressionValidator 校验属性值是否符合指定的模式 [[pattern]]。
  *
- * If the [[not]] property is set true, the validator will ensure the attribute value do NOT match the [[pattern]].
+ * 如果 [[not]] 被设置为 true，校验器会确保属性值不符合指定的模式 [[pattern]]。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -24,12 +24,12 @@ use yii\web\JsExpression;
 class RegularExpressionValidator extends Validator
 {
     /**
-     * @var string the regular expression to be matched with
+     * @var string 用于匹配的正则表达式
      */
     public $pattern;
     /**
-     * @var bool whether to invert the validation logic. Defaults to false. If set to true,
-     * the regular expression defined via [[pattern]] should NOT match the attribute value.
+     * @var bool 是否对校验结果取反。默认为 false。如果设置为 true ，
+     * 通过 [[pattern]] 定义的正则表达式必须不匹配属性值。
      */
     public $not = false;
 

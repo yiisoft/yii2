@@ -10,9 +10,9 @@ namespace yii\validators;
 use Yii;
 
 /**
- * StringValidator validates that the attribute value is of certain length.
+ * StringValidator 校验属性值是否满足规定的长度。
  *
- * Note, this validator should only be used with string-typed attributes.
+ * 注意，这个校验器只用于字符串类型的属性。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,48 +20,48 @@ use Yii;
 class StringValidator extends Validator
 {
     /**
-     * @var int|array specifies the length limit of the value to be validated.
-     * This can be specified in one of the following forms:
+     * @var int|array 指定被校验的值的长度限制
+     * 这个属性可以是如下的格式：
      *
-     * - an integer: the exact length that the value should be of;
-     * - an array of one element: the minimum length that the value should be of. For example, `[8]`.
-     *   This will overwrite [[min]].
-     * - an array of two elements: the minimum and maximum lengths that the value should be of.
-     *   For example, `[8, 128]`. This will overwrite both [[min]] and [[max]].
+     * - an integer: 这个值的确切长度
+     * - an array of one element: 这个值的最小长度。如：`[8]`。
+     *   这样会重写 [[min]] 的值。
+     * - an array of two elements: 这个值的最小和最大长度。
+     *   例如：`[8, 128]`。这样会同时重写 [[min]] 和 [[max]]。
      * @see tooShort for the customized message for a too short string.
      * @see tooLong for the customized message for a too long string.
      * @see notEqual for the customized message for a string that does not match desired length.
      */
     public $length;
     /**
-     * @var int maximum length. If not set, it means no maximum length limit.
-     * @see tooLong for the customized message for a too long string.
+     * @var int 最大长度，如果没有设置，它意味着没有最大长度限制。
+     * @see 参考 tooLong 自定义超长时的错误消息。
      */
     public $max;
     /**
-     * @var int minimum length. If not set, it means no minimum length limit.
-     * @see tooShort for the customized message for a too short string.
+     * @var int 最小长度。如果未设置，它意味着没有最小长度限制。
+     * @see tooShort 参考 tooShort 自定义太短时的错误消息。
      */
     public $min;
     /**
-     * @var string user-defined error message used when the value is not a string.
+     * @var string 当值不是字符串时的用户自定义错误消息。
      */
     public $message;
     /**
-     * @var string user-defined error message used when the length of the value is smaller than [[min]].
+     * @var string 当长度短于 [[min]] 时的自定义错误消息。
      */
     public $tooShort;
     /**
-     * @var string user-defined error message used when the length of the value is greater than [[max]].
+     * @var string 当长度大于 [[max]] 时的自定义错误消息。
      */
     public $tooLong;
     /**
-     * @var string user-defined error message used when the length of the value is not equal to [[length]].
+     * @var string 当长度不等于 [[length]] 时的自定义错误消息。
      */
     public $notEqual;
     /**
-     * @var string the encoding of the string value to be validated (e.g. 'UTF-8').
-     * If this property is not set, [[\yii\base\Application::charset]] will be used.
+     * @var string 待校验值的字符编码（例如：'UTF-8'）。
+     * 如果这个属性没有设置，默认使用 [[\yii\base\Application::charset]]。
      */
     public $encoding;
 

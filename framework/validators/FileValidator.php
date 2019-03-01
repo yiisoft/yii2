@@ -15,11 +15,11 @@ use yii\web\JsExpression;
 use yii\web\UploadedFile;
 
 /**
- * FileValidator verifies if an attribute is receiving a valid uploaded file.
+ * FileValidator 校验一个指定的属性接受的是一个合法的上传文件。
  *
- * Note that you should enable `fileinfo` PHP extension.
+ * 注意你需要开启 `fileinfo` PHP扩展。
  *
- * @property int $sizeLimit The size limit for uploaded files. This property is read-only.
+ * @property int $sizeLimit 上传的文件大小限制。这个属性是只读的。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,40 +27,40 @@ use yii\web\UploadedFile;
 class FileValidator extends Validator
 {
     /**
-     * @var array|string a list of file name extensions that are allowed to be uploaded.
-     * This can be either an array or a string consisting of file extension names
-     * separated by space or comma (e.g. "gif, jpg").
-     * Extension names are case-insensitive. Defaults to null, meaning all file name
-     * extensions are allowed.
+     * @var array|string 可上传的文件扩展名列表。
+     * 它可以是一个数组，
+     * 或者一个由空格或者逗号分隔的字符串（例如："gif, jpg"）。
+     * 扩展名称大小写不敏感，默认为 null ，
+     * 代表允许所有的文件扩展名。
      * @see wrongExtension for the customized message for wrong file type.
      */
     public $extensions;
     /**
-     * @var bool whether to check file type (extension) with mime-type. If extension produced by
-     * file mime-type check differs from uploaded file extension, the file will be considered as invalid.
+     * @var bool 是否检查文件类型（扩展名）和 mime-type 是否符合。
+     * 如果 mime-type 得到的扩展名和文件名称扩展名不一致，文件会被认为非法。
      */
     public $checkExtensionByMimeType = true;
     /**
-     * @var array|string a list of file MIME types that are allowed to be uploaded.
-     * This can be either an array or a string consisting of file MIME types
-     * separated by space or comma (e.g. "text/plain, image/png").
-     * The mask with the special character `*` can be used to match groups of mime types.
-     * For example `image/*` will pass all mime types, that begin with `image/` (e.g. `image/jpeg`, `image/png`).
-     * Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
+     * @var array|string 允许被上传的文件 MIME 类型列表。
+     * 它可以是一个 MIME 类型字符串数组，
+     * 或者一个由空格或者逗号分隔的字符串（例如："text/plain, image/png"）。
+     * 可以使用通配符 `*` 来匹配一组 MIME 类型。
+     * 例如：`image/*` 将会匹配所有以 `image/` 开头的 MIME 类型。（例如：`image/jpeg`, `image/png`）。
+     * MIME 类型名称大小写不敏感。默认为 null，代表允许所有的 MIME 类型。
      * @see wrongMimeType for the customized message for wrong MIME type.
      */
     public $mimeTypes;
     /**
-     * @var int the minimum number of bytes required for the uploaded file.
-     * Defaults to null, meaning no limit.
+     * @var int 上传文件的最小字节数，
+     * 默认为null，代表无限制。
      * @see tooSmall for the customized message for a file that is too small.
      */
     public $minSize;
     /**
-     * @var int the maximum number of bytes required for the uploaded file.
-     * Defaults to null, meaning no limit.
-     * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
-     * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
+     * @var int 上传文件的最大字节数，
+     * 默认为null，代表无限制。
+     * 注意：大小限制同样会受 `upload_max_filesize` 和 `post_max_size` INI 参数以及 MAX_FILE_SIZE 隐藏字段值影响。
+     * 更多详情参考 [[getSizeLimit()]]。
      * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
      * @see http://php.net/post-max-size
      * @see getSizeLimit
@@ -68,39 +68,39 @@ class FileValidator extends Validator
      */
     public $maxSize;
     /**
-     * @var int the maximum file count the given attribute can hold.
-     * Defaults to 1, meaning single file upload. By defining a higher number,
-     * multiple uploads become possible. Setting it to `0` means there is no limit on
-     * the number of files that can be uploaded simultaneously.
+     * @var int 指定的属性可最多持有的文件数量。
+     * 默认为1，代表上传单文件。
+     * 你可以设置一个大一点的值，这样允许同时上传多个文件。
+     * 设置为 `0` 意味着同时上传的文件数目没有限制。
      *
-     * > Note: The maximum number of files allowed to be uploaded simultaneously is
-     * also limited with PHP directive `max_file_uploads`, which defaults to 20.
+     * > 注意：同时上传的最大文件数量同样受 `max_file_uploads` 限制，
+     * 其默认值为 20。
      *
      * @see http://php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
     /**
-     * @var int the minimum file count the given attribute can hold.
-     * Defaults to 0. Higher value means at least that number of files should be uploaded.
+     * @var int 指定的属性最少持有的文件数量。
+     * 默认为0，代表无限制。大一点的值意味着最少那么多的文件应该被上传。
      *
      * @see tooFew for the customized message when too few files are uploaded.
      * @since 2.0.14
      */
     public $minFiles = 0;
     /**
-     * @var string the error message used when a file is not uploaded correctly.
+     * @var string 一个文件没有被正确上传时的错误消息。
      */
     public $message;
     /**
-     * @var string the error message used when no file is uploaded.
-     * Note that this is the text of the validation error message. To make uploading files required,
-     * you have to set [[skipOnEmpty]] to `false`.
+     * @var string 没有文件被上传的错误消息。
+     * 注意：这是校验错误消息。
+     * 为了确保文件上传是必须的，你需要设置属性 [[skipOnEmpty]] 值为 `false`。
      */
     public $uploadRequired;
     /**
-     * @var string the error message used when the uploaded file is too large.
-     * You may use the following tokens in the message:
+     * @var string 当上传文件太大时的错误消息。
+     * 你可以在消息中使用下面的这些 token ：
      *
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
@@ -327,9 +327,9 @@ class FileValidator extends Validator
     }
 
     /**
-     * Returns the maximum size allowed for uploaded files.
+     * 返回允许上传文件的最大大小。
      *
-     * This is determined based on four factors:
+     * 这个参数由下面四个因素决定：
      *
      * - 'upload_max_filesize' in php.ini
      * - 'post_max_size' in php.ini
@@ -391,7 +391,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * Checks if given uploaded file have correct type (extension) according current validator settings.
+     * 根据当前校验器配置检查指定的上传文件是否含有正确的类型（扩展）
      * @param UploadedFile $file
      * @return bool
      */
@@ -501,7 +501,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * Builds the RegExp from the $mask.
+     * 根据通配符构造正则表达式。
      *
      * @param string $mask
      * @return string the regular expression
@@ -513,7 +513,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * Checks the mimeType of the $file against the list in the [[mimeTypes]] property.
+     * 检查 $file 的 mimeType 是否在 [[mimeTypes]] 属性列表中。
      *
      * @param UploadedFile $file
      * @return bool whether the $file mimeType is allowed

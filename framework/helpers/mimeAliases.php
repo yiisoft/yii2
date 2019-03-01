@@ -1,8 +1,8 @@
 <?php
 /**
- * MIME aliases.
+ * MIME 别名。
  *
- * This file contains aliases for MIME types.
+ * 这个文件包含 MIME 类型的别名。
  */
 return [
     'text/xml' => 'application/xml',

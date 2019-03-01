@@ -22,7 +22,7 @@ class Constraint extends BaseObject
      */
     public $columnNames;
     /**
-     * @var string|null 约束名。
+     * @var string|null 约束名称。
      */
     public $name;
 }
