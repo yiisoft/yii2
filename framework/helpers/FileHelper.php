@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 /**
- * 文件系统辅助。
+ * 文件系统助手类。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
