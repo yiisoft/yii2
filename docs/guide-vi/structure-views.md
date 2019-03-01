@@ -406,67 +406,67 @@ class PostController extends Controller
 Với controller thuộc trong module, bạn có thể thiết lập thuộc tính [[yii\base\Module::layout|layout]] trong module để
 thiết lập layout cụ thể cho những controller. 
 
-Because the `layout` property may be configured at different levels (controllers, modules, application),
-behind the scene Yii takes two steps to determine what is the actual layout file being used for a particular controller.
+Bởi vì thuộc tính `layout` có thể đã thiết lập ở những vị trí khác như (controllers, modules, application),
+phía nền Yii cũng thực hiện 2 bước để xác định rằnglayout file sẽ được dùng vào controller cụ thể.
 
-In the first step, it determines the layout value and the context module:
+Tại bước đầu tiên, Yii xác định giá trị layout và context module:
 
-- If the [[yii\base\Controller::layout]] property of the controller is not `null`, use it as the layout value and
-  the [[yii\base\Controller::module|module]] of the controller as the context module.
-- If the [[yii\base\Controller::layout]] property of the controller is `null`, search through all ancestor modules (including the application itself) of the controller and 
-  find the first module whose [[yii\base\Module::layout|layout]] property is not `null`. Use that module and
-  its [[yii\base\Module::layout|layout]] value as the context module and the chosen layout value.
-  If such a module cannot be found, it means no layout will be applied.
+- Nếu thuộc tính [[yii\base\Controller::layout]] tại controller có giá trị khác `null`, sẽ dùng nó như giá trị layout và
+  thuộc tính [[yii\base\Controller::module|module]] của controller như là một context module.
+- Nếu thuộc tính [[yii\base\Controller::layout]] của controller có giá trị là `null`, tìm kiếm tất cả trong các modules liên quan (bao gồm bên trong ứng dụng) của controller và 
+  tìm kiếm module đầu tiên mà có thuộc tính [[yii\base\Module::layout|layout]] có giá trị khác `null`. Sử dụng nó như module và
+  giá trị [[yii\base\Module::layout|layout]] như một context module và chọn lấy giá trị layout.
+  Nếu một trong những module không được tìm thấy, đồng nghĩa với việc không có layout nào được chọn.
   
-In the second step, it determines the actual layout file according to the layout value and the context module
-determined in the first step. The layout value can be:
+Tại bước tiếp theo, nó xác định file layout được dùng dựa vào giá trị layout và context module
+được xác định ở bước. Giá trị layout có thể là:
 
-- a path alias (e.g. `@app/views/layouts/main`).
-- an absolute path (e.g. `/main`): the layout value starts with a slash. The actual layout file will be
-  looked for under the application's [[yii\base\Application::layoutPath|layout path]] which defaults to
+- một đường dẫn bí danh (vd. `@app/views/layouts/main`).
+- một đường dẫn tuyệt đối (vd. `/main`): giá trị layout bắt đầu với dấu gách chéo. thì file layout thực tế sẽ được tìm
+  dưới đường dẫn của ứng dụng [[yii\base\Application::layoutPath|layout path]] có mặc định là
   `@app/views/layouts`.
-- a relative path (e.g. `main`): the actual layout file will be looked for under the context module's
-  [[yii\base\Module::layoutPath|layout path]] which defaults to the `views/layouts` directory under the
+- một đường dẫn tương đối (vd. `main`): thì file layout được tìm dưới các context module's
+  [[yii\base\Module::layoutPath|layout path]] có mặc định ở đường dẫn `views/layouts` dưới đường dẫn module
   [[yii\base\Module::basePath|module directory]].
-- the boolean value `false`: no layout will be applied.
+- giá trị là `false`: không có layout nào được áp dụng.
 
-If the layout value does not contain a file extension, it will use the default one `.php`.
+Nếu tên layout không có chứa thông tin phần mở rộng tệp, thì Yii sử dụng đuôi mở rộng là `.php`.
 
 
-### Nested Layouts <span id="nested-layouts"></span>
+### Layout lồng nhau <span id="nested-layouts"></span>
 
-Sometimes you may want to nest one layout in another. Ví dụ, in different sections of a Web site, you
-want to use different layouts, while all these layouts share the same basic layout that generates the overall
-HTML5 page structure. You can achieve this goal by calling [[yii\base\View::beginContent()|beginContent()]] and
-[[yii\base\View::endContent()|endContent()]] in the child layouts like the following:
+Đôi lúc bạn muốn nhúng layout vào layout khác. Ví dụ, tại những mục khác nhau của Web site, bạn muốn
+sử dụng những layout khác, trong khi tất cả các layouts chia sẽ với layout chung được sinh bởi hầu hết các trang
+HTML5. Bạn có thể kết hợp các layout bằng việc gọi phương thức [[yii\base\View::beginContent()|beginContent()]] và
+[[yii\base\View::endContent()|endContent()]] tại những layout con như sau:
 
 ```php
 <?php $this->beginContent('@app/views/layouts/base.php'); ?>
 
-...child layout content here...
+...nội dung layout con nằm trong đây...
 
 <?php $this->endContent(); ?>
 ```
 
-As shown above, the child layout content should be enclosed within [[yii\base\View::beginContent()|beginContent()]] and
-[[yii\base\View::endContent()|endContent()]]. The parameter passed to [[yii\base\View::beginContent()|beginContent()]]
-specifies what is the parent layout. It can be either a layout file or alias.
+Như mô tả trên, nội dung layout nên được nằm trong phương thức [[yii\base\View::beginContent()|beginContent()]] và phương thức
+[[yii\base\View::endContent()|endContent()]]. Các tham số được gán vào phương thức [[yii\base\View::beginContent()|beginContent()]]
+có chỉ định các thông tin của layout cha. Nó có thể dùng cả các file layout hoặc alias.
 
-Using the above approach, you can nest layouts in more than one levels.
+Việc sử dụng phương pháp trên, bạn có thể lồng các layout theo nhiều cấp độ.
 
 
-### Using Blocks <span id="using-blocks"></span>
+### Sử dụng các khối(Block) <span id="using-blocks"></span>
 
-Blocks allow you to specify the view content in one place while displaying it in another. They are often used together
-with layouts. Ví dụ, you can define a block in a content view and display it in the layout.
+Các khối cho phép bạn xác định các nội dung ở view tại một vị trí khi muốn hiển thị khối đó tại nơi khác trong view. Chúng thường được dùng với
+các layout. Ví dụ, bạn có thể định nghĩa các khối ở nội dung view và hiển thị nó vào layout.
 
-You call [[yii\base\View::beginBlock()|beginBlock()]] and [[yii\base\View::endBlock()|endBlock()]] to define a block.
-The block can then be accessed via `$view->blocks[$blockID]`, where `$blockID` stands for a unique ID that you assign
-to the block when defining it.
+Khi gọi các phương thức [[yii\base\View::beginBlock()|beginBlock()]] và [[yii\base\View::endBlock()|endBlock()]] để định nghĩa các khối.
+Khối được truy cập qua phương thức `$view->blocks[$blockID]`, với `$blockID` là một định danh ID duy nhất mà bạn gán
+vào khối khi định nghĩa khối đó.
 
-The following example shows how you can use blocks to customize specific parts of a layout in a content view.
+Ví dụ sau sẽ chỉ cho bạn các để sử dụng các khối để tùy biến các phần của layout tại nội dung view.
 
-First, in a content view, define one or multiple blocks:
+Đầu tiên, tại trang nội dung của view, ta định nghĩa một hoặc nhiều khối:
 
 ```php
 ...
@@ -486,15 +486,15 @@ First, in a content view, define one or multiple blocks:
 <?php $this->endBlock(); ?>
 ```
 
-Then, in the layout view, render the blocks if they are available, or display some default content if a block is
-not defined.
+Tiếp đến, tại giao diện layout, sẽ xuất bản các khối nếu khối này có nội dung, còn không sẽ hiển thị các nội dung mặc định của khối nếu
+các khối không được định nghĩa.
 
 ```php
 ...
 <?php if (isset($this->blocks['block1'])): ?>
     <?= $this->blocks['block1'] ?>
 <?php else: ?>
-    ... default content for block1 ...
+    ... nội dung mặc định cho khối block1 ...
 <?php endif; ?>
 
 ...
@@ -502,7 +502,7 @@ not defined.
 <?php if (isset($this->blocks['block2'])): ?>
     <?= $this->blocks['block2'] ?>
 <?php else: ?>
-    ... default content for block2 ...
+    ... nội dung mặc định cho khối block2 ...
 <?php endif; ?>
 
 ...
@@ -510,7 +510,7 @@ not defined.
 <?php if (isset($this->blocks['block3'])): ?>
     <?= $this->blocks['block3'] ?>
 <?php else: ?>
-    ... default content for block3 ...
+    ... nội dung mặc định cho khối block3 ...
 <?php endif; ?>
 ...
 ```
@@ -518,10 +518,10 @@ not defined.
 
 ## Sử dụng các thành phần View <span id="using-view-components"></span>
 
-[[yii\base\View|View components]] provides many view-related features. While you can get view components
+[[yii\base\View|View components]] cung cấp nhiều tính năng cho  phần giao diện. While you can get view components
 by creating individual instances of [[yii\base\View]] or its child class, in most cases you will mainly use
-the `view` application component. You can configure this component in [application configurations](structure-applications.md#application-configurations)
-like the following:
+the `view` application component. Bạn có thể cấu hình các component trong mục [application configurations](structure-applications.md#application-configurations)
+như sau:
 
 ```php
 [
@@ -535,25 +535,25 @@ like the following:
 ]
 ```
 
-View components provide the following useful view-related features, each described in more details in a separate section:
+Các thành phần View cung cấp các tính năng hữu ích được liệt kê dưới, mỗi mô tả có trong các trang chi tiết:
 
-* [theming](output-theming.md): allows you to develop and change the theme for your Web site.
-* [fragment caching](caching-fragment.md): allows you to cache a fragment within a Web page.
-* [client script handling](output-client-scripts.md): supports CSS and JavaScript registration and rendering.
-* [asset bundle handling](structure-assets.md): supports registering and rendering of [asset bundles](structure-assets.md).
-* [alternative template engines](tutorial-template-engines.md): allows you to use other template engines, such as
+* [theming](output-theming.md): cho phép bạn xây dựng và thay đổi theme cho các trang Web.
+* [fragment caching](caching-fragment.md): cho phép bạn xử lý cache các fragment trong các trang Web.
+* [client script handling](output-client-scripts.md): hỗ trợ đăng ký vào xuất bản các nội dung về CSS và JavaScript.
+* [asset bundle handling](structure-assets.md): hỗ trợ việc đăng ký và xuất bản các [asset bundles](structure-assets.md).
+* [alternative template engines](tutorial-template-engines.md): cho phép bạn sử dụng các bộ giao diện, chẳng hạn như
   [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
 
 You may also frequently use the following minor yet useful features when you are developing Web pages.
 
 
-### Setting Page Titles <span id="setting-page-titles"></span>
+### Thiết lập tiêu đề trang <span id="setting-page-titles"></span>
 
-Every Web page should have a title. Normally the title tag is being displayed in a [layout](#layouts). However, in practice
-the title is often determined in content views rather than layouts. To solve this problem, [[yii\web\View]] provides
-the [[yii\web\View::title|title]] property for you to pass the title information from content views to layouts.
+Tại mỗi trang Web cần có các tiêu đề. Thông thường các thẻ tiêu đề được hiển hị trong các [layout](#layouts). Tuy nhiên, trong bài thực hành này
+các tiêu đề thường được xác định tại trang nội dung của view hơn là xác định tại các layout. Để làm được việc này, lớp [[yii\web\View]] cung cấp
+thuộc tính [[yii\web\View::title|title]] cho bạn đẩy thông tin tiêu đề từ nội dung view qua các layout.
 
-To make use of this feature, in each content view, you can set the page title like the following:
+Để thực hiện tính năng này, tại mỗi trang nội dung của view, bạn có thể thiết lập tiêu đề trang như sau:
 
 ```php
 <?php
@@ -561,14 +561,14 @@ $this->title = 'My page title';
 ?>
 ```
 
-Then in the layout, make sure you have the following code in the `<head>` section:
+Tiếp đến tại layout, hãy chắc chắn rằng bạn đặt đoạn mã sau vào mục `<head>`:
 
 ```php
 <title><?= Html::encode($this->title) ?></title>
 ```
 
 
-### Registering Meta Tags <span id="registering-meta-tags"></span>
+### Thực hiện đăng ký các thẻ Meta Tags <span id="registering-meta-tags"></span>
 
 Web pages usually need to generate various meta tags needed by different parties. Like page titles, meta tags
 appear in the `<head>` section and are usually generated in layouts.
@@ -701,16 +701,16 @@ to change the directory for searching these views.
 
 ## Bài thực hành <span id="best-practices"></span>
 
-Views are responsible for presenting models in the format that end users desire. In general, views
+Các View chịu trách nhiệm trong việc hiển thị dữ liệu từ model tới người dùng. Trong các trường hợp, view thường
 
-* should mainly contain presentational code, such as HTML, and simple PHP code to traverse, format and render data.
-* should not contain code that performs DB queries. Such code should be done in models.
-* should avoid direct access to request data, such as `$_GET`, `$_POST`. This belongs to controllers.
-  If request data is needed, they should be pushed into views by controllers.
-* may read model properties, but should not modify them.
+* nên chứa các mã code hiển thị, như HTML, và các câu lệnh PHP đơn giản để xử lý, định dạng và xuất bản dữ liệu.
+* không nên chứa các mã code có chứa các câu lệnh truy vấn vào CSDL. Những câu lệnh này nên đặt trong các model.
+* nên tranh các câu lệnh điều hướng yêu cầu dữ liệu, như `$_GET`, `$_POST`. Các lệnh này nên xử lý ở các controller.
+  Nếu cấn lấy dữ liệu, chúng nên được đẩy vào view qua controller.
+* nên có đọc các thuộc tính của model, nhưng không được sửa nội dung trong đó.
 
-To make views more manageable, avoid creating views that are too complex or contain too much redundant code.
-You may use the following techniques to achieve this goal:
+Để việc quản lý các view dễ dàng hơn, nên tránh việc tạo các view quá phức tạp hoặc chứa nhiều các mã code dự phòng.
+Bạn có thể tham khảo các thủ thuật sau để đạt việc quản lý view tốt:
 
 * use [layouts](#layouts) to represent common presentational sections (e.g. page header, footer).
 * divide a complicated view into several smaller ones. The smaller views can be rendered and assembled into a bigger

@@ -521,7 +521,7 @@ bạn có thể được thực hiện các chiến lược sau:
   ta định nghĩa lớp khung model bằng việc kế thừa từ lớp model cơ sở. Lớp khung model này
   có thể chứa các quy tắc logic được mô tả cụ thể chi ứng dụng hoặc module này.
 
-Ví dụ, với [Mẫu Dự án Advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), bạn có thể định nghĩa lớp cơ sở model
+Ví dụ, với [Mẫu dự án Advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), bạn có thể định nghĩa lớp cơ sở model
 là `common\models\Post`. Tiếp đến tại ứng dụng front end, bạn định nghĩa lớp khung là
 `frontend\models\Post` lớp này kế thừa từ lớp `common\models\Post`. Và tương tự cho ứng dụng back end,
 bạn định nghĩa model `backend\models\Post`. Với cách giải quyết này, bạn sẽ chắc chắn rằng mã của bạn tại model `frontend\models\Post`
