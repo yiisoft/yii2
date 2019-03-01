@@ -90,7 +90,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Updates the current session ID with a newly generated one .
-     * Please refer to <http://php.net/session_regenerate_id> for more details.
+     * Please refer to <https://secure.php.net/session_regenerate_id> for more details.
      * @param bool $deleteOldSession Whether to delete the old associated session file or not.
      */
     public function regenerateID($deleteOldSession = false)
@@ -167,7 +167,7 @@ class DbSession extends MultiFieldSession
     public function writeSession($id, $data)
     {
         // exception must be caught in session write handler
-        // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
+        // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             $fields = $this->composeFields($id, $data);
             $fields = $this->typecastFields($fields);
