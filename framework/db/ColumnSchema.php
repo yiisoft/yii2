@@ -151,7 +151,7 @@ class ColumnSchema extends BaseObject
                     return $value;
                 }
                 if (is_float($value)) {
-                    // 确保类型转换始终有。在所有区域设置中用小数分隔符
+                    // ensure type cast always has . as decimal separator in all locales
                     return StringHelper::floatToString($value);
                 }
                 return (string) $value;
