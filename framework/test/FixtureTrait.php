@@ -200,6 +200,11 @@ trait FixtureTrait
                 $name = isset($aliases[$class]) ? $aliases[$class] : $class;
                 unset($instances[$name]);  // unset so that the fixture is added to the last in the next line
                 $instances[$name] = $fixture;
+                foreach ($stack as $instance) {
+                    if ($instance instanceof Fixture && in_array($class, $instance->depends)) {
+                        $instance->dependInstances[$fixture->modelClass] = $fixture;
+                    }
+                } 
             } else {
                 $class = ltrim($fixture['class'], '\\');
                 $name = isset($aliases[$class]) ? $aliases[$class] : $class;
