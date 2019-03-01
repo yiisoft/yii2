@@ -136,7 +136,7 @@ $provider = new SqlDataProvider([
 $models = $provider->getModels();
 ```
 
-> 说明：[[yii\data\SqlDataProvider::totalCount|totalCount]] 的属性只有你需要
+> Info: [[yii\data\SqlDataProvider::totalCount|totalCount]] 的属性只有你需要
   分页数据的时候才会用到。这是因为通过 [[yii\data\SqlDataProvider::sql|sql]] 
   指定的SQL语句将被数据提供者所修改并且只返回当
   前页面数据。数据提供者为了正确计算可用页面的数量仍旧需要知道数据项的总数。
@@ -246,19 +246,19 @@ use yii\data\BaseDataProvider;
 class CsvDataProvider extends BaseDataProvider
 {
     /**
-     * @var string name of the CSV file to read
+     * @var string 要读取的 CSV 文件的名称
      */
     public $filename;
 
     /**
-     * @var string|callable name of the key column or a callable returning it
+     * @var string|callable 键列的名称或返回它的可调用列表
      */
     public $key;
 
     /**
      * @var SplFileObject
      */
-    protected $fileObject; // SplFileObject is very convenient for seeking to particular line in a file
+    protected $fileObject; // SplFileObject 非常便于搜索文件中的特定行
 
 
     /**
@@ -355,8 +355,8 @@ $filter = new ActiveDataFilter([
 $filterCondition = null;
 
 // 您可以从任何来源加载过滤器。例如：
-// if you prefer JSON in request body,
-// use Yii::$app->request->getBodyParams() below:
+// 如果你更喜欢请求体中的 JSON，
+// 使用 Yii::$app->request->getBodyParams() 如下：
 if ($filter->load(\Yii::$app->request->get())) { 
     $filterCondition = $filter->build();
     if ($filterCondition === false) {

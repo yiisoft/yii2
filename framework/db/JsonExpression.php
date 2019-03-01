@@ -10,9 +10,9 @@ namespace yii\db;
 use yii\base\InvalidConfigException;
 
 /**
- * Class JsonExpression represents data that should be encoded to JSON.
+ * JsonExpression 类表示应编码为 JSON 的数据。
  *
- * For example:
+ * 例如：
  *
  * ```php
  * new JsonExpression(['a' => 1, 'b' => 2]); // will be encoded to '{"a": 1, "b": 2}'
@@ -27,25 +27,25 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     const TYPE_JSONB = 'jsonb';
 
     /**
-     * @var mixed the value to be encoded to JSON.
-     * The value must be compatible with [\yii\helpers\Json::encode()|Json::encode()]] input requirements.
+     * @var mixed 要编码为 JSON 的值。
+     * 该值必须与 [\yii\helpers\Json::encode()|Json::encode()]] 输入要求兼容。
      */
     protected $value;
     /**
-     * @var string|null Type of JSON, expression should be casted to. Defaults to `null`, meaning
-     * no explicit casting will be performed.
-     * This property will be encountered only for DBMSs that support different types of JSON.
-     * For example, PostgreSQL has `json` and `jsonb` types.
+     * @var string|null 表达式应该被转为的 JSON 的类型。默认为 `null`，
+     * 表示不会执行显式转换。
+     * 只有支持不同类型 JSON 的 DBMS 才会遇到此属性。
+     * 例如，PostgreSQL 有 `json` 和 `jsonb` 类型。
      */
     protected $type;
 
 
     /**
-     * JsonExpression constructor.
+     * JsonExpression 构造函数。
      *
-     * @param mixed $value the value to be encoded to JSON.
-     * The value must be compatible with [\yii\helpers\Json::encode()|Json::encode()]] requirements.
-     * @param string|null $type the type of the JSON. See [[JsonExpression::type]]
+     * @param mixed $value 要编码为 JSON 的值。
+     * 该值必须与 [\yii\helpers\Json::encode()|Json::encode()]] 要求兼容。
+     * @param string|null $type JSON 的类型。请参阅 [[JsonExpression::type]]
      *
      * @see type
      */
@@ -69,7 +69,7 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     }
 
     /**
-     * @return null|string the type of JSON
+     * @return null|string JSON 的类型
      * @see type
      */
     public function getType()
@@ -78,13 +78,13 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
+     * 指定应序列化为 JSON 的数据
      *
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     * @return mixed 可以通过 <b>json_encode</b> 序列化的数据，
+     * 它是除资源之外的任何类型的值。
      * @since 2.0.14.2
-     * @throws InvalidConfigException when JsonExpression contains QueryInterface object
+     * @throws InvalidConfigException 当 JsonExpression 包含 QueryInterface 对象时抛出的异常
      */
     public function jsonSerialize()
     {

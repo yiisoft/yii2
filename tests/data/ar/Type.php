@@ -26,6 +26,8 @@ namespace yiiunit\data\ar;
  */
 class Type extends ActiveRecord
 {
+    public $name;
+
     /**
      * {@inheritdoc}
      */
