@@ -9,7 +9,7 @@ Yii 2 is a modern framework designed to be a solid foundation for your PHP appli
 It is fast, secure and efficient and works right out of the box pre-configured with reasonable defaults.
 The framework is easy to adjust to meet your needs, because Yii has been designed to be flexible.
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
+[![Backers on Open Collective](https://opencollective.com/yiisoft/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/yiisoft/sponsors/badge.svg)](#sponsors) [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
 [![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](https://travis-ci.org/yiisoft/yii2)
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
@@ -91,3 +91,33 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 ```
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 ```
+
+## Contributors
+
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/yiisoft/yii2/graphs/contributors"><img src="https://opencollective.com/yiisoft/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/yiisoft#backer)]
+
+<a href="https://opencollective.com/yiisoft#backers" target="_blank"><img src="https://opencollective.com/yiisoft/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/yiisoft#sponsor)]
+
+<a href="https://opencollective.com/yiisoft/sponsor/0/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/1/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/2/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/3/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/4/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/5/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/6/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/7/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/8/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/yiisoft/sponsor/9/website" target="_blank"><img src="https://opencollective.com/yiisoft/sponsor/9/avatar.svg"></a>
+
+
