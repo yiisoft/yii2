@@ -410,10 +410,6 @@ class Response extends \yii\base\Response
      */
     protected function sendContent()
     {
-        if ($this->getStatusCode() === 204) {
-            return;
-        }
-
         if ($this->stream === null) {
             echo $this->content;
 
@@ -1035,6 +1031,12 @@ class Response extends \yii\base\Response
      */
     protected function prepare()
     {
+        if ($this->statusCode === 204) {
+            $this->content = '';
+            $this->stream = null;
+            return;
+        }
+
         if ($this->stream !== null) {
             return;
         }
