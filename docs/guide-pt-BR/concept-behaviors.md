@@ -291,7 +291,7 @@ $user->touch('login_time');
 Comparando Behaviors com Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-Apesar de behaviors serem semelhantes a [traits](http://www.php.net/traits) em que ambos "injetam" suas propriedades e métodos para a classe principal, eles diferem em muitos aspectos. Tal como explicado abaixo, ambos têm prós e contras. Eles funcionam mais como complemento um do outro.
+Apesar de behaviors serem semelhantes a [traits](https://secure.php.net/traits) em que ambos "injetam" suas propriedades e métodos para a classe principal, eles diferem em muitos aspectos. Tal como explicado abaixo, ambos têm prós e contras. Eles funcionam mais como complemento um do outro.
 
 
 ### Razões para usar Behaviors <span id="pros-for-behaviors"></span>

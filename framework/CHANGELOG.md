@@ -1,14 +1,23 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.16.1 under development
+2.0.17 under development
 ------------------------
 
+- Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
+- Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
+
+
+2.0.16.1 February 28, 2019
+--------------------------
+
+- Bug #17089: Fixed caching of related records when `via()` using with callable (rugabarbo)
 - Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
-- Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 - Bug #17089: Fixed caching of related records when `via()` using with callable (rugabarbo)
 - Bug #17150: Fixed `yii\helpers\BaseInflector::camel2words()` splitting `ALLCAPS` words on each letter (brandonkelly)
+- Bug #17093: Fixed regression in `DataProvider::totalCount` (samdark)
+
 
 2.0.16 January 30, 2019
 -----------------------

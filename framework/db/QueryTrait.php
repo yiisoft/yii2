@@ -39,8 +39,8 @@ trait QueryTrait
     /**
      * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
      * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
-     * can be either [SORT_ASC](http://php.net/manual/en/array.constants.php#constant.sort-asc)
-     * or [SORT_DESC](http://php.net/manual/en/array.constants.php#constant.sort-desc).
+     * can be either [SORT_ASC](https://secure.php.net/manual/en/array.constants.php#constant.sort-asc)
+     * or [SORT_DESC](https://secure.php.net/manual/en/array.constants.php#constant.sort-desc).
      * The array may also contain [[ExpressionInterface]] objects. If that is the case, the expressions
      * will be converted into strings without any change.
      */

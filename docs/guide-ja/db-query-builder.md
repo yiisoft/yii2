@@ -773,7 +773,7 @@ foreach ($query->each() as $username => $user) {
 #### MySQL におけるバッチ・クエリの制約 <span id="batch-query-mysql"></span>
 
 MySQL のバッチ・クエリの実装は PDO ドライバのライブラリに依存しています。デフォルトでは、MySQL のクエリは
-[`バッファ・モード`](http://php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
+[`バッファ・モード`](https://secure.php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
 このことが、カーソルを使ってデータを取得する目的を挫折させます。というのは、バッファ・モードでは、
 ドライバによって結果セット全体がクライアントのメモリに読み込まれることを防止できないからです。
 
