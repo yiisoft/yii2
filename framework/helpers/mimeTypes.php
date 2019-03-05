@@ -1,12 +1,12 @@
 <?php
 /**
- * MIME types.
+ * MIME 类型。
  *
- * This file contains most commonly used MIME types
- * according to file extension names.
- * Its content is generated from the apache http mime.types file.
+ * 这个文件根据设置的扩展名包含常用的
+ * MIME 类型。
+ * 它的内容来自于 apache http mime。类型文件。
  * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
- * This file has been placed in the public domain for unlimited redistribution.
+ * 这个文件已经放在公共网络中，无限制的资源共享。
  */
 return [
     '3dml' => 'text/vnd.in3d.3dml',

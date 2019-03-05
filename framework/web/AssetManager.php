@@ -47,13 +47,13 @@ class AssetManager extends Component
      * 这些配置将应用于这个资源包。
      *
      * 数组的键是资源包名称，通常是资源包类名，没有反斜杠的那种。
-     * 数组的值是相应的配置，如果值为 false，则意味这it means the corresponding asset
+     * 数组的值是相应的配置，如果值为 false，则意味这
      * 这个资源包被禁用，[[getBundle()]] 返回为 null。
      *
      * 如果此属性为 false，则意味全部的资源包都被禁用，
      * [[getBundle()]] 会全部返回 null。
      *
-     * 以下示例显示如何禁用 Bootstrap 小部件去使用 bootstrap 的 CSS 。
+     * 以下示例显示如何禁用 Bootstrap 小部件去使用 bootstrap 的 CSS。
      * （由于你想使用自己的样式）：
      *
      * ```php
@@ -83,7 +83,7 @@ class AssetManager extends Component
      * 相应的值将替换资源，并被注册到视图中。
      * 例如，资源文件 `my/path/to/jquery.js` 匹配了 `jquery.js`。
      *
-     * 请注意，目标资源文件必须为绝对 URL 、相对于域名的 URL（以“/”开头）或者是
+     * 请注意，目标资源文件必须为绝对 URL、相对于域名的 URL（以“/”开头）或者是
      * 相对于 [[baseUrl]] 和 [[basePath]] 的路径。
      *
      * 在以下示例中，任何以 `jquery.min.js` 结尾的资源都会被替换成 `jquery/dist/jquery.js`，
@@ -330,7 +330,7 @@ class AssetManager extends Component
      * 返回给定资源的实际文件路径。
      * @param AssetBundle $bundle 资源文件所属的资源包
      * @param string $asset 资源路径。必须是 [[AssetBundle::$js]] 或者 [[AssetBundle::$css]] 列表里的资源文件。
-     * @return string|false 实际的文件路径，如果所给资源是是一个绝对 URL，则返回  `false`
+     * @return string|false 实际的文件路径，如果所给资源是是一个绝对 URL，则返回 `false`
      */
     public function getAssetPath($bundle, $asset)
     {
@@ -405,7 +405,7 @@ class AssetManager extends Component
     /**
      * 发布文件或目录。
      *
-     * 此方法将指定的文件或目录复制到 [[basePath]]， so that
+     * 此方法将指定的文件或目录复制到 [[basePath]]，
      * 以便可以通过Web服务器访问它们。
      *
      * 资源文件将检查其修改时间以避免不必要的文件复制。
@@ -419,7 +419,7 @@ class AssetManager extends Component
      * 如果要更改此行为，可以设置 "beforeCopy" 选项，
      * 如 `$options` 参数中所述。
      *
-     * Note: 在极端场景下，可能会形成竞争条件，导致在创建已发布的资源文件的目录时，
+     * Note：在极端场景下，可能会形成竞争条件，导致在创建已发布的资源文件的目录时，
      * 产生非关键问题的一次性表现。（就是并发请求同时触发布的问题）
      * 但可以完全避免这个问题，
      * 先发一个 “请求”，以触发所有会调用 'publish()' 的资源的发布，
@@ -430,14 +430,14 @@ class AssetManager extends Component
      * @param array $options 发布目录时要应用的选项。
      * 支持以下选项：
      *
-     * - only: array，允许被复制的文件路径的匹配模式列表。
-     * - except: array，不允许被复制的文件路径的匹配模式列表。
-     * - caseSensitive: boolean，指定为 “only” 或 “except” 的匹配模式是否区分大小写。默认为 true。
-     * - beforeCopy: callback, 一个在复制每个子目录或文件之前调用的 PHP 回调。
+     * - only：array，允许被复制的文件路径的匹配模式列表。
+     * - except：array，不允许被复制的文件路径的匹配模式列表。
+     * - caseSensitive：boolean，指定为 “only” 或 “except” 的匹配模式是否区分大小写。默认为 true。
+     * - beforeCopy：callback, 一个在复制每个子目录或文件之前调用的 PHP 回调。
      *   如果设置了，则覆盖 [[beforeCopy]] 属性。
-     * - afterCopy: callback, 在成功复制子目录或文件后调用的 PHP 回调。
+     * - afterCopy：callback, 在成功复制子目录或文件后调用的 PHP 回调。
      *   如果设置了，则覆盖 [[afterCopy]] 属性。
-     * - forceCopy: boolean, 如果目标目录要发布的文件已存在，是否要强制复制。
+     * - forceCopy：boolean, 如果目标目录要发布的文件已存在，是否要强制复制。
      *   此选项仅在发布目录时使用。
      *   如果设置了，则覆盖 [[forceCopy]] 属性。
      *
@@ -506,14 +506,14 @@ class AssetManager extends Component
      * @param array $options 发布目录时要应用的选项。
      * 支持以下选项：
      *
-     * - only: array，允许被复制的文件路径的匹配模式列表。
-     * - except: array，不允许被复制的文件路径的匹配模式列表。
-     * - caseSensitive: boolean，指定为 “only” 或 “except” 的匹配模式是否区分大小写。默认为 true。
-     * - beforeCopy: callback, 一个在复制每个子目录或文件之前调用的 PHP 回调。
+     * - only：array，允许被复制的文件路径的匹配模式列表。
+     * - except：array，不允许被复制的文件路径的匹配模式列表。
+     * - caseSensitive：boolean，指定为 “only” 或 “except” 的匹配模式是否区分大小写。默认为 true。
+     * - beforeCopy：callback, 一个在复制每个子目录或文件之前调用的 PHP 回调。
      *   如果设置了，则覆盖 [[beforeCopy]] 属性。
-     * - afterCopy: callback, 在成功复制子目录或文件后调用的 PHP 回调。
+     * - afterCopy：callback, 在成功复制子目录或文件后调用的 PHP 回调。
      *   如果设置了，则覆盖 [[afterCopy]] 属性。
-     * - forceCopy: boolean, 如果目标目录要发布的文件已存在，是否要强制复制。
+     * - forceCopy：boolean, 如果目标目录要发布的文件已存在，是否要强制复制。
      *   此选项仅在发布目录时使用。
      *   如果设置了，则覆盖 [[forceCopy]] 属性。
      *

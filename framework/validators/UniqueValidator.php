@@ -16,12 +16,12 @@ use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 
 /**
- * UniqueValidator validates that the attribute value is unique in the specified database table.
+ * UniqueValidator 校验指定的属性值在数据库表中是唯一的。
  *
- * UniqueValidator checks if the value being validated is unique in the table column specified by
- * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
+ * UniqueValidator 检查指定的值是否在由 AR 类 [[targetClass]] 和 [[targetAttribute]]
+ * 属性指定的数据库表列中唯一。
  *
- * The following are examples of validation rules using this validator:
+ * 如下是使用这个校验器的校验规则示例：
  *
  * ```php
  * // a1 needs to be unique
@@ -42,39 +42,39 @@ use yii\helpers\Inflector;
 class UniqueValidator extends Validator
 {
     /**
-     * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
-     * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
+     * @var string 用于校验当前属性值唯一性的 AR 类的名字。
+     * 如果没有设置，它将会使用被校验的属性所在的 AR 类。
      * @see targetAttribute
      */
     public $targetClass;
     /**
-     * @var string|array the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that should be used to
-     * validate the uniqueness of the current attribute value. If not set, it will use the name
-     * of the attribute currently being validated. You may use an array to validate the uniqueness
-     * of multiple columns at the same time. The array values are the attributes that will be
-     * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
+     * @var string|array 用于校验当前属性值唯一性的 [[\yii\db\ActiveRecord|ActiveRecord]] 的属性名称。
+     * 如果没有设置，它会使用当前被校验的属性名称。
+     * 你可以使用一个数组来在同一时刻校验多个列。
+     * 数组的值是被用于校验唯一性的属性，
+     * 数组的键则是将要被校验其值的属性。
      */
     public $targetAttribute;
     /**
-     * @var string|array|\Closure additional filter to be applied to the DB query used to check the uniqueness of the attribute value.
-     * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
-     * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
-     * is the [[\yii\db\Query|Query]] object that you can modify in the function.
+     * @var string|array|\Closure 用于应用在检查属性值唯一性的 DB 查询中的额外过滤器。
+     * 这个过滤器可以是一个字符串或者一个数组，代表额外的查询条件。（格式参考 [[\yii\db\Query::where()]]）
+     * 或者是一个匿名函数，签名为 `function ($query)`，
+     * 其中 `$query` 是 [[\yii\db\Query|Query]] 对象，你可以在函数中修改。
      */
     public $filter;
     /**
-     * @var string the user-defined error message.
+     * @var string 用户自定义错误消息。
      *
-     * When validating single attribute, it may contain
-     * the following placeholders which will be replaced accordingly by the validator:
+     * 当校验单个属性时，它可以包含如下占位符，
+     * 这些占位符将会根据具体的值做替换：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
-     * When validating mutliple attributes, it may contain the following placeholders:
+     * 当校验多个属性时，它可以包含如下占位符：
      *
-     * - `{attributes}`: the labels of the attributes being validated.
-     * - `{values}`: the values of the attributes being validated.
+     * - `{attributes}`: 被校验的属性值标签列表
+     * - `{values}`: 被校验的属性值列表
      */
     public $message;
     /**
@@ -167,18 +167,18 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Checks whether the $model exists in the database.
+     * 检测 $model 对应的表是否存在于数据库中。
      *
-     * @param string $targetClass the name of the ActiveRecord class that should be used to validate the uniqueness
-     * of the current attribute value.
-     * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
-     * @param Model $model the data model to be validated
+     * @param string $targetClass  AR 类，
+     * 用于校验当前属性值唯一性。
+     * @param array $conditions 兼容 [[\yii\db\Query::where()|Query::where()]] 键值对格式的条件数组
+     * @param Model $model 待校验的数据模型
      *
-     * @return bool whether the model already exists
+     * @return bool 模型对应的表是否存在。
      */
     private function modelExists($targetClass, $conditions, $model)
     {
-        /** @var ActiveRecordInterface $targetClass $query */
+        /** @var ActiveRecordInterface|\yii\base\BaseObject $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
@@ -216,13 +216,13 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Prepares a query by applying filtering conditions defined in $conditions method property
-     * and [[filter]] class property.
+     * 通过应用方法参数 $conditions 定义的过滤条件和类属性 [[filter]]
+     * 构建一个查询对象。
      *
-     * @param ActiveRecordInterface $targetClass the name of the ActiveRecord class that should be used to validate
-     * the uniqueness of the current attribute value.
-     * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format
-     *
+     * @param ActiveRecordInterface $targetClass  AR 类名字，
+     * 用于校验当前属性值唯一性。
+     * @param array $conditions 兼容 [[\yii\db\Query::where()|Query::where()]] 键值对格式的条件数组
+     * @param array $conditions
      * @return ActiveQueryInterface|ActiveQuery
      */
     private function prepareQuery($targetClass, $conditions)
@@ -239,16 +239,16 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Processes attributes' relations described in $targetAttribute parameter into conditions, compatible with
-     * [[\yii\db\Query::where()|Query::where()]] key-value format.
+     * 将 $targetAttribute 参数中描述的属性关系处理为条件表达式，
+     * 兼容 [[\yii\db\Query::where()|Query::where()]] 键值对格式。
      *
-     * @param string|array $targetAttribute the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that
-     * should be used to validate the uniqueness of the current attribute value. You may use an array to validate
-     * the uniqueness of multiple columns at the same time. The array values are the attributes that will be
-     * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
-     * If the key and the value are the same, you can just specify the value.
-     * @param Model $model the data model to be validated
-     * @param string $attribute the name of the attribute to be validated in the $model
+     * @param string|array $targetAttribute  用于校验当前属性值唯一性的 [[\yii\db\ActiveRecord|ActiveRecord]] 类属性名。
+     * 你可以用一个数组来同时校验多列。
+     * 数组的值是用来校验唯一性的属性，
+     * 数组的键则是需要被校验其值唯一性的属性。
+     * 如果键和值是一样的，你可以只指定值。
+     * @param Model $model 被校验的数据模型。
+     * @param string $attribute $model 中被校验的属性名称。
      *
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
      */
@@ -273,7 +273,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
+     * 创建和添加 [[comboNotUnique]] 错误消息到指定属性模型。
      * @param \yii\base\Model $model the data model.
      * @param string $attribute the name of the attribute.
      */
@@ -297,7 +297,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias.
+     * 返还包含别名的条件表达式。
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
@@ -311,10 +311,12 @@ class UniqueValidator extends Validator
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
-                $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . preg_quote($alias) . '\.(.*)$/',
-                    '$1',
-                    $columnName) . ']]';
+                $columnName = preg_replace('/^' . preg_quote($alias) . '\.(.*)$/', '$1', $columnName);
+                if (strpos($columnName, '[[') === 0) {
+                    $prefixedColumn = "{$alias}.{$columnName}";
+                } else {
+                    $prefixedColumn = "{$alias}.[[{$columnName}]]";
+                }
             } else {
                 // there is an expression, can't prefix it reliably
                 $prefixedColumn = $columnName;

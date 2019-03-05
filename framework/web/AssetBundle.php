@@ -127,7 +127,7 @@ class AssetBundle extends BaseObject
 
     /**
      * 初始化资源包。
-     * If you override this method, make sure you call the parent implementation in the last.
+     * 如果你重写这个方法，请确保你在最后面调用了父方法。
      */
     public function init()
     {

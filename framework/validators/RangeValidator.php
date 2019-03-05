@@ -12,11 +12,11 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
 /**
- * RangeValidator validates that the attribute value is among a list of values.
+ * RangeValidator 校验属性值是否在指定列表区间内。
  *
- * The range can be specified via the [[range]] property.
- * If the [[not]] property is set true, the validator will ensure the attribute value
- * is NOT among the specified range.
+ * 你可以通过 [[range]] 属性指定区间。
+ * 如果 [[not]] 属性被设置为 true ，
+ * 校验器会确保属性值不在指定区间内。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -24,8 +24,8 @@ use yii\helpers\ArrayHelper;
 class RangeValidator extends Validator
 {
     /**
-     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
-     * such a list. The signature of the anonymous function should be as follows,
+     * @var array|\Traversable|\Closure 合法值列表，属性值必须为列表元素之一；或者一个匿名函数返回这样的一个列表。
+     * 函数的签名如下：
      *
      * ```php
      * function($model, $attribute) {
@@ -36,16 +36,16 @@ class RangeValidator extends Validator
      */
     public $range;
     /**
-     * @var bool whether the comparison is strict (both type and value must be the same)
+     * @var bool 是否比较是严格的（值和型都必须一样）
      */
     public $strict = false;
     /**
-     * @var bool whether to invert the validation logic. Defaults to false. If set to true,
-     * the attribute value should NOT be among the list of values defined via [[range]].
+     * @var bool 是否对校验结果取反。默认为 false。如果设置为 true，
+     * 属性的值必须不能在 [[range]] 定义的列表值中。
      */
     public $not = false;
     /**
-     * @var bool whether to allow array type attribute.
+     * @var bool 是否允许数组类型的属性。
      */
     public $allowArray = false;
 

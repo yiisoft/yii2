@@ -12,15 +12,15 @@ use yii\db\QueryInterface;
 use yii\di\Instance;
 
 /**
- * DbQueryDependency represents a dependency based on the query result of an [[QueryInterface]] instance.
+ * DbQueryDependency 是基于一个 [[QueryInterface]] 实例的查询结果实现的依赖类。
  *
- * If the query result changes, the dependency is considered as changed.
- * The query is specified via the [[query]] property.
+ * 如果查询结果有变化，那么就认为依赖发生了变化。
+ * 查询语句由 [[query]] 属性指定。
  *
- * Object of any class which matches [[QueryInterface]] can be used, so this dependency can be used not only
- * with regular relational databases but with MongoDB, Redis and so on as well.
+ * 任何实现了 [[QueryInterface]] 接口的对象都能用，所以这个依赖不仅可以在普通的关系数据库中使用，
+ * 在 MongoDB，Redis 这些系统中也能使用。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @see QueryInterface
  *
@@ -30,23 +30,23 @@ use yii\di\Instance;
 class DbQueryDependency extends Dependency
 {
     /**
-     * @var string|array|object the application component ID of the database connection, connection object or
-     * its array configuration.
-     * This field can be left blank, allowing query to determine connection automatically.
+     * @var string|array|object 数据库连接的应用组件 ID，
+     * 也可以是连接对象或者数组格式的配置。
+     * 该属性也可以留空，这允许根据查询来自动决定连接对象。
      */
     public $db;
     /**
-     * @var QueryInterface the query which result is used to determine if the dependency has been changed.
-     * Actual query method to be invoked is determined by [[method]].
+     * @var QueryInterface 实现接口的查询对象，它的结果决定依赖是否发生了变化。
+     * 实际的查询方法有 [[method]] 属性决定并调用。
      */
     public $query;
     /**
-     * @var string|callable method which should be invoked in over the [[query]] object.
+     * @var string|callable 使用 [[query]] 对象作为参数调用的方法。
      *
-     * If specified as a string an own query method with such name will be invoked, passing [[db]] value as its
-     * first argument. For example: `exists`, `all`.
+     * 如果它是字符串，这表示一个自有的查询方法名，那么传递 [[db]] 属性作为第一个参数直接调用。
+     * 比如 `exists`，`all` 方法名。
      *
-     * This field can be specified as a PHP callback of following signature:
+     * 该属性也可以是如下签名的 PHP 回调函数：
      *
      * ```php
      * function (QueryInterface $query, mixed $db) {
@@ -54,18 +54,18 @@ class DbQueryDependency extends Dependency
      * }
      * ```
      *
-     * If not set - [[QueryInterface::one()]] will be used.
+     * 如果没有设置 - 那么会使用 [[QueryInterface::one()]] 方法。
      */
     public $method;
 
 
     /**
-     * Generates the data needed to determine if dependency is changed.
+     * 生成在判断依赖是否发生变化时用到的依赖数据。
      *
-     * This method returns the query result.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return mixed the data needed to determine if dependency has been changed.
-     * @throws InvalidConfigException on invalid configuration.
+     * 该方法返回查询的结果。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return mixed 判断依赖是否发生变化时用到的依赖数据。
+     * @throws InvalidConfigException 如果配置是无效的时候。
      */
     protected function generateDependencyData($cache)
     {
@@ -92,10 +92,10 @@ class DbQueryDependency extends Dependency
     }
 
     /**
-     * Executes the query according to [[method]] specification.
-     * @param QueryInterface $query query to be executed.
-     * @param mixed $db connection.
-     * @return mixed query result.
+     * 根据 [[method]] 指定的方法执行查询。
+     * @param QueryInterface $query 待执行的查询对象。
+     * @param mixed $db 连接。
+     * @return mixed 查询结果。
      */
     private function executeQuery($query, $db)
     {

@@ -13,11 +13,11 @@ use yii\helpers\StringHelper;
 use yii\web\JsExpression;
 
 /**
- * NumberValidator validates that the attribute value is a number.
+ * NumberValidator 校验属性的值是否是数字。
  *
- * The format of the number must match the regular expression specified in [[integerPattern]] or [[numberPattern]].
- * Optionally, you may configure the [[max]] and [[min]] properties to ensure the number
- * is within certain range.
+ * 数字的格式必须符合 [[integerPattern]]
+ * 或者 [[numberPattern]] 所指定的正则表达式。
+ * 另外，你可以配置 [[max]] 和 [[min]] 属性来确保数值是在指定的区间内。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,34 +25,34 @@ use yii\web\JsExpression;
 class NumberValidator extends Validator
 {
     /**
-     * @var bool whether the attribute value can only be an integer. Defaults to false.
+     * @var bool 是否属性的值只能为整数。默认为 false。
      */
     public $integerOnly = false;
     /**
-     * @var int|float upper limit of the number. Defaults to null, meaning no upper limit.
-     * @see tooBig for the customized message used when the number is too big.
+     * @var int|float 数值的上限。默认为 null， 意味着没有上限。
+     * @see tooBig 参考 tooBig 自定义超过上限时的错误消息。
      */
     public $max;
     /**
-     * @var int|float lower limit of the number. Defaults to null, meaning no lower limit.
-     * @see tooSmall for the customized message used when the number is too small.
+     * @var int|float 数值的下限。默认为 null，意味着没有下限。
+     * @see tooSmall 参考 tooSmall 自定义低于下限时的错误消息。
      */
     public $min;
     /**
-     * @var string user-defined error message used when the value is bigger than [[max]].
+     * @var string 用户自定义错误消息用于值超过 [[max]]。
      */
     public $tooBig;
     /**
-     * @var string user-defined error message used when the value is smaller than [[min]].
+     * @var string 用户自定义错误消息用于值低于 [[min]]。
      */
     public $tooSmall;
     /**
-     * @var string the regular expression for matching integers.
+     * @var string 用于匹配整数的正则表达式。
      */
     public $integerPattern = '/^\s*[+-]?\d+\s*$/';
     /**
-     * @var string the regular expression for matching numbers. It defaults to a pattern
-     * that matches floating numbers with optional exponential part (e.g. -1.23e-10).
+     * @var string 用于匹配数字的正则表达式。
+     * 默认为一个匹配包含对数部分的浮点数字的正则表达式。
      */
     public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
 
