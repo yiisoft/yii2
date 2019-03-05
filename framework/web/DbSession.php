@@ -76,6 +76,10 @@ class DbSession extends MultiFieldSession
      */
     public $sessionTable = '{{%session}}';
 
+    /**
+    * @var array Session fields to be written into session table columns
+    */
+    protected $fields = [];
 
     /**
      * Initializes the DbSession component.
@@ -137,6 +141,19 @@ class DbSession extends MultiFieldSession
     }
 
     /**
+     * Ends the current session and store session data.
+     */
+    public function close()
+    {
+        if ($this->getIsActive()) {
+            // prepare also write callback fields before session closed
+            $this->fields = $this->composeFields($this->id, $_SESSION);
+            $this->fields = $this->typecastFields($this->fields);
+            YII_DEBUG ? session_write_close() : @session_write_close();
+        }
+    }
+
+    /**
      * Session read handler.
      * @internal Do not call this method directly.
      * @param string $id session ID
@@ -169,9 +186,9 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $fields = $this->composeFields($id, $data);
-            $fields = $this->typecastFields($fields);
-            $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
+            if($this->fields){
+                $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
+            }
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
