@@ -146,9 +146,8 @@ class DbSession extends MultiFieldSession
     public function close()
     {
         if ($this->getIsActive()) {
-            // prepare also write callback fields before session closed
+            // prepare writeCallback fields before session closes
             $this->fields = $this->composeFields($this->id, $_SESSION);
-            $this->fields = $this->typecastFields($this->fields);
             YII_DEBUG ? session_write_close() : @session_write_close();
         }
     }
@@ -186,9 +185,13 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            if($this->fields){
-                $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
-            }
+            $this->fields = array_merge($this->fields, [
+                'id' => $id,
+                'expire' => time() + $this->getTimeout(),
+                'data' => $data,
+            ]);
+            $this->fields = $this->typecastFields($this->fields);
+            $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
