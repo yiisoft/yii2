@@ -103,7 +103,7 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 
 Yii supports a wide range of cache storage. The following is a summary:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
+* [[yii\caching\ApcCache]]: uses PHP [APC](https://secure.php.net/manual/en/book.apc.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
@@ -120,14 +120,14 @@ Yii supports a wide range of cache storage. The following is a summary:
   `Yii::$app->cache` might be `null`.
 * [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
+* [[yii\caching\MemCache]]: uses PHP [memcache](https://secure.php.net/manual/en/book.memcache.php)
+  and [memcached](https://secure.php.net/manual/en/book.memcached.php) extensions. This option can be considered as
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
 * [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](http://php.net/manual/en/book.wincache.php)) extension.
+  ([see also](https://secure.php.net/manual/en/book.wincache.php)) extension.
 * [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
 * [[yii\caching\ZendDataCache]] _(deprecated)_: uses
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)

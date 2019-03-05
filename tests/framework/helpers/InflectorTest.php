@@ -103,9 +103,16 @@ class InflectorTest extends TestCase
     public function testCamel2words()
     {
         $this->assertEquals('Camel Case', Inflector::camel2words('camelCase'));
+        $this->assertEquals('Camel Case', Inflector::camel2words('CamelCase'));
         $this->assertEquals('Lower Case', Inflector::camel2words('lower_case'));
         $this->assertEquals('Tricky Stuff It Is Testing', Inflector::camel2words(' tricky_stuff.it-is testing... '));
         $this->assertEquals('І Це Дійсно Так!', Inflector::camel2words('ІЦеДійсноТак!'));
+        $this->assertEquals('Test', Inflector::camel2words('TEST'));
+        $this->assertEquals('X Foo', Inflector::camel2words('XFoo'));
+        $this->assertEquals('Foo Bar Baz', Inflector::camel2words('FooBARBaz'));
+        $this->assertEquals('Generate Csrf', Inflector::camel2words('generateCSRF'));
+        $this->assertEquals('Generate Csrf Token', Inflector::camel2words('generateCSRFToken'));
+        $this->assertEquals('Csrf Token Generator', Inflector::camel2words('CSRFTokenGenerator'));
     }
 
     public function testCamel2id()
@@ -187,7 +194,8 @@ class InflectorTest extends TestCase
     {
         $this->assertEquals('dont_replace_replacement', Inflector::slug('dont replace_replacement', '_'));
         $this->assertEquals('remove_trailing_replacements', Inflector::slug('_remove trailing replacements_', '_'));
-        $this->assertEquals('thisrepisrepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
+        $this->assertEquals('thisrepisreprepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
+        $this->assertEquals('0_100_kmh', Inflector::slug('0-100 Km/h', '_'));
     }
 
     public function testSlugIntl()

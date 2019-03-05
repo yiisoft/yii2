@@ -1660,6 +1660,27 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         CustomerQuery::$joinWithProfile = false;
     }
 
+    public function legalValuesForFindByCondition()
+    {
+        return [
+            [['id' => 1]],
+            [['customer.id' => 1]],
+            [['[[id]]' => 1]],
+            [['{{customer}}.[[id]]' => 1]],
+            [['{{%customer}}.[[id]]' => 1]],
+        ];
+    }
+
+    /**
+     * @dataProvider legalValuesForFindByCondition
+     */
+    public function testLegalValuesForFindByCondition($validFilter)
+    {
+        /** @var Query $query */
+        $query = $this->invokeMethod(new Customer(), 'findByCondition', [$validFilter]);
+        Customer::getDb()->queryBuilder->build($query);
+    }
+
     public function illegalValuesForFindByCondition()
     {
         return [
