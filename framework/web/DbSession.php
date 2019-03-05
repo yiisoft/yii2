@@ -187,7 +187,7 @@ class DbSession extends MultiFieldSession
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             if($this->fields){
-                $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
+                $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
             }
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
