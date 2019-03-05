@@ -147,7 +147,7 @@ class DbSession extends MultiFieldSession
     {
         if ($this->getIsActive()) {
             // prepare writeCallback fields before session closes
-            $this->fields = $this->composeFields($this->id, $_SESSION);
+            $this->fields = $this->composeFields();
             YII_DEBUG ? session_write_close() : @session_write_close();
         }
     }
@@ -185,11 +185,17 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
+            // ensure 'id' and 'expire' are never affected by [[writeCallback]]
             $this->fields = array_merge($this->fields, [
                 'id' => $id,
                 'expire' => time() + $this->getTimeout(),
-                'data' => $data,
             ]);
+            // ensure data consistency
+            if(!isset($this->fields['data'])){
+                $this->fields['data'] = $data;
+            }else{
+                $_SESSION = $this->fields['data'];
+            }
             $this->fields = $this->typecastFields($this->fields);
             $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
         } catch (\Exception $e) {
