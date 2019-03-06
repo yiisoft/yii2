@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17127: `yii\db\ActiveRecord::findOne()` now accepts table aliases (albertborsos)
 - Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 - Bug #17180: Do not populate `yii\web\Response::$response` when response code is 204 (mikk150)
+- Bug #17124: Fixed ErrorException when run `./yii fixture/unload` without arguments (ricpelo)
 
 
 2.0.16.1 February 28, 2019
