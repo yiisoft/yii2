@@ -302,5 +302,16 @@ class UrlTest extends TestCase
         $this->assertFalse(Url::isRelative('//example.com/'));
         $this->assertFalse(Url::isRelative('http://example.com/'));
         $this->assertFalse(Url::isRelative('https://example.com/'));
+        $this->assertTrue(Url::isRelative('/test/index.php?param=https://example.com'));
+    }
+
+    public function testIsProtocolAgnostic()
+    {
+        $this->assertTrue(Url::isProtocolAgnostic('/test/index.php'));
+        $this->assertTrue(Url::isProtocolAgnostic('index.php'));
+        $this->assertTrue(Url::isProtocolAgnostic('//example.com/'));
+        $this->assertFalse(Url::isProtocolAgnostic('http://example.com/'));
+        $this->assertFalse(Url::isProtocolAgnostic('https://example.com/'));
+        $this->assertTrue(Url::isProtocolAgnostic('/test/index.php?param=https://example.com'));
     }
 }

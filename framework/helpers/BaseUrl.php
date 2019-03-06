@@ -248,20 +248,13 @@ class BaseUrl
             return $url;
         }
 
-        if (substr($url, 0, 2) === '//') {
-            // e.g. //example.com/path/to/resource
-            return $scheme === '' ? $url : "$scheme:$url";
+        if (self::isProtocolAgnostic($url)) {
+            $protocolAgnosticUrl = $url;
+        } else {
+            $protocolAgnosticUrl = substr($url, strlen(parse_url($url, PHP_URL_SCHEME)) + 1);
         }
 
-        if (($pos = strpos($url, '://')) !== false) {
-            if ($scheme === '') {
-                $url = substr($url, $pos + 1);
-            } else {
-                $url = $scheme . substr($url, $pos);
-            }
-        }
-
-        return $url;
+        return empty($scheme) ? $protocolAgnosticUrl : "{$scheme}:{$protocolAgnosticUrl}";
     }
 
     /**
@@ -378,7 +371,18 @@ class BaseUrl
      */
     public static function isRelative($url)
     {
-        return strncmp($url, '//', 2) && strpos($url, '://') === false;
+        return empty(parse_url($url, PHP_URL_HOST));
+    }
+
+    /**
+     * Returns a value indicating whether a URL is protocol agnostic.
+     * @param string $url the URL to be checked
+     * @return bool whether the URL is protocol agnostic
+     * @since 2.0.16.2
+     */
+    public static function isProtocolAgnostic($url)
+    {
+        return empty(parse_url($url, PHP_URL_SCHEME));
     }
 
     /**

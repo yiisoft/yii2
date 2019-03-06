@@ -431,22 +431,22 @@ class UrlManager extends Component
             }
 
             if ($url !== false) {
-                if (strpos($url, '://') !== false) {
-                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    }
-
-                    return $url . $baseUrl . $anchor;
-                } elseif (strncmp($url, '//', 2) === 0) {
+                if (Url::isRelative($url)) {
+                    $url = ltrim($url, '/');
+                    return "$baseUrl/{$url}{$anchor}";
+                } elseif (Url::isProtocolAgnostic($url)) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 2)) !== false) {
                         return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
                     }
 
                     return $url . $baseUrl . $anchor;
-                }
+                } else {
+                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
+                    }
 
-                $url = ltrim($url, '/');
-                return "$baseUrl/{$url}{$anchor}";
+                    return $url . $baseUrl . $anchor;
+                }
             }
 
             if ($this->suffix !== null) {
