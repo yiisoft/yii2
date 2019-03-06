@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #9438, #13740, #15037: Handle DB session callback custom fields before session closed (lubosdz)
+- Bug #17185: Fixed `AssetManager` timestamp appending when a file is published manually (GHopperMSK)
 - Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
 - Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 - Bug #17180: Do not populate `yii\web\Response::$response` when response code is 204 (mikk150)
