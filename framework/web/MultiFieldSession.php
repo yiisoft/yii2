@@ -96,10 +96,10 @@ abstract class MultiFieldSession extends Session
     protected function composeFields($id = null, $data = null)
     {
         $fields = $this->writeCallback ? call_user_func($this->writeCallback, $this) : [];
-        if($id !== null){
+        if ($id !== null) {
             $fields['id'] = $id;
         }
-        if($data !== null){
+        if ($data !== null) {
             $fields['data'] = $data;
         }
         return $fields;
