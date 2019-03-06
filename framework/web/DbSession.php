@@ -78,6 +78,7 @@ class DbSession extends MultiFieldSession
 
     /**
     * @var array Session fields to be written into session table columns
+    * @since 2.0.17
     */
     protected $fields = [];
 
@@ -142,6 +143,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Ends the current session and store session data.
+     * @since 2.0.17
      */
     public function close()
     {
@@ -186,13 +188,13 @@ class DbSession extends MultiFieldSession
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             // ensure backwards compatability (fixed #9438)
-            if($this->writeCallback && !$this->fields){
+            if ($this->writeCallback && !$this->fields) {
                 $this->fields = $this->composeFields();
             }
             // ensure data consistency
-            if(!isset($this->fields['data'])){
+            if (!isset($this->fields['data'])) {
                 $this->fields['data'] = $data;
-            }else{
+            } else {
                 $_SESSION = $this->fields['data'];
             }
             // ensure 'id' and 'expire' are never affected by [[writeCallback]]
