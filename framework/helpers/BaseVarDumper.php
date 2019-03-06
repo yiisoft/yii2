@@ -11,9 +11,9 @@ use yii\base\Arrayable;
 use yii\base\InvalidValueException;
 
 /**
- * BaseVarDumper provides concrete implementation for [[VarDumper]].
+ * BaseVarDumper 为 [[VarDumper]] 提供了具体的实现。
  *
- * Do not use BaseVarDumper. Use [[VarDumper]] instead.
+ * 不要使用 BaseVarDumper。使用 [[VarDumper]] 来替代。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,12 +26,12 @@ class BaseVarDumper
 
 
     /**
-     * Displays a variable.
-     * This method achieves the similar functionality as var_dump and print_r
-     * but is more robust when handling complex objects such as Yii controllers.
-     * @param mixed $var variable to be dumped
-     * @param int $depth maximum depth that the dumper should go into the variable. Defaults to 10.
-     * @param bool $highlight whether the result should be syntax-highlighted
+     * 显示一个变量。
+     * 这个方法达到了类似 var_dump 和 print_r 的功能，
+     * 但是处理 Yii 控制器等复杂对象时更健壮。
+     * @param mixed $var 待转储变量
+     * @param int $depth 深层次输出这个变量的最大的深度。默认是 10。
+     * @param bool $highlight 结果是否应该突出高亮语法
      */
     public static function dump($var, $depth = 10, $highlight = false)
     {
@@ -39,13 +39,13 @@ class BaseVarDumper
     }
 
     /**
-     * Dumps a variable in terms of a string.
-     * This method achieves the similar functionality as var_dump and print_r
-     * but is more robust when handling complex objects such as Yii controllers.
-     * @param mixed $var variable to be dumped
-     * @param int $depth maximum depth that the dumper should go into the variable. Defaults to 10.
-     * @param bool $highlight whether the result should be syntax-highlighted
-     * @return string the string representation of the variable
+     * 以字符串的形式转储变量。
+     * 这个方法达到了类似 var_dump 和 print_r 的功能，
+     * 但是处理 Yii 控制器等复杂对象时更健壮。
+     * @param mixed $var 待转储变量
+     * @param int $depth 深层次输出这个变量的最大的深度。默认是 10。
+     * @param bool $highlight 结果是否应该突出高亮语法
+     * @return string 变量的字符串表示形式
      */
     public static function dumpAsString($var, $depth = 10, $highlight = false)
     {
@@ -62,8 +62,8 @@ class BaseVarDumper
     }
 
     /**
-     * @param mixed $var variable to be dumped
-     * @param int $level depth level
+     * @param mixed $var 待转储变量
+     * @param int $level 转储的深度级别
      */
     private static function dumpInternal($var, $level)
     {
@@ -137,20 +137,20 @@ class BaseVarDumper
     }
 
     /**
-     * Exports a variable as a string representation.
+     * 将变量导出为字符串表示形式。
      *
-     * The string is a valid PHP expression that can be evaluated by PHP parser
-     * and the evaluation result will give back the variable value.
+     * 这个字符串是一个有效的可以由 PHP 解析器计算的表达式
+     * 并且将计算结果返回变量值。
      *
-     * This method is similar to `var_export()`. The main difference is that
-     * it generates more compact string representation using short array syntax.
+     * 该方法类似于 `var_export()`。
+     * 主要的区别在于它使用短数组语法生成更紧凑的字符串表示。
      *
-     * It also handles objects by using the PHP functions serialize() and unserialize().
+     * 它还使用 PHP 函数 serialize() 和 unserialize() 来处理对象。
      *
-     * PHP 5.4 or above is required to parse the exported value.
+     * PHP 5.4 或以上版本是解析输出值所必需的。
      *
-     * @param mixed $var the variable to be exported.
-     * @return string a string representation of the variable
+     * @param mixed $var 要输出的变量。
+     * @return string 变量的字符串表示形式
      */
     public static function export($var)
     {
@@ -160,8 +160,8 @@ class BaseVarDumper
     }
 
     /**
-     * @param mixed $var variable to be exported
-     * @param int $level depth level
+     * @param mixed $var 输出的变量
+     * @param int $level 深度级别
      */
     private static function exportInternal($var, $level)
     {
@@ -225,8 +225,8 @@ class BaseVarDumper
     }
 
     /**
-     * Exports a [[Closure]] instance.
-     * @param \Closure $closure closure instance.
+     * 导出一个 [[Closure]] 实例。
+     * @param \Closure $closure 闭包实例。
      * @return string
      */
     private static function exportClosure(\Closure $closure)
