@@ -173,11 +173,8 @@ abstract class AbstractDbSessionTest extends TestCase
         // reopen & read session from DB
         $session->open();
         $loadedUserId = empty($session['user_id']) ? null : $session['user_id'];
-
         $this->assertSame($loadedUserId, $savedUserId);
-
         $session->close();
-        $migration->dropColumn($session->sessionTable, 'user_id');
     }
 
     protected function buildObjectForSerialization()
