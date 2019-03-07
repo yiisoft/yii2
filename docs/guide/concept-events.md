@@ -59,6 +59,21 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 });
 ```
 
+For example, to attach events handlers to a particular model you can do that overriding the init method
+```
+// this should be inside your model class. For example User.php
+public function init(){
+
+  $this->on(self::EVENT_NEW_USER, [$this, 'sendMail']);
+  $this->on(self::EVENT_NEW_USER, [$this, 'notification']);
+
+  // first parameter is the name of the event and second is the handler. 
+  // For handlers I use methods sendMail and notification
+  // from $this class.
+  parent::init(); // DON'T Forget to call the parent method.
+}
+```
+
 You may also attach event handlers through [configurations](concept-configurations.md). For more details, please
 refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
@@ -426,3 +441,10 @@ $foo->off('*');
 
 $foo->trigger('event.hello'); // outputs: 'direct-handler'
 ```
+
+Bootstrap Event Handlers Registration <span id="global-events-registration"></span>
+----------------------------------
+Class-Level Event Handlers can be registered in the bootstrap process.
+
+Either writing your registration code inside a file `e.g bootstrap.php` in your web/index.php as done in the <a href="http://example.com/" target="_blank">Advanced-Template</a> or registering through a custom component (eg. app\components\MyEventDispatcherClass) and put the registration code inside `bootstrap($app)` method 
+https://www.yiiframework.com/doc/guide/2.0/en/structure-extensions#bootstrapping-classes
