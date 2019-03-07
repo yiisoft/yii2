@@ -31,7 +31,7 @@ $model->name = 'example';
 echo $model->name;
 ```
 
-Vous pouvez également accéder aux attributs comme aux éléments d'un tableau, grâce à la prise en charge de [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) et [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+Vous pouvez également accéder aux attributs comme aux éléments d'un tableau, grâce à la prise en charge de [ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) et [ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php)
 par la classe [[yii\base\Model]]:
 
 ```php
