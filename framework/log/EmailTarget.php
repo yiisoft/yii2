@@ -77,7 +77,7 @@ class EmailTarget extends Target
      */
     public function export()
     {
-        // 由于以下问题，此处移动了主题的初始化
+        // moved initialization of subject here because of the following issue
         // https://github.com/yiisoft/yii2/issues/1446
         if (empty($this->message['subject'])) {
             $this->message['subject'] = 'Application Log';

@@ -65,8 +65,8 @@ class DbTarget extends Target
     public function export()
     {
         if ($this->db->getTransaction()) {
-            // 创建新的数据库连接，
-            // 如果存在打开的事务，则确保 insert 语句不受回滚的影响
+            // create new database connection, if there is an open transaction
+            // to ensure insert statement is not affected by a rollback
             $this->db = clone $this->db;
         }
 
@@ -77,7 +77,7 @@ class DbTarget extends Target
         foreach ($this->messages as $message) {
             list($text, $level, $category, $timestamp) = $message;
             if (!is_string($text)) {
-                // 如果某个闭包调用了堆栈，则异常可能无法序列化。
+                // exceptions may not be serializable if in the call stack somewhere is a Closure
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
                     $text = (string) $text;
                 } else {

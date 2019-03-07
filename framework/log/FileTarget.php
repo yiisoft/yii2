@@ -110,8 +110,8 @@ class FileTarget extends Target
         }
         @flock($fp, LOCK_EX);
         if ($this->enableRotation) {
-            // 清除stat缓存以确保获取实际的当前文件大小而不是缓存的文件大小
-            // 这可能导致在后续调用中使用缓存文件大小时旋转两次
+            // clear stat cache to ensure getting the real current file size and not a cached one
+            // this may result in rotating twice when cached file size is used on subsequent calls
             clearstatcache();
         }
         if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
@@ -152,10 +152,10 @@ class FileTarget extends Target
     {
         $file = $this->logFile;
         for ($i = $this->maxLogFiles; $i >= 0; --$i) {
-            // $i == 0 是原始日志文件
+            // $i == 0 is the original log file
             $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
             if (is_file($rotateFile)) {
-                // 抑制错误，因为可能有多个进程进入此部分
+                // suppress errors because it's possible multiple processes enter into this section
                 if ($i === $this->maxLogFiles) {
                     @unlink($rotateFile);
                     continue;

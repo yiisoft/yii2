@@ -83,7 +83,7 @@ class SyslogTarget extends Target
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            // 如果某个闭包调用了堆栈，则异常可能无法序列化。
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
             if ($text instanceof \Throwable || $text instanceof \Exception) {
                 $text = (string) $text;
             } else {

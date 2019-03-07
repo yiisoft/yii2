@@ -127,7 +127,7 @@ abstract class Target extends Component
             if (($context = $this->getContextMessage()) !== '') {
                 $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
             }
-            // 将 exportInterval 设置为 0 以避免在导出时再次触发导出
+            // set exportInterval to 0 to avoid triggering export again while exporting
             $oldExportInterval = $this->exportInterval;
             $this->exportInterval = 0;
             $this->export();
@@ -266,7 +266,7 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            // 如果某个闭包调用了堆栈，则异常可能无法序列化。
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
             if ($text instanceof \Throwable || $text instanceof \Exception) {
                 $text = (string) $text;
             } else {

@@ -79,12 +79,12 @@ class Dispatcher extends Component
      */
     public function __construct($config = [])
     {
-        // 确保在任何其他配置选项之前设置记录器
+        // ensure logger gets set before any other config option
         if (isset($config['logger'])) {
             $this->setLogger($config['logger']);
             unset($config['logger']);
         }
-        // 连接记录器和调度程序
+        // connect logger and dispatcher
         $this->getLogger();
 
         parent::__construct($config);

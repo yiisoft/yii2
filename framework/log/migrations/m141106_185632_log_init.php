@@ -43,7 +43,7 @@ class m141106_185632_log_init extends Migration
                         $target->logTable,
                     ];
                     if (!in_array($currentTarget, $usedTargets, true)) {
-                        // 不要重复创建同一个表
+                        // do not create same table twice
                         $usedTargets[] = $currentTarget;
                         $this->dbTargets[] = $target;
                     }
