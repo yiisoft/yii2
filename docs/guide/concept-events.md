@@ -73,6 +73,7 @@ public function init(){
   parent::init(); // DON'T Forget to call the parent method.
 }
 ```
+(<a href="https://stackoverflow.com/questions/28575636/how-to-use-events-in-yii2" target="_blank">https://stackoverflow.com/questions/28575636/how-to-use-events-in-yii2</a>)
 
 You may also attach event handlers through [configurations](concept-configurations.md). For more details, please
 refer to the [Configurations](concept-configurations.md#configuration-format) section.
@@ -446,5 +447,5 @@ Bootstrap Event Handlers Registration <span id="global-events-registration"></sp
 ----------------------------------
 Class-Level Event Handlers can be registered in the bootstrap process.
 
-Either writing your registration code inside a file `e.g bootstrap.php` in your web/index.php as done in the <a href="http://example.com/" target="_blank">Advanced-Template</a> or registering through a custom component (eg. app\components\MyEventDispatcherClass) and put the registration code inside `bootstrap($app)` method 
+Either writing your registration code inside a file `e.g bootstrap.php` in your web/index.php as done in the <a href="https://github.com/yiisoft/yii2-app-advanced" target="_blank">Advanced-Template</a> or registering through a custom component (eg. app\components\MyEventDispatcherClass) and put the registration code inside `bootstrap($app)` method 
 https://www.yiiframework.com/doc/guide/2.0/en/structure-extensions#bootstrapping-classes
