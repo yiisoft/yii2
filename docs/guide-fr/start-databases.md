@@ -53,7 +53,7 @@ Configurer une Connexion à la BDD <span id="configuring-db-connection"></span>
 ---------------------------
 
 Avant de continuer, vérifiez que vous avez installé à la fois l'extension PHP 
-[PDO](http://www.php.net/manual/fr/book.pdo.php) et le pilote PDO pour la base de données que vous utilisez (c'est
+[PDO](https://secure.php.net/manual/fr/book.pdo.php) et le pilote PDO pour la base de données que vous utilisez (c'est
 à dire `pdo_mysql` pour MySQL). C'est une exigence de base si votre application utilise une base de données relationnelle.
 
 Une fois ces éléments installés, ouvrez le fichier `config/db.php` et modifiez les paramètres pour qu'ils correspondent à votre base de données. Par défaut, le fichier contient ce qui suit :

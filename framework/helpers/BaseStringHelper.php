@@ -39,7 +39,7 @@ class BaseStringHelper
      * @param int $length the desired portion length. If not specified or `null`, there will be
      * no limit on length i.e. the output will be until the end of the string.
      * @return string the extracted part of string, or FALSE on failure or an empty string.
-     * @see http://www.php.net/manual/en/function.substr.php
+     * @see https://secure.php.net/manual/en/function.substr.php
      */
     public static function byteSubstr($string, $start, $length = null)
     {
@@ -57,7 +57,7 @@ class BaseStringHelper
      * @param string $path A path string.
      * @param string $suffix If the name component ends in suffix this will also be cut off.
      * @return string the trailing name component of the given path.
-     * @see http://www.php.net/manual/en/function.basename.php
+     * @see https://secure.php.net/manual/en/function.basename.php
      */
     public static function basename($path, $suffix = '')
     {
@@ -79,7 +79,7 @@ class BaseStringHelper
      *
      * @param string $path A path string.
      * @return string the parent directory's path.
-     * @see http://www.php.net/manual/en/function.basename.php
+     * @see https://secure.php.net/manual/en/function.basename.php
      */
     public static function dirname($path)
     {
@@ -241,7 +241,7 @@ class BaseStringHelper
             return true;
         }
         if ($caseSensitive) {
-            // Warning check, see http://php.net/manual/en/function.substr-compare.php#refsect1-function.substr-compare-returnvalues
+            // Warning check, see https://secure.php.net/manual/en/function.substr-compare.php#refsect1-function.substr-compare-returnvalues
             if (static::byteLength($string) < $bytes) {
                 return false;
             }
@@ -425,7 +425,7 @@ class BaseStringHelper
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see http://php.net/manual/en/function.ucfirst.php
+     * @see https://secure.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
@@ -442,7 +442,7 @@ class BaseStringHelper
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see http://php.net/manual/en/function.ucwords.php
+     * @see https://secure.php.net/manual/en/function.ucwords.php
      * @since 2.0.16
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')

@@ -226,4 +226,32 @@ class ResponseTest extends \yiiunit\TestCase
         $content = ob_get_clean();
         $this->assertSame($content, '');
     }
+
+    public function testSettingContentToNullOn204()
+    {
+        $response = new Response();
+        $response->setStatusCode(204);
+        $response->content = 'not empty content';
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+        $this->assertSame($response->content, '');
+    }
+
+    public function testSettingStreamToNullOn204()
+    {
+        $response = new Response();
+        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+
+        $response->sendFile($dataFile);
+        $response->setStatusCode(204);
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+        $this->assertNull($response->stream);
+    }
 }

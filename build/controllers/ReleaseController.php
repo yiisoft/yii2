@@ -1016,6 +1016,13 @@ class ReleaseController extends Controller
                 throw new Exception('Command "git tag" failed with code ' . $ret);
             }
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
+
+            // exclude 3.0.0-alpha1 tag
+            if (($key = array_search('3.0.0-alpha1', $tags, true)) !== false)
+            {
+                unset($tags[$key]);
+            }
+
             $versions[$ext] = reset($tags);
         }
 

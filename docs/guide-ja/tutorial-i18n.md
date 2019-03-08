@@ -241,7 +241,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: パラメータのフォーマットには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
+> Note: パラメータのフォーマットには、[intl PHP 拡張](https://secure.php.net/manual/ja/intro.intl.php) のインストールが必要です。
 
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 
@@ -739,7 +739,7 @@ class TranslationEventHandler
 > Note: 全てのメッセージ・ソースは、欠落した翻訳をそれぞれ独自に処理します。
 > いくつかのメッセージ・ソースを使っていて、それらが同じ方法で欠落した翻訳を取り扱うようにしたい場合は、対応するイベント・ハンドラを全てのメッセージ・ソースそれぞれに割り当てなければなりません。
 
-### `message` コマンドを使う <a name="message-command"></a>
+### `message` コマンドを使う <span id="message-command"></span>
 
 翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。追加のオプションについてはそれぞれのクラスを参照してください。
 
@@ -804,12 +804,12 @@ class TranslationEventHandler
 
 ## PHP 環境をセットアップする <span id="setup-environment"></span>
 
-Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](http://php.net/manual/ja/book.intl.php) を使います。
+Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) を使います。
 この二つのクラスは、`intl` がインストールされていない場合に備えて基本的な機能を提供するフォールバックを実装しています。
 だだし、このフォールバックの実装は、英語がターゲット言語である場合にのみ十分に機能するものす。
 従って、国際化機能が必要とされる場合は、`intl` をインストールすることが強く推奨されます。
 
-[PHP intl 拡張](http://php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
+[PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
 [ICU ライブラリ](http://site.icu-project.org/) に基礎を置いています。
 ICU のバージョンが異なると、日付や数値のフォーマットの結果も異なる場合があります。
 あなたのウェブ・サイトが全ての環境で同じ出力をすることを保証するためには、
@@ -832,4 +832,4 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 これに加えて、ICU ライブラリとともに出荷されるタイム・ゾーン・データベースの情報も古くなっている可能性があります。
 タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) を参照してください。
 出力の書式設定には ICU タイム・ゾーン・データベースが使用されますが、PHP によって使われるタイム・ゾーン・データベースも影響する可能性があります。
-PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](http://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。
+PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](https://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。

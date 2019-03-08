@@ -104,7 +104,7 @@ class BaseHtml
      * HTML entities in `$content` will not be further encoded.
      * @return string the encoded content
      * @see decode()
-     * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+     * @see https://secure.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function encode($content, $doubleEncode = true)
     {
@@ -117,7 +117,7 @@ class BaseHtml
      * @param string $content the content to be decoded
      * @return string the decoded content
      * @see encode()
-     * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see https://secure.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function decode($content)
     {

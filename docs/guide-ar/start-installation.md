@@ -179,7 +179,7 @@ http://localhost:8080/
 </ul>
 
 <p dir="rtl">
-    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال <a href="http://www.php.net/manual/en/pdo.installation.php">PDO PHP Extension</a>.
+    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال <a href="https://secure.php.net/manual/en/pdo.installation.php">PDO PHP Extension</a>.
 </p>
 
 
@@ -244,7 +244,7 @@ DocumentRoot "path/to/basic/web"
 -----------------------
 
 <p dir="rtl">
-    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="http://php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
+    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="https://secure.php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
 </p>
 
 
