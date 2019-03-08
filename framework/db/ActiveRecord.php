@@ -211,7 +211,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $result = [];
         $db = static::getDb();
-        $columnNames = static::validFilterColumnNames($db, $aliases);
+        $columnNames = static::filterValidColumnNames($db, $aliases);
 
         foreach ($condition as $key => $value) {
             if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
@@ -231,7 +231,7 @@ class ActiveRecord extends BaseActiveRecord
      * @return array
      * @throws InvalidConfigException
      */
-    public static function validFilterColumnNames($db, array $aliases)
+    protected static function filterValidColumnNames($db, array $aliases)
     {
         $columnNames = [];
         $tableName = static::tableName();
