@@ -155,9 +155,7 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         $session = new DbSession();
         $session->open();
-
-        $savedUserId = mt_rand(111, 999);
-        $session->set('user_id', $savedUserId);
+        $session->set('user_id', 12345);
 
         // add mapped custom column
         $migration = new Migration;
@@ -173,7 +171,7 @@ abstract class AbstractDbSessionTest extends TestCase
         // reopen & read session from DB
         $session->open();
         $loadedUserId = empty($session['user_id']) ? null : $session['user_id'];
-        $this->assertSame($loadedUserId, $savedUserId);
+        $this->assertSame($loadedUserId, 12345);
         $session->close();
     }
 
