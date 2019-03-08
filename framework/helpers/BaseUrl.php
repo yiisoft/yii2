@@ -383,7 +383,8 @@ class BaseUrl
      */
     public static function isProtocolAgnostic($url)
     {
-        return empty(parse_url($url, PHP_URL_SCHEME));
+        $parts = parse_url($url, PHP_URL_SCHEME);
+        return empty($parts);
     }
 
     /**
