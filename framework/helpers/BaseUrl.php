@@ -371,7 +371,8 @@ class BaseUrl
      */
     public static function isRelative($url)
     {
-        return empty(parse_url($url, PHP_URL_HOST));
+        $parts = parse_url($url, PHP_URL_HOST);        
+        return empty($parts);
     }
 
     /**
