@@ -207,7 +207,7 @@ class ActiveRecord extends BaseActiveRecord
      * @since 2.0.15
      * @internal
      */
-    protected static function filterCondition(array $condition, array $aliases)
+    protected static function filterCondition(array $condition, array $aliases = [])
     {
         $result = [];
         $db = static::getDb();
