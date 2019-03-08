@@ -1317,6 +1317,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             foreach ($relation->link as $a => $b) {
                 $columns[$b] = $model->$a;
             }
+            
+            // add viaRelation On conditions to preset columns
+            foreach ($viaRelation->on as $key => $value) {
+                $columns[$key] = $value;
+            }
+            
             foreach ($extraColumns as $k => $v) {
                 $columns[$k] = $v;
             }
@@ -1410,6 +1416,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             foreach (array_keys($columns) as $a) {
                 $nulls[$a] = null;
             }
+            
+            // add viaRelation On conditions to preset columns
+            foreach ($viaRelation->on as $key => $value) {
+                $columns[$key] = $value;
+            }
+            
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
