@@ -236,7 +236,7 @@ class ActiveRecord extends BaseActiveRecord
         $columnNames = [];
         $tableName = static::tableName();
         $quotedTableName = $db->quoteTableName($tableName);
-        $tableAliases = array_keys(ArrayHelper::removeValue($aliases, $tableName, []));
+        $tableAliases = array_keys($aliases);
 
         foreach (static::getTableSchema()->getColumnNames() as $columnName) {
             $columnNames[] = $columnName;
