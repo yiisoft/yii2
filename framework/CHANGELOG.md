@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.17 under development
 ------------------------
 
+- Bug #17133: Fixed aliases rendering during help generation for a console command (GHopperMSK)
 - Bug #17185: Fixed `AssetManager` timestamp appending when a file is published manually (GHopperMSK)
 - Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
 - Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
