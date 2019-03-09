@@ -130,7 +130,7 @@ especifican en `session.cache_limiter` de la configuración INI de PHP. Estas ca
 el almacenamiento de caché que desees de `HttpCache`. Para evitar este problema, por defecto `HttpCache` deshabilitará
 automáticamente el envío de estas cabeceras. Si deseas modificar este comportamiento, tienes que configurar la propiedad
 [[yii\filters\HttpCache::sessionCacheLimiter]]. La propiedad puede tomar un valor de cadena, incluyendo `public`, `private`,
-`private_no_expire`, and `nocache`. Por favor, consulta el manual PHP acerca de [session_cache_limiter()](http://www.php.net/manual/es/function.session-cache-limiter.php)
+`private_no_expire`, and `nocache`. Por favor, consulta el manual PHP acerca de [session_cache_limiter()](https://secure.php.net/manual/es/function.session-cache-limiter.php)
 para una mejor explicación sobre esos valores.
 
 

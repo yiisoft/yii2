@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 Bạn có thể truy cập các thuộc tính như truy cập mảng các phần tử, nhờ sự hỗ trợ từ lớp
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) và [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+[ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) và [ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php)
 bởi [[yii\base\Model]]:
 
 ```php

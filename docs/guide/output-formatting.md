@@ -45,7 +45,7 @@ echo Yii::$app->formatter->format(0.125, ['percent', 2]);
 > the formatter is not the right tool for that.
 > To convert user input for date and number values you may use [[yii\validators\DateValidator]] and [[yii\validators\NumberValidator]]
 > respectively. For simple conversion between machine readable date and time formats,
-> the PHP [date()](http://php.net/manual/en/function.date.php)-function is enough.
+> the PHP [date()](https://secure.php.net/manual/en/function.date.php)-function is enough.
 
 ## Configuring Formatter <span id="configuring-formatter"></span>
 
@@ -86,7 +86,7 @@ and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized glob
 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
 You can specify date and time formats using the [ICU syntax](http://userguide.icu-project.org/formatparse/datetime).
-You can also use the [PHP date() syntax](http://php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
+You can also use the [PHP date() syntax](https://secure.php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
 it from ICU syntax. For example,
 
 ```php
@@ -174,7 +174,7 @@ The format for number formatting can be adjusted using the [[yii\i18n\Formatter:
 active [[yii\i18n\Formatter::locale|locale]].
 
 For more advanced configuration, [[yii\i18n\Formatter::numberFormatterOptions]] and [[yii\i18n\Formatter::numberFormatterTextOptions]]
-can be used to configure the [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php) used internally
+can be used to configure the [NumberFormatter class](https://secure.php.net/manual/en/class.numberformatter.php) used internally
 to implement the formatter. For example, to adjust the maximum and minimum value of fraction digits, you can configure 
 the [[yii\i18n\Formatter::numberFormatterOptions]] property like the following:
 
@@ -235,7 +235,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 By default, the currently active [[yii\i18n\Formatter::locale|locale]] is determined by the value of 
 [[yii\base\Application::language]]. You may override it by setting the [[yii\i18n\Formatter::locale]] property explicitly.
 
-> Note: The Yii formatter relies on the [PHP intl extension](http://php.net/manual/en/book.intl.php) to support
+> Note: The Yii formatter relies on the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to support
 > localized data formatting. Because different versions of the ICU library compiled with PHP may cause different
 > formatting results, it is recommended that you use the same ICU version for all your environments. For more details,
 > please refer to [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).

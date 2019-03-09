@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
 
-> Note: 参数的格式化需要安装 [intl PHP 扩展](http://www.php.net/manual/en/intro.intl.php)。
+> Note: 参数的格式化需要安装 [intl PHP 扩展](https://secure.php.net/manual/en/intro.intl.php)。
 
 可以使用缩写的形式或完整的形式来格式化占位符：
 
@@ -679,7 +679,7 @@ class TranslationEventHandler
 > 你应该给它们每一个消息源指定相应的事件处理程序。
 
 
-### 使用 `message` 命令（Using the `message` command） <a name="message-command"></a>
+### 使用 `message` 命令（Using the `message` command） <span id="message-command"></span>
 
 翻译储存在 [[yii\i18n\PhpMessageSource|php 文件]]，[[yii\i18n\GettextMessageSource|.po 文件] 或者 [[yii\i18n\DbMessageSource|数据库]]。具体见类的附加选项。
 
@@ -738,12 +738,12 @@ class TranslationEventHandler
 
 ## 设置 PHP 环境（Setting Up PHP Environment） <span id="setup-environment"></span>
 
-Yii 使用 [PHP intl 扩展](http://php.net/manual/en/book.intl.php) 来提供大多数 I18N 的功能，
+Yii 使用 [PHP intl 扩展](https://secure.php.net/manual/en/book.intl.php) 来提供大多数 I18N 的功能，
 如日期和数字格式的 [[yii\i18n\Formatter]] 类和消息格式的 [[yii\i18n\MessageFormatter]] 类。
 当 `intl` 扩展没有安装时，两者会提供一个回调机制。然而，该回调机制只适用于目标语言是英语的情况下。
 因此，当 I18N 对你来说必不可少时，强烈建议你安装 `intl`。
 
-[PHP intl 扩展](http://php.net/manual/en/book.intl.php) 是基于对于所有不同的语言环境
+[PHP intl 扩展](https://secure.php.net/manual/en/book.intl.php) 是基于对于所有不同的语言环境
 提供格式化规则的 [ICU库](http://site.icu-project.org/)。
 不同版本的 ICU 中可能会产生不同日期和数值格式的结果。
 为了确保你的网站在所有环境产生相同的结果，
@@ -766,4 +766,4 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 另外，ICU 库中时区数据库的信息可能过时。要更新时区数据库时详情请参阅
 [ICU 手册](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) 。
 而对于 ICU 输出格式使用的时区数据库，PHP 用的时区数据库可能跟它有关。
-你可以通过安装 [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb) 的最新版本来更新它。
+你可以通过安装 [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb) 的最新版本来更新它。

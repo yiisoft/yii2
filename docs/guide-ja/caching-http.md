@@ -131,7 +131,7 @@ Cache-Control: public, max-age=3600
 この問題を防止するために、`HttpCache` はこれらのヘッダの送信をデフォルトで自動的に無効化します。
 この動作を変更したい場合は [[yii\filters\HttpCache::sessionCacheLimiter]] プロパティを設定します。
 このプロパティには `public`、`private`、`private_no_expire`、そして `nocache` などの文字列の値を使用することができます。
-これらの値についての説明は [session_cache_limiter()](http://www.php.net/manual/ja/function.session-cache-limiter.php)
+これらの値についての説明は [session_cache_limiter()](https://secure.php.net/manual/ja/function.session-cache-limiter.php)
 を参照してください。
 
 

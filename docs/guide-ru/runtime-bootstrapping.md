@@ -30,8 +30,8 @@
 В производственном режиме включите байткод кэшеры, такие как [PHP OPcache] или [APC], для минимизации времени 
 подключения и парсинг php файлов.
 
-[PHP OPcache]: http://php.net/manual/ru/intro.opcache.php
-[APC]: http://php.net/manual/ru/book.apc.php
+[PHP OPcache]: https://secure.php.net/manual/ru/intro.opcache.php
+[APC]: https://secure.php.net/manual/ru/book.apc.php
 
 Некоторые большие приложения могут иметь сложную [конфигурацию](concept-configurations.md), которая разделена на несколько мелких файлов.
 Если это тот самый случай, возможно вам стоит кэшировать весь конфигурационный файл и загружать его прямо из кэша до создания объекта 

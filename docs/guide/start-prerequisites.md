@@ -4,7 +4,7 @@ The Yii learning curve is not as steep as other PHP frameworks but still there a
 
 ## PHP
 
-Yii is a PHP framework so make sure you [read and understand language reference](http://php.net/manual/en/langref.php).
+Yii is a PHP framework so make sure you [read and understand language reference](https://secure.php.net/manual/en/langref.php).
 When developing with Yii you will be writing code in an object oriented fashion, so make sure you are familiar with [Classes and Objects](https://secure.php.net/manual/en/language.oop5.basic.php) as well as [namespaces](https://secure.php.net/manual/en/language.namespaces.php).
 
 ## Object oriented programming
