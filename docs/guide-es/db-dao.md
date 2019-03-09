@@ -1,7 +1,7 @@
 Objetos de Acceso a Bases de Datos
 ==================================
 
-Construido sobre [PDO](http://php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
+Construido sobre [PDO](https://secure.php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
 API orientada a objetos para el acceso a bases de datos relacionales. Es el fundamento para otros métodos de acceso a bases de datos
 más avanzados, incluyendo el [constructor de consultas](db-query-builder.md) y [active record](db-active-record.md).
 
@@ -60,7 +60,7 @@ Puedes acceder a la conexión DB mediante la expresión `Yii::$app->db`.
 
 Cuando configuras una conexión DB, deberías siempre especificar el Nombre de Origen de Datos (DSN) mediante la
 propiedad [[yii\db\Connection::dsn|dsn]]. El formato del DSN varia para cada diferente base de datos. Por favor consulte el
-[manual de PHP](http://www.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
+[manual de PHP](https://secure.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -185,7 +185,7 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status',
            ->queryOne();
 ```
 
-La vinculación parámetros es implementada mediante [sentencias preparadas (prepared statements)](http://php.net/manual/es/mysqli.quickstart.prepared-statements.php).
+La vinculación parámetros es implementada mediante [sentencias preparadas (prepared statements)](https://secure.php.net/manual/es/mysqli.quickstart.prepared-statements.php).
 Además de prevenir ataques de inyección de SQL, también puede mejorar el rendimiento preparando una sola vez una sentencia SQL y ejecutándola múltiples veces con diferentes
 parámetros. Por ejemplo,
 

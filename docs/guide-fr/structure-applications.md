@@ -306,7 +306,7 @@ Pour plus d'informations sur cette propriété, reportez-vous à la section [Int
 
 Cette propriété est fournie comme une manière alternative de définir le fuseau horaire par défaut au moment de l'exécution du script PHP. 
 En configurant cette propriété, vous ne faites essentiellement qu'appeler la fonction PHP 
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Par exemple :
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). Par exemple :
 
 ```php
 [

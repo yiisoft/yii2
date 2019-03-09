@@ -50,7 +50,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 Налаштування підключення до БД <span id="configuring-db-connection"></span>
 ------------------------------
 
-Перш ніж продовжити, переконайтеся, що у вас встановлено розширення PHP [PDO](http://www.php.net/manual/en/book.pdo.php)
+Перш ніж продовжити, переконайтеся, що у вас встановлено розширення PHP [PDO](https://secure.php.net/manual/en/book.pdo.php)
 та драйвер PDO для вашої БД (наприклад `pdo_mysql` для MySQL). Це є основною вимогою,
 якщо ваш додаток використовує реляційну базу даних.
 
