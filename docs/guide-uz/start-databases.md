@@ -45,7 +45,7 @@ Hozirda sizda `yii2basic` degan ma'lumotlar ombori bo'lishi kerak va unda 3 ta u
 Ma'lumotlar omborida bilan aloqani sozlaymiz<span id="configuring-db-connection"></span>
 -------------------------------------------------------------------------
 
-Ishni boshlashdan oldin sizda [PDO](http://php.net/manual/ru/book.pdo.php) kengaytmasi o'rnatilganiga amin bo'ling va PDO-boshqaruvchisi ma'lumotlar ombori bilan boshqara olishingiz uchun(misol uchun, `pdo_mysql` MYSql uchun). Bu siz aloqali ma'lumtolar ombori bilan ishlashingiz uchun assosiy talablardir.
+Ishni boshlashdan oldin sizda [PDO](https://secure.php.net/manual/ru/book.pdo.php) kengaytmasi o'rnatilganiga amin bo'ling va PDO-boshqaruvchisi ma'lumotlar ombori bilan boshqara olishingiz uchun(misol uchun, `pdo_mysql` MYSql uchun). Bu siz aloqali ma'lumtolar ombori bilan ishlashingiz uchun assosiy talablardir.
 Endi esa, hammasini o'rnatib bo'lganingizdan so'ng, `config/db.php` oching va sozlamalarni o`zingizni ma'lumotlar omboringiz sozlamalariga o'zgartiring. Boshlanish sozlamalar quydagichadir:
 
 ```php

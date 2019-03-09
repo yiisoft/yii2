@@ -173,7 +173,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -236,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
+To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://secure.php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
 `basic/web` and `mysite.test` with the actual hostname to serve.
 

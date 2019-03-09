@@ -116,7 +116,7 @@ class User extends ActiveRecord implements IdentityInterface
 并带有其他相关信息头（如HTTP 基本认证会有 `WWW-Authenticate` 头信息）。
 
 
-## 授权 <a name="authorization"></a>
+## 授权 <span id="authorization"></span>
 
 在用户认证成功后，你可能想要检查他是否有权限执行对应的操作来获取资源，
 这个过程称为 *authorization* ，
