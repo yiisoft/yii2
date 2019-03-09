@@ -245,7 +245,8 @@ class ActiveRecord extends BaseActiveRecord
             $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
             foreach ($tableAliases as $tableAlias) {
                 $columnNames[] = "$tableAlias.$columnName";
-                $columnNames[] = $db->quoteSql("$tableAlias.[[$columnName]]");
+                $quotedTableAlias = $db->quoteTableName($tableAlias);
+                $columnNames[] = $db->quoteSql("$quotedTableAlias.[[$columnName]]");
             }
         }
 

@@ -1676,7 +1676,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             [CustomerWithAlias::className(), ['{{customer}}.[[id]]' => 1]],
             [CustomerWithAlias::className(), ['{{%customer}}.[[id]]' => 1]],
             [CustomerWithAlias::className(), ['csr.id' => 1]],
-            [CustomerWithAlias::className(), ['csr.[[id]]' => 1]],
+            [CustomerWithAlias::className(), ['{{csr}}.[[id]]' => 1]],
         ];
     }
 
