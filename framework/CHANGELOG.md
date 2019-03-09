@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.17 under development
 ------------------------
 
-- Enh #16681: Pass `ActiveField::inputOptions` to widget (GHopperMSK)
+- Bug #16681: `ActiveField::inputOptions` were not used during some widgets rendering (GHopperMSK)
 - Bug #17133: Fixed aliases rendering during help generation for a console command (GHopperMSK)
 - Bug #17185: Fixed `AssetManager` timestamp appending when a file is published manually (GHopperMSK)
 - Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
