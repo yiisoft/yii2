@@ -248,7 +248,7 @@ class BaseUrl
             return $url;
         }
 
-        if (self::isProtocolAgnostic($url)) {
+        if (static::isProtocolAgnostic($url)) {
             $protocolAgnosticUrl = $url;
         } else {
             $protocolAgnosticUrl = substr($url, strlen(parse_url($url, PHP_URL_SCHEME)) + 1);
