@@ -76,6 +76,11 @@ class DbSession extends MultiFieldSession
      */
     public $sessionTable = '{{%session}}';
 
+    /**
+    * @var array Session fields to be written into session table columns
+    * @since 2.0.17
+    */
+    protected $fields = [];
 
     /**
      * Initializes the DbSession component.
@@ -137,6 +142,19 @@ class DbSession extends MultiFieldSession
     }
 
     /**
+     * Ends the current session and store session data.
+     * @since 2.0.17
+     */
+    public function close()
+    {
+        if ($this->getIsActive()) {
+            // prepare writeCallback fields before session closes
+            $this->fields = $this->composeFields();
+            YII_DEBUG ? session_write_close() : @session_write_close();
+        }
+    }
+
+    /**
      * Session read handler.
      * @internal Do not call this method directly.
      * @param string $id session ID
@@ -169,14 +187,28 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $fields = $this->composeFields($id, $data);
-            $fields = $this->typecastFields($fields);
-            $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
+            // ensure backwards compatability (fixed #9438)
+            if ($this->writeCallback && !$this->fields) {
+                $this->fields = $this->composeFields();
+            }
+            // ensure data consistency
+            if (!isset($this->fields['data'])) {
+                $this->fields['data'] = $data;
+            } else {
+                $_SESSION = $this->fields['data'];
+            }
+            // ensure 'id' and 'expire' are never affected by [[writeCallback]]
+            $this->fields = array_merge($this->fields, [
+                'id' => $id,
+                'expire' => time() + $this->getTimeout(),
+            ]);
+            $this->fields = $this->typecastFields($this->fields);
+            $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
+            $this->fields = [];
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
         }
-
         return true;
     }
 
