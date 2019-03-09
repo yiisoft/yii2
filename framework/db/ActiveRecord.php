@@ -187,11 +187,33 @@ class ActiveRecord extends BaseActiveRecord
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         } elseif (is_array($condition)) {
-            $aliases = !empty($query->from) ? $query->from : [];
+            $aliases = static::filterValidAliases($query);
             $condition = static::filterCondition($condition, $aliases);
         }
 
         return $query->andWhere($condition);
+    }
+
+    /**
+     * Returns table aliases which are not the same as the name of the tables.
+     *
+     * @param Query $query
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidAliases(Query $query)
+    {
+        $tables = $query->getTablesUsedInFrom();
+
+        $aliases = array_filter(array_keys($tables), function ($alias) use ($tables) {
+            return !in_array($alias, $tables);
+        });
+
+        return array_map(function ($alias) {
+            return preg_replace('/{{([\w]+)}}/', '$1', $alias);
+        }, array_values($aliases));
     }
 
     /**
@@ -230,21 +252,21 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $aliases
      * @return array
      * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
      */
     protected static function filterValidColumnNames($db, array $aliases)
     {
         $columnNames = [];
         $tableName = static::tableName();
         $quotedTableName = $db->quoteTableName($tableName);
-        $tableAliases = array_keys($aliases);
-        unset($tableAliases[$tableName]);
 
         foreach (static::getTableSchema()->getColumnNames() as $columnName) {
             $columnNames[] = $columnName;
             $columnNames[] = $db->quoteColumnName($columnName);
             $columnNames[] = "$tableName.$columnName";
             $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
-            foreach ($tableAliases as $tableAlias) {
+            foreach ($aliases as $tableAlias) {
                 $columnNames[] = "$tableAlias.$columnName";
                 $quotedTableAlias = $db->quoteTableName($tableAlias);
                 $columnNames[] = $db->quoteSql("$quotedTableAlias.[[$columnName]]");

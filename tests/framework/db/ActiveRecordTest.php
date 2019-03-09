@@ -1661,6 +1661,32 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         CustomerQuery::$joinWithProfile = false;
     }
 
+    /**
+     * @dataProvider filterTableNamesFromAliasesProvider
+     * @param $fromParams
+     * @param $expectedAliases
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function testFilterTableNamesFromAliases($fromParams, $expectedAliases)
+    {
+        $query = Customer::find()->from($fromParams);
+        $aliases = $this->invokeMethod(\Yii::createObject(Customer::className()), 'filterValidAliases', [$query]);
+
+        $this->assertEquals($expectedAliases, $aliases);
+    }
+
+    public function filterTableNamesFromAliasesProvider()
+    {
+        return [
+            'table name as string'         => ['customer', []],
+            'table name as array'          => [['customer'], []],
+            'table names'                  => [['customer', 'order'], []],
+            'table name and a table alias' => [['customer', 'ord' => 'order'], ['ord']],
+            'table alias'                  => [['csr' => 'customer'], ['csr']],
+            'table aliases'                => [['csr' => 'customer', 'ord' => 'order'], ['csr', 'ord']],
+        ];
+    }
+
     public function legalValuesForFindByCondition()
     {
         return [
