@@ -32,15 +32,15 @@ O Yii 2.0 requer o PHP 5.4 ou superior, que é uma versão de grande melhoria so
 Como resultado, existem muitas diferenças na linguagem às quais você deve dar a devida atenção.
 Segue abaixo um resumo das principais mudanças do PHP:
 
-- [Namespaces](http://php.net/manual/pt_BR/language.namespaces.php).
-- [Funções anônimas](http://php.net/manual/pt_BR/functions.anonymous.php).
+- [Namespaces](https://secure.php.net/manual/pt_BR/language.namespaces.php).
+- [Funções anônimas](https://secure.php.net/manual/pt_BR/functions.anonymous.php).
 - A sintaxe curta de arrays `[...elementos...]` é utilizada ao invés de `array(...elementos...)`.
 - Tags curtas de *echo* `<?=` são usadas nos arquivos de view. É seguro utilizá-las a partir do PHP 5.4.
-- [Classes e interfaces da SPL](http://php.net/manual/pt_BR/book.spl.php).
-- [Late Static Bindings](http://php.net/manual/pt_BR/language.oop5.late-static-bindings.php).
-- [Date e Time](http://php.net/manual/pt_BR/book.datetime.php).
-- [Traits](http://php.net/manual/pt_BR/language.oop5.traits.php).
-- [intl](http://php.net/manual/pt_BR/book.intl.php). O Yii 2.0 utiliza a extensão
+- [Classes e interfaces da SPL](https://secure.php.net/manual/pt_BR/book.spl.php).
+- [Late Static Bindings](https://secure.php.net/manual/pt_BR/language.oop5.late-static-bindings.php).
+- [Date e Time](https://secure.php.net/manual/pt_BR/book.datetime.php).
+- [Traits](https://secure.php.net/manual/pt_BR/language.oop5.traits.php).
+- [intl](https://secure.php.net/manual/pt_BR/book.intl.php). O Yii 2.0 utiliza a extensão
   `intl` do PHP para suportar as funcionalidades de internacionalização.
 
 
@@ -327,7 +327,7 @@ I18N
 ----
 
 O Yii 2.0 remove os formatadores de data e número embutidos em favor do módulo
-[intl do PECL do PHP](http://pecl.php.net/package/intl).
+[intl do PECL do PHP](https://pecl.php.net/package/intl).
 
 A tradução de mensagens agora é realizada pelo componente `i18n` da aplicação.
 Este componente gerencia um conjunto de fontes de mensagens, o  que permite a você usar diferentes fontes de mensagens baseadas em categorias de mensagens.

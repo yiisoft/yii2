@@ -4,7 +4,7 @@ A curva de aprendizado no Yii não é tão íngreme como em outros frameworks PH
 
 ## PHP
 
-Yii é um framework PHP. Portanto, certifique-se de [ler e entender a referência da linguagem](http://php.net/manual/pt_BR/langref.php).
+Yii é um framework PHP. Portanto, certifique-se de [ler e entender a referência da linguagem](https://secure.php.net/manual/pt_BR/langref.php).
 Quando estiver desenvolvendo com Yii, você estará escrevendo código orientado a objetos, então, certifique-se de que está familiarizado tanto com [Classes e Objetos](https://secure.php.net/manual/pt_BR/language.oop5.basic.php) como com [namespaces](https://secure.php.net/manual/pt_BR/language.namespaces.php).
 
 ## Programação orientada a objetos

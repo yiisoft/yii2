@@ -177,7 +177,7 @@ Você deverá ver a página de parabenização acima em seu navegador. Se não a
   ```
 
 Você deve configurar sua instalação PHP de forma a atingir os requisitos mínimos do Yii. A versão mínima do PHP que você deve ter é a 5.4. Mas o ideal seria utilizar a versão mais recente, PHP 7.
-Se sua aplicação precisa de um banco de dados, você também deve instalar a [Extensão PDO PHP](http://php.net/manual/pt_BR/pdo.installation.php) e o driver de banco de dados correspondente (tal como `pdo_mysql` para bancos de dados MySQL).
+Se sua aplicação precisa de um banco de dados, você também deve instalar a [Extensão PDO PHP](https://secure.php.net/manual/pt_BR/pdo.installation.php) e o driver de banco de dados correspondente (tal como `pdo_mysql` para bancos de dados MySQL).
 
 
 Configurando Servidores Web <span id="configuring-web-servers"></span>
@@ -242,7 +242,7 @@ DocumentRoot "caminho/para/basico/web"
 
 ### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
-Para usar o [Nginx](http://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](http://php.net/install.fpm). Use a seguinte configuração do Nginx,
+Para usar o [Nginx](http://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://secure.php.net/install.fpm). Use a seguinte configuração do Nginx,
 substituindo `caminho/para/basico/web` com o caminho real para `basico/web` e `mysite.test` com o nome de host real a servir.
 
 ```nginx

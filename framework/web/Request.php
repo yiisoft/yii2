@@ -688,7 +688,7 @@ class Request extends \yii\base\Request
      *
      * By default this value is based on the user request information. This method will
      * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
-     * You may want to check out the [PHP documentation](http://php.net/manual/en/reserved.variables.server.php)
+     * You may want to check out the [PHP documentation](https://secure.php.net/manual/en/reserved.variables.server.php)
      * for more information on these variables.
      *
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.

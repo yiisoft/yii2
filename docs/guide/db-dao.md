@@ -1,7 +1,7 @@
 Database Access Objects
 =======================
 
-Built on top of [PDO](http://www.php.net/manual/en/book.pdo.php), Yii DAO (Database Access Objects) provides an
+Built on top of [PDO](https://secure.php.net/manual/en/book.pdo.php), Yii DAO (Database Access Objects) provides an
 object-oriented API for accessing relational databases. It is the foundation for other more advanced database
 access methods, including [query builder](db-query-builder.md) and [active record](db-active-record.md).
 
@@ -67,7 +67,7 @@ You can then access the DB connection via the expression `Yii::$app->db`.
 > Tip: You can configure multiple DB application components if your application needs to access multiple databases.
 
 When configuring a DB connection, you should always specify its Data Source Name (DSN) via the [[yii\db\Connection::dsn|dsn]] 
-property. The format of DSN varies for different databases. Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) 
+property. The format of DSN varies for different databases. Please refer to the [PHP manual](https://secure.php.net/manual/en/function.PDO-construct.php) 
 for more details. Below are some examples:
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
@@ -184,7 +184,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-Parameter binding is implemented via [prepared statements](http://php.net/manual/en/mysqli.quickstart.prepared-statements.php).
+Parameter binding is implemented via [prepared statements](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php).
 Besides preventing SQL injection attacks, it may also improve performance by preparing a SQL statement once and
 executing it multiple times with different parameters. For example,
 
@@ -378,7 +378,7 @@ the changes made by the queries prior to that failed query in the transaction. `
 exception as if we had not caught it, so the normal error handling process will take care of it.
 
 > Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 

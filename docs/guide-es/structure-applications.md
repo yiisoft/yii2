@@ -335,7 +335,7 @@ Puedes encontrar más detalles de esta propiedad en la sección [Internacionaliz
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 Esta propiedad es provista como una forma alternativa de definir el `time zone` de PHP por defecto en tiempo de ejecución.
-Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](http://php.net/manual/es/function.date-default-timezone-set.php).
+Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](https://secure.php.net/manual/es/function.date-default-timezone-set.php).
 Por ejemplo:
 
 ```php

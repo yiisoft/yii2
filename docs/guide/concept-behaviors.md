@@ -329,7 +329,7 @@ There are several built-in and external behaviors available:
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
+While behaviors are similar to [traits](https://secure.php.net/traits) in that they both "inject" their
 properties and methods to the primary class, they differ in many aspects. As explained below, they
 both have pros and cons. They are more like complements to each other rather than alternatives.
 
