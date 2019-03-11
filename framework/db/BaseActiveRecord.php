@@ -1319,8 +1319,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
             
             // add viaRelation On conditions to preset columns
-            foreach ($viaRelation->on as $key => $value) {
-                $columns[$key] = $value;
+            if (is_array($viaRelation->on) {
+                foreach ($viaRelation->on as $key => $value) {
+                    $columns[$key] = $value;
+                }
             }
             
             foreach ($extraColumns as $k => $v) {
@@ -1418,8 +1420,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
             
             // add viaRelation On conditions to preset columns
-            foreach ($viaRelation->on as $key => $value) {
-                $columns[$key] = $value;
+            if (is_array($viaRelation->on) {
+                foreach ($viaRelation->on as $key => $value) {
+                    $columns[$key] = $value;
+                }
             }
             
             if (is_array($relation->via)) {
