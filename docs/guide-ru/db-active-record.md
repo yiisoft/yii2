@@ -521,7 +521,25 @@ $customer->loadDefaultValues();
 
 > Совет: вы можете использовать поведение [[yii\behaviors\AttributeTypecastBehavior]] для того, чтобы производить
   приведение типов для ActiveRecord во время валидации или сохранения.
+  
+Начиная с 2.0.14, Yii ActiveRecord поддерживает сложные типы данных, такие как JSON или многомерные массивы.
 
+#### JSON в MySQL и PostgreSQL
+После заполнения данных, значение из столбца JSON будет автоматически декодировано из JSON в соответствии со стандартными правилами декодирования JSON.
+
+Чтобы сохранить значение атрибута в столбец JSON, ActiveRecord автоматически создаст объект [[yii\db\JsonExpression|JsonExpression]], который будет закодирован в строку JSON на уровне [QueryBuilder](db-query-builder.md).
+
+#### Массивы в PostgreSQL
+После заполнения данных значение из столбца `Array` будет автоматически декодировано из нотации PgSQL в объект [[yii\db\ArrayExpression|ArrayExpression]]. Он реализует интерфейс PHP `ArrayAccess`, так что вы можете использовать его в качестве массива, или вызвать `->getValue ()`, чтобы получить сам массив.
+
+Чтобы сохранить значение атрибута в столбец массива, ActiveRecord автоматически создаст объект [[yii\db\Array Expression|ArrayExpression]], который будет закодирован [QueryBuilder](db-query-builder.md) в строковое представление массива PgSQL.
+
+Можно также использовать условия для столбцов JSON:
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+Дополнительные сведения о системе построения выражений см. [Query Builder – добавление пользовательских условий и выражений](db-query-builder.md#adding-custom-conditions-and-expressions)
 
 ### Обновление нескольких строк данных <span id="updating-multiple-rows"></span>
 
