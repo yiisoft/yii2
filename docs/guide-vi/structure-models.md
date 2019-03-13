@@ -119,10 +119,10 @@ class ContactForm extends Model
     public function attributeLabels()
     {
         return [
-            'name' => 'Your name',
-            'email' => 'Your email address',
-            'subject' => 'Subject',
-            'body' => 'Content',
+            'name' => 'Tên liên hệ',
+            'email' => 'Địa chỉ email',
+            'subject' => 'Tiêu đề',
+            'body' => 'Nội dung',
         ];
     }
 }
@@ -135,10 +135,10 @@ Với ứng dụng cần hỗ trợ đa ngôn ngữ, bạn cần dịch lại nh
 public function attributeLabels()
 {
     return [
-        'name' => \Yii::t('app', 'Your name'),
-        'email' => \Yii::t('app', 'Your email address'),
-        'subject' => \Yii::t('app', 'Subject'),
-        'body' => \Yii::t('app', 'Content'),
+        'name' => \Yii::t('app', 'Tên liên hệ'),
+        'email' => \Yii::t('app', 'Địa chỉ email'),
+        'subject' => \Yii::t('app', 'Tiêu đề'),
+        'body' => \Yii::t('app', 'Nội dung'),
     ];
 }
 ```

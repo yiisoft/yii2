@@ -544,7 +544,7 @@ Các thành phần View cung cấp các tính năng hữu ích được liệt k
 * [alternative template engines](tutorial-template-engines.md): cho phép bạn sử dụng các bộ giao diện, chẳng hạn như
   [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
 
-You may also frequently use the following minor yet useful features when you are developing Web pages.
+Bạn cũng có thể thường xuyên sử dụng các tính năng nhỏ nhưng hữu ích sau đây khi bạn đang phát triển các trang Web.
 
 
 ### Thiết lập tiêu đề trang <span id="setting-page-titles"></span>
@@ -557,7 +557,7 @@ thuộc tính [[yii\web\View::title|title]] cho bạn đẩy thông tin tiêu đ
 
 ```php
 <?php
-$this->title = 'My page title';
+$this->title = 'Tiêu đề trang';
 ?>
 ```
 
@@ -570,11 +570,11 @@ Tiếp đến tại layout, hãy chắc chắn rằng bạn đặt đoạn mã s
 
 ### Thực hiện đăng ký các thẻ Meta Tags <span id="registering-meta-tags"></span>
 
-Web pages usually need to generate various meta tags needed by different parties. Like page titles, meta tags
-appear in the `<head>` section and are usually generated in layouts.
+Các trang web thường cần tạo các thẻ meta khác nhau cần thiết cho các trang khác nhau. Như các thẻ tiêu đề trang, các thẻ meta
+xuất hiện ở mục `<head>` và thường được tạo ở các layouts.
 
-If you want to specify what meta tags to generate in content views, you can call [[yii\web\View::registerMetaTag()]]
-in a content view, like the following:
+Nếu bạn muốn chỉ định thẻ meta nào sẽ tạo trong trang views, bạn có thể gọi phương thức [[yii\web\View::registerMetaTag()]]
+trong nội dung của view, như đoạn sau:
 
 ```php
 <?php
@@ -582,19 +582,19 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ?>
 ```
 
-The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-rendered after the layout finishes rendering. The following HTML code will be generated and inserted
-at the place where you call [[yii\web\View::head()]] in the layout:
+Đoạn mã trên sẽ đăng ký thẻ mata là "keywords" với thành phần của view. Thẻ meta đã đăng ký được hiển thị sau 
+việc xuất bản layout được xong. Đoạn mã HTML sau sẽ xuất bản và chèn vào vị trí nơi bạn gọi phương thức
+[[yii\web\View::head()]] tại layout:
 
 ```php
 <meta name="keywords"
 ``` content="yii, framework, php">
 
-Lưu ý rằng nếu bạn gọi phương thức [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
-regardless whether the meta tags are the same or not.
+Lưu ý rằng nếu bạn gọi phương thức [[yii\web\View::registerMetaTag()]] nhiều lần, nó sẽ đăng ký nhiều thẻ meta,
+cho dù bất kể các thẻ meta có giống nhau hay không.
 
-To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
-Ví dụ, the following code registers two "description" meta tags. However, only the second one will be rendered.
+Để đảm bảo chỉ có một phiên bản duy nhất của loại thẻ meta, bạn có thể chỉ định một khóa làm tham số thứ hai khi gọi phương thức.
+Ví dụ, đoạn mã sau sẽ đăng ký 2 thẻ meta là "description". Tuy nhiên, chỉ có thẻ thứ 2 được hiển thị.
 
 ```php
 $this->registerMetaTag(['name' => 'description', 'content' => 'This is my cool website made with Yii!'], 'description');
@@ -602,11 +602,11 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 ```
 
 
-### Registering Link Tags <span id="registering-link-tags"></span>
+### Đăng ký các thẻ liên kết (Link Tags) <span id="registering-link-tags"></span>
 
-Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
-RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags
-by using [[yii\web\View::registerLinkTag()]]. Ví dụ, in a content view, you can register a link tag like follows,
+Giống như các [thẻ meta](#registering-meta-tags), các thẻ liên kết rất hữu ích trong nhiều trường hợp, như tùy biến favicon, trỏ đến nguồn cấp dữ liệu RSS hoặc ủy quyền OpenID
+cho máy chủ khác. Bạn có thể làm việc với các thẻ liên kết theo cách tương tự như thẻ meta bằng cách sử dụng phương thức [[yii\web\View::registerLinkTag()]].
+Ví dụ, trong trang nội dung view, bạn có thể đăng ký một thẻ liên kết như sau,
 
 ```php
 $this->registerLinkTag([
@@ -617,32 +617,32 @@ $this->registerLinkTag([
 ]);
 ```
 
-The code above will result in
+Đoạn mã trên sẽ ra kết quả như sau
 
 ```html
 <link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-Similar as [[yii\web\View::registerMetaTag()|registerMetaTag()]], you can specify a key when calling
-[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generating repeated link tags.
+Giống như phương thức [[yii\web\View::registerMetaTag()|registerMetaTag()]], bạn có thể chỉ định từ khóa khi gọi phương thức
+[[yii\web\View::registerLinkTag()|registerLinkTag()]] để tránh tạo ra các thẻ liên kết lặp đi lặp lại.
 
 
 ## Sự kiện View <span id="view-events"></span>
 
-[[yii\base\View|View components]] trigger several events during the view rendering process. You may respond
-to these events to inject content into views or process the rendering results before they are sent to end users.
+[[thành phần yii\base\View|View]] kích hoạt một số sự kiện trong quá trình xuất bản view. Bạn có thể phản hồi các sự kiện này để đưa nội dung
+vào chế độ xem hoặc xử lý kết quả hiển thị trước khi chúng được gửi đến người dùng cuối.
 
-- [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: triggered at the beginning of rendering a file
-  in a controller. Handlers of this event may set [[yii\base\ViewEvent::isValid]] to be `false` to cancel the rendering process.
-- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered after rendering a file by the call of [[yii\base\View::afterRender()]].
-  Handlers of this event may obtain the rendering result through [[yii\base\ViewEvent::output]] and may modify
-  this property to change the rendering result.
-- [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: triggered by the call of [[yii\base\View::beginPage()]] in layouts.
-- [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]]: triggered by the call of [[yii\base\View::endPage()]] in layouts.
-- [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]]: triggered by the call of [[yii\web\View::beginBody()]] in layouts.
-- [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]]: triggered by the call of [[yii\web\View::endBody()]] in layouts.
+- [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: sự kiện được kích hoạt khi bắt đầu xuất bản file trong
+  controller. Người xử lý sự kiện này có thể thiết lập [[yii\base\ViewEvent::isValid]] giá trị là `false` để hủy quá trình xuất bản.
+- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: được kích hoạt sau khi xuất bản một file bằng việc gọi phương thức [[yii\base\View::afterRender()]].
+  Những người xử lý sự kiện này có thể có được kết quả xuất bản thông qua thuộc tính [[yii\base\ViewEvent::output]] và có thể sửa đổi thuộc tính này
+  để thay đổi kết quả xuất bản.
+- [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: được kích hoạt khi gọi phương thức [[yii\base\View::beginPage()]] tại layouts.
+- [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]]: được kích hoạt khi gọi phương thức [[yii\base\View::endPage()]] tại layouts.
+- [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]]: được kích hoạt khi gọi phương thức [[yii\web\View::beginBody()]] tại layouts.
+- [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]]: được kích hoạt khi gọi phương thức [[yii\web\View::endBody()]] tại layouts.
 
-Ví dụ, the following code injects the current date at the end of the page body:
+Ví dụ, đoạn mã sau sẽ chèn nội dung ngày hiện tại vào cuối trang:
 
 ```php
 \Yii::$app->view->on(View::EVENT_END_BODY, function () {
@@ -653,10 +653,10 @@ Ví dụ, the following code injects the current date at the end of the page bod
 
 ## Xuất bản các trang tĩnh <span id="rendering-static-pages"></span>
 
-Static pages refer to those Web pages whose main content are mostly static without the need of accessing
-dynamic data pushed from controllers.
+Các trang tĩnh đề cập đến các trang Web có nội dung chính chủ yếu là tĩnh mà không cần truy cập dữ liệu động được đẩy từ các
+controller.
 
-You can output static pages by putting their code in the view, and then using the code like the following in a controller:
+Bạn có thể hiển thị trang tĩnh bằng cách đặt các đoạn mã vào view, và sử dụng đoạn mã sau ở controller:
 
 ```php
 public function actionAbout()
@@ -665,9 +665,9 @@ public function actionAbout()
 }
 ```
 
-If a Web site contains many static pages, it would be very tedious repeating the similar code many times.
-To solve this problem, you may introduce a [standalone action](structure-controllers.md#standalone-actions)
-called [[yii\web\ViewAction]] in a controller. Ví dụ,
+Nếu một trang web chứa nhiều trang tĩnh, nó sẽ không linh hoạt khi sử dụng các đoạn mã nhiều lần.
+Để giải quyết vấn đề này, bạn có thể cho vào một [standalone action](structure-controllers.md#standalone-actions)
+được gọi là [[yii\web\ViewAction]] trong controller. Ví dụ,
 
 ```php
 namespace app\controllers;
@@ -687,16 +687,16 @@ class SiteController extends Controller
 }
 ```
 
-Now if you create a view named `about` under the directory `@app/views/site/pages`, you will be able to
-display this view by the following URL:
+Bây giờ nếu bạn tạo một view đặt là `about` nằm dưới đường dẫn `@app/views/site/pages`, bạn có thể hiển thị
+view này qua URL sau:
 
 ```
 http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
-The `GET` parameter `view` tells [[yii\web\ViewAction]] which view is requested. The action will then look
-for this view under the directory `@app/views/site/pages`. You may configure [[yii\web\ViewAction::viewPrefix]]
-to change the directory for searching these views.
+Tham số `GET` là `view` sẽ gọi đến hành động [[yii\web\ViewAction]] với view được yêu cầu. Hành động sau đó sẽ
+tìm kiếm view này trong thư mục `@app/views/site/pages`. Bạn có thể cấu hình [[yii\web\ViewAction::viewPrefix]]
+để thay đổi thư mục tìm kiếm các view này.
 
 
 ## Bài thực hành <span id="best-practices"></span>
@@ -712,9 +712,9 @@ Các View chịu trách nhiệm trong việc hiển thị dữ liệu từ model
 Để việc quản lý các view dễ dàng hơn, nên tránh việc tạo các view quá phức tạp hoặc chứa nhiều các mã code dự phòng.
 Bạn có thể tham khảo các thủ thuật sau để đạt việc quản lý view tốt:
 
-* use [layouts](#layouts) to represent common presentational sections (e.g. page header, footer).
-* divide a complicated view into several smaller ones. The smaller views can be rendered and assembled into a bigger
-  one using the rendering methods that we have described.
-* create and use [widgets](structure-widgets.md) as building blocks of views.
-* create and use helper classes to transform and format data in views.
+* dùng [layouts](#layouts) để hiển thị cho các mục chung (vd. trang header, footer).
+* chia các view phức tạp thành các view nhỏ hơn. Các view nhỏ hơn có thể được hiển thị và lắp ráp thành một view lớn hơn
+bằng các phương thức xuất bản mà chúng tôi đã mô tả.
+* tạo và dùng các [widgets](structure-widgets.md) như việc xây dựng các khối của view.
+* tạo vào dung các lớp helper classes để định dạng và chuyển đổi các nội dung trong view.
 

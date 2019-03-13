@@ -65,7 +65,7 @@ Object Configuration
 --------------------
 
 Lớp [[yii\base\BaseObject|BaseObject]] giới thiệu một cách thống nhất để cấu hình các đối tượng. Bất kỳ các lớp con của
-lớp [[yii\base\BaseObject|BaseObject]] nên khai báo các hàm hởi tạo (constructor) (nếu cần thiết)  theo cách sau để có thể được
+lớp [[yii\base\BaseObject|BaseObject]] nên khai báo các hàm khởi tạo (constructor) (nếu cần thiết)  theo cách sau để có thể được
 cấu hình đúng:
 
 ```php
