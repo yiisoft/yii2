@@ -33,7 +33,7 @@ class Foo
     }
 }
 
-$foo = $container->get('Foo');
+$foo = Yii::$container->get('Foo');
 // which is equivalent to the following:
 $bar = new Bar;
 $foo = new Foo($bar);
