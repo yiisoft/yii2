@@ -16,21 +16,16 @@ IDE
 </svg>
 HTML;
 ?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" hidden>
-    <symbol id="new-window" viewBox="0 0 24 24">
-        <g transform="scale(0.0234375 0.0234375)">
-            <path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z"></path>
-        </g>
-    </symbol>
-</svg>
 <li class="<?= ($index === 1 || !$handler->isCoreFile($file)) ? 'application' : '' ?> call-stack-item"
     data-line="<?= (int) ($line - $begin) ?>">
     <div class="element-wrap">
         <div class="element">
             <span class="item-number"><?= (int) $index ?>.</span>
             <span class="text"><?= $file !== null ? 'in ' . $handler->htmlEncode($file) : '' ?></span>
-            <span> - </span>
-            <?= strtr($handler->traceLine, ['{file}' => $file, '{line}' => $line + 1, '{html}' => $html]) ?>
+            <?php if ($handler->traceLine !== '{html}'): ?>
+                <span> &ndash; </span>
+                <?= strtr($handler->traceLine, ['{file}' => $file, '{line}' => $line + 1, '{html}' => $html]) ?>
+            <?php endif; ?>
             <span class="at">
                 <?= $line !== null ? 'at line' : '' ?>
                 <span class="line"><?= $line !== null ? $line + 1 : '' ?></span>
