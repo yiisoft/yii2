@@ -369,7 +369,7 @@ class BaseStringHelper
     /**
      * 检查传递的字符串是否与给定的 shell 通配符模式匹配。
      * 此函数使用 PCRE 模拟 [[fnmatch()]]，这在某些环境中可能不可用。
-     * @param string $pattern shell通配符模式。
+     * @param string $pattern shell 通配符模式。
      * @param string $string 测试过的字符串。
      * @param array $options 匹配选项。有效选项包括：
      *
