@@ -13,7 +13,7 @@ use yii\base\InvalidArgumentException;
 /**
  * BaseMarkdown 为 [[Markdown]] 提供了具体的实现。
  *
- * 不要使用类 BaseMarkdown。使用 [[Markdown]] 来替代.
+ * 不要使用类 BaseMarkdown。使用 [[Markdown]] 来替代。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
