@@ -8,16 +8,16 @@
 namespace yii\caching;
 
 /**
- * ExpressionDependency represents a dependency based on the result of a PHP expression.
+ * ExpressionDependency 是基于 PHP 表达式的结果实现的依赖类。
  *
- * ExpressionDependency will use `eval()` to evaluate the PHP expression.
- * The dependency is reported as unchanged if and only if the result of the expression is
- * the same as the one evaluated when storing the data to cache.
+ * ExpressionDependency 将会使用 `eval()` 函数解析 PHP 表达式。
+ * 这个依赖只有在和存入缓存数据时解析的表达式结果一样时，
+ * 会报告无变化。
  *
- * A PHP expression can be any PHP code that has a value. To learn more about what an expression is,
- * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
+ * 一个 PHP 表达式可以是任何产生值的 PHP 代码。想了解更多表达式是什么， 
+ * 请参考 [php manual](http://www.php.net/manual/en/language.expressions.php) 手册。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,23 +25,23 @@ namespace yii\caching;
 class ExpressionDependency extends Dependency
 {
     /**
-     * @var string the string representation of a PHP expression whose result is used to determine the dependency.
-     * A PHP expression can be any PHP code that evaluates to a value. To learn more about what an expression is,
-     * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
+     * @var string PHP 表达式的字符串表示，它的结果用来判断依赖是否发生变化。
+     * 一个 PHP 表达式可以是任何产生值的 PHP 代码。想了解更多表达式是什么， 
+     * 请参考 [php manual](http://www.php.net/manual/en/language.expressions.php) 手册。
      */
     public $expression = 'true';
     /**
-     * @var mixed custom parameters associated with this dependency. You may get the value
-     * of this property in [[expression]] using `$this->params`.
+     * @var mixed 有关这个依赖的自定义参数。
+     * 你可以在 [[expression]] 里用 `$this->params` 获得该属性的值。
      */
     public $params;
 
 
     /**
-     * Generates the data needed to determine if dependency has been changed.
-     * This method returns the result of the PHP expression.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return mixed the data needed to determine if dependency has been changed.
+     * 生成在判断依赖是否发生变化时用到的依赖数据。
+     * 该方法返回 PHP 表达式的结果。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return mixed 判断依赖是否发生变化时用到的依赖数据。
      */
     protected function generateDependencyData($cache)
     {
