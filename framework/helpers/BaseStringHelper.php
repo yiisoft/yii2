@@ -10,9 +10,9 @@ namespace yii\helpers;
 use Yii;
 
 /**
- * BaseStringHelper provides concrete implementation for [[StringHelper]].
+ * BaseStringHelper 为 [[StringHelper]] 提供了具体的实现。
  *
- * Do not use BaseStringHelper. Use [[StringHelper]] instead.
+ * 不要使用 BaseStringHelper。使用 [[StringHelper]]。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
@@ -21,10 +21,10 @@ use Yii;
 class BaseStringHelper
 {
     /**
-     * Returns the number of bytes in the given string.
-     * This method ensures the string is treated as a byte array by using `mb_strlen()`.
-     * @param string $string the string being measured for length
-     * @return int the number of bytes in the given string.
+     * 返回给定字符串中的字节数。
+     * 该方法使用 `mb_strlen()` 确保字符串被视为字节数组。
+     * @param string $string 字符串的长度
+     * @return int 给定字符串中的字节数。
      */
     public static function byteLength($string)
     {
@@ -32,13 +32,13 @@ class BaseStringHelper
     }
 
     /**
-     * Returns the portion of string specified by the start and length parameters.
-     * This method ensures the string is treated as a byte array by using `mb_substr()`.
-     * @param string $string the input string. Must be one character or longer.
-     * @param int $start the starting position
-     * @param int $length the desired portion length. If not specified or `null`, there will be
-     * no limit on length i.e. the output will be until the end of the string.
-     * @return string the extracted part of string, or FALSE on failure or an empty string.
+     * 返回由起始和长度参数指定的字符串部分。
+     * 该方法使用 `mb_strlen()` 确保字符串被视为字节数组。
+     * @param string $string 输入字符串。必须是一个字符或更长。
+     * @param int $start 起始位置
+     * @param int $length 所需的部分长度。
+     * 如果没有特殊指定或者为 `null` 时，则长度没有限制。也就是说输出字符串直到末尾结束。
+     * @return string 提取的部分字符串，或在失败时为 FALSE 或为空字符串。
      * @see http://www.php.net/manual/en/function.substr.php
      */
     public static function byteSubstr($string, $start, $length = null)
@@ -47,16 +47,16 @@ class BaseStringHelper
     }
 
     /**
-     * Returns the trailing name component of a path.
-     * This method is similar to the php function `basename()` except that it will
-     * treat both \ and / as directory separators, independent of the operating system.
-     * This method was mainly created to work on php namespaces. When working with real
-     * file paths, php's `basename()` should work fine for you.
-     * Note: this method is not aware of the actual filesystem, or path components such as "..".
+     * 返回指定的跟踪组件的路径。
+     * 这个方法类似于 php 函数 `basename()`，
+     * 除此之外它还同时将 \ 和 / 作为目录分隔符，独立于操作系统。
+     * 该方法主要用于处理 php 命名空间 php。
+     * 在处理实际文件路径时，php 的 `basename()` 应该可以很好地工作。
+     * Note: 此方法不知道实际的文件系统路径，或路径组件诸如 ".."。
      *
-     * @param string $path A path string.
-     * @param string $suffix If the name component ends in suffix this will also be cut off.
-     * @return string the trailing name component of the given path.
+     * @param string $path 一个路径字符串。
+     * @param string $suffix 即使这个名称组件以后缀结尾也会将其删除。
+     * @return string 给定追踪名称组件的路径。
      * @see http://www.php.net/manual/en/function.basename.php
      */
     public static function basename($path, $suffix = '')
@@ -73,12 +73,12 @@ class BaseStringHelper
     }
 
     /**
-     * Returns parent directory's path.
-     * This method is similar to `dirname()` except that it will treat
-     * both \ and / as directory separators, independent of the operating system.
+     * 返回父目录的路径。
+     * 这个方法类似于 `dirname()`，
+     * 除此之外它还同时将 \ 和 / 作为目录分隔符，独立于操作系统之外。
      *
-     * @param string $path A path string.
-     * @return string the parent directory's path.
+     * @param string $path 一个路径字符串。
+     * @return string 父目录的路径。
      * @see http://www.php.net/manual/en/function.basename.php
      */
     public static function dirname($path)
@@ -92,15 +92,15 @@ class BaseStringHelper
     }
 
     /**
-     * Truncates a string to the number of characters specified.
+     * 将字符串截取为指定的字符数。
      *
-     * @param string $string The string to truncate.
-     * @param int $length How many characters from original string to include into truncated string.
-     * @param string $suffix String to append to the end of truncated string.
-     * @param string $encoding The charset to use, defaults to charset currently used by application.
-     * @param bool $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
-     * This parameter is available since version 2.0.1.
-     * @return string the truncated string.
+     * @param string $string 要截取的字符串。
+     * @param int $length 从原始字符串包含到截取字符串中的字符数。
+     * @param string $suffix 附加到截取字符串的末尾。
+     * @param string $encoding 要使用的字符集，默认为应用程序当前使用的字符集。
+     * @param bool $asHtml 是否将被截取的字符串视为 HTML 并保留适当的 HTML 标记。
+     * 这个参数在 2.0.1 版之后就可用了。
+     * @return string 截取字符串。
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
@@ -119,14 +119,14 @@ class BaseStringHelper
     }
 
     /**
-     * Truncates a string to the number of words specified.
+     * 将字符串截取为指定的单词数。
      *
-     * @param string $string The string to truncate.
-     * @param int $count How many words from original string to include into truncated string.
-     * @param string $suffix String to append to the end of truncated string.
-     * @param bool $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
-     * This parameter is available since version 2.0.1.
-     * @return string the truncated string.
+     * @param string $string 要截取的字符串。
+     * @param int $count 从原始字符串中包含多少个单词到截取的字符串中。
+     * @param string $suffix 附加到截取字符串的末尾。
+     * @param bool $asHtml 是否将被截取的字符串视为 HTML 并保留适当的 HTML 标记。
+     * 这个参数在 2.0.1 版之后就可用了。
+     * @return string 截取的字符串。
      */
     public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
     {
@@ -143,11 +143,11 @@ class BaseStringHelper
     }
 
     /**
-     * Truncate a string while preserving the HTML.
+     * 在保留 HTML 的同时截取字符串。
      *
-     * @param string $string The string to truncate
+     * @param string $string 要截取的字符串
      * @param int $count
-     * @param string $suffix String to append to the end of the truncated string.
+     * @param string $suffix 将指定字符串附加到截取的字符串末尾。
      * @param string|bool $encoding
      * @return string
      * @since 2.0.1
@@ -205,13 +205,13 @@ class BaseStringHelper
     }
 
     /**
-     * Check if given string starts with specified substring.
-     * Binary and multibyte safe.
+     * 检查给定字符串是否以指定的子字符串开始。
+     * 二进制和多字节安全。
      *
-     * @param string $string Input string
-     * @param string $with Part to search inside the $string
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value.
-     * @return bool Returns true if first input starts with second input, false otherwise
+     * @param string $string 输入字符串
+     * @param string $with 部分用于在 $string 中搜索
+     * @param bool $caseSensitive 大小写敏感的搜索。默认是 true。当启用区分大小写时，$with 必须与字符串的开头完全匹配，才能获得一个真正的值。
+     * @return bool 如果第一个输入以第二个输入开始，则返回 true，否则返回 false
      */
     public static function startsWith($string, $with, $caseSensitive = true)
     {
@@ -227,13 +227,13 @@ class BaseStringHelper
     }
 
     /**
-     * Check if given string ends with specified substring.
-     * Binary and multibyte safe.
+     * 检查给定字符串是否以指定的子字符串结束。
+     * 二进制和多字节安全。
      *
-     * @param string $string Input string to check
-     * @param string $with Part to search inside of the $string.
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the ending of the string in order to get a true value.
-     * @return bool Returns true if first input ends with second input, false otherwise
+     * @param string $string 要检查的输入字符串
+     * @param string $with 部分用于搜索 $string 的内部。
+     * @param bool $caseSensitive 大小写敏感的搜索。默认是 true。当启用区分大小写时，$with 必须与字符串的结尾完全匹配，才能获得一个真正的值。
+     * @return bool 如果第一个输入以第二个输入结束，则返回 true，否则返回 false
      */
     public static function endsWith($string, $with, $caseSensitive = true)
     {
@@ -254,15 +254,15 @@ class BaseStringHelper
     }
 
     /**
-     * Explodes string into array, optionally trims values and skips empty ones.
+     * 将字符串分割为数组，可选地删除值并跳过空值。
      *
-     * @param string $string String to be exploded.
-     * @param string $delimiter Delimiter. Default is ','.
-     * @param mixed $trim Whether to trim each element. Can be:
-     *   - boolean - to trim normally;
-     *   - string - custom characters to trim. Will be passed as a second argument to `trim()` function.
-     *   - callable - will be called for each value instead of trim. Takes the only argument - value.
-     * @param bool $skipEmpty Whether to skip empty strings between delimiters. Default is false.
+     * @param string $string 要分割的字符串。
+     * @param string $delimiter 分隔符。默认设置是 ','。
+     * @param mixed $trim 是否清除每个元素。可以是：
+     *   - boolean - 正常清除；
+     *   - string - 指定字符串进行清除。将作为第二个参数传递给 `trim()` 函数。
+     *   - callable - 将调用每个值而不是 trim。给定指定的参数 - 值。
+     * @param bool $skipEmpty 是否跳过分隔符之间的空字符串。默认是 false。
      * @return array
      * @since 2.0.4
      */
@@ -290,7 +290,7 @@ class BaseStringHelper
     }
 
     /**
-     * Counts words in a string.
+     * 统计字符串中的单词。
      * @since 2.0.8
      *
      * @param string $string
@@ -302,8 +302,8 @@ class BaseStringHelper
     }
 
     /**
-     * Returns string representation of number value with replaced commas to dots, if decimal point
-     * of current locale is comma.
+     * 如果小数点，则返回数字值的字符串表示形式，
+     * 并将逗号替换为点。
      * @param int|float|string $value
      * @return string
      * @since 2.0.11
@@ -323,14 +323,14 @@ class BaseStringHelper
     }
 
     /**
-     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
+     * 将字符串编码为 "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)。
      *
-     * > Note: Base 64 padding `=` may be at the end of the returned string.
-     * > `=` is not transparent to URL encoding.
+     * > Note：Base 64 padding `=` 可能位于返回的字符串的末尾。
+     * > `=` 对 URL 编码不透明。
      *
      * @see https://tools.ietf.org/html/rfc4648#page-7
-     * @param string $input the string to encode.
-     * @return string encoded string.
+     * @param string $input 要编码的字符串。
+     * @return string 编码后的字符串。
      * @since 2.0.12
      */
     public static function base64UrlEncode($input)
@@ -339,11 +339,11 @@ class BaseStringHelper
     }
 
     /**
-     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
+     * 解码 "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)。
      *
      * @see https://tools.ietf.org/html/rfc4648#page-7
-     * @param string $input encoded string.
-     * @return string decoded string.
+     * @param string $input 编码字符串。
+     * @return string 解码后的字符。
      * @since 2.0.12
      */
     public static function base64UrlDecode($input)
@@ -352,11 +352,11 @@ class BaseStringHelper
     }
 
     /**
-     * Safely casts a float to string independent of the current locale.
+     * 安全地将 float 转换为字符串，与当前语言环境无关。
      *
-     * The decimal separator will always be `.`.
-     * @param float|int $number a floating point number or integer.
-     * @return string the string representation of the number.
+     * 小数分隔符将始终为 `.`。
+     * @param float|int $number 浮点数或整数。
+     * @return string 数字的字符串表示形式。
      * @since 2.0.13
      */
     public static function floatToString($number)
@@ -367,17 +367,17 @@ class BaseStringHelper
     }
 
     /**
-     * Checks if the passed string would match the given shell wildcard pattern.
-     * This function emulates [[fnmatch()]], which may be unavailable at certain environment, using PCRE.
-     * @param string $pattern the shell wildcard pattern.
-     * @param string $string the tested string.
-     * @param array $options options for matching. Valid options are:
+     * 检查传递的字符串是否与给定的 shell 通配符模式匹配。
+     * 此函数使用 PCRE 模拟 [[fnmatch()]]，这在某些环境中可能不可用。
+     * @param string $pattern shell 通配符模式。
+     * @param string $string 测试过的字符串。
+     * @param array $options 匹配选项。有效选项包括：
      *
-     * - caseSensitive: bool, whether pattern should be case sensitive. Defaults to `true`.
-     * - escape: bool, whether backslash escaping is enabled. Defaults to `true`.
-     * - filePath: bool, whether slashes in string only matches slashes in the given pattern. Defaults to `false`.
+     * - caseSensitive：bool，模式是否应区分大小写。默认是 `true`。
+     * - escape：bool，是否启用了反斜杠转义。默认是 `true`。
+     * - filePath：bool，字符串中的斜杠是否仅与给定模式中的斜杠匹配。默认是 `false`。
      *
-     * @return bool whether the string matches pattern or not.
+     * @return bool 字符串是否匹配模式。
      * @since 2.0.14
      */
     public static function matchWildcard($pattern, $string, $options = [])
@@ -420,10 +420,10 @@ class BaseStringHelper
     }
 
     /**
-     * This method provides a unicode-safe implementation of built-in PHP function `ucfirst()`.
+     * 这个方法提供了内置 PHP 函数 `ucfirst()` 的 unicode-safe 实现。
      *
-     * @param string $string the string to be proceeded
-     * @param string $encoding Optional, defaults to "UTF-8"
+     * @param string $string 提取的字符串
+     * @param string $encoding 可选项，默认是 "UTF-8"
      * @return string
      * @see http://php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
@@ -437,10 +437,10 @@ class BaseStringHelper
     }
 
     /**
-     * This method provides a unicode-safe implementation of built-in PHP function `ucwords()`.
+     * 这个方法提供了内置 PHP 函数 `ucwords()` 的 unicode-safe 实现。
      *
-     * @param string $string the string to be proceeded
-     * @param string $encoding Optional, defaults to "UTF-8"
+     * @param string $string 指定进行的字符串
+     * @param string $encoding 可选项，默认是 "UTF-8"
      * @see http://php.net/manual/en/function.ucwords.php
      * @return string
      */
