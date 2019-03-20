@@ -586,13 +586,17 @@
         return val1 === val2;
     };
 
+    /**
+     * Compares two objects
+     * @param obj1
+     * @param obj2
+     * @returns boolean
+     */
     var isObjectsEqual = function(obj1, obj2) {
         if (!(obj1 instanceof Object) || !(obj2 instanceof Object)) {
             return false;
         }
-        if (!(obj2 instanceof Object)) {
-            return false;
-        }
+
         var keys1 = Object.keys(obj1);
         var keys2 = Object.keys(obj2);
         if (keys1.length !== keys2.length) {
@@ -611,13 +615,17 @@
         return true;
     };
 
+    /**
+     * Compares two arrays
+     * @param arr1
+     * @param arr2
+     * @returns boolean
+     */
     var isArraysEqual = function(arr1, arr2) {
         if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
             return false;
         }
-        if (!Array.isArray(arr2)) {
-            return false;
-        }
+
         if (arr1.length !== arr2.length) {
             return false;
         }
