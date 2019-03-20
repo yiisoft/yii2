@@ -1,3 +1,5 @@
+> ⚠️ 3.0 branch in this repository is deprected. Yii 3.0 development takes place [in separate repositories](https://github.com/yiisoft/docs/blob/master/000-packages.md). Please do not use the branch in any projects.
+
 <p align="center">
     <a href="http://www.yiiframework.com/" target="_blank">
         <img src="https://www.yiiframework.com/files/logo/yii.png" width="400" alt="Yii Framework" />
