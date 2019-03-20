@@ -724,4 +724,21 @@ class RequestTest extends TestCase
         $this->assertSame(null, $request->getBodyParam('unexisting'));
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
+
+    /**
+     * @testWith    ["POST", "GET", "POST"]
+     *              ["POST", "OPTIONS", "POST"]
+     *              ["POST", "HEAD", "POST"]
+     *              ["POST", "DELETE", "DELETE"]
+     *              ["POST", "CUSTOM", "CUSTOM"]
+     */
+    public function testRequestMethodCanNotBeDowngraded($requestMethod, $requestOverrideMethod, $expectedMethod)
+    {
+        $request = new Request();
+
+        $_SERVER['REQUEST_METHOD'] = $requestMethod;
+        $_POST[$request->methodParam] = $requestOverrideMethod;
+
+        $this->assertSame($expectedMethod, $request->getMethod());
+    }
 }

@@ -52,7 +52,7 @@ class UploadedFile extends BaseObject
     public $size;
     /**
      * @var int an error code describing the status of this file uploading.
-     * @see http://www.php.net/manual/en/features.file-upload.errors.php
+     * @see https://secure.php.net/manual/en/features.file-upload.errors.php
      */
     public $error;
 

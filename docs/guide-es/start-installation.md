@@ -115,7 +115,7 @@ Puedes utilizar tu navegador para acceder a la aplicación instalada de Yii en l
 
 ```
 http://localhost:8080/.
-
+```
 
 ![Instalación Correcta de Yii](images/start-app-installed.png)
 
@@ -131,7 +131,7 @@ de PHP satisfaga los requerimientos de Yii. Esto puedes hacerlo usando cualquier
   ```
   
 Deberías configurar tu instalación de PHP para que satisfaga los requisitos mínimos de Yii. Lo que es más importante,
-debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](http://www.php.net/manual/es/pdo.installation.php)
+debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](https://secure.php.net/manual/es/pdo.installation.php)
 y el correspondiente driver de base de datos (como `pdo_mysql` para bases de datos MySQL), si tu aplicación lo necesitara.
 
 
@@ -187,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuración Recomendada de Nginx <span id="recommended-nginx-configuration"></span>
 
-Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](http://php.net/install.fpm).
+Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://secure.php.net/install.fpm).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
 `basic/web` y `mysite.test` con el hostname real a servir.
 

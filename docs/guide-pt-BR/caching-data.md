@@ -75,7 +75,7 @@ Por exemplo, você pode modificar a configuração acima para usar [[yii\caching
 
 Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
 
-* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](http://php.net/manual/en/book.apc.php). Esta opção pode ser
+* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](https://secure.php.net/manual/en/book.apc.php). Esta opção pode ser
   considerada a mais rápida ao se implementar o cache de uma aplicação densa e centralizada (por exemplo, um
   servidor, sem balanceadores de carga dedicados, etc.).
 * [[yii\caching\DbCache]]: usa uma tabela no banco de dados para armazenar os dados em cache. Para usar este cache
@@ -89,13 +89,13 @@ Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
   `Yii::$app->cache` possa ser `null`.
 * [[yii\caching\FileCache]]: usa arquivos para armazenar os dados em cache. Este é particularmente indicado 
   para armazenar grandes quantidades de dados como o conteúdo da página.
-* [[yii\caching\MemCache]]: usa o [memcache](http://php.net/manual/en/book.memcache.php) do PHP e as extensões
-  [memcached](http://php.net/manual/en/book.memcached.php). Esta opção pode ser considerada a mais rápida
+* [[yii\caching\MemCache]]: usa o [memcache](https://secure.php.net/manual/en/book.memcache.php) do PHP e as extensões
+  [memcached](https://secure.php.net/manual/en/book.memcached.php). Esta opção pode ser considerada a mais rápida
   ao se implementar o cache em aplicações distribuídas (ex., vários servidores, balanceadores de carga, etc.)
 * [[yii\redis\Cache]]: implementa um componente de cache baseado em armazenamento chave-valor 
   [Redis](http://redis.io/) (requer redis versão 2.6.12 ou mais recente).
 * [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([veja também](http://php.net/manual/en/book.wincache.php)).
+  ([veja também](https://secure.php.net/manual/en/book.wincache.php)).
 * [[yii\caching\XCache]] _(deprecated)_: usa a extensão PHP [XCache](http://xcache.lighttpd.net/).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: usa
   [Cache de Dados Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)

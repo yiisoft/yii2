@@ -92,6 +92,10 @@ class TargetTest extends TestCase
                 'C', 'C.C_a',
                 'D',
             ],
+            'maskVars' => [
+                'C.C_b',
+                'D.D_a'
+            ]
         ]);
         $GLOBALS['A'] = [
             'A_a' => 1,
@@ -105,7 +109,7 @@ class TargetTest extends TestCase
         ];
         $GLOBALS['C'] = [
             'C_a' => 1,
-            'C_b' => 1,
+            'C_b' => 'mySecret',
             'C_c' => 1,
         ];
         $GLOBALS['E'] = [
@@ -129,6 +133,8 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_a', $context);
         $this->assertNotContains('E_b', $context);
         $this->assertNotContains('E_c', $context);
+        $this->assertNotContains('mySecret', $context);
+        $this->assertContains('***', $context);
     }
 
     /**

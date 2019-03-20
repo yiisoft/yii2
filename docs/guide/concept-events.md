@@ -13,7 +13,7 @@ events, it should extend from [[yii\base\Component]], or from a child class.
 Event Handlers <span id="event-handlers"></span>
 --------------
 
-An event handler is a [PHP callback](http://www.php.net/manual/en/language.types.callable.php) that gets executed
+An event handler is a [PHP callback](https://secure.php.net/manual/en/language.types.callable.php) that gets executed
 when the event it is attached to is triggered. You can use any of the following callbacks:
 
 - a global PHP function specified as a string (without parentheses), e.g., `'trim'`;

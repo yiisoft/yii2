@@ -535,6 +535,25 @@ EOF;
 
         Yii::setAlias('@web', $originalAlias);
     }
+
+    public function testCustomFilePublishWithTimestamp()
+    {
+        $path = Yii::getAlias('@webroot');
+
+        $view = $this->getView();
+        $am = $view->assetManager;
+        // publising without timestamp
+        $result = $am->publish($path . '/data.txt');
+        $this->assertRegExp('/.*data.txt$/i', $result[1]);
+        unset($view, $am, $result);
+
+        $view = $this->getView();
+        $am = $view->assetManager;
+        // turn on timestamp appending
+        $am->appendTimestamp = true;
+        $result = $am->publish($path . '/data.txt');
+        $this->assertRegExp('/.*data.txt\?v=\d+$/i', $result[1]);
+    }
 }
 
 class TestSimpleAsset extends AssetBundle

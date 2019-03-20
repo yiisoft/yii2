@@ -149,7 +149,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](http://www.php.net/manual/en/intro.intl.php).
+> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://secure.php.net/manual/en/intro.intl.php).
 
 Vous pouvez utiliser, soit la forme raccourcie, soit la forme complète pour spécifier une valeur à remplacer avec un format :
 ```
@@ -582,7 +582,7 @@ Si [[yii\i18n\MissingTranslationEvent::translatedMessage]] est défini par le ge
 > Note: chacune des sources de messages gère ses traductions manquantes séparément. Si vous avez recours à plusieurs sources de messages et que vous voulez qu'elles gèrent les messages manquants de la même manière, vous devez assigner le gestionnaire d'événement correspondant à chacune d'entre-elles. 
 
 
-### Utilisation de la commande `message`<a name="message-command"></a>
+### Utilisation de la commande `message`<span id="message-command"></span>
 
 Les traductions peuvent être stockées dans des [[yii\i18n\PhpMessageSource|fichiers php]], des [[yii\i18n\GettextMessageSource|fichiers .po ]] ou dans une [[yii\i18n\DbMessageSource|bases de données]]. Reportez-vous aux classes spécifiques pour connaître les options supplémentaires. 
 
@@ -637,9 +637,9 @@ Reportez-vous à la section [Formatage des données](output-formatting.md) pour 
 
 ## Configuration de l'environnement PHP <span id="setup-environment"></span>
 
-Yii utilise l'[extension intl de PHP](http://php.net/manual/en/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
+Yii utilise l'[extension intl de PHP](https://secure.php.net/manual/en/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
 Les deux classes fournissent un mécanisme de remplacement lorsque l'extension `intl` n'est pas installée. Néanmoins, l'implémentation du mécanisme de remplacement ne fonctionne bien que quand la langue cible est l'anglais. C'est pourquoi, il est fortement recommandé d'installer `intl` quand c'est nécessaire.
-L'[extension intl de PHP](http://php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](http://site.icu-project.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
+L'[extension intl de PHP](https://secure.php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](http://site.icu-project.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
 
 Pour savoir quelle version d'ICU est utilisée par PHP, vous pouvez exécuter le script suivant, qui vous restitue la version de PHP et d'ICU en cours d'utilisation. 
 
@@ -652,4 +652,4 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 Il est également recommandé d'utiliser une version d'ICU supérieure ou égale à 48. Cela garantit que toutes les fonctionnalités décrites dans ce document sont utilisables. Par exemple, une version d'ICU inférieure à 49 ne prend pas en charge la valeur à remplacer `#` dans les règles de pluralisation. Reportez-vous à  <http://site.icu-project.org/download> pour obtenir une liste complète des versions d'ICU disponibles. Notez que le numérotage des versions a changé après la version 4.8  (p. ex., ICU 4.8, ICU 49, ICU 50, etc.)
 
-En outre, les informations dans la base de donnée des fuseaux horaires fournie par la bibliothèque ICU peuvent être surannées. Reportez-vous au [manuel d'ICU](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) pour les détails sur la manière de mettre la base de données des fuseaux horaires à jour. Bien que la base de données des fuseaux horaires d'ICU soit utilisée pour le formatage, celle de PHP peut aussi être d'actualité. Vous pouvez la mettre à jour en installant la dernière version du [paquet `timezonedb` de pecl](http://pecl.php.net/package/timezonedb).
+En outre, les informations dans la base de donnée des fuseaux horaires fournie par la bibliothèque ICU peuvent être surannées. Reportez-vous au [manuel d'ICU](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) pour les détails sur la manière de mettre la base de données des fuseaux horaires à jour. Bien que la base de données des fuseaux horaires d'ICU soit utilisée pour le formatage, celle de PHP peut aussi être d'actualité. Vous pouvez la mettre à jour en installant la dernière version du [paquet `timezonedb` de pecl](https://pecl.php.net/package/timezonedb).
