@@ -1349,7 +1349,7 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in bytes as a size in human readable form for example `12 KB`.
+     * Formats the value in bytes as a size in human readable form for example `12 kB`.
      *
      * This is the short form of [[asSize]].
      *
@@ -1393,7 +1393,7 @@ class Formatter extends Component
                 case 0:
                     return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
                 case 1:
-                    return Yii::t('yii', '{nFormatted} KB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} kB', $params, $this->locale);
                 case 2:
                     return Yii::t('yii', '{nFormatted} MB', $params, $this->locale);
                 case 3:

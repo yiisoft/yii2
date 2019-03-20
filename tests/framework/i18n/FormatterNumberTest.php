@@ -594,8 +594,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('999 B', $this->formatter->asShortSize(999));
         $this->assertSame('999 B', $this->formatter->asShortSize('999'));
         $this->assertSame('1.05 MB', $this->formatter->asShortSize(1024 * 1024));
-        $this->assertSame('1 KB', $this->formatter->asShortSize(1000));
-        $this->assertSame('1.02 KB', $this->formatter->asShortSize(1023));
+        $this->assertSame('1 kB', $this->formatter->asShortSize(1000));
+        $this->assertSame('1.02 kB', $this->formatter->asShortSize(1023));
         $this->assertNotEquals('3 PB', $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // string values
         $this->assertSame('28.41 GB', $this->formatter->asShortSize(28406984038));
@@ -632,8 +632,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('999 B', $this->formatter->asShortSize('999'));
         $this->assertSame('1.05 MB', $this->formatter->asShortSize(1024 * 1024));
         $this->assertSame('1.0486 MB', $this->formatter->asShortSize(1024 * 1024, 4));
-        $this->assertSame('1.00 KB', $this->formatter->asShortSize(1000));
-        $this->assertSame('1.02 KB', $this->formatter->asShortSize(1023));
+        $this->assertSame('1.00 kB', $this->formatter->asShortSize(1000));
+        $this->assertSame('1.02 kB', $this->formatter->asShortSize(1023));
         $this->assertNotEquals('3 PB', $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // string values
         $this->assertSame('28.41 GB', $this->formatter->asShortSize(28406984038));

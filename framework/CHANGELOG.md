@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.17 under development
 ------------------------
 
+- Bug #16158: Fix multiple select validation was trigged on other fields blur event (GHopperMSK)
+- Bug #16335: Fixed in `yii\filters\AccessRule::matchIP()` user IP validation with netmask in rule (omentes)
 - Bug #9438, #13740, #15037: Handle DB session callback custom fields before session closed (lubosdz)
 - Bug #16681: `ActiveField::inputOptions` were not used during some widgets rendering (GHopperMSK)
 - Bug #17133: Fixed aliases rendering during help generation for a console command (GHopperMSK)
