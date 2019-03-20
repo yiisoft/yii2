@@ -13,7 +13,7 @@ Yiiはイベントをサポートするために、 [[yii\base\Component]] と�
 イベント・ハンドラ <span id="event-handlers"></span>
 ------------------
 
-イベント・ハンドラとは、アタッチされたイベントがトリガされたときに実行される [PHP コールバック](http://www.php.net/manual/ja/language.types.callable.php)
+イベント・ハンドラとは、アタッチされたイベントがトリガされたときに実行される [PHP コールバック](https://secure.php.net/manual/ja/language.types.callable.php)
 です。次のコールバックのいずれも使用可能です:
 
 - 文字列で指定されたグローバル PHP 関数 (括弧を除く)、例えば `'trim'`。

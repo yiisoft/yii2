@@ -593,6 +593,52 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($positiveKey2, $messages);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17098
+     */
+    public function testMessageExtractActionWhenMessageUsingParamsReturnedFromMethodCalls()
+    {
+        $sourceFileContent = "
+            echo PHP_EOL, Yii::t('app', '1. Simple message');
+            echo PHP_EOL, Yii::t('app', '2. Message with simple param {val}', [
+                'val' => 'today',
+            ]);
+            echo PHP_EOL, Yii::t('app', '3. Message with param from function call {val}', [
+                'val' => date('Y-m-d'),
+            ]);
+            
+            // the next call creates the bug:
+            echo PHP_EOL, Yii::t('app', '4. Message with param from method call {val}', [
+                'val' => \Yii::\$app->formatter->asDecimal(23, 4),
+            ]);
+            
+            // after the bug:
+            echo PHP_EOL, Yii::t('app', '5. Simple message');
+            echo PHP_EOL, Yii::t('app', '6. Message with simple param {val}', [
+                'val' => 'today',
+            ]);
+            echo PHP_EOL, Yii::t('app', '7. Message with param from function call {val}', [
+                'val' => date('Y-m-d'),
+            ]);
+        ";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig(['translator' => ['Yii::t']]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages('app');
+
+        $this->assertEquals([
+            '1. Simple message' => '',
+            '2. Message with simple param {val}' => '',
+            '3. Message with param from function call {val}' => '',
+            '4. Message with param from method call {val}' => '',
+            '5. Simple message' => '',
+            '6. Message with simple param {val}' => '',
+            '7. Message with param from function call {val}' => '',
+        ], $messages);
+    }
+
     public function testMessagesSorting()
     {
         $category = 'test_order_category';

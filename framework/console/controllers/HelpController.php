@@ -532,7 +532,7 @@ class HelpController extends Controller
     protected function formatOptionAliases($controller, $option)
     {
         foreach ($controller->optionAliases() as $name => $value) {
-            if ($value === $option) {
+            if (Inflector::camel2id($value, '-', true) === $option) {
                 return ', -' . $name;
             }
         }

@@ -124,7 +124,7 @@ como especificado na configuração `session.cache_limiter` do PHP.INI. Estes ca
 desabilitar o cache que você deseja do `HttpCache`. Para prevenir-se deste problema, por padrão, o `HttpCache`
 desabilitará o envio destes cabeçalhos automaticamente. Se você quiser modificar estes comportamentos, deve
 configurar a propriedade [[yii\filters\HttpCache::sessionCacheLimiter]]. A propriedade pode receber um valor string, como: `public`, `private`, `private_no_expire` e `nocache`. Por favor, consulte o manual do
-PHP sobre [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+PHP sobre [session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php)
 para mais explicações sobre estes valores.
 
 

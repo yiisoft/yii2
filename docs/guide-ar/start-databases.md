@@ -60,7 +60,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 ## <div dir="rtl">إعدادات الإتصال الخاصة بقواعد البيانات - Configuring a DB Connection</div> <span id="configuring-db-connection"></span>
 
 <p dir="rtl">
-    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="http://www.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
+    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="https://secure.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
 </p>
 
 <blockquote class="note"><p dir="rtl">
@@ -68,7 +68,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
     كما يمكنك تفعيل ال driver المطلوب عن طريق حذف الفاصلة المنقوطة قبل ال driver المقصود مثل: 
 <code>extension=php_pdo_mysql.dll</code>
     ويمكنك الإطلاع على المزيد من هنا: 
-<a href="http://php.net/manual/en/pdo.installation.php">pdo installation</a>    
+<a href="https://secure.php.net/manual/en/pdo.installation.php">pdo installation</a>    
 </p></blockquote>
 
 <p dir="rtl">

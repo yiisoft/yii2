@@ -438,8 +438,8 @@ Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wyw
 > ma tą samą wartość, ale jest innego typu. Taka sytuacja zdarza się często, kiedy model jest aktualizowany danymi pochodzącymi z formularza 
 > HTML, gdzie każda wartość jest reprezentowana jako string.
 > Aby upewnić się, że wartości będą odpowiednich typów, np. integer, możesz zaaplikować [filtr walidacji](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](http://php.net/manual/en/function.intval.php), 
-> [floatval()](http://php.net/manual/en/function.floatval.php), [boolval](http://php.net/manual/en/function.boolval.php), itp...
+> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](https://secure.php.net/manual/en/function.intval.php), 
+> [floatval()](https://secure.php.net/manual/en/function.floatval.php), [boolval](https://secure.php.net/manual/en/function.boolval.php), itp...
 
 
 ### Domyślne wartości atrybutów <span id="default-attribute-values"></span>
@@ -613,7 +613,7 @@ try {
 ```
 
 > Note: w powyższym kodzie znajdują się dwa bloki catch dla kompatybilności 
-> z PHP 5.x i PHP 7.x. `\Exception` implementuje [interfejs `\Throwable`](http://php.net/manual/en/class.throwable.php)
+> z PHP 5.x i PHP 7.x. `\Exception` implementuje [interfejs `\Throwable`](https://secure.php.net/manual/en/class.throwable.php)
 > od PHP 7.0, zatem można pominąć część z `\Exception`, jeśli Twoja aplikacja używa tylko PHP 7.0 lub wyższego.
 
 Drugi sposób polega na utworzeniu listy operacji bazodanowych, które wymagają transakcji za pomocą metody [[yii\db\ActiveRecord::transactions()|transactions()]]. 
