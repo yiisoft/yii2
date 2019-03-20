@@ -370,7 +370,7 @@ trait QueryTrait
             foreach ($columns as $column => $value) {
                 if (is_integer($value)) {
                     $result[$column] = $value;
-                } else if (preg_match('#(asc|desc)#i', $value, $matches)) {
+                } elseif (preg_match('#(asc|desc)#i', $value, $matches)) {
                     $result[$column] = (strcasecmp($matches[0], 'desc')) ? SORT_ASC : SORT_DESC;
                 } else {
                     $result[$column] = SORT_ASC;
