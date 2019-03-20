@@ -23,6 +23,7 @@ class ControllerTest extends TestCase
         $this->mockApplication();
         Yii::$app->controllerMap = [
             'fake' => 'yiiunit\framework\console\FakeController',
+            'fake_witout_output' => 'yiiunit\framework\console\FakeHelpControllerWithoutOutput',
             'help' => 'yiiunit\framework\console\FakeHelpController',
         ];
     }
@@ -127,6 +128,10 @@ class ControllerTest extends TestCase
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
+
+        $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
+        $helpController->actionIndex('fake/aksi1');
+        $this->assertContains('--test-array, -ta', $helpController->outputString);
     }
 
     /**

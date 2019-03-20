@@ -13,7 +13,7 @@ Gestor de Eventos <span id="event-handlers"></span>
 -----------------
 
 Un gestor de eventos es una
-[llamada de retorno PHP (PHP callback)](http://php.net/manual/es/language.types.callable.php) que se ejecuta cuando se
+[llamada de retorno PHP (PHP callback)](https://secure.php.net/manual/es/language.types.callable.php) que se ejecuta cuando se
 lanza el evento al que corresponde. Se puede usar cualquier llamada de retorno de las enumeradas a continuación:
 
 - una función de PHP global especificada como una cadena de texto (sin paréntesis), ej. `'trim'`;

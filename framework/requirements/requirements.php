@@ -47,7 +47,7 @@ return array(
         'name' => 'MBString extension',
         'mandatory' => true,
         'condition' => extension_loaded('mbstring'),
-        'by' => '<a href="http://www.php.net/manual/en/book.mbstring.php">Multibyte string</a> processing',
+        'by' => '<a href="https://secure.php.net/manual/en/book.mbstring.php">Multibyte string</a> processing',
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
@@ -61,7 +61,7 @@ return array(
         'name' => 'Intl extension',
         'mandatory' => false,
         'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
-        'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+        'by' => '<a href="https://secure.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use advanced parameters formatting
         in <code>Yii::t()</code>, non-latin languages with <code>Inflector::slug()</code>,
         <abbr title="Internationalized domain names">IDN</abbr>-feature of
@@ -71,7 +71,7 @@ return array(
         'name' => 'ICU version',
         'mandatory' => false,
         'condition' => defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '49', '>='),
-        'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+        'by' => '<a href="https://secure.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'ICU 49.0 or higher is required when you want to use <code>#</code> placeholder in plural rules
         (for example, plural in
         <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
@@ -82,7 +82,7 @@ return array(
         'name' => 'ICU Data version',
         'mandatory' => false,
         'condition' => defined('INTL_ICU_DATA_VERSION') && version_compare(INTL_ICU_DATA_VERSION, '49.1', '>='),
-        'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+        'by' => '<a href="https://secure.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'ICU Data 49.1 or higher is required when you want to use <code>#</code> placeholder in plural rules
         (for example, plural in
         <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
@@ -93,14 +93,14 @@ return array(
         'name' => 'Fileinfo extension',
         'mandatory' => false,
         'condition' => extension_loaded('fileinfo'),
-        'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
+        'by' => '<a href="https://secure.php.net/manual/en/book.fileinfo.php">File Information</a>',
         'memo' => 'Required for files upload to detect correct file mime-types.'
     ),
     array(
         'name' => 'DOM extension',
         'mandatory' => false,
         'condition' => extension_loaded('dom'),
-        'by' => '<a href="http://php.net/manual/en/book.dom.php">Document Object Model</a>',
+        'by' => '<a href="https://secure.php.net/manual/en/book.dom.php">Document Object Model</a>',
         'memo' => 'Required for REST API to send XML responses via <code>yii\web\XmlResponseFormatter</code>.'
     ),
     array(

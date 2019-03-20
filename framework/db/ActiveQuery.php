@@ -170,16 +170,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             } elseif (is_array($this->via)) {
                 // via relation
                 /* @var $viaQuery ActiveQuery */
-                list($viaName, $viaQuery) = $this->via;
+                list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
-                    if ($this->primaryModel->isRelationPopulated($viaName)) {
+                    if ($viaCallableUsed) {
+                        $viaModels = $viaQuery->all();
+                    } elseif ($this->primaryModel->isRelationPopulated($viaName)) {
                         $viaModels = $this->primaryModel->$viaName;
                     } else {
                         $viaModels = $viaQuery->all();
                         $this->primaryModel->populateRelation($viaName, $viaModels);
                     }
                 } else {
-                    if ($this->primaryModel->isRelationPopulated($viaName)) {
+                    if ($viaCallableUsed) {
+                        $model = $viaQuery->one();
+                    } elseif ($this->primaryModel->isRelationPopulated($viaName)) {
                         $model = $this->primaryModel->$viaName;
                     } else {
                         $model = $viaQuery->one();
@@ -767,12 +771,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the query object itself
+     * @throws InvalidConfigException when query is not initialized properly
      * @see via()
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $modelClass = $this->primaryModel !== null ? get_class($this->primaryModel) : __CLASS__;
-
+        $modelClass = $this->primaryModel ? get_class($this->primaryModel) : $this->modelClass;
         $relation = new self($modelClass, [
             'from' => [$tableName],
             'link' => $link,

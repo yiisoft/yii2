@@ -74,7 +74,7 @@ trait ActiveRelationTrait
         if (is_object($this->via)) {
             $this->via = clone $this->via;
         } elseif (is_array($this->via)) {
-            $this->via = [$this->via[0], clone $this->via[1]];
+            $this->via = [$this->via[0], clone $this->via[1], $this->via[2]];
         }
     }
 
@@ -105,7 +105,8 @@ trait ActiveRelationTrait
     public function via($relationName, callable $callable = null)
     {
         $relation = $this->primaryModel->getRelation($relationName);
-        $this->via = [$relationName, $relation];
+        $callableUsed = $callable !== null;
+        $this->via = [$relationName, $relation, $callableUsed];
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
@@ -551,7 +552,23 @@ trait ActiveRelationTrait
                 }
             }
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+
+        if (!empty($values)) {
+            $scalarValues = [];
+            $nonScalarValues = [];
+            foreach ($values as $value) {
+                if (is_scalar($value)) {
+                    $scalarValues[] = $value;
+                } else {
+                    $nonScalarValues[] = $value;
+                }
+            }
+
+            $scalarValues = array_unique($scalarValues);
+            $values = array_merge($scalarValues, $nonScalarValues);
+        }
+
+        $this->andWhere(['in', $attributes, $values]);
     }
 
     /**

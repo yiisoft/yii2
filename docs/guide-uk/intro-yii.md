@@ -52,5 +52,5 @@ Yii 2.0 потребує PHP 5.4.0 та вище. Щоб дізнатися ви
 який поставляється із кожним релізом фреймворку.
 
 Для розробки на Yii необхідне загальне розуміння ООП, оскільки фреймворк повністю слідує цій парадигмі.
-Також слід вивчити такі сучасні можливості PHP як [простори імен](http://www.php.net/manual/en/language.namespaces.php)
-і [трейти](http://www.php.net/manual/en/language.oop5.traits.php).
+Також слід вивчити такі сучасні можливості PHP як [простори імен](https://secure.php.net/manual/en/language.namespaces.php)
+і [трейти](https://secure.php.net/manual/en/language.oop5.traits.php).

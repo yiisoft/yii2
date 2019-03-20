@@ -122,7 +122,7 @@ php requirements.php
 
 Для корректной работы фреймворка вам необходима установка PHP, соответствующая его минимальным требованиям. Основное
 требование — PHP версии 5.4 и выше. Если ваше приложение работает с базой данных, необходимо установить
-[расширение PHP PDO](http://www.php.net/manual/ru/pdo.installation.php) и соответствующий драйвер 
+[расширение PHP PDO](https://secure.php.net/manual/ru/pdo.installation.php) и соответствующий драйвер 
 (например, `pdo_mysql` для MySQL).
 
 
@@ -174,7 +174,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендуемые настройки Nginx <span id="recommended-nginx-configuration"></span>
 
-PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
+PHP должен быть установлен как [FPM SAPI](https://secure.php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
 `mysite.test` на ваше имя хоста.
 

@@ -26,7 +26,7 @@
     في البداية، عليك إنشاء قاعدة بيانات تسمى ب <code>yii2basic</code>، والتي ستستخدم لجلب البيانات الخاصة بالتطبيق، ويمكنك إستخدام أي من ال SQLite, MySql, PostgreSQL, MSSQL or Oracle database, ال Yii بشكل افتراضي بدعم العديد من قواعد البيانات والتي يمكنك إستخدامها مباشرة في التطبيق الخاص بك، ولتبسيط الأمور، ال MySql هي التي سيتم إستخدامها في في هذا الشرح. 
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: إذا كنت ترغب بالحصول على خيارات متقدمة  مثل دعم ال <code>JSON</code> الموجود داخل MariaDB، فيمكنك من إستخدام أحد ال Extension المذكوره بالأسفل للقيام بهذه المهمة بدلا من الإستغناء عن ال MySql، فإستخدام MariaDB بدلا عن ال MySql لم يعد صحيحا تماما. 
 </p></blockquote>
 
@@ -60,15 +60,15 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 ## <div dir="rtl">إعدادات الإتصال الخاصة بقواعد البيانات - Configuring a DB Connection</div> <span id="configuring-db-connection"></span>
 
 <p dir="rtl">
-    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="http://www.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
+    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="https://secure.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
    ملاحظة: يمكنك تقعيل ال PDO مباشرة من خلال الدخول الى php.ini ومن ثم حذف الفاصلة المنقوطة قبل السطر التالي: <code>extension=php_pdo.dll</code>
     كما يمكنك تفعيل ال driver المطلوب عن طريق حذف الفاصلة المنقوطة قبل ال driver المقصود مثل: 
 <code>extension=php_pdo_mysql.dll</code>
     ويمكنك الإطلاع على المزيد من هنا: 
-<a href="http://php.net/manual/en/pdo.installation.php">pdo installation</a>    
+<a href="https://secure.php.net/manual/en/pdo.installation.php">pdo installation</a>    
 </p></blockquote>
 
 <p dir="rtl">
@@ -97,7 +97,7 @@ return [
     <code>Yii::$app->db</code>
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: سيتم تضمين ملف ال <code>config/db.php</code> من خلال  ال main application configuration والذي يتمثل بالملف <code>config/web.php</code>، والذي يقوم بدوره بتحديد كيف يمكن تهيئة ال instance الخاص <a href="../guide/concept-configurations.md">بالتطبيق</a>، لمزيد من المعلومات، يرجى الإطلاع على قسم ال <a href="../guide/concept-configurations.md">Configurations</a>.
 </p></blockquote>
 
@@ -133,7 +133,7 @@ class Country extends ActiveRecord
     يرث ال <code>Country</code> Class ال [[yii\db\ActiveRecord]]، ولذلك، أنت لست بحاجة لكتابة أي شيفرة برمجية بداخله، فقط الشيفرة التي تشاهدها بالأعلى. سيقوم ال Yii بشكل تلقائي بالحصول على إسم الجدول في قاعدة البيانات من خلال إسم ال Class. 
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: إذا لم يكن من الممكن إجراء مطابقة مباشرة بين اسم ال class واسم الجدول، فيمكنك تجاوز هذه المشكلة من خلال إستخدام الدالة  [[yii\db\ActiveRecord::tableName()]] ، والتي ستقوم بعمل override على اسم الجدول. 
 </p></blockquote>
 
@@ -158,7 +158,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: يعتبر ال Active Record وسيلة قوية للوصول إلى بيانات قاعدة البيانات والتعامل معها بطريقة ال object oriented.
     ستجد معلومات أكثر تفصيلاً في الجزء الخاص بال <a href="../guide/db-active-record.md">Active Record</a>. بالإضافة الى ذلك، يمكنك التفاعل مباشرة مع قاعدة البيانات باستخدام lower-level data accessing والتي تسمى ب <a href="../guide/db-dao.md">Database Access Objects</a>.
 </p></blockquote>

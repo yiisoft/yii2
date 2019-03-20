@@ -16,7 +16,7 @@ use yii\helpers\Url;
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
  * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
- * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
+ * The name is the [fully qualified class name](https://secure.php.net/manual/en/language.namespaces.rules.php)
  * of the class representing it.
  *
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
