@@ -368,7 +368,7 @@ trait QueryTrait
             return [$columns];
         } elseif (is_array($columns)) {
             foreach ($columns as $column => $value) {
-                if (preg_match('#(asc|desc)#i', $value, $matches)) {
+                if (preg_match('#\b(asc|desc)\b#i', $value, $matches)) {
                     $result[$column] = strcasecmp($matches[0], 'desc') ? SORT_ASC : SORT_DESC;
                 } else {
                     $result[$column] = $value == SORT_DESC ? $value : SORT_ASC;
