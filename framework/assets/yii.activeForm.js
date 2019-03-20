@@ -587,7 +587,7 @@
     };
 
     var isObjectsEqual = function(obj1, obj2) {
-        if (!(obj1 instanceof Object)) {
+        if (!(obj1 instanceof Object) || !(obj2 instanceof Object)) {
             return false;
         }
         if (!(obj2 instanceof Object)) {
@@ -612,7 +612,7 @@
     };
 
     var isArraysEqual = function(arr1, arr2) {
-        if (!Array.isArray(arr1)) {
+        if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
             return false;
         }
         if (!Array.isArray(arr2)) {
