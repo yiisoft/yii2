@@ -363,14 +363,23 @@ trait QueryTrait
      */
     protected function normalizeOrderBy($columns)
     {
+        $result = [];
         if ($columns instanceof ExpressionInterface) {
             return [$columns];
         } elseif (is_array($columns)) {
-            return $columns;
+            foreach ($columns as $column => $value) {
+                if (is_integer($value)) {
+                    $result[$column] = $value;
+                } else if (preg_match('#(asc|desc)#i', $value, $matches)) {
+                    $result[$column] = (strcasecmp($matches[0], 'desc')) ? SORT_ASC : SORT_DESC;
+                } else {
+                    $result[$column] = SORT_ASC;
+                }
+            }
+            return $result;
         }
 
         $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-        $result = [];
         foreach ($columns as $column) {
             if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
                 $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
