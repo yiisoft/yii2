@@ -587,7 +587,7 @@
     };
 
     var isObjectsEqual = function(obj1, obj2) {
-        if (!(obj1 instanceof Object)) {
+        if (!(obj1 instanceof Object) || !(obj2 instanceof Object)) {
             return false;
         }
         if (!(obj2 instanceof Object)) {
