@@ -356,7 +356,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 このプロパティは、PHP ランタイムのデフォルト・タイム・ゾーンを設定する代替手段として提供されています。
-このプロパティを構成することによって、本質的には PHP 関数 [date_default_timezone_set()](http://php.net/manual/ja/function.date-default-timezone-set.php) を呼び出すことになります。
+このプロパティを構成することによって、本質的には PHP 関数 [date_default_timezone_set()](https://secure.php.net/manual/ja/function.date-default-timezone-set.php) を呼び出すことになります。
 例えば、
 
 ```php
@@ -365,6 +365,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 ]
 ```
 
+タイム・ゾーンを設定することの意味合いについては、[日付のフォーマッティングのセクション](output-formatting.md#time-zones) で詳細を参照して下さい。
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 

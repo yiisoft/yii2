@@ -103,7 +103,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 Yii はさまざまなキャッシュ・ストレージをサポートしています。以下がその概要です:
 
-* [[yii\caching\ApcCache]]: PHP の [APC](http://php.net/manual/ja/book.apc.php) 拡張モジュールを使用します。
+* [[yii\caching\ApcCache]]: PHP の [APC](https://secure.php.net/manual/ja/book.apc.php) 拡張モジュールを使用します。
   集中型の重厚なアプリケーションのキャッシュを扱うときには最速の一つとして考えることができます
   (例えば、サーバが一台で、専用のロード・バランサを持っていない、などの場合)。
 * [[yii\caching\DbCache]]: キャッシュされたデータを格納するためにデータベースのテーブルを使用します。
@@ -120,14 +120,14 @@ Yii はさまざまなキャッシュ・ストレージをサポートしてい�
   データを取得するために同じコード `Yii::$app->cache->get($key)` を使用できます。
 * [[yii\caching\FileCache]]: キャッシュされたデータを保存するために通常のファイルを使用します。
   これはページ・コンテントなど大きなかたまりのデータに特に適しています。
-* [[yii\caching\MemCache]]: PHP の [Memcache](http://php.net/manual/ja/book.memcache.php) と
-  [Memcached](http://php.net/manual/ja/book.memcached.php) 拡張モジュールを使用します。
+* [[yii\caching\MemCache]]: PHP の [Memcache](https://secure.php.net/manual/ja/book.memcache.php) と
+  [Memcached](https://secure.php.net/manual/ja/book.memcached.php) 拡張モジュールを使用します。
   分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます
   (例えば、複数台のサーバで、ロード・バランサがある、などの場合) 。
 * [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュ・コンポーネントを実装しています。
   (Redis の バージョン 2.6.12 以降が必要とされます) 。
 * [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) エクステンションを使用します。
-  ([参照リンク](http://php.net/manual/ja/book.wincache.php))
+  ([参照リンク](https://secure.php.net/manual/ja/book.wincache.php))
 * [[yii\caching\XCache]] _(非推奨)_: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
 * [[yii\caching\ZendDataCache]] _(非推奨)_:
   キャッシュ・メディアとして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
@@ -427,6 +427,7 @@ $result = $db->cache(function ($db) {
  - `yii cache/flush cache1 cache2`: キャッシュ・コンポーネント `cache1` と `cache2` をフラッシュします
   (複数のコンポーネント名をスペースで区切って渡すことが出来ます)
  - `yii cache/flush-all`: アプリケーションの全てのキャッシュ・コンポーネントをフラッシュします。
+- `yii cache/flush-schema db`: 指定された DB 接続に対する DB スキーマ・キャッシュをクリアします。
 
 > Info: デフォルトでは、コンソール・アプリケーションは独立した構成情報ファイルを使用します。
 正しい結果を得るためには、ウェブとコンソールのアプリケーション構成で同じキャッシュ・コンポーネントを使用していることを確認してください。

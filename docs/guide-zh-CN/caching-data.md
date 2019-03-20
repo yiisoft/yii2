@@ -23,9 +23,9 @@ if ($data === false) {
 // 这儿 $data 可以使用了。
 ```
 
-从2.0.11版本开始, [缓存组件](#cache-components) 
-提供了[[yii\caching\Cache::getOrSet()|getOrSet()]] 方法来简化数据的取回、计算和存储。
-下面的代码逻辑和上一个例子是完全一样的:
+从 2.0.11 版本开始, [缓存组件](#cache-components) 
+提供了 [[yii\caching\Cache::getOrSet()|getOrSet()]] 方法来简化数据的取回、计算和存储。
+下面的代码逻辑和上一个例子是完全一样的：
 
 ```php
 $data = $cache->getOrSet($key, function () {
@@ -33,10 +33,10 @@ $data = $cache->getOrSet($key, function () {
 });
 ```
 
-当缓存中有关联$key的数据时，将返回这个缓存的值。
+当缓存中有关联 $key 的数据时，将返回这个缓存的值。
 否则就执行匿名函数来计算出将要缓存的数据并返回它。
 
-如果匿名函数需要作用域外的数据时，可以使用`use`语句把这些数据传递到匿名函数中。
+如果匿名函数需要作用域外的数据时，可以使用 `use` 语句把这些数据传递到匿名函数中。
 例如：
 
 ```php
@@ -80,11 +80,11 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 ],
 ```
 
-然后就可以通过  `Yii::$app->cache` 访问上面的缓存组件了。
+然后就可以通过 `Yii::$app->cache` 访问上面的缓存组件了。
 
 由于所有缓存组件都支持同样的一系列 API ，并不需要修改使用缓存的业务代码
 就能直接替换为其他底层缓存组件，只需在应用配置中重新配置一下就可以。
-例如，你可以将上述配置修改为使用 [[yii\caching\ApcCache|APC cache]]:
+例如，你可以将上述配置修改为使用 [[yii\caching\ApcCache|APC cache]]：
 
 
 ```php
@@ -103,7 +103,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 Yii 支持一系列缓存存储器，概况如下：
 
-* [[yii\caching\ApcCache]]：使用 PHP [APC](http://php.net/manual/en/book.apc.php) 扩展。
+* [[yii\caching\ApcCache]]：使用 PHP [APC](https://secure.php.net/manual/en/book.apc.php) 扩展。
   这个选项可以认为是集中式应用程序环境中
  （例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
 * [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，
@@ -120,14 +120,14 @@ Yii 支持一系列缓存存储器，概况如下：
   `Yii::$app->cache` 可能是 `null`。
 * [[yii\caching\FileCache]]：使用标准文件存储缓存数据。
   这个特别适用于缓存大块数据，例如一个整页的内容。
-* [[yii\caching\MemCache]]：使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 
-  和 [memcached](http://php.net/manual/en/book.memcached.php) 扩展。
+* [[yii\caching\MemCache]]：使用 PHP [memcache](https://secure.php.net/manual/en/book.memcache.php) 
+  和 [memcached](https://secure.php.net/manual/en/book.memcached.php) 扩展。
   这个选项被看作分布式应用环境中（例如：多台服务器，有负载均衡等）
   最快的缓存方案。
 * [[yii\redis\Cache]]：实现了一个基于 [Redis](http://redis.io/) 键值对存储器的缓存组件
  （需要 redis 2.6.12 及以上版本的支持 ）。
 * [[yii\caching\WinCache]]：使用 PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
- （[另可参考](http://php.net/manual/en/book.wincache.php)）扩展.
+ （[另可参考](https://secure.php.net/manual/en/book.wincache.php)）扩展.
 * [[yii\caching\XCache]]：使用 PHP [XCache](http://xcache.lighttpd.net/)扩展。
 * [[yii\caching\ZendDataCache]]：使用 
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend- server.htm#data_cache_component.htm) 
@@ -420,14 +420,15 @@ $result = $db->cache(function ($db) {
 
 ### 缓存冲刷 <span id="cache-flushing">
 
-当你想让所有的缓存数据失效时，可以调用[[yii\caching\Cache::flush()]]。
+当你想让所有的缓存数据失效时，可以调用 [[yii\caching\Cache::flush()]]。
 
-冲刷缓存数据，你还可以从控制台调用`yii cache/flush`。
- - `yii cache`: 列出应用中可用的缓存组件
- - `yii cache/flush cache1 cache2`: 冲刷缓存组件`cache1`, `cache2` 
+冲刷缓存数据，你还可以从控制台调用 `yii cache/flush`。
+ - `yii cache`：列出应用中可用的缓存组件
+ - `yii cache/flush cache1 cache2`：刷新缓存组件`cache1`，`cache2` 
  (可以传递多个用空格分开的缓存组件）
- - `yii cache/flush-all`: 冲刷应用中所有的缓存组件
+ - `yii cache/flush-all`：刷新应用中所有的缓存组件
+ - `yii cache/flush-schema db`：清除给定连接组件的数据库表结构缓存
 
 > Info: 默认情况下，控制台应用使用独立的配置文件。
-所以，为了上述命令发挥作用，请确保Web应用和控制台应用配置相同的缓存组件。
+所以，为了上述命令发挥作用，请确保 Web 应用和控制台应用配置相同的缓存组件。
 

@@ -43,8 +43,8 @@ echo $model->name;
 ```
 
 Você também pode acessar os atributos como elementos de um array, graças ao suporte 
-de [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) e 
-[ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) pelo 
+de [ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) e 
+[ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php) pelo 
 [[yii\base\Model]]:
 
 ```php

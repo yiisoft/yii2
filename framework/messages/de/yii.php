@@ -78,7 +78,7 @@ return [
     '{attribute} contains wrong subnet mask.' => '{attribute} enthält ungültige Subnetz-Maske.',
     '{attribute} is invalid.' => '{attribute} ist ungültig.',
     '{attribute} is not a valid URL.' => '{attribute} ist keine gültige URL.',
-    '{attribute} is not a valid email address.' => '{attribute} ist keine gültige Emailadresse.',
+    '{attribute} is not a valid email address.' => '{attribute} ist keine gültige E-Mail-Adresse.',
     '{attribute} is not in the allowed range.' => '{attribute} ist außerhalb des gültigen Bereichs.',
     '{attribute} must be "{requiredValue}".' => '{attribute} muss den Wert {requiredValue} haben.',
     '{attribute} must be a number.' => '{attribute} muss eine Zahl sein.',

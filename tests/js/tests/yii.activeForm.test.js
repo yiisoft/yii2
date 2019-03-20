@@ -78,6 +78,32 @@ describe('yii.activeForm', function () {
                 assert.isTrue(afterValidateSpy.calledOnce);
             });
         });
+        
+        describe('with disabled fields', function () {
+            var inputTypes = {
+                test_radio: 'radioList',
+                test_checkbox: 'checkboxList',
+                test_text: 'text input'
+            };
+
+            for (var key in inputTypes) {
+                if (inputTypes.hasOwnProperty(key)) {
+                    (function () {
+                        var inputId = key;
+                        it(inputTypes[key] + ' disabled field', function () {
+                            $activeForm = $('#w1');
+                            $activeForm.yiiActiveForm({
+                                id: inputId,
+                                input: '#' + inputId
+                            });
+                            $activeForm.yiiActiveForm('validate');
+
+                            assert.isFalse($activeForm.data('yiiActiveForm').validated);
+                        });
+                    })();
+                }
+            }
+        });
     });
 
     describe('resetForm method', function () {

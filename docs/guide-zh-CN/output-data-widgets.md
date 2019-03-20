@@ -7,7 +7,7 @@ Yii提供了一套数据小部件 [widgets](structure-widgets.md) ，这些小�
 排序和过滤功能的一个列表或者表格。
 
 
-DetailView <a name="detail-view"></a>
+DetailView <span id="detail-view"></span>
 ----------
 
 [[yii\widgets\DetailView|DetailView]] 小部件显示的是单一 [[yii\widgets\DetailView::$model|model]] 数据的详情。
@@ -24,18 +24,42 @@ DetailView使用 [[yii\widgets\DetailView::$attributes|$attributes]] 属性来�
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title attribute (in plain text)
-        'description:html',    // description attribute formatted as HTML
-        [                      // the owner name of the model
+        'title',                                           // title attribute (in plain text)
+        'description:html',                                // description attribute formatted as HTML
+        [                                                  // the owner name of the model
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
         ],
-        'created_at:datetime', // creation date formatted as datetime
+        'created_at:datetime',                             // creation date formatted as datetime
     ],
 ]);
 ```
 
-ListView <a name="list-view"></a>
+请记住，与处理一组模型的 [[yii\widgets\GridView|GridView]] 不同，
+[[yii\widgets\DetailView|DetailView]] 只处理一个。
+因为 `$model` 是唯一一个用于显示的模型，并且可以作为变量在视图中使用。
+
+但是有些情况下可以使闭包有用。
+例如指定了 `visible`，并且你不想让`value` 的结果为 `false`：
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
+ListView <span id="list-view"></span>
 --------
 
 [[yii\widgets\ListView|ListView]] 小部件用于显示数据提供者 [data provider](output-data-providers.md) 提供的数据。
@@ -100,7 +124,7 @@ echo ListView::widget([
 在视图中，上述这些附加数据也是可以作为变量来使用的。
 
 
-GridView <a name="grid-view"></a>
+GridView <span id="grid-view"></span>
 --------
 
 数据网格或者说 GridView 小部件是Yii中最强大的部件之一。如果你需要快速建立系统的管理后台，
@@ -159,7 +183,7 @@ echo GridView::widget([
 ```
 
 请注意，假如配置中没有指定 [[yii\grid\GridView::columns|columns]] 属性，
-那么Yii会试图显示数据提供者的模型中所有可能的列。
+那么 Yii 会试图显示数据提供者的模型中所有可能的列。
 
 
 ### 列类
@@ -183,7 +207,7 @@ echo GridView::widget([
 
 - [[yii\grid\Column::header|header]] 允许为头部行设置内容。
 - [[yii\grid\Column::footer|footer]] 允许为尾部行设置内容。
-- [[yii\grid\Column::visible|visible]] 定义某个列是否可见
+- [[yii\grid\Column::visible|visible]] 定义某个列是否可见。
 - [[yii\grid\Column::content|content]] 允许你传递一个有效的PHP回调来为一行返回数据，格式如下：
 
   ```php
@@ -219,19 +243,32 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // shortcut format
+        [
+            'label' => 'Education',
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
-]); 
+]);
 ```
 
-在上面的代码中，`text` 对应于 [[\yii\i18n\Formatter::asText()]]。列的值作为第一个参数传递。
+在上述代码中，`text` 对应于 [[\yii\i18n\Formatter::asText()]]。列的值作为第一个参数传递。
 在第二列的定义中，`date` 对应于 [[\yii\i18n\Formatter::asDate()]]。
-同样地，列值也是通过第一个参数传递的，而 'php:Y-m-d' 用作第二个参数的值。
+该列的值再次作为第一个参数传递同时 'php:Y-m-d' 被用作第二个参数。
 
-可用的格式化方法列表，请参照 [section about Data Formatting](output-formatting.md)。
+有关可用格式化程序的列表，请参阅 [关于数据格式的部分](output-formatting.md)。
 
-数据列配置，还有一个”快捷格式化串”的方法，详情见API文档 [[yii\grid\GridView::columns|columns]]。
-（译者注：举例说明， `"name:text:Name"` 快捷格式化串，表示列名为 `name` 格式为 `text` 显示标签是 `Name`） 
+对于配置数据列，还有一种快捷方式格式，
+请参阅 API 文档 [[yii\grid\GridView::columns|columns]]。
 
+使用 [[yii\grid\DataColumn::filter|filter]] 和 [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]]
+去控制过滤器输入的 HTML。
+
+默认情况下，列的头部有 [[yii\data\Sort::link]] 来呈现。它还可以使用 [[yii\grid\Column::header]] 来调整。
+要更改头部文本，您应该像上面的示例中那样设置 [[yii\grid\DataColumn::$label]]。
+默认情况下，标签应该从数据模型中填充。更多细节请参阅 [[yii\grid\DataColumn::getHeaderCellLabel]]。
 
 #### 动作列 
 
@@ -243,7 +280,7 @@ echo GridView::widget([
     'columns' => [
         [
             'class' => 'yii\grid\ActionColumn',
-            // you may configure additional properties here
+            // 您可以在此处配置其他属性
         ],
 ```
 
@@ -271,10 +308,10 @@ echo GridView::widget([
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] 是使用指定的模型信息来创建一个按钮URL的回调函数。
   该回调的原型和 [[yii\grid\ActionColumn::createUrl()]] 是一样的。
   假如这个属性没有设置，按钮的URL将使用 [[yii\grid\ActionColumn::createUrl()]] 来创建。
-- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] is an array of visibility conditions for each button.
-  The array keys are the button names (without curly brackets), and the values are the boolean true/false or the
-  anonymous function. When the button name is not specified in this array it will be shown by default.
-  The callbacks must use the following signature:
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] 是控制每个按钮可见性条件的数组。
+  数组键是按钮名称 (没有大括号)，值是布尔值 true/false 或匿名函数。
+  如果在数组中没有指定按钮名称，将会按照默认的来显示。
+  回调必须像如下这样来使用：
 
   ```php
   function ($model, $key, $index) {
@@ -282,7 +319,7 @@ echo GridView::widget([
   }
   ```
 
-  Or you can pass a boolean value:
+  或者你可以传递一个布尔值：
 
   ```php
   [
@@ -397,8 +434,8 @@ class PostSearch extends Post
 }
 ```
 
-> Tip: See [Query Builder](db-query-builder.md) and especially [Filter Conditions](db-query-builder.md#filter-conditions)
-> to learn how to build filtering query.
+> Tip: 请参阅 [Query Builder](db-query-builder.md) 尤其是 [Filter Conditions](db-query-builder.md#filter-conditions)
+> 去学习如何构建过滤查询。
 
 你可以在控制器中使用如下方法为网格视图获取数据提供者：
 
@@ -424,10 +461,10 @@ echo GridView::widget([
 ]);
 ```
 
-### Separate filter form
+### 单独过滤表单
 
-Most of the time using GridView header filters is enough, but in case you need a separate filter form,
-you can easily add it as well. You can create partial view `_search.php` with the following contents:
+大多数时候使用 GridView 标头过滤器就足够了，但是如果你需要一个单独的过滤器表单，你也可以很轻松的去添加。您可以使用以下内容创建部分视图 `_search.php`：
+
 
 ```php
 <?php
@@ -459,18 +496,18 @@ use yii\widgets\ActiveForm;
 </div>
 ```
 
-and include it in `index.php` view like so:
+并将其包含在 `index.php` 视图中，如下所示：
 
 ```php
 <?= $this->render('_search', ['model' => $searchModel]) ?>
 ```
 
-> Note: if you use Gii to generate CRUD code, the separate filter form (`_search.php`) is generated by default,
-but is commented in `index.php` view. Uncomment it and it's ready to use!
+> Note: 如果使用 Gii 生成 CRUD 代码， 默认情况下会生成单独的过滤器表单（`_search.php`），
+  但是在 `index.php` 视图中已经被注释了。取消注释就可以用了!
 
-Separate filter form is useful when you need to filter by fields, that are not displayed in GridView
-or for special filtering conditions, like date range. For filtering by date range we can add non DB attributes
-`createdFrom` and `createdTo` to the search model:
+当您需要按字段过滤时，单独的过滤器表单很有用，这些字段不会在 GridView 中显示，也不适用于特殊筛选条件（如日期范围）。
+对于按日期范围过滤，
+我们可以将非 DB 属性 `createdFrom` 和 `createdTo` 添加到搜索模型：
 
 ```php
 class PostSearch extends Post
@@ -487,14 +524,14 @@ class PostSearch extends Post
 }
 ```
 
-Extend query conditions in the `search()` method like so:
+在 `search()` 扩展查询条件的方法如下：
 
 ```php
 $query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
       ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
 ```
 
-And add the representative fields to the filter form:
+并将代表字段添加到过滤器表单：
 
 ```php
 <?= $form->field($model, 'creationFrom') ?>
@@ -560,13 +597,13 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: 在上面的代码中，我们使用相同的字符串作为关联名称和表别名；
 > 然而，当你的表别名和关联名称不相同的时候，你得注意在哪使用你的别名，在哪使用你的关联名称。
 > 一个简单的规则是在每个构建数据库查询的地方使用别名，而在所有其他和定义相关的诸如：
->`attributes()` 和 `rules()` 等地方使用关联名称。
+> `attributes()` 和 `rules()` 等地方使用关联名称。
 > 
->例如，你使用 `au` 作为作者关系表的别名，那么联查语句就要写成像下面这样：
+> 例如，你使用 `au` 作为作者关系表的别名，那么联查语句就要写成像下面这样：
 > 
 > ```php
->$query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
->```
+> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> ```
 >
 > 当别名已经在关联函数中定义了时，也可以只调用 `$query->joinWith(['author']);`。
 >
@@ -595,9 +632,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: 更多关于 `joinWith` 和在后台执行查询的相关信息，
 > 可以查看 [active record docs on joining with relations](db-active-record.md#joining-with-relations)。
 
-#### SQL视图用于过滤、排序和显示数据
+#### SQL 视图用于过滤、排序和显示数据
 
-还有另外一种方法可以更快、更有用 - SQL 视图。例如，我们要在 `GridView` 
+还有另外一种方法可以更快、更有用的 SQL 视图。例如，我们要在 `GridView` 
 中显示用户和他们的简介，可以这样创建 SQL 视图：
 
 ```sql
@@ -659,8 +696,8 @@ class UserView extends ActiveRecord
 所有属性都可开箱即用。请注意，这种方法有利有弊：
 
 - 你不需要指定不同排序和过滤条件，一切都包装好了；
-- 它可以更快，因为数据的大小，SQL查询的执行（对于每个关联数据你都不需要额外的查询）都得到优化；
-- 因为在SQL视图中这仅仅是一个简单的映射UI，所以在你的实体中，它可能缺乏某方面的逻辑，所以，假如你有一些诸如 `isActive`、`isDeleted` 或者其他影响到UI的方法，
+- 它可以更快，因为数据的大小，SQL 查询的执行（对于每个关联数据你都不需要额外的查询）都得到优化；
+- 因为在 SQL 视图中这仅仅是一个简单的映射UI，所以在你的实体中，它可能缺乏某方面的逻辑，所以，假如你有一些诸如 `isActive`、`isDeleted` 或者其他影响到 UI 的方法，
   你也需要在这个类中复制他们。
 
 
@@ -697,11 +734,11 @@ echo GridView::widget([
 ]);
 ```
 
-### Using GridView with Pjax
+### 在 GridView 使用 Pjax
 
-The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to to update only the
-[[yii\grid\GridView|GridView]] content when using filters.
+[[yii\widgets\Pjax|Pjax]] 允许您更新页面的某个部分，
+而不是重新加载整个页面。
+使用过滤器时，可以使用它仅更新 [[yii\grid\GridView|GridView]] 内容。
 
 ```php
 use yii\widgets\Pjax;
@@ -716,16 +753,16 @@ Pjax::begin([
 Pjax::end();
 ```
 
-Pjax also works for the links inside the [[yii\widgets\Pjax|Pjax]] widget and
-for the links specified by [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]].
-But this might be a problem for the links of an [[yii\grid\ActionColumn|ActionColumn]].
-To prevent this, add the HTML attribute `data-pjax="0"` to the links when you edit
-the [[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] property.
+Pjax 也适用于 [[yii\widgets\Pjax|Pjax]] 小部件之间的链接以及
+[[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] 指定的链接。
+但是这可能是 [[yii\grid\ActionColumn|ActionColumn]] 链接的问题。
+要防止这种情况，请在编辑
+[[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] 属性时将 HTML 属性 `data-pjax="0"` 添加到链接中。
 
-#### GridView/ListView with Pjax in Gii
+#### 在 Gii 中使用 Pjax 的 GridView/ListView
 
-Since 2.0.5, the CRUD generator of [Gii](start-gii.md) has an option called
-`$enablePjax` that can be used via either web interface or command line.
+从 2.0.5 开始，[Gii](start-gii.md) 的 CRUD 生成器有一个 `$enablePjax` 选项，
+可以通过 web 界面或者命令行使用。
 
 ```php
 yii gii/crud --controllerClass="backend\\controllers\PostController" \
@@ -733,10 +770,10 @@ yii gii/crud --controllerClass="backend\\controllers\PostController" \
   --enablePjax=1
 ```
 
-Which generates a [[yii\widgets\Pjax|Pjax]] widget wrapping the
-[[yii\grid\GridView|GridView]] or [[yii\widgets\ListView|ListView]] widgets.
+这会生成一个由 [[yii\widgets\Pjax|Pjax]] 小部件包含的
+[[yii\grid\GridView|GridView]] 或者 [[yii\widgets\ListView|ListView]]。
 
-Further reading
+延伸阅读
 ---------------
 
 - [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) by Arno Slatius.

@@ -7,6 +7,8 @@
 
 namespace yiiunit\data\ar;
 
+use yii\db\ActiveQuery;
+
 /**
  * Class Order.
  *
@@ -14,6 +16,9 @@ namespace yiiunit\data\ar;
  * @property int $customer_id
  * @property int $created_at
  * @property string $total
+ *
+ * @property-read Item[] $expensiveItemsUsingViaWithCallable
+ * @property-read Item[] $cheapItemsUsingViaWithCallable
  */
 class Order extends ActiveRecord
 {
@@ -76,6 +81,22 @@ class Order extends ActiveRecord
             ->via('orderItems', function ($q) {
                 // additional query configuration
             })->orderBy('item.id');
+    }
+
+    public function getExpensiveItemsUsingViaWithCallable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems', function (ActiveQuery $q) {
+                $q->where(['>=', 'subtotal', 10]);
+            });
+    }
+
+    public function getCheapItemsUsingViaWithCallable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems', function (ActiveQuery $q) {
+                $q->where(['<', 'subtotal', 10]);
+            });
     }
 
     public function getItemsIndexed()

@@ -112,7 +112,7 @@ class MigrateController extends BaseMigrateController
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
      */
-    public $useTablePrefix = false;
+    public $useTablePrefix = true;
     /**
      * @var array column definition strings used for creating migration code.
      *
@@ -310,8 +310,17 @@ class MigrateController extends BaseMigrateController
 
         // Then drop the tables:
         foreach ($schemas as $schema) {
-            $db->createCommand()->dropTable($schema->name)->execute();
-            $this->stdout("Table {$schema->name} dropped.\n");
+            try {
+                $db->createCommand()->dropTable($schema->name)->execute();
+                $this->stdout("Table {$schema->name} dropped.\n");
+            } catch (\Exception $e) {
+                if (strpos($e->getMessage(), 'DROP VIEW to delete view') !== false) {
+                    $db->createCommand()->dropView($schema->name)->execute();
+                    $this->stdout("View {$schema->name} dropped.\n");
+                } else {
+                    $this->stdout("Cannot drop {$schema->name} Table .\n");
+                }
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 ArrayHelper
 ===========
-Вдобавок к [богатому набору функций](http://php.net/manual/ru/book.array.php)  для работы с массивами, которые есть в самом PHP, хелпер Yii Array предоставляет свои статические функции, которые могут быть вам полезны.
+Вдобавок к [богатому набору функций](https://secure.php.net/manual/ru/book.array.php)  для работы с массивами, которые есть в самом PHP, хелпер Yii Array предоставляет свои статические функции, которые могут быть вам полезны.
 
 
 ## Получение значений <span id="getting-values"></span>
@@ -110,7 +110,7 @@ $type = ArrayHelper::remove($array, 'type');
 
 ## Проверка наличия ключей <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` работает так же, как и стандартный [array_key_exists](http://php.net/manual/ru/function.array-key-exists.php),
+`ArrayHelper::keyExists` работает так же, как и стандартный [array_key_exists](https://secure.php.net/manual/ru/function.array-key-exists.php),
 но также может проверять ключи без учёта регистра:
 
 ```php
@@ -245,7 +245,7 @@ ArrayHelper::multisort($data, function($item) {
 ```
 Третий аргумент определяет способ сортировки – от большего к меньшему или от меньшего к большему. В случае, если мы сортируем по одному ключу, передаем  `SORT_ASC`  или  `SORT_DESC`. Если сортировка осуществляется по нескольким ключам, вы можете назначить направление сортировки для каждого из них с помощью массива.
 
-Последний аргумент – это флаг, который используется в стандартной функции PHP `sort()`. Посмотреть его возможные значения можно [тут](http://php.net/manual/ru/function.sort.php).
+Последний аргумент – это флаг, который используется в стандартной функции PHP `sort()`. Посмотреть его возможные значения можно [тут](https://secure.php.net/manual/ru/function.sort.php).
 
 
 ## Определение типа массива <span id="detecting-array-types"></span>
@@ -335,7 +335,7 @@ $data = ArrayHelper::toArray($posts, [
 
 Для таких случаев [[yii\helpers\ArrayHelper]] предоставляет [[yii\helpers\ArrayHelper::isIn()|isIn()]] и
 [[yii\helpers\ArrayHelper::isSubset()|isSubset()]]. Методы принимают такие же параметры, что и
-[in_array()](http://php.net/manual/ru/function.in-array.php).
+[in_array()](https://secure.php.net/manual/ru/function.in-array.php).
 
 ```php
 // true

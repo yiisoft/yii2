@@ -371,7 +371,12 @@ class Request extends \yii\base\Request
      */
     public function getMethod()
     {
-        if (isset($_POST[$this->methodParam])) {
+        if (
+            isset($_POST[$this->methodParam])
+            // Never allow to downgrade request from WRITE methods (POST, PATCH, DELETE, etc)
+            // to read methods (GET, HEAD, OPTIONS) for security reasons.
+            && !in_array(strtoupper($_POST[$this->methodParam]), ['GET', 'HEAD', 'OPTIONS'], true)
+        ) {
             return strtoupper($_POST[$this->methodParam]);
         }
 
@@ -683,7 +688,7 @@ class Request extends \yii\base\Request
      *
      * By default this value is based on the user request information. This method will
      * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
-     * You may want to check out the [PHP documentation](http://php.net/manual/en/reserved.variables.server.php)
+     * You may want to check out the [PHP documentation](https://secure.php.net/manual/en/reserved.variables.server.php)
      * for more information on these variables.
      *
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
@@ -922,7 +927,7 @@ class Request extends \yii\base\Request
             | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
             )*$%xs', $pathInfo)
         ) {
-            $pathInfo = utf8_encode($pathInfo);
+            $pathInfo = $this->utf8Encode($pathInfo);
         }
 
         $scriptUrl = $this->getScriptUrl();
@@ -942,6 +947,26 @@ class Request extends \yii\base\Request
         }
 
         return (string) $pathInfo;
+    }
+
+    /**
+     * Encodes an ISO-8859-1 string to UTF-8
+     * @param string $s
+     * @return string the UTF-8 translation of `s`.
+     * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
+     */
+    private function utf8Encode($s)
+    {
+        $s .= $s;
+        $len = \strlen($s);
+        for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
+            switch (true) {
+                case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
+                case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
+                default: $s[$j] = "\xC3"; $s[++$j] = \chr(\ord($s[$i]) - 64); break;
+            }
+        }
+        return substr($s, 0, $j);
     }
 
     /**
@@ -1561,7 +1586,11 @@ class Request extends \yii\base\Request
                 if ($data === false) {
                     continue;
                 }
-                $data = @unserialize($data);
+                if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 70000) {
+                    $data = @unserialize($data, ['allowed_classes' => false]);
+                } else {
+                    $data = @unserialize($data);
+                }
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
                         'class' => 'yii\web\Cookie',

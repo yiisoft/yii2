@@ -184,4 +184,27 @@ class JsonResponseFormatterTest extends FormatterTest
 
         $this->assertEquals($contentTypeExpected, $contentTypeActual);
     }
+
+    /**
+     * Formatter must return 'null' string.
+     */
+    public function testFormatNull()
+    {
+        $this->response->data = null;
+        $this->formatter->format($this->response);
+        $this->assertEquals('null', $this->response->content);
+    }
+
+    /**
+     * Formatter must return early sets content,
+     * e.g. content may be sets by PageCache filter
+     */
+    public function testFormatFilledContent()
+    {
+        $content = '{"text": "early seted content"}';
+        $this->response->data = null;
+        $this->response->content = $content;
+        $this->formatter->format($this->response);
+        $this->assertEquals($content, $this->response->content);
+    }
 }

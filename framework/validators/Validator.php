@@ -49,6 +49,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
  * @property array $attributeNames Attribute names. This property is read-only.
+ * @property array $validationAttributes List of attribute names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -133,7 +134,7 @@ class Validator extends Component
     public $skipOnError = true;
     /**
      * @var bool whether this validation rule should be skipped if the attribute value
-     * is null or an empty string.
+     * is null or an empty string. This property is used only when validating [[yii\base\Model]].
      */
     public $skipOnEmpty = true;
     /**
@@ -259,6 +260,17 @@ class Validator extends Component
         }
     }
 
+    /**
+     * Returns a list of attributes this validator applies to.
+     * @param array|string|null $attributes the list of attributes to be validated.
+     *
+     * - If this is `null`, the result will be equal to [[getAttributeNames()]].
+     * - If this is a string or an array, the intersection of [[getAttributeNames()]]
+     *   and the specified attributes will be returned.
+     *
+     * @return array list of attribute names.
+     * @since 2.0.16
+     */
     public function getValidationAttributes($attributes = null)
     {
         if ($attributes === null) {

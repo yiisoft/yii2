@@ -13,6 +13,9 @@ nbproject
 *.sublime-project
 *.sublime-workspace
 
+# visual studio code project files
+.vscode
+
 # windows thumbnail cache
 Thumbs.db
 

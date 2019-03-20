@@ -66,7 +66,7 @@ class Command extends Component
     public $pdoStatement;
     /**
      * @var int the default fetch mode for this command.
-     * @see http://www.php.net/manual/en/pdostatement.setfetchmode.php
+     * @see https://secure.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
@@ -285,7 +285,7 @@ class Command extends Component
      * @param int $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
-     * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
+     * @see https://secure.php.net/manual/en/function.PDOStatement-bindParam.php
      */
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
     {
@@ -327,7 +327,7 @@ class Command extends Component
      * @param mixed $value The value to bind to the parameter
      * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
-     * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
+     * @see https://secure.php.net/manual/en/function.PDOStatement-bindValue.php
      */
     public function bindValue($name, $value, $dataType = null)
     {
@@ -388,7 +388,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -402,7 +402,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://php.net/manual/en/pdostatement.setfetchmode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -931,10 +931,10 @@ class Command extends Component
     /**
      * Creates a SQL command for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
+     * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence will be reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     * the next new row's primary key will have the maximum existing value +1.
      * @return $this the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
@@ -943,6 +943,22 @@ class Command extends Component
         $sql = $this->db->getQueryBuilder()->resetSequence($table, $value);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Executes a db command resetting the sequence value of a table's primary key.
+     * Reason for execute is that some databases (Oracle) need several queries to do so.
+     * The sequence is reset such that the primary key of the next new row inserted
+     * will have the specified value or the maximum existing value +1.
+     * @param string $table the name of the table whose primary key sequence is reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value +1.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     * @since 2.0.16
+     */
+    public function executeResetSequence($table, $value = null)
+    {
+        return $this->db->getQueryBuilder()->executeResetSequence($table, $value);
     }
 
     /**
@@ -1109,7 +1125,7 @@ class Command extends Component
     /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
@@ -1124,14 +1140,8 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $cacheKey = [
-                    __CLASS__,
-                    $method,
-                    $fetchMode,
-                    $this->db->dsn,
-                    $this->db->username,
-                    $rawSql ?: $rawSql = $this->getRawSql(),
-                ];
+                $rawSql = $rawSql ?: $this->getRawSql();
+                $cacheKey = $this->getCacheKey($method, $fetchMode, $rawSql);
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
@@ -1169,6 +1179,28 @@ class Command extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the cache key for the query.
+     *
+     * @param string $method method of PDOStatement to be called
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes.
+     * @param string $rawSql the raw SQL with parameter values inserted into the corresponding placeholders
+     * @return array the cache key
+     * @since 2.0.16
+     */
+    protected function getCacheKey($method, $fetchMode, $rawSql)
+    {
+        return [
+            __CLASS__,
+            $method,
+            $fetchMode,
+            $this->db->dsn,
+            $this->db->username,
+            $rawSql,
+        ];
     }
 
     /**

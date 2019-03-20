@@ -19,6 +19,8 @@ class FixtureStorage
 
     public static $subdirSecondFixtureData = [];
 
+    public static $activeFixtureSequence = [];
+
     public static function clear()
     {
         static::$globalFixturesData = [];
@@ -26,5 +28,6 @@ class FixtureStorage
         static::$secondFixtureData = [];
         static::$subdirFirstFixtureData = [];
         static::$subdirSecondFixtureData = [];
+        static::$activeFixtureSequence = [];
     }
 }

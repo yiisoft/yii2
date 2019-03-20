@@ -1,7 +1,7 @@
 Генерация кода при помощи Gii
 ========================
 
-В этом разделе мы опишем, как использовать [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ru/README.md) для автоматической генерации кода,
+В этом разделе мы опишем, как использовать [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) для автоматической генерации кода,
 реализующего некоторые общие функции вебсайта. Для достижения этой цели всё, что вам нужно, это просто ввести необходимую информацию в соответствии с инструкциями, отображаемыми на веб-страницах Gii.
 
 В этом руководстве вы узнаете:
@@ -15,7 +15,7 @@
 Запускаем Gii <span id="starting-gii"></span>
 ------------
 
-[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ru/README.md) представлен в Yii как [модуль](structure-modules.md). Вы можете активировать Gii,
+[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) представлен в Yii как [модуль](structure-modules.md). Вы можете активировать Gii,
 настроив его в свойстве [[yii\base\Application::modules|modules]]. В зависимости от того, каким образом вы создали приложение, вы можете удостовериться в наличии следующего кода в конфигурационном файле `config/web.php`,
 
 ```php
@@ -119,7 +119,7 @@ http://hostname/index.php?r=country%2Findex
 * Модели: `models/Country.php` и `models/CountrySearch.php`
 * Вид: `views/country/*.php`
 
-> Info: Gii разработан как тонконастраиваемый и расширяемый инструмент генерации кода. Используя его с умом, вы можете значительно ускорить скорость разработки приложений. Для более подробной информации, пожалуйста, обратитесь к разделу [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ru/README.md).
+> Info: Gii разработан как тонконастраиваемый и расширяемый инструмент генерации кода. Используя его с умом, вы можете значительно ускорить скорость разработки приложений. Для более подробной информации, пожалуйста, обратитесь к разделу [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide).
 
 
 Заключение <span id="summary"></span>

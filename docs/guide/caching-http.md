@@ -131,7 +131,7 @@ that you want from `HttpCache`. To prevent this problem, by default `HttpCache` 
 these headers automatically. If you want to change this behavior, you should configure the
 [[yii\filters\HttpCache::sessionCacheLimiter]] property. The property can take a string value, including
 `public`, `private`, `private_no_expire`, and `nocache`. Please refer to the PHP manual about
-[session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+[session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php)
 for explanations about these values.
 
 

@@ -11,19 +11,20 @@ use Yii;
 use yii\db\BaseActiveRecord;
 use yii\base\InvalidCallException;
 use yii\validators\NumberValidator;
+use yii\helpers\ArrayHelper;
 
 /**
- * OptimisticLockBehavior automatically upgrades a model's lock version using the column name 
+ * OptimisticLockBehavior automatically upgrades a model's lock version using the column name
  * returned by [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]].
  *
  * Optimistic locking allows multiple users to access the same record for edits and avoids
  * potential conflicts. In case when a user attempts to save the record upon some staled data
  * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
  * and the update or deletion is skipped.
- * 
- * To use this behavior, first enable optimistic lock by following the steps listed in 
- * [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]], remove the column name 
- * holding the lock version from the [[\yii\base\Model::rules()|rules()]] method of your 
+ *
+ * To use this behavior, first enable optimistic lock by following the steps listed in
+ * [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]], remove the column name
+ * holding the lock version from the [[\yii\base\Model::rules()|rules()]] method of your
  * ActiveRecord class, then add the following code to it:
  *
  * ```php
@@ -40,10 +41,16 @@ use yii\validators\NumberValidator;
  * By default, OptimisticLockBehavior will use [[\yii\web\Request::getBodyParam()|getBodyParam()]] to parse
  * the submitted value or set it to 0 on any fail. That means a request not holding the version attribute
  * may achieve a first successful update to entity, but starting from there any further try should fail
- * unless the request is holding the expected version number. You can also configure the [[value]] property 
- * with a PHP callable to implement a different logic.
- * 
- * OptimisticLockBehavior also provides a method named [[upgrade()]] that increases a model's 
+ * unless the request is holding the expected version number.
+ *
+ * Once attached, internal use of the model class should also fail to save the record if the version number
+ * isn't held by [[\yii\web\Request::getBodyParam()|getBodyParam()]]. It may be useful to extend your model class,
+ * enable optimistic lock in parent class by overriding [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]],
+ * then attach the behavior to the child class so you can tie the parent model to internal use while linking the child model
+ * holding this behavior to the controllers responsible of receiving end user inputs.
+ * Alternatively, you can also configure the [[value]] property with a PHP callable to implement a different logic.
+ *
+ * OptimisticLockBehavior also provides a method named [[upgrade()]] that increases a model's
  * version by one, that may be useful when you need to mark an entity as stale among connected clients
  * and avoid any change to it until they load it again:
  *
@@ -67,6 +74,7 @@ class OptimisticLockBehavior extends AttributeBehavior
      * {@inheritdoc}
      */
     public $skipUpdateOnClean = false;
+
     /**
      * @var string the attribute name holding the version value.
      */
@@ -128,8 +136,11 @@ class OptimisticLockBehavior extends AttributeBehavior
     protected function getValue($event)
     {
         if ($this->value === null) {
+            $request = Yii::$app->getRequest();
             $lock = $this->getLockAttribute();
-            $input = Yii::$app->getRequest()->getBodyParam($lock);
+            $formName = $this->owner->formName();
+            $formValue = $formName ? ArrayHelper::getValue($request->getBodyParams(), $formName . '.' . $lock) : null;
+            $input = $formValue ?: $request->getBodyParam($lock);
             $isValid = $input && (new NumberValidator())->validate($input);
             return $isValid ? $input : 0;
         }

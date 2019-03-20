@@ -822,7 +822,7 @@ class ReleaseController extends Controller
         $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
         $headline = $version . ' ' . date('F d, Y');
         $this->sed(
-            '/' . $v . ' under development\n(-+?)\n/',
+            '/' . $v . ' under development\R(-+?)\R/',
             $headline . "\n" . str_repeat('-', \strlen($headline)) . "\n",
             $this->getChangelogs($what)
         );
@@ -987,7 +987,7 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
+            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
             $frameworkPath . '/BaseYii.php');
     }
@@ -1016,6 +1016,13 @@ class ReleaseController extends Controller
                 throw new Exception('Command "git tag" failed with code ' . $ret);
             }
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
+
+            // exclude 3.0.0-alpha1 tag
+            if (($key = array_search('3.0.0-alpha1', $tags, true)) !== false)
+            {
+                unset($tags[$key]);
+            }
+
             $versions[$ext] = reset($tags);
         }
 

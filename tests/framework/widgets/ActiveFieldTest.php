@@ -14,6 +14,7 @@ use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
+use yii\widgets\MaskedInput;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
@@ -353,6 +354,20 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
 
+    public function testRadioList()
+    {
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-attributename">
+<label class="control-label">Attribute Name</label>
+<input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+        $this->activeField->radioList(['1' => 'Item One']);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->render());
+    }
+
     public function testGetClientOptionsReturnEmpty()
     {
         // setup: we want the real deal here!
@@ -570,6 +585,30 @@ HTML;
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
     }
 
+    public function testInputOptionsTransferToWidget()
+    {
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_direct'],
+        ]);
+        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+
+        // transfer options from ActiveField to widget
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+        ]);
+        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+
+        // set both AF and widget options (second one takes precedence)
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_both_direct']
+        ]);
+        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
+    }
+
     /**
      * Helper methods.
      */
@@ -653,3 +692,31 @@ class TestInputWidget extends InputWidget
         return 'Render: ' . get_class($this);
     }
 }
+
+class TestMaskedInput extends MaskedInput
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init()
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function getOptions() {
+        return $this->options;
+    }
+
+    public function run()
+    {
+        return 'Options: ' . implode(', ', array_map(
+            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            $this->options,
+            array_keys($this->options)
+        ));
+    }
+}
+

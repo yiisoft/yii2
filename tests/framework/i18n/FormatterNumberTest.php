@@ -92,6 +92,7 @@ class FormatterNumberTest extends TestCase
     public function testAsInteger()
     {
         $this->assertSame('123', $this->formatter->asInteger(123));
+        $this->assertSame('123', $this->formatter->asInteger(123.00));
         $this->assertSame('123', $this->formatter->asInteger(123.23));
         $this->assertSame('123', $this->formatter->asInteger(123.53));
         $this->assertSame('0', $this->formatter->asInteger(0));
@@ -107,6 +108,37 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asInteger(null));
+
+        // string fallback
+        $this->assertSame('87,654,321,098,765,436', $this->formatter->asInteger('87654321098765436'));
+        $this->assertSame('95,836,208,451,783,051', $this->formatter->asInteger('95836208451783051.864'));
+
+        $this->formatter->thousandSeparator = '';
+        $this->assertSame('95836208451783051', $this->formatter->asInteger('95836208451783051.864'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/16900
+     */
+    public function testIntlAsIntegerOptions()
+    {
+        $this->formatter->numberFormatterTextOptions = [
+            \NumberFormatter::POSITIVE_PREFIX => '+',
+        ];
+
+        $this->assertSame('+2', $this->formatter->asInteger(2));
+        $this->assertSame('+10', $this->formatter->asInteger(10));
+        $this->assertSame('+12', $this->formatter->asInteger(12));
+        $this->assertSame('+123', $this->formatter->asInteger(123));
+        $this->assertSame('+1,230', $this->formatter->asInteger(1230));
+        $this->assertSame('+123', $this->formatter->asInteger(123.23));
+        $this->assertSame('+123', $this->formatter->asInteger(123.53));
+        $this->assertSame('+0', $this->formatter->asInteger(0));
+        $this->assertSame('-123', $this->formatter->asInteger(-123.23));
+        $this->assertSame('-123', $this->formatter->asInteger(-123.53));
+
+        $this->assertSame('+123,456', $this->formatter->asInteger(123456));
+        $this->assertSame('+123,456', $this->formatter->asInteger(123456.789));
     }
 
     /**
@@ -166,6 +198,15 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
+
+        // string fallback
+        $this->assertSame('87,654,321,098,765,436.00', $this->formatter->asDecimal('87654321098765436'));
+        $this->assertSame('95,836,208,451,783,051.86', $this->formatter->asDecimal('95836208451783051.864'));
+        $this->assertSame('95,836,208,451,783,052', $this->formatter->asDecimal('95836208451783051.864', 0));
+
+        $this->formatter->thousandSeparator = ' ';
+        $this->formatter->decimalSeparator = ',';
+        $this->assertSame('95 836 208 451 783 051,86', $this->formatter->asDecimal('95836208451783051.864'));
     }
 
     public function testAsDecimal()
@@ -176,6 +217,17 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('123', $this->formatter->asDecimal($value, 0));
         $value = 123;
         $this->assertSame('123.00', $this->formatter->asDecimal($value));
+
+        $this->assertSame('123.00', $this->formatter->asDecimal('123.00'));
+        $this->assertSame('-123.00', $this->formatter->asDecimal('-123.00'));
+        $this->assertSame('123.00', $this->formatter->asDecimal('+123.00'));
+        $this->assertSame('10.00', $this->formatter->asDecimal('10.00'));
+        $this->assertSame('0.01', $this->formatter->asDecimal(0.01));
+        $this->assertSame('0.00', $this->formatter->asDecimal('0.00'));
+        $this->assertSame('0.01', $this->formatter->asDecimal('00000000000000.0100000000000'));
+
+        $this->assertSame('2,000.00', $this->formatter->asDecimal(2e3));
+
         $this->formatter->decimalSeparator = ',';
         $this->formatter->thousandSeparator = '.';
         $value = 123.12;
@@ -207,6 +259,15 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
+
+        // string fallback
+        $this->assertSame('87,654,321,098,765,436.00', $this->formatter->asDecimal('87654321098765436'));
+        $this->assertSame('95,836,208,451,783,051.86', $this->formatter->asDecimal('95836208451783051.864'));
+        $this->assertSame('95,836,208,451,783,052', $this->formatter->asDecimal('95836208451783051.864', 0));
+
+        $this->formatter->thousandSeparator = ' ';
+        $this->formatter->decimalSeparator = ',';
+        $this->assertSame('95 836 208 451 783 051,86', $this->formatter->asDecimal('95836208451783051.864'));
     }
 
     public function testIntlAsPercent()
@@ -218,6 +279,7 @@ class FormatterNumberTest extends TestCase
     {
         $this->assertSame('12,300%', $this->formatter->asPercent(123));
         $this->assertSame('12,300%', $this->formatter->asPercent('123'));
+        $this->assertSame('12,300%', $this->formatter->asPercent('123.0'));
         $this->assertSame('12%', $this->formatter->asPercent(0.1234));
         $this->assertSame('12%', $this->formatter->asPercent('0.1234'));
         $this->assertSame('-1%', $this->formatter->asPercent(-0.009343));
@@ -229,12 +291,23 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asPercent(null));
+
+        // string fallback
+        $this->assertSame('8,765,432,109,876,543,600%', $this->formatter->asPercent('87654321098765436'));
+        $this->assertSame('9,583,620,845,178,305,186%', $this->formatter->asPercent('95836208451783051.864'));
+        $this->assertSame('9,583,620,845,178,305,133%', $this->formatter->asPercent('95836208451783051.328'));
+
+        $this->formatter->thousandSeparator = ' ';
+        $this->formatter->decimalSeparator = ',';
+        $this->assertSame('9 583 620 845 178 305 186,40%', $this->formatter->asPercent('95836208451783051.864', 2));
     }
 
     public function testIntlAsCurrency()
     {
         $this->formatter->locale = 'en-US';
         $this->assertSame('$123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('$123.00', $this->formatter->asCurrency('123.00'));
+        $this->assertSame('$123.20', $this->formatter->asCurrency('123.20'));
         $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
         $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
 
@@ -322,6 +395,22 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
+
+        // string fallback
+        $this->assertSame('USD 87,654,321,098,765,436.00', $this->formatter->asCurrency('87654321098765436', 'USD'));
+        $this->assertSame('USD 95,836,208,451,783,051.86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
+
+        $this->formatter->thousandSeparator = ' ';
+        $this->formatter->decimalSeparator = ',';
+        $this->assertSame('USD 95 836 208 451 783 051,86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testAsCurrencyStringFallbackException()
+    {
+        $this->formatter->asCurrency('87654321098765436');
     }
 
     /**
@@ -336,6 +425,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
         $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123.00'));
         $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
         $this->formatter->currencyCode = 'USD';
         $this->assertSame("123\xc2\xa0$", $this->formatter->asCurrency('123'));
@@ -379,6 +469,7 @@ class FormatterNumberTest extends TestCase
     {
         $this->formatter->currencyCode = 'USD';
         $this->assertSame('USD 123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('USD 123.00', $this->formatter->asCurrency('123.00'));
         $this->assertSame('USD 0.00', $this->formatter->asCurrency('0'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency(-123.45));
@@ -397,6 +488,16 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
+
+        $this->assertSame('USD 876,543,210,987,654,367.00', $this->formatter->asCurrency('876543210987654367'));
+
+        // string fallback
+        $this->assertSame('USD 87,654,321,098,765,436.00', $this->formatter->asCurrency('87654321098765436', 'USD'));
+        $this->assertSame('USD 95,836,208,451,783,051.86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
+
+        $this->formatter->thousandSeparator = ' ';
+        $this->formatter->decimalSeparator = ',';
+        $this->assertSame('USD 95 836 208 451 783 051,86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
     }
 
     public function testIntlAsScientific()
@@ -414,6 +515,8 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
+
+        $this->assertSame('8.76543210987654E16', $this->formatter->asScientific('87654321098765436'));
     }
 
     public function testAsScientific()
@@ -431,6 +534,8 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
+
+        $this->assertSame('8.765432E+16', $this->formatter->asScientific('87654321098765436'));
     }
 
     public function testIntlAsSpellout()
