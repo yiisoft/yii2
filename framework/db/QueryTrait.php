@@ -368,12 +368,10 @@ trait QueryTrait
             return [$columns];
         } elseif (is_array($columns)) {
             foreach ($columns as $column => $value) {
-                if (is_integer($value)) {
-                    $result[$column] = $value;
-                } elseif (preg_match('#(asc|desc)#i', $value, $matches)) {
-                    $result[$column] = (strcasecmp($matches[0], 'desc')) ? SORT_ASC : SORT_DESC;
+                if (preg_match('#(asc|desc)#i', $value, $matches)) {
+                    $result[$column] = strcasecmp($matches[0], 'desc') ? SORT_ASC : SORT_DESC;
                 } else {
-                    $result[$column] = SORT_ASC;
+                    $result[$column] = $value == SORT_DESC ? $value : SORT_ASC;
                 }
             }
             return $result;
