@@ -77,10 +77,11 @@ class DbSession extends MultiFieldSession
     public $sessionTable = '{{%session}}';
 
     /**
-    * @var array Session fields to be written into session table columns
-    * @since 2.0.17
-    */
+     * @var array Session fields to be written into session table columns
+     * @since 2.0.17
+     */
     protected $fields = [];
+
 
     /**
      * Initializes the DbSession component.
