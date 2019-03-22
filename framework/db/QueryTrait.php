@@ -307,7 +307,8 @@ trait QueryTrait
      * Sets the ORDER BY part of the query.
      * @param string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
      * Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
-     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]` or `['id' => 'asc', 'name' => 'DESC']` ). Be careful,
+     * such a call `['asc']` creates a query that will sort in ascending order column by name '0'
      *
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
