@@ -543,6 +543,7 @@ class ReleaseController extends Controller
         $this->stdout("- create a release on github.\n");
         $this->stdout("- release news and announcement.\n");
         $this->stdout("- update the website (will be automated soon and is only relevant for the new website).\n");
+        $this->stdout("  https://github.com/yiisoft-contrib/yiiframework.com/blob/master/config/versions.php#L69\n");
         $this->stdout("\n");
         $this->stdout("- release applications: ./build/build release app-basic\n");
         $this->stdout("- release applications: ./build/build release app-advanced\n");
@@ -626,7 +627,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to github:  ./build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build release/package app-$name\n");
 
         $this->stdout("\n");
     }
