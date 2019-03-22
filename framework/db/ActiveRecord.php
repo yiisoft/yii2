@@ -207,9 +207,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $tables = $query->getTablesUsedInFrom();
 
-        $aliases = array_filter(array_keys($tables), function ($alias) use ($tables) {
-            return !in_array($alias, $tables);
-        });
+        $aliases = array_diff(array_keys($tables), $tables);
 
         return array_map(function ($alias) {
             return preg_replace('/{{([\w]+)}}/', '$1', $alias);
