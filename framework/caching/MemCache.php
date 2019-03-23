@@ -11,22 +11,22 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * MemCache implements a cache application component based on [memcache](http://pecl.php.net/package/memcache)
- * and [memcached](http://pecl.php.net/package/memcached).
+ * MemCache 是基于 [memcache](http://pecl.php.net/package/memcache)
+ * 和 [memcached](http://pecl.php.net/package/memcached) 实现的缓存应用组件。
  *
- * MemCache supports both [memcache](http://pecl.php.net/package/memcache) and
- * [memcached](http://pecl.php.net/package/memcached). By setting [[useMemcached]] to be true or false,
- * one can let MemCache to use either memcached or memcache, respectively.
+ * MemCache 支持 [memcache](http://pecl.php.net/package/memcache) 和
+ * [memcached](http://pecl.php.net/package/memcached)。通过设置 [[useMemcached]] 为 true 或者 false，
+ * 你可以让 MemCache 在使用 memcached 或者 memcache 之间随意切换。
  *
- * MemCache can be configured with a list of memcache servers by settings its [[servers]] property.
- * By default, MemCache assumes there is a memcache server running on localhost at port 11211.
+ * MemCache 通过设置 [[servers]] 属性来配置 memcache 服务器列表。
+ * 默认情况下，MemCache 会认为有一个服务器运行在 localhost 的 11211 端口。
  *
- * See [[Cache]] for common cache operations that MemCache supports.
+ * 可以参考 [[Cache]] 查看 MemCache 支持的通用的缓存操作方法。
  *
- * Note, there is no security measure to protected data in memcache.
- * All data in memcache can be accessed by any process running in the system.
+ * 注意，存入 memcache 的数据并不会有任何安全保障措施。
+ * 这些都可以被运行在同一个服务器上的任何其它进程访问。
  *
- * To use MemCache as the cache application component, configure the application as follows,
+ * 要把 MemCache 当作缓存应用组件使用，参考下述的配置， 
  *
  * ```php
  * [
@@ -50,15 +50,15 @@ use yii\base\InvalidConfigException;
  * ]
  * ```
  *
- * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
- * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
+ * 上述配置使用了两个 memcache 服务器：server1 和 server2。你也可以给每个服务器配置更多的属性，
+ * 比如 `persistent`，`weight`，`timeout`。可用的配置选项可以参考 [[MemCacheServer]]。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
- * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
- * This property is read-only.
- * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
- * property differs in getter and setter. See [[getServers()]] and [[setServers()]] for details.
+ * @property \Memcache|\Memcached $memcache 缓存组件使用的 memcache（或者 memcached）对象。
+ * 该属性只读。
+ * @property MemCacheServer[] $servers memcache 服务器配置列表。
+ * 注意该属性的操作类型不同于 getter 和 setter 方法。详情参考 [[getServers()]] 和 [[setServers()]] 方法。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -66,49 +66,49 @@ use yii\base\InvalidConfigException;
 class MemCache extends Cache
 {
     /**
-     * @var bool whether to use memcached or memcache as the underlying caching extension.
-     * If true, [memcached](http://pecl.php.net/package/memcached) will be used.
-     * If false, [memcache](http://pecl.php.net/package/memcache) will be used.
-     * Defaults to false.
+     * @var bool 使用 memcached 还是 memcache 作为底层的缓存扩展。
+     * 如果是 true，[memcached](http://pecl.php.net/package/memcached) 将会使用。
+     * 如果是 false，[memcache](http://pecl.php.net/package/memcache) 将会使用。
+     * 默认是 false。
      */
     public $useMemcached = false;
     /**
-     * @var string an ID that identifies a Memcached instance. This property is used only when [[useMemcached]] is true.
-     * By default the Memcached instances are destroyed at the end of the request. To create an instance that
-     * persists between requests, you may specify a unique ID for the instance. All instances created with the
-     * same ID will share the same connection.
+     * @var string 一个表示 Memcached 实例的字符串 ID。它在 [[useMemcached]] 为 true 时使用。
+     * 默认情况下 Memcached 实例会在请求结束后销毁。为了创建一个在多请求间持久稳定的实例，
+     * 你可以为实例指定一个唯一的 ID。
+     * 这样所有基于同样的 ID 创建的实例都共享同一个连接。
      * @see http://ca2.php.net/manual/en/memcached.construct.php
      */
     public $persistentId;
     /**
-     * @var array options for Memcached. This property is used only when [[useMemcached]] is true.
+     * @var array Memcached 的配置选项。它在 [[useMemcached]] 为 true 时使用。
      * @see http://ca2.php.net/manual/en/memcached.setoptions.php
      */
     public $options;
     /**
-     * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
+     * @var string memcached sasl 用户名。它在 [[useMemcached]] 为 true 时使用。
      * @see http://php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $username;
     /**
-     * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
+     * @var string memcached sasl 密码。它在 [[useMemcached]] 为 true 时使用。
      * @see http://php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $password;
 
     /**
-     * @var \Memcache|\Memcached the Memcache instance
+     * @var \Memcache|\Memcached Memcache 对象
      */
     private $_cache;
     /**
-     * @var array list of memcache server configurations
+     * @var array memcache 服务器配置列表
      */
     private $_servers = [];
 
 
     /**
-     * Initializes this application component.
-     * It creates the memcache instance and adds memcache servers.
+     * 初始化应用组件。
+     * 它将完成 memcache 实例化并添加 memcache 服务器。
      */
     public function init()
     {
@@ -117,7 +117,7 @@ class MemCache extends Cache
     }
 
     /**
-     * Add servers to the server pool of the cache specified.
+     * 添加服务器到缓存对象的服务器池。
      *
      * @param \Memcache|\Memcached $cache
      * @param MemCacheServer[] $servers
@@ -145,8 +145,8 @@ class MemCache extends Cache
     }
 
     /**
-     * Add servers to the server pool of the cache specified
-     * Used for memcached PECL extension.
+     * 添加服务器到缓存对象的服务器池。
+     * 这是使用 memcached PECL 扩展的情况。
      *
      * @param \Memcached $cache
      * @param MemCacheServer[] $servers
@@ -167,8 +167,8 @@ class MemCache extends Cache
     }
 
     /**
-     * Add servers to the server pool of the cache specified
-     * Used for memcache PECL extension.
+     * 添加服务器到缓存对象的服务器池。
+     * 这是使用 memcache PECL 扩展的情况。
      *
      * @param \Memcache $cache
      * @param MemCacheServer[] $servers
@@ -208,9 +208,9 @@ class MemCache extends Cache
     }
 
     /**
-     * Returns the underlying memcache (or memcached) object.
-     * @return \Memcache|\Memcached the memcache (or memcached) object used by this cache component.
-     * @throws InvalidConfigException if memcache or memcached extension is not loaded
+     * 返回底层的 memcache（或者 memcached）对象。
+     * @return \Memcache|\Memcached 应用组件使用的 memcache（或者 memcached）对象。
+     * @throws InvalidConfigException 如果 memcache 或者 memcached 扩展没有加载。
      */
     public function getMemcache()
     {
@@ -238,8 +238,8 @@ class MemCache extends Cache
     }
 
     /**
-     * Returns the memcache or memcached server configurations.
-     * @return MemCacheServer[] list of memcache server configurations.
+     * 返回 memcache 或者 memcached 服务器的配置。
+     * @return MemCacheServer[] memcache 服务器配置列表。
      */
     public function getServers()
     {
@@ -247,8 +247,8 @@ class MemCache extends Cache
     }
 
     /**
-     * @param array $config list of memcache or memcached server configurations. Each element must be an array
-     * with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
+     * @param array $config memcache 或者 memcached 服务器配置列表。每个元素必须是一个数组，
+     * 数组的键可以是：host，port，persistent，weight，timeout，retryInterval，status。
      * @see http://php.net/manual/en/memcache.addserver.php
      * @see http://php.net/manual/en/memcached.addserver.php
      */
@@ -260,10 +260,10 @@ class MemCache extends Cache
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return mixed|false the value stored in cache, false if the value is not in the cache or expired.
+     * 根据指定的键从缓存中获取缓存数据。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明缓存数据的唯一键。
+     * @return mixed|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
      */
     protected function getValue($key)
     {
@@ -271,9 +271,9 @@ class MemCache extends Cache
     }
 
     /**
-     * Retrieves multiple values from cache with the specified keys.
-     * @param array $keys a list of keys identifying the cached values
-     * @return array a list of cached values indexed by the keys
+     * 根据多个缓存键从缓存中一次获取多个缓存数据。
+     * @param array $keys 指明缓存数据的缓存键列表。
+     * @return array 由缓存键组成下标的缓存数据列表。
      */
     protected function getValues($keys)
     {
@@ -281,14 +281,14 @@ class MemCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
+     * 根据指定的键把数据存入缓存中。
+     * 该方法从父类中声明，在子类这里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached.
+     * @param string $key 指明缓存值的键。
+     * @param mixed $value 要缓存的值。
      * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function setValue($key, $value, $duration)
     {
@@ -301,10 +301,10 @@ class MemCache extends Cache
     }
 
     /**
-     * Stores multiple key-value pairs in cache.
-     * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys.
+     * 一次性存入多个 键-值 对到缓存中。
+     * @param array $data 数组，数组的键对应缓存的键而值就是要缓存的值。
+     * @param int $duration 缓存数据过期的秒数，0 意味着永不过期。
+     * @return array 未能存入缓存数据的键列表。
      */
     protected function setValues($data, $duration)
     {
@@ -323,14 +323,14 @@ class MemCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This is the implementation of the method declared in the parent class.
+     * 在指定的键不存在的情况下，才存入指定的缓存值。
+     * 该方法从父类中声明，在子类里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached
+     * @param string $key 指明缓存值的键。
+     * @param mixed $value 要缓存的值。
      * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function addValue($key, $value, $duration)
     {
@@ -343,10 +343,10 @@ class MemCache extends Cache
     }
 
     /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * 根据指定的键把数据从缓存中删除。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明要删除缓存的键。
+     * @return bool 如果删除过程没有发生错误。
      */
     protected function deleteValue($key)
     {
@@ -354,9 +354,9 @@ class MemCache extends Cache
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * 从缓存中删除所有值。
+     * 该方法从父类中声明，在子类这里实现。
+     * @return bool 是否成功执行了删除操作。
      */
     protected function flushValues()
     {
