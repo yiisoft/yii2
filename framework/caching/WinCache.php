@@ -8,14 +8,14 @@
 namespace yii\caching;
 
 /**
- * WinCache provides Windows Cache caching in terms of an application component.
+ * WinCache 是使用 Windows Cache 实现的缓存组件。
  *
- * To use this application component, the [WinCache PHP extension](http://www.iis.net/expand/wincacheforphp)
- * must be loaded. Also note that "wincache.ucenabled" should be set to "On" in your php.ini file.
+ * 要使用这个应用组件，必须加载 [WinCache PHP extension](http://www.iis.net/expand/wincacheforphp)。
+ * 还要注意，在 php.ini 文件中把 "wincache.ucenabled" 设置为 "On"。
  *
- * See [[Cache]] manual for common cache operations that are supported by WinCache.
+ * 可以参考 [[Cache]] 查看 WinCache 支持的通用的缓存操作方法。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,14 +23,14 @@ namespace yii\caching;
 class WinCache extends Cache
 {
     /**
-     * Checks whether a specified key exists in the cache.
-     * This can be faster than getting the value from the cache if the data is big.
-     * Note that this method does not check whether the dependency associated
-     * with the cached data, if there is any, has changed. So a call to [[get]]
-     * may return false while exists returns true.
-     * @param mixed $key a key identifying the cached value. This can be a simple string or
-     * a complex data structure consisting of factors representing the key.
-     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
+     * 检测指定的键是否存在缓存中。
+     * 如果缓存数据量大的话，这比从缓存中直接获取值稍快些。
+     * 注意，如果缓存数据有缓存依赖，
+     * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false，
+     * 而调用该方法返回 true。
+     * @param mixed $key 指明缓存值的键。可以是一个简单的字符串，
+     * 或者是一个包含着缓存键的复杂数据结构。
+     * @return bool 如果缓存值存在返回 true，如果缓存值不存在或者已经过期则返回 false。
      */
     public function exists($key)
     {
@@ -40,10 +40,10 @@ class WinCache extends Cache
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return string|bool the value stored in cache, false if the value is not in the cache or expired.
+     * 根据指定的键从缓存中获取缓存数据。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明缓存数据的唯一键。
+     * @return string|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
      */
     protected function getValue($key)
     {
@@ -51,9 +51,9 @@ class WinCache extends Cache
     }
 
     /**
-     * Retrieves multiple values from cache with the specified keys.
-     * @param array $keys a list of keys identifying the cached values
-     * @return array a list of cached values indexed by the keys
+     * 根据多个缓存的键一次从缓存中获取多个对应的缓存数据。
+     * @param array $keys 指明多个缓存数据的字符串键列表。
+     * @return array 由对应的键指定的缓存数据列表。
      */
     protected function getValues($keys)
     {
@@ -61,14 +61,14 @@ class WinCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
+     * 根据指定的键把数据存入缓存中。
+     * 该方法从父类中声明，在子类这里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
-     * it could be something else.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param mixed $value 要缓存的值。大多数情况下它是一个字符串。 如果禁用了 [[serializer]],
+     * 它也可以是其它数据类型。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function setValue($key, $value, $duration)
     {
@@ -76,10 +76,10 @@ class WinCache extends Cache
     }
 
     /**
-     * Stores multiple key-value pairs in cache.
-     * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys
+     * 一次性存入多个 键-值 对到缓存中。
+     * @param array $data 数组，数组的键对应缓存的键而值就是要缓存的值。
+     * @param int $duration 缓存数据过期的秒数，0 意味着永不过期。
+     * @return array 未能存入缓存数据的键列表。
      */
     protected function setValues($data, $duration)
     {
@@ -87,14 +87,14 @@ class WinCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This is the implementation of the method declared in the parent class.
+     * 在指定的键不存在的情况下，才存入指定的缓存值。
+     * 该方法从父类中声明，在子类里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
-     * it could be something else.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param mixed $value 要缓存的值。大多数情况下它是一个字符串。 如果禁用了 [[serializer]],
+     * 它也可以是其它数据类型。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function addValue($key, $value, $duration)
     {
@@ -102,12 +102,12 @@ class WinCache extends Cache
     }
 
     /**
-     * Adds multiple key-value pairs to cache.
-     * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
-     * storage supports multiadd, this method should be overridden to exploit that feature.
-     * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys
+     * 一次性存入多个 键-值 对到缓存中。
+     * 默认的实现就是通过循环调用 [[addValue()]] 方法添加缓存值。如果当前环境的缓存驱动
+     * 支持 multi-add，该方法将会被覆盖而是尽量使用 multi-add 来发挥它的特性。
+     * @param array $data 数组，数组的键对应缓存的键而值就是要缓存的值。
+     * @param int $duration 缓存数据过期的秒数，0 意味着永不过期。
+     * @return array 未能存入缓存数据的键列表。
      */
     protected function addValues($data, $duration)
     {
@@ -115,10 +115,10 @@ class WinCache extends Cache
     }
 
     /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * 根据指定的键把数据从缓存中删除。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明要删除缓存的键。
+     * @return bool 如果删除过程没有发生错误。
      */
     protected function deleteValue($key)
     {
@@ -126,9 +126,9 @@ class WinCache extends Cache
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * 从缓存中删除所有值。
+     * 该方法从父类中声明，在子类这里实现。
+     * @return bool 是否成功执行了删除操作。
      */
     protected function flushValues()
     {
