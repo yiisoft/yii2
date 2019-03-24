@@ -36,10 +36,10 @@ use yii\helpers\Console;
  *
  * PHP进程之间不共享APC，因此从命令行刷新缓存对web没有影响。
  * 刷新Web缓存可以通过以下方式完成：
- *
+ * 
  * - 将一个php文件放在web根目录下并通过HTTP调用它
  * - 使用 [Cachetool](http://gordalina.github.io/cachetool/)
- * 
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0

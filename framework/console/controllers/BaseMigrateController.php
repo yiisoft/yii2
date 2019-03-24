@@ -38,20 +38,20 @@ abstract class BaseMigrateController extends Controller
     /**
      * @var string|array 包含迁移类的目录。 这可以是
      * 一个 [path alias](guide:concept-aliases) 或一个目录路径。
-
+     *
      * 位于此路径的迁移类应该在没有命名空间的情况下声明。
      * 使用 [[migrationNamespaces]] 属性 以防你使用命名空间迁移。
-
+     *
      * 如果你已经设置了 [[migrationNamespaces]] ，你可以按顺序将此字段设置为 `null`
      * 禁用未命名空间的迁移的使用。
      * 从版本2.0.12开始 您还可以指定应该搜索的迁移路径数组
      * 以加载迁移。这主要用于支持在没有命名空间的情况下
      * 提供迁移的旧扩展，并在保留现有迁移的同时采用命名空间迁移的新功能。
-
+     *
      * 通常，要从不同位置加载迁移，[[migrationNamespaces]] 是首选解决方案
      * 因为迁移名称包含历史记录中迁移的来源, 而使用多个迁移路径时
      * 则不是这种情况。
-
+     *
      * @see $migrationNamespaces
      */
     public $migrationPath = ['@app/migrations'];

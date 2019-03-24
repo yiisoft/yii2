@@ -130,7 +130,8 @@ class AssetController extends Controller
     public $deleteSource = false;
 
     /**
-     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] 实例或者他数组配置，将用于资源处理
+     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] 实例或者他数组配置，将用于
+     * 资源处理
      */
     private $_assetManager = [];
 
