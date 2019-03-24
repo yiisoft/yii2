@@ -10,7 +10,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * Condition that inverts passed [[condition]].
+ * 反转通过的条件 [[condition]]。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -18,15 +18,15 @@ use yii\base\InvalidArgumentException;
 class NotCondition implements ConditionInterface
 {
     /**
-     * @var mixed the condition to be negated
+     * @var mixed 要被否定的条件
      */
     private $condition;
 
 
     /**
-     * NotCondition constructor.
+     * NotCondition 构造函数。
      *
-     * @param mixed $condition the condition to be negated
+     * @param mixed $condition 要被否定的条件
      */
     public function __construct($condition)
     {
@@ -43,7 +43,7 @@ class NotCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException if wrong number of operands have been given.
+     * @throws InvalidArgumentException 如果给出错误的操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {
