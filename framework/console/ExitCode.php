@@ -1,16 +1,19 @@
 <?php
 /**
- * @link      http://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license   http://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\console;
 
 /**
  * 此类提供用于定义控制台命令退出代码的常量。
+ *
  * 退出代码遵循 [FreeBSD sysexits(3)](http://man.openbsd.org/sysexits) 手册页中定义的代码。
+ *
  * 这些常量可以在控制台控制器中使用，例如：
+ *
  * ```php
  * public function actionIndex()
  * {
@@ -18,14 +21,17 @@ namespace yii\console;
  *          $this->stderr('Error: ' . ExitCode::getReason(ExitCode::NOPERM));
  *          return ExitCode::NOPERM;
  *     }
+ *
  *     // do something
+ *
  *     return ExitCode::OK;
  * }
  * ```
+ *
  * @author Tom Worster <fsb@thefsb.org>
  * @author Alexander Makarov <sam@rmcreative.ru>
- * @see    http://man.openbsd.org/sysexits
- * @since  2.0.13
+ * @see http://man.openbsd.org/sysexits
+ * @since 2.0.13
  */
 class ExitCode
 {
@@ -120,28 +126,29 @@ class ExitCode
      * @var array 退出代码的原因说明的映射。
      */
     public static $reasons = [
-        self::OK                => 'Success',
+        self::OK => 'Success',
         self::UNSPECIFIED_ERROR => 'Unspecified error',
-        self::USAGE             => 'Incorrect usage, argument or option error',
-        self::DATAERR           => 'Error in input data',
-        self::NOINPUT           => 'Input file not found or unreadable',
-        self::NOUSER            => 'User not found',
-        self::NOHOST            => 'Host not found',
-        self::UNAVAILABLE       => 'A requied service is unavailable',
-        self::SOFTWARE          => 'Internal error',
-        self::OSERR             => 'Error making system call or using OS service',
-        self::OSFILE            => 'Error accessing system file',
-        self::CANTCREAT         => 'Cannot create output file',
-        self::IOERR             => 'I/O error',
-        self::TEMPFAIL          => 'Temporary failure',
-        self::PROTOCOL          => 'Unexpected remote service behavior',
-        self::NOPERM            => 'Insufficient permissions',
-        self::CONFIG            => 'Configuration error',
+        self::USAGE => 'Incorrect usage, argument or option error',
+        self::DATAERR => 'Error in input data',
+        self::NOINPUT => 'Input file not found or unreadable',
+        self::NOUSER => 'User not found',
+        self::NOHOST => 'Host not found',
+        self::UNAVAILABLE => 'A requied service is unavailable',
+        self::SOFTWARE => 'Internal error',
+        self::OSERR => 'Error making system call or using OS service',
+        self::OSFILE => 'Error accessing system file',
+        self::CANTCREAT => 'Cannot create output file',
+        self::IOERR => 'I/O error',
+        self::TEMPFAIL => 'Temporary failure',
+        self::PROTOCOL => 'Unexpected remote service behavior',
+        self::NOPERM => 'Insufficient permissions',
+        self::CONFIG => 'Configuration error',
     ];
 
 
     /**
      * 返回给定退出代码的简短原因文本。
+     * 
      * 此方法使用 [[$reasons]] 来确定退出代码的原因。
      * @param int $exitCode 此类中定义的常量之一。
      * @return string 原因文本，或 `"Unknown exit code"` 如果代码未在 [[$reasons]] 中列出。

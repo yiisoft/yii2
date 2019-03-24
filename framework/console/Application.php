@@ -18,6 +18,7 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
 
 /**
  * Application代表一个控制台应用程序。
+ *
  * Application继承自 [[\yii\base\Application]] 通过提供特定于
  * 控制台请求的功能。特别是，它处理控制台请求
  * 通过基于命令的方法。
