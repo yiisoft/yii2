@@ -21,39 +21,39 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  *
  * Application继承自 [[\yii\base\Application]] 通过提供特定于
  * 控制台请求的功能。特别是，它处理控制台请求
- * 通过基于命令的方法。
-
+ * 通过基于命令的方法：
+ *
  * - 控制台应用程序包含一个或多个可能的用户命令；
  * - 每个用户命令都实现为继承 [[\yii\console\Controller]] 的类；
  * - 用户指定在命令行上运行哪个命令；
  * - 该命令使用指定的参数处理用户请求。
-
+ *
  * 命令类应位于 [[controllerNamespace]] 指定的命名空间下。
  * 它们的命名应遵循与控制器相同的命名约定。例如，`help` 命令
  * 使用 `HelpController` 类实现。
-
+ *
  * 要运行控制台应用程序，请在命令行中输入以下内容：
-
+ *
  * ```
  * yii <route> [--param1=value1 --param2 ...]
  * ```
-
+ *
  * 其中 `<route>` 指的是 `ModuleID/ControllerID/ActionID` 形式的控制器路由
  * （例如 `sitemap/create`）， 和 `param1`，`param2` 指的是一组命名参数
  * 将用于初始化控制器动作 （例如 `--since=0` 指定一个 `since` 参数
  * 其值为0并且将相应的 `$since` 参数传递给动作方法）。
-
+ *
  * 默认提供 `help` 命令，列出可用命令并显示其用法。
  * 要使用此命令，只需键入：
-
+ *
  * ```
  * yii help
  * ```
-
+ *
  * @property ErrorHandler $errorHandler 错误处理程序应用程序组件。此属性是只读的。
  * @property Request $request 请求组件。此属性是只读的。
  * @property Response $response 响应组件。此属性是只读的。
-
+ *                              
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
