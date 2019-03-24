@@ -32,7 +32,7 @@ interface AuthInterface
     public function authenticate($user, $request, $response);
 
     /**
-     * 在身份验证失败时产生挑战。
+     * 在身份验证失败时产生质询。
      * 例如，一些适当的 HTTP headers 可能会生成。
      * @param Response $response
      */

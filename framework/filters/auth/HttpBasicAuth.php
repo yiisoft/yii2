@@ -64,7 +64,7 @@ class HttpBasicAuth extends AuthMethod
      */
     public $realm = 'api';
     /**
-     * @var callable 可调用 php 将使用 HTTP 基本身份验证信息对用户进行身份验证。
+     * @var callable 可调用 PHP 将使用 HTTP 基本身份验证信息对用户进行身份验证。
      * 可调用文件接收用户名和密码作为其参数。它应该返回一个标识对象。
      * 与用户名和密码匹配的，如果没有此类标识则应返回空值。
      * 仅当当前用户未通过身份验证时才调用可调用。

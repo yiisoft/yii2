@@ -37,10 +37,10 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      */
     public $response;
     /**
-     * @var array 此筛选器将应用于的操作行为 ID 的数组列表, 但是身份验证失败不会导致错误。
+     * @var array 此筛选器将应用于的操作行为 IDs 的数组列表，但是身份验证失败不会导致错误。
      * 它可能被用于行动，那是允许公开的，但是返回一些已验证用户的附加数据。
      * 默认空，意思是不可选认证的任何行动。
-     * Since version 2.0.10 action IDs  可以指定为通配符，例如 `site/*`。
+     * Since version 2.0.10 action IDs 可以指定为通配符，例如 `site/*`。
      * @see isOptional()
      * @since 2.0.7
      */
