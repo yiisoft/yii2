@@ -203,7 +203,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      *
      * - 一个用于创建分页对象的配置数组。“class” 元素默认
      *   为 'yii\data\Pagination'
-     * -  [[Pagination]] 或其子类的实例
+     * - [[Pagination]] 或其子类的实例
      * - false，禁用分页
      *
      * @throws InvalidArgumentException
