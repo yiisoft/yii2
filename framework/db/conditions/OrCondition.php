@@ -8,7 +8,7 @@
 namespace yii\db\conditions;
 
 /**
- * Condition that connects two or more SQL expressions with the `AND` operator.
+ * 使用 `AND` 操作符连接两个或多个 SQL 表达式的条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -16,7 +16,7 @@ namespace yii\db\conditions;
 class OrCondition extends ConjunctionCondition
 {
     /**
-     * Returns the operator that is represented by this condition class, e.g. `AND`, `OR`.
+     * 返回由此条件类表示的操作符，例如：`AND`，`OR`。
      *
      * @return string
      */
