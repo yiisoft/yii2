@@ -1,10 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.17.1 under development
+2.0.18 under development
 ------------------------
 
-- Bug #17220: Fixed widgets with no options (samdark)
+- no changes in this release.
 
 
 2.0.17 March 22, 2019
