@@ -11,7 +11,7 @@ namespace yii\data;
  * DataProviderInterface是数据提供器类必须实现的接口。
  *
  * 数据提供器是对数据进行排序和分页的组件，并将其提供给小部件
- * 如 [[\yii\grid\GridView]], [[\yii\widgets\ListView]]。
+ * 如 [[\yii\grid\GridView]]，[[\yii\widgets\ListView]]。
  *
  * 有关 DataProviderInterface 的详细信息和使用信息，请参阅 [guide article on data providers](guide:output-data-providers)。
  *

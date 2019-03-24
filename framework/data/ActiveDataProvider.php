@@ -48,7 +48,7 @@ use yii\di\Instance;
  * $posts = $provider->getModels();
  * ```
  *
- * 有关 ActiveDataProvider 的详细信息和使用信息, 请参阅 [guide article on data providers](guide:output-data-providers) 。
+ * 有关 ActiveDataProvider 的详细信息和使用信息，请参阅 [guide article on data providers](guide:output-data-providers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -83,7 +83,7 @@ class ActiveDataProvider extends BaseDataProvider
     /**
      * 初始化数据库连接组件
      * 此方法将初始化 [[db]] 属性，以确保它引用有效的db连接。
-     * @throws InvalidConfigException 如果 [[db]] 不可用.
+     * @throws InvalidConfigException 如果 [[db]] 不可用。
      */
     public function init()
     {

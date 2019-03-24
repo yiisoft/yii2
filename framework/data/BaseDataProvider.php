@@ -20,11 +20,11 @@ use yii\base\InvalidArgumentException;
  * @property array $keys 与 [[models]] 对应的键值列表。[[models]] 中的每个数据模型
  * 都由该数组中相应的键值唯一标识。
  * @property array $models 当前页中的数据模型列表。
- * @property Pagination|false $pagination 分页对象。如果为 false，则表示禁用
- * 分页。注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getPagination()]] 和
+ * @property Pagination|false $pagination 分页对象。如果为 false，则表示禁用分页。
+ * 注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getPagination()]] 和
  * [[setPagination()]]。
- * @property Sort|bool $sort 排序对象。如果为 false，则表示排序被禁用。 注意
- * 此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getSort()]] 和 [[setSort()]] 。
+ * @property Sort|bool $sort 排序对象。如果为 false，则表示排序被禁用。注意
+ * 此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getSort()]] 和 [[setSort()]]。
  * @property int $totalCount 数据模型总数。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -41,7 +41,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * 则按以下方式自动生成：
      *
      * - 第一个数据提供器 ID 为空。
-     * - 第二个和所有后续的数据提供者 IDs 是： "dp-1"，"dp-2"等。
+     * - 第二个和所有后续的数据提供者 IDs 是："dp-1"，"dp-2"等。
      */
     public $id;
 
@@ -89,7 +89,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * 准备数据模型和键。
      *
      * 此方法将准备可通过 [[getModels()]] 和 [[getKeys()]] 检索的
-     * 数据模型和密钥。
+     * 数据模型和键。
      *
      * 如果没有调用此方法，则它将由 [[getModels()]] 和 [[getKeys()]] 隐式调用。
      *
@@ -106,7 +106,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * 返回当前页中的数据模型.
+     * 返回当前页中的数据模型。
      * @return array 当前页中的数据模型列表。
      */
     public function getModels()
@@ -157,7 +157,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * 返回数据模型总数。
-     * 当 [[pagination]] 为 false, 值与 [[count]] 相同。
+     * 当 [[pagination]] 为 false，值与 [[count]] 相同。
      * 否则，将调用 [[prepareTotalCount()]] 获取数量。
      * @return int 数据模型总数。
      */
@@ -266,7 +266,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * 刷新数据提供器
-     * 调用此方法后，如果再次调用 [[getModels()]]， [[getKeys()]] 或者 [[getTotalCount()]] ，
+     * 调用此方法后，如果再次调用 [[getModels()]]，[[getKeys()]] 或者 [[getTotalCount()]]，
      * 它们将重新执行查询并返回可用的最新数据。
      */
     public function refresh()
