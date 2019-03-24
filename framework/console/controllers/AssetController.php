@@ -17,28 +17,28 @@ use yii\helpers\VarDumper;
 use yii\web\AssetBundle;
 
 /**
- * 允许你合并和压缩你的JavaScript和CSS文件。
+ * 允许你合并和压缩你的 JavaScript 和 CSS 文件。
  *
  * 用法:
  *
- * 1. 使用`template`方法创建配置文件:
+ * 1. 使用 `template` 方法创建配置文件:
  *
  *    yii asset/template /path/to/myapp/config.php
  *
  * 2. 根据你的web应用的需要，编辑创建的配置文件。
- * 3. 使用创建的配置文件，运行'compress'操作:
+ * 3. 使用创建的配置文件，运行 'compress' 动作:
  *
  *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
  *
- * 4. 调整你的web应用程序配置以使用压缩资源
+ * 4. 调整你的 web 应用程序配置以使用压缩资源
  *
- * Note: 在控制台环境中一些 [path alias](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在,
+ * Note: 在控制台环境中一些 [path alias](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在，
  * 因此应该直接指定配置中的相应路径。
  *
  * Note: 默认情况下这个命令依赖外部工具来执行实际的文件压缩，
  * 核实 [[jsCompressor]] 和 [[cssCompressor]] 获取详细信息。
  *
- * @property \yii\web\AssetManager $assetManager 资源管理器实例。 注意此属性的类型在getter和setter中有所不同。
+ * @property \yii\web\AssetManager $assetManager 资源管理器实例。 注意此属性的类型在 getter 和 setter 中有所不同。
  * 查看 [[getAssetManager()]] 和 [[setAssetManager()]] 获取详情。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -57,8 +57,8 @@ class AssetController extends Controller
     public $bundles = [];
     /**
      * @var array 表示输出压缩文件的资源包列表。
-     * 你可以使用'css'和'js'键来指定输出压缩文件的名称:
-     * For example:
+     * 你可以使用 'css' 和 'js' 键来指定输出压缩文件的名称：
+     * 例如：
      *
      * ```php
      * 'app\config\AllAsset' => [
@@ -68,13 +68,13 @@ class AssetController extends Controller
      * ]
      * ```
      *
-     * 文件名可以包含占位符 "{hash}", 他将由生成的文件的哈希填充。
+     * 文件名可以包含占位符 "{hash}" ，他将由生成的文件的哈希填充。
      *
      * 为了压缩不通的资源组，你可以指定多个目标包。
      * 在这种情况下你应该使用 'depends' 键来指定, 哪些包应该包含在特定的目标包中。
      * 对于单个包，你可以将 'depends' 保留为空，它将压缩所有剩下的包
      * 在这种情况下。
-     * For example:
+     * 例如：
      *
      * ```php
      * 'allShared' => [
@@ -104,7 +104,7 @@ class AssetController extends Controller
     public $targets = [];
     /**
      * @var string|callable JavaScript 文件压缩程序。
-     * 如果是个字符串, 它将被视为shell命令模版, 其中应该包含
+     * 如果是个字符串，它将被视为shell命令模版, 其中应该包含
      * 占位符 {from} - 源文件名 - 和 {to} - 输出文件名。
      * 否则，他被视为应该执行压缩的PHP回调。
      *
@@ -114,9 +114,9 @@ class AssetController extends Controller
     public $jsCompressor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
     /**
      * @var string|callable CSS 文件压缩程序。
-     * 如果是个字符串, 它将被视为shell命令模版, 其中应该包含
+     * 如果是个字符串，它将被视为 shell 命令模版, 其中应该包含
      * 占位符 {from} - 源文件名 - 和 {to} - 输出文件名。
-     * 否则，他被视为应该执行压缩的PHP回调。
+     * 否则，他被视为应该执行压缩的 PHP 回调。
      *
      * 默认值依赖于 "YUI Compressor" 的用法
      * @see https://github.com/yui/yuicompressor/
@@ -130,7 +130,7 @@ class AssetController extends Controller
     public $deleteSource = false;
 
     /**
-     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] 实例或者他数组配置, 将用于资源处理
+     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] 实例或者他数组配置，将用于资源处理
      */
     private $_assetManager = [];
 
@@ -250,7 +250,7 @@ class AssetController extends Controller
     }
 
     /**
-     * 递归加载资源包依赖项.
+     * 递归加载资源包依赖项。
      * @param \yii\web\AssetBundle $bundle 包实例
      * @param array $result 已经记载包列表。
      * @throws Exception 失败。
@@ -274,8 +274,8 @@ class AssetController extends Controller
      * 创建输出资源包的完整列表。
      * @param array $targets 输出资源包配置。
      * @param \yii\web\AssetBundle[] $bundles 源资源包列表。
-     * @return \yii\web\AssetBundle[] 输出资源包列表.
-     * @throws Exception 失败.
+     * @return \yii\web\AssetBundle[] 输出资源包列表。
+     * @throws Exception 失败。
      */
     protected function loadTargets($targets, $bundles)
     {
@@ -310,7 +310,7 @@ class AssetController extends Controller
         }
 
         // 根据包的依赖顺序调整每个目标的 'depends' 顺序
-        // 为每个目标创建一个AssetBundle对象
+        // 为每个目标创建一个 AssetBundle 对象
         foreach ($targets as $name => $target) {
             if (!isset($target['basePath'])) {
                 throw new Exception("Please specify 'basePath' for the '$name' target.");
@@ -500,7 +500,7 @@ EOD;
     }
 
     /**
-     * 压缩给定的JavaScript文件并将他们合并到一个文件里面。
+     * 压缩给定的 JavaScrip t文件并将他们合并到一个文件里面。
      * @param array $inputFiles 源文件名字列表。
      * @param string $outputFile 输出文件名。
      * @throws \yii\console\Exception 失败
@@ -529,7 +529,7 @@ EOD;
     }
 
     /**
-     * 压缩给定的CSS文件并将他们合并到一个文件里面。
+     * 压缩给定的 CSS 文件并将他们合并到一个文件里面。
      * @param array $inputFiles 源文件名字列表。
      * @param string $outputFile 输出文件名。
      * @throws \yii\console\Exception 失败
@@ -558,7 +558,7 @@ EOD;
     }
 
     /**
-     * 将JavaScript文件合并到一个里面。
+     * 将 JavaScript 文件合并到一个里面。
      * @param array $inputFiles 源文件名字。
      * @param string $outputFile 输出文件名。
      * @throws \yii\console\Exception 失败。
@@ -583,7 +583,7 @@ EOD;
     }
 
     /**
-     * 将CSS文件合并到一个里面。
+     * 将 CSS 文件合并到一个里面。
      * @param array $inputFiles 源文件名字。
      * @param string $outputFile 输出文件名。
      * @throws \yii\console\Exception 失败。
@@ -603,11 +603,11 @@ EOD;
     }
 
     /**
-     * 调整CSS内容允许指向原始资源的URL引用。
-     * @param string $cssContent 源CSS内容。
-     * @param string $inputFilePath 输入CSS文件名。
-     * @param string $outputFilePath 输出CSS文件名。
-     * @return string 调整后的CSS内容。
+     * 调整 CSS 内容允许指向原始资源的 URL 引用。
+     * @param string $cssContent 源 CSS 内容。
+     * @param string $inputFilePath 输入 CSS 文件名。
+     * @param string $outputFilePath 输出 CSS 文件名。
+     * @return string 调整后的 CSS 内容。
      */
     protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
     {

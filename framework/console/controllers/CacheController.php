@@ -66,7 +66,7 @@ class CacheController extends Controller
      * For example,
      *
      * ```
-     * # 刷新其id指定的缓存: "first", "second", "third"
+     * # 刷新其id指定的缓存："first"，"second"，"third"
      * yii cache/flush first second third
      * ```
      */
@@ -136,11 +136,11 @@ class CacheController extends Controller
      * 清除给定连接组件的数据库架构缓存。
      *
      * ```
-     * # 清除指定的缓存模式通过组件id: "db"
+     * # 清除指定的缓存模式通过组件 id： "db"
      * yii cache/flush-schema db
      * ```
      *
-     * @param string $db id连接组件
+     * @param string $db id 连接组件
      * @return int 退出码
      * @throws Exception
      * @throws \yii\base\InvalidConfigException

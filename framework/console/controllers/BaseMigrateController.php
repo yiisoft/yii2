@@ -37,18 +37,18 @@ abstract class BaseMigrateController extends Controller
     public $defaultAction = 'up';
     /**
      * @var string|array 包含迁移类的目录。 这可以是
-     * 一个[path alias](guide:concept-aliases)或一个目录路径。
+     * 一个 [path alias](guide:concept-aliases) 或一个目录路径。
 
      * 位于此路径的迁移类应该在没有命名空间的情况下声明。
      * 使用 [[migrationNamespaces]] 属性 以防你使用命名空间迁移。
 
-     * 如果你已经设置了 [[migrationNamespaces]], 你可以按顺序将此字段设置为`null`
+     * 如果你已经设置了 [[migrationNamespaces]] ，你可以按顺序将此字段设置为 `null`
      * 禁用未命名空间的迁移的使用。
      * 从版本2.0.12开始 您还可以指定应该搜索的迁移路径数组
      * 以加载迁移。这主要用于支持在没有命名空间的情况下
      * 提供迁移的旧扩展，并在保留现有迁移的同时采用命名空间迁移的新功能。
 
-     * 通常, 要从不同位置加载迁移, [[migrationNamespaces]] 是首选解决方案
+     * 通常，要从不同位置加载迁移，[[migrationNamespaces]] 是首选解决方案
      * 因为迁移名称包含历史记录中迁移的来源, 而使用多个迁移路径时
      * 则不是这种情况。
 
@@ -107,7 +107,7 @@ abstract class BaseMigrateController extends Controller
      * 在执行动作之前调用此方法 (在所有可能的过滤器之后。)
      * 它检查 [[migrationPath]] 的存在。
      * @param \yii\base\Action $action 要执行的动作。
-     * @throws InvalidConfigException 如果在 migrationPath 中指定的目录不存在并且动作不是"create".
+     * @throws InvalidConfigException 如果在 migrationPath 中指定的目录不存在并且动作不是 "create" 。
      * @return bool 是否应该继续执行该动作。
      */
     public function beforeAction($action)
@@ -155,10 +155,10 @@ abstract class BaseMigrateController extends Controller
      * yii migrate 3   # apply the first 3 new migrations
      * ```
      *
-     * @param int $limit 要应用的新迁移数. 如果是 0, 意味着
+     * @param int $limit 要应用的新迁移数。如果是 0， 意味着
      * 应用所有可用的新迁移。
      *
-     * @return int 动作执行的状态。0表示正常，其他值表示异常。
+     * @return int 动作执行的状态。0 表示正常，其他值表示异常。
      */
     public function actionUp($limit = 0)
     {
@@ -212,7 +212,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * 通过恢复旧迁移来降级应用程序。
      *
-     * 例如,
+     * 例如，
      *
      * ```
      * yii migrate/down     # 恢复上次迁移
@@ -274,7 +274,7 @@ abstract class BaseMigrateController extends Controller
      * 重做最后几次迁移。
      *
      * 此命令将首先还原指定的迁移, 然后再次应用
-     * 他们。 比如,
+     * 他们。 比如，
      *
      * ```
      * yii migrate/redo     # 重做上次应用的迁移
@@ -282,11 +282,11 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/redo all # 重做所有迁移
      * ```
      *
-     * @param int|string $limit 要重做的迁移次数。默认为1，
-     * 表示最后一次应用的迁移将重做。当等于"all"时，将重做所有迁移。
-     * @throws Exception 如果指定的步数小于1。
+     * @param int|string $limit 要重做的迁移次数。默认为 1 ，
+     * 表示最后一次应用的迁移将重做。当等于 "all" 时，将重做所有迁移。
+     * @throws Exception 如果指定的步数小于 1 。
      *
-     * @return int 动作执行的状态。0表示正常，其他值表示异常。
+     * @return int 动作执行的状态。0 表示正常，其他值表示异常。
      */
     public function actionRedo($limit = 1)
     {
@@ -339,11 +339,11 @@ abstract class BaseMigrateController extends Controller
     /**
      * 升级或降级至指定版本。
      *
-     * 也可以将版本降级到过去的某个应用时间,通过提供
-     * 一个UNIX时间戳或者一个strtotime()函数可解析的字符串. 这意味着
+     * 也可以将版本降级到过去的某个应用时间，通过提供
+     * 一个UNIX时间戳或者一个 strtotime() 函数可解析的字符串。这意味着
      * 在指定的特定时间之后应用的所有版本都将被还原。
      *
-     * 此命令将首先还原指定的迁移，,然后再次应用
+     * 此命令将首先还原指定的迁移，然后再次应用
      * 他们。 比如,
      *
      * ```
@@ -356,7 +356,7 @@ abstract class BaseMigrateController extends Controller
      *
      * @param string $version 应用将迁移到的
      * 过去的版本名称或特定的时间值。 这可以是时间戳，
-     * 迁移的全名，UNIX时间戳或, 或可解析的时间日期
+     * 迁移的全名，UNIX时间戳或，或可解析的时间日期
      * 字符串。
      * @throws Exception 如果version参数无效。
      */
@@ -405,7 +405,7 @@ abstract class BaseMigrateController extends Controller
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table)\nor the full name of a namespaced migration (e.g. app\\migrations\\M101129185401CreateUserTable).");
         }
 
-        // try mark up
+        // 尝试标记
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
@@ -420,7 +420,7 @@ abstract class BaseMigrateController extends Controller
             }
         }
 
-        // 尝试标记
+        // 试着记下来
         $migrations = array_keys($this->getMigrationHistory(null));
         $migrations[] = static::BASE_MIGRATION;
         foreach ($migrations as $i => $migration) {
@@ -471,7 +471,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * 检查给定的迁移版本规范是否与命名空间迁移名称匹配。
      * @param string $rawVersion 从用户输入接收的原始版本规范。
-     * @return string|false 实际迁移版本， `false` - 如果不匹配。
+     * @return string|false 实际迁移版本，`false` - 如果不匹配。
      * @since 2.0.10
      */
     private function extractNamespaceMigrationVersion($rawVersion)
@@ -486,7 +486,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * 检查给定的迁移版本规范是否与迁移基本名称匹配。
      * @param string $rawVersion 从用户输入接收的原始版本规范。
-     * @return string|false 实际迁移版本， `false` - 如果不匹配。
+     * @return string|false 实际迁移版本，`false` - 如果不匹配。
      * @since 2.0.10
      */
     private function extractMigrationVersion($rawVersion)
@@ -502,7 +502,7 @@ abstract class BaseMigrateController extends Controller
      * 显示迁移历史记录。
      *
      * 此命令将显示已应用的迁移列表
-     * 到目前为止. For example,
+     * 到目前为止。For example，
      *
      * ```
      * yii migrate/history     # 显示最近10次迁移
@@ -546,7 +546,7 @@ abstract class BaseMigrateController extends Controller
      * 显示未应用的新迁移。
      *
      * 此命令将显示尚未应用的新迁移。
-     * For example,
+     * 例如，
      *
      * ```
      * yii migrate/new     # 显示前10次新迁移
@@ -599,8 +599,8 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/create create_user_table
      * ```
 
-     * 为了生成命名空间迁移, 您应该在迁移名称之前指定命名空间。
-     * 请注意反斜杠 (`\`) 通常被认为是shell中的特殊字符，因此您需要将其转义
+     * 为了生成命名空间迁移，您应该在迁移名称之前指定命名空间。
+     * 请注意反斜杠 （`\`） 通常被认为是shell中的特殊字符，因此您需要将其转义
      * 正确避免shell错误或不正确的行为。
      * For example:
 
@@ -613,8 +613,8 @@ abstract class BaseMigrateController extends Controller
      * @param string $name 新迁移的名称。 这应该只包含
      * 字母，数字，下划线和/或反斜杠。
 
-     * Note: 如果迁移名称是特殊形式, 例如create_xxx或
-     * drop_xxx，然后生成的迁移文件将包含额外的代码，
+     * Note: 如果迁移名称是特殊形式，例如 create_xxx 或
+     * drop_xxx ，然后生成的迁移文件将包含额外的代码，
      * 在这种情况下用于创建/删除表。
 
      * @throws Exception 如果name参数无效。
@@ -650,7 +650,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * 生成类的基本名称和命名空间通过用户输入的迁移名称。
      * @param string $name 用户输入的迁移名称。
-     * @return array 2个元素列表: 'namespace' 和 'class base name'
+     * @return array 2个元素列表： 'namespace' 和 'class base name'
      * @since 2.0.10
      */
     private function generateClassName($name)
@@ -784,7 +784,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * 包括给定迁移类名称的迁移文件。
      *
-     * 此函数对命名空间迁移不做任何操作， 哪些由
+     * 此函数对命名空间迁移不做任何操作，哪些由
      * 自动加载加载。他将包含迁移文件，通过在
      * [[migrationPath]] 中搜索没有命名空间的类。
      * @param string $class 迁移类名。
@@ -811,7 +811,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * 迁移到过去指定的应用时间。
-     * @param int $time UNIX时间戳值。
+     * @param int $time UNIX 时间戳值。
      */
     protected function migrateToTime($time)
     {
@@ -948,7 +948,7 @@ abstract class BaseMigrateController extends Controller
      * 返回迁移的最大名称长度。
      *
      * 子类可以重写此方法以定义限制。
-     * @return int|null 迁移的最大名称长度，如果没有限制则为`null`。
+     * @return int|null 迁移的最大名称长度，如果没有限制则为 `null` 。
      * @since 2.0.13
      */
     protected function getMigrationNameLimit()
@@ -958,7 +958,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * 返回迁移历史记录。
-     * @param int $limit 要返回的历史记录中的最大记录数。`null` 表示 "no limit".
+     * @param int $limit 要返回的历史记录中的最大记录数。`null` 表示 "no limit"。
      * @return array 迁移历史记录
      */
     abstract protected function getMigrationHistory($limit);

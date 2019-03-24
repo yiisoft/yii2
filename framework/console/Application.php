@@ -10,7 +10,7 @@ namespace yii\console;
 use Yii;
 use yii\base\InvalidRouteException;
 
-// 如果PHP SAPI没有定义它们，则定义STDIN，STDOUT和STDERR(e.g. 在web env中创建控制台应用程序)
+// 如果 PHP SAPI 没有定义它们，则定义 STDIN，STDOUT 和 STDERR （e.g. 在 web env 中创建控制台应用程序）
 // http://php.net/manual/en/features.commandline.io-streams.php
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
@@ -20,11 +20,11 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * Application代表一个控制台应用程序。
  * Application继承自 [[\yii\base\Application]] 通过提供特定于
  * 控制台请求的功能。特别是，它处理控制台请求
- * 通过基于命令的方法：
+ * 通过基于命令的方法。
 
- * - 控制台应用程序包含一个或多个可能的用户命令;
- * - 每个用户命令都实现为继承 [[\yii\console\Controller]] 的类;
- * - 用户指定在命令行上运行哪个命令;
+ * - 控制台应用程序包含一个或多个可能的用户命令；
+ * - 每个用户命令都实现为继承 [[\yii\console\Controller]] 的类；
+ * - 用户指定在命令行上运行哪个命令；
  * - 该命令使用指定的参数处理用户请求。
 
  * 命令类应位于 [[controllerNamespace]] 指定的命名空间下。
@@ -38,11 +38,11 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * ```
 
  * 其中 `<route>` 指的是 `ModuleID/ControllerID/ActionID` 形式的控制器路由
- * (e.g. `sitemap/create`), 和 `param1`, `param2` 指的是一组命名参数
- * 将用于初始化控制器动作 (e.g. `--since=0` 指定一个 `since` 参数
- * 其值为0并且将相应的 `$since` 参数传递给动作方法).
+ * （e.g. `sitemap/create`）， 和 `param1`，`param2` 指的是一组命名参数
+ * 将用于初始化控制器动作 （e.g. `--since=0` 指定一个 `since` 参数
+ * 其值为0并且将相应的 `$since` 参数传递给动作方法）。
 
- * 默认提供`help`命令，列出可用命令并显示其用法。
+ * 默认提供 `help` 命令，列出可用命令并显示其用法。
  * 要使用此命令，只需键入：
 
  * ```
@@ -64,13 +64,13 @@ class Application extends \yii\base\Application
     const OPTION_APPCONFIG = 'appconfig';
 
     /**
-     * @var string 此应用程序的默认路由。默认为'help'，
-     * 表示`help`命令。
+     * @var string 此应用程序的默认路由。默认为 'help' ，
+     * 表示 `help` 命令。
      */
     public $defaultRoute = 'help';
     /**
      * @var bool 是否启用核心框架提供的命令。
-     * 默认为true。
+     * 默认为 true 。
      */
     public $enableCoreCommands = true;
     /**
@@ -169,8 +169,8 @@ class Application extends \yii\base\Application
      *
      * @param string $route 指定动作的路由。
      * @param array $params 要传递给动作的参数
-     * @return int|Response 动作的结果。这可以是退出码或Response对象。
-     * 退出代码0表示正常，其他值表示异常。退出代码`null`也被视为`0`.
+     * @return int|Response 动作的结果。这可以是退出码或 Response 对象。
+     * 退出代码0表示正常，其他值表示异常。退出代码 `null` 也被视为 `0` 。
      * @throws Exception 如果路由无效
      */
     public function runAction($route, $params = [])
