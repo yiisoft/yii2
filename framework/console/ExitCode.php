@@ -148,7 +148,7 @@ class ExitCode
 
     /**
      * 返回给定退出代码的简短原因文本。
-     * 
+     *
      * 此方法使用 [[$reasons]] 来确定退出代码的原因。
      * @param int $exitCode 此类中定义的常量之一。
      * @return string 原因文本，或 `"Unknown exit code"` 如果代码未在 [[$reasons]] 中列出。
