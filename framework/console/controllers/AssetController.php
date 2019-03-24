@@ -124,7 +124,7 @@ class AssetController extends Controller
     public $cssCompressor = 'java -jar yuicompressor.jar --type css {from} -o {to}';
     /**
      * @var bool 压缩后是否删除资源源文件
-     * 此选项仅影响那些设置了 [[\yii\web\AssetBundle::sourcePath]] 的包.
+     * 此选项仅影响那些设置了 [[\yii\web\AssetBundle::sourcePath]] 的包。
      * @since 2.0.10
      */
     public $deleteSource = false;
@@ -501,7 +501,7 @@ EOD;
     }
 
     /**
-     * 压缩给定的 JavaScrip t文件并将他们合并到一个文件里面。
+     * 压缩给定的 JavaScript 文件并将他们合并到一个文件里面。
      * @param array $inputFiles 源文件名字列表。
      * @param string $outputFile 输出文件名。
      * @throws \yii\console\Exception 失败
@@ -683,7 +683,7 @@ EOD;
     }
 
     /**
-     * 创建配置文件模板给 [[actionCompress]].
+     * 创建配置文件模板给 [[actionCompress]]。
      * @param string $configFile 输出文件名。
      * @return int CLI 退出码。
      * @throws \yii\console\Exception 失败。

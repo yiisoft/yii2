@@ -14,7 +14,7 @@ use yii\helpers\Console;
 /**
  * 运行 PHP 内置 web 服务器。
  *
- * 要从远程计算机访问服务器，请使用0.0.0.0:8000。这在虚拟机中运行服务器
+ * 要从远程计算机访问服务器，请使用 0.0.0.0:8000。这在虚拟机中运行服务器
  * 时特别有用。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -45,7 +45,7 @@ class ServeController extends Controller
     /**
      * 运行 PHP 内置 web 服务器。
      *
-     * @param string $address 服务器地址。 "host" 或 "host:port"。
+     * @param string $address 服务器地址。"host" 或 "host:port"。
      *
      * @return int
      */

@@ -44,7 +44,7 @@ class ExitCode
      */
     const UNSPECIFIED_ERROR = 1;
     /**
-     * 命令使用不正确，e.g., 错误的参数数量，
+     * 命令使用不正确，例如，错误的参数数量，
      * 坏标志，参数中的错误语法或其他。
      */
     const USAGE = 64;
@@ -55,8 +55,8 @@ class ExitCode
     const DATAERR = 65;
     /**
      * 输入文件（不是系统文件）不存在或不可读。
-     * 这也可能包括邮件中的 ``No message'' 等错误 （如果它想
-     * 捕获它）。
+     * 这也可能包括邮件中的 ``No message''
+     * 等错误（如果它想捕获它）。
      */
     const NOINPUT = 66;
     /**
@@ -70,26 +70,26 @@ class ExitCode
      */
     const NOHOST = 68;
     /**
-     * 服务不可用。 如果支持程序或文件不存在，
+     * 服务不可用。如果支持程序或文件不存在，
      * 可能会发生这种情况。这也可以用作一条覆盖所有的消息，
      * 当你想要做的事情不起作用，但您不知道原因时。
      */
     const UNAVAILABLE = 69;
     /**
-     * 检测到内部软件错误。 这应尽可能限于
+     * 检测到内部软件错误。这应尽可能限于
      * 与操作系统无关的错误。
      */
     const SOFTWARE = 70;
     /**
-     * 检测到操作系统错误。 这是为了
-     * 用于诸如 ``cannot fork''， ``cannot create pipe''，或
+     * 检测到操作系统错误。这是为了
+     * 用于诸如 ``cannot fork''，``cannot create pipe''，或
      * 类似的。它包括像 getuid 返回一个在 passwd 文件中 不存在
      * 的用户。
      */
     const OSERR = 71;
     /**
      * 某些系统文件（例如，/etc/passwd，/var/run/utx.active，等等。）不
-     * 存在，不能被打开，或者有某种错误 （例如，syntax error）。
+     * 存在，不能被打开，或者有某种错误（例如，syntax error）。
      */
     const OSFILE = 72;
     /**
@@ -101,8 +101,8 @@ class ExitCode
      */
     const IOERR = 74;
     /**
-     * 暂时失败，表明某些事情并非真正的错误。 在
-     * 发送邮件中，这意味着一个邮件发件人(例如)无法创建连接，
+     * 暂时失败，表明某些事情并非真正的错误。
+     * 在发送邮件中，这意味着一个邮件发件人（例如）无法创建连接，
      * 请求应稍后重试。
      */
     const TEMPFAIL = 75;

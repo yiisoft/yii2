@@ -17,9 +17,9 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
 
 /**
- * Application代表一个控制台应用程序。
+ * Application 代表一个控制台应用程序。
  *
- * Application继承自 [[\yii\base\Application]] 通过提供特定于
+ * Application 继承自 [[\yii\base\Application]] 通过提供特定于
  * 控制台请求的功能。特别是，它处理控制台请求
  * 通过基于命令的方法：
  *
@@ -39,9 +39,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * ```
  *
  * 其中 `<route>` 指的是 `ModuleID/ControllerID/ActionID` 形式的控制器路由
- * （例如 `sitemap/create`）， 和 `param1`，`param2` 指的是一组命名参数
+ * （例如 `sitemap/create`），和 `param1`，`param2` 指的是一组命名参数
  * 将用于初始化控制器动作 （例如 `--since=0` 指定一个 `since` 参数
- * 其值为0并且将相应的 `$since` 参数传递给动作方法）。
+ * 其值为 0 并且将相应的 `$since` 参数传递给动作方法）。
  *
  * 默认提供 `help` 命令，列出可用命令并显示其用法。
  * 要使用此命令，只需键入：
@@ -65,7 +65,7 @@ class Application extends \yii\base\Application
     const OPTION_APPCONFIG = 'appconfig';
 
     /**
-     * @var string 此应用程序的默认路由。默认为 'help' ，
+     * @var string 此应用程序的默认路由。默认为 'help'，
      * 表示 `help` 命令。
      */
     public $defaultRoute = 'help';
@@ -91,7 +91,7 @@ class Application extends \yii\base\Application
 
     /**
      * 加载配置。
-     * 此方法将检查是否指定了命令行选项 [[OPTION_APPCONFIG]] 。
+     * 此方法将检查是否指定了命令行选项 [[OPTION_APPCONFIG]]。
      * 如果是，则将相应的文件作为应用程序配置加载。
      * 否则，将返回作为参数提供的配置。
      * @param array $config 构造函数中提供的配置。
@@ -157,9 +157,9 @@ class Application extends \yii\base\Application
 
     /**
      * 运行路由指定的控制器操作。
-     * 此方法解析指定的路由并创建相应的子模块，控制器和动作
-     * 实例。然后调用 [[Controller::runAction()]] 通过给定的参数来运行动作。
-     * 如果路由为空，则方法将使用 [[defaultRoute]] 。
+     * 此方法解析指定的路由并创建相应的子模块，控制器和动作实例。
+     * 然后调用 [[Controller::runAction()]] 通过给定的参数来运行动作。
+     * 如果路由为空，则方法将使用 [[defaultRoute]]。
      *
      * 例如，运行 `public function actionTest($a, $b)` 假设控制器有选项
      * 应使用以下代码：
@@ -171,7 +171,7 @@ class Application extends \yii\base\Application
      * @param string $route 指定动作的路由。
      * @param array $params 要传递给动作的参数
      * @return int|Response 动作的结果。这可以是退出码或 Response 对象。
-     * 退出代码0表示正常，其他值表示异常。退出代码 `null` 也被视为 `0` 。
+     * 退出代码 0 表示正常，其他值表示异常。退出代码 `null` 也被视为 `0`。
      * @throws Exception 如果路由无效
      */
     public function runAction($route, $params = [])

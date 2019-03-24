@@ -58,7 +58,7 @@ class UnknownCommandException extends Exception
      *
      * - 建议以 `$command` 开头的备选方案
      * - 通过计算未知命令和所有可用命令之间的 Levenshtein 距离来查找
-     *   拼写错误。Levenshtein距离定义为将str1转换为str2
+     *   拼写错误。Levenshtein 距离定义为将 str1 转换为 str2
      *   所需替换、插入或删除的最小字符数。
      *
      * @see http://php.net/manual/en/function.levenshtein.php
@@ -104,7 +104,7 @@ class UnknownCommandException extends Exception
      *
      * - 建议以 `$command` 开头的备选方案
      * - 通过计算未知命令和所有可用命令之间的 Levenshtein 距离来查找
-     *   拼写错误。Levenshtein距离定义为将str1转换为str2
+     *   拼写错误。 Levenshtein 距离定义为将 str1 转换为 str2
      *   所需替换、插入或删除的最小字符数。
      *
      * @see http://php.net/manual/en/function.levenshtein.php
@@ -130,7 +130,7 @@ class UnknownCommandException extends Exception
             return levenshtein($action, $command);
         }, array_combine($actions, $actions));
 
-        // 如果 levensthein 距离不超过3，我们假设拼写错误，即需要3次替换
+        // 如果 levensthein 距离不超过 3，我们假设拼写错误，即需要 3 次替换
         $relevantTypos = array_filter($distances, function ($distance) {
             return $distance <= 3;
         });
