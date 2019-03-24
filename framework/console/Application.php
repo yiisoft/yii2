@@ -10,72 +10,71 @@ namespace yii\console;
 use Yii;
 use yii\base\InvalidRouteException;
 
-// define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
+// 如果PHP SAPI没有定义它们，则定义STDIN，STDOUT和STDERR(e.g. 在web env中创建控制台应用程序)
 // http://php.net/manual/en/features.commandline.io-streams.php
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
 
 /**
- * Application represents a console application.
- *
- * Application extends from [[\yii\base\Application]] by providing functionalities that are
- * specific to console requests. In particular, it deals with console requests
- * through a command-based approach:
- *
- * - A console application consists of one or several possible user commands;
- * - Each user command is implemented as a class extending [[\yii\console\Controller]];
- * - User specifies which command to run on the command line;
- * - The command processes the user request with the specified parameters.
- *
- * The command classes should be under the namespace specified by [[controllerNamespace]].
- * Their naming should follow the same naming convention as controllers. For example, the `help` command
- * is implemented using the `HelpController` class.
- *
- * To run the console application, enter the following on the command line:
- *
+ * Application代表一个控制台应用程序。
+ * Application继承自 [[\yii\base\Application]] 通过提供特定于
+ * 控制台请求的功能。特别是，它处理控制台请求
+ * 通过基于命令的方法：
+
+ * - 控制台应用程序包含一个或多个可能的用户命令;
+ * - 每个用户命令都实现为继承 [[\yii\console\Controller]] 的类;
+ * - 用户指定在命令行上运行哪个命令;
+ * - 该命令使用指定的参数处理用户请求。
+
+ * 命令类应位于 [[controllerNamespace]] 指定的命名空间下。
+ * 它们的命名应遵循与控制器相同的命名约定。例如，`help` 命令
+ * 使用 `HelpController` 类实现。
+
+ * 要运行控制台应用程序，请在命令行中输入以下内容：
+
  * ```
  * yii <route> [--param1=value1 --param2 ...]
  * ```
- *
- * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
- * (e.g. `sitemap/create`), and `param1`, `param2` refers to a set of named parameters that
- * will be used to initialize the controller action (e.g. `--since=0` specifies a `since` parameter
- * whose value is 0 and a corresponding `$since` parameter is passed to the action method).
- *
- * A `help` command is provided by default, which lists available commands and shows their usage.
- * To use this command, simply type:
- *
+
+ * 其中 `<route>` 指的是 `ModuleID/ControllerID/ActionID` 形式的控制器路由
+ * (e.g. `sitemap/create`), 和 `param1`, `param2` 指的是一组命名参数
+ * 将用于初始化控制器动作 (e.g. `--since=0` 指定一个 `since` 参数
+ * 其值为0并且将相应的 `$since` 参数传递给动作方法).
+
+ * 默认提供`help`命令，列出可用命令并显示其用法。
+ * 要使用此命令，只需键入：
+
  * ```
  * yii help
  * ```
- *
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
- * @property Request $request The request component. This property is read-only.
- * @property Response $response The response component. This property is read-only.
- *
+
+ * @property ErrorHandler $errorHandler 错误处理程序应用程序组件。此属性是只读的。
+ * @property Request $request 请求组件。此属性是只读的。
+ * @property Response $response 响应组件。此属性是只读的。
+
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Application extends \yii\base\Application
 {
     /**
-     * The option name for specifying the application configuration file path.
+     * 用于指定应用程序配置文件路径的选项名称。
      */
     const OPTION_APPCONFIG = 'appconfig';
 
     /**
-     * @var string the default route of this application. Defaults to 'help',
-     * meaning the `help` command.
+     * @var string 此应用程序的默认路由。默认为'help'，
+     * 表示`help`命令。
      */
     public $defaultRoute = 'help';
     /**
-     * @var bool whether to enable the commands provided by the core framework.
-     * Defaults to true.
+     * @var bool 是否启用核心框架提供的命令。
+     * 默认为true。
      */
     public $enableCoreCommands = true;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller 当前运行的控制器实例
      */
     public $controller;
 
@@ -90,12 +89,12 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Loads the configuration.
-     * This method will check if the command line option [[OPTION_APPCONFIG]] is specified.
-     * If so, the corresponding file will be loaded as the application configuration.
-     * Otherwise, the configuration provided as the parameter will be returned back.
-     * @param array $config the configuration provided in the constructor.
-     * @return array the actual configuration to be used by the application.
+     * 加载配置。
+     * 此方法将检查是否指定了命令行选项 [[OPTION_APPCONFIG]] 。
+     * 如果是，则将相应的文件作为应用程序配置加载。
+     * 否则，将返回作为参数提供的配置。
+     * @param array $config 构造函数中提供的配置。
+     * @return array 应用程序使用的实际配置。
      */
     protected function loadConfig($config)
     {
@@ -117,7 +116,7 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Initialize the application.
+     * 初始化应用程序。
      */
     public function init()
     {
@@ -129,16 +128,16 @@ class Application extends \yii\base\Application
                 }
             }
         }
-        // ensure we have the 'help' command so that we can list the available commands
+        // 确保我们有'help'命令，以便我们列出可用的命令
         if (!isset($this->controllerMap['help'])) {
             $this->controllerMap['help'] = 'yii\console\controllers\HelpController';
         }
     }
 
     /**
-     * Handles the specified request.
-     * @param Request $request the request to be handled
-     * @return Response the resulting response
+     * 处理指定的请求。
+     * @param Request $request 要处理的请求
+     * @return Response 生成的响应
      */
     public function handleRequest($request)
     {
@@ -156,23 +155,23 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Runs a controller action specified by a route.
-     * This method parses the specified route and creates the corresponding child module(s), controller and action
-     * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
-     * If the route is empty, the method will use [[defaultRoute]].
+     * 运行路由指定的控制器操作。
+     * 此方法解析指定的路由并创建相应的子模块，控制器和动作
+     * 实例。然后调用 [[Controller::runAction()]] 通过给定的参数来运行动作。
+     * 如果路由为空，则方法将使用 [[defaultRoute]] 。
      *
-     * For example, to run `public function actionTest($a, $b)` assuming that the controller has options the following
-     * code should be used:
+     * 例如，运行 `public function actionTest($a, $b)` 假设控制器有选项
+     * 应使用以下代码：
      *
      * ```php
      * \Yii::$app->runAction('controller/test', ['option' => 'value', $a, $b]);
      * ```
      *
-     * @param string $route the route that specifies the action.
-     * @param array $params the parameters to be passed to the action
-     * @return int|Response the result of the action. This can be either an exit code or Response object.
-     * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treaded as `0` as well.
-     * @throws Exception if the route is invalid
+     * @param string $route 指定动作的路由。
+     * @param array $params 要传递给动作的参数
+     * @return int|Response 动作的结果。这可以是退出码或Response对象。
+     * 退出代码0表示正常，其他值表示异常。退出代码`null`也被视为`0`.
+     * @throws Exception 如果路由无效
      */
     public function runAction($route, $params = [])
     {
@@ -185,8 +184,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the configuration of the built-in commands.
-     * @return array the configuration of the built-in commands.
+     * 返回内置命令的配置。
+     * @return array 内置命令的配置。
      */
     public function coreCommands()
     {
@@ -202,8 +201,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the error handler component.
-     * @return ErrorHandler the error handler application component.
+     * 返回错误处理程序组件。
+     * @return ErrorHandler 错误处理程序应用程序组件。
      */
     public function getErrorHandler()
     {
@@ -211,8 +210,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the request component.
-     * @return Request the request component.
+     * 返回请求组件。
+     * @return Request 请求组件。
      */
     public function getRequest()
     {
@@ -220,8 +219,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the response component.
-     * @return Response the response component.
+     * 返回响应组件。
+     * @return Response 响应组件。
      */
     public function getResponse()
     {
