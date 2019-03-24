@@ -23,7 +23,8 @@ class BetweenConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * 方法从 $expression 构建原始 SQL，不会被额外转义或引用。
+     * 方法从 $expression 构建原始 SQL，不会被额外
+     * 转义或引用。
      *
      * @param ExpressionInterface|BetweenCondition $expression 要构建的表达式。
      * @param array $params 绑定参数。
