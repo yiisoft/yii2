@@ -10,7 +10,7 @@ namespace yii\console;
 use yii\base\UserException;
 
 /**
- * Exception represents an exception caused by incorrect usage of a console command.
+ * Exception 表示由于不正确使用控制台命令而导致的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,7 +18,7 @@ use yii\base\UserException;
 class Exception extends UserException
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

@@ -10,7 +10,7 @@ namespace yii\console;
 use Yii;
 use yii\base\InvalidRouteException;
 
-// 如果 PHP SAPI 没有定义它们，则定义 STDIN，STDOUT 和 STDERR （e.g. 在 web env 中创建控制台应用程序）
+// 如果 PHP SAPI 没有定义它们，则定义 STDIN，STDOUT 和 STDERR （例如 在 web env 中创建控制台应用程序）
 // http://php.net/manual/en/features.commandline.io-streams.php
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
@@ -38,8 +38,8 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * ```
 
  * 其中 `<route>` 指的是 `ModuleID/ControllerID/ActionID` 形式的控制器路由
- * （e.g. `sitemap/create`）， 和 `param1`，`param2` 指的是一组命名参数
- * 将用于初始化控制器动作 （e.g. `--since=0` 指定一个 `since` 参数
+ * （例如 `sitemap/create`）， 和 `param1`，`param2` 指的是一组命名参数
+ * 将用于初始化控制器动作 （例如 `--since=0` 指定一个 `since` 参数
  * 其值为0并且将相应的 `$since` 参数传递给动作方法）。
 
  * 默认提供 `help` 命令，列出可用命令并显示其用法。
@@ -128,7 +128,7 @@ class Application extends \yii\base\Application
                 }
             }
         }
-        // 确保我们有'help'命令，以便我们列出可用的命令
+        // 确保我们有 'help' 命令，以便我们列出可用的命令
         if (!isset($this->controllerMap['help'])) {
             $this->controllerMap['help'] = 'yii\console\controllers\HelpController';
         }
