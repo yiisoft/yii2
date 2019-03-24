@@ -129,7 +129,7 @@ class Application extends \yii\base\Application
                 }
             }
         }
-        // 确保我们有 'help' 命令，以便我们列出可用的命令
+        // ensure we have the 'help' command so that we can list the available commands
         if (!isset($this->controllerMap['help'])) {
             $this->controllerMap['help'] = 'yii\console\controllers\HelpController';
         }

@@ -406,7 +406,7 @@ abstract class BaseMigrateController extends Controller
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table)\nor the full name of a namespaced migration (e.g. app\\migrations\\M101129185401CreateUserTable).");
         }
 
-        // 尝试标记
+        // try mark up
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
@@ -421,7 +421,7 @@ abstract class BaseMigrateController extends Controller
             }
         }
 
-        // 试着记下来
+        // try mark down
         $migrations = array_keys($this->getMigrationHistory(null));
         $migrations[] = static::BASE_MIGRATION;
         foreach ($migrations as $i => $migration) {
@@ -601,8 +601,8 @@ abstract class BaseMigrateController extends Controller
      * ```
      *
      * 为了生成命名空间迁移，您应该在迁移名称之前指定命名空间。
-     * 请注意反斜杠 （`\`） 通常被认为是shell中的特殊字符，因此您需要将其转义
-     * 正确避免shell错误或不正确的行为。
+     * 请注意反斜杠（`\`）通常被认为是 shell 中的特殊字符，因此您需要将其转义
+     * 正确避免 shell 错误或不正确的行为。
      * 例如：
      *
      * ```
@@ -627,7 +627,7 @@ abstract class BaseMigrateController extends Controller
         }
 
         list($namespace, $className) = $this->generateClassName($name);
-        // 如果名字太长则中止
+        // Abort if name is too long
         $nameLimit = $this->getMigrationNameLimit();
         if ($nameLimit !== null && strlen($className) > $nameLimit) {
             throw new Exception('The migration name is too long.');
@@ -651,7 +651,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * 生成类的基本名称和命名空间通过用户输入的迁移名称。
      * @param string $name 用户输入的迁移名称。
-     * @return array 2个元素列表： 'namespace' 和 'class base name'
+     * @return array 2个元素列表：'namespace' 和 'class base name'
      * @since 2.0.10
      */
     private function generateClassName($name)
@@ -838,7 +838,7 @@ abstract class BaseMigrateController extends Controller
     {
         $originalVersion = $version;
 
-        // 尝试向上迁移
+        // try migrate up
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
@@ -848,7 +848,7 @@ abstract class BaseMigrateController extends Controller
             }
         }
 
-        // 尝试向下迁移
+        // try migrate down
         $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {

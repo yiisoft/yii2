@@ -83,7 +83,7 @@ class ExitCode
     /**
      * 检测到操作系统错误。这是为了
      * 用于诸如 ``cannot fork''，``cannot create pipe''，或
-     * 类似的。它包括像 getuid 返回一个在 passwd 文件中 不存在
+     * 类似的。它包括像 getuid 返回一个在 passwd 文件中不存在
      * 的用户。
      */
     const OSERR = 71;

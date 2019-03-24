@@ -226,7 +226,7 @@ class AssetController extends Controller
             }
         }
 
-        $this->getAssetManager(); // 检测资源管理器配置是否正确
+        $this->getAssetManager(); // check if asset manager configuration is correct
     }
 
     /**
@@ -280,14 +280,14 @@ class AssetController extends Controller
      */
     protected function loadTargets($targets, $bundles)
     {
-        // 构建包的依赖顺序
+        // build the dependency order of bundles
         $registered = [];
         foreach ($bundles as $name => $bundle) {
             $this->registerBundle($bundles, $name, $registered);
         }
         $bundleOrders = array_combine(array_keys($registered), range(0, count($bundles) - 1));
 
-        // 填满有空的 'depends' 的目标.
+        // fill up the target which has empty 'depends'.
         $referenced = [];
         foreach ($targets as $name => $target) {
             if (empty($target['depends'])) {
@@ -310,8 +310,8 @@ class AssetController extends Controller
             $targets[$all]['depends'] = array_diff(array_keys($registered), array_keys($referenced));
         }
 
-        // 根据包的依赖顺序调整每个目标的 'depends' 顺序
-        // 为每个目标创建一个 AssetBundle 对象
+        // adjust the 'depends' order for each target according to the dependency order of bundles
+        // create an AssetBundle object for each target
         foreach ($targets as $name => $target) {
             if (!isset($target['basePath'])) {
                 throw new Exception("Please specify 'basePath' for the '$name' target.");
@@ -408,7 +408,7 @@ class AssetController extends Controller
             $target->depends = array_keys($depends);
         }
 
-        // 检测可能的循环依赖
+        // detect possible circular dependencies
         foreach ($targets as $name => $target) {
             $registered = [];
             $this->registerBundle($targets, $name, $registered);
@@ -568,8 +568,8 @@ EOD;
     {
         $content = '';
         foreach ($inputFiles as $file) {
-            // 如果缺少尾随分号，在源代码中添加分号。
-            // Notice: 在 `;` 前面需要一个新行以避免行注释影响。 (// ...;)
+            // Add a semicolon to source code if trailing semicolon missing.
+            // Notice: It needs a new line before `;` to avoid affection of line comment. (// ...;)
             $fileContent = rtrim(file_get_contents($file));
             if (substr($fileContent, -1) !== ';') {
                 $fileContent .= "\n;";

@@ -79,10 +79,10 @@ class UnknownCommandException extends Exception
             if ($result === false) {
                 continue;
             }
-            // 添加命令本身（默认操作）
+            // add the command itself (default action)
             $availableActions[] = $command;
 
-            // 添加此控制器的所有操作
+            // add all actions of this controller
             /** @var $controller Controller */
             list($controller, $actionID) = $result;
             $actions = $helpController->getActions($controller);
@@ -104,7 +104,7 @@ class UnknownCommandException extends Exception
      *
      * - 建议以 `$command` 开头的备选方案
      * - 通过计算未知命令和所有可用命令之间的 Levenshtein 距离来查找
-     *   拼写错误。 Levenshtein 距离定义为将 str1 转换为 str2
+     *   拼写错误。Levenshtein 距离定义为将 str1 转换为 str2
      *   所需替换、插入或删除的最小字符数。
      *
      * @see http://php.net/manual/en/function.levenshtein.php
@@ -116,21 +116,21 @@ class UnknownCommandException extends Exception
     {
         $alternatives = [];
 
-        // 建议首先以 $command 开头的备选方案
+        // suggest alternatives that begin with $command first
         foreach ($actions as $action) {
             if (strpos($action, $command) === 0) {
                 $alternatives[] = $action;
             }
         }
 
-        // 计算未知命令和所有可用命令之间的 Levenshtein 距离。
+        // calculate the Levenshtein distance between the unknown command and all available commands.
         $distances = array_map(function ($action) use ($command) {
             $action = strlen($action) > 255 ? substr($action, 0, 255) : $action;
             $command = strlen($command) > 255 ? substr($command, 0, 255) : $command;
             return levenshtein($action, $command);
         }, array_combine($actions, $actions));
 
-        // 如果 levensthein 距离不超过 3，我们假设拼写错误，即需要 3 次替换
+        // we assume a typo if the levensthein distance is no more than 3, i.e. 3 replacements needed
         $relevantTypos = array_filter($distances, function ($distance) {
             return $distance <= 3;
         });
