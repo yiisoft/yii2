@@ -24,7 +24,7 @@ namespace yii\filters\auth;
  * ```
  *
  * HttpHeaderAuth 默认使用了 [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]]
- * `user` 应用程序组件的方法并传递 'X-Api-Key' 头的值。
+ * `user` 应用程序组件的方法并传递 `X-Api-Key` 头的值。
  * 此实现用于验证 API 客户端。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
