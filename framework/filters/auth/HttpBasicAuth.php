@@ -23,9 +23,9 @@ namespace yii\filters\auth;
  * }
  * ```
  *
- *  HttpBasicAuth 默认实现使用 [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]] 方法。
+ * HttpBasicAuth 默认实现使用 [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]] 方法。
  * `user` 应用程序组件的方法只传递用户名。
- *  此实现用于对 API 客户端进行身份验证。
+ * 此实现用于对 API 客户端进行身份验证。
  *
  * 如果要使用用户名和密码对用户进行身份验证，您应该提供 [[auth]] 功能例如：
  *
@@ -47,7 +47,7 @@ namespace yii\filters\auth;
  * }
  * ```
  *
- * >Tip: 如果身份验证不能按预期工作，确保您的 Web 服务器通过
+ * > Tip: 如果身份验证不能按预期工作，确保您的 Web 服务器通过
  * `$_SERVER['PHP_AUTH_USER']` 和 `$_SERVER['PHP_AUTH_PW']` 的值。
  * 如果你使用 Apache 配合 PHP-CGI，您可能需要将此行添加到 `.htaccess` 文件中：
  * ```
