@@ -591,33 +591,33 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * 创建新的迁移。
-
+     *
      * 此命令使用可用的迁移模板创建新迁移。
      * 使用此命令后，开发人员应通过填充实际的迁移逻辑
      * 来修改创建的迁移框架。
-
+     *
      * ```
      * yii migrate/create create_user_table
      * ```
-
+     *
      * 为了生成命名空间迁移，您应该在迁移名称之前指定命名空间。
      * 请注意反斜杠 （`\`） 通常被认为是shell中的特殊字符，因此您需要将其转义
      * 正确避免shell错误或不正确的行为。
      * For example:
-
+     *
      * ```
      * yii migrate/create 'app\\migrations\\createUserTable'
      * ```
-
+     *
      * 如果未设置 [[migrationPath]] 且未提供命名空间，则将使用 [[migrationNamespaces]]的第一个条目。
-
+     *
      * @param string $name 新迁移的名称。 这应该只包含
      * 字母，数字，下划线和/或反斜杠。
-
+     *
      * Note: 如果迁移名称是特殊形式，例如 create_xxx 或
      * drop_xxx ，然后生成的迁移文件将包含额外的代码，
      * 在这种情况下用于创建/删除表。
-
+     *
      * @throws Exception 如果name参数无效。
      */
     public function actionCreate($name)
