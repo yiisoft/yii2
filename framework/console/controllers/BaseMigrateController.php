@@ -44,6 +44,7 @@ abstract class BaseMigrateController extends Controller
      *
      * 如果你已经设置了 [[migrationNamespaces]] ，你可以按顺序将此字段设置为 `null`
      * 禁用未命名空间的迁移的使用。
+     *
      * 从版本2.0.12开始 您还可以指定应该搜索的迁移路径数组
      * 以加载迁移。这主要用于支持在没有命名空间的情况下
      * 提供迁移的旧扩展，并在保留现有迁移的同时采用命名空间迁移的新功能。
