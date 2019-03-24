@@ -66,7 +66,7 @@ interface DataProviderInterface
     public function getSort();
 
     /**
-     * @return Pagination|false 分页对象。如果为false，则表示禁用分页。
+     * @return Pagination|false 分页对象。如果为 false，则表示禁用分页。
      */
     public function getPagination();
 }

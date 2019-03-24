@@ -20,11 +20,11 @@ use yii\base\InvalidArgumentException;
  * @property array $keys 与 [[models]] 对应的键值列表。[[models]] 中的每个数据模型
  * 都由该数组中相应的键值唯一标识。
  * @property array $models 当前页中的数据模型列表。
- * @property Pagination|false $pagination 分页对象。如果为false，则表示禁用
+ * @property Pagination|false $pagination 分页对象。如果为 false，则表示禁用
  * 分页。注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getPagination()]] 和
  * [[setPagination()]]。
  * @property Sort|bool $sort 排序对象。如果为 false，则表示排序被禁用。 注意
- * 此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getSort()]] and [[setSort()]] 。
+ * 此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getSort()]] 和 [[setSort()]] 。
  * @property int $totalCount 数据模型总数。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -33,14 +33,14 @@ use yii\base\InvalidArgumentException;
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
     /**
-     * @var int 当前页上的数据提供器数。用于生成唯一IDs。
+     * @var int 当前页上的数据提供器数。用于生成唯一 IDs。
      */
     private static $counter = 0;
     /**
-     * @var string 在所有数据提供器中唯一标识该数据提供器的ID，如果未设置该ID，
+     * @var string 在所有数据提供器中唯一标识该数据提供器的 ID，如果未设置该 ID，
      * 则按以下方式自动生成：
      *
-     * - 第一个数据提供器ID为空。
+     * - 第一个数据提供器 ID 为空。
      * - 第二个和所有后续的数据提供者 IDs 是： "dp-1"，"dp-2"等。
      */
     public $id;

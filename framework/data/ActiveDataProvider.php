@@ -75,7 +75,7 @@ class ActiveDataProvider extends BaseDataProvider
     /**
      * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件 ID。
      * 如果未设置，将使用默认的 DB 连接。
-     * 从2.0.2版开始，它也可以是用于创建对象的配置数组。
+     * 从 2.0.2 版开始，它也可以是用于创建对象的配置数组。
      */
     public $db;
 
