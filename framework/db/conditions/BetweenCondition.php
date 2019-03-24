@@ -10,7 +10,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * 类 BetweenCondition 表示 `BETWEEN` 条件
+ * 类 BetweenCondition 表示 `BETWEEN` 条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -36,7 +36,7 @@ class BetweenCondition implements ConditionInterface
 
 
     /**
-     * 使用 `BETWEEN` 运算符创建条件
+     * 使用 `BETWEEN` 运算符创建条件。
      *
      * @param mixed $column $operator 左边的文字
      * @param string $operator 要使用的运算符（例如：`BETWEEN` or `NOT BETWEEN`）
@@ -85,7 +85,7 @@ class BetweenCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException 如果已给出错误的操作数，则抛出 InvalidArgumentException 异常
+     * @throws InvalidArgumentException 如果已给出错误的操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {
