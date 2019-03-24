@@ -8,7 +8,7 @@
 namespace yii\db\conditions;
 
 /**
- * Condition based on column-value pairs.
+ * 条件基于列值对。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -16,13 +16,13 @@ namespace yii\db\conditions;
 class HashCondition implements ConditionInterface
 {
     /**
-     * @var array|null the condition specification.
+     * @var array|null 条件规范。
      */
     private $hash;
 
 
     /**
-     * HashCondition constructor.
+     * HashCondition 构造函数。
      *
      * @param array|null $hash
      */
