@@ -42,7 +42,7 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * 主备要在 SQL 语句中使用的列名。
+     * 准备要在 SQL 语句中使用的列名。
      *
      * @param Query|ExpressionInterface|string $columnName
      * @param array $params 绑定参数。
