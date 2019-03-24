@@ -23,7 +23,6 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
     use ExpressionBuilderTrait;
 
     /**
-     * @var array map of chars to their replacements in LIKE conditions.
      * @var array 在 LIKE 条件下，字符到替换字符的映射。
      * 默认情况下，指定用 `\` 转义 `%`、`_` 以及 `\`。
      */
