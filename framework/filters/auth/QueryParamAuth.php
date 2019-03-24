@@ -8,7 +8,7 @@
 namespace yii\filters\auth;
 
 /**
- * QueryParamAuth is an action filter that supports the authentication based on the access token passed through a query parameter.
+ * QueryParamAuth 是一个操作筛选器支持基于通过查询参数传递的访问令牌进行身份验证。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,7 +16,7 @@ namespace yii\filters\auth;
 class QueryParamAuth extends AuthMethod
 {
     /**
-     * @var string the parameter name for passing the access token
+     * @var string 用于传递访问令牌的参数名
      */
     public $tokenParam = 'access-token';
 
