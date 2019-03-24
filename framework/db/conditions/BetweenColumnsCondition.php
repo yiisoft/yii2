@@ -17,7 +17,7 @@ use yii\db\Query;
  *
  * ```php
  * new BetweenColumnsCondition(42, 'BETWEEN', 'min_value', 'max_value')
- * // 将构建如下 sql 语句：
+ * // Will be build to:
  * // 42 BETWEEN min_value AND max_value
  * ```
  *
@@ -31,7 +31,7 @@ use yii\db\Query;
  *    'update_time'
  * );
  *
- * // 将构建如下 sql 语句：
+ * // Will be build to:
  * // NOW() NOT BETWEEN (SELECT time FROM log ORDER BY id ASC LIMIT 1) AND update_time
  * ```
  *
