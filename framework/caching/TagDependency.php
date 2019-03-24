@@ -8,9 +8,9 @@
 namespace yii\caching;
 
 /**
- * TagDependency associates a cached data item with one or multiple [[tags]].
+ * TagDependency 是基于缓存数据的一个或者多个 [[tags]] 实现的缓存依赖类。
  *
- * By calling [[invalidate()]], you can invalidate all cached data items that are associated with the specified tag name(s).
+ * 通过调用 [[invalidate()]] 方法，你可以使得所有和指定的 tag 关联的缓存数据都置为无效。
  *
  * ```php
  * // setting multiple cache keys to store data forever and tagging them with "user-123"
@@ -21,7 +21,7 @@ namespace yii\caching;
  * TagDependency::invalidate(Yii::$app->cache, 'user-123');
  * ```
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -29,16 +29,16 @@ namespace yii\caching;
 class TagDependency extends Dependency
 {
     /**
-     * @var string|array a list of tag names for this dependency. For a single tag, you may specify it as a string.
+     * @var string|array 依赖的 tag 名称列表。如果仅仅是一个单独的 tag ,你可以指定它为一个字符串。
      */
     public $tags = [];
 
 
     /**
-     * Generates the data needed to determine if dependency has been changed.
-     * This method does nothing in this class.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return mixed the data needed to determine if dependency has been changed.
+     * 生成在判断依赖是否发生变化时用到的依赖数据。
+     * 在该类中这个方法不需要做什么。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return mixed 判断依赖是否发生变化时的依赖数据。
      */
     protected function generateDependencyData($cache)
     {
@@ -67,8 +67,8 @@ class TagDependency extends Dependency
     }
 
     /**
-     * Invalidates all of the cached data items that are associated with any of the specified [[tags]].
-     * @param CacheInterface $cache the cache component that caches the data items
+     * 使得所有和任何指定的 [[tags]] 关联的缓存数据都置为无效。
+     * @param CacheInterface $cache 缓存数据项的缓存组件。
      * @param string|array $tags
      */
     public static function invalidate($cache, $tags)
@@ -81,10 +81,10 @@ class TagDependency extends Dependency
     }
 
     /**
-     * Generates the timestamp for the specified cache keys.
+     * 根据指定的缓存键生成时间戳。
      * @param CacheInterface $cache
      * @param string[] $keys
-     * @return array the timestamp indexed by cache keys
+     * @return array 由缓存键为下标值为时间戳组成的数组。
      */
     protected static function touchKeys($cache, $keys)
     {
@@ -98,10 +98,10 @@ class TagDependency extends Dependency
     }
 
     /**
-     * Returns the timestamps for the specified tags.
+     * 根据指定的 tags 返回时间戳。
      * @param CacheInterface $cache
      * @param string[] $tags
-     * @return array the timestamps indexed by the specified tags.
+     * @return array 由 tags 为数组下标数组值为时间戳的数组。
      */
     protected function getTimestamps($cache, $tags)
     {
