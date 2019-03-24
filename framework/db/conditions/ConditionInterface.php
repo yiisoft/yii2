@@ -23,7 +23,7 @@ interface ConditionInterface extends ExpressionInterface
      * 按照 [文档：查询构建器 - 操作符格式](guide:db-query-builder#operator-format) 文档中的描述，
      * 以数组定义创建对象。
      *
-     * @param string $operator 运算符大写。
+     * @param string $operator 操作符大写。
      * @param array $operands 相应操作数的数组。
      *
      * @return $this
