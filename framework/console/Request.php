@@ -11,7 +11,7 @@ namespace yii\console;
  * 控制台请求表示控制台应用程序的环境信息。
  *
  * 它是 PHP `$_SERVER` 变量的包装器，该变量包含有关当前运行的
- * PHP脚本及其命令行参数的信息。
+ * PHP 脚本及其命令行参数的信息。
  *
  * @property array $params 命令行参数。它不包括条目脚本名称。
  *
