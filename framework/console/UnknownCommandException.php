@@ -79,7 +79,7 @@ class UnknownCommandException extends Exception
             if ($result === false) {
                 continue;
             }
-            // 添加命令本身(默认操作)
+            // 添加命令本身（默认操作）
             $availableActions[] = $command;
 
             // 添加此控制器的所有操作
