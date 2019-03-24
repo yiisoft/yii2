@@ -19,18 +19,18 @@ use yii\db\ExpressionInterface;
 class InCondition implements ConditionInterface
 {
     /**
-     * @var string $operator 要使用的运算符（例如：`IN` 或 `NOT IN`）
+     * @var string $operator 要使用的操作符（例如：`IN` 或 `NOT IN`）
      */
     private $operator;
     /**
-     * @var string|string[] 列名称。如果其是数组，
+     * @var string|string[] 列名。如果其是数组，
      * 将生成复合 `IN` 条件。
      */
     private $column;
     /**
      * @var ExpressionInterface[]|string[]|int[] 应该包含 [[column]] 值的值数组。
      * 如果值是一个空数组，当 [[operator]] 是 `IN` 时,则生成的表达式将会是 `false`,
-     * 如果运算符是 `NOT IN`，则为空。
+     * 如果操作符是 `NOT IN`，则为空。
      */
     private $values;
 
@@ -38,11 +38,11 @@ class InCondition implements ConditionInterface
     /**
      * SimpleCondition 构造函数
      *
-     * @param string|string[] 列名称。如果其是数组，
+     * @param string|string[] 列名。如果其是数组，
      * 将生成复合 `IN` 条件。
-     * @param string $operator 要使用运算符（例如：`IN` 或 `NOT IN`）
+     * @param string $operator 要使用操作符（例如：`IN` 或 `NOT IN`）
      * @param array 包含 [[column]] 值的值数组。如果值是一个空数组，当 [[operator]] 是 `IN` 时,则生成的表达式将会是 `false`,
-     * 如果运算符是 `NOT IN`，则为空。
+     * 如果操作符是 `NOT IN`，则为空。
      */
     public function __construct($column, $operator, $values)
     {
