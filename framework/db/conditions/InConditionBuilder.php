@@ -106,6 +106,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
     /**
      * 为 IN 条件构建 SQL。
+     *
      * @param string $operator
      * @param array|string $columns
      * @param Query $values
