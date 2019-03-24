@@ -41,7 +41,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * 则按以下方式自动生成：
      *
      * - 第一个数据提供器 ID 为空。
-     * - 第二个和所有后续的数据提供者 IDs 是："dp-1"，"dp-2"等。
+     * - 第二个和所有后续的数据提供者 IDs 是："dp-1"，"dp-2" 等。
      */
     public $id;
 

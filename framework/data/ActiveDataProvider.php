@@ -82,7 +82,7 @@ class ActiveDataProvider extends BaseDataProvider
 
     /**
      * 初始化数据库连接组件
-     * 此方法将初始化 [[db]] 属性，以确保它引用有效的db连接。
+     * 此方法将初始化 [[db]] 属性，以确保它引用有效的 db 连接。
      * @throws InvalidConfigException 如果 [[db]] 不可用。
      */
     public function init()
