@@ -10,7 +10,7 @@ namespace yii\filters\auth;
 /**
  * HttpBearerAuth 是支持基于 HTTP 承载令牌的身份验证方法的操作筛选器。
  *
- * 您可以使用 HttpBearerAuth，将其作为行为附加到控制器或模块，如下所示:
+ * 您可以使用 HttpBearerAuth，将其作为行为附加到控制器或模块，如下所示：
  *
  * ```php
  * public function behaviors()
