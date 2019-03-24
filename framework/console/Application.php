@@ -53,7 +53,7 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * @property ErrorHandler $errorHandler 错误处理程序应用程序组件。此属性是只读的。
  * @property Request $request 请求组件。此属性是只读的。
  * @property Response $response 响应组件。此属性是只读的。
- *                              
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -53,14 +53,14 @@ class UnknownCommandException extends Exception
 
     /**
      * 根据字符串相似性为 [[$command]] 建议替代命令。
-
+     *
      * 使用以下步骤搜索备选方案：
-
+     *
      * - 建议以 `$command` 开头的备选方案
      * - 通过计算未知命令和所有可用命令之间的 Levenshtein 距离来查找
      *   拼写错误。Levenshtein距离定义为将str1转换为str2
      *   所需替换、插入或删除的最小字符数。
-
+     *
      * @see http://php.net/manual/en/function.levenshtein.php
      * @return array 按相似性排序的建议备选方案列表。
      */
