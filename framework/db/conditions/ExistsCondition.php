@@ -11,7 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\db\Query;
 
 /**
- * 表示 `EXISTS` 运算符的条件。
+ * 表示 `EXISTS` 操作符的条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -19,7 +19,7 @@ use yii\db\Query;
 class ExistsCondition implements ConditionInterface
 {
     /**
-     * @var string $operator 要使用的运算符（例如：`EXISTS` 或 `NOT EXISTS`）
+     * @var string $operator 要使用的操作符（例如：`EXISTS` 或 `NOT EXISTS`）
      */
     private $operator;
     /**
