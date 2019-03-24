@@ -32,10 +32,10 @@ use yii\web\AssetBundle;
  *
  * 4. 调整你的web应用程序配置以使用压缩资源
  *
- * 注意: 在控制台环境中一些 [路径 别名](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在,
+ * Note: 在控制台环境中一些 [path alias](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在,
  * 因此应该直接指定配置中的相应路径。
  *
- * 注意: 默认情况下这个命令依赖外部工具来执行实际的文件压缩，
+ * Note: 默认情况下这个命令依赖外部工具来执行实际的文件压缩，
  * 核实 [[jsCompressor]] 和 [[cssCompressor]] 获取详细信息。
  *
  * @property \yii\web\AssetManager $assetManager 资源管理器实例。 注意此属性的类型在getter和setter中有所不同。
@@ -58,7 +58,7 @@ class AssetController extends Controller
     /**
      * @var array 表示输出压缩文件的资源包列表。
      * 你可以使用'css'和'js'键来指定输出压缩文件的名称:
-     * 例如:
+     * For example:
      *
      * ```php
      * 'app\config\AllAsset' => [
@@ -72,8 +72,9 @@ class AssetController extends Controller
      *
      * 为了压缩不通的资源组，你可以指定多个目标包。
      * 在这种情况下你应该使用 'depends' 键来指定, 哪些包应该包含在特定的目标包中。
-     * 对于单个包，你可以将 'depends' 保留为空，在这种情况下，它将压缩所有剩下的包。
-     * 例如:
+     * 对于单个包，你可以将 'depends' 保留为空，它将压缩所有剩下的包
+     * 在这种情况下。
+     * For example:
      *
      * ```php
      * 'allShared' => [
@@ -567,7 +568,7 @@ EOD;
         $content = '';
         foreach ($inputFiles as $file) {
             // 如果缺少尾随分号，在源代码中添加分号。
-            // 注意: 在 `;` 前面需要一个新行以避免行注释影响。 (// ...;)
+            // Notice: 在 `;` 前面需要一个新行以避免行注释影响。 (// ...;)
             $fileContent = rtrim(file_get_contents($file));
             if (substr($fileContent, -1) !== ';') {
                 $fileContent .= "\n;";
