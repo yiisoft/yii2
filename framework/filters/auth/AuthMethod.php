@@ -94,7 +94,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     }
 
     /**
-     * 检查,给定操作的身份验证是否可选。
+     * 检查，给定操作的身份验证是否可选。
      *
      * @param Action $action 要检查的操作。
      * @return bool 身份验证是否可选。
