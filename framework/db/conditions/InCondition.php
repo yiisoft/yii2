@@ -41,7 +41,7 @@ class InCondition implements ConditionInterface
      * @param string|string[] 列名。如果其是数组，
      * 将生成复合 `IN` 条件。
      * @param string $operator 要使用操作符（例如：`IN` 或 `NOT IN`）
-     * @param array 包含 [[column]] 值的值数组。如果值是一个空数组，当 [[operator]] 是 `IN` 时,则生成的表达式将会是 `false`,
+     * @param array 包含 [[column]] 值的值数组。如果值是一个空数组，当 [[operator]] 是 `IN` 时，则生成的表达式将会是 `false`,
      * 如果操作符是 `NOT IN`，则为空。
      */
     public function __construct($column, $operator, $values)
