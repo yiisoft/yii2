@@ -43,7 +43,7 @@ class LikeCondition extends SimpleCondition
      * @param array 从特殊字符到其转义对应字符的映射数组。
      * 你可以使用 `false` 或空数组来表示值已经转义，并不应该再应用转义。
      * 注意，使用转义映射（或未提供第三个操作数）时，
-     * 值将自动包含在一对 %字符中。
+     * 值将自动包含在一对 % 字符中。
      */
     public function setEscapingReplacements($escapingReplacements)
     {

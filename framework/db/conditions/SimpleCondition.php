@@ -10,7 +10,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * 类 SimpleCondition 表示一个简单的条件，如 `“列”操作符值`。
+ * 类 SimpleCondition 表示一个简单的条件，如 `“column”操作符值`。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

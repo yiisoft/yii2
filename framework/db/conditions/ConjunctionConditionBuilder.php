@@ -49,7 +49,7 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
      * 构建存储再 $condition 中的表达式
      *
      * @param ExpressionInterface|ConjunctionCondition $condition 要构建的表达式。
-     * @param array $params 绑定参数
+     * @param array $params 绑定参数。
      * @return string[]
      */
     private function buildExpressionsFrom(ExpressionInterface $condition, &$params = [])

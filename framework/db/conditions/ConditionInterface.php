@@ -12,7 +12,7 @@ use yii\db\ExpressionInterface;
 
 /**
  * 接口 ConditionInterface 应该由表示框架的
- * DBAL中的条件的类实现
+ * DBAL 中的条件的类实现
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -20,7 +20,7 @@ use yii\db\ExpressionInterface;
 interface ConditionInterface extends ExpressionInterface
 {
     /**
-     * 按照 [文档：查询构建器 - 操作符格式](guide:db-query-builder#operator-format) 文档中的描述，
+     * 按照 [Query Builder – Operator format](guide:db-query-builder#operator-format) 文档中的描述，
      * 以数组定义创建对象。
      *
      * @param string $operator 操作符大写。
