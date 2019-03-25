@@ -12,7 +12,7 @@ use yii\db\Constraint;
 use yii\db\Expression;
 
 /**
- * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
+ * MS SQL Server（版本要求 2008 以及 2008 以上版本）数据库查询构建器。
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -20,7 +20,7 @@ use yii\db\Expression;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）到物理列类型（值）的映射。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
@@ -76,12 +76,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
-     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     * 为 SQL SERVER 2012 或更高版本构建的 BY/LIMIT/OFFSET 子句。
+     * @param string $sql 现有的 SQL 语句（语句中不包含 ORDER BY/LIMIT/OFFSET）
+     * @param array $orderBy 按列排序。有关如何指定此参数的详细信息，参阅 [[\yii\db\Query::orderBy]]。
+     * @param int $limit 限制量。更多细节，请参阅 [[\yii\db\Query::limit]]。
+     * @param int $offset 偏移量。更多细节，请参阅 [[\yii\db\Query::offset]]。
+     * @return string 包含 ORDER BY/LIMIT/OFFSET 的 SQL 语句（假如有的话）
      */
     protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -103,12 +103,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
-     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     * 为 SQL SERVER 2005 到 2008 版本构建的 BY/LIMIT/OFFSET 子句。
+     * @param string $sql 现有的 SQL 语句（语句中不包含 ORDER BY/LIMIT/OFFSET）
+     * @param array $orderBy 按列排序。有关如何指定此参数的详细信息，参阅 [[\yii\db\Query::orderBy]]。
+     * @param int $limit 限制量。更多细节，请参阅 [[\yii\db\Query::limit]]。
+     * @param int $offset 偏移量。更多细节，请参阅 [[\yii\db\Query::offset]]。
+     * @return string 包含 ORDER BY/LIMIT/OFFSET 的 SQL 语句（假如有的话）
      */
     protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -133,10 +133,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
+     * 构建用于重新命名数据库表名的 SQL 语句。
+     * @param string $oldName 要重命名的表名。确保在该方法内请引用正确的名称。
+     * @param string $newName 表的新名称。确保在该方法内请引用正确的名称。
+     * @return string 用于重命名数据库表名的 SQL 语句。
      */
     public function renameTable($oldName, $newName)
     {
@@ -144,11 +144,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
+     * 构建对列名重命名的 SQL 语句。
+     * @param string $table 要重命名的列所在表的名称。确保在该方法内引用正确的名称。
+     * @param string $oldName 旧的列名. 确保在该方法内引用正确的名称。
+     * @param string $newName 新的列名。确保在该方法内引用正确的名称。
+     * @return string 用于重命名数据库表的列名的 SQL 语句。
      */
     public function renameColumn($table, $oldName, $newName)
     {
