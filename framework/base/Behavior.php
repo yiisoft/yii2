@@ -86,7 +86,15 @@ class Behavior extends BaseObject
     {
         if ($this->owner) {
             foreach ($this->events() as $event => $handler) {
-                $this->owner->off($event, is_string($handler) ? [$this, $handler] : $handler);
+                if (is_string($handler)) {
+                    $sParam = [$this, $handler];
+                } else if ($handler instanceof \Closure) {
+                    $sParam = null;
+                } else {
+                    $sParam = $handler;
+                }
+
+                $this->owner->off($event, $sParam);
             }
             $this->owner = null;
         }

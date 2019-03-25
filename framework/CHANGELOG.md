@@ -4,8 +4,7 @@ Yii Framework 2 Change Log
 2.0.18 under development
 ------------------------
 
-- no changes in this release.
-
+- Bug #17223: Fixed detaching a behavior event when it is a Closure instance (GHopperMSK)
 
 2.0.17 March 22, 2019
 ---------------------
