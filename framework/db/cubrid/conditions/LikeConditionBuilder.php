@@ -17,8 +17,8 @@ class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
      */
     protected $escapeCharacter = '!';
     /**
-     * `\` is initialized in [[buildLikeCondition()]] method since
-     * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
+     * 在 [[buildLinkCondition()]] 方法中初始化 `\`
+     * 需要根据 [[\yii\db\Schema::quoteValue()]] 选择替换值。
      * {@inheritdoc}
      */
     protected $escapingReplacements = [
