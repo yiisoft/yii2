@@ -445,6 +445,36 @@ class ComponentTest extends TestCase
         $this->assertFalse($obj->off('test', [$this, 'handler2']), 'Trying to remove the handler that is not attached');
         $this->assertTrue($obj->off('test', [$this, 'handler']), 'Trying to remove the attached handler');
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17223
+     */
+    public function testEventClosureDetachesItself()
+    {
+        $obj = new class () extends Component
+        {
+            public $foo = 0;
+        };
+
+        $obj->attachBehavior('bar', (new class () extends Behavior
+        {
+            public function events()
+            {
+                return [
+                    'barEventOnce' => function ($event) {
+                        $this->owner->foo++;
+                        $this->detach();
+                    },
+                ];
+            }
+        }));
+
+        $obj->trigger('barEventOnce');
+        $this->assertEquals(1, $obj->foo);
+        $obj->trigger('barEventOnce');
+        $this->assertEquals(1, $obj->foo);
+    }
+
 }
 
 class NewComponent extends Component
