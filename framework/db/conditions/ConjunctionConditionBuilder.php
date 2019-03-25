@@ -12,7 +12,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * 类 ConjunctionConditionBuilder 构建抽象类的对象 [[ConjunctionCondition]]
+ * 类 ConjunctionConditionBuilder 构建抽象类 [[ConjunctionCondition]] 的具体对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -23,12 +23,12 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * 方法从 $expression 构建原始 SQL，
-     * 不会被额外转义或引用。
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构架原始 sQL 语句的方法。
      *
      * @param ExpressionInterface|ConjunctionCondition $condition 要构建的表达式。
      * @param array $params 绑定参数。
-     * @return string 原始 SQL 不会被额外转义或引用。
+     * @return string 不会被额外转义或引用的原始 SQL 语句。
      */
     public function build(ExpressionInterface $condition, array &$params = [])
     {
@@ -46,7 +46,7 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * 构建存储再 $condition 中的表达式
+     * 构建存储在 $condition 中的表达式
      *
      * @param ExpressionInterface|ConjunctionCondition $condition 要构建的表达式。
      * @param array $params 绑定参数。

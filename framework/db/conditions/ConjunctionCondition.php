@@ -8,7 +8,7 @@
 namespace yii\db\conditions;
 
 /**
- * 类 ConjunctionCondition
+ * ConjunctionCondition 类
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -38,7 +38,7 @@ abstract class ConjunctionCondition implements ConditionInterface
     }
 
     /**
-     * 返回由此条件类表示的操作符，例如：`AND`，`OR`。
+     * 返回由此抽象类表示的操作符，例如：`AND`，`OR`。
      * @return string
      */
     abstract public function getOperator();

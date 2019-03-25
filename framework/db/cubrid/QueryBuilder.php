@@ -14,7 +14,7 @@ use yii\db\Exception;
 use yii\db\Expression;
 
 /**
- * QueryBuilder 是 CUBRID 数据库的模式查询构建器（版本要求 version 9.3.x 或 更高）。
+ * QueryBuilder 是 CUBRID 数据库的模式查询构建器（版本要求 version 9.3.x 以及 更高）。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

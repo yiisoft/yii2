@@ -13,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * 类 BetweenColumnsConditionBuilder 构建 [[BetweenColumnsCondition]] 对象
+ * 类 BetweenColumnsConditionBuilder 构建 [[BetweenColumnsCondition]] 类的对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -24,12 +24,12 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * 方法从 $expression 构建原始 SQL，
-     * 不会被额外转义或引用。
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构架原始 SQL 语句的方法。
      *
      * @param ExpressionInterface|BetweenColumnsCondition $expression 要构建的表达式。
      * @param array $params 绑定参数。
-     * @return string 原始 SQL 不会被额外转义或引用。
+     * @return string 不会被额外转义或引用的 SQL语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {

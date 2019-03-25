@@ -12,7 +12,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * 类 BetweenColumnCondition 表示 `BETWEEN` 条件
+ * BetweenColumnCondition 类表示 `BETWEEN` 条件
  * 其中值在两个列中间，比如：
  *
  * ```php

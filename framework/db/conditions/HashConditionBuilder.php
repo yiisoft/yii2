@@ -25,12 +25,12 @@ class HashConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * 方法从 $expression 构建原始 SQL，
-     * 不会被额外转义或引用。
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构架原始 sQL 语句的方法。
      *
      * @param ExpressionInterface|HashCondition $expression 要构建的表达式。
      * @param array $params 绑定参数。
-     * @return string 原始 SQL 不会被额外转义或引用。
+     * @return string 不会被额外转义或引用的原始 SQL 语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
