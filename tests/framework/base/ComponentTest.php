@@ -451,28 +451,30 @@ class ComponentTest extends TestCase
      */
     public function testEventClosureDetachesItself()
     {
-        $obj = new class () extends Component
-        {
-            public $foo = 0;
-        };
-
-        $obj->attachBehavior('bar', (new class () extends Behavior
-        {
-            public function events()
+        if (version_compare(PHP_VERSION, '7.0', '>=')) {
+            $obj = new class () extends Component
             {
-                return [
-                    'barEventOnce' => function ($event) {
-                        $this->owner->foo++;
-                        $this->detach();
-                    },
-                ];
-            }
-        }));
+                public $foo = 0;
+            };
 
-        $obj->trigger('barEventOnce');
-        $this->assertEquals(1, $obj->foo);
-        $obj->trigger('barEventOnce');
-        $this->assertEquals(1, $obj->foo);
+            $obj->attachBehavior('bar', (new class () extends Behavior
+            {
+                public function events()
+                {
+                    return [
+                        'barEventOnce' => function ($event) {
+                            $this->owner->foo++;
+                            $this->detach();
+                        },
+                    ];
+                }
+            }));
+
+            $obj->trigger('barEventOnce');
+            $this->assertEquals(1, $obj->foo);
+            $obj->trigger('barEventOnce');
+            $this->assertEquals(1, $obj->foo);
+        }
     }
 
 }
