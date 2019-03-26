@@ -103,4 +103,16 @@ class DynamicModelTest extends TestCase
         $this->assertEquals($name, $dynamic->name);
         $this->assertEquals($mobile, $dynamic->mobile);
     }
+
+    public function testDefineAttributes()
+    {
+        $dynamic = new DynamicModel();
+        $attributes = [
+            'attr_1' => $attr_1 = 'value_1',
+            'attr_2' => $attr_2 = 'value_2',
+        ];
+        $dynamic->defineAttributes($attributes);
+        $this->assertEquals($attr_1, $dynamic->attr_1);
+        $this->assertEquals($attr_2, $dynamic->attr_2);
+    }
 }

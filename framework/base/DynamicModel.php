@@ -161,6 +161,20 @@ class DynamicModel extends Model
     }
 
     /**
+     * Defines an attributes.
+     * @param Array $attributes associate array of attributes
+     */
+    public function defineAttributes($attributes)
+    {
+        if(!is_array($attributes)){
+            return;
+        }
+        foreach ($attributes as $name=>$value){
+            $this->_attributes[$name] = $value;
+        }
+    }
+
+    /**
      * Undefines an attribute.
      * @param string $name the attribute name
      */
