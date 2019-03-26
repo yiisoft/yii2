@@ -22,7 +22,7 @@ class SqlsrvPDO extends \PDO
      * SQLSRV 驱动实现了 [[PDO::lastInsertId()]] 方法，但具有单一的特性：
      * 当 `$sequence` 值为 null 或空字符串时，返回一个空字符串。
      * 但是，当没有指定参数时，它将按预期工作，
-     * 并返回实际的最好插入的 ID（与其他 PDO 驱动程序一样）。
+     * 并返回实际的最后插入的 ID（与其他 PDO 驱动程序一样）。
      * @param string|null $sequence 序列名称。默认为空。
      * @return int 最后插入的 ID 的值。
      */

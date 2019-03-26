@@ -11,7 +11,7 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 /**
- * Class ColumnSchema for MySQL database
+ * MySQL 数据库的 ColumnSchema 类
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14.1
@@ -19,12 +19,12 @@ use yii\db\JsonExpression;
 class ColumnSchema extends \yii\db\ColumnSchema
 {
     /**
-     * @var bool whether the column schema should OMIT using JSON support feature.
-     * You can use this property to make upgrade to Yii 2.0.14 easier.
-     * Default to `false`, meaning JSON support is enabled.
+     * @var bool 列结构是否应该使用 JSON 支持功能 OMIT 。
+     * 在升级到 Yii 2.0.14 使用此属性会更加的方便容易。
+     * 默认为 `false`，表示启用了 JSON 支持。
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated 从 2.0.14.1 开始支持，并且将在 2.1 以后移除。
      */
     public $disableJsonSupport = false;
 
