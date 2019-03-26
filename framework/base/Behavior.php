@@ -85,16 +85,16 @@ class Behavior extends BaseObject
     public function detach()
     {
         if ($this->owner) {
-            foreach ($this->events() as $event => $handler) {
-                if (is_string($handler)) {
-                    $sParam = [$this, $handler];
-                } elseif ($handler instanceof \Closure) {
-                    $sParam = null;
+            foreach ($this->events() as $event => $value) {
+                if (is_string($value)) {
+                    $handler = [$this, $value];
+                } elseif ($value instanceof \Closure) {
+                    $handler = null;
                 } else {
-                    $sParam = $handler;
+                    $handler = $value;
                 }
 
-                $this->owner->off($event, $sParam);
+                $this->owner->off($event, $handler);
             }
             $this->owner = null;
         }
