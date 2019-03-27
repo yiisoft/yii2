@@ -760,19 +760,20 @@ class ActiveField extends Component
      * @param string $class the widget class name.
      * @param array $config name-value pairs that will be used to initialize the widget.
      * @return $this the field object itself.
+     * @throws \Exception
      */
     public function widget($class, $config = [])
     {
-        foreach ($this->inputOptions as $key => $value) {
-            if (!isset($config['options'][$key])) {
-                $config['options'][$key] = $value;
-            }
-        }
         /* @var $class \yii\base\Widget */
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
         if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
+            foreach ($this->inputOptions as $key => $value) {
+                if (!isset($config['options'][$key])) {
+                    $config['options'][$key] = $value;
+                }
+            }
             $config['field'] = $this;
             if (isset($config['options'])) {
                 if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
