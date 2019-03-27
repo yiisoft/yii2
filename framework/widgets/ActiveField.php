@@ -763,7 +763,9 @@ class ActiveField extends Component
      */
     public function widget($class, $config = [])
     {
-        if (property_exists($class, 'options')) {
+        if (property_exists($class, 'options')
+            || (is_subclass_of($class, 'yii\base\BaseObject') && method_exists ($class, 'setOptions'))
+        ) {
             foreach ($this->inputOptions as $key => $value) {
                 if (!isset($config['options'][$key])) {
                     $config['options'][$key] = $value;
