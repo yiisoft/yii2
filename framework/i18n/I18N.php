@@ -12,14 +12,14 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
- * I18N provides features related with internationalization (I18N) and localization (L10N).
+ * I18N 提供与国际化（I18N）和本地化（L10N）相关的功能。
  *
- * I18N is configured as an application component in [[\yii\base\Application]] by default.
- * You can access that instance via `Yii::$app->i18n`.
+ * 默认情况下，I18N 在 [[\yii\base\Application]] 中配置为应用程序组件。
+ * 您可以通过 `Yii::$app->i18n` 访问该实例。
  *
- * @property MessageFormatter $messageFormatter The message formatter to be used to format message via ICU
- * message format. Note that the type of this property differs in getter and setter. See
- * [[getMessageFormatter()]] and [[setMessageFormatter()]] for details.
+ * @property MessageFormatter $messageFormatter 消息格式化程序，用于通过 ICU 消息格式格式化消息。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。
+ * 详细信息请参见 [[getMessageFormatter()]] 和 [[setMessageFormatter()]]。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,30 +27,30 @@ use yii\base\InvalidConfigException;
 class I18N extends Component
 {
     /**
-     * @var array list of [[MessageSource]] configurations or objects. The array keys are message
-     * category patterns, and the array values are the corresponding [[MessageSource]] objects or the configurations
-     * for creating the [[MessageSource]] objects.
+     * @var array [[MessageSource]] 配置或对象的列表。
+     * 数组键是消息类别模式，
+     * 数组值是对应的 [[MessageSource]] 对象或用于创建 [[MessageSource]] 对象的配置。
      *
-     * The message category patterns can contain the wildcard `*` at the end to match multiple categories with the same prefix.
-     * For example, `app/*` matches both `app/cat1` and `app/cat2`.
+     * 消息类别模式可以在末尾包含通配符 `*`，以匹配具有相同前缀的多个类别。
+     * 例如，`app/*` 匹配 `app/cat1` 和 `app/cat2`。
      *
-     * The `*` category pattern will match all categories that do not match any other category patterns.
+     * 类别模式 `*` 将匹配与其他类别模式不匹配的所有类别。
      *
-     * This property may be modified on the fly by extensions who want to have their own message sources
-     * registered under their own namespaces.
+     * 如果希望在自己的命名空间中扩展注册自己的消息源，
+     * 则可以动态修改此属性。
      *
-     * The category `yii` and `app` are always defined. The former refers to the messages used in the Yii core
-     * framework code, while the latter refers to the default message category for custom application code.
-     * By default, both of these categories use [[PhpMessageSource]] and the corresponding message files are
-     * stored under `@yii/messages` and `@app/messages`, respectively.
+     * 始终定义有类别 `yii` 和 `app`。
+     * 前者指的是 Yii 核心框架代码中使用的消息类别，而后者指的是自定义应用程序代码的默认消息类别。
+     * 默认情况下，这两个类别都使用 [[PhpMessageSource]]，
+     * 相应的消息文件分别存储在 `@yii/messages` 和 `@app/messages` 下。
      *
-     * You may override the configuration of both categories.
+     * 您可以重写两个类别的配置。
      */
     public $translations;
 
 
     /**
-     * Initializes the component by configuring the default message categories.
+     * 通过配置默认消息类别来初始化组件。
      */
     public function init()
     {
@@ -73,16 +73,16 @@ class I18N extends Component
     }
 
     /**
-     * Translates a message to the specified language.
+     * 翻译消息到指定的语言。
      *
-     * After translation the message will be formatted using [[MessageFormatter]] if it contains
-     * ICU message format and `$params` are not empty.
+     * 翻译后，如果消息包含 ICU 消息格式且 `$params` 不为空，
+     * 则使用 [[MessageFormatter]] 格式化消息。
      *
-     * @param string $category the message category.
-     * @param string $message the message to be translated.
-     * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-     * @param string $language the language code (e.g. `en-US`, `en`).
-     * @return string the translated and formatted message.
+     * @param string $category 消息类别。
+     * @param string $message 要翻译的信息。
+     * @param array $params 将用于替换消息中相应占位符的参数。
+     * @param string $language 语言代码（例如 `en-US`，`en`）。
+     * @return string 已经翻译和格式化的消息。
      */
     public function translate($category, $message, $params, $language)
     {
@@ -96,12 +96,12 @@ class I18N extends Component
     }
 
     /**
-     * Formats a message using [[MessageFormatter]].
+     * 使用 [[MessageFormatter]] 格式化消息。
      *
-     * @param string $message the message to be formatted.
-     * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-     * @param string $language the language code (e.g. `en-US`, `en`).
-     * @return string the formatted message.
+     * @param string $message 要格式化的消息。
+     * @param array $params 将用于替换消息中相应占位符的参数。
+     * @param string $language 语言代码（例如 `en-US`，`en`）。
+     * @return string 格式化的消息。
      */
     public function format($message, $params, $language)
     {
@@ -137,8 +137,8 @@ class I18N extends Component
     private $_messageFormatter;
 
     /**
-     * Returns the message formatter instance.
-     * @return MessageFormatter the message formatter to be used to format message via ICU message format.
+     * 返回消息格式化程序实例。
+     * @return MessageFormatter 消息格式化程序实例，用于通过 ICU 消息格式格式化消息。
      */
     public function getMessageFormatter()
     {
@@ -152,9 +152,9 @@ class I18N extends Component
     }
 
     /**
-     * @param string|array|MessageFormatter $value the message formatter to be used to format message via ICU message format.
-     * Can be given as array or string configuration that will be given to [[Yii::createObject]] to create an instance
-     * or a [[MessageFormatter]] instance.
+     * @param string|array|MessageFormatter $value 消息格式化程序，用于通过 ICU 消息格式格式化消息。
+     * 可以配置为数组或字符串，
+     * 它们将被赋予 [[Yii::createObject]] 以创建实例或 [[MessageFormatter]] 实例。
      */
     public function setMessageFormatter($value)
     {
@@ -162,10 +162,10 @@ class I18N extends Component
     }
 
     /**
-     * Returns the message source for the given category.
-     * @param string $category the category name.
-     * @return MessageSource the message source for the given category.
-     * @throws InvalidConfigException if there is no message source available for the specified category.
+     * 返回给定类别的消息源。
+     * @param string $category 类别名称。
+     * @return MessageSource 给定类别的消息源。
+     * @throws InvalidConfigException 如果没有可用于指定类别的消息源。
      */
     public function getMessageSource($category)
     {
