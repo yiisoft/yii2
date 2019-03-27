@@ -82,7 +82,7 @@ class DbMessageSource extends MessageSource
      */
     public $cachingDuration = 0;
     /**
-     * @var bool 是否启用缓存翻译后的消息
+     * @var bool 是否要缓存翻译后的消息
      */
     public $enableCaching = false;
 
@@ -104,7 +104,8 @@ class DbMessageSource extends MessageSource
 
     /**
      * 加载指定语言和类别的消息翻译。
-     * 如果没有找到 `en-US` 等特定语言环境代码的翻译，它会尝试更通用的 `en`。
+     * 如果没有找到 `en-US` 等特定语言环境代码的翻译，
+     * 它会尝试更通用的 `en`。
      *
      * @param string $category 消息的分类
      * @param string $language 目标语言
@@ -163,12 +164,12 @@ class DbMessageSource extends MessageSource
     }
 
     /**
-     * The method builds the [[Query]] object for the fallback language messages search.
-     * Normally is called from [[loadMessagesFromDb]].
+     * 该方法为后备语言消息搜索构建 [[Query]] 对象。
+     * 通常由 [[loadMessagesFromDb]] 调用。
      *
-     * @param string $category the message category
-     * @param string $language the originally requested language
-     * @param string $fallbackLanguage the target fallback language
+     * @param string $category 消息类别
+     * @param string $language 最初请求的语言
+     * @param string $fallbackLanguage 目标后备语言
      * @return Query
      * @see loadMessagesFromDb
      * @since 2.0.7
