@@ -10,7 +10,7 @@ namespace yii\i18n;
 use yii\base\Event;
 
 /**
- * MissingTranslationEvent represents the parameter for the [[MessageSource::EVENT_MISSING_TRANSLATION]] event.
+ * MissingTranslationEvent 表示 [[MessageSource::EVENT_MISSING_TRANSLATION]] 事件的参数。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,21 +18,21 @@ use yii\base\Event;
 class MissingTranslationEvent extends Event
 {
     /**
-     * @var string the message to be translated. An event handler may use this to provide a fallback translation
-     * and set [[translatedMessage]] if possible.
+     * @var string 要翻译的信息。事件处理程序可以使用它来提供一个回退转换，
+     * 并在可能的情况下设置 [[translatedMessage]]。
      */
     public $message;
     /**
-     * @var string the translated message. An event handler may overwrite this property
-     * with a translated version of [[message]] if possible. If not set (null), it means the message is not translated.
+     * @var string 翻译好的消息。事件处理程序可以使用 [[message]] 的翻译版本覆盖此属性。
+     * 如果未设置（null），则表示消息未被翻译。
      */
     public $translatedMessage;
     /**
-     * @var string the category that the message belongs to
+     * @var string 消息所属的类别
      */
     public $category;
     /**
-     * @var string the language ID (e.g. en-US) that the message is to be translated to
+     * @var string 要将消息翻译成的语言 ID（例如 en-US）
      */
     public $language;
 }
