@@ -25,7 +25,7 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
 
     /**
      * 从不会被额外转义或引用的 $expression 接口
-     * 构架原始 SQL 语句的方法。
+     * 构建原始 SQL 语句的方法。
      *
      * @param ExpressionInterface|BetweenColumnsCondition $expression 要构建的表达式。
      * @param array $params 绑定参数。
