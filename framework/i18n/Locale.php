@@ -12,19 +12,19 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
- * Locale provides various locale information via convenient methods.
+ * Locale 提供一些实用的方法获取各种区域信息。
  *
- * The class requires [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+ * 使用这个类需要安装 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
+ *
+ * @property string $currencySymbol 此属性是只读的。
+ *
  * @since 2.0.14
- *
- * @property string $currencySymbol This property is read-only.
- *
  */
 class Locale extends Component
 {
     /**
      * @var string the locale ID.
-     * If not set, [[\yii\base\Application::language]] will be used.
+     * 如果没有设置，将使用 [[\yii\base\Application::language]]。
      */
     public $locale;
 
@@ -44,10 +44,10 @@ class Locale extends Component
     }
 
     /**
-     * Returns a currency symbol
+     * 返回货币符号
      *
-     * @param string $currencyCode the 3-letter ISO 4217 currency code to get symbol for. If null,
-     * method will attempt using currency code from [[locale]].
+     * @param string $currencyCode 货币代码 ISO 4217 中的三个字母的字母代码。
+     * 如果为 null，则方法将尝试使用 [[locale]] 中的货币代码。
      * @return string
      */
     public function getCurrencySymbol($currencyCode = null)
