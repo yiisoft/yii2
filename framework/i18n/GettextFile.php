@@ -10,7 +10,7 @@ namespace yii\i18n;
 use yii\base\Component;
 
 /**
- * GettextFile is the base class for representing a Gettext message file.
+ * GettextFile 是表示 Gettext 消息文件的基类。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,20 +18,20 @@ use yii\base\Component;
 abstract class GettextFile extends Component
 {
     /**
-     * Loads messages from a file.
-     * @param string $filePath file path
-     * @param string $context message context
-     * @return array message translations. Array keys are source messages and array values are translated messages:
-     * source message => translated message.
+     * 从文件加载消息。
+     * @param string $filePath 文件路径
+     * @param string $context 消息上下文
+     * @return array 消息翻译。数组键是源消息，数组值是已翻译的消息：
+     * 源消息 => 已翻译的消息。
      */
     abstract public function load($filePath, $context);
 
     /**
-     * Saves messages to a file.
-     * @param string $filePath file path
-     * @param array $messages message translations. Array keys are source messages and array values are
-     * translated messages: source message => translated message. Note if the message has a context,
-     * the message ID must be prefixed with the context with chr(4) as the separator.
+     * 将消息保存到文件。
+     * @param string $filePath 文件路径
+     * @param array $messages 消息翻译。 数组键是源消息，数组值是已翻译的消息：源消息 => 已翻译的消息。
+     * 请注意，如果消息具有上下文，
+     * 则消息 ID 必须以 chr(4) 作为分隔符的上下文前缀。
      */
     abstract public function save($filePath, $messages);
 }
