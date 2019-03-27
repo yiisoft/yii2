@@ -10,10 +10,10 @@ namespace yii\i18n;
 use yii\base\Exception;
 
 /**
- * GettextMoFile represents an MO Gettext message file.
+ * GettextMoFile 表示 MO Gettext 消息文件。
  *
- * This class is written by adapting Michael's Gettext_MO class in PEAR.
- * Please refer to the following license terms.
+ * 这个类是通过在 PEAR 中调整 Michael 的 Gettext_MO 类来编写的。
+ * 请参阅以下许可条款。
  *
  * Copyright (c) 2004-2005, Michael Wallner <mike@iworks.at>.
  * All rights reserved.
@@ -44,18 +44,18 @@ use yii\base\Exception;
 class GettextMoFile extends GettextFile
 {
     /**
-     * @var bool whether to use big-endian when reading and writing an integer.
+     * @var bool 在读写整数时是否使用 big-endian。
      */
     public $useBigEndian = false;
 
 
     /**
-     * Loads messages from an MO file.
-     * @param string $filePath file path
-     * @param string $context message context
-     * @return array message translations. Array keys are source messages and array values are translated messages:
-     * source message => translated message.
-     * @throws Exception if unable to read the MO file
+     * 从 MO 文件加载消息。
+     * @param string $filePath 文件路径
+     * @param string $context 消息上下文
+     * @return array 消息翻译。 数组键是源消息，数组值是已翻译的消息：
+     * 源消息 => 已翻译的消息。
+     * @throws Exception 如果无法读取 MO 文件
      */
     public function load($filePath, $context)
     {
@@ -126,12 +126,12 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Saves messages to an MO file.
-     * @param string $filePath file path
-     * @param array $messages message translations. Array keys are source messages and array values are
-     * translated messages: source message => translated message. Note if the message has a context,
-     * the message ID must be prefixed with the context with chr(4) as the separator.
-     * @throws Exception if unable to save the MO file
+     * 将消息保存到 MO 文件。
+     * @param string $filePath 文件路径
+     * @param array $messages 消息翻译。 数组键是源消息，数组值是已翻译的消息：源消息 => 已翻译的消息。
+     * 请注意，如果消息具有上下文，
+     * 则消息 ID 必须以 chr(4) 作为分隔符的上下文前缀。
+     * @throws Exception 如果无法保存 MO 文件
      */
     public function save($filePath, $messages)
     {
@@ -198,10 +198,10 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Reads one or several bytes.
-     * @param resource $fileHandle to read from
-     * @param int $byteCount to be read
-     * @return string bytes
+     * 读一个或多个字节。
+     * @param resource $fileHandle 要读入的文件句柄
+     * @param int $byteCount 要读入的字节数目
+     * @return string 字节
      */
     protected function readBytes($fileHandle, $byteCount = 1)
     {
@@ -213,10 +213,10 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Write bytes.
-     * @param resource $fileHandle to write to
-     * @param string $bytes to be written
-     * @return int how many bytes are written
+     * 写入字节。
+     * @param resource $fileHandle 要写入的文件句柄
+     * @param string $bytes 要写入的字节
+     * @return int 写入的字节数目
      */
     protected function writeBytes($fileHandle, $bytes)
     {
@@ -224,9 +224,9 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Reads a 4-byte integer.
-     * @param resource $fileHandle to read from
-     * @return int the result
+     * 读一个 4 字节的整数。
+     * @param resource $fileHandle 要读入的文件句柄
+     * @return int 结果
      */
     protected function readInteger($fileHandle)
     {
@@ -236,10 +236,10 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Writes a 4-byte integer.
-     * @param resource $fileHandle to write to
-     * @param int $integer to be written
-     * @return int how many bytes are written
+     * 写一个 4 字节的整数。
+     * @param resource $fileHandle 要写入的文件句柄
+     * @param int $integer 要写入的整数
+     * @return int 写入的字节数目
      */
     protected function writeInteger($fileHandle, $integer)
     {
@@ -247,11 +247,11 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Reads a string.
-     * @param resource $fileHandle file handle
-     * @param int $length of the string
-     * @param int $offset of the string in the file. If null, it reads from the current position.
-     * @return string the result
+     * 读入一个字符串
+     * @param resource $fileHandle 文件句柄
+     * @param int $length 字符串的长度
+     * @param int $offset 文件中字符串的偏移量。 如果为 null，则从当前位置读取。
+     * @return string 结果
      */
     protected function readString($fileHandle, $length, $offset = null)
     {
@@ -263,10 +263,10 @@ class GettextMoFile extends GettextFile
     }
 
     /**
-     * Writes a string.
-     * @param resource $fileHandle to write to
-     * @param string $string to be written
-     * @return int how many bytes are written
+     * 写一个字符串。
+     * @param resource $fileHandle 要写入的文件句柄
+     * @param string $string 要写入的字符串
+     * @return int 写入的字节数目
      */
     protected function writeString($fileHandle, $string)
     {
