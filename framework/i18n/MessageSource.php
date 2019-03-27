@@ -11,11 +11,11 @@ use Yii;
 use yii\base\Component;
 
 /**
- * MessageSource is the base class for message translation repository classes.
+ * MessageSource 是消息翻译类的基类。
  *
- * A message source stores message translations in some persistent storage.
+ * 消息源将翻译的消息存储在某个持久化存储中。
  *
- * Child classes should override [[loadMessages()]] to provide translated messages.
+ * 子类应覆盖 [[loadMessages()]] 以提供已翻译的消息。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,18 +23,18 @@ use yii\base\Component;
 class MessageSource extends Component
 {
     /**
-     * @event MissingTranslationEvent an event that is triggered when a message translation is not found.
+     * @event MissingTranslationEvent 当找不到一条消息翻译时触发的事件。
      */
     const EVENT_MISSING_TRANSLATION = 'missingTranslation';
 
     /**
-     * @var bool whether to force message translation when the source and target languages are the same.
-     * Defaults to false, meaning translation is only performed when source and target languages are different.
+     * @var bool 是否在源语言和目标语言相同时强制进行消息转换。
+     * 默认为 false，表示仅在源语言和目标语言不同时执行转换。
      */
     public $forceTranslation = false;
     /**
-     * @var string the language that the original messages are in. If not set, it will use the value of
-     * [[\yii\base\Application::sourceLanguage]].
+     * @var string 原始消息的语言。
+     * 如果没有设置，将使用 [[\yii\base\Application::sourceLanguage]] 的值。
      */
     public $sourceLanguage;
 
@@ -42,7 +42,7 @@ class MessageSource extends Component
 
 
     /**
-     * Initializes this component.
+     * 初始化此组件。
      */
     public function init()
     {
@@ -53,14 +53,14 @@ class MessageSource extends Component
     }
 
     /**
-     * Loads the message translation for the specified language and category.
-     * If translation for specific locale code such as `en-US` isn't found it
-     * tries more generic `en`.
+     * 加载指定语言和类别的消息转换。
+     * 如果找不到特定区域代码的翻译，例如 `en-US`，
+     * 则会尝试更通用的 `en`。
      *
-     * @param string $category the message category
-     * @param string $language the target language
-     * @return array the loaded messages. The keys are original messages, and the values
-     * are translated messages.
+     * @param string $category 消息类别
+     * @param string $language 目标语言
+     * @return array 加载的消息。
+     * 键是原始的消息，值是翻译的消息。
      */
     protected function loadMessages($category, $language)
     {
@@ -68,18 +68,18 @@ class MessageSource extends Component
     }
 
     /**
-     * Translates a message to the specified language.
+     * 翻译消息到指定的语言。
      *
-     * Note that unless [[forceTranslation]] is true, if the target language
-     * is the same as the [[sourceLanguage|source language]], the message
-     * will NOT be translated.
+     * 请注意，除非 [[forceTranslation]] 为 true，
+     * 否则如果目标语言与 [[sourceLanguage|source language]] 相同，
+     * 将不会翻译该消息。
      *
-     * If a translation is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered.
+     * 如果未找到翻译，将触发 [[EVENT_MISSING_TRANSLATION|missingTranslation]] 事件。
      *
-     * @param string $category the message category
-     * @param string $message the message to be translated
-     * @param string $language the target language
-     * @return string|bool the translated message or false if translation wasn't found or isn't required
+     * @param string $category 消息类别
+     * @param string $message 要翻译的信息
+     * @param string $language 目标语言
+     * @return string|bool 翻译好的消息，如果未找到或不需要翻译，则为 false
      */
     public function translate($category, $message, $language)
     {
@@ -91,14 +91,14 @@ class MessageSource extends Component
     }
 
     /**
-     * Translates the specified message.
-     * If the message is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered.
-     * If there is an event handler, it may provide a [[MissingTranslationEvent::$translatedMessage|fallback translation]].
-     * If no fallback translation is provided this method will return `false`.
-     * @param string $category the category that the message belongs to.
-     * @param string $message the message to be translated.
-     * @param string $language the target language.
-     * @return string|bool the translated message or false if translation wasn't found.
+     * 翻译指定的消息。
+     * 如果未找到该消息，将触发 [[EVENT_MISSING_TRANSLATION|missingTranslation]] 事件。
+     * 如果有事件处理程序，它可能会提供 [[MissingTranslationEvent::$translatedMessage|fallback translation]].
+     * 如果没有提供消息翻译，则此方法将返回 `false`。
+     * @param string $category 消息所属的类别。
+     * @param string $message 要翻译的信息。
+     * @param string $language 目标语言。
+     * @return string|bool 已翻译的消息，如果未找到翻译，则为 false。
      */
     protected function translateMessage($category, $message, $language)
     {
