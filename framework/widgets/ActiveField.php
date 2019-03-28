@@ -760,7 +760,6 @@ class ActiveField extends Component
      * @param string $class the widget class name.
      * @param array $config name-value pairs that will be used to initialize the widget.
      * @return $this the field object itself.
-     * @throws \Exception
      */
     public function widget($class, $config = [])
     {
