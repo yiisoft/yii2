@@ -746,6 +746,9 @@ class ActiveField extends Component
      * If you want to use a widget that does not have `model` and `attribute` properties,
      * please use [[render()]] instead.
      *
+     * While widgets extending from [[Widget]] work with active field, it is preferred to use
+     * [[InputWidget]] as a base class.
+     *
      * For example to use the [[MaskedInput]] widget to get some date input, you can use
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
