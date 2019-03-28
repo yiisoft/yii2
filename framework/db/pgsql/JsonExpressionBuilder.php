@@ -16,7 +16,7 @@ use yii\db\Query;
 use yii\helpers\Json;
 
 /**
- * Class JsonExpressionBuilder builds [[JsonExpression]] for PostgreSQL DBMS.
+ * JsonExpressionBuilder 类为 PostgreSQL DBMS 构建 [[JsonExpression]]。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -28,7 +28,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * {@inheritdoc}
-     * @param JsonExpression|ExpressionInterface $expression the expression to be built
+     * @param JsonExpression|ExpressionInterface $expression 构建的表达式
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
@@ -49,7 +49,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * @param JsonExpression $expression
-     * @return string the typecast expression based on [[type]].
+     * @return string 基于 [[type]] 的类型转换表达式。
      */
     protected function getTypecast(JsonExpression $expression)
     {

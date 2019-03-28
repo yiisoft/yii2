@@ -20,8 +20,8 @@ use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from a PostgreSQL database
- * (version 9.x and above).
+ * Schema 是从 PostgreSQL 数据库（版本 9.x 及更高版本）
+ * 检索元数据的类。
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
@@ -34,7 +34,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     const TYPE_JSONB = 'jsonb';
 
     /**
-     * @var string the default schema used for the current session.
+     * @var string 用于当前会话的默认结构。
      */
     public $defaultSchema = 'public';
     /**
@@ -42,8 +42,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public $columnSchemaClass = 'yii\db\pgsql\ColumnSchema';
     /**
-     * @var array mapping from physical column types (keys) to abstract
-     * column types (values)
+     * @var array 从物理列类型（键）
+     * 到抽象列类型的映射。
      * @see http://www.postgresql.org/docs/current/static/datatype.html#DATATYPE-TABLE
      */
     public $typeMap = [
@@ -275,7 +275,7 @@ SQL;
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果方法被调用，则抛出异常。
      */
     protected function loadTableDefaultValues($tableName)
     {
@@ -283,8 +283,8 @@ SQL;
     }
 
     /**
-     * Creates a query builder for the PostgreSQL database.
-     * @return QueryBuilder query builder instance
+     * 创建 PostgreSQL 数据库的查询构建器。
+     * @return QueryBuilder 查询构建器实例
      */
     public function createQueryBuilder()
     {
@@ -292,9 +292,9 @@ SQL;
     }
 
     /**
-     * Resolves the table name and schema name (if any).
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * 解析表名和数据库结构名称（如果有的话）。
+     * @param TableSchema $table 表元数据对象
+     * @param string $name 表名
      */
     protected function resolveTableNames($table, $name)
     {
@@ -330,8 +330,8 @@ SQL;
     }
 
     /**
-     * Collects the foreign key column details for the given table.
-     * @param TableSchema $table the table metadata
+     * 从给定表搜集外键列详细信息。
+     * @param TableSchema $table 表元数据
      */
     protected function findConstraints($table)
     {
@@ -391,9 +391,9 @@ SQL;
     }
 
     /**
-     * Gets information about given table unique indexes.
-     * @param TableSchema $table the table metadata
-     * @return array with index and column names
+     * 获取有关给定表唯一索引的信息。
+     * @param TableSchema $table 表元数据
+     * @return array 索引和列名称
      */
     protected function getUniqueIndexInformation($table)
     {
@@ -420,9 +420,9 @@ SQL;
     }
 
     /**
-     * Returns all unique indexes for the given table.
+     * 返回给定表的所有唯一索引。
      *
-     * Each array element is of the following structure:
+     * 每个数组元素都具有如下结构：
      *
      * ```php
      * [
@@ -431,8 +431,8 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
-     * @return array all unique indexes for the given table.
+     * @param TableSchema $table 表元数据
+     * @return array 给定表的所有唯一索引。
      */
     public function findUniqueIndexes($table)
     {
@@ -455,9 +455,9 @@ SQL;
     }
 
     /**
-     * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
-     * @return bool whether the table exists in the database
+     * 搜集数据表列的元数据。
+     * @param TableSchema $table 表元数据
+     * @return bool 数据表是否存在于数据库中
      */
     protected function findColumns($table)
     {
@@ -565,9 +565,9 @@ SQL;
     }
 
     /**
-     * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * 加载列信息到 [[ColumnSchema]] 对象中。
+     * @param array $info 列信息
+     * @return ColumnSchema 列结构对象
      */
     protected function loadColumnSchema($info)
     {
@@ -620,9 +620,9 @@ SQL;
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     * 加载多种类型的约束并返回指定的约束。
+     * @param string $tableName 表名。
+     * @param string $returnType 返回的约束类型：
      * - primaryKey
      * - foreignKeys
      * - uniques

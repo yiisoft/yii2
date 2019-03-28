@@ -16,7 +16,7 @@ use yii\db\PdoValue;
 use yii\helpers\StringHelper;
 
 /**
- * QueryBuilder is the query builder for PostgreSQL databases.
+ * QueryBuilder 是 PostgreSQL 数据库的查询构建器。
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
@@ -24,33 +24,33 @@ use yii\helpers\StringHelper;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * Defines a UNIQUE index for [[createIndex()]].
+     * 为 [[createIndex()]] 定义一个 UNIQUE 索引。
      * @since 2.0.6
      */
     const INDEX_UNIQUE = 'unique';
     /**
-     * Defines a B-tree index for [[createIndex()]].
+     * 为 [[createIndex()]] 定义一个 B-tree 索引。
      * @since 2.0.6
      */
     const INDEX_B_TREE = 'btree';
     /**
-     * Defines a hash index for [[createIndex()]].
+     * 为 [[createIndex()]] 定义一个 hash 索引。
      * @since 2.0.6
      */
     const INDEX_HASH = 'hash';
     /**
-     * Defines a GiST index for [[createIndex()]].
+     * 为 [[createIndex()]] 定义一个 GIST 索引。
      * @since 2.0.6
      */
     const INDEX_GIST = 'gist';
     /**
-     * Defines a GIN index for [[createIndex()]].
+     * 为 [[createIndex()]] 定义一个 GIN 索引。
      * @since 2.0.6
      */
     const INDEX_GIN = 'gin';
 
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）到物理列类型（值）的映射。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'serial NOT NULL PRIMARY KEY',
@@ -103,16 +103,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for creating a new index.
-     * @param string $name the name of the index. The name will be properly quoted by the method.
-     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
-     * separate them with commas or use an array to represent them. Each column name will be properly quoted
-     * by the method, unless a parenthesis is found in the name.
-     * @param bool|string $unique whether to make this a UNIQUE index constraint. You can pass `true` or [[INDEX_UNIQUE]] to create
-     * a unique index, `false` to make a non-unique index using the default index type, or one of the following constants to specify
-     * the index method to use: [[INDEX_B_TREE]], [[INDEX_HASH]], [[INDEX_GIST]], [[INDEX_GIN]].
-     * @return string the SQL statement for creating a new index.
+     * 构建用于创建新索引的 SQL 语句。
+     * @param string $name 索引的名称。该方法将正确引用该名称。
+     * @param string $table 将为其创建新索引的表。表名将由该方法正确引用。
+     * @param string|array $columns 应包含在索引中的列。如果有多个列，
+     * 请用逗号分隔它们或使用数组来表示他们。除非在名称中找到括号，
+     * 否则方法将正确引用每个列名称。
+     * @param bool|string $unique 是否使其成为 UNIQUE 索引约束。您可以传递 `true` 或 [[INDEX_UNIQUE]] 来创建唯一索引，
+     * 传递 `false` 来使用默认索引类型创建非唯一索引，或者传递下列常量之一来指定要使用的索引方法：
+     * [[INDEX_B_TREE]]、[[INDEX_HASH]]、[[INDEX_GIST]]、[[INDEX_GIN]]。
+     * @return string 用于创建新索引的 SQL 语句。
      * @see http://www.postgresql.org/docs/8.2/static/sql-createindex.html
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -133,10 +133,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for dropping an index.
-     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping an index.
+     * 构建用于删除索引的 SQL 语句。
+     * @param string $name 要删除的索引的名称。该方法将正确引用该名称。
+     * @param string $table 要删除其索引的表。该方法将正确引用该名称。
+     * @return string 用于删除索引的 SQL 语句。
      */
     public function dropIndex($name, $table)
     {
@@ -157,10 +157,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
+     * 构建用于重命名 DB 表名的 SQL 语句。
+     * @param string $oldName 要重命名的表。该方法将正确引用该名称。
+     * @param string $newName 新的表名。该方法将正确引用该名称。
+     * @return string 重命名 DB 表名的 SQL 语句。
      */
     public function renameTable($oldName, $newName)
     {
@@ -168,14 +168,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     * 创建用于重建数据表主键序列的 SQL 语句。
+     * 序列将被重置，
+     * 以便插入的下一个新行的主键具有指定值或者其值为 1。
+     * @param string $tableName 用于重置主键序列的数据表的表名
+     * @param mixed $value 插入的下一新行的主键的值。如果 $value 未设置，
+     * 则新行的主键值将设置为 1。
+     * @return string 用于重置序列的 SQL 语句。
+     * @throws InvalidArgumentException 如果表不存在，或者没有与表关联的序列，则抛出异常。
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -200,11 +200,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table the table name.
-     * @return string the SQL statement for checking integrity
+     * 构建用于启用或禁用完整性检查的 SQL 语句。
+     * @param bool $check 是否打开或关闭完整性检查。
+     * @param string $schema 表结构。
+     * @param string $table 表名。
+     * @return string 用于完整性检查的 SQL 语句
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
@@ -227,10 +227,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for truncating a DB table.
-     * Explicitly restarts identity for PGSQL to be consistent with other databases which all do this by default.
-     * @param string $table the table to be truncated. The name will be properly quoted by the method.
-     * @return string the SQL statement for truncating a DB table.
+     * 构建用于截断 DB 表的 SQL 语句。
+     * 显式重新启动 PGSQL 的标识，以便与默认情况下都执行此操作的其他数据库保持一致。
+     * @param string $table 要被截断的表。该方法会确保正确引用该名称。
+     * @return string 用于截断 DB 表的 SQL 语句。
      */
     public function truncateTable($table)
     {
@@ -238,14 +238,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
-     * @return string the SQL statement for changing the definition of a column.
+     * 构建用于更改列定义的 SQL 语句。
+     * @param string $table 要更改其列的表名。该方法会确保正确引用表名称。
+     * @param string $column 要更改的列的名称。该方法会确保正确引用该名称。
+     * @param string $type 新列类型。调用 [[getColumnType()]] 方法将抽象列类型（如果有）转换为物理列类型。
+     * 任何未被识别为抽象类型的内容都将保留在生成的 SQL 语句中。
+     * 例如，`string` 会被转换为 `varchar(255)`，而 `string not null` 转换为 `varchar(255) not null`。
+     * 您还可以使用 PostgreSQL 特定的语法，例如 `SET NOT NULL`。
+     * @return string 用于更改列定义的 SQL 语句。
      */
     public function alterColumn($table, $column, $type)
     {
@@ -286,7 +286,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * [[upsert()]] implementation for PostgreSQL 9.5 or higher.
+     * PostgreSQL 9.5 或更高版本的 [[upsert()]] 实现。
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
@@ -316,7 +316,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * [[upsert()]] implementation for PostgreSQL older than 9.5.
+     * 早于 PostgreSQL 9.5 的 [[upsert()]] 实现。
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
@@ -411,13 +411,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     * 如果有必要，将要保存到表中的数据标准化，执行额外准备和类型转换。
      *
-     * @param string $table the table that data will be saved into.
-     * @param array|Query $columns the column data (name => value) to be saved into the table or instance
-     * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
-     * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
-     * @return array normalized columns
+     * @param string $table 数据将保存到的表。
+     * @param array|Query $columns 将要保存到 [[yii\db\Query|Query]] 的表或实例中的列数据（name => value），
+     * 执行 INSERT INTO ... SELECT SQL 语句。
+     * 自 2.0.11 版本起，[[yii\db\Query|Query]] 的传递可用。
+     * @return array 标准化列
      * @since 2.0.9
      */
     private function normalizeTableRowData($table, $columns)

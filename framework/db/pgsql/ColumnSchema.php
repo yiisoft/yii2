@@ -12,41 +12,41 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 /**
- * Class ColumnSchema for PostgreSQL database.
+ * PostgreSQL 数据库的 ColumnSchema 类。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  */
 class ColumnSchema extends \yii\db\ColumnSchema
 {
     /**
-     * @var int the dimension of array. Defaults to 0, means this column is not an array.
+     * @var int 数组的维度。默认为 0，表示此列不是数组。
      */
     public $dimension = 0;
     /**
-     * @var bool whether the column schema should OMIT using JSON support feature.
-     * You can use this property to make upgrade to Yii 2.0.14 easier.
-     * Default to `false`, meaning JSON support is enabled.
+     * @var bool 列结构是否应该使用 JSON 支持功能 OMIT。
+     * 你可以是使用此属性使升级到 Yii 2.0.14 更容易。
+     * 默认为 `false`，表示支持 JSON。
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated 自 2.0.14 开始支持，并将在 2.1 以后移除。
      */
     public $disableJsonSupport = false;
     /**
-     * @var bool whether the column schema should OMIT using PgSQL Arrays support feature.
-     * You can use this property to make upgrade to Yii 2.0.14 easier.
-     * Default to `false`, meaning Arrays support is enabled.
+     * @var bool 列结构是否应该使用 PgSQL Arrays 支持功能 OMIT。
+     * 你可以是使用此属性使升级到 Yii 2.0.14 更容易。
+     * 默认为 `false`，表示支持 Arrays。
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated 自 2.0.14 开始支持，并将在 2.1 以后移除。
      */
     public $disableArraySupport = false;
     /**
-     * @var bool whether the Array column value should be unserialized to an [[ArrayExpression]] object.
-     * You can use this property to make upgrade to Yii 2.0.14 easier.
-     * Default to `true`, meaning arrays are unserialized to [[ArrayExpression]] objects.
+     * @var bool 是否应该将 Array 列值反序列化为 [[ArrayExpression]] 对象。
+     * 你可以是使用此属性使升级到 Yii 2.0.14 更容易。
+     * 默认为 `true`，表示数组未序列化为 [[ArrayExpression]] 对象。
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated 自 2.0.14 开始支持，并将在 2.1 以后移除。
      */
     public $deserializeArrayColumnToArrayExpression = true;
 
@@ -105,7 +105,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * Casts $value after retrieving from the DBMS to PHP representation.
+     * 从 DBMS 检索到 PHP 表示后，转为为 $value。
      *
      * @param string|null $value
      * @return bool|mixed|null
@@ -135,7 +135,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * Creates instance of ArrayParser
+     * 创建 ArrayParser 的实例
      *
      * @return ArrayParser
      */

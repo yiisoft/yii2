@@ -15,7 +15,7 @@ use yii\db\JsonExpression;
 use yii\db\Query;
 
 /**
- * Class ArrayExpressionBuilder builds [[ArrayExpression]] for PostgreSQL DBMS.
+ * ArrayExpressionBuilder 类为 PostgreSQL DBMS 构建 [[ArrayExpression]]。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -27,7 +27,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * {@inheritdoc}
-     * @param ArrayExpression|ExpressionInterface $expression the expression to be built
+     * @param ArrayExpression|ExpressionInterface $expression 构建的表达式
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
@@ -47,9 +47,9 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds placeholders array out of $expression values
+     * 使用 $expression 值构建占位符数组
      * @param ExpressionInterface|ArrayExpression $expression
-     * @param array $params the binding parameters.
+     * @param array $params 绑定参数。
      * @return array
      */
     protected function buildPlaceholders(ExpressionInterface $expression, &$params)
@@ -101,7 +101,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * @param ArrayExpression $expression
-     * @return string the typecast expression based on [[type]].
+     * @return string 基于 [[type]] 类型转换表达式。
      */
     protected function getTypehint(ArrayExpression $expression)
     {
@@ -116,11 +116,11 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Build an array expression from a subquery SQL.
+     * 从子查询 SQL 语句构建数组表达式。
      *
-     * @param string $sql the subquery SQL.
+     * @param string $sql 子查询语句。
      * @param ArrayExpression $expression
-     * @return string the subquery array expression.
+     * @return string 子查询数组表达式。
      */
     protected function buildSubqueryArray($sql, ArrayExpression $expression)
     {
@@ -128,7 +128,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Casts $value to use in $expression
+     * 转换 $value 以便在 $expression 中使用
      *
      * @param ArrayExpression $expression
      * @param mixed $value
