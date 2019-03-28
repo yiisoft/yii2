@@ -277,7 +277,7 @@ class Validator extends Component
             return $this->getAttributeNames();
         }
 
-        if (is_string($attributes)) {
+        if (is_scalar($attributes)) {
             $attributes = [$attributes];
         }
 
