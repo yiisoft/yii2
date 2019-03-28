@@ -16,12 +16,12 @@ use yii\db\ExpressionInterface;
 class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
 {
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|InCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|InCondition $expression 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的 SQL 语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
@@ -34,12 +34,12 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
     }
 
     /**
-     * Oracle DBMS does not support more than 1000 parameters in `IN` condition.
-     * This method splits long `IN` condition into series of smaller ones.
+     * Oracle DBMS 中 `IN` 操作符后面的参数不能超过 1000 个。
+     * 此方法将长的 `IN` 条件拆分为一系列较小的条件。
      *
-     * @param ExpressionInterface|InCondition $condition the expression to be built.
-     * @param array $params the binding parameters.
-     * @return null|string null when split is not required. Otherwise - built SQL condition.
+     * @param ExpressionInterface|InCondition $condition 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return null|string null 不需要拆分时返回 null。否则，构建 SQL 条件。
      */
     protected function splitCondition(InCondition $condition, &$params)
     {
