@@ -10,7 +10,7 @@ namespace yii\db\sqlite;
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilder is the schema builder for Sqlite databases.
+ * ColumnSchemaBuilder 是 Sqlite 数据库的数据库结构构建器。
  *
  * @author Chris Harris <chris@buckshotsoftware.com>
  * @since 2.0.8

@@ -17,7 +17,7 @@ use yii\db\Query;
 use yii\helpers\StringHelper;
 
 /**
- * QueryBuilder is the query builder for SQLite databases.
+ * QueryBuilder 是 SQLite 数据库的查询构建器。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,7 +25,7 @@ use yii\helpers\StringHelper;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）到物理列类型（值）的映射。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
@@ -110,9 +110,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Generates a batch INSERT SQL statement.
+     * 生成批量插入的 SQL 语句。
      *
-     * For example,
+     * 例如：
      *
      * ```php
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
@@ -122,12 +122,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * ])->execute();
      * ```
      *
-     * Note that the values in each row must match the corresponding column names.
+     * 注意，每行中的值必须与相对应的列名称匹配。
      *
-     * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column names
-     * @param array|\Generator $rows the rows to be batch inserted into the table
-     * @return string the batch INSERT SQL statement
+     * @param string $table 将插入新行的表。
+     * @param array $columns 列名
+     * @param array|\Generator $rows 要批量插入表中的行
+     * @return string 用于批量插入的 SQL 语句
      */
     public function batchInsert($table, $columns, $rows, &$params = [])
     {
@@ -185,14 +185,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     * 创建用于重置表的主键序列的 SQL 语句。
+     * 序列将被重置，
+     * 以便插入的下一个新行的主键具有指定的值或其值为 1 。
+     * @param string $tableName 将被重置主键序列的表名
+     * @param mixed $value 插入下一新行的主键的值。如果 $value 未设置，
+     * 则插入下一新行的主键序列值将指定为 1 。
+     * @return string 用于重置序列的 SQL 语句
+     * @throws InvalidArgumentException 如果表不存在，或没有与表关联的序列，则抛出异常。
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -218,12 +218,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Enables or disables integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Meaningless for SQLite.
-     * @param string $table the table name. Meaningless for SQLite.
-     * @return string the SQL statement for checking integrity
-     * @throws NotSupportedException this is not supported by SQLite
+     * 启用或禁用完整性检查。
+     * @param bool $check 是否开打或关闭完整性检查。
+     * @param string $schema 表的数据库结构。对 SQLite 毫无意义。
+     * @param string $table 表名。对 SQLite 毫无意义。
+     * @return string 用于完整性检查的 SQL 语句
+     * @throws NotSupportedException 如果 SQLite 不支持完整性检查，则抛出异常。
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
@@ -231,9 +231,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for truncating a DB table.
-     * @param string $table the table to be truncated. The name will be properly quoted by the method.
-     * @return string the SQL statement for truncating a DB table.
+     * 构建用于截断数据库表的 SQL 语句。
+     * @param string $table 要截断的表。该方法将正确引用该名称。
+     * @return string 用于截断数据库表的 SQL 语句。
      */
     public function truncateTable($table)
     {
@@ -241,10 +241,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for dropping an index.
-     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping an index.
+     * 构建用于删除索引的 SQL 语句。
+     * @param string $name 要删除的索引的名称。该方法将正确引用该名称。
+     * @param string $table 要删除其索引的表的名称。该方法将正确引用该名称。
+     * @return string 用于删除索引的 SQL 语句。
      */
     public function dropIndex($name, $table)
     {
@@ -252,11 +252,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for dropping a DB column.
-     * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
-     * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping a DB column.
-     * @throws NotSupportedException this is not supported by SQLite
+     * 构建用于删除 DB 列的 SQL 语句。
+     * @param string $table 要删除其列的表名。该方法将正确引用该名称。
+     * @param string $column 要删除的列的名称。该方法将正确引用该名称。
+     * @return string 用于删除 DB 列的 SQL 语句。
+     * @throws NotSupportedException 当 SQLite 不支持时抛出异常
      */
     public function dropColumn($table, $column)
     {
@@ -264,7 +264,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a column.
+     * 构建用于重命名列的 SQL 语句。
      * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
      * @param string $oldName the old name of the column. The name will be properly quoted by the method.
      * @param string $newName the new name of the column. The name will be properly quoted by the method.

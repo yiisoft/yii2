@@ -11,7 +11,7 @@ use yii\db\SqlToken;
 use yii\helpers\StringHelper;
 
 /**
- * Command represents an SQLite's SQL statement to be executed against a database.
+ * Command 表示 SQLite 数据库要执行的 SQL 语句。
  *
  * {@inheritdoc}
  *
@@ -67,8 +67,8 @@ class Command extends \yii\db\Command
     }
 
     /**
-     * Splits the specified SQL code into individual SQL statements and returns them
-     * or `false` if there's a single statement.
+     * 将指定的 SQL 代码拆分为单独的 SQL 语句并返回，
+     * 如果只有一个语句，则返回 `false`。
      * @param string $sql
      * @param array $params
      * @return string[]|false
@@ -94,7 +94,7 @@ class Command extends \yii\db\Command
     }
 
     /**
-     * Returns named bindings used in the specified statement token.
+     * 返回指定语句标记中使用的命名绑定。
      * @param SqlToken $statement
      * @param array $params
      * @return array
