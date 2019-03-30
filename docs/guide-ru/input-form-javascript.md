@@ -3,12 +3,10 @@
 
 Виджет [[yii\widgets\ActiveForm]] поставляется с набором JavaScript методов, которые используются для проверки на стороне клиента.
 Его реализация очень гибкая и позволяет расширять его различными способами.
-Ниже они описаны.
 
 ## ActiveForm события
 
-ActiveForm запускает серию специальных событий. Используя код, подобный следующему, вы можете подписаться на эти
-события и обрабатывать их:
+ActiveForm запускает серию специальных событий. Используя код, подобный следующему, вы можете подписаться на эти события и обрабатывать их:
 
 ```javascript
 $('#contact-form').on('beforeSubmit', function (e) {
@@ -33,9 +31,9 @@ function (event, messages, deferreds) {}
 
 где
 
-- `event`: объект события.
-- `messages`: ассоциативный массив с ключами, являющимися идентификаторами атрибутов, и значениями, являющимися массивами сообщений об ошибках для соответствующих атрибутов.
-- `deferreds`: массив отложенных объектов. Вы можете использовать `deferreds.add(callback)`, чтобы добавить новую отложенную проверку.
+- `event`: объект `Event`
+- `messages`: ассоциативный массив с ключами, являющимися идентификаторами атрибутов, и значениями, являющимися массивами сообщений об ошибках для соответствующих атрибутов
+- `deferreds`: массив отложенных объектов. Вы можете использовать `deferreds.add(callback)`, чтобы добавить новую отложенную проверку
 
 Если обработчик возвращает логическое `false`, он остановит дальнейшую проверку формы после этого события. И, как результат, событие `afterValidate` не будет запущено.
 
@@ -51,26 +49,26 @@ function (event, messages, errorAttributes) {}
 
 где
 
-- `event`: объект события.
-- `messages`: ассоциативный массив с ключами, являющимися идентификаторами атрибутов, и значениями, являющимися массивами сообщений об ошибках для соответствующих атрибутов.
-- `errorAttributes`: массив атрибутов, которые имеют ошибки проверки. Пожалуйста, обратитесь к `attributeDefaults` для просмотра структуры этого параметра.
+- `event`: объект `Event`
+- `messages`: ассоциативный массив с ключами, являющимися идентификаторами атрибутов, и значениями, являющимися массивами сообщений об ошибках для соответствующих атрибутов
+- `errorAttributes`: массив атрибутов, которые имеют ошибки проверки. Пожалуйста, обратитесь к `attributeDefaults` для просмотра структуры этого параметра
 
 ### `beforeValidateAttribute`
 
 `beforeValidateAttribute` событие инициируется перед проверкой атрибута.
 
-Подпись обработчика события должна быть:
+Сигнатура обработчика события должна быть:
 
 ```javascript
-function (event, attribute, messages, deferreds){}
+function (event, attribute, messages, deferreds)
 ```
 
 где
 
-- `event`: объект события.
-- `attribute`: атрибут для проверки. Пожалуйста, обратитесь к `attributeDefaults` для просмотра структуры
-- `messages`: массив, в который вы можете добавить сообщения об ошибках проверки для указанного атрибута.
-- `deferreds`: массив отложенных объектов. Вы можете использовать `deferreds.add (callback)`, чтобы добавить новую отложенную проверку.
+- `event`: объект `Event`
+- `attribute`: атрибут для проверки. Пожалуйста, обратитесь к `attributeDefaults` для просмотра структуры этого параметра
+- `messages`: массив, в который вы можете добавить сообщения об ошибках проверки для указанного атрибута
+- `deferreds`: массив отложенных объектов. Вы можете использовать `deferreds.add (callback)`, чтобы добавить новую отложенную проверку
 
 Если обработчик возвращает логическое `false`, он остановит дальнейшую проверку указанного атрибута.
 И, как результат, событие `afterValidateAttribute` не будет запущено.
@@ -79,72 +77,68 @@ function (event, attribute, messages, deferreds){}
 
 `afterValidateAttribute` событие запускается после проверки всей формы и каждого атрибута.
 
-The signature of the event handler should be:
+Сигнатура обработчика события должна быть:
 
 ```javascript
 function (event, attribute, messages)
 ```
 
-where
+где
 
-- `event`: an Event object.
-- `attribute`: the attribute being validated. Please refer to `attributeDefaults` for the structure
-   of this parameter.
-- `messages`: an array to which you can add additional validation error messages for the specified
-   attribute.
+- `event`: объект `Event`
+- `attribute`: проверяемый атрибут. Пожалуйста, обратитесь к `attributeDefaults` для просмотра структуры этого параметра
+- `messages`: массив, в который вы можете добавить дополнительные сообщения об ошибках валидации для указанного атрибута
 
 ### `beforeSubmit`
 
-`beforeSubmit` event is triggered before submitting the form after all validations have passed.
+`beforeSubmit` событие запускается перед отправкой формы после того, как все проверки пройдены.
 
-The signature of the event handler should be:
+Сигнатура обработчика события должна быть:
 
 ```javascript
 function (event)
 ```
 
-where event is an Event object.
+где событие является объектом `Event`.
 
-If the handler returns a boolean `false`, it will stop form submission.
+Если обработчик возвращает логическое значение `false`, он остановит отправку формы.
 
 ### `ajaxBeforeSend`
          
-`ajaxBeforeSend` event is triggered before sending an AJAX request for AJAX-based validation.
+`ajaxBeforeSend` cобытие инициируется перед отправкой AJAX запроса для проверки основанной на AJAX.
 
-The signature of the event handler should be:
+Сигнатура обработчика события должна быть:
 
 ```javascript
 function (event, jqXHR, settings)
 ```
 
-where
+где
 
-- `event`: an Event object.
-- `jqXHR`: a jqXHR object
-- `settings`: the settings for the AJAX request
+- `event`: объект `Event`
+- `jqXHR`: объект `jqXHR`
+- `settings`: настройки для AJAX запроса
 
 ### `ajaxComplete`
 
-`ajaxComplete` event is triggered after completing an AJAX request for AJAX-based validation.
+`ajaxComplete` событие запускается после выполнения AJAX запроса для проверки основанной на AJAX.
 
-The signature of the event handler should be:
+Сигнатура обработчика события должна быть:
 
 ```javascript
 function (event, jqXHR, textStatus)
 ```
 
-where
+где
 
-- `event`: an Event object.
-- `jqXHR`: a jqXHR object
-- `textStatus`: the status of the request ("success", "notmodified", "error", "timeout",
-"abort", or "parsererror").
+- `event`: объект `Event`
+- `jqXHR`: объект `jqXHR`
+- `textStatus`: статус запроса ("success", "notmodified", "error", "timeout", "abort", или "parsererror")
 
-## Submitting the form via AJAX
+## Отправка формы через AJAX
 
-While validation can be made on client side or via AJAX request, the form submission itself is done
-as a normal request by default. If you want the form to be submitted via AJAX, you can achieve this
-by handling the `beforeSubmit` event of the form in the following way:
+Хотя проверка может быть выполнена на стороне клиента или с помощью AJAX-запроса, сама отправка формы, по умолчанию, выполняется как обычный запрос.
+Если вы хотите, чтобы форма была отправлена через AJAX, вы можете достичь этого, обработав событие `beforeSubmit` формы следующим образом:
 
 ```javascript
 var $form = $('#formId');
@@ -188,7 +182,7 @@ $('#contact-form').yiiActiveForm('add', {
 });
 ```
 
-Для даления поля из списка проверки, чтобы оно не было проверено, выполните следующие действия:
+Для удаления поля из списка проверки, чтобы оно не было проверено, выполните следующие действия:
 
 ```javascript
 $('#contact-form').yiiActiveForm('remove', 'address');
