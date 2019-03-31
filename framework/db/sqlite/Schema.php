@@ -22,10 +22,10 @@ use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from a SQLite (2/3) database.
+ * Schema 是从 SQLite（SQLite 2 或 SQLite 3）数据库中检索元数据的类。
  *
- * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
- * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
+ * @property string $transactionIsolationLevel 用于此事务的事务隔离级别。
+ * 这可以是 [[Transaction::READ_UNCOMMITTED]] 或 [[Transaction::SERIALIZABLE]]。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -35,7 +35,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
-     * @var array mapping from physical column types (keys) to abstract column types (values)
+     * @var array 从物理列类型（键）到抽象列类型（值）的映射
      */
     public $typeMap = [
         'tinyint' => self::TYPE_TINYINT,
@@ -192,7 +192,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果调用此方法，则抛出异常。
      */
     protected function loadTableDefaultValues($tableName)
     {
@@ -200,9 +200,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Creates a query builder for the MySQL database.
-     * This method may be overridden by child classes to create a DBMS-specific query builder.
-     * @return QueryBuilder query builder instance
+     * 创建 MySQL 数据库查询构建器。
+     * 子类可以重写此方法以创建特定于 DBMS 的查询构建器。
+     * @return QueryBuilder 查询构建器实例
      */
     public function createQueryBuilder()
     {
@@ -211,7 +211,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @return ColumnSchemaBuilder column schema builder instance
+     * @return ColumnSchemaBuilder 列结构构建器实例
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -219,9 +219,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Collects the table column metadata.
-     * @param TableSchema $table the table metadata
-     * @return bool whether the table exists in the database
+     * 搜集表列的元数据。
+     * @param TableSchema $table 表元数据
+     * @return bool 表是否存在于数据库中
      */
     protected function findColumns($table)
     {
@@ -247,8 +247,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Collects the foreign key column details for the given table.
-     * @param TableSchema $table the table metadata
+     * 在给定表中搜集外键列的详细信息。
+     * @param TableSchema $table 表元数据
      */
     protected function findConstraints($table)
     {
@@ -266,9 +266,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Returns all unique indexes for the given table.
+     * 返回给定表的所有唯一索引。
      *
-     * Each array element is of the following structure:
+     * 每个数组元素都具有如下结构：
      *
      * ```php
      * [
@@ -277,8 +277,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
-     * @return array all unique indexes for the given table.
+     * @param TableSchema $table 表元数据
+     * @return array 给定表的所有唯一索引。
      */
     public function findUniqueIndexes($table)
     {
@@ -302,9 +302,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * 加载列信息到 [[ColumnSchema]] 对象。
+     * @param array $info 列信息
+     * @return ColumnSchema 列结构对象
      */
     protected function loadColumnSchema($info)
     {
@@ -357,11 +357,11 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Sets the isolation level of the current transaction.
-     * @param string $level The transaction isolation level to use for this transaction.
-     * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
-     * @throws NotSupportedException when unsupported isolation levels are used.
-     * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
+     * 设置当前事务的隔离级别。
+     * @param string $level 用于此事务的隔离级别。
+     * 这可以是 [[Transaction::READ_UNCOMMITTED]] 或 [[Transaction::SERIALIZABLE]]。
+     * @throws NotSupportedException 当使用不支持的隔离级别时，抛出异常。
+     * SQLite 仅仅支持 SERIALIZABLE 和 READ UNCOMMITTED。
      * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
      */
     public function setTransactionIsolationLevel($level)
@@ -379,8 +379,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Returns table columns info.
-     * @param string $tableName table name
+     * 返回表列信息。
+     * @param string $tableName 表名
      * @return array
      */
     private function loadTableColumnsInfo($tableName)
@@ -392,9 +392,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     * 加载多种类型的约束，并返回指定的约束。
+     * @param string $tableName 表名。
+     * @param string $returnType 返回的约束类型：
      * - primaryKey
      * - indexes
      * - uniques
@@ -474,7 +474,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Return whether the specified identifier is a SQLite system identifier.
+     * 返回指定的标识符是否为 SQLite 系统标识符。
      * @param string $identifier
      * @return bool
      * @see https://www.sqlite.org/src/artifact/74108007d286232f

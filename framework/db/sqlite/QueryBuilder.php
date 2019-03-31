@@ -265,11 +265,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * 构建用于重命名列的 SQL 语句。
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
-     * @throws NotSupportedException this is not supported by SQLite
+     * @param string $table 要重命名其列的表名。该方法将正确引用该名称。
+     * @param string $oldName 要重命名的列的名称。该方法将正确引用该名称。
+     * @param string $newName 要重命名的列的新的名称。该方法将正确引用该名称。
+     * @return string 用于重命名 DB 列的 SQL 语句。
+     * @throws NotSupportedException 当 SQLite 不支持时抛出异常
      */
     public function renameColumn($table, $oldName, $newName)
     {
@@ -277,19 +277,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for adding a foreign key constraint to an existing table.
-     * The method will properly quote the table and column names.
-     * @param string $name the name of the foreign key constraint.
-     * @param string $table the table that the foreign key constraint will be added to.
-     * @param string|array $columns the name of the column to that the constraint will be added on.
-     * If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param string $refTable the table that the foreign key references to.
-     * @param string|array $refColumns the name of the column that the foreign key references to.
-     * If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @return string the SQL statement for adding a foreign key constraint to an existing table.
-     * @throws NotSupportedException this is not supported by SQLite
+     * 构建用于将外键约束添加到已知的表的 SQL 语句。
+     * 该方法将确保正确引用表名和列名。
+     * @param string $name 外键约束名称。
+     * @param string $table 要添加外键约束的表名。
+     * @param string|array $columns 要添加约束的列名。
+     * 如果有多个列，请使用英文逗号分割它们或使用数组来表示它们。
+     * @param string $refTable 外键引用的表。
+     * @param string|array $refColumns 外键引用的列名。
+     * 如果有多个列，请使用英文逗号分隔它们或使用数组来表示它们。
+     * @param string $delete ON DELETE 选项。大多数 DBMS 支持这些选项：RESTRICT，CASCADE，NO ACTION，SET DEFAULT，SET NULL
+     * @param string $update ON UPDATE 选项。大多数 DBMS 支持这些选项：RESTRICT，CASCADE，NO ACTION，SET DEFAULT，SET NULL
+     * @return string 用于将外键约束添加到已知的表的 SQL 语句。
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
@@ -297,11 +297,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for dropping a foreign key constraint.
-     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping a foreign key constraint.
-     * @throws NotSupportedException this is not supported by SQLite
+     * 构建用于删除外键约束的 SQL 语句。
+     * @param string $name 要被删除的外键约束的名称。该方法将正确引用该名称。
+     * @param string $table 外删除其外键约束的表的表名。该方法将正确引用该名称。
+     * @return string 构建用于删除外键约束的 SQL 语句。
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常
      */
     public function dropForeignKey($name, $table)
     {
@@ -309,11 +309,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a DB table.
+     * 构建用于重命名 DB 表名的 SQL 语句。
      *
-     * @param string $table the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
+     * @param string $table 要重命名的表的名称。该方法将正确引用该名称。
+     * @param string $newName 新的表名称。该方法将正确引用该名称。
+     * @return string 用于重命名 DB 表名的 SQL 语句。
      */
     public function renameTable($table, $newName)
     {
@@ -321,15 +321,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     * will become 'varchar(255) not null'.
-     * @return string the SQL statement for changing the definition of a column.
-     * @throws NotSupportedException this is not supported by SQLite
+     * 构建用于更改列定义的 SQL 语句。
+     * @param string $table 要更改其列的表。表名将由该方法正确引用。
+     * @param string $column 要更改的列的名称。该方法将正确引用该名称。
+     * @param string $type 新的列类型。将调用 [[getColumnType()]] 方法将抽象列类型（如果有）转换为物理列类型。
+     * 任何未被识别为抽象类型的内容都将保存在生成的 SQL 语句中。
+     * 例如，`string` 将变为 `varchar(255)`，
+     * 而 `string not null` 将变为 `varchar(255) not null`。
+     * @return string 用于更改列定义的 SQL 语句。
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常
      */
     public function alterColumn($table, $column, $type)
     {
@@ -337,12 +337,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for adding a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint.
-     * @param string $table the table that the primary key constraint will be added to.
-     * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
-     * @return string the SQL statement for adding a primary key constraint to an existing table.
-     * @throws NotSupportedException this is not supported by SQLite
+     * 构建用于将主键约束添加到现有表的 SQL 语句。
+     * @param string $name 主键约束名称。
+     * @param string $table 将主键约束添加到其中的表的表名。
+     * @param string|array $columns 英文逗号分隔的字符串或主键所包含的l列数组。
+     * @return string 将主键约束添加到现有表的 SQL 语句。
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常
      */
     public function addPrimaryKey($name, $table, $columns)
     {
@@ -350,11 +350,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
-     * @return string the SQL statement for removing a primary key constraint from an existing table.
-     * @throws NotSupportedException this is not supported by SQLite
+     * 构建一个将主键约束从现有表移除的 SQL 语句。
+     * @param string $name 要被移除的主键约束的名称。
+     * @param string $table 从中要移除主键约束的表的名称。
+     * @return string 将主键约束从现有表移除的 SQL 语句。
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常
      */
     public function dropPrimaryKey($name, $table)
     {
@@ -363,7 +363,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by SQLite.
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常。
      */
     public function addUnique($name, $table, $columns)
     {
@@ -372,7 +372,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by SQLite.
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常。
      */
     public function dropUnique($name, $table)
     {
@@ -381,7 +381,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by SQLite.
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常。
      */
     public function addCheck($name, $table, $expression)
     {
@@ -390,7 +390,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by SQLite.
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常。
      */
     public function dropCheck($name, $table)
     {
@@ -399,7 +399,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by SQLite.
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常。
      */
     public function addDefaultValue($name, $table, $column, $value)
     {
@@ -408,7 +408,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by SQLite.
+     * @throws NotSupportedException SQLite 不支持这一点时抛出异常。
      */
     public function dropDefaultValue($name, $table)
     {
