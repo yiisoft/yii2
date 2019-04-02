@@ -149,7 +149,7 @@ $userIP = Yii::$app->request->userIP;
     ],
 ],
 ```
-IP-адрес отправляется прокси-сервером в заголовке `X-Forwarded-For` по умолчанию, а протокол (`http` или `https`) отправляется в `X-Forwarded-Proto`.
+IP-адрес, по умолчанию, отправляется прокси-сервером в заголовке `X-Forwarded-For`, а протокол (`http` или `https`) отправляется в `X-Forwarded-Proto`.
 Если ваши прокси используют разные заголовки, вы можете использовать конфигурацию компонента `request` для их настройки, например:
 
 ```php
@@ -176,8 +176,5 @@ IP-адрес отправляется прокси-сервером в заго
     ],
 ],
 ```
-
-With the above configuration, all headers listed in `secureHeaders` are filtered from the request,
-except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is made by the proxy.
-In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
-will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].
+В приведенной выше конфигурации все заголовки, перечисленные в `secureHeaders`, отфильтровываются из запроса, кроме заголовков `X-ProxyUser-Ip` и `Front-End-Https` в случае, если запрос создан прокси.
+В этом случае, первый используется для получения IP-адреса пользователя, настроенного в `ipHeaders`, а последний будет использоваться для определения результата [[yii\web\Request::getIsSecureConnection()]].
