@@ -456,7 +456,7 @@ class ComponentTest extends TestCase
             return;
         }
 
-        $obj = include 'stub/AnonymousComponentClass.php';
+        $obj = require __DIR__ . 'stub/AnonymousComponentClass.php';
 
         $obj->trigger('barEventOnce');
         $this->assertEquals(1, $obj->foo);
