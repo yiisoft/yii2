@@ -745,6 +745,9 @@ class FileHelperTest extends TestCase
         // https://github.com/yiisoft/yii2/issues/13034
         $this->assertEquals('\\\\server\share\path\file', FileHelper::normalizePath('\\\\server\share\path\file', '\\'));
 
+        // Stream Wrappers should not have the double slashes stripped
+        // https://github.com/yiisoft/yii2/issues/17235
+        $this->assertEquals('ftp://192.168.1.100/test', FileHelper::normalizePath('ftp://192.168.1.100/test/'));
     }
 
     public function testLocalizedDirectory()
