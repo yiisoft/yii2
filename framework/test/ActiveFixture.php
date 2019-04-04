@@ -70,6 +70,8 @@ class ActiveFixture extends BaseActiveFixture
      *
      * If you override this method, you should consider calling the parent implementation
      * so that the data returned by [[getData()]] can be populated into the table.
+     * @throws InvalidConfigException
+     * @throws \yii\base\NotSupportedException
      */
     public function load()
     {
@@ -78,6 +80,9 @@ class ActiveFixture extends BaseActiveFixture
         foreach ($this->getData() as $alias => $row) {
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
+        }
+        if ($table->sequenceName !== null) {
+            $this->db->createCommand()->executeResetSequence($table->fullName);
         }
     }
 
