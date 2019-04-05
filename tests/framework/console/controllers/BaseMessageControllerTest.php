@@ -487,6 +487,27 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
+     * Do not crash on this string, but ignore it.
+     */
+    public function testCreateTranslationFromConcatenatedStringWithParenthesis()
+    {
+        $category = 'test.category1';
+        $sourceFileContent = <<<'EOF'
+<?= Yii::t('app.invoice', '{n} ' . ($item['quantityUnit'] !== null ? $item['quantityUnit'] : ''), ['n' => $item['quantity']], $language); ?>
+<?= Yii::t('app.invoice', 'reach this part, don\'t crash') ?>
+EOF
+;
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages($category);
+        $this->assertArrayHasKey('reach this part, don\'t crash', $messages,
+            "message is missing in translation file. Command output:\n\n" . $out);
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/14016
      */
     public function testShouldNotMarkUnused()
