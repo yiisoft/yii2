@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #17220: Fixed error when using non-InputWidget in active form field (s1lver)
 - Bug #17235: `yii\helpers\FileHelper::normalizePath()` now accepts stream wrappers (razvanphp)
+- Bug: Fixed `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
 
 
 2.0.17 March 22, 2019

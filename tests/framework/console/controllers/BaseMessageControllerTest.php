@@ -493,8 +493,9 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $category = 'test.category1';
         $sourceFileContent = <<<'EOF'
-<?= Yii::t('app.invoice', '{n} ' . ($item['quantityUnit'] !== null ? $item['quantityUnit'] : ''), ['n' => $item['quantity']], $language); ?>
-<?= Yii::t('app.invoice', 'reach this part, don\'t crash') ?>
+<?= Yii::t('test.category1', '{n} ' . ($item['quantityUnit'] !== null ? $item['quantityUnit'] : ''), ['n' => $item['quantity']], $language); ?>
+asd
+<?= Yii::t('test.category1', 'reach this part, don\'t crash') ?>
 EOF
 ;
         $this->createSourceFile($sourceFileContent);
@@ -503,6 +504,7 @@ EOF
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $messages = $this->loadMessages($category);
+        $this->assertCount(1, $messages, print_r($messages, true) . "\nCommand output:\n\n" . $out);
         $this->assertArrayHasKey('reach this part, don\'t crash', $messages,
             "message is missing in translation file. Command output:\n\n" . $out);
     }
