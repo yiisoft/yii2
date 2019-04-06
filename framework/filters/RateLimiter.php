@@ -16,7 +16,7 @@ use yii\web\TooManyRequestsHttpException;
 /**
  * RateLimiter implements a rate limiting algorithm based on the [leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket).
  *
- * You may use RateLimiter by attaching it as a behavior to a controller or module, like the following,
+ * 您可以通过将 RateLimiter 作为行为附加到控制器或模块来使用，如下所示，
  *
  * ```php
  * public function behaviors()
@@ -29,10 +29,10 @@ use yii\web\TooManyRequestsHttpException;
  * }
  * ```
  *
- * When the user has exceeded his rate limit, RateLimiter will throw a [[TooManyRequestsHttpException]] exception.
+ * 当用户超过其速率限制时，RateLimiter 将引发 [[TooManyRequestsHttpException]] 异常。
  *
- * Note that RateLimiter requires [[user]] to implement the [[RateLimitInterface]]. RateLimiter will
- * do nothing if [[user]] is not set or does not implement [[RateLimitInterface]].
+ * 请注意 RateLimiter 需要 [[user]] 实现[RateLimitInterface]。
+ * 如果 [[user]] 未设置或未实现 [[RateLimitInterface]] 则不会执行任何操作。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -40,24 +40,24 @@ use yii\web\TooManyRequestsHttpException;
 class RateLimiter extends ActionFilter
 {
     /**
-     * @var bool whether to include rate limit headers in the response
+     * @var bool 是否在响应中包含速率限制 headers
      */
     public $enableRateLimitHeaders = true;
     /**
-     * @var string the message to be displayed when rate limit exceeds
+     * @var string 超过速率限制时显示的消息
      */
     public $errorMessage = 'Rate limit exceeded.';
     /**
-     * @var RateLimitInterface the user object that implements the RateLimitInterface.
-     * If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
+     * @var RateLimitInterface 实现 RateLimitInterface 的用户对象。
+     * 如果未设置，它将从 `Yii::$app->user->getIdentity(false)` 取值。
      */
     public $user;
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request 当前的请求。如果未设置，则将使用 `request` 应用程序组件。
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response 要发送的响应。如果未设置，则将使用 `response` 应用程序组件。
      */
     public $response;
 
@@ -97,12 +97,12 @@ class RateLimiter extends ActionFilter
     }
 
     /**
-     * Checks whether the rate limit exceeds.
-     * @param RateLimitInterface $user the current user
+     * 检查是否超过了比率限额。
+     * @param RateLimitInterface $user 当前用户
      * @param Request $request
      * @param Response $response
-     * @param \yii\base\Action $action the action to be executed
-     * @throws TooManyRequestsHttpException if rate limit exceeds
+     * @param \yii\base\Action $action 将要执行的动作
+     * @throws TooManyRequestsHttpException 如果超过比率限制
      */
     public function checkRateLimit($user, $request, $response, $action)
     {
@@ -127,11 +127,11 @@ class RateLimiter extends ActionFilter
     }
 
     /**
-     * Adds the rate limit headers to the response.
+     * 将速率限制 headers 添加到响应中。
      * @param Response $response
-     * @param int $limit the maximum number of allowed requests during a period
-     * @param int $remaining the remaining number of allowed requests within the current period
-     * @param int $reset the number of seconds to wait before having maximum number of allowed requests again
+     * @param int $limit 一段时间内允许的最大请求数
+     * @param int $remaining 当前期间内允许的剩余请求数
+     * @param int $reset 再次具有允许的最大请求数之前等待的秒数
      */
     public function addRateLimitHeaders($response, $limit, $remaining, $reset)
     {

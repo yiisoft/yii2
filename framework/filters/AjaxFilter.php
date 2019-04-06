@@ -13,7 +13,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Request;
 
 /**
- * AjaxFilter allow to limit access only for ajax requests.
+ * AjaxFilter 只允许限制 Ajax 请求的访问。
  *
  * ```php
  * public function behaviors()
@@ -33,11 +33,11 @@ use yii\web\Request;
 class AjaxFilter extends ActionFilter
 {
     /**
-     * @var string the message to be displayed when request isn't ajax
+     * @var 当请求不是 Ajax 时要显示的消息的字符串
      */
     public $errorMessage = 'Request must be XMLHttpRequest.';
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request 当前请求。如果未设置，将使用 `request` 应用程序组件。
      */
     public $request;
 
