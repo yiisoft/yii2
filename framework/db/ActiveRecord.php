@@ -23,15 +23,14 @@ use yii\helpers\StringHelper;
  * 引用 Active Record 属性等同于访问该记录的相应表列。
  *
  * 例如，假设 'Customer' ActiveRecord 类与 `customer` 表相关联。
- * As an example, say that the `Customer` ActiveRecord class is associated with the `customer` table.
- * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `customer` table.
- * Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of
- * the `name` column for the table row, you can use the expression `$customer->name`.
- * In this example, Active Record is providing an object-oriented interface for accessing data stored in the database.
- * But Active Record provides much more functionality than this.
+ * 这意味着类的 `name` 属性会自动映射到 `customer` 表中的 `name` 列。
+ * 感谢伟大的 Active Record，当变量 `$customer` 是 `Customer` 类的对象时，
+ * 为了得到表行的 `name` 列的值，你可以使用表达式 `$customer->name` 获取它。
+ * 在此示例中，ActiveRecord 提供了一个面向对象的接口，用于访问存储在数据库中的数据。
+ * 但 Active Record 提供了比这更多的功能。
  *
- * To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
- * implement the `tableName` method:
+ * 要声明一个 ActiveRecord 类，
+ * 你需要继承 [[\yii\db\ActiveRecord]] 并实现 `tableName` 方法：
  *
  * ```php
  * <?php
@@ -45,12 +44,12 @@ use yii\helpers\StringHelper;
  * }
  * ```
  *
- * The `tableName` method only has to return the name of the database table associated with the class.
+ * `tableName` 方法仅会返回与该类关联的数据库表的名称。
  *
- * > Tip: You may also use the [Gii code generator](guide:start-gii) to generate ActiveRecord classes from your
- * > database tables.
+ * > 提示：您还可以使用 [Gii code generator](guide:start-gii)
+ * > 从数据库表生成 ActiveRecord 类。
  *
- * Class instances are obtained in one of two ways:
+ * 类实例可通过以下两种方式的任何一种获得：
  *
  * * Using the `new` operator to create a new, empty object
  * * Using a method to fetch an existing record (or records) from the database
