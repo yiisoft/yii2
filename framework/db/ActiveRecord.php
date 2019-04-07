@@ -15,13 +15,14 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
- * ActiveRecord is the base class for classes representing relational data in terms of objects.
+ * ActiveRecord 是表示数据对象关系的类的基类。
  *
- * Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
- * The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific
- * row in a database table. The object's attributes are mapped to the columns of the corresponding table.
- * Referencing an Active Record attribute is equivalent to accessing the corresponding table column for that record.
+ * ActiveRecord 实现请阅读 [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record)。
+ * Active Record 背后的前提是，单个 [[ActiveRecord]] 对象与数据库表中的特定行相关联。
+ * 对象的属性映射到相应表的列。
+ * 引用 Active Record 属性等同于访问该记录的相应表列。
  *
+ * 例如，假设 'Customer' ActiveRecord 类与 `customer` 表相关联。
  * As an example, say that the `Customer` ActiveRecord class is associated with the `customer` table.
  * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `customer` table.
  * Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of
