@@ -109,7 +109,7 @@ EOD;
     /**
      * 构建用于更改列定义的 SQL 语句。
      *
-     * @param string $table 要更改其列的表。该方法将正确引用表明。
+     * @param string $table 要更改其列的表。该方法将正确引用表名。
      * @param string $column 要更改的列的名称。该方法将正确引用该名称。
      * @param string $type 新的列类型。将调用 [[getColumnType]] 方法转换抽象列类型（如果有）转换为物理列类型，
      * 任何为被识别为抽象列类型的内容都将保留在生成的 SQL 语句中。

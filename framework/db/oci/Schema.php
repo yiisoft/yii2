@@ -371,7 +371,7 @@ SQL;
     }
 
     /**
-     * @Overrides 类 `Schema` 中的方法
+     * @Overrides 类 'Schema' 中的方法
      * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle 不支持这一点
      *
      * 返回最后插入的行或序列的 ID。
@@ -544,7 +544,7 @@ SQL;
     }
 
     /**
-     * 提取给定列的s数据类型。
+     * 提取给定列的数据类型。
      * @param ColumnSchema $column
      * @param string $dbType DB 类型
      * @param string $precision 总位数。

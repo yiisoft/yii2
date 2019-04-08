@@ -170,7 +170,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * 序列将被重置，
      * 以便插入的下一个新行的主键具有指定值或者为 1。
      * @param string $tableName 将要重置主键序列的表的名称
-     * @param mixed $value 插入的下一个新行的值。如果 $vaule 为设置，
+     * @param mixed $value 插入的下一个新行的值。如果 $vaule 没设置，
      * 则下一个新行的主键的值为 1。
      * @return string 重置序列的 SQL 语句
      * @throws InvalidArgumentException 如果表不存在，或者没有与表关联的序列，则抛出异常。
@@ -199,7 +199,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * 构建用于启用或禁用数据完整性检查的 SQL 语句。
      * @param bool $check 是否打开或关闭数据完整性检查。
      * @param string $schema 表格的架构。对 MySQL 来说该参数毫无意思。
-     * @param string $table 表名。对 MySQL 来说该参数毫无意思。
+     * @param string $table 表名。对 MySQL 来说该参数毫无意义。
      * @return string 用于完整性检查的 SQL 语句
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')

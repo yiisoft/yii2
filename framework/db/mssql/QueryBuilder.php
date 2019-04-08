@@ -197,11 +197,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * 创建用于重置表主键的x序列值的 SQL 语句。
+     * 创建用于重置表主键的序列值的 SQL 语句。
      * 序列将被重置，
      * 以便于下一个新行插入的主键具有指定的值或者为 1。
      * @param string $tableName 要重建主键序列的数据库表名。
-     * @param mixed $value 插入的下一个新行的主键的值。 如果未设置此值，
+     * @param mixed $value 插入的下一个新行的主键的值。如果未设置此值，
      * 则下一个新行的主键值将为 1。
      * @return string 用于重置主键序列的 SQL 语句
      * @throws InvalidArgumentException 如果该表不存在，或没有与之关联的序列，则抛出异常。

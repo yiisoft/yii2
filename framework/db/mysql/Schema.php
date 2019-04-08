@@ -209,7 +209,6 @@ SQL;
     }
 
     /**
-     * Creates a query builder for the MySQL database.
      * 创建 MySQL 数据库的查询构建器。
      * @return QueryBuilder 查询构建器实例
      */
@@ -478,7 +477,7 @@ SQL;
 
     /**
      * 加载多种类型的约束，并返回指定的约束。
-     * @param string $tableName 表明
+     * @param string $tableName 表名。
      * @param string $returnType 返回的约束类型：
      * - primaryKey
      * - foreignKeys

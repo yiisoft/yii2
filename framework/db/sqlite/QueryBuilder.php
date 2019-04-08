@@ -112,7 +112,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * 生成批量插入的 SQL 语句。
      *
-     * 例如：
+     * 例如，
      *
      * ```php
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [

@@ -13,7 +13,7 @@ use yii\db\Query;
 
 /**
  * BetweenColumnCondition 类表示 `BETWEEN` 条件
- * 其中值在两个列中间，比如：
+ * 其中值在两个列中间。比如：
  *
  * ```php
  * new BetweenColumnsCondition(42, 'BETWEEN', 'min_value', 'max_value')

@@ -18,7 +18,7 @@ class PDO extends \PDO
 {
     /**
      * 返回最后插入的 ID 的值。
-     * @param string|null $sequence 序列名。 默认为空。
+     * @param string|null $sequence 序列名。默认为空。
      * @return int 最后插入的 ID 的值。
      */
     public function lastInsertId($sequence = null)
@@ -41,7 +41,6 @@ class PDO extends \PDO
     /**
      * 提交事务方法。因为 MSSQL PDO 驱动本身不支持事务，
      * 所以有必要覆盖 PDO 类的方法。
-     *
      * @return bool 提交事务的结果。
      */
     public function commit()
@@ -54,7 +53,6 @@ class PDO extends \PDO
     /**
      * 回滚事务方法。因为 MSSQL PDO 驱动本身不支持事务，
      * 所以有必要覆盖 PDO 类的方法。
-     *
      * @return bool 回滚事务的结果。
      */
     public function rollBack()
@@ -69,9 +67,7 @@ class PDO extends \PDO
      *
      * 因为某些 MSSQL PDO 驱动（例如：dblib）不支持获取连接属性，
      * 所以有必要覆盖 PDO 类的方法。
-     *
      * @param int $attribute PDO::ATTR_* 常量之一。
-     * @return mixed A successful call returns the value of the requested PDO attribute.
      * @return mixed 调用成功后将返回所请求的 PDO 属性的值。
      * 调用不成功，则返回 null。
      */

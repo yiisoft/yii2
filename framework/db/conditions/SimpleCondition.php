@@ -34,9 +34,9 @@ class SimpleCondition implements ConditionInterface
     /**
      * SimpleCondition 构造函数。
      *
-     * @param mixed $column $operator 左边的字符。
+     * @param mixed $column $operator 左边的字符
      * @param string $operator 要使用的运算符。任何场景下都可以使用，例如： `>`，`<=`，等等。
-     * @param mixed $value $operator 右边的字符。
+     * @param mixed $value $operator 右边的字符
      */
     public function __construct($column, $operator, $value)
     {
