@@ -482,12 +482,12 @@ class ActiveRecord extends BaseActiveRecord
      * 将通过相应的方法引发事件 [[EVENT_BEFORE_VALIDATE]]，
      * [[EVENT_AFTER_VALIDATE]]，[[EVENT_BEFORE_INSERT]]，以及 [[EVENT_AFTER_INSERT]]。
      *
-     * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
+     * 只有 [[dirtyAttributes|changed attribute values]] 才会插入到数据库中。
      *
-     * If the table's primary key is auto-incremental and is `null` during insertion,
-     * it will be populated with the actual value after insertion.
+     * 如果表的主键是自动增量并且在插入期间为 `null`，
+     * 则插入后将填充实际值。
      *
-     * For example, to insert a customer record:
+     * 例如，要插入 customer 记录：
      *
      * ```php
      * $customer = new Customer;
