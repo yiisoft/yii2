@@ -409,9 +409,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the list of all attribute names of the model.
-     * The default implementation will return all column names of the table associated with this AR class.
-     * @return array list of attribute names.
+     * 返回模型的所有的属性名称的列表。
+     * 默认实现将返回与此 AR 类关联的表的所有列名。
+     * @return array 属性名称列表。
      */
     public function attributes()
     {
@@ -419,14 +419,14 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Declares which DB operations should be performed within a transaction in different scenarios.
-     * The supported DB operations are: [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]],
-     * which correspond to the [[insert()]], [[update()]] and [[delete()]] methods, respectively.
-     * By default, these methods are NOT enclosed in a DB transaction.
+     * 声明应在不同场景中的事务中执行那些 DB 操作。
+     * 支持的 DB 操作为 [[OP_INSERT]]，[[OP_UPDATE]] 以及 [[OP_DELETE]]，
+     * 分别对应 [[insert()]]， [[update()]] 以及 [[delete()]] 方法，
+     * 默认情况下，这些方法不包含在数据库事务中。
      *
-     * In some scenarios, to ensure data consistency, you may want to enclose some or all of them
-     * in transactions. You can do so by overriding this method and returning the operations
-     * that need to be transactional. For example,
+     * 在某些情况下，为保持数据一致性，
+     * 你可能希望将其中的部分或全部包含在事务中。
+     * 你可以通过重写此方法并返回需要进行事务处理的操作来完成此操作。例如，
      *
      * ```php
      * return [
@@ -438,12 +438,12 @@ class ActiveRecord extends BaseActiveRecord
      * ];
      * ```
      *
-     * The above declaration specifies that in the "admin" scenario, the insert operation ([[insert()]])
-     * should be done in a transaction; and in the "api" scenario, all the operations should be done
-     * in a transaction.
+     * 上述声明指定在 `admin` 场景中，
+     * 插入操作 ([[insert()]]) 应该在事务中完成；
+     * 在 `api` 场景中，所有的操作都应该在事务中完成。
      *
-     * @return array the declarations of transactional operations. The array keys are scenarios names,
-     * and the array values are the corresponding transaction operations.
+     * @return array 事务操作声明。数组的键是场景名称，
+     * 数组值是相应的事务操作。
      */
     public function transactions()
     {
@@ -465,22 +465,22 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Inserts a row into the associated database table using the attribute values of this record.
+     * 使用此属性的记录值将行插入关联的数据库表中。
      *
-     * This method performs the following steps in order:
+     * 此方法按顺序执行以下步骤：
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is `true`. If [[beforeValidate()]]
-     *    returns `false`, the rest of the steps will be skipped;
-     * 2. call [[afterValidate()]] when `$runValidation` is `true`. If validation
-     *    failed, the rest of the steps will be skipped;
-     * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
-     *    the rest of the steps will be skipped;
-     * 4. insert the record into database. If this fails, it will skip the rest of the steps;
-     * 5. call [[afterSave()]];
+     * 1. 当 `$runValidation` 为 `true` 时调用 [[beforeValidate()]]。
+     *    如果 [[beforeValidate()]] 返回 `false`，则跳过其余步骤；
+     * 2. 当 `$runValidation` 为 `true` 时调用 [[afterValidate()]]。
+     *    如果验证失败，则跳过其余步骤；
+     * 3. 调用 [[beforeSave()]]。当 [[beforeSave()]] 返回 `false`，
+     *    则跳过其余步骤；
+     * 4. 插入记录到数据库。 如果插入记录失败，则跳过其余步骤；
+     * 5. 调用 [[afterSave()]]；
      *
-     * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-     * [[EVENT_AFTER_VALIDATE]], [[EVENT_BEFORE_INSERT]], and [[EVENT_AFTER_INSERT]]
-     * will be raised by the corresponding methods.
+     * 在上面的步骤 1，2，3 和 5 中，
+     * 将通过相应的方法引发事件 [[EVENT_BEFORE_VALIDATE]]，
+     * [[EVENT_AFTER_VALIDATE]]，[[EVENT_BEFORE_INSERT]]，以及 [[EVENT_AFTER_INSERT]]。
      *
      * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
      *
