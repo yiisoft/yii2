@@ -51,10 +51,10 @@ use yii\helpers\StringHelper;
  *
  * 类实例可通过以下两种方式的任何一种获得：
  *
- * * Using the `new` operator to create a new, empty object
- * * Using a method to fetch an existing record (or records) from the database
+ * * 使用 `new` 操作符，创建一个新的空对象
+ * * 使用方法从数据库中获取现有记录（或记录）
  *
- * Below is an example showing some typical usage of ActiveRecord:
+ * 下面是一个示例，显示 ActiveRecord 的一些典型用法：
  *
  * ```php
  * $user = new User();
@@ -68,10 +68,10 @@ use yii\helpers\StringHelper;
  * $orders = $user->orders;
  * ```
  *
- * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
+ * 有关 ActiveRecord 的更多详细信息和用法，请参阅 [guide article on ActiveRecord](guide:db-active-record)。
  *
- * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
- * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
+ * @method ActiveQuery hasMany($class, array $link) 有关详细信息请参阅 [[BaseActiveRecord::hasMany()]]
+ * @method ActiveQuery hasOne($class, array $link) 有关详细信息请参阅 [[BaseActiveRecord::hasOne()]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -80,28 +80,28 @@ use yii\helpers\StringHelper;
 class ActiveRecord extends BaseActiveRecord
 {
     /**
-     * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     * 插入操作。其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_INSERT = 0x01;
     /**
-     * The update operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     * 更新操作。其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_UPDATE = 0x02;
     /**
-     * The delete operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     * 删除操作。 其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_DELETE = 0x04;
     /**
-     * All three operations: insert, update, delete.
-     * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
+     * 所有三个操作： insert、update、delete。
+     * 这是表达式的快捷方式： OP_INSERT | OP_UPDATE | OP_DELETE。
      */
     const OP_ALL = 0x07;
 
 
     /**
-     * Loads default values from database table schema.
+     * 从数据库表结构加载默认值。
      *
-     * You may call this method to load default values after creating a new instance:
+     * 你可以在创建新实例后调用此方法以加载默认值：
      *
      * ```php
      * // class Customer extends \yii\db\ActiveRecord
@@ -109,9 +109,9 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->loadDefaultValues();
      * ```
      *
-     * @param bool $skipIfSet whether existing value should be preserved.
-     * This will only set defaults for attributes that are `null`.
-     * @return $this the model instance itself.
+     * @param bool $skipIfSet 是否应保留现有值。
+     * 这只会为 `null` 属性设置默认值。
+     * @return $this 模型实例本身。
      */
     public function loadDefaultValues($skipIfSet = true)
     {
@@ -125,10 +125,10 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the database connection used by this AR class.
-     * By default, the "db" application component is used as the database connection.
-     * You may override this method if you want to use a different database connection.
-     * @return Connection the database connection used by this AR class.
+     * 返回此 AR 类使用的数据库连接。
+     * 默认情况下，“db” 组件用作数据库连接。
+     * 如果要使用其他数据库连接，可以重写此方法。
+     * @return Connection 此 AR 类使用的数据库连接。
      */
     public static function getDb()
     {
@@ -136,22 +136,22 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Creates an [[ActiveQuery]] instance with a given SQL statement.
+     * 使用给定的 SQL 语句创建 [[ActiveQuery]] 实例。
      *
-     * Note that because the SQL statement is already specified, calling additional
-     * query modification methods (such as `where()`, `order()`) on the created [[ActiveQuery]]
-     * instance will have no effect. However, calling `with()`, `asArray()` or `indexBy()` is
-     * still fine.
+     * 请注意，因为已经指定了 SQL 语句，
+     * 所以在创建的 [[ActiveQuery]] 实例上调用其他查询修改方法（例如 `where()`，`order()`），
+     * 将不起作用，
+     * 但是，调用 `with()`，`asArray()` 或 `indexBy()` 仍然没问题。
      *
-     * Below is an example:
+     * 下面举个例子：
      *
      * ```php
      * $customers = Customer::findBySql('SELECT * FROM customer')->all();
      * ```
      *
-     * @param string $sql the SQL statement to be executed
-     * @param array $params parameters to be bound to the SQL statement during execution.
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance
+     * @param string $sql 要执行的 SQL 语句
+     * @param array $params 在执行期间绑定到 SQL 语句的参数。
+     * @return ActiveQuery 新创建的 [[ActiveQuery]] 实例
      */
     public static function findBySql($sql, $params = [])
     {
@@ -162,11 +162,11 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Finds ActiveRecord instance(s) by the given condition.
-     * This method is internally called by [[findOne()]] and [[findAll()]].
-     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws InvalidConfigException if there is no primary key defined.
+     * 按给定的条件查找 ActiveRecord 实例。
+     * 此方法由 [[findOne()]] and [[findAll()]] 在内部调用。
+     * @param mixed $condition 有关此参数的说明请参阅 [[findOne()]]
+     * @return ActiveQueryInterface 新创建的 [[ActiveQueryInterface|ActiveQuery]] 实例。
+     * @throws InvalidConfigException 如果没有定义主键，则抛出异常。
      * @internal
      */
     protected static function findByCondition($condition)
@@ -194,13 +194,13 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Filters array condition before it is assiged to a Query filter.
+     * 在将数组条件分配给查询过滤器之前对其进行过滤。
      *
-     * This method will ensure that an array condition only filters on existing table columns.
+     * 此方法将确保数组条件仅过滤现有表列。
      *
-     * @param array $condition condition to filter.
-     * @return array filtered condition.
-     * @throws InvalidArgumentException in case array contains unsafe values.
+     * @param array $condition 过滤条件。
+     * @return array 过滤后的条件。
+     * @throws InvalidArgumentException 当数组中包含不安全的值时，抛出异常。
      * @since 2.0.15
      * @internal
      */
@@ -243,19 +243,19 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Updates the whole table using the provided attribute values and conditions.
+     * 使用提供的属性值和条件更新整个表。
      *
-     * For example, to change the status to be 1 for all customers whose status is 2:
+     * 比如，要将所有状态为 2 的客户的状态更改为 1：
      *
      * ```php
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
-     * > Warning: If you do not specify any condition, this method will update **all** rows in the table.
+     * > 警告：如果未指定任何条件，则此方法将更新表中的**所有**行。
      *
-     * Note that this method will not trigger any events. If you need [[EVENT_BEFORE_UPDATE]] or
-     * [[EVENT_AFTER_UPDATE]] to be triggered, you need to [[find()|find]] the models first and then
-     * call [[update()]] on each of them. For example an equivalent of the example above would be:
+     * 注意，此方法不会触发任何事件，如果需要触发 [[EVENT_BEFORE_UPDATE]] 或 [[EVENT_AFTER_UPDATE]] ，
+     * 则首先需要 [[find()|find]] 模型，然后在每个模型上调用 [[update()]]。
+     * 例如，下面的例子和前面的例子作用是相同的：
      *
      * ```php
      * $models = Customer::find()->where('status = 2')->all();
@@ -265,13 +265,13 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
+     * 对于大量模型，可以考虑使用 [[ActiveQuery::each()]] 将内存使用限制在规定范围内。
      *
-     * @param array $attributes attribute values (name-value pairs) to be saved into the table
-     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return int the number of rows updated
+     * @param array $attributes 要保存在表中的属性值（name-value pairs）
+     * @param string|array $condition 将放在 UPDATE SQL 的 WHERE 部分中的条件。
+     * 有关如何指定此参数，请阅读 [[Query::where()]]。
+     * @param array $params 要绑定到查询的参数 (name => value)。
+     * @return int 更新的行数
      */
     public static function updateAll($attributes, $condition = '', $params = [])
     {
@@ -282,23 +282,23 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Updates the whole table using the provided counter changes and conditions.
+     * 使用提供的计数器更改条件更新整个表。
      *
-     * For example, to increment all customers' age by 1,
+     * 例如，要将所有客户的年龄增加 1，
      *
      * ```php
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
-     * Note that this method will not trigger any events.
+     * 注意，此方法不会触发任何事件。
      *
-     * @param array $counters the counters to be updated (attribute name => increment value).
-     * Use negative values if you want to decrement the counters.
-     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
-     * @return int the number of rows updated
+     * @param array $counters 要更新的计数器 (attribute name => increment value)。
+     * 如果要递减计数器，请使用负值。
+     * @param string|array $condition 将放在 UPDATE SQL 的 WHERE 部分中的条件。
+     * 有关如何指定此参数，请阅读 [[Query::where()]]。
+     * @param array $params 要绑定到查询的参数 (name => value)。
+     * 不要将参数命名为 `:bp0`，`:bp1` 等，因为它们是由这个方法内部使用的。
+     * @return int 更新的行数
      */
     public static function updateAllCounters($counters, $condition = '', $params = [])
     {
@@ -314,19 +314,19 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Deletes rows in the table using the provided conditions.
+     * 使用提供的条件删除表中的行。
      *
-     * For example, to delete all customers whose status is 3:
+     * 例如，要删除所有状态为 3 的客户：
      *
      * ```php
      * Customer::deleteAll('status = 3');
      * ```
      *
-     * > Warning: If you do not specify any condition, this method will delete **all** rows in the table.
+     * > 警告：如果未指定任何条件，则此方法将删除表中的**所有**行。
      *
-     * Note that this method will not trigger any events. If you need [[EVENT_BEFORE_DELETE]] or
-     * [[EVENT_AFTER_DELETE]] to be triggered, you need to [[find()|find]] the models first and then
-     * call [[delete()]] on each of them. For example an equivalent of the example above would be:
+     * 注意，此方法不会触发任何事件。如果需要触发 [[EVENT_BEFORE_DELETE]] 或 [[EVENT_AFTER_DELETE]]，
+     * 则首先需要 [[find()|find]] 模型，然后再每个模型上调用 [[delete()]]。
+     * 例如，下面的例子和前面的例子作用是相同的：
      *
      * ```php
      * $models = Customer::find()->where('status = 3')->all();
@@ -335,12 +335,12 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
+     * 对于大量模型，可以考虑使用 [[ActiveQuery::each()]] 将内存使用限制在规定范围内。
      *
-     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return int the number of rows deleted
+     * @param string|array $condition 将放在 DELETE SQL 的 WHERE 部分中的条件。
+     * 有关如何指定此参数，请阅读 [[Query::where()]]。
+     * @param array $params 要绑定到查询的参数 (name => value)。
+     * @return int 删除的行数
      */
     public static function deleteAll($condition = null, $params = [])
     {
@@ -352,7 +352,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @return ActiveQuery 新建的 [[ActiveQuery]] 实例。
      */
     public static function find()
     {
@@ -360,12 +360,12 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Declares the name of the database table associated with this AR class.
-     * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
-     * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is `tbl_`,
-     * `Customer` becomes `tbl_customer`, and `OrderItem` becomes `tbl_order_item`. You may override this method
-     * if the table is not named after this convention.
-     * @return string the table name
+     * 声明与此 AR 类关联的数据库表的名称。
+     * 默认情况下，此方法通过使用前缀 [[Connection::tablePrefix]] 调用 [[Inflector::camel2id()]] 来返回类名作为表名。
+     * 例如，如果 [[Connection::tablePrefix]] 是 `tbl_`，
+     * 则 `Customer` 变为 `tbl_customer`，`OrderItem` 变为 `tbl_order_item`。
+     * 如果未按约定命名表，则可以重写此方法。
+     * @return string 表名
      */
     public static function tableName()
     {
@@ -373,9 +373,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the schema information of the DB table associated with this AR class.
-     * @return TableSchema the schema information of the DB table associated with this AR class.
-     * @throws InvalidConfigException if the table for the AR class does not exist.
+     * 返回与此 AR 类关联的 DB 表的结构信息。
+     * @return TableSchema 与此 AR 类关联的 DB 表的结构信息。
+     * @throws InvalidConfigException 如果 AR 类的表不存在，抛出异常。
      */
     public static function getTableSchema()
     {
@@ -391,17 +391,17 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the primary key name(s) for this AR class.
-     * The default implementation will return the primary key(s) as declared
-     * in the DB table that is associated with this AR class.
+     * 返回此 AR 类的主键名称。
+     * 默认实现将返回与此 AR 类
+     * 关联的DB 表中声明的主键。
      *
-     * If the DB table does not declare any primary key, you should override
-     * this method to return the attributes that you want to use as primary keys
-     * for this AR class.
+     * 如果 DB 表中为声明任何主键，
+     * 则应重写此方法以返回
+     * 要用作此 AR 类的主键属性。
      *
-     * Note that an array should be returned even for a table with single primary key.
+     * 请注意，即使对于具有单个主键的表，也应返回一个数组。
      *
-     * @return string[] the primary keys of the associated database table.
+     * @return string[] 相关数据表的主键。
      */
     public static function primaryKey()
     {
