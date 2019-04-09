@@ -496,13 +496,13 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->insert();
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception|\Throwable in case insert failed.
+     * @param bool $runValidation 是否在保存记录之前执行验证 (调用 [[validate()]])。
+     * 默认为 `true`,即执行验证。如果验证失败，则记录不会保存到数据库中，
+     * 并且此方法将返回 `false`。
+     * @param array $attributes 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return bool 属性是否有效，以及是否成功插入记录。
+     * @throws \Exception|\Throwable 如果插入失败，则抛出异常。
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -535,10 +535,10 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Inserts an ActiveRecord into DB without considering transaction.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return bool whether the record is inserted successfully.
+     * 在不考虑事务的情况下将 ActiveRecord 插入到 DB 中。
+     * @param array $attributes 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return bool 是否成功插入记录。
      */
     protected function insertInternal($attributes = null)
     {
@@ -563,26 +563,26 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Saves the changes to this active record into the associated database table.
+     * 将对此活动记录的更改保存到关联的数据库表中。
      *
-     * This method performs the following steps in order:
+     * 此方法将按顺序执行一下步骤：
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is `true`. If [[beforeValidate()]]
-     *    returns `false`, the rest of the steps will be skipped;
-     * 2. call [[afterValidate()]] when `$runValidation` is `true`. If validation
-     *    failed, the rest of the steps will be skipped;
-     * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
-     *    the rest of the steps will be skipped;
-     * 4. save the record into database. If this fails, it will skip the rest of the steps;
-     * 5. call [[afterSave()]];
+     * 1. 当 `$runValidation` 为 `true` 时，调用 [[beforeValidate()]]。
+     *    如果 [[beforeValidate()]] 返回 `false`，则跳过其余步骤；
+     * 2. 当 `$runValidation` 为 `true` 时，调用 [[afterValidate()]]。
+     *    如果验证失败，则跳过其余步骤；
+     * 3. 调用 [[beforeSave()]]。如果 [[beforeSave()]] 返回 `false`，
+     *    则跳过其余步骤；
+     * 4. 保存记录到数据中。如果保存失败，则跳过余下步骤；
+     * 5. 调用 [[afterSave()]]；
      *
-     * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-     * [[EVENT_AFTER_VALIDATE]], [[EVENT_BEFORE_UPDATE]], and [[EVENT_AFTER_UPDATE]]
-     * will be raised by the corresponding methods.
+     * 在上面的步骤1，2，3，以及 5 中，
+     * 将通过相应的方法引发事件 [[EVENT_BEFORE_VALIDATE]]，
+     * [[EVENT_AFTER_VALIDATE]]，[[EVENT_BEFORE_UPDATE]]，以及 [[EVENT_AFTER_UPDATE]]。
      *
-     * Only the [[dirtyAttributes|changed attribute values]] will be saved into database.
+     * 只有 [[dirtyAttributes|changed attribute values]] 才会保存到数据库。
      *
-     * For example, to update a customer record:
+     * 例如，要更新 customer 记录：
      *
      * ```php
      * $customer = Customer::findOne($id);
@@ -591,9 +591,9 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->update();
      * ```
      *
-     * Note that it is possible the update does not affect any row in the table.
-     * In this case, this method will return 0. For this reason, you should use the following
-     * code to check if update() is successful or not:
+     * 注意，更新可能不会影响表中的任何行。
+     * 在该情况下，此方法有可能返回 0。
+     * 因此，应使用以下代码检查 update() 是否成功：
      *
      * ```php
      * if ($customer->update() !== false) {
@@ -603,16 +603,16 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return int|false the number of rows affected, or false if validation fails
-     * or [[beforeSave()]] stops the updating process.
-     * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     * being updated is outdated.
-     * @throws \Exception|\Throwable in case update failed.
+     * @param bool $runValidation 是否在保存记录之前执行验证 (调用 [[validate()]])。
+     * 默认为 `true`,即执行验证。如果验证失败，则记录不会保存到数据库中，
+     * 并且此方法将返回 `false`。
+     * @param array $attributeNames 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return int|false 受影响的行数，如果验证失败或 [[beforeSave()]] 停止更新过程，
+     * 则为 false。
+     * @throws StaleObjectException 如果启用了 [[optimisticLock|optimistic locking]]
+     * 并且正在更新的数据已过时，则抛出异常。
+     * @throws \Exception|\Throwable 万一更新失败，则抛出异常。
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -645,23 +645,23 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Deletes the table row corresponding to this active record.
+     * 删除与此活动记录对应的表行。
      *
-     * This method performs the following steps in order:
+     * 此方法将按顺序执行以下步骤：
      *
-     * 1. call [[beforeDelete()]]. If the method returns `false`, it will skip the
-     *    rest of the steps;
-     * 2. delete the record from the database;
-     * 3. call [[afterDelete()]].
+     * 1. 调用 [[beforeDelete()]]。
+     *    如果该方法返回 `false`，则跳过其余步骤；
+     * 2. 从数据库删除记录；
+     * 3. 调用 [[afterDelete()]]。
      *
-     * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
-     * will be raised by the corresponding methods.
+     * 在以上步骤 1 和 3 中，
+     * 将通过相应的方法引发事件 [[EVENT_BEFORE_DELETE]] 和 [[EVENT_AFTER_DELETE]]。
      *
-     * @return int|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
-     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
-     * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     * being deleted is outdated.
-     * @throws \Exception|\Throwable in case delete failed.
+     * @return int|false 删除的行数，如果由于某种原因删除失败，则为 `false`。
+     * 注意，即使删除执行成功，删除的行数也可能为 0。
+     * @throws StaleObjectException 如果启用了 [[optimisticLock|optimistic locking]]
+     * 并且当正在删除的数据已过时，则抛出异常。
+     * @throws \Exception|\Throwable 万一删除失败，则抛出异常。
      */
     public function delete()
     {
@@ -689,9 +689,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Deletes an ActiveRecord without considering transaction.
-     * @return int|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
-     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+     * 删除 ActiveRecord 而不考虑事务。
+     * @return int|false 删除的行数，如果由于某种原因删除失败，则为 `false`。
+     * 注意，即使删除执行成功，删除的行数也可能为 0。
      * @throws StaleObjectException
      */
     protected function deleteInternal()
@@ -718,11 +718,11 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns a value indicating whether the given active record is the same as the current one.
-     * The comparison is made by comparing the table names and the primary key values of the two active records.
-     * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-     * @param ActiveRecord $record record to compare to
-     * @return bool whether the two active records refer to the same row in the same database table.
+     * 返回一个给定值，指示给定的活动记录是否与当前记录相同。
+     * 通过比较两个活动记录的表名和主键值来进行比较。
+     * 如果其中一个记录 [[isNewRecord|is new]] 也会被认为不相同。
+     * @param ActiveRecord $record 要比较记录
+     * @return bool 两个活动记录s是否引用同一数据库表中的同一行。
      */
     public function equals($record)
     {
@@ -734,9 +734,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns a value indicating whether the specified operation is transactional in the current [[$scenario]].
-     * @param int $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
-     * @return bool whether the specified operation is transactional in the current [[scenario]].
+     * 返回一个值，该值表示指定的操作在当前 [[$scenario]] 中是否为事务性操作。
+     * @param int $operation 要检查的操作。可能的值为 [[OP_INSERT]]，[[OP_UPDATE]] 以及 [[OP_DELETE]]。
+     * @return bool 指定的操作在当前 [[scenario]] 中是否是事务性的。
      */
     public function isTransactional($operation)
     {
