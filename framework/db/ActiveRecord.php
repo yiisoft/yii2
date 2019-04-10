@@ -361,9 +361,9 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * 声明与此 AR 类关联的数据库表的名称。
-     * 默认情况下，此方法通过使用前缀 [[Connection::tablePrefix]] 调用 [[Inflector::camel2id()]] 来返回类名作为表名。
+     * 默认情况下，此方法通过使用前缀 [[Connection::tablePrefix]] 调用 [[Inflector::camel2id()]] 来返回类名作为表名
      * 例如，如果 [[Connection::tablePrefix]] 是 `tbl_`，
-     * 则 `Customer` 变为 `tbl_customer`，`OrderItem` 变为 `tbl_order_item`。
+     * 则 `Customer` 变为 `tbl_customer`，`OrderItem` 变为 `tbl_order_item`
      * 如果未按约定命名表，则可以重写此方法。
      * @return string 表名
      */
@@ -419,7 +419,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * 声明应在不同场景中的事务中执行那些 DB 操作。
+     * 声明应在不同场景的事务中执行那些 DB 操作。
      * 支持的 DB 操作为 [[OP_INSERT]]，[[OP_UPDATE]] 以及 [[OP_DELETE]]，
      * 分别对应 [[insert()]]， [[update()]] 以及 [[delete()]] 方法，
      * 默认情况下，这些方法不包含在数据库事务中。
