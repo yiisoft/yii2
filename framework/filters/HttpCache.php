@@ -46,7 +46,7 @@ use yii\base\ActionFilter;
 class HttpCache extends ActionFilter
 {
     /**
-     * @var callable 一个 php 回调返回上次修改时间的UNIX时间戳。
+     * @var callable 一个 php 回调返回上次修改时间的 UNIX 时间戳。
      * 回调的签名应为：
      *
      * ```php
@@ -73,7 +73,7 @@ class HttpCache extends ActionFilter
      */
     public $etagSeed;
     /**
-     * @var bool 是否生成弱ETag。
+     * @var bool 是否生成弱 ETags。
      *
      * 如果内容在语义上是等价的而不是字节相等，则应使用弱 ETags 。
      *
@@ -86,7 +86,7 @@ class HttpCache extends ActionFilter
      */
     public $params;
     /**
-     * @var string  `Cache-Control` HTTP header的值，如果为 null, 则不会发送。
+     * @var string `Cache-Control` HTTP header的值，如果为 null, 则不会发送。
      * @see http://tools.ietf.org/html/rfc2616#section-14.9
      */
     public $cacheControlHeader = 'public, max-age=3600';
@@ -157,10 +157,10 @@ class HttpCache extends ActionFilter
 
     /**
      * 验证 HTTP 缓存是否包含有效内容。
-     * 如果 Last-Modified 和 ETag 均为NULL，则返回False。
+     * 如果 Last-Modified 和 ETag 均为 null，则返回False。
      * @param int $lastModified 根据 UNIX 时间戳计算 Last-Modified 值。
-     * 如果为NULL，则不会验证 Last-Modified header。
-     * @param string $etag 计算的 ETag 值。如果为NULL，则不会验证ETag header。
+     * 如果为 null，则不会验证 Last-Modified header。
+     * @param string $etag 计算的 ETag 值。如果为 null，则不会验证 ETag header。
      * @return bool HTTP 缓存是否仍然有效。
      */
     protected function validateCache($lastModified, $etag)

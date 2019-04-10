@@ -63,14 +63,14 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
 
     /**
      * @var bool 是否应根据路由区分要缓存的内容。
-     * 路由请求的控制器 ID 和操作 ID 组成。 默认值为`true`。
+     * 路由请求的控制器 ID 和操作 ID 组成。默认值为`true`。
      */
     public $varyByRoute = true;
     /**
      * @var CacheInterface|array|string 缓存对象或缓存对象的应用程序组件 ID 。
      * 创建 PageCache 对象后，如果要更改此属性，
      * 您应该只用缓存对象来分配它。
-     * 从版本2.0.2开始，这也可以是用于创建对象的配置数组。
+     * 从版本 2.0.2 开始，这也可以是用于创建对象的配置数组。
      */
     public $cache = 'cache';
     /**
@@ -94,12 +94,12 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * 如果任何帖子的修改时间发生更改，则缓存的内容将无效。
      *
      * 如果启用 [[cacheCookies]] 或者 [[cacheHeaders]]，然后应该启用 [[\yii\caching\Dependency::reusable]] 节省性能。
-     * 这是因为cookies 和 headers 当前是与实际页面内容分开存储的，从而导致对依赖项进行两次计算。
+     * 这是因为 cookies 和 headers 当前是与实际页面内容分开存储的，从而导致对依赖项进行两次计算。
      */
     public $dependency;
     /**
      * @var string[]|string 将导致缓存内容更改的因素列表。
-     * 每个因素都是表示变体的字符串（例如。语言， a GET 参数）。
+     * 每个因素都是表示变体的字符串（例如语言，一个 GET 参数）。
      * 以下更改设置将根据
      * 当前应用程序语言将内容缓存到不同版本中：
      *
@@ -112,24 +112,24 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     public $variations;
     /**
      * @var bool 是否启用页面缓存。 您可以使用此属性根据
-     * 特定设置打开和关闭页缓存（例如. 仅对 GET 请求启用页缓存）。
+     * 特定设置打开和关闭页缓存（例如仅对 GET 请求启用页缓存）。
      */
     public $enabled = true;
     /**
-     * @var \yii\base\View 用于缓存的视图组件。 如果未设置，默认应用程序
+     * @var \yii\base\View 用于缓存的视图组件。如果未设置，默认应用程序
      * [[\yii\web\Application::view]] 视图组件。
      */
     public $view;
     /**
      * @var bool|array 指示是否缓存所有 cookies 或数组的布尔值 cookies 名称
-     * 该名称指示可缓存哪些 cookies。 要非常小心地缓存 cookies，因为它
+     * 该名称指示可缓存哪些 cookies。要非常小心地缓存 cookies，因为它
      * 可能泄漏存储在 cookies 中的敏感或私有数据给不需要的用户。
      * @since 2.0.4
      */
     public $cacheCookies = false;
     /**
      * @var bool|array 指示是否缓存所有 HTTP headers 的布尔值，或者一个
-     * HTTP header 名称 （大小写不敏感）数组指示可以缓存哪些 HTTP headers
+     * HTTP header 名称（大小写不敏感）数组指示可以缓存哪些 HTTP headers
      * 注意：如果您的 HTTP headers 包含敏感信息，你应该列出白名单哪些 headers 可以缓存。
      * @since 2.0.4
      */
@@ -194,7 +194,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * 此方法是在响应恢复完成后(但在响应发送之前)调用的。
+     * 此方法是在响应恢复完成后（但在响应发送之前）调用的。
      * 您可以重写此方法以便在发送响应之前进行最后一刻的准备。
      * @param array|null $data 存储在缓存条目或 `null` 中的附加数据的数组。
      * @since 2.0.11

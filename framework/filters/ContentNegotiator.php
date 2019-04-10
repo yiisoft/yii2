@@ -24,7 +24,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * [[Response::acceptMimeType]] 以及 [[Response::acceptParams]] 也将相应更新。
  *
  * 如果指定了 [[languages|supported languages]]， ContentNegotiator 程序将支持
- * 基于GET参数 [[languageParam]] 和`Accept-Language` HTTP header 的值进行应用程序语言协商。
+ * 基于 GET 参数 [[languageParam]] 和`Accept-Language` HTTP header 的值进行应用程序语言协商。
  * 如果找到匹配，[[\yii\base\Application::language]] 属性将设置为选择的语言。
  *
  * 您可以将 ContentNegotiator 程序用作引导组件和操作筛选器。
@@ -54,7 +54,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * ```
  *
  * 下面的代码显示了如何在控制器或模块中将 ContentNegotiator 程序用作操作筛选器。
- * 在这种情况下， 内容协商结果仅适用于相应的控制器或模块，或者
+ * 在这种情况下，内容协商结果仅适用于相应的控制器或模块，或者
  * 如果您配置过滤器的 `only` 或`except` 属性甚至还可以配置特定的操作。
  *
  * ```php
@@ -96,21 +96,21 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     /**
      * @var string 指定 [[\yii\base\Application::language|application language]] 的 GET 参数的名称。
      * 请注意，如果指定的语言与 [[languages]] 中的任何一种不匹配，将使用 [[languages]] 的
-     * 第一种语言。 如果参数值为空或此属性为空，
+     * 第一种语言。如果参数值为空或此属性为空，
      * 应用程序语言将仅根据`Accept-Language` HTTP header 确定。
      * @see languages
      */
     public $languageParam = '_lang';
     /**
-     * @var array 支持的响应格式列表。键是MIME类型（例如。`application/json`）
-     * 而值是相应的格式（例如。`html`，`json`）
+     * @var array 支持的响应格式列表。键是MIME类型（例如 `application/json`）
+     * 而值是相应的格式（例如 `html`，`json`）
      * 必须按照 [[\yii\web\Response::formatters]] 中的声明予以支持。
      *
      * 如果此属性为空或未设置，则将跳过响应格式协商。
      */
     public $formats;
     /**
-     * @var array 支持的语言列表。数组键是受支持的语言变体(例如，`en-GB`, `en-US`)，
+     * @var array 支持的语言列表。数组键是受支持的语言变体（例如，`en-GB`，`en-US`），
      * 数组值是应用程序识别的相应语言代码（例如。 `en`, `de`）。
      *
      * 并非总是需要阵列密钥。当数组值没有键时，所请求的语言的匹配

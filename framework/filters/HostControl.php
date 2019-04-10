@@ -58,7 +58,7 @@ use yii\web\NotFoundHttpException;
  * }
  * ```
  *
- * > Note: 限制允许的主机名的最佳方法是使用 Web 服务器的“虚拟主机”配置。
+ * > Note: 限制允许的主机名的最佳方法是使用 Web 服务器的 “虚拟主机” 配置。
  * 仅当此配置不可用或不安全时才应使用此筛选器。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -103,14 +103,14 @@ class HostControl extends ActionFilter
      * 其中 `$action` 是当前 [[\yii\base\Action|action]] 对象。
      *
      * > Note: 在实现自己的主机拒绝处理时， 确保避免使用当前请求的
-     * 主机名, 创建绝对URL链接、缓存页面部件等。
+     * 主机名, 创建绝对 URL 链接、缓存页面部件等。
      */
     public $denyCallback;
     /**
      * @var string|null 回退主机信息 (例如。`http://www.yiiframework.com`) 使用 [[\yii\web\Request::$hostInfo|Request::$hostInfo]] 时无效。
      * 在调用 [[$denyCallback]] 之前，此值将替换 [[\yii\web\Request::$hostInfo|Request::$hostInfo]]
      * 以确保不会使用无效的主机进行进一步处理。您可以将其设置为 `null` 使 [[\yii\web\Request::$hostInfo|Request::$hostInfo]] 保持不变。
-     * 默认值为空字符串（这将导致创建相对URL而不是绝对URL）。
+     * 默认值为空字符串（这将导致创建相对 URL 而不是绝对 URL ）。
      * @see \yii\web\Request::getHostInfo()
      */
     public $fallbackHostInfo = '';
@@ -157,9 +157,9 @@ class HostControl extends ActionFilter
 
     /**
      * 拒绝访问。
-     * 默认实现将立即显示404页，正在终止程序执行。
+     * 默认实现将立即显示 404 页，正在终止程序执行。
      * 您可以重写此方法，创建自己的拒绝访问处理程序。在执行此操作时，请确保
-     * 避免使用当前请求的主机名，创建绝对URL链接，缓存页面部件等。
+     * 避免使用当前请求的主机名，创建绝对 URL 链接，缓存页面部件等。
      * @param \yii\base\Action $action 要执行的操作。
      * @throws NotFoundHttpException
      */

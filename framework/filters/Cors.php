@@ -17,9 +17,9 @@ use yii\web\Response;
  * Cors 过滤工具 [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
  *
  * 请务必仔细阅读 CORS 能做的和不能做的事情。CORS 不保护您的 API，
- * 但是允许开发人员授予对第三方代码的访问权限（来自外部域的Ajax调用）。
+ * 但是允许开发人员授予对第三方代码的访问权限（来自外部域的 Ajax 调用）。
  *
- * 您可以通过将CORS筛选器作为行为附加到控制器或模块来使用 CORS 筛选器，如下所示：
+ * 您可以通过将 CORS 筛选器作为行为附加到控制器或模块来使用 CORS 筛选器，如下所示：
  *
  * ```php
  * public function behaviors()
@@ -135,8 +135,8 @@ class Cors extends ActionFilter
     }
 
     /**
-     * 从请求中提取 CORS headers。
-     * @return array 要处理的 CORS headers
+     * 从请求中提取 CORS 标头。
+     * @return array 要处理的 CORS 标头
      */
     public function extractHeaders()
     {

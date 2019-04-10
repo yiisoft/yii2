@@ -37,20 +37,20 @@ class AccessRule extends Component
      * @var array 应用此规则的控制器 IDs 的列表。
      *
      * 比较使用 [[\yii\base\Controller::uniqueId]]，因此每个控制器 ID 都带有前缀
-     * 使用模块 ID (如果有的话)。对于应用程序中的 `product` 控制器，您可以指定
-     * 此属性类似于 `['product']` 如果该控制器位于 `shop` 模块，则
-     * 将是 `['shop/product']`。
+     * 使用模块 ID (如果有的话)。对于应用程序中的 `product` 控制器，
+     * 您可以指定此属性类似于 `['product']` 如果该控制器位于 `shop` 模块，
+     * 则将是 `['shop/product']`。
      *
      * 比较区分大小写。
      *
      * 如果未设置或为空，则表示此规则适用于所有控制器。
      *
-     * 自版本2.0.12起可以将控制器ID指定为通配符，例如 `module/*`。
+     * 自版本 2.0.12 起可以将控制器ID指定为通配符，例如 `module/*`。
      */
     public $controllers;
     /**
      * @var array 此规则适用的角色列表（需要正确配置的用户组件）。
-     * 识别两个特殊角色，并通过 via [[User::isGuest]] 检查它们：
+     * 识别两个特殊角色，并通过 [[User::isGuest]] 检查它们：
      *
      * - `?`: 匹配来宾用户（尚未通过身份验证）
      * - `@`: 匹配经过身份验证的用户
@@ -80,7 +80,7 @@ class AccessRule extends Component
      * 用于评估 [[$roles]] 中的用户权限。
      *
      * 如果这是一个数组，它将直接传递给 [[User::can()]]。例如
-     * 从当前请求传递 ID, 您可以使用以下内容：
+     * 从当前请求传递 ID，您可以使用以下内容:
      *
      * ```php
      * ['postId' => Yii::$app->request->get('id')]

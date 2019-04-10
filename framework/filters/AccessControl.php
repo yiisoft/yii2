@@ -18,7 +18,7 @@ use yii\web\User;
  * AccessControl 基于一组规则提供简单的访问控制。
  *
  * AccessControl 是一个操作筛选器。它将检查其 [[rules]] 查找
- * 匹配当前上下文变量(例如用户IP地址、用户角色)的第一条规则。
+ * 匹配当前上下文变量（例如用户IIp 地址、用户角色）的第一条规则。
  * 匹配规则将指定是允许还是拒绝访问所请求的控制器
  * 操作。如果没有匹配的规则，访问将被拒绝。
  *
@@ -58,8 +58,8 @@ class AccessControl extends ActionFilter
 {
     /**
      * @var User|array|string|false 表示用户应用程序组件的身份验证状态或ID的用户对象。
-     * 从版本2.0.2开始，也可以是用于创建对象的配置数组。
-     * 从版本2.0.12开始，你可以将其设置为“false”，以显式地为筛选器关闭此组件支持。
+     * 从版本 2.0.2 开始，也可以是用于创建对象的配置数组。
+     * 从版本 2.0.12 开始，你可以将其设置为 “false”，以显式地为筛选器关闭此组件支持。
      */
     public $user = 'user';
     /**
@@ -87,7 +87,7 @@ class AccessControl extends ActionFilter
      * @var array 访问规则对象的列表或用于创建规则对象的配置数组。
      * 如果规则是通过配置数组指定的，它将首先与 [[ruleConfig]] 合并
      * 在用于创建规则对象之前。
-     * @请参阅规则配置
+     * @see 规则配置
      */
     public $rules = [];
 
@@ -146,7 +146,7 @@ class AccessControl extends ActionFilter
     /**
      * 拒绝用户访问。
      * 如果用户是访客默认实现会将用户重定向到登录页面；
-     * 如果用户已登录，则将引发403 HTTP 异常。
+     * 如果用户已登录，则将引发 403 HTTP 异常。
      * @param User|false $user 在分离用户组件的情况下当前用户或布尔值 `false`
      * @throws ForbiddenHttpException 如果用户已经登录或者已分离用户组件。
      */
