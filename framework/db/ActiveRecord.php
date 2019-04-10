@@ -22,7 +22,7 @@ use yii\helpers\StringHelper;
  * 对象的属性映射到相应表的列。
  * 引用 Active Record 属性等同于访问该记录的相应表列。
  *
- * 例如，假设 'Customer' ActiveRecord 类与 `customer` 表相关联。
+ * 例如，假设 `Customer` ActiveRecord 类与 `customer` 表相关联。
  * 这意味着类的 `name` 属性会自动映射到 `customer` 表中的 `name` 列。
  * 感谢伟大的 Active Record，当变量 `$customer` 是 `Customer` 类的对象时，
  * 为了得到表行的 `name` 列的值，你可以使用表达式 `$customer->name` 获取它。
@@ -92,8 +92,8 @@ class ActiveRecord extends BaseActiveRecord
      */
     const OP_DELETE = 0x04;
     /**
-     * 所有三个操作： insert、update、delete。
-     * 这是表达式的快捷方式： OP_INSERT | OP_UPDATE | OP_DELETE。
+     * 所有三个操作：insert、update、delete。
+     * 这是表达式的快捷方式：OP_INSERT | OP_UPDATE | OP_DELETE。
      */
     const OP_ALL = 0x07;
 
@@ -126,7 +126,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * 返回此 AR 类使用的数据库连接。
-     * 默认情况下，“db” 组件用作数据库连接。
+     * 默认情况下，"db" 组件用作数据库连接。
      * 如果要使用其他数据库连接，可以重写此方法。
      * @return Connection 此 AR 类使用的数据库连接。
      */
@@ -163,7 +163,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * 按给定的条件查找 ActiveRecord 实例。
-     * 此方法由 [[findOne()]] and [[findAll()]] 在内部调用。
+     * 此方法由 [[findOne()]] 和 [[findAll()]] 在内部调用。
      * @param mixed $condition 有关此参数的说明请参阅 [[findOne()]]
      * @return ActiveQueryInterface 新创建的 [[ActiveQueryInterface|ActiveQuery]] 实例。
      * @throws InvalidConfigException 如果没有定义主键，则抛出异常。
@@ -267,7 +267,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * 对于大量模型，可以考虑使用 [[ActiveQuery::each()]] 将内存使用限制在规定范围内。
      *
-     * @param array $attributes 要保存在表中的属性值（name-value pairs）
+     * @param array $attributes 要保存在表中的属性值（键值对）
      * @param string|array $condition 将放在 UPDATE SQL 的 WHERE 部分中的条件。
      * 有关如何指定此参数，请阅读 [[Query::where()]]。
      * @param array $params 要绑定到查询的参数 (name => value)。
@@ -393,11 +393,11 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * 返回此 AR 类的主键名称。
      * 默认实现将返回与此 AR 类
-     * 关联的DB 表中声明的主键。
+     * 关联的 DB 表中声明的主键。
      *
      * 如果 DB 表中为声明任何主键，
-     * 则应重写此方法以返回
-     * 要用作此 AR 类的主键属性。
+     * 则应重写此方法
+     * 以返回要用作此 AR 类的主键属性。
      *
      * 请注意，即使对于具有单个主键的表，也应返回一个数组。
      *
@@ -438,9 +438,9 @@ class ActiveRecord extends BaseActiveRecord
      * ];
      * ```
      *
-     * 上述声明指定在 `admin` 场景中，
+     * 上述声明指定在 "admin" 场景中，
      * 插入操作 ([[insert()]]) 应该在事务中完成；
-     * 在 `api` 场景中，所有的操作都应该在事务中完成。
+     * 在 "api" 场景中，所有的操作都应该在事务中完成。
      *
      * @return array 事务操作声明。数组的键是场景名称，
      * 数组值是相应的事务操作。
@@ -475,7 +475,7 @@ class ActiveRecord extends BaseActiveRecord
      *    如果验证失败，则跳过其余步骤；
      * 3. 调用 [[beforeSave()]]。当 [[beforeSave()]] 返回 `false`，
      *    则跳过其余步骤；
-     * 4. 插入记录到数据库。 如果插入记录失败，则跳过其余步骤；
+     * 4. 插入记录到数据库。如果插入记录失败，则跳过其余步骤；
      * 5. 调用 [[afterSave()]]；
      *
      * 在上面的步骤 1，2，3 和 5 中，
@@ -497,7 +497,7 @@ class ActiveRecord extends BaseActiveRecord
      * ```
      *
      * @param bool $runValidation 是否在保存记录之前执行验证 (调用 [[validate()]])。
-     * 默认为 `true`,即执行验证。如果验证失败，则记录不会保存到数据库中，
+     * 默认为 `true`，即执行验证。如果验证失败，则记录不会保存到数据库中，
      * 并且此方法将返回 `false`。
      * @param array $attributes 需要保存的属性列表。
      * 默认为 `null`，表示将保存从 DB 加载的所有属性。
@@ -604,7 +604,7 @@ class ActiveRecord extends BaseActiveRecord
      * ```
      *
      * @param bool $runValidation 是否在保存记录之前执行验证 (调用 [[validate()]])。
-     * 默认为 `true`,即执行验证。如果验证失败，则记录不会保存到数据库中，
+     * 默认为 `true`，即执行验证。如果验证失败，则记录不会保存到数据库中，
      * 并且此方法将返回 `false`。
      * @param array $attributeNames 需要保存的属性列表。
      * 默认为 `null`，表示将保存从 DB 加载的所有属性。
@@ -722,7 +722,7 @@ class ActiveRecord extends BaseActiveRecord
      * 通过比较两个活动记录的表名和主键值来进行比较。
      * 如果其中一个记录 [[isNewRecord|is new]] 也会被认为不相同。
      * @param ActiveRecord $record 要比较记录
-     * @return bool 两个活动记录s是否引用同一数据库表中的同一行。
+     * @return bool 两个活动记录是否引用同一数据库表中的同一行。
      */
     public function equals($record)
     {
