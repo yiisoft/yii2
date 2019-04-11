@@ -129,7 +129,7 @@ To use this widget, simply insert the following code in a view:
 <?php
 use app\components\HelloWidget;
 ?>
-<?= HelloWidget::widget(['message' => 'Good morning']) ?>
+<?= HelloWidget::widget(['options'=>['message' => 'Good morning']]) ?>
 ```
 
 
