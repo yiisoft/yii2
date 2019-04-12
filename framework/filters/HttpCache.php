@@ -94,8 +94,8 @@ class HttpCache extends ActionFilter
      * @var string 调用 [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
      * 时要设置的缓存限制器的名称。 默认值为空字符串，这意味着完全关闭缓存标头的自动发送。
      * 您可以将此属性设置为 `public`, `private`, `private_no_expire`，和 `nocache`。
-     * 有关这些值的详细说明请参阅 [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
-     *
+     * 请参阅 [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * 有关这些值的详细说明.
      *
      * 如果此属性为 `null`，则不会调用`session_cache_limiter()` 。结果，
      * PHP 将根据‘session.cache_limiter` PHP ini 设置发送headers 。

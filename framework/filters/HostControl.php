@@ -15,7 +15,7 @@ use yii\web\NotFoundHttpException;
 /**
  * HostControl 提供对请求的主机名的简单控制。
  *
- * 此筛选器提供针对 ['host header' attacks] 的保护(https://www.acunetix.com/vulnerabilities/web/host-header-attack),
+ * 此筛选器提供针对 ['host header' 攻击] 的保护(https://www.acunetix.com/vulnerabilities/web/host-header-attack),
  * 仅允许对指定的主机名执行操作。
  *
  * 应用程序配置示例：
