@@ -43,7 +43,7 @@ abstract class Target extends Component
      * @var array 需要记录的消息类别列表。
      * 默认为空，表示所有类别。
      * 您可以在类别末尾使用星号，以便可以使用该类别来匹配共享相同公共前缀的类别。
-     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection'。
+     * 例如，'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection'。
      */
     public $categories = [];
     /**
@@ -51,7 +51,7 @@ abstract class Target extends Component
      * 默认为空，表示没有需要排除的消息。
      * 如果此属性不为空，则此处列出的任何类别都将从 [[categories]] 中排除。
      * 您可以在类别末尾使用星号，以便该类别可用于匹配共享相同公共前缀的类别。
-     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection'。
+     * 例如，'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection'。
      * @see categories
      */
     public $except = [];
@@ -167,8 +167,8 @@ abstract class Target extends Component
      *
      * 参数可以是消息级别名称的数组，
      * 也可以是表示消息级别值的整数。
-     * 有效级别名称包括： 'error' ，'warning' ， 'info' ， 'trace' 和 'profile' ;
-     * 有效级别值包括： [[Logger::LEVEL_ERROR]] ， [[Logger::LEVEL_WARNING]] ， [[Logger::LEVEL_INFO]] ，
+     * 有效级别名称包括： 'error' ，'warning' ，'info' ，'trace' 和 'profile' ;
+     * 有效级别值包括： [[Logger::LEVEL_ERROR]] ，[[Logger::LEVEL_WARNING]] ，[[Logger::LEVEL_INFO]] ，
      * [[Logger::LEVEL_TRACE]] 和 [[Logger::LEVEL_PROFILE]]。
      *
      * 举个例子，

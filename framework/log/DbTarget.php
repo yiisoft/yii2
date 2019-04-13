@@ -48,7 +48,7 @@ class DbTarget extends Target
     /**
      * 初始化 DbTarget 组件。
      * 此方法将初始化 [[db]] 属性以确保它引用有效的数据库连接。
-     * @throws InvalidConfigException 如果 [[db]] 无效，将抛出异常 InvalidConfigException。
+     * @throws InvalidConfigException 如果 [[db]] 无效。
      */
     public function init()
     {

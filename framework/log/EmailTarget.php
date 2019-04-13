@@ -51,7 +51,7 @@ class EmailTarget extends Target
     public $message = [];
     /**
      * @var MailerInterface|array|string 邮件程序对象或邮件程序对象的应用程序组件 ID。
-     * 创建 EmailTarget 对象后， 只有它是邮件程序对象时，才可以更改它的属性。
+     * 创建 EmailTarget 对象后，只有它是邮件程序对象时，才可以更改它的属性。
      *
      * 从 2.0.2 版开始，这也可以是用于创建对象的配置数组。
      */
