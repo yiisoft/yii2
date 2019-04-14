@@ -71,9 +71,9 @@ class Controller extends \yii\base\Controller
 
 
     /**
-     * 返回一个指示是否启用ANSI颜色的值。
+     * 返回一个指示是否启用 ANSI 颜色的值。
      *
-     * 仅当 [[color]] 设置为 true 或者没有设置并且终端支持ANSI颜色时
+     * 仅当 [[color]] 设置为 true 或者没有设置并且终端支持 ANSI 颜色时
      * 才启用 ANSI 颜色
      *
      * @param resource $stream the stream to check.
@@ -151,8 +151,8 @@ class Controller extends \yii\base\Controller
     /**
      * 将参数绑定到动作。
      * 当 [[Action]] 开始使用给定的参数运行时，此方法被调用。
-     * 此方法首先将参数与操作可用的 [[options()|options]]
-     * 绑定。然后验证给定的参数。
+     * 此方法首先将参数与操作可用的 [[options()|options]]绑定。
+     * 然后验证给定的参数。
      * @param Action $action 要用参数绑定的动作
      * @param array $params 要绑定到动作的参数
      * @return array 可以运行动作的有效参数。
@@ -217,7 +217,7 @@ class Controller extends \yii\base\Controller
     /**
      * 将字符串打印到 STDOUT。
      *
-     * 你可以选择使用ANSI代码格式化字符串，通过
+     * 你可以选择使用 ANSI 代码格式化字符串，通过
      * 使用 [[\yii\helpers\Console]] 中定义的常量传递其他参数。
      *
      * 例如：
@@ -243,8 +243,8 @@ class Controller extends \yii\base\Controller
     /**
      * 将字符串打印到 STDERR。
      *
-     * 你可以选择使用ANSI代码格式化字符串，通过
-     * 使用 [[\yii\helpers\Console]] 中定义的常量传递其他参数。
+     * 你可以选择使用 ANSI 代码格式化字符串，
+     * 通过使用 [[\yii\helpers\Console]] 中定义的常量传递其他参数。
      *
      * 例如：
      *
@@ -344,7 +344,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * 返回操作的有效选项的动作 (id)
+     * 返回操作的有效选项的动作（id）
      * 选项要求存在一个名为选项名的
      * 公共成员变量。
      * 子类可以重写此方法以指定可能的选项。
@@ -473,7 +473,7 @@ class Controller extends \yii\base\Controller
      * 相应的帮助信息。每个值必须是以下结构的数组：
      *
      * - required: boolean，是否需要此参数。
-     * - type: string，此参数的PHP类型。
+     * - type: string，此参数的 PHP 类型。
      * - default: string，此参数的默认值
      * - comment: string，这个参数的注释
      *
@@ -531,7 +531,7 @@ class Controller extends \yii\base\Controller
      * 返回的值应该是一个数组。键是选项名称，值是
      * 相应的帮助信息。每个值必须是以下结构的数组：
      *
-     * - type: string，此参数的PHP类型。
+     * - type: string，此参数的 PHP 类型。
      * - default: string，此参数的默认值
      * - comment: string，这个参数的注释
      *

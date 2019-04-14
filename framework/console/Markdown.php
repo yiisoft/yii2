@@ -29,7 +29,7 @@ class Markdown extends \cebe\markdown\Parser
     use StrikeoutTrait;
 
     /**
-     * @var array 这些是 "escapeable" 字符。 当使用其中一个带反斜杠的前缀时，
+     * @var array 这些是 "escapeable" 字符。当使用其中一个带反斜杠的前缀时，
      * 字符将不带反斜杠输出，并且不会被解释为
      * markdown。
      */

@@ -30,7 +30,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     protected function renderException($exception)
     {
         if ($exception instanceof UnknownCommandException) {
-            // 在未知命令的情况下显示消息并建议备选方案
+            // display message and suggest alternatives in case of unknown command
             $message = $this->formatMessage($exception->getName() . ': ') . $exception->command;
             $alternatives = $exception->getSuggestedAlternatives();
             if (count($alternatives) === 1) {

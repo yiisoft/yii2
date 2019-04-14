@@ -484,7 +484,7 @@ class HelpController extends Controller
      * @param string $type 选项或参数的类型
      * @param mixed $defaultValue 选项或参数的默认值
      * @param string $comment 关于选项或参数的注释
-     * @return string 参数或选项的格式化字符串。
+     * @return string 参数或选项的格式化字符串
      */
     protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
     {

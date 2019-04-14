@@ -31,8 +31,8 @@ use yii\helpers\Console;
  *     yii cache/flush-all
  *
  * 请注意该命令使用控制台应用程序配置文件中定义的缓存组件。如果配置的组件
- * 与 web 应用程序不同，web 应用程序缓存不会被清除。 为了解决它
- * 请在控制台配置中复制 web 应用程序缓存组件。 你可以使用任何组件名称。
+ * 与 web 应用程序不同，web 应用程序缓存不会被清除。
+ * 为了解决它请在控制台配置中复制 web 应用程序缓存组件。你可以使用任何组件名称。
  *
  * PHP 进程之间不共享 APC，因此从命令行刷新缓存对 web 没有影响。
  * 刷新Web缓存可以通过以下方式完成：
@@ -284,7 +284,7 @@ class CacheController extends Controller
     }
 
     /**
-     * 检查给定的类是否为Cache类。
+     * 检查给定的类是否为 Cache 类。
      * @param string $className 类名。
      * @return bool
      */

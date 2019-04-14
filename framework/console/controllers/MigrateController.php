@@ -27,7 +27,7 @@ use yii\helpers\Console;
  *
  * 迁移历史记录存储在数据库表中
  * 称作 [[migrationTable]]。该表将在第一次执行此命令时自动创建，
- * 如果它不存在的话。 您也可以手动创建它，
+ * 如果它不存在的话。您也可以手动创建它，
  * 如下所示：
  *
  * ```sql
@@ -50,7 +50,7 @@ use yii\helpers\Console;
  * yii migrate/down
  * ```
  *
- * 从 2.0.10 开始，你可以使用带命名空间的迁移。 要启用此功能，您应在应用程序配置中为控制器配置 [[migrationNamespaces]]
+ * 从 2.0.10 开始，你可以使用带命名空间的迁移。要启用此功能，您应在应用程序配置中为控制器配置 [[migrationNamespaces]]
  * 属性：
  *
  * ```php
@@ -118,7 +118,7 @@ class MigrateController extends BaseMigrateController
      *
      * 每个定义的格式为 `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`。分隔符是 `,`。
      * 例如，`--fields="name:string(12):notNull:unique"`
-     * 生成大小为12的字符串列，该列不是 null 且唯一的值。
+     * 生成大小为 12 的字符串列，该列不是 null 且唯一的值。
      *
      * 注意：主键是自动添加的，默认情况下名为 id。
      * 如果你想使用另一个名称，则可以明确地指定它比如
@@ -128,7 +128,7 @@ class MigrateController extends BaseMigrateController
     public $fields = [];
     /**
      * @var Connection|array|string 应用迁移时要使用的 DB 连接对象或应用程序组件 ID。
-     * 从版本 2.0.3 开始， 这也可以是配置数组
+     * 从版本 2.0.3 开始，这也可以是配置数组
      * 用于创建对象。
      */
     public $db = 'db';
@@ -171,7 +171,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * 此方法是在执行操作之前(在所有可能的过滤器之后)调用的。
+     * 此方法是在执行操作之前（在所有可能的过滤器之后）调用的。
      * 它检查 [[migrationPath]] 的存在。
      * @param \yii\base\Action $action 要执行的动作。
      * @return bool 是否应继续执行该动作。

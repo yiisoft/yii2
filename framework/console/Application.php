@@ -10,7 +10,7 @@ namespace yii\console;
 use Yii;
 use yii\base\InvalidRouteException;
 
-// 如果 PHP SAPI 没有定义它们，则定义 STDIN，STDOUT 和 STDERR （例如 在 web env 中创建控制台应用程序）
+// 如果 PHP SAPI 没有定义它们，则定义 STDIN，STDOUT 和 STDERR（例如在 web env 中创建控制台应用程序）
 // http://php.net/manual/en/features.commandline.io-streams.php
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
@@ -19,9 +19,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
 /**
  * Application 代表一个控制台应用程序。
  *
- * Application 继承自 [[\yii\base\Application]] 通过提供特定于
- * 控制台请求的功能。特别是，它处理控制台请求
- * 通过基于命令的方法：
+ * Application 继承自 [[\yii\base\Application]] 通过提供特定于控制台请求的功能。
+ * 特别是，
+ * 它处理控制台请求通过基于命令的方法：
  *
  * - 控制台应用程序包含一个或多个可能的用户命令；
  * - 每个用户命令都实现为继承 [[\yii\console\Controller]] 的类；
@@ -40,7 +40,7 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  *
  * 其中 `<route>` 指的是 `ModuleID/ControllerID/ActionID` 形式的控制器路由
  * （例如 `sitemap/create`），和 `param1`，`param2` 指的是一组命名参数
- * 将用于初始化控制器动作 （例如 `--since=0` 指定一个 `since` 参数
+ * 将用于初始化控制器动作（例如 `--since=0` 指定一个 `since` 参数
  * 其值为 0 并且将相应的 `$since` 参数传递给动作方法）。
  *
  * 默认提供 `help` 命令，列出可用命令并显示其用法。
@@ -71,7 +71,7 @@ class Application extends \yii\base\Application
     public $defaultRoute = 'help';
     /**
      * @var bool 是否启用核心框架提供的命令。
-     * 默认为 true 。
+     * 默认为 true。
      */
     public $enableCoreCommands = true;
     /**

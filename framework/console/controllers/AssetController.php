@@ -21,24 +21,24 @@ use yii\web\AssetBundle;
  *
  * 用法:
  *
- * 1. 使用 `template` 方法创建配置文件:
+ * 1. 使用 `template` 方法创建配置文件：
  *
  *    yii asset/template /path/to/myapp/config.php
  *
- * 2. 根据你的web应用的需要，编辑创建的配置文件。
+ * 2. 根据你的 web 应用的需要，编辑创建的配置文件。
  * 3. 使用创建的配置文件，运行 'compress' 动作:
  *
  *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
  *
  * 4. 调整你的 web 应用程序配置以使用压缩资源
  *
- * Note: 在控制台环境中一些 [path alias](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在，
+ * 注意：在控制台环境中一些 [path alias](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在，
  * 因此应该直接指定配置中的相应路径。
  *
- * Note: 默认情况下这个命令依赖外部工具来执行实际的文件压缩，
+ * 注意：默认情况下这个命令依赖外部工具来执行实际的文件压缩，
  * 核实 [[jsCompressor]] 和 [[cssCompressor]] 获取详细信息。
  *
- * @property \yii\web\AssetManager $assetManager 资源管理器实例。 注意此属性的类型在 getter 和 setter 中有所不同。
+ * @property \yii\web\AssetManager $assetManager 资源管理器实例。注意此属性的类型在 getter 和 setter 中有所不同。
  * 查看 [[getAssetManager()]] 和 [[setAssetManager()]] 获取详情。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -48,7 +48,7 @@ use yii\web\AssetBundle;
 class AssetController extends Controller
 {
     /**
-     * @var string 控制器默认动作ID。
+     * @var string 控制器默认动作 ID。
      */
     public $defaultAction = 'compress';
     /**
@@ -68,7 +68,7 @@ class AssetController extends Controller
      * ]
      * ```
      *
-     * 文件名可以包含占位符 "{hash}" ，他将由生成的文件的哈希填充。
+     * 文件名可以包含占位符 "{hash}"，他将由生成的文件的哈希填充。
      *
      * 为了压缩不通的资源组，你可以指定多个目标包。
      * 在这种情况下你应该使用 'depends' 键来指定，哪些包应该包含在特定的目标包中。
@@ -104,7 +104,7 @@ class AssetController extends Controller
     public $targets = [];
     /**
      * @var string|callable JavaScript 文件压缩程序。
-     * 如果是个字符串，它将被视为shell命令模版, 其中应该包含
+     * 如果是个字符串，它将被视为 shell 命令模版，其中应该包含
      * 占位符 {from} - 源文件名 - 和 {to} - 输出文件名。
      * 否则，他被视为应该执行压缩的PHP回调。
      *
@@ -212,7 +212,7 @@ class AssetController extends Controller
     /**
      * 将给定文件中的配置应用于自身实例。
      * @param string $configFile 配置文件名。
-     * @throws \yii\console\Exception 失败.
+     * @throws \yii\console\Exception 失败。
      */
     protected function loadConfiguration($configFile)
     {
@@ -771,7 +771,7 @@ EOD;
 
     /**
      * @param AssetBundle $bundle
-     * @return bool 资源包外部与否
+     * @return bool 是否是外部的资源包
      */
     private function isBundleExternal($bundle)
     {

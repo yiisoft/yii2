@@ -397,7 +397,7 @@ class FixtureController extends Controller
      * 找到要加载的 fixtures，例如 "User"，如果未指定任何 fixtures 然后他们
      * 都将以 "Fixture.php" 为后缀进行搜索。
      * @param array $fixtures 要加载的 fixtures
-     * @return array 找到的 fixtures 数组。 这些参数可能与输入参数不同，因为不是所有的 fixtures 都可能存在。
+     * @return array 找到的 fixtures 数组。这些参数可能与输入参数不同，因为不是所有的 fixtures 都可能存在。
      */
     private function findFixtures(array $fixtures = [])
     {

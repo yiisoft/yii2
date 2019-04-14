@@ -21,17 +21,17 @@ use yii\i18n\GettextPoFile;
 /**
  * 从源文件中提取要翻译的消息。
  *
- * 根据配置文件中的 `format`设置，提取的消息可以
+ * 根据配置文件中的 `format` 设置，提取的消息可以
  * 保存如下：
  *
- * - PHP消息源文件。
+ * - PHP 消息源文件。
  * - ".po" 文件。
  * - 数据库。
  *
  * 用法：
  * 1. 通过 'message/config' 命令创建配置文件：
  *    yii message/config /path/to/myapp/messages/config.php
- * 2. 编辑创建的配置文件，根据Web应用程序的需要对其进行调整。
+ * 2. 编辑创建的配置文件，根据 Web 应用程序的需要对其进行调整。
  * 3. 运行 'message/extract' 命令，使用创建的配置：
  *    yii message /path/to/myapp/messages/config.php
  *
@@ -66,8 +66,8 @@ class MessageController extends \yii\console\Controller
     public $translator = 'Yii::t';
     /**
      * @var bool 是否在将新消息与现有消息合并时按键对消息进行排序。
-     * 默认为 false，也就是说新的 （untranslated）
-     * 消息将从旧的 （translated） 消息中分离出来。
+     * 默认为 false，也就是说新的（untranslated）
+     * 消息将从旧的（translated）消息中分离出来。
      */
     public $sort = false;
     /**
@@ -465,7 +465,7 @@ EOD;
      * @param string $fileName 要从中提取消息的文件的名称。
      * @param string $translator 用于翻译消息的函数的名称。
      * @param array $ignoreCategories 要忽略的消息类别。
-     * 此参数自版本 2.0.4. 起可用
+     * 此参数自版本 2.0.4。起可用
      * @return array
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])
@@ -493,7 +493,7 @@ EOD;
      * @param array $tokens 要处理的令牌。
      * @param array $translatorTokens 翻译令牌。
      * @param array $ignoreCategories 要忽略的消息类别。
-     * @return array messages.
+     * @return array messages。
      */
     protected function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
     {
@@ -647,7 +647,7 @@ EOD;
     }
 
     /**
-     * 将消息写入PHP文件。
+     * 将消息写入 PHP 文件。
      *
      * @param array $messages
      * @param string $dirName 要写入的目录的名称
@@ -674,7 +674,7 @@ EOD;
     }
 
     /**
-     * 将类别消息写入PHP文件。
+     * 将类别消息写入 PHP 文件。
      *
      * @param array $messages
      * @param string $fileName 要写入的文件的名称

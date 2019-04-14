@@ -88,8 +88,8 @@ class ExitCode
      */
     const OSERR = 71;
     /**
-     * 某些系统文件（例如，/etc/passwd，/var/run/utx.active，等等。）不
-     * 存在，不能被打开，或者有某种错误（例如，syntax error）。
+     * 某些系统文件（例如，/etc/passwd，/var/run/utx.active，等等。）
+     * 不存在，不能被打开，或者有某种错误（例如，syntax error）。
      */
     const OSFILE = 72;
     /**
