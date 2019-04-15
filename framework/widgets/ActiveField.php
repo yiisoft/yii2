@@ -728,6 +728,7 @@ class ActiveField extends Component
             $this->addErrorClassIfNeeded($options);
         }
 
+        $this->addRoleAttributes($options, 'radiogroup');
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->_skipLabelFor = true;
@@ -744,6 +745,9 @@ class ActiveField extends Component
      *
      * If you want to use a widget that does not have `model` and `attribute` properties,
      * please use [[render()]] instead.
+     *
+     * While widgets extending from [[Widget]] work with active field, it is preferred to use
+     * [[InputWidget]] as a base class.
      *
      * For example to use the [[MaskedInput]] widget to get some date input, you can use
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
@@ -767,6 +771,11 @@ class ActiveField extends Component
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
         if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
+            foreach ($this->inputOptions as $key => $value) {
+                if (!isset($config['options'][$key])) {
+                    $config['options'][$key] = $value;
+                }
+            }
             $config['field'] = $this;
             if (isset($config['options'])) {
                 if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
@@ -915,11 +924,22 @@ class ActiveField extends Component
             if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
                 $options['aria-required'] = 'true';
             }
-            if (!isset($options['aria-invalid'])) {
-                if ($this->model->hasErrors($this->attribute)) {
-                    $options['aria-invalid'] = 'true';
-                }
+            if (!isset($options['aria-invalid']) && $this->model->hasErrors($this->attribute)) {
+                $options['aria-invalid'] = 'true';
             }
+        }
+    }
+
+    /**
+     * Add role attributes to the input options
+     * @param $options array input options
+     * @param string $role
+     * @since 2.0.16
+     */
+    protected function addRoleAttributes(&$options, $role)
+    {
+        if (!isset($options['role'])) {
+            $options['role'] = $role;
         }
     }
 

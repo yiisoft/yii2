@@ -4,7 +4,7 @@ Composants graphiques d'affichage de données
 Yii fournit un jeu de [composants graphiques](structure-widgets.md) utilisables pour afficher des données. Tandis que le componsant graphique [DetailView](#detail-view) (vue détaillée) peut être utilisé pour afficher un enregistrement unique, les composants graphiques [ListView](#list-view) (vue en liste) et [GridView](#grid-view) (vue en grille) peuvent être utilisés pour afficher plusieurs enregistrements en liste ou en grille assortis de fonctionnalités telles que la pagination, le tri et le filtrage.
 
 
-Vue détaillée (classe *DetailView*) <a name="detail-view"></a>
+Vue détaillée (classe *DetailView*) <span id="detail-view"></span>
 ----------------------------------
 
 Le composant graphique [[yii\widgets\DetailView|DetailView]] (vue détaillée) affiche les détails d'un [[yii\widgets\DetailView::$model|modèle]] de données unique.
@@ -30,7 +30,7 @@ echo DetailView::widget([
 ]);
 ```
 
-Vue en liste (class *ListView*)<a name="list-view"></a>
+Vue en liste (class *ListView*)<span id="list-view"></span>
 ------------------------------
 
 Le composant graphique [[yii\widgets\ListView|ListView]] (vue en liste) est utilisé pour afficher des données issues d'un [fournisseur de données](output-data-providers.md). Chacun des modèles est rendu en utilisant le composant [[yii\widgets\ListView::$itemView|ListView]] (vue en liste) spécifié. Comme ce composant fournit des fonctionnalités telles que la pagination, le tri et le filtrage de base, il est pratique, à la fois pour afficher des informations et pour créer des interfaces utilisateur de gestion des données.
@@ -90,7 +90,7 @@ echo ListView::widget([
 Celles-ci sont alors disponibles aussi dans la vue en tant que variables. 
 
 
-Vue en grille (classe *GridView*)<a name="grid-view"></a>
+Vue en grille (classe *GridView*)<span id="grid-view"></span>
 --------------------------------
 
 La vue en grille, ou composant [[yii\grid\GridView|GridView]], est un des composants les plus puissants de Yii. Ce composant est extrêmement utile si vous devez rapidement construire l'interface d'administration du système. Il accepte des données d'un [fournisseur de données](output-data-providers.md) et rend chacune des lignes en utilisant un jeu de [[yii\grid\GridView::columns|columns]] (colonnes), présentant ainsi l'ensemble des données sous forme d'une grille.

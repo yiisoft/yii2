@@ -473,8 +473,8 @@ If you are interested in the attribute values prior to their most recent modific
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
-> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), etc...
+> [intval()](https://secure.php.net/manual/en/function.intval.php), [floatval()](https://secure.php.net/manual/en/function.floatval.php),
+> [boolval](https://secure.php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -689,7 +689,7 @@ try {
 ```
 
 > Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
@@ -744,8 +744,8 @@ To use optimistic locking,
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
 3. Implement [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] inside your model class to automatically parse its value from received requests.
-4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
    Remove the version attribute from validation rules as [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] should handle it.
+4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
 5. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    

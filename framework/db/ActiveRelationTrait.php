@@ -62,6 +62,7 @@ trait ActiveRelationTrait
      */
     public $inverseOf;
 
+    private $viaMap;
 
     /**
      * Clones internal objects.
@@ -73,7 +74,7 @@ trait ActiveRelationTrait
         if (is_object($this->via)) {
             $this->via = clone $this->via;
         } elseif (is_array($this->via)) {
-            $this->via = [$this->via[0], clone $this->via[1]];
+            $this->via = [$this->via[0], clone $this->via[1], $this->via[2]];
         }
     }
 
@@ -104,7 +105,8 @@ trait ActiveRelationTrait
     public function via($relationName, callable $callable = null)
     {
         $relation = $this->primaryModel->getRelation($relationName);
-        $this->via = [$relationName, $relation];
+        $callableUsed = $callable !== null;
+        $this->via = [$relationName, $relation, $callableUsed];
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
@@ -268,7 +270,7 @@ trait ActiveRelationTrait
         $models = $this->all();
 
         if (isset($viaModels, $viaQuery)) {
-            $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery->link);
+            $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery);
         } else {
             $buckets = $this->buildBuckets($models, $this->link);
         }
@@ -278,7 +280,14 @@ trait ActiveRelationTrait
             $buckets = $this->indexBuckets($buckets, $this->indexBy);
         }
 
-        $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
+        $link = array_values($this->link);
+        if (isset($viaQuery)) {
+            $deepViaQuery = $viaQuery;
+            while ($deepViaQuery->via) {
+                $deepViaQuery = is_array($deepViaQuery->via) ? $deepViaQuery->via[1] : $deepViaQuery->via;
+            };
+            $link = array_values($deepViaQuery->link);
+        }
         foreach ($primaryModels as $i => $primaryModel) {
             if ($this->multiple && count($link) === 1 && is_array($keys = $primaryModel[reset($link)])) {
                 $value = [];
@@ -378,14 +387,15 @@ trait ActiveRelationTrait
      * @param array $models
      * @param array $link
      * @param array $viaModels
-     * @param array $viaLink
+     * @param null|self $viaQuery
      * @param bool $checkMultiple
      * @return array
      */
-    private function buildBuckets($models, $link, $viaModels = null, $viaLink = null, $checkMultiple = true)
+    private function buildBuckets($models, $link, $viaModels = null, $viaQuery = null, $checkMultiple = true)
     {
         if ($viaModels !== null) {
             $map = [];
+            $viaLink = $viaQuery->link;
             $viaLinkKeys = array_keys($viaLink);
             $linkValues = array_values($link);
             foreach ($viaModels as $viaModel) {
@@ -393,6 +403,16 @@ trait ActiveRelationTrait
                 $key2 = $this->getModelKey($viaModel, $linkValues);
                 $map[$key2][$key1] = true;
             }
+
+            $viaQuery->viaMap = $map;
+
+            $viaVia = $viaQuery->via;
+            while ($viaVia) {
+                $viaViaQuery = is_array($viaVia) ? $viaVia[1] : $viaVia;
+                $map = $this->mapVia($map, $viaViaQuery->viaMap);
+
+                $viaVia = $viaViaQuery->via;
+            };
         }
 
         $buckets = [];
@@ -423,6 +443,20 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+    /**
+     * @param array $map
+     * @param array $viaMap
+     * @return array
+     */
+    private function mapVia($map, $viaMap) {
+        $resultMap = [];
+        foreach ($map as $key => $linkKeys) {
+            foreach (array_keys($linkKeys) as $linkKey) {
+                $resultMap[$key] = $viaMap[$linkKey];
+            }
+        }
+        return $resultMap;
+    }
 
     /**
      * Indexes buckets by column name.
@@ -492,6 +526,8 @@ trait ActiveRelationTrait
                 if (($value = $model[$attribute]) !== null) {
                     if (is_array($value)) {
                         $values = array_merge($values, $value);
+                    } elseif ($value instanceof ArrayExpression && $value->getDimension() === 1) {
+                        $values = array_merge($values, $value->getValue());
                     } else {
                         $values[] = $value;
                     }
@@ -516,7 +552,23 @@ trait ActiveRelationTrait
                 }
             }
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+
+        if (!empty($values)) {
+            $scalarValues = [];
+            $nonScalarValues = [];
+            foreach ($values as $value) {
+                if (is_scalar($value)) {
+                    $scalarValues[] = $value;
+                } else {
+                    $nonScalarValues[] = $value;
+                }
+            }
+
+            $scalarValues = array_unique($scalarValues);
+            $values = array_merge($scalarValues, $nonScalarValues);
+        }
+
+        $this->andWhere(['in', $attributes, $values]);
     }
 
     /**

@@ -69,7 +69,7 @@ abstract class Mutex extends Component
      */
     public function acquire($name, $timeout = 0)
     {
-        if ($this->acquireLock($name, $timeout)) {
+        if (!in_array($name, $this->_locks, true) && $this->acquireLock($name, $timeout)) {
             $this->_locks[] = $name;
 
             return true;

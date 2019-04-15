@@ -112,13 +112,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Asserting two strings equality ignoring line endings.
      * @param string $expected
      * @param string $actual
+     * @param string $message
      */
-    protected function assertEqualsWithoutLE($expected, $actual)
+    protected function assertEqualsWithoutLE($expected, $actual, $message = '')
     {
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $actual, $message);
     }
 
     /**

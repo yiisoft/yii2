@@ -329,7 +329,7 @@ $user->touch('login_time');
 比较行为与 Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-虽然行为类似于 [traits](http://www.php.net/traits)，它们都将自己的属性和方法“注入”到主类中，
+虽然行为类似于 [traits](https://secure.php.net/traits)，它们都将自己的属性和方法“注入”到主类中，
 但它们在许多方面有所不同。如下所述，他们都有优点和缺点。
 它们更像互补类而非替代类。
 

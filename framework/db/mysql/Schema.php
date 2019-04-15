@@ -287,7 +287,14 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            if (($column->type === 'timestamp' || $column->type ==='datetime') && $info['default'] === 'CURRENT_TIMESTAMP') {
+            /**
+             * When displayed in the INFORMATION_SCHEMA.COLUMNS table, a default CURRENT TIMESTAMP is displayed
+             * as CURRENT_TIMESTAMP up until MariaDB 10.2.2, and as current_timestamp() from MariaDB 10.2.3.
+             *
+             * See details here: https://mariadb.com/kb/en/library/now/#description
+             */
+            if (($column->type === 'timestamp' || $column->type === 'datetime') &&
+                ($info['default'] === 'CURRENT_TIMESTAMP' || $info['default'] === 'current_timestamp()')) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));

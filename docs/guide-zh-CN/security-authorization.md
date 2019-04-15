@@ -646,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+然后按 [in the previous section](#generating-rbac-data) 中的说明创建自己的 command/migration：
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;

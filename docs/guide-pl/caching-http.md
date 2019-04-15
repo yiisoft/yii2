@@ -126,7 +126,7 @@ w `session.cache_limiter` w ustawieniach PHP INI. Mogą one kolidować z funkcjo
 aby temu zapobiec, `HttpCache` blokuje to automatyczne wysyłanie. Jeśli jednak chcesz zmienić to zachowanie, powinieneś skonfigurować
 właściwość [[yii\filters\HttpCache::sessionCacheLimiter]]. Powinna ona przyjmować wartość zawierającą łańcuch znaków `public`,
 `private`, `private_no_expire` i `nocache`. Szczegóły dotyczące tego zapisu znajdziesz w dokumentacji PHP dla
-[session_cache_limiter()](http://www.php.net/manual/pl/function.session-cache-limiter.php).
+[session_cache_limiter()](https://secure.php.net/manual/pl/function.session-cache-limiter.php).
 
 
 ## Korzyści dla SEO <span id="seo-implications"></span>

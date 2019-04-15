@@ -1275,4 +1275,22 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->canGetProperty('non_existing_property'));
         $this->assertFalse($customer->canSetProperty('non_existing_property'));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17089
+     */
+    public function testViaWithCallable()
+    {
+        $order = Order::findOne(2);
+
+        $expensiveItems = $order->expensiveItemsUsingViaWithCallable;
+        $cheapItems = $order->cheapItemsUsingViaWithCallable;
+
+        $this->assertCount(2, $expensiveItems);
+        $this->assertEquals(4, $expensiveItems[0]->id);
+        $this->assertEquals(5, $expensiveItems[1]->id);
+
+        $this->assertCount(1, $cheapItems);
+        $this->assertEquals(3, $cheapItems[0]->id);
+    }
 }

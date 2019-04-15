@@ -66,7 +66,7 @@ public function rules()
     // проверяет, является ли значение атрибута "password" таким же, как "password_repeat"
     ['password', 'compare'],
     
-    // то же, что и выше, но атрбут для сравнения указан явно
+    // то же, что и выше, но атрибут для сравнения указан явно
     ['password', 'compare', 'compareAttribute' => 'password_repeat'],
 
     // проверяет, что возраст больше или равен 30
@@ -117,7 +117,7 @@ public function rules()
 - `format`: формат даты/времени, согласно которому должна быть сделана проверка.
    Значение может быть паттерном, описанным в [руководстве ICU](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
    или форматом PHP префиксированным `php:`. Формат должен приниматься классом `Datetime`. Подробнее о нём можно
-   прочитать в [руководстве PHP по date_create_from_format()](http://www.php.net/manual/ru/datetime.createfromformat.php).
+   прочитать в [руководстве PHP по date_create_from_format()](https://secure.php.net/manual/ru/datetime.createfromformat.php).
    Если значение не задано, используется `Yii::$app->formatter->dateFormat`.
    Подробнее читайте в [[yii\validators\DateValidator::$format|документации по API]].
 - `timestampAttribute`: имя атрибута, которому данный валидатор может присваивать значение UNIX timestamp,

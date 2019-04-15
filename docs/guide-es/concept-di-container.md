@@ -14,7 +14,7 @@ de ID:
 
 * Inyección de constructores;
 * Inyección de setters y propiedades;
-* Inyección de [llamadas de retorno PHP](http://php.net/manual/es/language.types.callable.php);
+* Inyección de [llamadas de retorno PHP](https://secure.php.net/manual/es/language.types.callable.php);
 
 ### Inyección de Constructores <span id="constructor-injection"></span>
 
