@@ -4,7 +4,8 @@ Yii Framework 2 Change Log
 2.0.18 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17220: Fixed error when using non-InputWidget in active form field (s1lver)
+- Bug #17235: `yii\helpers\FileHelper::normalizePath()` now accepts stream wrappers (razvanphp)
 
 
 2.0.17 March 22, 2019
