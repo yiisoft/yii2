@@ -1835,11 +1835,7 @@ class Formatter extends Component
             $fractionalPart = rtrim($fractionalPart, '0');
 
             if (empty($fractionalPart)) {
-                if ($powerPart !== null) {
-                    $fractionalPart = '0';
-                } else {
-                    $fractionalPart = null;
-                }
+                $fractionalPart = $powerPart !== null ? '0' : null;
             }
         }
 
