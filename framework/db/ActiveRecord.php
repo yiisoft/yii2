@@ -88,7 +88,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     const OP_UPDATE = 0x02;
     /**
-     * 删除操作。 其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
+     * 删除操作。其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_DELETE = 0x04;
     /**
@@ -361,7 +361,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * 声明与此 AR 类关联的数据库表的名称。
-     * 默认情况下，此方法通过使用前缀 [[Connection::tablePrefix]] 调用 [[Inflector::camel2id()]] 来返回类名作为表名
+     * 默认情况下，此方法通过使用前缀 [[Connection::tablePrefix]] 调用 [[Inflector::camel2id()]] 来返回类名作为表名。
      * 例如，如果 [[Connection::tablePrefix]] 是 `tbl_`，
      * 则 `Customer` 变为 `tbl_customer`，`OrderItem` 变为 `tbl_order_item`
      * 如果未按约定命名表，则可以重写此方法。
@@ -396,7 +396,7 @@ class ActiveRecord extends BaseActiveRecord
      * 关联的 DB 表中声明的主键。
      *
      * 如果 DB 表中为声明任何主键，
-     * 则应重写此方法
+     * 则应重写此方法，
      * 以返回要用作此 AR 类的主键属性。
      *
      * 请注意，即使对于具有单个主键的表，也应返回一个数组。
@@ -421,7 +421,7 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * 声明应在不同场景的事务中执行那些 DB 操作。
      * 支持的 DB 操作为 [[OP_INSERT]]，[[OP_UPDATE]] 以及 [[OP_DELETE]]，
-     * 分别对应 [[insert()]]， [[update()]] 以及 [[delete()]] 方法，
+     * 分别对应 [[insert()]]，[[update()]] 以及 [[delete()]] 方法，
      * 默认情况下，这些方法不包含在数据库事务中。
      *
      * 在某些情况下，为保持数据一致性，
@@ -496,7 +496,7 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->insert();
      * ```
      *
-     * @param bool $runValidation 是否在保存记录之前执行验证 (调用 [[validate()]])。
+     * @param bool $runValidation 是否在保存记录之前执行验证（调用 [[validate()]]）。
      * 默认为 `true`，即执行验证。如果验证失败，则记录不会保存到数据库中，
      * 并且此方法将返回 `false`。
      * @param array $attributes 需要保存的属性列表。
@@ -603,7 +603,7 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * @param bool $runValidation 是否在保存记录之前执行验证 (调用 [[validate()]])。
+     * @param bool $runValidation 是否在保存记录之前执行验证 （调用 [[validate()]]）。
      * 默认为 `true`，即执行验证。如果验证失败，则记录不会保存到数据库中，
      * 并且此方法将返回 `false`。
      * @param array $attributeNames 需要保存的属性列表。
