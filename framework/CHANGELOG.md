@@ -7,7 +7,8 @@ Yii Framework 2 Change Log
 - Bug #17220: Fixed error when using non-InputWidget in active form field (s1lver)
 - Bug #17235: `yii\helpers\FileHelper::normalizePath()` now accepts stream wrappers (razvanphp)
 - Bug #16820: `yii\filters\Cors::prepareHeaders()` now accepts Access-Control-Allow-Headers in preflight response (georgezim85)
-
+- Bug #16589: Fixed not using `defaultValue` in `BlameableBehavior` for console app (evil1)
+- Bug #17268: Fixed Formatter didn't take power into account (samdark)
 
 2.0.17 March 22, 2019
 ---------------------
