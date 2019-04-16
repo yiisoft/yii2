@@ -197,6 +197,10 @@ class Cors extends ActionFilter
         if (isset($this->cors['Access-Control-Expose-Headers'])) {
             $responseHeaders['Access-Control-Expose-Headers'] = implode(', ', $this->cors['Access-Control-Expose-Headers']);
         }
+        
+        if (isset($this->cors['Access-Control-Allow-Headers'])) {
+            $responseHeaders['Access-Control-Allow-Headers'] = implode(', ', $this->cors['Access-Control-Allow-Headers']);
+        }
 
         return $responseHeaders;
     }
