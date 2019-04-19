@@ -22,8 +22,12 @@
  *         // whether this module is currently active. If false, init() will not be called for this module
  *         // it will also not be called for all its child modules. If this property is undefined, it means true.
  *         isActive: true,
+ *         // indicates whether the module has already been initialized by calling its init method.
+ *         initialized: false,
  *         init: function() {
- *             // ... module initialization code goes here ...
+ *             // marks the module as initialized.
+ *              this.initialized = true;
+ *             // ... module initialization code continues here ...
  *         },
  *
  *         // ... other public functions and properties go here ...
@@ -43,6 +47,10 @@
  */
 window.yii = (function ($) {
     var pub = {
+        /**
+         * Indicates whether the module has already been initialized by calling its init method.
+         */
+        initialized: false,
         /**
          * List of JS or CSS URLs that can be loaded multiple times via AJAX requests.
          * Each item may be represented as either an absolute URL or a relative one.
@@ -323,12 +331,17 @@ window.yii = (function ($) {
             }
             $.each(module, function () {
                 if ($.isPlainObject(this)) {
-                    pub.initModule(this);
+                  if(this.initialized === true)
+                  {
+                    return "continue";
+                  }
+                  pub.initModule(this);
                 }
             });
         },
 
         init: function () {
+            this.initialized = true;
             initCsrfHandler();
             initRedirectHandler();
             initAssetFilters();
