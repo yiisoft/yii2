@@ -14,7 +14,7 @@ use yii\db\Exception;
 use yii\db\Expression;
 
 /**
- * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
+ * QueryBuilder 是 CUBRID 数据库的模式查询构建器（版本要求 version 9.3.x 以及更高）。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -22,7 +22,7 @@ use yii\db\Expression;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）映射到物理列类型（值）。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -116,14 +116,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     * 创建一个 SQL 语句，用于重置数据表主键的序列值。
+     * 主键序列将被重置，
+     * 以便插入的下一个新行的主键具有指定的值或者默认为 1。
+     * @param string $tableName 将重置主键序列的数据表的名称
+     * @param mixed $value 插入的下一个新行的主键的值，如果未设置，
+     * 则下一个新行的主键的值为 1。
+     * @return string 用于重建主键序列的 SQL 语句
+     * @throws InvalidArgumentException 如果数据表不存在或者没有与表关联的序列，则抛出 InvalidArgumentException 异常。
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -194,7 +194,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by CUBRID.
+     * @throws NotSupportedException CUBRID 不支持此功能，抛出 NotSupportedException 异常。
      */
     public function addCheck($name, $table, $expression)
     {
@@ -203,7 +203,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by CUBRID.
+     * @throws NotSupportedException CUBRID 不支持此功能，抛出 NotSupportedException 异常。
      */
     public function dropCheck($name, $table)
     {
@@ -255,12 +255,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
 
     /**
-     * Gets column definition.
+     * 获取列定义。
      *
-     * @param string $table table name
-     * @param string $column column name
-     * @return null|string the column definition
-     * @throws Exception in case when table does not contain column
+     * @param string $table 表名
+     * @param string $column 列名
+     * @return null|string 获取列定义
+     * @throws Exception 如果表不包含列，抛出异常。
      * @since 2.0.8
      */
     private function getColumnDefinition($table, $column)

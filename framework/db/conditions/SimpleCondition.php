@@ -10,7 +10,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * Class SimpleCondition represents a simple condition like `"column" operator value`.
+ * 类 SimpleCondition 表示一个简单的条件，如 `“column” operator value`。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -18,25 +18,25 @@ use yii\base\InvalidArgumentException;
 class SimpleCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @var string $operator 要使用的运算符。任何场景都可以使用，例如： `>`，`<=`，等等。
      */
     private $operator;
     /**
-     * @var mixed the column name to the left of [[operator]]
+     * @var mixed [[operator]] 左侧的列名。
      */
     private $column;
     /**
-     * @var mixed the value to the right of the [[operator]]
+     * @var mixed [[operator]] 右边的值。
      */
     private $value;
 
 
     /**
-     * SimpleCondition constructor
+     * SimpleCondition 构造函数。
      *
-     * @param mixed $column the literal to the left of $operator
-     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
-     * @param mixed $value the literal to the right of $operator
+     * @param mixed $column $operator 左边的字符
+     * @param string $operator 要使用的运算符。任何场景下都可以使用，例如： `>`，`<=`，等等。
+     * @param mixed $value $operator 右边的字符
      */
     public function __construct($column, $operator, $value)
     {
@@ -71,7 +71,7 @@ class SimpleCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException if wrong number of operands have been given.
+     * @throws InvalidArgumentException 如果给出错误操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {

@@ -12,16 +12,16 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class BetweenColumnCondition represents a `BETWEEN` condition where
- * values is between two columns. For example:
+ * BetweenColumnCondition 类表示 `BETWEEN` 条件
+ * 其中值在两个列中间。比如：
  *
  * ```php
  * new BetweenColumnsCondition(42, 'BETWEEN', 'min_value', 'max_value')
- * // Will be build to:
+ * // Will be built to:
  * // 42 BETWEEN min_value AND max_value
  * ```
  *
- * And a more complex example:
+ * 还有更加复杂的例子：
  *
  * ```php
  * new BetweenColumnsCondition(
@@ -41,30 +41,30 @@ use yii\db\Query;
 class BetweenColumnsCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @var string $operator 要使用的运算符（例如：`BETWEEN` or `NOT BETWEEN`）
      */
     private $operator;
     /**
-     * @var mixed the value to compare against
+     * @var mixed 要比较的值
      */
     private $value;
     /**
-     * @var string|ExpressionInterface|Query the column name or expression that is a beginning of the interval
+     * @var string|ExpressionInterface|Query 作为间隔开头的列名称或表达式
      */
     private $intervalStartColumn;
     /**
-     * @var string|ExpressionInterface|Query the column name or expression that is an end of the interval
+     * @var string|ExpressionInterface|Query 作为间隔结尾的列名称或表达式
      */
     private $intervalEndColumn;
 
 
     /**
-     * Creates a condition with the `BETWEEN` operator.
+     * 使用 `BETWEEN` 运算符创建条件
      *
-     * @param mixed the value to compare against
-     * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param string|ExpressionInterface $intervalStartColumn the column name or expression that is a beginning of the interval
-     * @param string|ExpressionInterface $intervalEndColumn the column name or expression that is an end of the interval
+     * @param mixed 要比较的值
+     * @param string $operator 要使用的运算符（例如：`BETWEEN` or `NOT BETWEEN`）
+     * @param string|ExpressionInterface $intervalStartColumn 作为间隔开头的列名称或表达式
+     * @param string|ExpressionInterface $intervalEndColumn 作为间隔结尾的列名称或表达式
      */
     public function __construct($value, $operator, $intervalStartColumn, $intervalEndColumn)
     {
@@ -108,7 +108,7 @@ class BetweenColumnsCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException if wrong number of operands have been given.
+     * @throws InvalidArgumentException 如果已给出错误的操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {

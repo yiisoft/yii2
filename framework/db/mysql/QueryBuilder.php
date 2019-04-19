@@ -14,7 +14,7 @@ use yii\db\Expression;
 use yii\db\Query;
 
 /**
- * QueryBuilder is the query builder for MySQL databases.
+ * QueryBuilder 类是 MySQL 数据库查询构建器。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,7 +22,7 @@ use yii\db\Query;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）到物理列类型（值）的映射。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -67,11 +67,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
+     * 构建用于重命名列的 SQL 语句。
+     * @param string $table 用重命名列的表明。该方法将正确引用表名。
+     * @param string $oldName 旧的列名。该方法将正确引用列名。
+     * @param string $newName 新的列名。该方法将正确引用列名。
+     * @return string 重命名列的 SQL 语句。
      * @throws Exception
      */
     public function renameColumn($table, $oldName, $newName)
@@ -117,10 +117,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for dropping a foreign key constraint.
-     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping a foreign key constraint.
+     * 构建用于删除外键约束的 SQL 语句。
+     * @param string $name 要删除的外键约束的名称。该方法会确保正确引用该名称。
+     * @param string $table 要删除外键约束的表的名称。该方法会确保正确引用该名称。
+     * @return string 用于删除外键约束的 SQL 语句。
      */
     public function dropForeignKey($name, $table)
     {
@@ -129,10 +129,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
-     * @return string the SQL statement for removing a primary key constraint from an existing table.
+     * 构建一个用于删除现有表的主键约束的 SQL 语句。
+     * @param string $name 将被删除的主键约束的名称。
+     * @param string $table 将主键约束要从中删除的表的名称。
+     * @return string 用于删除现有表的主键约束的 SQL 语句。
      */
     public function dropPrimaryKey($name, $table)
     {
@@ -149,7 +149,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
+     * @throws NotSupportedException MySQL 不支持此功能时抛出异常。
      */
     public function addCheck($name, $table, $expression)
     {
@@ -158,7 +158,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
+     * @throws NotSupportedException NySQL 不支持此功能时抛出异常。
      */
     public function dropCheck($name, $table)
     {
@@ -166,14 +166,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     * 创建用于重置表主键的序列值的 SQL 语句。
+     * 序列将被重置，
+     * 以便插入的下一个新行的主键具有指定值或者为 1。
+     * @param string $tableName 将要重置主键序列的表的名称
+     * @param mixed $value 插入的下一个新行的值。如果 $vaule 没设置，
+     * 则下一个新行的主键的值为 1。
+     * @return string 重置序列的 SQL 语句
+     * @throws InvalidArgumentException 如果表不存在，或者没有与表关联的序列，则抛出异常。
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -196,11 +196,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Meaningless for MySQL.
-     * @param string $table the table name. Meaningless for MySQL.
-     * @return string the SQL statement for checking integrity
+     * 构建用于启用或禁用数据完整性检查的 SQL 语句。
+     * @param bool $check 是否打开或关闭数据完整性检查。
+     * @param string $schema 表格的架构。对 MySQL 来说该参数毫无意思。
+     * @param string $table 表名。对 MySQL 来说该参数毫无意义。
+     * @return string 用于完整性检查的 SQL 语句
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
@@ -337,12 +337,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
 
     /**
-     * Gets column definition.
+     * 获取列定义。
      *
-     * @param string $table table name
-     * @param string $column column name
-     * @return null|string the column definition
-     * @throws Exception in case when table does not contain column
+     * @param string $table 表名
+     * @param string $column 列名
+     * @return null|string 列定义
+     * @throws Exception 如果表不包含列，则抛出异常
      */
     private function getColumnDefinition($table, $column)
     {
@@ -369,7 +369,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Checks the ability to use fractional seconds.
+     * 检查使用小数秒的能力。
      *
      * @return bool
      * @see https://dev.mysql.com/doc/refman/5.6/en/fractional-seconds.html
@@ -381,9 +381,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Returns the map for default time type.
-     * If the version of MySQL is lower than 5.6.4, then the types will be without fractional seconds,
-     * otherwise with fractional seconds.
+     * 返回默认时间类型映射。
+     * 当 MySQL 版本低于 5.6.4 时，类型没有小数秒，
+     * 不然则使用小数秒。
      *
      * @return array
      */

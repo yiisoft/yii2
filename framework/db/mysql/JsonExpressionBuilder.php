@@ -15,7 +15,7 @@ use yii\db\Query;
 use yii\helpers\Json;
 
 /**
- * Class JsonExpressionBuilder builds [[JsonExpression]] for MySQL DBMS.
+ * 类 JsonExpressionBuilder 为 MySQL DBMS 构建 [[JsonExpression]] 。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -29,7 +29,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * {@inheritdoc}
-     * @param JsonExpression|ExpressionInterface $expression the expression to be built
+     * @param JsonExpression|ExpressionInterface $expression 构建的表达式
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {

@@ -11,7 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\db\Query;
 
 /**
- * Condition that represents `EXISTS` operator.
+ * 表示 `EXISTS` 操作符的条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -19,20 +19,20 @@ use yii\db\Query;
 class ExistsCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
+     * @var string $operator 要使用的操作符（例如：`EXISTS` 或 `NOT EXISTS`）
      */
     private $operator;
     /**
-     * @var Query the [[Query]] object representing the sub-query.
+     * @var Query 表示子查询的 [[Query]] 对象。
      */
     private $query;
 
 
     /**
-     * ExistsCondition constructor.
+     * ExistsCondition 构造函数。
      *
-     * @param string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
-     * @param Query $query the [[Query]] object representing the sub-query.
+     * @param string $operator 要使用的操作符（例如：`EXISTS` 或 `NOT EXISTS`）
+     * @param Query $query 表示子查询的 [[Query]] 对象。
      */
     public function __construct($operator, $query)
     {

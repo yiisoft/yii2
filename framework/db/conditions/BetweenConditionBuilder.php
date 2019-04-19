@@ -12,7 +12,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class BetweenConditionBuilder builds objects of [[BetweenCondition]]
+ * 类 BetweenConditionBuilder 构建 [[BetweenCondition]] 类的对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -23,12 +23,12 @@ class BetweenConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|BetweenCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|BetweenCondition $expression 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的 SQL语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
@@ -46,10 +46,10 @@ class BetweenConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Attaches $value to $params array and returns placeholder.
+     * 将 $value 附加到 $params 数组并返回占位符。
      *
      * @param mixed $value
-     * @param array $params passed by reference
+     * @param array $params 通过引用传递
      * @return string
      */
     protected function createPlaceholder($value, &$params)

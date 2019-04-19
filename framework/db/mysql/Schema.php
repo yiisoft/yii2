@@ -20,7 +20,7 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
+ * Schema 是用来从 MySQL 数据库（MySQL 版本：4.1.x 和 5.x）检索元数据的类。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,13 +34,13 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public $columnSchemaClass = 'yii\db\mysql\ColumnSchema';
     /**
-     * @var bool whether MySQL used is older than 5.1.
+     * @var bool 使用的 MySQL 版本是否早于 5.1 。
      */
     private $_oldMysql;
 
 
     /**
-     * @var array mapping from physical column types (keys) to abstract column types (values)
+     * @var array 从物理列类型（键）到抽象列类型（值）的映射
      */
     public $typeMap = [
         'tinyint' => self::TYPE_TINYINT,
@@ -192,7 +192,7 @@ SQL;
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果调用此方法，则抛出 NotSupportedException 异常。
      */
     protected function loadTableChecks($tableName)
     {
@@ -201,7 +201,7 @@ SQL;
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果调用此方法，则抛出 NotSupportedException 异常。
      */
     protected function loadTableDefaultValues($tableName)
     {
@@ -209,8 +209,8 @@ SQL;
     }
 
     /**
-     * Creates a query builder for the MySQL database.
-     * @return QueryBuilder query builder instance
+     * 创建 MySQL 数据库的查询构建器。
+     * @return QueryBuilder 查询构建器实例
      */
     public function createQueryBuilder()
     {
@@ -218,9 +218,9 @@ SQL;
     }
 
     /**
-     * Resolves the table name and schema name (if any).
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * 解析表明和数据库结构名称（如果存在的话）。
+     * @param TableSchema $table 表元数据对象
+     * @param string $name 表名
      */
     protected function resolveTableNames($table, $name)
     {
@@ -235,9 +235,9 @@ SQL;
     }
 
     /**
-     * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * 加载列信息到 [[ColumnSchema]] 对象。
+     * @param array $info 列信息
+     * @return ColumnSchema 列架构对象
      */
     protected function loadColumnSchema($info)
     {
@@ -300,10 +300,10 @@ SQL;
     }
 
     /**
-     * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
-     * @return bool whether the table exists in the database
-     * @throws \Exception if DB query fails
+     * 搜集表列的元数据。
+     * @param TableSchema $table 表元数据
+     * @return bool 表是否存在于数据库中
+     * @throws \Exception 当 DB 查询失败时，抛出异常
      */
     protected function findColumns($table)
     {
@@ -337,9 +337,9 @@ SQL;
     }
 
     /**
-     * Gets the CREATE TABLE sql string.
-     * @param TableSchema $table the table metadata
-     * @return string $sql the result of 'SHOW CREATE TABLE'
+     * 获取 CREATE TABLE 的 sql 字符串。
+     * @param TableSchema $table 表元数据
+     * @return string $sql 'SHOW CREATE TABLE' 语句执行结果
      */
     protected function getCreateTableSql($table)
     {
@@ -355,8 +355,8 @@ SQL;
     }
 
     /**
-     * Collects the foreign key column details for the given table.
-     * @param TableSchema $table the table metadata
+     * 搜集给定表的外键列的细节。
+     * @param TableSchema $table 表元数据
      * @throws \Exception
      */
     protected function findConstraints($table)
@@ -420,9 +420,9 @@ SQL;
     }
 
     /**
-     * Returns all unique indexes for the given table.
+     * 返回给定表的所有唯一索引。
      *
-     * Each array element is of the following structure:
+     * 每个数组元素的结构如下：
      *
      * ```php
      * [
@@ -431,8 +431,8 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
-     * @return array all unique indexes for the given table.
+     * @param TableSchema $table 表元数据
+     * @return array 给定表的所有唯一索引。
      */
     public function findUniqueIndexes($table)
     {
@@ -460,7 +460,7 @@ SQL;
     }
 
     /**
-     * @return bool whether the version of the MySQL being used is older than 5.1.
+     * @return bool 所使用的 MySQL 版本是否早于 5.1 。
      * @throws InvalidConfigException
      * @throws Exception
      * @since 2.0.13
@@ -476,9 +476,9 @@ SQL;
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     * 加载多种类型的约束，并返回指定的约束。
+     * @param string $tableName 表名。
+     * @param string $returnType 返回的约束类型：
      * - primaryKey
      * - foreignKeys
      * - uniques
