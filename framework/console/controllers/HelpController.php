@@ -15,22 +15,22 @@ use yii\helpers\Console;
 use yii\helpers\Inflector;
 
 /**
- * Provides help information about console commands.
+ * 提供有关控制台命令的帮助信息。
  *
- * This command displays the available command list in
- * the application or the detailed instructions about using
- * a specific command.
+ * 此命令显示应用程序中的可用命令列表
+ * 或有关使用特定命令的
+ * 详细说明。
  *
- * This command can be used as follows on command line:
+ * 此命令可在命令行中使用如下：
  *
  * ```
  * yii help [command name]
  * ```
  *
- * In the above, if the command name is not provided, all
- * available commands will be displayed.
+ * 在上述命令中，如果未提供命令名称，
+ * 将显示所有可用的命令。
  *
- * @property array $commands All available command names. This property is read-only.
+ * @property array $commands 所有可用的命令名。此属性为只读。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -38,13 +38,13 @@ use yii\helpers\Inflector;
 class HelpController extends Controller
 {
     /**
-     * Displays available commands or the detailed information
-     * about a particular command.
+     * 显示可用的命令或有关特定命令的
+     * 详细信息。
      *
-     * @param string $command The name of the command to show help about.
-     * If not provided, all available commands will be displayed.
-     * @return int the exit status
-     * @throws Exception if the command for help is unknown
+     * @param string $command 要显示帮助的命令的名称。
+     * 如果未提供，将显示所有可用的命令。
+     * @return int 退出状态
+     * @throws Exception 如果帮助命令未知
      */
     public function actionIndex($command = null)
     {
@@ -69,8 +69,8 @@ class HelpController extends Controller
     }
 
     /**
-     * List all available controllers and actions in machine readable format.
-     * This is used for shell completion.
+     * 以计算机可读的格式列出所有可用的控制器和动作。
+     * 这用于完成 shell。
      * @since 2.0.11
      */
     public function actionList()
@@ -94,10 +94,10 @@ class HelpController extends Controller
     }
 
     /**
-     * List all available options for the $action in machine readable format.
-     * This is used for shell completion.
+     * 以机器可读格式列出 $action 的所有可用选项。
+     * 这用于完成 shell。
      *
-     * @param string $action route to action
+     * @param string $action 动作的路由
      * @since 2.0.11
      */
     public function actionListActionOptions($action)
@@ -128,9 +128,9 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays usage information for $action.
+     * 显示 $action 的使用信息。
      *
-     * @param string $action route to action
+     * @param string $action 动作路由
      * @since 2.0.11
      */
     public function actionUsage($action)
@@ -167,8 +167,8 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns all available command names.
-     * @return array all available command names
+     * 返回所有可用的命令名。
+     * @return array 所有可用的命令名。
      */
     public function getCommands()
     {
@@ -178,8 +178,8 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns an array of commands an their descriptions.
-     * @return array all available commands as keys and their description as values.
+     * 返回命令数组及其说明。
+     * @return array 所有可用命令作为键，其描述为值。
      */
     protected function getCommandDescriptions()
     {
@@ -201,9 +201,9 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns all available actions of the specified controller.
-     * @param Controller $controller the controller instance
-     * @return array all available action IDs.
+     * 返回指定控制器的所有可用动作。
+     * @param Controller $controller 控制器实例
+     * @return array 所有可用的动作 IDs.
      */
     public function getActions($controller)
     {
@@ -221,9 +221,9 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns available commands of a specified module.
-     * @param \yii\base\Module $module the module instance
-     * @return array the available command names
+     * 返回指定模块的可用命令。
+     * @param \yii\base\Module $module 模块实例
+     * @return array 可用的命令名称
      */
     protected function getModuleCommands($module)
     {
@@ -271,7 +271,7 @@ class HelpController extends Controller
     }
 
     /**
-     * Validates if the given class is a valid console controller class.
+     * 验证给定的类是否是有效的控制台控制器类。
      * @param string $controllerClass
      * @return bool
      */
@@ -286,7 +286,7 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays all available commands.
+     * 显示所有可用命令。
      */
     protected function getDefaultHelp()
     {
@@ -357,8 +357,8 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays the overall information of the command.
-     * @param Controller $controller the controller instance
+     * 显示命令的整体信息。
+     * @param Controller $controller 控制器实例
      */
     protected function getCommandHelp($controller)
     {
@@ -403,10 +403,10 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays the detailed information of a command action.
-     * @param Controller $controller the controller instance
-     * @param string $actionID action ID
-     * @throws Exception if the action does not exist
+     * 显示命令操作的详细信息。
+     * @param Controller $controller 控制器实例
+     * @param string $actionID 动作 ID
+     * @throws Exception 如果动作不存在
      */
     protected function getSubCommandHelp($controller, $actionID)
     {
@@ -478,13 +478,13 @@ class HelpController extends Controller
     }
 
     /**
-     * Generates a well-formed string for an argument or option.
-     * @param string $name the name of the argument or option
-     * @param bool $required whether the argument is required
-     * @param string $type the type of the option or argument
-     * @param mixed $defaultValue the default value of the option or argument
-     * @param string $comment comment about the option or argument
-     * @return string the formatted string for the argument or option
+     * 为参数或选项生成格式正确的字符串。
+     * @param string $name 参数或选项的名称
+     * @param bool $required 参数是否必需
+     * @param string $type 选项或参数的类型
+     * @param mixed $defaultValue 选项或参数的默认值
+     * @param string $comment 关于选项或参数的注释
+     * @return string 参数或选项的格式化字符串
      */
     protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
     {
@@ -524,9 +524,9 @@ class HelpController extends Controller
     }
 
     /**
-     * @param Controller $controller the controller instance
-     * @param string $option the option name
-     * @return string the formatted string for the alias argument or option
+     * @param Controller $controller 控制器实例
+     * @param string $option 选项名称
+     * @return string 别名参数或选项的格式化字符串。
      * @since 2.0.8
      */
     protected function formatOptionAliases($controller, $option)
@@ -541,7 +541,7 @@ class HelpController extends Controller
     }
 
     /**
-     * @return string the name of the cli script currently running.
+     * @return string 当前运行的 cli 脚本的名称。
      */
     protected function getScriptName()
     {
@@ -549,8 +549,8 @@ class HelpController extends Controller
     }
 
     /**
-     * Return a default help header.
-     * @return string default help header.
+     * 返回默认帮助标题。
+     * @return string 默认帮助标题。
      * @since 2.0.11
      */
     protected function getDefaultHelpHeader()

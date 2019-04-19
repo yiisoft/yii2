@@ -15,20 +15,20 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 
 /**
- * Manages application migrations.
+ * 管理应用程序迁移。
  *
- * A migration means a set of persistent changes to the application environment
- * that is shared among different developers. For example, in an application
- * backed by a database, a migration may refer to a set of changes to
- * the database, such as creating a new table, adding a new table column.
+ * 迁移意味着对应用程序环境的一组持久更改，
+ * 这些更改在不同的开发人员之间共享。例如，在数据库支持的
+ * 应用程序中，迁移可能指对数据库的一组更改，
+ * 例如创建一个新表，添加一个新表列。
  *
- * This command provides support for tracking the migration history, upgrading
- * or downloading with migrations, and creating new migration skeletons.
+ * 此命令提供跟踪迁移历史记录的支持，
+ * 通过迁移进行升级或下载，并创建新的迁移骨架。
  *
- * The migration history is stored in a database table named
- * as [[migrationTable]]. The table will be automatically created the first time
- * this command is executed, if it does not exist. You may also manually
- * create it as follows:
+ * 迁移历史记录存储在数据库表中
+ * 称作 [[migrationTable]]。该表将在第一次执行此命令时自动创建，
+ * 如果它不存在的话。您也可以手动创建它，
+ * 如下所示：
  *
  * ```sql
  * CREATE TABLE migration (
@@ -37,7 +37,7 @@ use yii\helpers\Console;
  * )
  * ```
  *
- * Below are some common usages of this command:
+ * 以下是此命令的一些常见用法：
  *
  * ```
  * # creates a new migration named 'create_user_table'
@@ -50,8 +50,8 @@ use yii\helpers\Console;
  * yii migrate/down
  * ```
  *
- * Since 2.0.10 you can use namespaced migrations. In order to enable this feature you should configure [[migrationNamespaces]]
- * property for the controller at application configuration:
+ * 从 2.0.10 开始，你可以使用带命名空间的迁移。要启用此功能，您应在应用程序配置中为控制器配置 [[migrationNamespaces]]
+ * 属性：
  *
  * ```php
  * return [
@@ -74,13 +74,13 @@ use yii\helpers\Console;
 class MigrateController extends BaseMigrateController
 {
     /**
-     * Maximum length of a migration name.
+     * 迁移名称的最大长度。
      * @since 2.0.13
      */
     const MAX_NAME_LENGTH = 180;
 
     /**
-     * @var string the name of the table for keeping applied migration information.
+     * @var string 用于保存应用的迁移信息的表的名称。
      */
     public $migrationTable = '{{%migration}}';
     /**
@@ -88,14 +88,14 @@ class MigrateController extends BaseMigrateController
      */
     public $templateFile = '@yii/views/migration.php';
     /**
-     * @var array a set of template paths for generating migration code automatically.
+     * @var array 用于自动生成迁移代码的一组模板路径。
      *
-     * The key is the template type, the value is a path or the alias. Supported types are:
-     * - `create_table`: table creating template
-     * - `drop_table`: table dropping template
-     * - `add_column`: adding new column template
-     * - `drop_column`: dropping column template
-     * - `create_junction`: create junction template
+     * 键是模板类型，值是路径或别名。支持的类型是：
+     * - `create_table`: 表创建模板
+     * - `drop_table`: 表删除模版
+     * - `add_column`: 添加新的列模板
+     * - `drop_column`: 删除列模板
+     * - `create_junction`: 创建连接模板
      *
      * @since 2.0.7
      */
@@ -107,33 +107,33 @@ class MigrateController extends BaseMigrateController
         'create_junction' => '@yii/views/createTableMigration.php',
     ];
     /**
-     * @var bool indicates whether the table names generated should consider
-     * the `tablePrefix` setting of the DB connection. For example, if the table
-     * name is `post` the generator wil return `{{%post}}`.
+     * @var bool 指示生成的表名是否应考虑
+     * DB连接的 `tablePrefix` 设置。例如，如果表名为
+     * `post` 生成器将返回 `{{%post}}`。
      * @since 2.0.8
      */
     public $useTablePrefix = false;
     /**
-     * @var array column definition strings used for creating migration code.
+     * @var array 列定义字符串，用于创建迁移代码。
      *
-     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Delimiter is `,`.
-     * For example, `--fields="name:string(12):notNull:unique"`
-     * produces a string column of size 12 which is not null and unique values.
+     * 每个定义的格式为 `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`。分隔符是 `,`。
+     * 例如，`--fields="name:string(12):notNull:unique"`
+     * 生成大小为 12 的字符串列，该列不是 null 且唯一的值。
      *
-     * Note: primary key is added automatically and is named id by default.
-     * If you want to use another name you may specify it explicitly like
+     * 注意：主键是自动添加的，默认情况下名为 id。
+     * 如果你想使用另一个名称，则可以明确地指定它比如
      * `--fields="id_key:primaryKey,name:string(12):notNull:unique"`
      * @since 2.0.7
      */
     public $fields = [];
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
-     * when applying migrations. Starting from version 2.0.3, this can also be a configuration array
-     * for creating the object.
+     * @var Connection|array|string 应用迁移时要使用的 DB 连接对象或应用程序组件 ID。
+     * 从版本 2.0.3 开始，这也可以是配置数组
+     * 用于创建对象。
      */
     public $db = 'db';
     /**
-     * @var string the comment for the table being created.
+     * @var string 正在创建的表的注释。
      * @since 2.0.14
      */
     public $comment = '';
@@ -171,10 +171,10 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * It checks the existence of the [[migrationPath]].
-     * @param \yii\base\Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * 此方法是在执行操作之前（在所有可能的过滤器之后）调用的。
+     * 它检查 [[migrationPath]] 的存在。
+     * @param \yii\base\Action $action 要执行的动作。
+     * @return bool 是否应继续执行该动作。
      */
     public function beforeAction($action)
     {
@@ -187,9 +187,9 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Creates a new migration instance.
-     * @param string $class the migration class name
-     * @return \yii\db\Migration the migration instance
+     * 创建新的迁移实例。
+     * @param string $class 迁移类名称
+     * @return \yii\db\Migration 迁移实例
      */
     protected function createMigration($class)
     {
@@ -260,7 +260,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Creates the migration history table.
+     * 创建迁移历史表。
      */
     protected function createMigrationHistoryTable()
     {
@@ -457,10 +457,10 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * If `useTablePrefix` equals true, then the table name will contain the
-     * prefix format.
+     * 如果 `useTablePrefix` 等于 true，然后表名将包含
+     * 前缀格式。
      *
-     * @param string $tableName the table name to generate.
+     * @param string $tableName 要生成的表名。
      * @return string
      * @since 2.0.8
      */
@@ -474,11 +474,11 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Parse the command line migration fields.
-     * @return array parse result with following fields:
+     * 解析命令行迁移字段。
+     * @return array 使用以下字段分析结果：
      *
-     * - fields: array, parsed fields
-     * - foreignKeys: array, detected foreign keys
+     * - fields: array，解析字段
+     * - foreignKeys: array，检测到的外键
      *
      * @since 2.0.7
      */
@@ -524,8 +524,8 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Adds default primary key to fields list if there's no primary key specified.
-     * @param array $fields parsed fields
+     * 如果未指定主键，则将默认主键添加到字段列表中。
+     * @param array $fields 解析字段
      * @since 2.0.7
      */
     protected function addDefaultPrimaryKey(&$fields)

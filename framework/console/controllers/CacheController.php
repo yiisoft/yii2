@@ -16,29 +16,29 @@ use yii\console\ExitCode;
 use yii\helpers\Console;
 
 /**
- * Allows you to flush cache.
+ * 允许你刷新缓存。
  *
- * see list of available components to flush:
+ * 查看要刷新的可用组件列表：
  *
  *     yii cache
  *
- * flush particular components specified by their names:
+ * 刷新由其名称指定的特定组件：
  *
  *     yii cache/flush first second third
  *
- * flush all cache components that can be found in the system
+ * 刷新可在系统中找到的所有缓存组件
  *
  *     yii cache/flush-all
  *
- * Note that the command uses cache components defined in your console application configuration file. If components
- * configured are different from web application, web application cache won't be cleared. In order to fix it please
- * duplicate web application cache components in console config. You can use any component names.
+ * 请注意该命令使用控制台应用程序配置文件中定义的缓存组件。如果配置的组件
+ * 与 web 应用程序不同，web 应用程序缓存不会被清除。
+ * 为了解决它请在控制台配置中复制 web 应用程序缓存组件。你可以使用任何组件名称。
  *
- * APC is not shared between PHP processes so flushing cache from command line has no effect on web.
- * Flushing web cache could be either done by:
+ * PHP 进程之间不共享 APC，因此从命令行刷新缓存对 web 没有影响。
+ * 刷新Web缓存可以通过以下方式完成：
  *
- * - Putting a php file under web root and calling it via HTTP
- * - Using [Cachetool](http://gordalina.github.io/cachetool/)
+ * - 将一个 php 文件放在 web 根目录下并通过 HTTP 调用它
+ * - 使用 [Cachetool](http://gordalina.github.io/cachetool/)
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
@@ -47,7 +47,7 @@ use yii\helpers\Console;
 class CacheController extends Controller
 {
     /**
-     * Lists the caches that can be flushed.
+     * 列出可以刷新的缓存。
      */
     public function actionIndex()
     {
@@ -61,12 +61,12 @@ class CacheController extends Controller
     }
 
     /**
-     * Flushes given cache components.
+     * 刷新给定的缓存组件。
      *
-     * For example,
+     * 例如，
      *
      * ```
-     * # flushes caches specified by their id: "first", "second", "third"
+     * # 刷新其id指定的缓存："first"，"second"，"third"
      * yii cache/flush first second third
      * ```
      */
@@ -109,7 +109,7 @@ class CacheController extends Controller
     }
 
     /**
-     * Flushes all caches registered in the system.
+     * 刷新系统中注册的所有缓存。
      */
     public function actionFlushAll()
     {
@@ -133,15 +133,15 @@ class CacheController extends Controller
     }
 
     /**
-     * Clears DB schema cache for a given connection component.
+     * 清除给定连接组件的数据库架构缓存。
      *
      * ```
-     * # clears cache schema specified by component id: "db"
+     * # 清除指定的缓存模式通过组件 id："db"
      * yii cache/flush-schema db
      * ```
      *
-     * @param string $db id connection component
-     * @return int exit code
+     * @param string $db id 连接组件
+     * @return int 退出码
      * @throws Exception
      * @throws \yii\base\InvalidConfigException
      *
@@ -172,8 +172,8 @@ class CacheController extends Controller
     }
 
     /**
-     * Notifies user that given caches are found and can be flushed.
-     * @param array $caches array of cache component classes
+     * 通知用户已找到给定的缓存并且可以刷新。
+     * @param array $caches 缓存组件类的数组
      */
     private function notifyCachesCanBeFlushed($caches)
     {
@@ -191,7 +191,7 @@ class CacheController extends Controller
     }
 
     /**
-     * Notifies user that there was not found any cache in the system.
+     * 通知用户系统中未找到任何缓存。
      */
     private function notifyNoCachesFound()
     {
@@ -199,7 +199,7 @@ class CacheController extends Controller
     }
 
     /**
-     * Notifies user that given cache components were not found in the system.
+     * 通知用户在系统中找不到给定的缓存组件。
      * @param array $cachesNames
      */
     private function notifyNotFoundCaches($cachesNames)
@@ -234,7 +234,7 @@ class CacheController extends Controller
     }
 
     /**
-     * Prompts user with confirmation if caches should be flushed.
+     * 如果应刷新缓存，则提示用户确认。
      * @param array $cachesNames
      * @return bool
      */
@@ -250,8 +250,8 @@ class CacheController extends Controller
     }
 
     /**
-     * Returns array of caches in the system, keys are cache components names, values are class names.
-     * @param array $cachesNames caches to be found
+     * 返回系统中的缓存数组，键是缓存组件名称，值是类名。
+     * @param array $cachesNames 缓存可以找到
      * @return array
      */
     private function findCaches(array $cachesNames = [])
@@ -284,8 +284,8 @@ class CacheController extends Controller
     }
 
     /**
-     * Checks if given class is a Cache class.
-     * @param string $className class name.
+     * 检查给定的类是否为 Cache 类。
+     * @param string $className 类名。
      * @return bool
      */
     private function isCacheClass($className)
@@ -294,8 +294,8 @@ class CacheController extends Controller
     }
 
     /**
-     * Checks if cache of a certain class can be flushed.
-     * @param string $className class name.
+     * 检查是否可以刷新某个类的缓存。
+     * @param string $className 类名。
      * @return bool
      */
     private function canBeFlushed($className)

@@ -8,12 +8,12 @@
 namespace yii\console;
 
 /**
- * The console Request represents the environment information for a console application.
+ * 控制台请求表示控制台应用程序的环境信息。
  *
- * It is a wrapper for the PHP `$_SERVER` variable which holds information about the
- * currently running PHP script and the command line arguments given to it.
+ * 它是 PHP `$_SERVER` 变量的包装器，该变量包含有关当前运行的
+ * PHP 脚本及其命令行参数的信息。
  *
- * @property array $params The command line arguments. It does not include the entry script name.
+ * @property array $params 命令行参数。它不包括条目脚本名称。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -24,8 +24,8 @@ class Request extends \yii\base\Request
 
 
     /**
-     * Returns the command line arguments.
-     * @return array the command line arguments. It does not include the entry script name.
+     * 返回命令行参数。
+     * @return array 命令行参数。它不包括条目脚本名称。
      */
     public function getParams()
     {
@@ -42,8 +42,8 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Sets the command line arguments.
-     * @param array $params the command line arguments
+     * 设置命令行参数。
+     * @param array $params 命令行参数
      */
     public function setParams($params)
     {
@@ -51,9 +51,9 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Resolves the current request into a route and the associated parameters.
-     * @return array the first element is the route, and the second is the associated parameters.
-     * @throws Exception when parameter is wrong and can not be resolved
+     * 将当前请求解析为路由和相关参数。
+     * @return array 第一个元素是路由，第二个元素是关联的参数。
+     * @throws Exception 当参数错误且无法解析时
      */
     public function resolve()
     {
