@@ -12,20 +12,20 @@ use yii\base\Component;
 use yii\base\InvalidArgumentException;
 
 /**
- * BaseDataProvider provides a base class that implements the [[DataProviderInterface]].
+ * BaseDataProvider 是一个实现了 [[DataProviderInterface]] 的基类。
  *
- * For more details and usage information on BaseDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ * 有关 BaseDataProvider 的详细信息和使用信息，请参阅 [guide article on data providers](guide:output-data-providers)。
  *
- * @property int $count The number of data models in the current page. This property is read-only.
- * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
- * uniquely identified by the corresponding key value in this array.
- * @property array $models The list of data models in the current page.
- * @property Pagination|false $pagination The pagination object. If this is false, it means the pagination is
- * disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
- * [[setPagination()]] for details.
- * @property Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled. Note that
- * the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
- * @property int $totalCount Total number of possible data models.
+ * @property int $count 当前页中的数据模型数。此属性为只读。
+ * @property array $keys 与 [[models]] 对应的键值列表。[[models]] 中的每个数据模型
+ * 都由该数组中相应的键值唯一标识。
+ * @property array $models 当前页中的数据模型列表。
+ * @property Pagination|false $pagination 分页对象。如果为 false，则表示禁用分页。
+ * 注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getPagination()]] 和
+ * [[setPagination()]]。
+ * @property Sort|bool $sort 排序对象。如果为 false，则表示排序被禁用。注意
+ * 此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getSort()]] 和 [[setSort()]]。
+ * @property int $totalCount 数据模型总数。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -33,15 +33,15 @@ use yii\base\InvalidArgumentException;
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
     /**
-     * @var int Number of data providers on the current page. Used to generate unique IDs.
+     * @var int 当前页上的数据提供器数。用于生成唯一 IDs。
      */
     private static $counter = 0;
     /**
-     * @var string an ID that uniquely identifies the data provider among all data providers.
-     * Generated automatically the following way in case it is not set:
+     * @var string 在所有数据提供器中唯一标识该数据提供器的 ID，如果未设置该 ID，
+     * 则按以下方式自动生成：
      *
-     * - First data provider ID is empty.
-     * - Second and all subsequent data provider IDs are: "dp-1", "dp-2", etc.
+     * - 第一个数据提供器 ID 为空。
+     * - 第二个和所有后续的数据提供者 IDs 是："dp-1"，"dp-2" 等。
      */
     public $id;
 
@@ -67,33 +67,33 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Prepares the data models that will be made available in the current page.
-     * @return array the available data models
+     * 准备将在当前页中可用的数据模型。
+     * @return array 可用的数据模型
      */
     abstract protected function prepareModels();
 
     /**
-     * Prepares the keys associated with the currently available data models.
-     * @param array $models the available data models
-     * @return array the keys
+     * 准备与当前可用数据模型关联的键。
+     * @param array $models 可用的数据模型
+     * @return array 键列表
      */
     abstract protected function prepareKeys($models);
 
     /**
-     * Returns a value indicating the total number of data models in this data provider.
-     * @return int total number of data models in this data provider.
+     * 返回一个值，该值指示此数据提供器中的数据模型总数。
+     * @return int 此数据提供器中的数据模型总数。
      */
     abstract protected function prepareTotalCount();
 
     /**
-     * Prepares the data models and keys.
+     * 准备数据模型和键。
      *
-     * This method will prepare the data models and keys that can be retrieved via
-     * [[getModels()]] and [[getKeys()]].
+     * 此方法将准备可通过 [[getModels()]] 和 [[getKeys()]] 检索的
+     * 数据模型和键。
      *
-     * This method will be implicitly called by [[getModels()]] and [[getKeys()]] if it has not been called before.
+     * 如果没有调用此方法，则它将由 [[getModels()]] 和 [[getKeys()]] 隐式调用。
      *
-     * @param bool $forcePrepare whether to force data preparation even if it has been done before.
+     * @param bool $forcePrepare 是否强制进行数据准备，即使之前已经进行过。
      */
     public function prepare($forcePrepare = false)
     {
@@ -106,8 +106,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Returns the data models in the current page.
-     * @return array the list of data models in the current page.
+     * 返回当前页中的数据模型。
+     * @return array 当前页中的数据模型列表。
      */
     public function getModels()
     {
@@ -117,8 +117,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Sets the data models in the current page.
-     * @param array $models the models in the current page
+     * 设置当前页中的数据模型。
+     * @param array $models 当前页面中的模型
      */
     public function setModels($models)
     {
@@ -126,9 +126,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Returns the key values associated with the data models.
-     * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
-     * is uniquely identified by the corresponding key value in this array.
+     * 返回与数据模型关联的键值。
+     * @return array 与 [[getModels|models]] 对应的键值列表。[[getModels|models]] 中的每个数据模型
+     * 都由该数组中相应的键值唯一标识。
      */
     public function getKeys()
     {
@@ -138,8 +138,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Sets the key values associated with the data models.
-     * @param array $keys the list of key values corresponding to [[models]].
+     * 设置与数据模型关联的键值。
+     * @param array $keys 与 [[models]] 对应的键值列表
      */
     public function setKeys($keys)
     {
@@ -147,8 +147,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Returns the number of data models in the current page.
-     * @return int the number of data models in the current page.
+     * 返回当前页中的数据模型数。
+     * @return int 当前页中的数据模型数。
      */
     public function getCount()
     {
@@ -156,10 +156,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Returns the total number of data models.
-     * When [[pagination]] is false, this returns the same value as [[count]].
-     * Otherwise, it will call [[prepareTotalCount()]] to get the count.
-     * @return int total number of possible data models.
+     * 返回数据模型总数。
+     * 当 [[pagination]] 为 false，值与 [[count]] 相同。
+     * 否则，将调用 [[prepareTotalCount()]] 获取数量。
+     * @return int 数据模型总数。
      */
     public function getTotalCount()
     {
@@ -173,8 +173,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Sets the total number of data models.
-     * @param int $value the total number of data models.
+     * 设置数据模型总数。
+     * @param int $value 数据模型总数
      */
     public function setTotalCount($value)
     {
@@ -182,10 +182,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Returns the pagination object used by this data provider.
-     * Note that you should call [[prepare()]] or [[getModels()]] first to get correct values
-     * of [[Pagination::totalCount]] and [[Pagination::pageCount]].
-     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
+     * 返回此数据提供器使用的分页对象。
+     * 注意，我们应该先调用 [[prepare()]] 或者 [[getModels()]] 以获取
+     * [[Pagination::totalCount]] 和 [[Pagination::pageCount]] 的正确的值。
+     * @return Pagination|false 分页对象。如果为 false，则表示禁用分页。
      */
     public function getPagination()
     {
@@ -197,14 +197,14 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Sets the pagination for this data provider.
-     * @param array|Pagination|bool $value the pagination to be used by this data provider.
-     * This can be one of the following:
+     * 为数据提供器设置分页组件。
+     * @param array|Pagination|bool $value 被此数据提供器使用的分页件。
+     * 可以是下列之一：
      *
-     * - a configuration array for creating the pagination object. The "class" element defaults
-     *   to 'yii\data\Pagination'
-     * - an instance of [[Pagination]] or its subclass
-     * - false, if pagination needs to be disabled.
+     * - 一个用于创建分页对象的配置数组。“class” 元素默认
+     *   为 'yii\data\Pagination'
+     * - [[Pagination]] 或其子类的实例
+     * - false，禁用分页
      *
      * @throws InvalidArgumentException
      */
@@ -225,8 +225,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Returns the sorting object used by this data provider.
-     * @return Sort|bool the sorting object. If this is false, it means the sorting is disabled.
+     * 返回此数据提供器使用的排序对象。
+     * @return Sort|bool 排序对象。如果为 false，则表示排序被禁用。
      */
     public function getSort()
     {
@@ -238,14 +238,14 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Sets the sort definition for this data provider.
-     * @param array|Sort|bool $value the sort definition to be used by this data provider.
-     * This can be one of the following:
+     * 设置此数据提供器的排序定义。
+     * @param array|Sort|bool $value 被此数据提供器使用的排序定义。
+     * 可以是下列之一：
      *
-     * - a configuration array for creating the sort definition object. The "class" element defaults
-     *   to 'yii\data\Sort'
-     * - an instance of [[Sort]] or its subclass
-     * - false, if sorting needs to be disabled.
+     * - 一个用于创建排序定义的配置数组。"class" 元素默认
+     *   为 'yii\data\Sort'
+     * - [[Sort]] 或其子类的实例。
+     * - false，禁用排序
      *
      * @throws InvalidArgumentException
      */
@@ -265,9 +265,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * Refreshes the data provider.
-     * After calling this method, if [[getModels()]], [[getKeys()]] or [[getTotalCount()]] is called again,
-     * they will re-execute the query and return the latest data available.
+     * 刷新数据提供器
+     * 调用此方法后，如果再次调用 [[getModels()]]，[[getKeys()]] 或者 [[getTotalCount()]]，
+     * 它们将重新执行查询并返回可用的最新数据。
      */
     public function refresh()
     {
