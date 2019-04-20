@@ -23,7 +23,7 @@ use yii\helpers\VarDumper;
  * yii migrate --migrationPath=@yii/log/migrations/
  * ```
  *
- * 如果您不想使用迁移并且需要 SQL ，则所有数据库的文件都位于迁移目录中。
+ * 如果您不想使用迁移并且需要 SQL，则所有数据库的文件都位于迁移目录中。
  *
  * 您可以通过设置 [[logTable]] 来更改用于存储数据的表的名称。
  *
@@ -40,7 +40,7 @@ class DbTarget extends Target
      */
     public $db = 'db';
     /**
-     * @var string 用于存储缓存内容的表的名称。默认为 “log”。
+     * @var string 用于存储缓存内容的表的名称。默认为“log”。
      */
     public $logTable = '{{%log}}';
 
