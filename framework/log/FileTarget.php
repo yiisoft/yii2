@@ -64,11 +64,10 @@ class FileTarget extends Target
      * 并且在 Windows 系统中不能很好地重命名已打开的文件。
      * 但是，通过重命名进行轮换要快一点。
      *
-     *
      * 在PHP文档中 [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) 中描述了 Windows
      * 系统中 [rename()](http://www.php.net/manual/en/function.rename.php) 函数不能与某些进程打开的文件一起使用的问题。
-     * 您可以通过将 rotateByCopy 设置为 `true` 解决此问题。
-     *
+     * 您可以通过将 rotateByCopy
+     * 设置为 `true` 解决此问题。
      */
     public $rotateByCopy = true;
 
