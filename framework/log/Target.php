@@ -32,7 +32,7 @@ use yii\web\Request;
  * 请注意，此属性的类型在 getter 和 setter 中有所不同。
  * 有关详细信息，请参见 [[getLevels()]] 和 [[setLevels()]]。
  *
- * 有关 Target 的更多详细信息和使用信息，请参阅[guide article on logging & targets](guide:runtime-logging)。
+ * 有关 Target 的更多详细信息和使用信息，请参阅 [guide article on logging & targets](guide:runtime-logging)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -57,7 +57,7 @@ abstract class Target extends Component
     public $except = [];
     /**
      * @var array 需要记录在消息中的PHP预定义变量的列表。
-     * 请注意，必须可以通过 `$ GLOBALS` 访问变量。否则将不会记录。
+     * 请注意，必须可以通过 `$GLOBALS` 访问变量。否则将不会记录。
      *
      * 默认是 `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`。
      *
@@ -80,7 +80,7 @@ abstract class Target extends Component
      * 如果未设置，将使用 [[getMessagePrefix()]]，该消息在消息前面加上上下文信息。
      * 例如用户 IP，用户 ID 和会话 ID。
      *
-     * 可调用的函数应该是 `function($message)`。
+     * 可调用的函数应该是 `function ($message)`。
      */
     public $prefix;
     /**
