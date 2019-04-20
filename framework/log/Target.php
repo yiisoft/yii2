@@ -32,7 +32,7 @@ use yii\web\Request;
  * 请注意，此属性的类型在 getter 和 setter 中有所不同。
  * 有关详细信息，请参见 [[getLevels()]] 和 [[setLevels()]]。
  *
- * 有关 Target 的更多详细信息和使用信息，请参阅[有关日志记录和目标的指南文章]（指南：运行时日志记录）。
+ * 有关 Target 的更多详细信息和使用信息，请参阅[guide article on logging & targets](guide:runtime-logging)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -64,11 +64,11 @@ abstract class Target extends Component
      * 从版本 2.0.9 开始，可以使用其他语法：
      * 每个元素都可以指定为以下之一：
      *
-     * - `var` 会记录 `var`。
-     * - `var.key` 只会记录 `var[key]`。
-     * - `!var.key` 会排除 `var[key]`。
+     * - `var` - 会记录 `var`。
+     * - `var.key` - 只会记录 `var[key]`。
+     * - `!var.key` - 会排除 `var[key]`。
      *
-     * 请注意，如果您需要记录 $_SESSION ，无论是否使用了会话，
+     * 请注意，如果您需要记录 $_SESSION，无论是否使用了会话，
      * 您都必须在请求开始时立即打开它。
      *
      * @see \yii\helpers\ArrayHelper::filter()
@@ -77,10 +77,10 @@ abstract class Target extends Component
     /**
      * @var callable 一个可调用的函数，它返回一个字符串，以便为每个导出的消息添加前缀。
      *
-     * 如果未设置，将使用 [[getMessagePrefix()]] ，该消息在消息前面加上上下文信息。
-     * 例如用户IP，用户ID和会话ID。
+     * 如果未设置，将使用 [[getMessagePrefix()]]，该消息在消息前面加上上下文信息。
+     * 例如用户 IP，用户 ID 和会话 ID。
      *
-     * 可调用的函数应该是 `function ($message)`。
+     * 可调用的函数应该是 `function($message)`。
      */
     public $prefix;
     /**
@@ -167,15 +167,15 @@ abstract class Target extends Component
      *
      * 参数可以是消息级别名称的数组，
      * 也可以是表示消息级别值的整数。
-     * 有效级别名称包括： 'error' ，'warning' ，'info' ，'trace' 和 'profile' ;
-     * 有效级别值包括： [[Logger::LEVEL_ERROR]] ，[[Logger::LEVEL_WARNING]] ，[[Logger::LEVEL_INFO]] ，
+     * 有效级别名称包括：'error'，'warning'，'info'，'trace' 和 'profile'；
+     * 有效级别值包括：[[Logger::LEVEL_ERROR]]，[[Logger::LEVEL_WARNING]]，[[Logger::LEVEL_INFO]]，
      * [[Logger::LEVEL_TRACE]] 和 [[Logger::LEVEL_PROFILE]]。
      *
      * 举个例子，
      *
      * ```php
      * ['error', 'warning']
-     * // 另一种表达方式是:
+     * // 另一种表达方式是：
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
      * ```
      *
@@ -287,8 +287,8 @@ abstract class Target extends Component
 
     /**
      * 返回要添加到给定消息前缀的字符串。
-     * 如果配置了 [[prefix]] ，它将返回回调的结果。
-     * 默认将返回用户IP，用户ID和会话ID作为前缀。
+     * 如果配置了 [[prefix]]，它将返回回调的结果。
+     * 默认将返回用户 IP，用户 ID 和会话 ID 作为前缀。
      * @param array $message 正在导出的消息。
      * 消息结构遵循 [[Logger::messages]] 中的消息结构。
      * @return string 前缀字符串
@@ -356,8 +356,8 @@ abstract class Target extends Component
     }
 
     /**
-     * 返回格式化以后的消息时间戳，格式为： 'Y-m-d H:i:s'。
-     * 如果 [[microtime]] 配置为 true ，则格式为 'Y-m-d H:i:s.u'。
+     * 返回格式化以后的消息时间戳，格式为：'Y-m-d H:i:s'。
+     * 如果 [[microtime]] 配置为 true，则格式为 'Y-m-d H:i:s.u'。
      * @param float $timestamp
      * @return string
      * @since 2.0.13
