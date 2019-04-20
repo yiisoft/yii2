@@ -328,7 +328,7 @@ $query->where([$column => $value]);
 ```php
 // 脆弱なコード:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where([$column => $value]);
 // $value は安全です。しかし、$column の名前はエンコードされません。
 ```
