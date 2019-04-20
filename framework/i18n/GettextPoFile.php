@@ -10,7 +10,7 @@ namespace yii\i18n;
 use Yii;
 
 /**
- * GettextPoFile represents a PO Gettext message file.
+ * GettextPoFile 表示 PO Gettext 消息文件。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,11 +18,11 @@ use Yii;
 class GettextPoFile extends GettextFile
 {
     /**
-     * Loads messages from a PO file.
-     * @param string $filePath file path
-     * @param string $context message context
-     * @return array message translations. Array keys are source messages and array values are translated messages:
-     * source message => translated message.
+     * 从 PO 文件加载消息。
+     * @param string $filePath 文件路径
+     * @param string $context 消息上下文
+     * @return array 消息翻译。数组键是源消息，数组值是已翻译的消息：
+     * 源消息 => 已翻译的消息。
      */
     public function load($filePath, $context)
     {
@@ -46,11 +46,11 @@ class GettextPoFile extends GettextFile
     }
 
     /**
-     * Saves messages to a PO file.
-     * @param string $filePath file path
-     * @param array $messages message translations. Array keys are source messages and array values are
-     * translated messages: source message => translated message. Note if the message has a context,
-     * the message ID must be prefixed with the context with chr(4) as the separator.
+     * 将消息保存到 PO 文件。
+     * @param string $filePath 文件路径
+     * @param array $messages 消息翻译。 数组键是源消息，数组值是已翻译的消息：源消息 => 已翻译的消息。
+     * 请注意，如果消息具有上下文，
+     * 则消息 ID 必须以 chr(4) 作为分隔符的上下文前缀。
      */
     public function save($filePath, $messages)
     {
@@ -82,9 +82,9 @@ class GettextPoFile extends GettextFile
     }
 
     /**
-     * Encodes special characters in a message.
-     * @param string $string message to be encoded
-     * @return string the encoded message
+     * 在消息特殊字符进行编码。
+     * @param string $string 要编码的消息
+     * @return string 编码的消息
      */
     protected function encode($string)
     {
@@ -96,9 +96,9 @@ class GettextPoFile extends GettextFile
     }
 
     /**
-     * Decodes special characters in a message.
-     * @param string $string message to be decoded
-     * @return string the decoded message
+     * 解码消息中的特殊字符。
+     * @param string $string 要解码的消息
+     * @return string 解码的消息
      */
     protected function decode($string)
     {
