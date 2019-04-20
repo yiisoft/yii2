@@ -13,10 +13,10 @@ use yii\di\Instance;
 use yii\mail\MailerInterface;
 
 /**
- * EmailTarget sends selected log messages to the specified email addresses.
+ * EmailTarget 将所选日志消息发送到指定的电子邮件地址。
  *
- * You may configure the email to be sent by setting the [[message]] property, through which
- * you can set the target email addresses, subject, etc.:
+ * 您可以通过设置 [[message]] 属性来配置要发送的电子邮件。
+ * 您可以通过该属性设置目标电子邮件地址，主题等：
  *
  * ```php
  * 'components' => [
@@ -37,7 +37,7 @@ use yii\mail\MailerInterface;
  * ],
  * ```
  *
- * In the above `mailer` is ID of the component that sends email and should be already configured.
+ * 在上面的 `mailer` 中，是发送电子邮件的组件的 ID，应该已经配置好了。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -45,15 +45,15 @@ use yii\mail\MailerInterface;
 class EmailTarget extends Target
 {
     /**
-     * @var array the configuration array for creating a [[\yii\mail\MessageInterface|message]] object.
-     * Note that the "to" option must be set, which specifies the destination email address(es).
+     * @var array 用于创建 [[\yii\mail\MessageInterface|message]] 对象的配置数组。
+     * 请注意，必须设置“to”选项，该选项指定目标电子邮件地址。
      */
     public $message = [];
     /**
-     * @var MailerInterface|array|string the mailer object or the application component ID of the mailer object.
-     * After the EmailTarget object is created, if you want to change this property, you should only assign it
-     * with a mailer object.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var MailerInterface|array|string 邮件程序对象或邮件程序对象的应用程序组件 ID。
+     * 创建 EmailTarget 对象后，只有它是邮件程序对象时，才可以更改它的属性。
+     *
+     * 从 2.0.2 版开始，这也可以是用于创建对象的配置数组。
      */
     public $mailer = 'mailer';
 
@@ -71,8 +71,8 @@ class EmailTarget extends Target
     }
 
     /**
-     * Sends log messages to specified email addresses.
-     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * 将日志消息发送到指定的电子邮件地址。
+     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException 异常。
      * @throws LogRuntimeException
      */
     public function export()
@@ -91,8 +91,8 @@ class EmailTarget extends Target
     }
 
     /**
-     * Composes a mail message with the given body content.
-     * @param string $body the body content
+     * 使用给定的正文内容编写邮件消息。
+     * @param string $body 邮件正文
      * @return \yii\mail\MessageInterface $message
      */
     protected function composeMessage($body)

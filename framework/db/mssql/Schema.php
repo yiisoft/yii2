@@ -19,7 +19,7 @@ use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from MS SQL Server databases (version 2008 and above).
+ * Schema 是用于从 MS SQL Server 数据库（2008 及以上版本）检索元数据的类。
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -30,11 +30,11 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
-     * @var string the default schema used for the current session.
+     * @var string 用于当前会话默认的数据库结构。
      */
     public $defaultSchema = 'dbo';
     /**
-     * @var array mapping from physical column types (keys) to abstract column types (values)
+     * @var array 从物理列类型（键）映射到抽象列类型（值）
      */
     public $typeMap = [
         // exact numbers
@@ -91,9 +91,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
 
     /**
-     * Resolves the table name and schema name (if any).
-     * @param string $name the table name
-     * @return TableSchema resolved table, schema, etc. names.
+     * 解析表名和数据库结构名称（如果存在的话）。
+     * @param string $name 表名
+     * @return TableSchema 解析表、数据库结构等名称。
      */
     protected function resolveTableName($name)
     {
@@ -282,8 +282,8 @@ SQL;
     }
 
     /**
-     * Creates a query builder for the MSSQL database.
-     * @return QueryBuilder query builder interface.
+     * 为 MSSQL 数据库创建查询构建器。
+     * @return QueryBuilder 查询构建器接口。
      */
     public function createQueryBuilder()
     {
@@ -291,9 +291,9 @@ SQL;
     }
 
     /**
-     * Resolves the table name and schema name (if any).
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * 解析表名和数据结构名称（如果存在的话）。
+     * @param TableSchema $table 表元数据对象
+     * @param string $name 表名
      */
     protected function resolveTableNames($table, $name)
     {
@@ -324,9 +324,9 @@ SQL;
     }
 
     /**
-     * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * 将列信息加载到 [[ColumnSchema]] 对象中。
+     * @param array $info 列信息
+     * @return ColumnSchema 列数据库结构对象
      */
     protected function loadColumnSchema($info)
     {
@@ -378,9 +378,9 @@ SQL;
     }
 
     /**
-     * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
-     * @return bool whether the table exists in the database
+     * 收集表列的元数据。
+     * @param TableSchema $table 表元数据
+     * @return bool 表是否存在于数据库中
      */
     protected function findColumns($table)
     {
@@ -442,10 +442,10 @@ SQL;
     }
 
     /**
-     * Collects the constraint details for the given table and constraint type.
+     * 收集给定表和约束类型的约束详细信息。
      * @param TableSchema $table
-     * @param string $type either PRIMARY KEY or UNIQUE
-     * @return array each entry contains index_name and field_name
+     * @param string $type PRIMARY KEY 和 UNIQUE 任选其一
+     * @return array 每个条目都包含的 index_name 和 field_name
      * @since 2.0.4
      */
     protected function findTableConstraints($table, $type)
@@ -484,8 +484,8 @@ SQL;
     }
 
     /**
-     * Collects the primary key column details for the given table.
-     * @param TableSchema $table the table metadata
+     * 收集给定表的主键列详细信息。
+     * @param TableSchema $table 表元数据
      */
     protected function findPrimaryKeys($table)
     {
@@ -497,8 +497,8 @@ SQL;
     }
 
     /**
-     * Collects the foreign key column details for the given table.
-     * @param TableSchema $table the table metadata
+     * 收集外键列详细信息。
+     * @param TableSchema $table 表元数据
      */
     protected function findForeignKeys($table)
     {
@@ -562,9 +562,9 @@ SQL;
     }
 
     /**
-     * Returns all unique indexes for the given table.
+     * 返回给定表的所有唯一索引。
      *
-     * Each array element is of the following structure:
+     * 每个数组元素都具有以下结构：
      *
      * ```php
      * [
@@ -573,8 +573,8 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
-     * @return array all unique indexes for the given table.
+     * @param TableSchema $table 表元数据
+     * @return array 给定表的所有唯一索引。
      * @since 2.0.4
      */
     public function findUniqueIndexes($table)
@@ -588,15 +588,15 @@ SQL;
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     * 加载多种类型的约束，并返回指定的约束类型。
+     * @param string $tableName 表名。
+     * @param string $returnType 返回的约束类型：
      * - primaryKey
      * - foreignKeys
      * - uniques
      * - checks
      * - defaults
-     * @return mixed constraints.
+     * @return mixed 约束。
      */
     private function loadTableConstraints($tableName, $returnType)
     {

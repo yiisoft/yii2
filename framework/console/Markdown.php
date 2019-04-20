@@ -14,9 +14,9 @@ use cebe\markdown\inline\StrikeoutTrait;
 use yii\helpers\Console;
 
 /**
- * A Markdown parser that enhances markdown for reading in console environments.
+ * 一个 Markdown 解析器，它增强了用于在控制台环境中读取的 markdown。
  *
- * Based on [cebe/markdown](https://github.com/cebe/markdown).
+ * 基于 [cebe/markdown](https://github.com/cebe/markdown)。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -29,9 +29,9 @@ class Markdown extends \cebe\markdown\Parser
     use StrikeoutTrait;
 
     /**
-     * @var array these are "escapeable" characters. When using one of these prefixed with a
-     * backslash, the character will be outputted without the backslash and is not interpreted
-     * as markdown.
+     * @var array 这些是 "escapeable" 字符。当使用其中一个带反斜杠的前缀时，
+     * 字符将不带反斜杠输出，并且不会被解释为
+     * markdown。
      */
     protected $escapeCharacters = [
         '\\', // backslash
@@ -43,7 +43,7 @@ class Markdown extends \cebe\markdown\Parser
 
 
     /**
-     * Renders a code block.
+     * 渲染代码块。
      *
      * @param array $block
      * @return string
@@ -54,7 +54,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-     * Render a paragraph block.
+     * 渲染段落块。
      *
      * @param string $block
      * @return string
@@ -65,7 +65,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-     * Renders an inline code span `` ` ``.
+     * 渲染内联代码范围 `` ` ``。
      * @param array $element
      * @return string
      */
@@ -75,7 +75,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-     * Renders empathized elements.
+     * 渲染强调元素。
      * @param array $element
      * @return string
      */
@@ -85,7 +85,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-     * Renders strong elements.
+     * 渲染增强元素。
      * @param array $element
      * @return string
      */
@@ -95,7 +95,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-     * Renders the strike through feature.
+     * 渲染删除功能。
      * @param array $element
      * @return string
      */

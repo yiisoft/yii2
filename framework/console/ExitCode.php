@@ -8,11 +8,11 @@
 namespace yii\console;
 
 /**
- * This class provides constants for defining console command exit codes.
+ * 此类提供用于定义控制台命令退出代码的常量。
  *
- * The exit codes follow the codes defined in the [FreeBSD sysexits(3)](http://man.openbsd.org/sysexits) manual page.
+ * 退出代码遵循 [FreeBSD sysexits(3)](http://man.openbsd.org/sysexits) 手册页中定义的代码。
  *
- * These constants can be used in console controllers for example like this:
+ * 这些常量可以在控制台控制器中使用，例如：
  *
  * ```php
  * public function actionIndex()
@@ -36,94 +36,94 @@ namespace yii\console;
 class ExitCode
 {
     /**
-     * The command completed successfully.
+     * 命令成功完成。
      */
     const OK = 0;
     /**
-     * The command exited with an error code that says nothing about the error.
+     * 命令退出时带有一个错误代码，该代码对错误没有任何说明。
      */
     const UNSPECIFIED_ERROR = 1;
     /**
-     * The command was used incorrectly, e.g., with the wrong number of
-     * arguments, a bad flag, a bad syntax in a parameter, or whatever.
+     * 命令使用不正确，例如，错误的参数数量，
+     * 坏标志，参数中的错误语法或其他。
      */
     const USAGE = 64;
     /**
-     * The input data was incorrect in some way.  This should only be used for
-     * user's data and not system files.
+     * 输入数据在某种程度上是不正确的。这应该只用于
+     * 用户的数据，而不是系统文件。
      */
     const DATAERR = 65;
     /**
-     * An input file (not a system file) did not exist or was not readable.
-     * This could also include errors like ``No message'' to a mailer (if it
-     * cared to catch it).
+     * 输入文件（不是系统文件）不存在或不可读。
+     * 这也可能包括邮件中的 ``No message''
+     * 等错误（如果它想捕获它）。
      */
     const NOINPUT = 66;
     /**
-     * The user specified did not exist.  This might be used for mail addresses
-     * or remote logins.
+     * 指定的用户不存在。这可以用于邮件地址
+     * 或远程登陆。
      */
     const NOUSER = 67;
     /**
-     * The host specified did not exist.  This is used in mail addresses or
-     * network requests.
+     * 指定的主机不存在。这被用于邮件地址或
+     * 网络请求。
      */
     const NOHOST = 68;
     /**
-     * A service is unavailable.  This can occur if a support program or file
-     * does not exist.  This can also be used as a catchall message when
-     * something you wanted to do does not work, but you do not know why.
+     * 服务不可用。如果支持程序或文件不存在，
+     * 可能会发生这种情况。这也可以用作一条覆盖所有的消息，
+     * 当你想要做的事情不起作用，但您不知道原因时。
      */
     const UNAVAILABLE = 69;
     /**
-     * An internal software error has been detected.  This should be limited to
-     * non-operating system related errors as possible.
+     * 检测到内部软件错误。这应尽可能限于
+     * 与操作系统无关的错误。
      */
     const SOFTWARE = 70;
     /**
-     * An operating system error has been detected.  This is intended to be
-     * used for such things as ``cannot fork'', ``cannot create pipe'', or the
-     * like.  It includes things like getuid returning a user that does not
-     * exist in the passwd file.
+     * 检测到操作系统错误。这是为了
+     * 用于诸如 ``cannot fork''，``cannot create pipe''，或
+     * 类似的。它包括像 getuid 返回一个在 passwd 文件中不存在
+     * 的用户。
      */
     const OSERR = 71;
     /**
-     * Some system file (e.g., /etc/passwd, /var/run/utx.active, etc.) does not
-     * exist, cannot be opened, or has some sort of error (e.g., syntax error).
+     * 某些系统文件（例如，/etc/passwd，/var/run/utx.active，等等。）
+     * 不存在，不能被打开，或者有某种错误（例如，syntax error）。
      */
     const OSFILE = 72;
     /**
-     * A (user specified) output file cannot be created.
+     * 无法创建（用户指定的）输出文件。
      */
     const CANTCREAT = 73;
     /**
-     * An error occurred while doing I/O on some file.
+     * 在某些文件上执行 I/O 时发生错误。
      */
     const IOERR = 74;
     /**
-     * Temporary failure, indicating something that is not really an error. In
-     * sendmail, this means that a mailer (e.g.) could not create a connection,
-     * and the request should be reattempted later.
+     * 暂时失败，表明某些事情并非真正的错误。
+     * 在发送邮件中，这意味着一个邮件发件人（例如）无法创建连接，
+     * 请求应稍后重试。
      */
     const TEMPFAIL = 75;
     /**
-     * The remote system returned something that was ``not possible'' during a
-     * protocol exchange.
+     * 远程系统在协议交换期间返回了 ``not possible''
+     * 的内容。
      */
     const PROTOCOL = 76;
     /**
-     * You did not have sufficient permission to perform the operation.  This
-     * is not intended for file system problems, which should use NOINPUT or
-     * CANTCREAT, but rather for higher level permissions.
+     * 您没有足够的权限来执行操作。这
+     * 不是针对应该使用 NOINPUT 或 CANTCREAT 的文件系统问题，
+     * 而是针对较高级别的权限。
      */
     const NOPERM = 77;
     /**
-     * Something was found in an unconfigured or misconfigured state.
+     * 在未配置或错误配置状态下发现了某些内容。
      */
     const CONFIG = 78;
 
     /**
-     * @var array a map of reason descriptions for exit codes.
+     * @var array 退出代码的原因说明的映射。
      */
     public static $reasons = [
         self::OK => 'Success',
@@ -147,11 +147,11 @@ class ExitCode
 
 
     /**
-     * Returns a short reason text for the given exit code.
+     * 返回给定退出代码的简短原因文本。
      *
-     * This method uses [[$reasons]] to determine the reason for an exit code.
-     * @param int $exitCode one of the constants defined in this class.
-     * @return string the reason text, or `"Unknown exit code"` if the code is not listed in [[$reasons]].
+     * 此方法使用 [[$reasons]] 来确定退出代码的原因。
+     * @param int $exitCode 此类中定义的常量之一。
+     * @return string 原因文本，或 `"Unknown exit code"` 如果代码未在 [[$reasons]] 中列出。
      */
     public static function getReason($exitCode)
     {

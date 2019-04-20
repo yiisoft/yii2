@@ -8,7 +8,7 @@
 namespace yii\db\mssql;
 
 /**
- * TableSchema represents the metadata of a database table.
+ * TableSchema 类表示数据库表的元数据。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,8 +16,8 @@ namespace yii\db\mssql;
 class TableSchema extends \yii\db\TableSchema
 {
     /**
-     * @var string name of the catalog (database) that this table belongs to.
-     * Defaults to null, meaning no catalog (or the current database).
+     * @var string 此表所属目录（数据库）的名称。
+     * 默认为 null，表示没有目录（或当前数据库不存在）。
      */
     public $catalogName;
 }

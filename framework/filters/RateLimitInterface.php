@@ -8,7 +8,7 @@
 namespace yii\filters;
 
 /**
- * RateLimitInterface is the interface that may be implemented by an identity object to enforce rate limiting.
+ * RateLimitInterface 是可由标识对象实现以实施速率限制的接口。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,29 +16,29 @@ namespace yii\filters;
 interface RateLimitInterface
 {
     /**
-     * Returns the maximum number of allowed requests and the window size.
-     * @param \yii\web\Request $request the current request
-     * @param \yii\base\Action $action the action to be executed
-     * @return array an array of two elements. The first element is the maximum number of allowed requests,
-     * and the second element is the size of the window in seconds.
+     * 返回允许的最大请求数和窗口大小。
+     * @param \yii\web\Request $request 当前请求
+     * @param \yii\base\Action $action 要执行的操作
+     * @return array 由两个元素组成的数组。第一个元素是允许的最大请求数，
+     * 第二个元素是以秒为单位的窗口大小。
      */
     public function getRateLimit($request, $action);
 
     /**
-     * Loads the number of allowed requests and the corresponding timestamp from a persistent storage.
-     * @param \yii\web\Request $request the current request
-     * @param \yii\base\Action $action the action to be executed
-     * @return array an array of two elements. The first element is the number of allowed requests,
-     * and the second element is the corresponding UNIX timestamp.
+     * 从持久存储加载允许的请求数和相应的时间戳。
+     * @param \yii\web\Request $request 当前请求
+     * @param \yii\base\Action $action 要执行的操作
+     * @return array 由两个元素组成的数组。第一个元素是允许的请求数，
+     * 第二个元素是相应的 UNIX 时间戳。
      */
     public function loadAllowance($request, $action);
 
     /**
-     * Saves the number of allowed requests and the corresponding timestamp to a persistent storage.
-     * @param \yii\web\Request $request the current request
-     * @param \yii\base\Action $action the action to be executed
-     * @param int $allowance the number of allowed requests remaining.
-     * @param int $timestamp the current timestamp.
+     * 将允许的请求数和相应的时间戳保存到持久存储中。
+     * @param \yii\web\Request $request 当前请求
+     * @param \yii\base\Action $action 要执行的操作
+     * @param int $allowance 允许的剩余请求数。
+     * @param int $timestamp 当前时间戳。
      */
     public function saveAllowance($request, $action, $allowance, $timestamp);
 }

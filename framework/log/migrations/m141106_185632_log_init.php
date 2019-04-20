@@ -10,11 +10,11 @@ use yii\db\Migration;
 use yii\log\DbTarget;
 
 /**
- * Initializes log table.
+ * 初始化日志表。
  *
- * The indexes declared are not required. They are mainly used to improve the performance
- * of some queries about message levels and categories. Depending on your actual needs, you may
- * want to create additional indexes (e.g. index on `log_time`).
+ * 索引不是必需的。
+ * 它们主要用于提高有关消息级别和类别的某些查询的性能。
+ * 根据您的实际需要，您可能希望创建其他索引（例如 `log_time` 上的索引）。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0.1
@@ -22,7 +22,7 @@ use yii\log\DbTarget;
 class m141106_185632_log_init extends Migration
 {
     /**
-     * @var DbTarget[] Targets to create log table for
+     * @var DbTarget[] 用于创建日志表的目标
      */
     private $dbTargets = [];
 

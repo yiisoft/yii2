@@ -8,8 +8,8 @@
 namespace yii\db\sqlite;
 
 /**
- * SqlTokenizer splits SQLite query into individual SQL tokens.
- * It's used to obtain a `CHECK` constraint information from a `CREATE TABLE` SQL code.
+ * SqlTokenizer 类将 SQLite 查询拆分为单个 SQL 令牌。
+ * 它用于从 `CREATE TABLE` SQL 代码获取 `CHECK` 约束信息。
  *
  * @see http://www.sqlite.org/draft/tokenreq.html
  * @see https://sqlite.org/lang.html

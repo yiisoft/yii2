@@ -23,26 +23,26 @@ use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 
 /**
- * Formatter provides a set of commonly used data formatting methods.
+ * Formatter 提供一组常用的数据格式化方法。
  *
- * The formatting methods provided by Formatter are all named in the form of `asXyz()`.
- * The behavior of some of them may be configured via the properties of Formatter. For example,
- * by configuring [[dateFormat]], one may control how [[asDate()]] formats the value into a date string.
+ * Formatter 提供的格式化方法都以 `asXyz()` 的形式命名。
+ * 它们中的一些行为可以通过 Formatter 的属性进行配置。
+ * 例如，通过配置 [[dateFormat]]，可以控制 [[asDate()]] 将值格式化为自定义的日期字符串。
  *
- * Formatter is configured as an application component in [[\yii\base\Application]] by default.
- * You can access that instance via `Yii::$app->formatter`.
+ * Formatter 默认配置为 [[\yii\base\ application]] 中的应用程序组件。
+ * 您可以通过 `Yii::$app->formatter` 访问该实例。
  *
- * The Formatter class is designed to format values according to a [[locale]]. For this feature to work
- * the [PHP intl extension](http://php.net/manual/en/book.intl.php) has to be installed.
- * Most of the methods however work also if the PHP intl extension is not installed by providing
- * a fallback implementation. Without intl month and day names are in English only.
- * Note that even if the intl extension is installed, formatting date and time values for years >=2038 or <=1901
- * on 32bit systems will fall back to the PHP implementation because intl uses a 32bit UNIX timestamp internally.
- * On a 64bit system the intl formatter is used in all cases if installed.
+ * Formatter 类用于根据 [[locale]] 格式化值。
+ * 要使此功能起作用，必须安装 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 扩展。
+ * 但是，如果没有通过提供回滚实现安装 PHP intl 扩展，大多数方法也可以工作。
+ * 没有 intl 扩展时，只有英文的月、日名称。
+ * 注意，即使安装了 intl 扩展，在 32 位系统上格式化年份 >=2038 或 <=1901 的日期和时间值也将回到 PHP 实现。
+ * 因为 intl 在内部使用 32 位 UNIX 时间戳。
+ * 在 64 位系统上，如果安装了 intl 格式化程序，则在所有情况下都使用它。
  *
- * > Note: The Formatter class is meant to be used for formatting values for display to users in different
- * > languages and time zones. If you need to format a date or time in machine readable format, use the
- * > PHP [date()](http://php.net/manual/en/function.date.php) function instead.
+ * > 注意：Formatter 类用于格式化以不同语言和时区显示给用户的值。
+ * > 如果需要将日期或时间格式化为机器可读的格式，
+ * > 请使用 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Enrica Ruedin <e.ruedin@guggach.com>
@@ -77,60 +77,60 @@ class Formatter extends Component
     const UNIT_WEIGHT = 'mass';
 
     /**
-     * @var string the text to be displayed when formatting a `null` value.
-     * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
-     * will be translated according to [[locale]].
+     * @var string 格式化值为 `null` 时显示的文本。
+     * 默认为 `'<span class="not-set">(not set)</span>'`，其中 `(not set)`
+     * 将会根据 [[locale]] 来翻译。
      */
     public $nullDisplay;
     /**
-     * @var array the text to be displayed when formatting a boolean value. The first element corresponds
-     * to the text displayed for `false`, the second element for `true`.
-     * Defaults to `['No', 'Yes']`, where `Yes` and `No`
-     * will be translated according to [[locale]].
+     * @var array 格式化布尔值时显示的文本。
+     * 第一个元素对应 `false` 显示的文本，第二个元素对应 `true` 显示的文本。
+     * 默认为 `['No', 'Yes']`, 其中 `Yes` 和 `No`
+     * 将会根据 [[locale]] 来翻译。
      */
     public $booleanFormat;
     /**
-     * @var string the locale ID that is used to localize the date and number formatting.
-     * For number and date formatting this is only effective when the
-     * [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
-     * If not set, [[\yii\base\Application::language]] will be used.
+     * @var string 用于本地化日期和数字格式的区域设置 ID。
+     * 对于数字和日期格式，
+     * 只有在安装了 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 时才有效。
+     * 如果没有设置，将使用 [[\yii\base\Application::language]]。
      */
     public $locale;
     /**
-     * @var string the time zone to use for formatting time and date values.
+     * @var string 用于格式化时间和日期值的时区。
      *
-     * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
-     * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
-     * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
+     * 这可以是可传递给 [date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php) 的任何值，
+     * 例如 `UTC`，`Europe/Berlin` 或 `America/Chicago`。
+     * 有关可用时区，请参阅 [php manual](https://secure.php.net/manual/en/timezones.php)。
+     * 如果未设置此属性，将使用 [[\yii\base\Application::timeZone]]。
      *
-     * Note that the default time zone for input data is assumed to be UTC by default if no time zone is included in the input date value.
-     * If you store your data in a different time zone in the database, you have to adjust [[defaultTimeZone]] accordingly.
+     * 请注意，如果输入日期值中不包含任何时区，则默认情况下输入数据的默认时区为 UTC。
+     * 如果将数据存储在数据库的不同时区，则必须相应地调整 [[defaultTimeZone]]。
      */
     public $timeZone;
     /**
-     * @var string the time zone that is assumed for input values if they do not include a time zone explicitly.
+     * @var string 如果输入值不显式包含时区，则为输入值假定的时区。
      *
-     * The value must be a valid time zone identifier, e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Please refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
+     * 该值必须是有效的时区标识符，例如 `UTC`，`Europe/Berlin` 或者 `America/Chicago`。
+     * 有关可用时区，请参阅 [php manual](https://secure.php.net/manual/en/timezones.php)。
      *
-     * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
+     * 它默认为 `UTC`，因此如果将日期时间值存储在数据库的另一个时区中，则只需调整此值。
      *
-     * Note that a UNIX timestamp is always in UTC by its definition. That means that specifying a default time zone different from
-     * UTC has no effect on date values given as UNIX timestamp.
+     * 请注意，UNIX 时间戳的定义始终为 UTC。
+     * 这意味着指定与 UTC 不同的默认时区对作为 UNIX 时间戳给出的日期值没有影响。
      *
      * @since 2.0.1
      */
     public $defaultTimeZone = 'UTC';
     /**
-     * @var string the default format string to be used to format a [[asDate()|date]].
-     * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
+     * @var string 用于格式化 [[asDate()|date]] 的默认格式字符串。
+     * 这可以是 "short"，"medium"，"long" 或 "full"，其表示不同长度的预设格式。
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
-     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
+     * 它也可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中指定的自定义格式。
+     * 这也可以是一个前缀为 `php:` 的字符串，
+     * 表示可以由 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数识别的格式。
      *
-     * For example:
+     * 例如
      *
      * ```php
      * 'MM/dd/yyyy' // date in ICU format
@@ -139,14 +139,14 @@ class Formatter extends Component
      */
     public $dateFormat = 'medium';
     /**
-     * @var string the default format string to be used to format a [[asTime()|time]].
-     * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
+     * @var string 用于格式化 [[asTime()|time]] 的默认格式字符串。
+     * 这可以是 "short"，"medium"，"long" 或 "full"，其表示不同长度的预设格式。
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
-     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
+     * 它也可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中指定的自定义格式。
+     * 这也可以是一个前缀为 `php:` 的字符串，
+     * 表示可以由 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数识别的格式。
      *
-     * For example:
+     * 例如：
      *
      * ```php
      * 'HH:mm:ss' // time in ICU format
@@ -155,15 +155,15 @@ class Formatter extends Component
      */
     public $timeFormat = 'medium';
     /**
-     * @var string the default format string to be used to format a [[asDatetime()|date and time]].
-     * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
+     * @var string 用于格式化 [[asDatetime()|date and time]] 的默认格式字符串。
+     * 这可以是 "short"，"medium"，"long" 或 "full"，其表示不同长度的预设格式。
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * 它也可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中指定的自定义格式。
      *
-     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
+     * 这也可以是一个前缀为 `php:` 的字符串，
+     * 表示可以由 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数识别的格式。
      *
-     * For example:
+     * 例如：
      *
      * ```php
      * 'MM/dd/yyyy HH:mm:ss' // date and time in ICU format
@@ -172,15 +172,15 @@ class Formatter extends Component
      */
     public $datetimeFormat = 'medium';
     /**
-     * @var \IntlCalendar|int|null the calendar to be used for date formatting. The value of this property will be directly
-     * passed to the [constructor of the `IntlDateFormatter` class](http://php.net/manual/en/intldateformatter.create.php).
+     * @var \IntlCalendar|int|null 用于日期格式的日历。
+     * 该属性的值将直接传递给 [constructor of the `IntlDateFormatter` class](https://secure.php.net/manual/en/intldateformatter.create.php).
      *
-     * Defaults to `null`, which means the Gregorian calendar will be used. You may also explicitly pass the constant
-     * `\IntlDateFormatter::GREGORIAN` for Gregorian calendar.
+     * 默认值为 `null`，这意味着将使用公历。
+     * 您也可以为公历日历显式传递常量 `\IntlDateFormatter::GREGORIAN`。
      *
-     * To use an alternative calendar like for example the [Jalali calendar](https://en.wikipedia.org/wiki/Jalali_calendar),
-     * set this property to `\IntlDateFormatter::TRADITIONAL`.
-     * The calendar must then be specified in the [[locale]], for example for the persian calendar the configuration for the formatter would be:
+     * 要使用替代日历，例如 [Jalali calendar](https://en.wikipedia.org/wiki/Jalali_calendar)，
+     * 请将此属性设置为 `\IntlDateFormatter::TRADITIONAL`。
+     * 然后必须在 [[locale]] 中指定日历，例如对于 persian 日历，格式化程序的配置将是：
      *
      * ```php
      * 'formatter' => [
@@ -189,41 +189,41 @@ class Formatter extends Component
      * ],
      * ```
      *
-     * Available calendar names can be found in the [ICU manual](http://userguide.icu-project.org/datetime/calendar).
+     * 可在 [ICU manual](http://userguide.icu-project.org/datetime/calendar) 中找到可用的日历名称。
      *
-     * Since PHP 5.5 you may also use an instance of the [[\IntlCalendar]] class.
-     * Check the [PHP manual](http://php.net/manual/en/intldateformatter.create.php) for more details.
+     * 从 PHP 5.5 开始，您也可以使用 [[\IntlCalendar]] 类的实例。
+     * 查看 [PHP manual](https://secure.php.net/manual/en/intldateformatter.create.php) 了解更多详情。
      *
-     * If the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     * 如果 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 不可用，则设置此属性将不起作用。
      *
-     * @see http://php.net/manual/en/intldateformatter.create.php
-     * @see http://php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants.calendartypes
-     * @see http://php.net/manual/en/class.intlcalendar.php
+     * @see https://secure.php.net/manual/en/intldateformatter.create.php
+     * @see https://secure.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants.calendartypes
+     * @see https://secure.php.net/manual/en/class.intlcalendar.php
      * @since 2.0.7
      */
     public $calendar;
     /**
-     * @var string the character displayed as the decimal point when formatting a number.
-     * If not set, the decimal separator corresponding to [[locale]] will be used.
-     * If [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value is '.'.
+     * @var string 格式化数字时显示为小数点的字符。
+     * 如果未设置，将使用与 [[locale]] 对应的小数分隔符。
+     * 如果 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 不可用，默认值为 '.'。
      */
     public $decimalSeparator;
     /**
-     * @var string the character displayed as the thousands separator (also called grouping separator) character when formatting a number.
-     * If not set, the thousand separator corresponding to [[locale]] will be used.
-     * If [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value is ','.
+     * @var string 格式化数字时显示的千位分隔符（也称为分组分隔符）的字符。
+     * 如果未设置，将使用与 [[locale]] 对应的千位分隔符。
+     * 如果 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 不可用，默认值为 ','。
      */
     public $thousandSeparator;
     /**
-     * @var array a list of name value pairs that are passed to the
-     * intl [NumberFormatter::setAttribute()](http://php.net/manual/en/numberformatter.setattribute.php) method of all
-     * the number formatter objects created by [[createNumberFormatter()]].
-     * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
+     * @var array 传递给
+     * intl [NumberFormatter::setAttribute()](https://secure.php.net/manual/en/numberformatter.setattribute.php) 方法的键值对，
+     * 所有数字格式化程序由 [[createNumberFormatter()]] 所创建。
+     * 仅安装了 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 时，此属性才有效。
      *
-     * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
-     * for the possible options.
+     * 请参阅 [PHP manual](https://secure.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
+     * 获取可以调整的选项。
      *
-     * For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
+     * 例如，要调整小数位的最大值和最小值，您可以配置此属性，如下所示：
      *
      * ```php
      * [
@@ -234,15 +234,15 @@ class Formatter extends Component
      */
     public $numberFormatterOptions = [];
     /**
-     * @var array a list of name value pairs that are passed to the
-     * intl [NumberFormatter::setTextAttribute()](http://php.net/manual/en/numberformatter.settextattribute.php) method of all
-     * the number formatter objects created by [[createNumberFormatter()]].
-     * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
+     * @var array 传递给
+     * intl [NumberFormatter::setTextAttribute()](https://secure.php.net/manual/en/numberformatter.settextattribute.php) 方法的键值对，
+     * 所有数字格式化程序由 [[createNumberFormatter()]] 所创建。
+     * 仅安装了 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 时，此属性才有效。
      *
-     * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformattextattribute)
-     * for the possible options.
+     * 请参阅 [PHP manual](https://secure.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformattextattribute)
+     * 获取可以调整的选项。
      *
-     * For example to change the minus sign for negative numbers you can configure this property like the following:
+     * 例如，要更改负数的减号，您可以配置此属性，如下所示：
      *
      * ```php
      * [
@@ -252,15 +252,15 @@ class Formatter extends Component
      */
     public $numberFormatterTextOptions = [];
     /**
-     * @var array a list of name value pairs that are passed to the
-     * intl [NumberFormatter::setSymbol()](http://php.net/manual/en/numberformatter.setsymbol.php) method of all
-     * the number formatter objects created by [[createNumberFormatter()]].
-     * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
+     * @var array 传递给
+     * intl [NumberFormatter::setSymbol()](https://secure.php.net/manual/en/numberformatter.setsymbol.php) 方法的键值对，
+     * 所有数字格式化程序由 [[createNumberFormatter()]] 所创建。
+     * 仅安装了 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 时，此属性才有效。
      *
-     * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatsymbol)
-     * for the possible options.
+     * 请参阅 [PHP manual](https://secure.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatsymbol)
+     * 获取可以调整的选项。
      *
-     * For example to choose a custom currency symbol, e.g. [U+20BD](http://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
+     * 例如，选择自定义货币符号，例如俄罗斯卢布使用 [U+20BD](http://unicode-table.com/en/20BD/) 而不是 `руб.`：
      *
      * ```php
      * [
@@ -272,20 +272,20 @@ class Formatter extends Component
      */
     public $numberFormatterSymbols = [];
     /**
-     * @var string the 3-letter ISO 4217 currency code indicating the default currency to use for [[asCurrency]].
-     * If not set, the currency code corresponding to [[locale]] will be used.
-     * Note that in this case the [[locale]] has to be specified with a country code, e.g. `en-US` otherwise it
-     * is not possible to determine the default currency.
+     * @var string 货币代码 ISO 4217 定义的 3 个字母货币代码，表示 [[asCurrency]] 使用的默认货币。
+     * 如果未设置，将使用与 [[locale]] 对应的货币代码。
+     * 请注意，在这种情况下，必须为 [[locale]] 指定国家/地区代码，
+     * 否则，使用 `en-US` 无法确定默认货币。
      */
     public $currencyCode;
     /**
-     * @var int the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte), used by [[asSize]] and [[asShortSize]].
-     * Defaults to 1024.
+     * @var int 计算千字节的基数（每千字节为 1000 或 1024 个字节），由 [[asSize]] 和 [[asShortSize]] 使用。
+     * 默认为 1024。
      */
     public $sizeFormatBase = 1024;
     /**
-     * @var string default system of measure units. Defaults to [[UNIT_SYSTEM_METRIC]].
-     * Possible values:
+     * @var string 默认的系统度量单位。默认为 [[UNIT_SYSTEM_METRIC]]。
+     * 可能的值：
      *  - [[UNIT_SYSTEM_METRIC]]
      *  - [[UNIT_SYSTEM_IMPERIAL]]
      *
@@ -295,11 +295,11 @@ class Formatter extends Component
      */
     public $systemOfUnits = self::UNIT_SYSTEM_METRIC;
     /**
-     * @var array configuration of weight and length measurement units.
-     * This array contains the most usable measurement units, but you can change it
-     * in case you have some special requirements.
+     * @var array 重量和长度测量单位的配置。
+     * 此数组包含最常用的测量单位，
+     * 但如果您有其它要求，可以更改它。
      *
-     * For example, you can add smaller measure unit:
+     * 例如，您可以添加较小的度量单位：
      *
      * ```php
      * $this->measureUnits[self::UNIT_LENGTH][self::UNIT_SYSTEM_METRIC] = [
@@ -346,7 +346,7 @@ class Formatter extends Component
         ],
     ];
     /**
-     * @var array The base units that are used as multipliers for smallest possible unit from [[measureUnits]].
+     * @var array 用于 [[measureUnits]] 中最小可能单位的乘法的基本单位。
      * @since 2.0.13
      */
     public $baseUnits = [
@@ -361,15 +361,15 @@ class Formatter extends Component
     ];
 
     /**
-     * @var bool whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
+     * @var bool [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 是否已经加载。
      */
     private $_intlLoaded = false;
     /**
-     * @var \ResourceBundle cached ResourceBundle object used to read unit translations
+     * @var \ResourceBundle 缓存的 ResourceBundle 对象，用于读取单元翻译
      */
     private $_resourceBundle;
     /**
-     * @var array cached unit translation patterns
+     * @var array 缓存的单元翻译模式
      */
     private $_unitMessages = [];
 
@@ -403,25 +403,25 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value based on the given format type.
-     * This method will call one of the "as" methods available in this class to do the formatting.
-     * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
-     * then [[asHtml()]] will be used. Format names are case insensitive.
-     * @param mixed $value the value to be formatted.
-     * @param string|array|Closure $format the format of the value, e.g., "html", "text" or an anonymous function
-     * returning the formatted value.
+     * 根据给定的格式类型格式化值。
+     * 此方法将调用此类中可用的 "as" 方法来进行格式化。例如，如果格式为 "html"，
+     * 将使用 [[asHtml()]]。格式名称不区分大小写。
+     * 对于类型 "xyz"，将使用方法 "asXyz"。
+     * @param mixed $value 要格式化的值。
+     * @param string|array|Closure $format 值的格式，
+     * 例如："html"，"text" 或者一个匿名函数返回的格式值。
      *
-     * To specify additional parameters of the formatting method, you may use an array.
-     * The first element of the array specifies the format name, while the rest of the elements will be used as the
-     * parameters to the formatting method. For example, a format of `['date', 'Y-m-d']` will cause the invocation
-     * of `asDate($value, 'Y-m-d')`.
+     * 要指定格式化方法的其他参数，可以使用数组。
+     * 数组的第一个元素指定格式名称，
+     * 而其余元素将用作格式化方法的参数。 
+     * 例如，`['date', 'Y-m-d']` 的格式将导致调用 `asDate($value, 'Y-m-d')`。
      *
-     * The anonymous function signature should be: `function($value, $formatter)`,
-     * where `$value` is the value that should be formatted and `$formatter` is an instance of the Formatter class,
-     * which can be used to call other formatting functions.
-     * The possibility to use an anonymous function is available since version 2.0.13.
-     * @return string the formatting result.
-     * @throws InvalidArgumentException if the format type is not supported by this class.
+     * 匿名函数应为：`function($value, $formatter)`，
+     * 其中`$value` 是应该格式化的值，`$formatter` 是 Formatter 类的一个实例，
+     * 可用于调用其他格式化函数。
+     * 从版本 2.0.13 开始，可以使用匿名函数。
+     * @return string 格式化结果。
+     * @throws InvalidArgumentException 如果此类不支持格式类型。
      */
     public function format($value, $format)
     {
@@ -451,11 +451,11 @@ class Formatter extends Component
 
 
     /**
-     * Formats the value as is without any formatting.
-     * This method simply returns back the parameter without any format.
-     * The only exception is a `null` value which will be formatted using [[nullDisplay]].
-     * @param mixed $value the value to be formatted.
-     * @return string the formatted result.
+     * 按原样格式化值，不进行任何格式化。
+     * 此方法只返回没有任何格式的参数。
+     * 唯一的例外是当值为 `null` 时，将使用 [[nullDisplay]] 格式化。
+     * @param mixed $value 要格式化的值。
+     * @return string 格式化的结果。
      */
     public function asRaw($value)
     {
@@ -467,9 +467,9 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as an HTML-encoded plain text.
-     * @param string $value the value to be formatted.
-     * @return string the formatted result.
+     * 将值格式化为 HTML 编码的纯文本。
+     * @param string $value 要格式化的值。
+     * @return string 格式化的结果。
      */
     public function asText($value)
     {
@@ -481,9 +481,9 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as an HTML-encoded plain text with newlines converted into breaks.
-     * @param string $value the value to be formatted.
-     * @return string the formatted result.
+     * 将值格式化为 HTML 编码的纯文本，并拆分换行符为新行。
+     * @param string $value 要格式化的值。
+     * @return string 格式化的结果。
      */
     public function asNtext($value)
     {
@@ -495,11 +495,11 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as HTML-encoded text paragraphs.
-     * Each text paragraph is enclosed within a `<p>` tag.
-     * One or multiple consecutive empty lines divide two paragraphs.
-     * @param string $value the value to be formatted.
-     * @return string the formatted result.
+     * 将值格式化为HTML编码的文本段落。
+     * 每个文本段落都包含在一个 `<p>` 标签中。
+     * 一个或多个连续的空行分为两段。
+     * @param string $value 要格式化的值。
+     * @return string 格式化的结果。
      */
     public function asParagraphs($value)
     {
@@ -511,12 +511,12 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as HTML text.
-     * The value will be purified using [[HtmlPurifier]] to avoid XSS attacks.
-     * Use [[asRaw()]] if you do not want any purification of the value.
-     * @param string $value the value to be formatted.
-     * @param array|null $config the configuration for the HTMLPurifier class.
-     * @return string the formatted result.
+     * 将值格式化为 HTML 文本。
+     * 该值将使用 [[HtmlPurifier]] 进行过滤，以避免 XSS 攻击。
+     * 如果你不想对值进行过滤，请使用 [[asRaw()]]。
+     * @param string $value 要格式化的值。
+     * @param array|null $config HTMLPurifier 类的配置。
+     * @return string 格式化的结果。
      */
     public function asHtml($value, $config = null)
     {
@@ -528,10 +528,10 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a mailto link.
-     * @param string $value the value to be formatted.
-     * @param array $options the tag options in terms of name-value pairs. See [[Html::mailto()]].
-     * @return string the formatted result.
+     * 将值格式化为 mailto 链接。
+     * @param string $value 要格式化的值。
+     * @param array $options  键值对形式的标签选项。见 [[Html::mailto()]]。
+     * @return string 格式化的结果。
      */
     public function asEmail($value, $options = [])
     {
@@ -543,10 +543,10 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as an image tag.
-     * @param mixed $value the value to be formatted.
-     * @param array $options the tag options in terms of name-value pairs. See [[Html::img()]].
-     * @return string the formatted result.
+     * 将值格式化为 img 标签。
+     * @param mixed $value 要格式化的值。
+     * @param array $options  键值对形式的标签选项。见 [[Html::img()]]。
+     * @return string 格式化的结果。
      */
     public function asImage($value, $options = [])
     {
@@ -558,10 +558,10 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a hyperlink.
-     * @param mixed $value the value to be formatted.
-     * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]].
-     * @return string the formatted result.
+     * 将值格式化为超链接。
+     * @param mixed $value 要格式化的值。
+     * @param array $options 键值对形式的标签选项。见 [[Html::a()]]。
+     * @return string 格式化的结果。
      */
     public function asUrl($value, $options = [])
     {
@@ -577,9 +577,9 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a boolean.
-     * @param mixed $value the value to be formatted.
-     * @return string the formatted result.
+     * 将值格式化为布尔值。
+     * @param mixed $value 要格式化的值。
+     * @return string 格式化的结果。
      * @see booleanFormat
      */
     public function asBoolean($value)
@@ -596,32 +596,32 @@ class Formatter extends Component
 
 
     /**
-     * Formats the value as a date.
-     * @param int|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     * 将值格式化为日期。
+     * @param int|string|DateTime $value 要格式化的值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
-     *   for the DateTime object to specify the source time zone.
+     * - 表示 UNIX 时间戳的整数。UNIX 时间戳的定义始终为 UTC。
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) PHP 对象。
+     *   您可以为 DateTime 对象设置时区，以指定源时区。
      *
-     * The formatter will convert date values according to [[timeZone]] before formatting it.
-     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
-     * Also no conversion will be performed on values that have no time information, e.g. `"2017-06-05"`.
+     * 在格式化之前，格式化程序将根据 [[timeZone]] 转换日期值。
+     * 如果不应执行时区转换，则需要将 [[defaultTimeZone]] 和 [[timeZone]] 设置为相同的值。
+     * 此外，不会对没有时间信息的值执行转换，例如，`"2017-06-05"`.
      *
-     * @param string $format the format used to convert the value into a date string.
-     * If null, [[dateFormat]] will be used.
+     * @param string $format 用于将值转换为日期字符串的格式。
+     * 如果为 null，将使用 [[dateFormat]]。
      *
-     * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * 这可以是 "short"，"medium"，"long" 或 "full"，其表示不同长度的预设格式。
+     * 它也可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime) 中指定的自定义格式。
      *
-     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
+     * 这也可以是一个前缀为 `php:` 的字符串，
+     * 表示可以由 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数识别的格式。
      *
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
-     * @throws InvalidConfigException if the date format is invalid.
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值无法计算为日期值。
+     * @throws InvalidConfigException 如果日期格式无效。
      * @see dateFormat
      */
     public function asDate($value, $format = null)
@@ -634,31 +634,31 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a time.
-     * @param int|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     * 将值格式化为时间。
+     * @param int|string|DateTime $value 要格式化的值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
-     *   for the DateTime object to specify the source time zone.
+     * - 表示 UNIX 时间戳的整数。UNIX 时间戳的定义始终为 UTC。
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) 对象。
+     *   您可以为 DateTime 对象设置时区，以指定源时区。
      *
-     * The formatter will convert date values according to [[timeZone]] before formatting it.
-     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
+     * 在格式化之前，格式化程序将根据 [[timeZone]] 转换日期值。
+     * 如果不应执行时区转换，则需要将 [[defaultTimeZone]] 和 [[timeZone]] 设置为相同的值。
      *
-     * @param string $format the format used to convert the value into a date string.
-     * If null, [[timeFormat]] will be used.
+     * @param string $format 用于将值转换为日期字符串的格式。
+     * 如果为 null，将使用 [[timeFormat]]。
      *
-     * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * 这可以是 "short"，"medium"，"long" 或 "full"，其表示不同长度的预设格式。
+     * 它也可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime) 中指定的自定义格式。
      *
-     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
+     * 这也可以是一个前缀为 `php:` 的字符串，
+     * 表示可以由 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数识别的格式。
      *
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
-     * @throws InvalidConfigException if the date format is invalid.
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值无法计算为日期值。
+     * @throws InvalidConfigException 如果日期格式无效。
      * @see timeFormat
      */
     public function asTime($value, $format = null)
@@ -671,31 +671,31 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a datetime.
-     * @param int|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     * 将值格式化为日期时间。
+     * @param int|string|DateTime $value 要格式化的值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
-     *   for the DateTime object to specify the source time zone.
+     * - 表示 UNIX 时间戳的整数。UNIX 时间戳的定义始终为 UTC。
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) 对象。
+     *   您可以为 DateTime 对象设置时区，以指定源时区。
      *
-     * The formatter will convert date values according to [[timeZone]] before formatting it.
-     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
+     * 在格式化之前，格式化程序将根据 [[timeZone]] 转换日期值。
+     * 如果不应执行时区转换，则需要将 [[defaultTimeZone]] 和 [[timeZone]] 设置为相同的值。
      *
-     * @param string $format the format used to convert the value into a date string.
-     * If null, [[datetimeFormat]] will be used.
+     * @param string $format 用于将值转换为日期字符串的格式。
+     * 如果为 null，则将使用 [[datetimeFormat]]。
      *
-     * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * 这可以是 "short"，"medium"，"long" 或 "full"，其表示不同长度的预设格式。
+     * 它也可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime) 中指定的自定义格式。
      *
-     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
+     * 这也可以是一个前缀为 `php:` 的字符串，
+     * 表示可以由 PHP [date()](https://secure.php.net/manual/en/function.date.php) 函数识别的格式。
      *
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
-     * @throws InvalidConfigException if the date format is invalid.
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值无法计算为日期值。
+     * @throws InvalidConfigException 如果日期格式无效。
      * @see datetimeFormat
      */
     public function asDatetime($value, $format = null)
@@ -708,7 +708,7 @@ class Formatter extends Component
     }
 
     /**
-     * @var array map of short format names to IntlDateFormatter constant values.
+     * @var array 短格式的名称以映射到 IntlDateFormatter 常量值。
      */
     private $_dateFormats = [
         'short' => 3, // IntlDateFormatter::SHORT,
@@ -718,18 +718,18 @@ class Formatter extends Component
     ];
 
     /**
-     * @param int|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     * @param int|string|DateTime $value 要格式化的值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - 表示 UNIX 时间戳的整数
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) PHP 对象
      *
-     * @param string $format the format used to convert the value into a date string.
+     * @param string $format 用于将值转换为日期字符串的格式。
      * @param string $type 'date', 'time', or 'datetime'.
-     * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result.
+     * @throws InvalidConfigException 如果日期格式无效。
+     * @return string 格式化的结果。
      */
     private function formatDateTimeValue($value, $format, $type)
     {
@@ -792,28 +792,28 @@ class Formatter extends Component
     }
 
     /**
-     * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
+     * 将给定的日期时间值规范化为可由各种日期/时间格式化方法采用的 DateTime 对象。
      *
-     * @param int|string|DateTime $value the datetime value to be normalized. The following
-     * types of value are supported:
+     * @param int|string|DateTime $value 要标准化的日期时间值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - 表示 UNIX 时间戳的整数
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) PHP 对象
      *
-     * @param bool $checkDateTimeInfo whether to also check if the date/time value has some time and date information attached.
-     * Defaults to `false`. If `true`, the method will then return an array with the first element being the normalized
-     * timestamp, the second a boolean indicating whether the timestamp has time information and third a boolean indicating
-     * whether the timestamp has date information.
-     * This parameter is available since version 2.0.1.
-     * @return DateTime|array the normalized datetime value.
-     * Since version 2.0.1 this may also return an array if `$checkDateTimeInfo` is true.
-     * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
-     * the timestamp has time information or it is just a date value.
-     * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information
-     * or it is just a time value.
-     * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
+     * @param bool $checkDateTimeInfo 是否还检查日期/时间值是否附加了一些时间和日期信息。
+     * 默认为 `false`。如果为 `true`，则该方法将返回一个数组，
+     * 其中第一个元素是标准化时间戳，第二个是表示时间戳是否具有时间信息的布尔值，
+     * 第三个是表示时间戳是否具有日期信息的布尔值。
+     * 此参数自版本 2.0.1 起可用。
+     * @return DateTime|array 规范化的日期时间值。
+     * 从版本 2.0.1 开始，如果 `$checkDateTimeInfo` 为真，这会返回一个数组。
+     * 数组的第一个元素是标准化的时间戳，第二个元素是一个布尔值，
+     * 表示时间戳是时间信息还是日期值。
+     * 从版本 2.0.12 开始，该数组具有第三个为布尔值的元素，
+     * 指示时间戳是否具有日期信息，或者它只是一个时间值。
+     * @throws InvalidArgumentException 如果输入值无法计算为日期值。
      */
     protected function normalizeDatetimeValue($value, $checkDateTimeInfo = false)
     {
@@ -841,7 +841,7 @@ class Formatter extends Component
                 return [
                     $timestamp,
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
-                    !($info['year'] === false && $info['month'] === false && $info['day'] === false),
+                    !($info['year'] === false && $info['month'] === false && $info['day'] === false && empty($info['zone'])),
                 ];
             }
 
@@ -853,16 +853,16 @@ class Formatter extends Component
     }
 
     /**
-     * Formats a date, time or datetime in a float number as UNIX timestamp (seconds since 01-01-1970).
-     * @param int|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     * 将浮点数中的日期，时间或日期时间格式化为 UNIX 时间戳（自1970-01-01以来的秒数）。
+     * @param int|string|DateTime $value 要格式化的值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - 表示 UNIX 时间戳的整数
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) PHP 对象
      *
-     * @return string the formatted result.
+     * @return string 格式化的结果。
      */
     public function asTimestamp($value)
     {
@@ -874,27 +874,27 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as the time interval between a date and now in human readable form.
+     * 将日期值与当前时间的时间间隔格式化为易读的形式。
      *
-     * This method can be used in three different ways:
+     * 此方法可以以三种不同的方式使用：
      *
-     * 1. Using a timestamp that is relative to `now`.
-     * 2. Using a timestamp that is relative to the `$referenceTime`.
-     * 3. Using a `DateInterval` object.
+     * 1. 使用相对于 `now` 的时间戳。
+     * 2. 使用相对于 `$referenceTime` 的时间戳。
+     * 3. `DateInterval` 对象。
      *
-     * @param int|string|DateTime|DateInterval $value the value to be formatted. The following
-     * types of value are supported:
+     * @param int|string|DateTime|DateInterval $value 要格式化的值。
+     * 支持以下类型的值：
      *
-     * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
-     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
+     * - 表示 UNIX 时间戳的整数
+     * - 可以供 [DateTime object](https://secure.php.net/manual/en/datetime.formats.php) 解析的字符串。
+     *   时间戳假定在 [[defaultTimeZone]]，除非给出一个明确的时区。
+     * - 一个 [DateTime](https://secure.php.net/manual/en/class.datetime.php) PHP 对象
+     * - 一个 PHP DateInterval 对象（正值时间间隔表示过去，负值时间间隔表示未来）
      *
-     * @param int|string|DateTime $referenceTime if specified the value is used as a reference time instead of `now`
-     * when `$value` is not a `DateInterval` object.
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
+     * @param int|string|DateTime $referenceTime 如果指定了该值，当 `$value` 不是 `DateInterval` 对象时，
+     * 该值将用作参考时间，而不是 `now`。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值无法计算为日期值。
      */
     public function asRelativeTime($value, $referenceTime = null)
     {
@@ -978,20 +978,20 @@ class Formatter extends Component
     }
 
     /**
-     * Represents the value as duration in human readable format.
+     * 以将时间值值格式为易读形式的持续时间。
      *
-     * @param DateInterval|string|int $value the value to be formatted. Acceptable formats:
-     *  - [DateInterval object](http://php.net/manual/ru/class.dateinterval.php)
-     *  - integer - number of seconds. For example: value `131` represents `2 minutes, 11 seconds`
-     *  - ISO8601 duration format. For example, all of these values represent `1 day, 2 hours, 30 minutes` duration:
-     *    `2015-01-01T13:00:00Z/2015-01-02T13:30:00Z` - between two datetime values
-     *    `2015-01-01T13:00:00Z/P1D2H30M` - time interval after datetime value
-     *    `P1D2H30M/2015-01-02T13:30:00Z` - time interval before datetime value
-     *    `P1D2H30M` - simply a date interval
-     *    `P-1D2H30M` - a negative date interval (`-1 day, 2 hours, 30 minutes`)
+     * @param DateInterval|string|int $value 要格式化的值。 可接受的格式：
+     *  - [DateInterval object](https://secure.php.net/manual/ru/class.dateinterval.php)
+     *  - 整数 - 秒数。 例如：值 `131` 表示 `2 minutes, 11 seconds`
+     *  - ISO8601 持续时间格式。例如，以下这些值表示 `1 day, 2 hours, 30 minutes` 持续时间：
+     *    `2015-01-01T13:00:00Z/2015-01-02T13:30:00Z` - 在两个日期时间值之间
+     *    `2015-01-01T13:00:00Z/P1D2H30M` - 日期时间值之后的时间间隔
+     *    `P1D2H30M/2015-01-02T13:30:00Z` - 日期时间值之前的时间间隔
+     *    `P1D2H30M` - 只是一个日期间隔
+     *    `P-1D2H30M` - 一个负日期间隔（`-1 day, 2 hours, 30 minutes`）
      *
-     * @param string $implodeString will be used to concatenate duration parts. Defaults to `, `.
-     * @param string $negativeSign will be prefixed to the formatted duration, when it is negative. Defaults to `-`.
+     * @param string $implodeString 将用于连接持续时间部分。 默认为`, `。
+     * @param string $negativeSign 当它为负数时，将为格式化持续时间的前缀。 默认为`-`。
      * @return string the formatted duration.
      * @since 2.0.7
      */
@@ -1049,17 +1049,17 @@ class Formatter extends Component
 
 
     /**
-     * Formats the value as an integer number by removing any decimal digits without rounding.
+     * 通过移除小数部分将值格式化为整数。
      *
-     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without [PHP intl extension](http://php.net/manual/en/book.intl.php) support. For very big numbers it's
-     * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
+     * 从版本 2.0.16 起，规范化后出现错误的数字使用误的数字使用回调函数格式化为字符串，
+     * 不支持 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
+     * 对于非常大的数字，建议将它们以字符串传递，而不是使用科学记数法，否则输出可能是错误的。
      *
-     * @param mixed $value the value to be formatted.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @param mixed $value 要格式化的值。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      */
     public function asInteger($value, $options = [], $textOptions = [])
     {
@@ -1087,27 +1087,27 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a decimal number.
+     * 将值格式化为十进制数。
      *
-     * Property [[decimalSeparator]] will be used to represent the decimal point. The
-     * value is rounded automatically to the defined decimal digits.
+     * 属性 [[decimalSeparator]] 将用于表示小数点。
+     * 该值自动舍入为定义的十进制数字。
      *
-     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without [PHP intl extension](http://php.net/manual/en/book.intl.php) support. For very big numbers it's
-     * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
+     * 从版本 2.0.16 起，规范化后出现错误的数字使用回调函数格式化为字符串，
+     * 不支持 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
+     * 对于非常大的数字，建议将它们以字符串传递，而不是使用科学记数法，否则输出可能是错误的。
      *
-     * @param mixed $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * If not given, the number of digits depends in the input value and is determined based on
-     * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
-     * using [[$numberFormatterOptions]].
-     * If the PHP intl extension is not available, the default value is `2`.
-     * If you want consistent behavior between environments where intl is available and not, you should explicitly
-     * specify a value here.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @param mixed $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。
+     * 如果没有给出，则位数取决于输入值，
+     * 并且基于 `NumberFormatter::MIN_FRACTION_DIGITS` 和 `NumberFormatter::MAX_FRACTION_DIGITS` 确定，
+     * 可以使用 [[$numberFormatterOptions]] 进行配置。
+     * 如果 PHP intl 扩展不可用，则默认值为 `2`。
+     * 如果要在 intl 可用和不可用的环境之间保持一致的行为，
+     * 则应在此处明确指定值。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      * @see decimalSeparator
      * @see thousandSeparator
      */
@@ -1140,24 +1140,24 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a percent number with "%" sign.
+     * 将值格式化为带有 "%" 符号的百分比数字。
      *
-     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without [PHP intl extension](http://php.net/manual/en/book.intl.php) support. For very big numbers it's
-     * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
+     * 从版本 2.0.16 起，规范化后出现错误的数字使用回调函数格式化为字符串，
+     * 不支持 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
+     * 对于非常大的数字，建议将它们以字符串传递，而不是使用科学记数法，否则输出可能是错误的。
      *
-     * @param mixed $value the value to be formatted. It must be a factor e.g. `0.75` will result in `75%`.
-     * @param int $decimals the number of digits after the decimal point.
-     * If not given, the number of digits depends in the input value and is determined based on
-     * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
-     * using [[$numberFormatterOptions]].
-     * If the PHP intl extension is not available, the default value is `0`.
-     * If you want consistent behavior between environments where intl is available and not, you should explicitly
-     * specify a value here.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @param mixed $value 要格式化的值。这必须是一个小数，例如 `0.75` 将格式化为 `75%`。
+     * @param int $decimals 小数点后的位数。
+     * 如果没有给出，则位数取决于输入值，
+     * 并且基于 `NumberFormatter::MIN_FRACTION_DIGITS` 和 `NumberFormatter::MAX_FRACTION_DIGITS` 确定，
+     * 可以使用 [[$numberFormatterOptions]] 进行配置。
+     * 如果 PHP intl 扩展不可用，则默认值为 `0`。
+     * 如果要在 intl 可用和不可用的环境之间保持一致的行为，
+     * 则应在此处明确指定值。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      */
     public function asPercent($value, $decimals = null, $options = [], $textOptions = [])
     {
@@ -1189,20 +1189,20 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a scientific number.
+     * 将值格式化为科学数字。
      *
-     * @param mixed $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * If not given, the number of digits depends in the input value and is determined based on
-     * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
-     * using [[$numberFormatterOptions]].
-     * If the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value depends on your PHP configuration.
-     * If you want consistent behavior between environments where intl is available and not, you should explicitly
-     * specify a value here.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @param mixed $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。
+     * 如果没有给出，则位数取决于输入值，
+     * 并且基于 `NumberFormatter::MIN_FRACTION_DIGITS` 和 `NumberFormatter::MAX_FRACTION_DIGITS` 确定，
+     * 可以使用 [[$numberFormatterOptions]] 进行配置。
+     * 如果 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 不可用，默认值取决于您的PHP配置。
+     * 如果要在 intl 可用和不可用的环境之间保持一致的行为，
+     * 则应在此处明确指定值。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      */
     public function asScientific($value, $decimals = null, $options = [], $textOptions = [])
     {
@@ -1228,23 +1228,23 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a currency number.
+     * 将值格式化为货币编号。
      *
-     * This function does not require the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed
-     * to work, but it is highly recommended to install it to get good formatting results.
+     * 此函数不需要安装 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 也能工作，
+     * 但是强烈建议安装它以获得良好的格式化结果。
      *
-     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without PHP intl extension support. For very big numbers it's recommended to pass them as strings and not use
-     * scientific notation otherwise the output might be wrong.
+     * 从版本 2.0.16 起，规范化后出现错误的数字使用回调函数格式化为字符串，
+     * 不支持 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
+     * 对于非常大的数字，建议将它们以字符串传递，而不是使用科学记数法，否则输出可能是错误的。
      *
-     * @param mixed $value the value to be formatted.
-     * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
-     * If null, [[currencyCode]] will be used.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
+     * @param mixed $value 要格式化的值。
+     * @param string $currency 3 个字母的 ISO 4217 货币代码，表示要使用的货币。
+     * 如果为 null，将使用 [[currencyCode]]。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException 如果没有给出货币且未定义 [[currencyCode]]。
      */
     public function asCurrency($value, $currency = null, $options = [], $textOptions = [])
     {
@@ -1261,7 +1261,7 @@ class Formatter extends Component
         if ($this->_intlLoaded) {
             $currency = $currency ?: $this->currencyCode;
             // currency code must be set before fraction digits
-            // http://php.net/manual/en/numberformatter.formatcurrency.php#114376
+            // https://secure.php.net/manual/en/numberformatter.formatcurrency.php#114376
             if ($currency && !isset($textOptions[NumberFormatter::CURRENCY_CODE])) {
                 $textOptions[NumberFormatter::CURRENCY_CODE] = $currency;
             }
@@ -1289,16 +1289,16 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a number spellout.
+     * 将值格式化为数字拼写。
      *
-     * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+     * 此函数需要安装 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
      *
-     * This formatter does not work well with very big numbers.
+     * 这个格式化程序不适用于非常大的数字。
      *
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
+     * @param mixed $value 要格式化的值
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException 当 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 不可用时。
      */
     public function asSpellout($value)
     {
@@ -1319,16 +1319,16 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a ordinal value of a number.
+     * 将值格式化为数字的序数值。
      *
-     * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+     * 此函数需要安装 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
      *
-     * This formatter does not work well with very big numbers.
+     * 这个格式化程序不适用于非常大的数字。
      *
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
+     * @param mixed $value 要格式化的值
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException when the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available.
      */
     public function asOrdinal($value)
     {
@@ -1349,19 +1349,19 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in bytes as a size in human readable form for example `12 KB`.
+     * 将以字节为单位的值格式化为易读形式的大小，例如 `12 kB`。
      *
-     * This is the short form of [[asSize]].
+     * 这是 [[asSize]] 的缩写形式。
      *
-     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
-     * are used in the formatting result.
+     * 如果 [[sizeFormatBase]] 是 1024，
+     * 将在格式化结果中使用 [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) （例如，kibibyte/KiB， mebibyte/MiB， ...）
      *
-     * @param string|int|float $value value in bytes to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @param string|int|float $value 要格式化的字节值。
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      * @see sizeFormatBase
      * @see asSize
      */
@@ -1393,7 +1393,7 @@ class Formatter extends Component
                 case 0:
                     return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
                 case 1:
-                    return Yii::t('yii', '{nFormatted} KB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} kB', $params, $this->locale);
                 case 2:
                     return Yii::t('yii', '{nFormatted} MB', $params, $this->locale);
                 case 3:
@@ -1407,17 +1407,17 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in bytes as a size in human readable form, for example `12 kilobytes`.
+     * 将值格式化为易读形式的字节大小，例如 `12 kilobytes`。
      *
-     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
-     * are used in the formatting result.
+     * 如果 [[sizeFormatBase]] 是 1024，
+     * 将在格式化结果中使用 [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) （例如，kibibyte/KiB， mebibyte/MiB， ...）
      *
-     * @param string|int|float $value value in bytes to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @param string|int|float $value 要格式化的字节值。
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      * @see sizeFormatBase
      * @see asShortSize
      */
@@ -1463,17 +1463,17 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a length in human readable form for example `12 meters`.
-     * Check properties [[baseUnits]] if you need to change unit of value as the multiplier
-     * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
+     * 将值格式化为易读形式的长度，例如 `12 meters`。
+     * 如果需要将值单位更改为最小单位的乘数，
+     * 并使 [[systemOfUnits]] 在 [[UNIT_SYSTEM_METRIC]] 或 [[UNIT_SYSTEM_IMPERIAL]] 之间切换，请检查属性 [[baseUnits]]。
      *
-     * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $numberOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @param float|int $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。
+     * @param array $numberOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException 未安装 INTL 或不包含所需信息时。
      * @see asLength
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
@@ -1484,19 +1484,19 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a length in human readable form for example `12 m`.
-     * This is the short form of [[asLength]].
+     * 将值格式化为易读形式的长度，例如 `12 m`。
+     * 这是 [[asLength]] 的缩写形式。
      *
-     * Check properties [[baseUnits]] if you need to change unit of value as the multiplier
-     * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
+     * 如果需要将值单位更改为最小单位的乘数，
+     * 并使 [[systemOfUnits]] 在 [[UNIT_SYSTEM_METRIC]] 或 [[UNIT_SYSTEM_IMPERIAL]] 之间切换，请检查属性 [[baseUnits]]。
      *
-     * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @param float|int $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException 未安装 INTL 或不包含所需信息时。
      * @see asLength
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
@@ -1507,17 +1507,17 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a weight in human readable form for example `12 kilograms`.
-     * Check properties [[baseUnits]] if you need to change unit of value as the multiplier
-     * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
+     * 将值格式化为易读形式的重量，例如 `12 kilograms`。
+     * 如果需要将值单位更改为最小单位的乘数，
+     * 并使 [[systemOfUnits]] 在 [[UNIT_SYSTEM_METRIC]] 或 [[UNIT_SYSTEM_IMPERIAL]] 之间切换，请检查属性 [[baseUnits]]。
      *
-     * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @param float|int $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException 未安装 INTL 或不包含所需信息时。
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
      */
@@ -1527,19 +1527,19 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a weight in human readable form for example `12 kg`.
-     * This is the short form of [[asWeight]].
+     * 将值格式化为易读形式的重量，例如 `12 kg`。
+     * 这是 [[asWeight]] 的缩写形式。
      *
-     * Check properties [[baseUnits]] if you need to change unit of value as the multiplier
-     * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
+     * 如果需要将值单位更改为最小单位的乘数，
+     * 并使 [[systemOfUnits]] 在 [[UNIT_SYSTEM_METRIC]] 或 [[UNIT_SYSTEM_IMPERIAL]] 之间切换，请检查属性 [[baseUnits]]。
      *
-     * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return string the formatted result.
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @param float|int $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return string 格式化的结果。
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
+     * @throws InvalidConfigException 未安装 INTL 或不包含所需信息时。
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
      */
@@ -1549,17 +1549,17 @@ class Formatter extends Component
     }
 
     /**
-     * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
-     * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
-     * @param float|int $value to be formatted
-     * @param float $baseUnit unit of value as the multiplier of the smallest unit. When `null`, property [[baseUnits]]
-     * will be used to determine base unit using $unitType and $unitSystem.
-     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @param string $unitType 为 [[UNIT_WEIGHT]] 或者 [[UNIT_LENGTH]]
+     * @param string $unitFormat 为 [[FORMAT_WIDTH_SHORT]] 或者 [[FORMAT_WIDTH_LONG]]
+     * @param float|int $value 要格式化的值
+     * @param float $baseUnit 值的单位作为最小单位的乘数。当为 `null` 时，
+     * [[baseUnits]] 将用于确定使用 $unitType 和 $unitSystem 的基本单位。
+     * @param string $unitSystem 可以是 [[UNIT_SYSTEM_METRIC]] 或者 [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
      * @return string
-     * @throws InvalidConfigException when INTL is not installed or does not contain required information
+     * @throws InvalidConfigException 未安装 INTL 或不包含所需信息时
      */
     private function formatUnit($unitType, $unitFormat, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions)
     {
@@ -1593,12 +1593,12 @@ class Formatter extends Component
     }
 
     /**
-     * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
-     * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
-     * @param string $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
-     * @param int $position internal position of size unit
+     * @param string $unitType 为 [[UNIT_WEIGHT]] 或者 [[UNIT_LENGTH]]
+     * @param string $unitFormat 为 [[FORMAT_WIDTH_SHORT]] 或者 [[FORMAT_WIDTH_LONG]]
+     * @param string $system 为 [[UNIT_SYSTEM_METRIC]] 或者 [[UNIT_SYSTEM_IMPERIAL]]。 当值为 `null` 时，将使用属性 [[systemOfUnits]]。
+     * @param int $position 大小单位的内部位置
      * @return string
-     * @throws InvalidConfigException when INTL is not installed or does not contain required information
+     * @throws InvalidConfigException 未安装 INTL 或不包含所需信息时
      */
     private function getUnitMessage($unitType, $unitFormat, $system, $position)
     {
@@ -1636,16 +1636,16 @@ class Formatter extends Component
     }
 
     /**
-     * Given the value in bytes formats number part of the human readable form.
+     * 给出以字节为单位易读形式的格式化值的数值部分。
      *
-     * @param string|int|float $value value in bytes to be formatted.
-     * @param int $decimals the number of digits after the decimal point
-     * @param int $maxPosition maximum internal position of size unit, ignored if $formatBase is an array
-     * @param array|int $formatBase the base at which each next unit is calculated, either 1000 or 1024, or an array
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @param string|int|float $value 要格式化的字节值。
+     * @param int $decimals 小数点后的位数
+     * @param int $maxPosition 如果 $formatBase 是一个数组，则字节单元的最大内部位置
+     * @param array|int $formatBase 计算每下一个单位的基数，1000 或 1024，或数组
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @throws InvalidArgumentException 如果输入值不是数字或格式化失败。
      */
     private function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
     {
@@ -1704,16 +1704,16 @@ class Formatter extends Component
     }
 
     /**
-     * Normalizes a numeric input value.
+     * 规范化数字输入值。
      *
-     * - everything [empty](http://php.net/manual/en/function.empty.php) will result in `0`
-     * - a [numeric](http://php.net/manual/en/function.is-numeric.php) string will be casted to float
-     * - everything else will be returned if it is [numeric](http://php.net/manual/en/function.is-numeric.php),
-     *   otherwise an exception is thrown.
+     * - 所有的 [empty](https://secure.php.net/manual/en/function.empty.php) 将是 `0`
+     * - 一个 [numeric](https://secure.php.net/manual/en/function.is-numeric.php) 字符串将转化为浮点数
+     * - 如果它是 [numeric](https://secure.php.net/manual/en/function.is-numeric.php)，则返回其它所有内容，
+     *   否则抛出异常。
      *
-     * @param mixed $value the input value
-     * @return float|int the normalized number value
-     * @throws InvalidArgumentException if the input value is not numeric.
+     * @param mixed $value 输入的值
+     * @return float|int 规范化的数值
+     * @throws InvalidArgumentException 如果输入值不是数字。
      */
     protected function normalizeNumericValue($value)
     {
@@ -1731,17 +1731,17 @@ class Formatter extends Component
     }
 
     /**
-     * Creates a number formatter based on the given type and format.
+     * 创建基于给定类型和格式的数字格式。
      *
-     * You may override this method to create a number formatter based on patterns.
+     * 您可以重写此方法创建基于模式的数字格式化程序。
      *
-     * @param int $style the type of the number formatter.
-     * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
+     * @param int $style 数字格式器的类型。
+     * 类型有： NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
      * ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
-     * @param int $decimals the number of digits after the decimal point.
-     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
-     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     * @return NumberFormatter the created formatter instance
+     * @param int $decimals 小数点后的位数。
+     * @param array $options 数字格式化程序的可选配置。此参数将与 [[numberFormatterOptions]] 合并。
+     * @param array $textOptions 数字格式化程序的可选配置。此参数将与 [[numberFormatterTextOptions]] 合并。
+     * @return NumberFormatter 创建的格式化程序实例
      */
     protected function createNumberFormatter($style, $decimals = null, $options = [], $textOptions = [])
     {
@@ -1783,7 +1783,7 @@ class Formatter extends Component
     }
 
     /**
-     * Checks if string representations of given value and its normalized version are different.
+     * 检查给定值及其规范化版本的值是否不同。
      * @param string|float|int $value
      * @param float|int $normalizedValue
      * @return bool
@@ -1799,9 +1799,9 @@ class Formatter extends Component
     }
 
     /**
-     * Normalizes a numeric string value.
+     * 规范化数字字符串值。
      * @param string $value
-     * @return string the normalized number value as a string
+     * @return string 规范化数字字符串值
      * @since 2.0.16
      */
     protected function normalizeNumericStringValue($value)
@@ -1837,14 +1837,14 @@ class Formatter extends Component
     }
 
     /**
-     * Fallback for formatting value as a decimal number.
+     * 将值格式化为十进制数的回退函数。
      *
-     * Property [[decimalSeparator]] will be used to represent the decimal point. The value is rounded automatically
-     * to the defined decimal digits.
+     * 属性 [[decimalSeparator]] 将用于表示小数点。
+     * 该值自动舍入为定义的十进制数字。
      *
-     * @param string|int|float $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point. The default value is `2`.
-     * @return string the formatted result.
+     * @param string|int|float $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。默认值是 `2`。
+     * @return string 格式化的结果。
      * @see decimalSeparator
      * @see thousandSeparator
      * @since 2.0.16
@@ -1954,10 +1954,10 @@ class Formatter extends Component
     }
 
     /**
-     * Fallback for formatting value as an integer number by removing any decimal digits without rounding.
+     * 将值通过移除小数部分格式化为整数的回退函数。
      *
-     * @param string|int|float $value the value to be formatted.
-     * @return string the formatted result.
+     * @param string|int|float $value 要格式化的值。
+     * @return string 格式化的结果。
      * @since 2.0.16
      */
     protected function asIntegerStringFallback($value)
@@ -1979,14 +1979,14 @@ class Formatter extends Component
     }
 
     /**
-     * Fallback for formatting value as a percent number with "%" sign.
+     * 将值格式化为带 "%" 符号百分数的回退函数。
      *
-     * Property [[decimalSeparator]] will be used to represent the decimal point. The value is rounded automatically
-     * to the defined decimal digits.
+     * 属性 [[decimalSeparator]] 将用于表示小数点。
+     * 该值自动舍入为定义的十进制数字。
      *
-     * @param string|int|float $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point. The default value is `0`.
-     * @return string the formatted result.
+     * @param string|int|float $value 要格式化的值。
+     * @param int $decimals 小数点后的位数。默认值为 `0`。
+     * @return string 格式化的结果。
      * @since 2.0.16
      */
     protected function asPercentStringFallback($value, $decimals = null)
@@ -2022,13 +2022,13 @@ class Formatter extends Component
     }
 
     /**
-     * Fallback for formatting value as a currency number.
+     * 将值格式化为货币号的回退函数。
      *
-     * @param string|int|float $value the value to be formatted.
-     * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
-     * If null, [[currencyCode]] will be used.
-     * @return string the formatted result.
-     * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
+     * @param string|int|float $value 要格式化的值。
+     * @param string $currency 3 个字母的 ISO 4217 货币代码，表示要使用的货币。
+     * 如果为 null，将使用 [[currencyCode]]。
+     * @return string 格式化的结果。
+     * @throws InvalidConfigException 如果没有给出货币且未定义 [[currencyCode]]。
      * @since 2.0.16
      */
     protected function asCurrencyStringFallback($value, $currency = null)

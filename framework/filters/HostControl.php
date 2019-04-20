@@ -13,12 +13,12 @@ use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
 
 /**
- * HostControl provides simple control over requested host name.
+ * HostControl 提供对请求的主机名的简单控制。
  *
- * This filter provides protection against ['host header' attacks](https://www.acunetix.com/vulnerabilities/web/host-header-attack),
- * allowing action execution only for specified host names.
+ * 此筛选器提供针对 ['host header' 攻击] 的保护(https://www.acunetix.com/vulnerabilities/web/host-header-attack),
+ * 仅允许对指定的主机名执行操作。
  *
- * Application configuration example:
+ * 应用程序配置示例：
  *
  * ```php
  * return [
@@ -33,7 +33,7 @@ use yii\web\NotFoundHttpException;
  * ];
  * ```
  *
- * Controller configuration example:
+ * 控制器配置示例：
  *
  * ```php
  * use yii\web\Controller;
@@ -58,8 +58,8 @@ use yii\web\NotFoundHttpException;
  * }
  * ```
  *
- * > Note: the best way to restrict allowed host names is usage of the web server 'virtual hosts' configuration.
- * This filter should be used only if this configuration is not available or compromised.
+ * > Note: 限制允许的主机名的最佳方法是使用 Web 服务器的 “虚拟主机” 配置。
+ * 仅当此配置不可用或不安全时才应使用此筛选器。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.11
@@ -67,8 +67,8 @@ use yii\web\NotFoundHttpException;
 class HostControl extends ActionFilter
 {
     /**
-     * @var array|\Closure|null list of host names, which are allowed.
-     * Each host can be specified as a wildcard pattern. For example:
+     * @var array|\Closure|null 主机名列表，哪些是允许的。
+     * 每个主机都可以指定为通配符模式。例如：
      *
      * ```php
      * [
@@ -77,7 +77,7 @@ class HostControl extends ActionFilter
      * ]
      * ```
      *
-     * This field can be specified as a PHP callback of following signature:
+     * 此字段可指定为以下签名的 PHP 回调：
      *
      * ```php
      * function (\yii\base\Action $action) {
@@ -85,32 +85,32 @@ class HostControl extends ActionFilter
      * }
      * ```
      *
-     * where `$action` is the current [[\yii\base\Action|action]] object.
+     * 其中 `$action` 是当前 [[\yii\base\Action|action]] 对象。
      *
-     * If this field is not set - no host name check will be performed.
+     * 如果未设置此字段 - 将不执行任何主机名检查。
      */
     public $allowedHosts;
     /**
-     * @var callable a callback that will be called if the current host does not match [[allowedHosts]].
-     * If not set, [[denyAccess()]] will be called.
+     * @var callable 如果当前主机与 [[allowedHosts]] 不匹配将调用的回调。
+     * 如果未设置，将调用[[denyAccess()]]。
      *
-     * The signature of the callback should be as follows:
+     * 回调的签名应如下：
      *
      * ```php
      * function (\yii\base\Action $action)
      * ```
      *
-     * where `$action` is the current [[\yii\base\Action|action]] object.
+     * 其中 `$action` 是当前 [[\yii\base\Action|action]] 对象。
      *
-     * > Note: while implementing your own host deny processing, make sure you avoid usage of the current requested
-     * host name, creation of absolute URL links, caching page parts and so on.
+     * > Note: 在实现自己的主机拒绝处理时， 确保避免使用当前请求的
+     * 主机名, 创建绝对 URL 链接、缓存页面部件等。
      */
     public $denyCallback;
     /**
-     * @var string|null fallback host info (e.g. `http://www.yiiframework.com`) used when [[\yii\web\Request::$hostInfo|Request::$hostInfo]] is invalid.
-     * This value will replace [[\yii\web\Request::$hostInfo|Request::$hostInfo]] before [[$denyCallback]] is called to make sure that
-     * an invalid host will not be used for further processing. You can set it to `null` to leave [[\yii\web\Request::$hostInfo|Request::$hostInfo]] untouched.
-     * Default value is empty string (this will result creating relative URLs instead of absolute).
+     * @var string|null 回退主机信息 (例如。`http://www.yiiframework.com`) 使用 [[\yii\web\Request::$hostInfo|Request::$hostInfo]] 时无效。
+     * 在调用 [[$denyCallback]] 之前，此值将替换 [[\yii\web\Request::$hostInfo|Request::$hostInfo]]
+     * 以确保不会使用无效的主机进行进一步处理。您可以将其设置为 `null` 使 [[\yii\web\Request::$hostInfo|Request::$hostInfo]] 保持不变。
+     * 默认值为空字符串（这将导致创建相对 URL 而不是绝对 URL ）。
      * @see \yii\web\Request::getHostInfo()
      */
     public $fallbackHostInfo = '';
@@ -156,11 +156,11 @@ class HostControl extends ActionFilter
     }
 
     /**
-     * Denies the access.
-     * The default implementation will display 404 page right away, terminating the program execution.
-     * You may override this method, creating your own deny access handler. While doing so, make sure you
-     * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
-     * @param \yii\base\Action $action the action to be executed.
+     * 拒绝访问。
+     * 默认实现将立即显示 404 页，正在终止程序执行。
+     * 您可以重写此方法，创建自己的拒绝访问处理程序。在执行此操作时，请确保
+     * 避免使用当前请求的主机名，创建绝对 URL 链接，缓存页面部件等。
+     * @param \yii\base\Action $action 要执行的操作。
      * @throws NotFoundHttpException
      */
     protected function denyAccess($action)

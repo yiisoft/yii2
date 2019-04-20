@@ -10,7 +10,7 @@ namespace yii\db\cubrid;
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilder is the schema builder for Cubrid databases.
+ * ColumnSchemaBuilder 是 Cubrid 数据库的模式构建器。
  *
  * @author Chris Harris <chris@buckshotsoftware.com>
  * @since 2.0.8

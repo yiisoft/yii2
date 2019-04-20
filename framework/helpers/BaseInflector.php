@@ -10,9 +10,9 @@ namespace yii\helpers;
 use Yii;
 
 /**
- * BaseInflector provides concrete implementation for [[Inflector]].
+ * BaseInflector 为 [[Inflector]] 提供了具体的实现方法。
  *
- * Do not use BaseInflector. Use [[Inflector]] instead.
+ * 不要使用 BaseInflector 类。使用 [[Inflector]] 类来代替。
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -21,8 +21,8 @@ use Yii;
 class BaseInflector
 {
     /**
-     * @var array the rules for converting a word into its plural form.
-     * The keys are the regular expressions and the values are the corresponding replacements.
+     * @var array 把一个词转换成复数形式的规则。
+     * 键是正则表达式，值是相应的替换。
      */
     public static $plurals = [
         '/([nrlm]ese|deer|fish|sheep|measles|ois|pox|media)$/i' => '\1',
@@ -57,8 +57,8 @@ class BaseInflector
         '/$/' => 's',
     ];
     /**
-     * @var array the rules for converting a word into its singular form.
-     * The keys are the regular expressions and the values are the corresponding replacements.
+     * @var array 把一个词转换成单数形式的规则。
+     * 键是正则表达式，值是相应的替换。
      */
     public static $singulars = [
         '/([nrlm]ese|deer|fish|sheep|measles|ois|pox|media|ss)$/i' => '\1',
@@ -103,8 +103,8 @@ class BaseInflector
         '/s$/i' => '',
     ];
     /**
-     * @var array the special rules for converting a word between its plural form and singular form.
-     * The keys are the special words in singular form, and the values are the corresponding plural form.
+     * @var array 在复数形式和单数形式之间转换单词的特殊规则。
+     * 关键字是单数形式的特殊词，值是对应的复数形式。
      */
     public static $specials = [
         'atlas' => 'atlases',
@@ -221,7 +221,7 @@ class BaseInflector
         'Yengeese' => 'Yengeese',
     ];
     /**
-     * @var array fallback map for transliteration used by [[transliterate()]] when intl isn't available.
+     * @var array 当 intl 不可用时 [[transliterate()]] 所使用的音译回退映射。
      */
     public static $transliteration = [
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
@@ -236,46 +236,46 @@ class BaseInflector
         'ÿ' => 'y',
     ];
     /**
-     * Shortcut for `Any-Latin; NFKD` transliteration rule.
+     * 为 `Any-Latin; NFKD` 提供快捷的音译规则。
      *
-     * The rule is strict, letters will be transliterated with
-     * the closest sound-representation chars. The result may contain any UTF-8 chars. For example:
-     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
-     * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`.
+     * 规则很严格，字母将被音译与最接近的声音表示字符。
+     * 结果可能包含任何 UTF-8 字符。
+     * 例如：`获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` 会被音译成
+     * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`。
      *
-     * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * 在 [[transliterate()]] 中使用。
+     * 有关详细信息，请参阅 [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
     const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
     /**
-     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule.
+     * 为 `Any-Latin; Latin-ASCII` 提供快捷的音译规则。
      *
-     * The rule is medium, letters will be
-     * transliterated to characters of Latin-1 (ISO 8859-1) ASCII table. For example:
-     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
-     * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`.
+     * 规则是中等的，字母将被转换为 Latin-1（ISO 8859-1）ASCII 表中的字符。
+     * 例如：
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` 会被音译成
+     * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`。
      *
-     * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * 在 [[transliterate()]] 中使用。
+     * 有关详细信息，请参阅 [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
     const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
     /**
-     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule.
+     * 为 `Any-Latin; Latin-ASCII; [\u0080-\uffff] 提供移除规则的快捷方式。
      *
-     * The rule is loose,
-     * letters will be transliterated with the characters of Basic Latin Unicode Block.
-     * For example:
-     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
-     * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`.
+     * 规则是宽松的，
+     * 字母将与基本拉丁 Unicode 块的字符进行音译。
+     * 例如：
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` 会被音译成
+     * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`。
      *
-     * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * 在 [[transliterate()]] 中使用。
+     * 有关详细信息，请参阅 [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
@@ -283,19 +283,19 @@ class BaseInflector
     const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
 
     /**
-     * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
-     * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
+     * @var mixed 可以使用 [[\Transliterator]]，也可以使用字符串构建 [[\Transliterator]] 构建用于音译的 [[\Transliterator]]。 
+     * 当 intl 可用时，由 [[transliterate()]] 使用。默认为 [[TRANSLITERATE_LOOSE]]
      * @see http://php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
 
 
     /**
-     * Converts a word to its plural form.
-     * Note that this is for English only!
-     * For example, 'apple' will become 'apples', and 'child' will become 'children'.
-     * @param string $word the word to be pluralized
-     * @return string the pluralized word
+     * 将一个单词转换为其复数形式。
+     * 注意，这只适用于英语!
+     * 例如，'apple' 将变成复数形式 'apples'，并且 'child' 将变成复数形式 'children'。
+     * @param string $word 将要转换为复数形式的单词
+     * @return string 复数词
      */
     public static function pluralize($word)
     {
@@ -312,9 +312,9 @@ class BaseInflector
     }
 
     /**
-     * Returns the singular of the $word.
-     * @param string $word the english word to singularize
-     * @return string Singular noun.
+     * 返回 $word 的单数。
+     * @param string $word 将英语单词单数化
+     * @return string 单数名词。
      */
     public static function singularize($word)
     {
@@ -332,10 +332,10 @@ class BaseInflector
     }
 
     /**
-     * Converts an underscored or CamelCase word into a English
-     * sentence.
+     * 将带下划线或驼峰大小写的单词
+     * 转换为英语句子。
      * @param string $words
-     * @param bool $ucAll whether to set all words to uppercase
+     * @param bool $ucAll 是否将所有单词设置为大写
      * @return string
      */
     public static function titleize($words, $ucAll = false)
@@ -346,13 +346,13 @@ class BaseInflector
     }
 
     /**
-     * Returns given word as CamelCased.
+     * 返回以 CamelCase 格式给出的单词。
      *
-     * Converts a word like "send_email" to "SendEmail". It
-     * will remove non alphanumeric character from the word, so
-     * "who's online" will be converted to "WhoSOnline".
+     * 将 "send_email" 之类的单词转换为 "SendEmail"。
+     * 它将从单词中删除非字母数字字符，
+     * 所以 "who's online" 将被转换为 "WhoSOnline"。
      * @see variablize()
-     * @param string $word the word to CamelCase
+     * @param string $word 转成驼峰的单词
      * @return string
      */
     public static function camelize($word)
@@ -361,11 +361,11 @@ class BaseInflector
     }
 
     /**
-     * Converts a CamelCase name into space-separated words.
-     * For example, 'PostTag' will be converted to 'Post Tag'.
-     * @param string $name the string to be converted
-     * @param bool $ucwords whether to capitalize the first letter in each word
-     * @return string the resulting words
+     * 转换一个 CamelCase 命名的名称为以空格分隔的单词。
+     * 例如，'PostTag' 将转换成 'Post Tag'。
+     * @param string $name 将被转换的字符串
+     * @param bool $ucwords 是否将每个单词的第一个字母大写
+     * @return string 返回这个单词的结果
      */
     public static function camel2words($name, $ucwords = true)
     {
@@ -379,13 +379,13 @@ class BaseInflector
     }
 
     /**
-     * Converts a CamelCase name into an ID in lowercase.
-     * Words in the ID may be concatenated using the specified character (defaults to '-').
-     * For example, 'PostTag' will be converted to 'post-tag'.
-     * @param string $name the string to be converted
-     * @param string $separator the character used to concatenate the words in the ID
-     * @param bool|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
-     * @return string the resulting ID
+     * 将 CamelCase 名称转换成小写 ID 单词。
+     * 可以使用指定的字符连接 ID 中的单词（默认 '-'）。
+     * 例如，'PostTag' 将被转成 'post-tag'。
+     * @param string $name 将被转换的字符串
+     * @param string $separator 用于连接 ID 中的单词的字符
+     * @param bool|string $strict 是否在两个连续大写字符之间插入分隔符，默认 false
+     * @return string 生成的结果 ID
      */
     public static function camel2id($name, $separator = '-', $strict = false)
     {
@@ -398,12 +398,12 @@ class BaseInflector
     }
 
     /**
-     * Converts an ID into a CamelCase name.
-     * Words in the ID separated by `$separator` (defaults to '-') will be concatenated into a CamelCase name.
-     * For example, 'post-tag' is converted to 'PostTag'.
-     * @param string $id the ID to be converted
-     * @param string $separator the character used to separate the words in the ID
-     * @return string the resulting CamelCase name
+     * 转换 ID 成一个 CamelCase 名称。
+     * ID 中以 `$separator` 分隔的单词（默认 '-'）将连接到 CamelCase 名称中。
+     * 例如，'post-tag' 将被转换成 'PostTag'。
+     * @param string $id ID 将被转换
+     * @param string $separator 用于分隔 ID 中单词的字符
+     * @return string 返回结果 CamelCase 命名
      */
     public static function id2camel($id, $separator = '-')
     {
@@ -411,8 +411,8 @@ class BaseInflector
     }
 
     /**
-     * Converts any "CamelCased" into an "underscored_word".
-     * @param string $words the word(s) to underscore
+     * 转换一些 "CamelCased" 成 "underscored_word"。
+     * @param string $words 带下划线的 word(s)
      * @return string
      */
     public static function underscore($words)
@@ -421,9 +421,9 @@ class BaseInflector
     }
 
     /**
-     * Returns a human-readable string from $word.
-     * @param string $word the string to humanize
-     * @param bool $ucAll whether to set all words to uppercase or not
+     * $word 返回人类可读的字符串。
+     * @param string $word 字符串要人性化
+     * @param bool $ucAll 是否将所有单词设置为大写
      * @return string
      */
     public static function humanize($word, $ucAll = false)
@@ -435,11 +435,11 @@ class BaseInflector
     }
 
     /**
-     * Same as camelize but first char is in lowercase.
+     * 与 camelize 相同，但是第一个 char 是小写的。
      *
-     * Converts a word like "send_email" to "sendEmail". It
-     * will remove non alphanumeric character from the word, so
-     * "who's online" will be converted to "whoSOnline".
+     * 将 "send_email" 之类的单词转换为 "sendEmail"。
+     * 它将从单词中删除非字母数字字符，
+     * 所以 "who's online" 将被转换成 "whoSOnline"。
      * @param string $word to lowerCamelCase
      * @return string
      */
@@ -451,10 +451,10 @@ class BaseInflector
     }
 
     /**
-     * Converts a class name to its table name (pluralized) naming conventions.
+     * 将类名转换为其表名（复数）命名约定。
      *
-     * For example, converts "Person" to "people".
-     * @param string $className the class name for getting related table_name
+     * 例如，"Person" 转换成小写 "people"。
+     * @param string $className 获取相关 table_name 的类名
      * @return string
      */
     public static function tableize($className)
@@ -463,17 +463,17 @@ class BaseInflector
     }
 
     /**
-     * Returns a string with all spaces converted to given replacement,
-     * non word characters removed and the rest of characters transliterated.
+     * 返回一个字符串，其中所有空格都转换为给定的替换，
+     * 去掉非单词字符，将其余字符音译。
      *
-     * If intl extension isn't available uses fallback that converts latin characters only
-     * and removes the rest. You may customize characters map via $transliteration property
-     * of the helper.
+     * 如果 intl 扩展不可用，则使用仅转换拉丁字符的回退
+     * 然后把剩下的移除。
+     * 您可以通过 $transliteration 属性自定义字符映射。
      *
-     * @param string $string An arbitrary string to convert
-     * @param string $replacement The replacement to use for spaces
-     * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
-     * @return string The converted string.
+     * @param string $string 要转换的任意字符串
+     * @param string $replacement 用于空格的替换
+     * @param bool $lowercase 是否返回小写字符串。默认是 `true`。
+     * @return string 转换后的字符串。
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
@@ -490,17 +490,17 @@ class BaseInflector
     }
 
     /**
-     * Returns transliterated version of a string.
+     * 返回字符串的音译版本。
      *
-     * If intl extension isn't available uses fallback that converts latin characters only
-     * and removes the rest. You may customize characters map via $transliteration property
-     * of the helper.
+     * 如果 intl 扩展不可用，使用仅转换拉丁字符的回滚
+     * 然后把剩下的移除。
+     * 您可以通过 $transliteration 属性自定义字符映射。
      *
-     * @param string $string input string
-     * @param string|\Transliterator $transliterator either a [[\Transliterator]] or a string
-     * from which a [[\Transliterator]] can be built.
+     * @param string $string 输入字符串
+     * @param string|\Transliterator $transliterator 可以是
+     * [[\Transliterator]] 或者字符串从中可以构建 [[\Transliterator]]。
      * @return string
-     * @since 2.0.7 this method is public.
+     * @since 2.0.7 以上版本中此方法是公共的。
      */
     public static function transliterate($string, $transliterator = null)
     {
@@ -516,7 +516,7 @@ class BaseInflector
     }
 
     /**
-     * @return bool if intl extension is loaded
+     * @return bool 如果 intl 扩展已加载
      */
     protected static function hasIntl()
     {
@@ -524,9 +524,9 @@ class BaseInflector
     }
 
     /**
-     * Converts a table name to its class name.
+     * 将表名转换为其类名。
      *
-     * For example, converts "people" to "Person".
+     * 例如，将 "people" 转换成 "Person"。
      * @param string $tableName
      * @return string
      */
@@ -536,8 +536,8 @@ class BaseInflector
     }
 
     /**
-     * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-     * @param int $number the number to get its ordinal value
+     * 将数字转换为英文序数形式。例如，将 13 转成 13th，2 转成 2nd ...
+     * @param int $number 获取其序数值的数字
      * @return string
      */
     public static function ordinalize($number)
@@ -558,9 +558,9 @@ class BaseInflector
     }
 
     /**
-     * Converts a list of words into a sentence.
+     * 将单词列表转换为句子。
      *
-     * Special treatment is done for the last few words. For example,
+     * 最后几句话要特别处理。例如，
      *
      * ```php
      * $words = ['Spain', 'France'];
@@ -576,13 +576,13 @@ class BaseInflector
      * // output: Spain, France & Italy
      * ```
      *
-     * @param array $words the words to be converted into an string
-     * @param string $twoWordsConnector the string connecting words when there are only two
-     * @param string $lastWordConnector the string connecting the last two words. If this is null, it will
-     * take the value of `$twoWordsConnector`.
-     * @param string $connector the string connecting words other than those connected by
-     * $lastWordConnector and $twoWordsConnector
-     * @return string the generated sentence
+     * @param array $words 要转换为字符串的单词
+     * @param string $twoWordsConnector 当只有两个单词时连接单词的字符串
+     * @param string $lastWordConnector 连接最后两个单词的字符串。
+     * 如果这是空的，它将获取 `$twoWordsConnector` 的值。
+     * @param string $connector 连接单词的字符串，
+     * 而不是由 $lastWordConnector 和 $twoWordsConnector 连接的单词。
+     * @return string 生成的句子
      * @since 2.0.1
      */
     public static function sentence(array $words, $twoWordsConnector = null, $lastWordConnector = null, $connector = ', ')

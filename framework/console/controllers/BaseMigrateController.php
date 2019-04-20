@@ -19,7 +19,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * BaseMigrateController is the base class for migrate controllers.
+ * BaseMigrateController 是迁移控制器的基类。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,44 +27,44 @@ use yii\helpers\FileHelper;
 abstract class BaseMigrateController extends Controller
 {
     /**
-     * The name of the dummy migration that marks the beginning of the whole migration history.
+     * 虚拟迁移的名称，标记整个迁移历史记录的开头。
      */
     const BASE_MIGRATION = 'm000000_000000_base';
 
     /**
-     * @var string the default command action.
+     * @var string 默认的命令操作。
      */
     public $defaultAction = 'up';
     /**
-     * @var string|array the directory containing the migration classes. This can be either
-     * a [path alias](guide:concept-aliases) or a directory path.
+     * @var string|array 包含迁移类的目录。这可以是
+     * 一个 [path alias](guide:concept-aliases) 或一个目录路径。
      *
-     * Migration classes located at this path should be declared without a namespace.
-     * Use [[migrationNamespaces]] property in case you are using namespaced migrations.
+     * 位于此路径的迁移类应该在没有命名空间的情况下声明。
+     * 使用 [[migrationNamespaces]] 属性以防你使用命名空间迁移。
      *
-     * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
-     * to disable usage of migrations that are not namespaced.
+     * 如果你已经设置了 [[migrationNamespaces]]，你可以按顺序将此字段设置为 `null`
+     * 禁用未命名空间的迁移的使用。
      *
-     * Since version 2.0.12 you may also specify an array of migration paths that should be searched for
-     * migrations to load. This is mainly useful to support old extensions that provide migrations
-     * without namespace and to adopt the new feature of namespaced migrations while keeping existing migrations.
+     * 从版本 2.0.12 开始您还可以指定应该搜索的迁移路径数组
+     * 以加载迁移。这主要用于支持在没有命名空间的情况下
+     * 提供迁移的旧扩展，并在保留现有迁移的同时采用命名空间迁移的新功能。
      *
-     * In general, to load migrations from different locations, [[migrationNamespaces]] is the preferable solution
-     * as the migration name contains the origin of the migration in the history, which is not the case when
-     * using multiple migration paths.
+     * 通常，要从不同位置加载迁移，[[migrationNamespaces]] 是首选解决方案
+     * 因为迁移名称包含历史记录中迁移的来源，而使用多个迁移路径时
+     * 则不是这种情况。
      *
      * @see $migrationNamespaces
      */
     public $migrationPath = ['@app/migrations'];
     /**
-     * @var array list of namespaces containing the migration classes.
+     * @var array 包含迁移类的命名空间列表。
      *
-     * Migration namespaces should be resolvable as a [path alias](guide:concept-aliases) if prefixed with `@`, e.g. if you specify
-     * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return
-     * the file path to the directory this namespace refers to.
-     * This corresponds with the [autoloading conventions](guide:concept-autoloading) of Yii.
+     * 如果前缀为 `@` 迁移命名空间应该可解析为 [path alias](guide:concept-aliases)，例如如果你指定
+     * 命名空间 `app\migrations`，代码 `Yii::getAlias('@app/migrations')` 应该能够返回
+     * 此命名空间引用的目录的文件路径。
+     * 这与Yii的 [autoloading conventions](guide:concept-autoloading) 相适应。
      *
-     * For example:
+     * 例如：
      *
      * ```php
      * [
@@ -78,15 +78,15 @@ abstract class BaseMigrateController extends Controller
      */
     public $migrationNamespaces = [];
     /**
-     * @var string the template file for generating new migrations.
-     * This can be either a [path alias](guide:concept-aliases) (e.g. "@app/migrations/template.php")
-     * or a file path.
+     * @var string 用于生成新迁移的模板文件。
+     * 这可以是一个 [path alias](guide:concept-aliases)（例如 "@app/migrations/template.php"）
+     * 或文件路径。
      */
     public $templateFile;
     /**
-     * @var bool indicates whether the console output should be compacted.
-     * If this is set to true, the individual commands ran within the migration will not be output to the console.
-     * Default is false, in other words the output is fully verbose by default.
+     * @var bool 指示是否应该压缩控制台输出。
+     * 如果设置为 true，则迁移中运行的各个命令将不会输出到控制台。
+     * 默认为 false，换句话说输出是完全详细的。
      * @since 2.0.13
      */
     public $compact = false;
@@ -99,17 +99,17 @@ abstract class BaseMigrateController extends Controller
     {
         return array_merge(
             parent::options($actionID),
-            ['migrationPath', 'migrationNamespaces', 'compact'], // global for all actions
-            $actionID === 'create' ? ['templateFile'] : [] // action create
+            ['migrationPath', 'migrationNamespaces', 'compact'], // 所有动作的全局
+            $actionID === 'create' ? ['templateFile'] : [] // 动作创建
         );
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * It checks the existence of the [[migrationPath]].
-     * @param \yii\base\Action $action the action to be executed.
-     * @throws InvalidConfigException if directory specified in migrationPath doesn't exist and action isn't "create".
-     * @return bool whether the action should continue to be executed.
+     * 在执行动作之前调用此方法（在所有可能的过滤器之后。）
+     * 它检查 [[migrationPath]] 的存在。
+     * @param \yii\base\Action $action 要执行的动作。
+     * @throws InvalidConfigException 如果在 migrationPath 中指定的目录不存在并且动作不是 "create"。
+     * @return bool 是否应该继续执行该动作。
      */
     public function beforeAction($action)
     {
@@ -147,19 +147,19 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Upgrades the application by applying new migrations.
+     * 通过应用新迁移来升级应用程序。
      *
-     * For example,
+     * 例如，
      *
      * ```
      * yii migrate     # apply all new migrations
      * yii migrate 3   # apply the first 3 new migrations
      * ```
      *
-     * @param int $limit the number of new migrations to be applied. If 0, it means
-     * applying all available new migrations.
+     * @param int $limit 要应用的新迁移数。如果是 0，
+     * 意味着应用所有可用的新迁移。
      *
-     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
+     * @return int 动作执行的状态。0 表示正常，其他值表示异常。
      */
     public function actionUp($limit = 0)
     {
@@ -211,21 +211,21 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Downgrades the application by reverting old migrations.
+     * 通过恢复旧迁移来降级应用程序。
      *
-     * For example,
+     * 例如，
      *
      * ```
-     * yii migrate/down     # revert the last migration
-     * yii migrate/down 3   # revert the last 3 migrations
-     * yii migrate/down all # revert all migrations
+     * yii migrate/down     # 恢复上次迁移
+     * yii migrate/down 3   # 恢复最后 3 次迁移
+     * yii migrate/down all # 恢复所有迁移
      * ```
      *
-     * @param int|string $limit the number of migrations to be reverted. Defaults to 1,
-     * meaning the last applied migration will be reverted. When value is "all", all migrations will be reverted.
-     * @throws Exception if the number of the steps specified is less than 1.
+     * @param int|string $limit 要还原的迁移次数。默认为 1，
+     * 表示将恢复上次应用的迁移。当值为 “all” 时，将还原所有迁移。
+     * @throws Exception 如果指定的步数小于 1。
      *
-     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
+     * @return int 动作执行的状态。0 表示正常，其他值表示异常。
      */
     public function actionDown($limit = 1)
     {
@@ -272,22 +272,22 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Redoes the last few migrations.
+     * 重做最后几次迁移。
      *
-     * This command will first revert the specified migrations, and then apply
-     * them again. For example,
+     * 此命令将首先还原指定的迁移, 然后再次应用
+     * 他们。比如，
      *
      * ```
-     * yii migrate/redo     # redo the last applied migration
-     * yii migrate/redo 3   # redo the last 3 applied migrations
-     * yii migrate/redo all # redo all migrations
+     * yii migrate/redo     # 重做上次应用的迁移
+     * yii migrate/redo 3   # 重做最后 3 次应用的迁移
+     * yii migrate/redo all # 重做所有迁移
      * ```
      *
-     * @param int|string $limit the number of migrations to be redone. Defaults to 1,
-     * meaning the last applied migration will be redone. When equals "all", all migrations will be redone.
-     * @throws Exception if the number of the steps specified is less than 1.
+     * @param int|string $limit 要重做的迁移次数。默认为 1，
+     * 表示最后一次应用的迁移将重做。当等于 "all" 时，将重做所有迁移。
+     * @throws Exception 如果指定的步数小于 1。
      *
-     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
+     * @return int 动作执行的状态。0 表示正常，其他值表示异常。
      */
     public function actionRedo($limit = 1)
     {
@@ -338,28 +338,28 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Upgrades or downgrades till the specified version.
+     * 升级或降级至指定版本。
      *
-     * Can also downgrade versions to the certain apply time in the past by providing
-     * a UNIX timestamp or a string parseable by the strtotime() function. This means
-     * that all the versions applied after the specified certain time would be reverted.
+     * 也可以将版本降级到过去的某个应用时间，通过提供
+     * 一个 UNIX 时间戳或者一个 strtotime() 函数可解析的字符串。这意味着
+     * 在指定的特定时间之后应用的所有版本都将被还原。
      *
-     * This command will first revert the specified migrations, and then apply
-     * them again. For example,
+     * 此命令将首先还原指定的迁移，然后再次应用他们。
+     * 比如，
      *
      * ```
-     * yii migrate/to 101129_185401                          # using timestamp
-     * yii migrate/to m101129_185401_create_user_table       # using full name
-     * yii migrate/to 1392853618                             # using UNIX timestamp
-     * yii migrate/to "2014-02-15 13:00:50"                  # using strtotime() parseable string
-     * yii migrate/to app\migrations\M101129185401CreateUser # using full namespace name
+     * yii migrate/to 101129_185401                          # 使用时间戳
+     * yii migrate/to m101129_185401_create_user_table       # 使用全名
+     * yii migrate/to 1392853618                             # 使用 UNIX 时间戳
+     * yii migrate/to "2014-02-15 13:00:50"                  # 使用 strtotime() 可解析的字符串
+     * yii migrate/to app\migrations\M101129185401CreateUser # 使用完整的命名空间名称
      * ```
      *
-     * @param string $version either the version name or the certain time value in the past
-     * that the application should be migrated to. This can be either the timestamp,
-     * the full name of the migration, the UNIX timestamp, or the parseable datetime
-     * string.
-     * @throws Exception if the version argument is invalid.
+     * @param string $version 应用将迁移到的
+     * 过去的版本名称或特定的时间值。这可以是时间戳，
+     * 迁移的全名，UNIX 时间戳或，或可解析的时间日期
+     * 字符串。
+     * @throws Exception 如果 version 参数无效。
      */
     public function actionTo($version)
     {
@@ -377,23 +377,23 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Modifies the migration history to the specified version.
+     * 将迁移历史记录修改为指定的版本。
      *
-     * No actual migration will be performed.
+     * 不会进行实际迁移。
      *
      * ```
-     * yii migrate/mark 101129_185401                        # using timestamp
-     * yii migrate/mark m101129_185401_create_user_table     # using full name
-     * yii migrate/mark app\migrations\M101129185401CreateUser # using full namespace name
-     * yii migrate/mark m000000_000000_base # reset the complete migration history
+     * yii migrate/mark 101129_185401                        # 使用时间戳
+     * yii migrate/mark m101129_185401_create_user_table     # 使用全名
+     * yii migrate/mark app\migrations\M101129185401CreateUser # 使用命名空间全名
+     * yii migrate/mark m000000_000000_base # 重置完整的迁移历史记录
      * ```
      *
-     * @param string $version the version at which the migration history should be marked.
-     * This can be either the timestamp or the full name of the migration.
-     * You may specify the name `m000000_000000_base` to set the migration history to a
-     * state where no migration has been applied.
-     * @return int CLI exit code
-     * @throws Exception if the version argument is invalid or the version cannot be found.
+     * @param string $version 应标记迁移历史记录的版本。
+     * 这可以是时间戳或迁移的全名。
+     * 你可以指定名称 `m000000_000000_base` 以将迁移历史设置为
+     * 未应用迁移的状态。
+     * @return int CLI 退出码
+     * @throws Exception 如果版本参数无效或无法找到版本。
      */
     public function actionMark($version)
     {
@@ -445,7 +445,7 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Truncates the whole database and starts the migration from the beginning.
+     * 截断整个数据库并从头开始迁移。
      *
      * ```
      * yii migrate/fresh
@@ -470,9 +470,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Checks if given migration version specification matches namespaced migration name.
-     * @param string $rawVersion raw version specification received from user input.
-     * @return string|false actual migration version, `false` - if not match.
+     * 检查给定的迁移版本规范是否与命名空间迁移名称匹配。
+     * @param string $rawVersion 从用户输入接收的原始版本规范。
+     * @return string|false 实际迁移版本，`false` - 如果不匹配。
      * @since 2.0.10
      */
     private function extractNamespaceMigrationVersion($rawVersion)
@@ -485,9 +485,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Checks if given migration version specification matches migration base name.
-     * @param string $rawVersion raw version specification received from user input.
-     * @return string|false actual migration version, `false` - if not match.
+     * 检查给定的迁移版本规范是否与迁移基本名称匹配。
+     * @param string $rawVersion 从用户输入接收的原始版本规范。
+     * @return string|false 实际迁移版本，`false` - 如果不匹配。
      * @since 2.0.10
      */
     private function extractMigrationVersion($rawVersion)
@@ -500,20 +500,20 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Displays the migration history.
+     * 显示迁移历史记录。
      *
-     * This command will show the list of migrations that have been applied
-     * so far. For example,
+     * 此命令将显示已应用的迁移列表到目前为止。
+     * 例如，
      *
      * ```
-     * yii migrate/history     # showing the last 10 migrations
-     * yii migrate/history 5   # showing the last 5 migrations
-     * yii migrate/history all # showing the whole history
+     * yii migrate/history     # 显示最近 10 次迁移
+     * yii migrate/history 5   # 显示最近 5 次迁移
+     * yii migrate/history all # 显示整个历史记录
      * ```
      *
-     * @param int|string $limit the maximum number of migrations to be displayed.
-     * If it is "all", the whole migration history will be displayed.
-     * @throws \yii\console\Exception if invalid limit value passed
+     * @param int|string $limit 要显示的最大迁移数。
+     * 如果是 "all"，将显示整个迁移历史记录。
+     * @throws \yii\console\Exception 如果传递了无效限制值。
      */
     public function actionHistory($limit = 10)
     {
@@ -544,20 +544,20 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Displays the un-applied new migrations.
+     * 显示未应用的新迁移。
      *
-     * This command will show the new migrations that have not been applied.
-     * For example,
+     * 此命令将显示尚未应用的新迁移。
+     * 例如，
      *
      * ```
-     * yii migrate/new     # showing the first 10 new migrations
-     * yii migrate/new 5   # showing the first 5 new migrations
-     * yii migrate/new all # showing all new migrations
+     * yii migrate/new     # 显示前 10 次新迁移
+     * yii migrate/new 5   # 显示前 5 次新迁移
+     * yii migrate/new all # 显示所有新迁移
      * ```
      *
-     * @param int|string $limit the maximum number of new migrations to be displayed.
-     * If it is `all`, all available new migrations will be displayed.
-     * @throws \yii\console\Exception if invalid limit value passed
+     * @param int|string $limit 要显示的最大新迁移数。
+     * 如果是 `all`，将显示所有可用的新迁移。
+     * @throws \yii\console\Exception 如果传递了无效限制值。
      */
     public function actionNew($limit = 10)
     {
@@ -590,35 +590,35 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Creates a new migration.
+     * 创建新的迁移。
      *
-     * This command creates a new migration using the available migration template.
-     * After using this command, developers should modify the created migration
-     * skeleton by filling up the actual migration logic.
+     * 此命令使用可用的迁移模板创建新迁移。
+     * 使用此命令后，开发人员应通过填充实际的迁移逻辑
+     * 来修改创建的迁移框架。
      *
      * ```
      * yii migrate/create create_user_table
      * ```
      *
-     * In order to generate a namespaced migration, you should specify a namespace before the migration's name.
-     * Note that backslash (`\`) is usually considered a special character in the shell, so you need to escape it
-     * properly to avoid shell errors or incorrect behavior.
-     * For example:
+     * 为了生成命名空间迁移，您应该在迁移名称之前指定命名空间。
+     * 请注意反斜杠（`\`）通常被认为是 shell 中的特殊字符，因此您需要将其转义
+     * 正确避免 shell 错误或不正确的行为。
+     * 例如：
      *
      * ```
      * yii migrate/create 'app\\migrations\\createUserTable'
      * ```
      *
-     * In case [[migrationPath]] is not set and no namespace is provided, the first entry of [[migrationNamespaces]] will be used.
+     * 如果未设置 [[migrationPath]] 且未提供命名空间，则将使用 [[migrationNamespaces]]的第一个条目。
      *
-     * @param string $name the name of the new migration. This should only contain
-     * letters, digits, underscores and/or backslashes.
+     * @param string $name 新迁移的名称。这应该只包含
+     * 字母，数字，下划线和/或反斜杠。
      *
-     * Note: If the migration name is of a special form, for example create_xxx or
-     * drop_xxx, then the generated migration file will contain extra code,
-     * in this case for creating/dropping tables.
+     * 注意：如果迁移名称是特殊形式，例如 create_xxx 或 drop_xxx，
+     * 然后生成的迁移文件将包含额外的代码，
+     * 在这种情况下用于创建/删除表。
      *
-     * @throws Exception if the name argument is invalid.
+     * @throws Exception 如果 name 参数无效。
      */
     public function actionCreate($name)
     {
@@ -649,9 +649,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Generates class base name and namespace from migration name from user input.
-     * @param string $name migration name from user input.
-     * @return array list of 2 elements: 'namespace' and 'class base name'
+     * 生成类的基本名称和命名空间通过用户输入的迁移名称。
+     * @param string $name 用户输入的迁移名称。
+     * @return array 2 个元素列表：'namespace' 和 'class base name'
      * @since 2.0.10
      */
     private function generateClassName($name)
@@ -678,10 +678,10 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Finds the file path for the specified migration namespace.
-     * @param string|null $namespace migration namespace.
-     * @return string migration file path.
-     * @throws Exception on failure.
+     * 查找指定迁移命名空间的文件路径。
+     * @param string|null $namespace 迁移命名空间。
+     * @return string 迁移文件路径。
+     * @throws Exception 失败时。
      * @since 2.0.10
      */
     private function findMigrationPath($namespace)
@@ -698,9 +698,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Returns the file path matching the give namespace.
-     * @param string $namespace namespace.
-     * @return string file path.
+     * 返回与给定命名空间匹配的文件路径。
+     * @param string $namespace 命名空间
+     * @return string 文件路径
      * @since 2.0.10
      */
     private function getNamespacePath($namespace)
@@ -709,9 +709,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Upgrades with the specified migration class.
-     * @param string $class the migration class name
-     * @return bool whether the migration is successful
+     * 使用指定的迁移类进行升级。
+     * @param string $class 迁移类名。
+     * @return bool 迁移是否成功。
      */
     protected function migrateUp($class)
     {
@@ -737,9 +737,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Downgrades with the specified migration class.
-     * @param string $class the migration class name
-     * @return bool whether the migration is successful
+     * 使用指定的迁移类降级。
+     * @param string $class 迁移类名
+     * @return bool 迁移是否成功
      */
     protected function migrateDown($class)
     {
@@ -765,9 +765,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Creates a new migration instance.
-     * @param string $class the migration class name
-     * @return \yii\db\MigrationInterface the migration instance
+     * 创建新的迁移实例。
+     * @param string $class 迁移类名
+     * @return \yii\db\MigrationInterface 迁移实例
      */
     protected function createMigration($class)
     {
@@ -783,12 +783,12 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Includes the migration file for a given migration class name.
+     * 包括给定迁移类名称的迁移文件。
      *
-     * This function will do nothing on namespaced migrations, which are loaded by
-     * autoloading automatically. It will include the migration file, by searching
-     * [[migrationPath]] for classes without namespace.
-     * @param string $class the migration class name.
+     * 此函数对命名空间迁移不做任何操作，哪些由
+     * 自动加载加载。它将包含迁移文件，通过在
+     * [[migrationPath]] 中搜索没有命名空间的类。
+     * @param string $class 迁移类名。
      * @since 2.0.12
      */
     protected function includeMigrationFile($class)
@@ -811,8 +811,8 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Migrates to the specified apply time in the past.
-     * @param int $time UNIX timestamp value.
+     * 迁移到过去指定的应用时间。
+     * @param int $time UNIX 时间戳值。
      */
     protected function migrateToTime($time)
     {
@@ -829,10 +829,10 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Migrates to the certain version.
-     * @param string $version name in the full format.
-     * @return int CLI exit code
-     * @throws Exception if the provided version cannot be found.
+     * 迁移到特定版本。
+     * @param string $version 名称的完整格式。
+     * @return int CLI 退出码
+     * @throws Exception 如果找不到提供的版本。
      */
     protected function migrateToVersion($version)
     {
@@ -866,8 +866,8 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Returns the migrations that are not applied.
-     * @return array list of new migrations
+     * 返回未应用的迁移。
+     * @return array 新迁移列表
      */
     protected function getNewMigrations()
     {
@@ -919,14 +919,14 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Generates new migration source PHP code.
-     * Child class may override this method, adding extra logic or variation to the process.
-     * @param array $params generation parameters, usually following parameters are present:
+     * 生成新的迁移源 PHP 代码。
+     * 子类可以重写此方法，为进程添加额外的逻辑或变动。
+     * @param array $params 生成参数，通常存在以下参数：
      *
-     *  - name: string migration base name
-     *  - className: string migration class name
+     *  - name: string 迁移基本名称
+     *  - className: string 迁移类名
      *
-     * @return string generated PHP code.
+     * @return string 生成的 PHP 代码。
      * @since 2.0.8
      */
     protected function generateMigrationSourceCode($params)
@@ -935,9 +935,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Truncates the database.
-     * This method should be overwritten in subclasses to implement the task of clearing the database.
-     * @throws NotSupportedException if not overridden
+     * 截断数据库。
+     * 应在子类中覆盖此方法以实现清除数据库的任务。
+     * @throws NotSupportedException 如果没有被覆盖
      * @since 2.0.13
      */
     protected function truncateDatabase()
@@ -946,10 +946,10 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Return the maximum name length for a migration.
+     * 返回迁移的最大名称长度。
      *
-     * Subclasses may override this method to define a limit.
-     * @return int|null the maximum name length for a migration or `null` if no limit applies.
+     * 子类可以重写此方法以定义限制。
+     * @return int|null 迁移的最大名称长度，如果没有限制则为 `null`。
      * @since 2.0.13
      */
     protected function getMigrationNameLimit()
@@ -958,21 +958,21 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Returns the migration history.
-     * @param int $limit the maximum number of records in the history to be returned. `null` for "no limit".
-     * @return array the migration history
+     * 返回迁移历史记录。
+     * @param int $limit 要返回的历史记录中的最大记录数。`null` 表示 "no limit"。
+     * @return array 迁移历史记录
      */
     abstract protected function getMigrationHistory($limit);
 
     /**
-     * Adds new migration entry to the history.
-     * @param string $version migration version name.
+     * 将新迁移条目添加到历史记录中。
+     * @param string $version 迁移版本名称。
      */
     abstract protected function addMigrationHistory($version);
 
     /**
-     * Removes existing migration from the history.
-     * @param string $version migration version name.
+     * 从历史记录中删除现有迁移。
+     * @param string $version 迁移版本名称。
      */
     abstract protected function removeMigrationHistory($version);
 }

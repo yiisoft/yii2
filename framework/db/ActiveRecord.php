@@ -15,22 +15,22 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
- * ActiveRecord is the base class for classes representing relational data in terms of objects.
+ * ActiveRecord 是表示数据对象关系的类的基类。
  *
- * Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
- * The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific
- * row in a database table. The object's attributes are mapped to the columns of the corresponding table.
- * Referencing an Active Record attribute is equivalent to accessing the corresponding table column for that record.
+ * ActiveRecord 实现请阅读 [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record)。
+ * Active Record 背后的前提是，单个 [[ActiveRecord]] 对象与数据库表中的特定行相关联。
+ * 对象的属性映射到相应表的列。
+ * 引用 Active Record 属性等同于访问该记录的相应表列。
  *
- * As an example, say that the `Customer` ActiveRecord class is associated with the `customer` table.
- * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `customer` table.
- * Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of
- * the `name` column for the table row, you can use the expression `$customer->name`.
- * In this example, Active Record is providing an object-oriented interface for accessing data stored in the database.
- * But Active Record provides much more functionality than this.
+ * 例如，假设 `Customer` ActiveRecord 类与 `customer` 表相关联。
+ * 这意味着类的 `name` 属性会自动映射到 `customer` 表中的 `name` 列。
+ * 感谢伟大的 Active Record，当变量 `$customer` 是 `Customer` 类的对象时，
+ * 为了得到表行的 `name` 列的值，你可以使用表达式 `$customer->name` 获取它。
+ * 在此示例中，ActiveRecord 提供了一个面向对象的接口，用于访问存储在数据库中的数据。
+ * 但 Active Record 提供了比这更多的功能。
  *
- * To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
- * implement the `tableName` method:
+ * 要声明一个 ActiveRecord 类，
+ * 你需要继承 [[\yii\db\ActiveRecord]] 并实现 `tableName` 方法：
  *
  * ```php
  * <?php
@@ -44,17 +44,17 @@ use yii\helpers\StringHelper;
  * }
  * ```
  *
- * The `tableName` method only has to return the name of the database table associated with the class.
+ * `tableName` 方法仅会返回与该类关联的数据库表的名称。
  *
- * > Tip: You may also use the [Gii code generator](guide:start-gii) to generate ActiveRecord classes from your
- * > database tables.
+ * > 提示：您还可以使用 [Gii code generator](guide:start-gii)
+ * > 从数据库表生成 ActiveRecord 类。
  *
- * Class instances are obtained in one of two ways:
+ * 类实例可通过以下两种方式的任何一种获得：
  *
- * * Using the `new` operator to create a new, empty object
- * * Using a method to fetch an existing record (or records) from the database
+ * * 使用 `new` 操作符，创建一个新的空对象
+ * * 使用方法从数据库中获取现有记录（或记录）
  *
- * Below is an example showing some typical usage of ActiveRecord:
+ * 下面是一个示例，显示 ActiveRecord 的一些典型用法：
  *
  * ```php
  * $user = new User();
@@ -68,10 +68,10 @@ use yii\helpers\StringHelper;
  * $orders = $user->orders;
  * ```
  *
- * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
+ * 有关 ActiveRecord 的更多详细信息和用法，请参阅 [guide article on ActiveRecord](guide:db-active-record)。
  *
- * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
- * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
+ * @method ActiveQuery hasMany($class, array $link) 有关详细信息请参阅 [[BaseActiveRecord::hasMany()]]
+ * @method ActiveQuery hasOne($class, array $link) 有关详细信息请参阅 [[BaseActiveRecord::hasOne()]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -80,28 +80,28 @@ use yii\helpers\StringHelper;
 class ActiveRecord extends BaseActiveRecord
 {
     /**
-     * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     * 插入操作。其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_INSERT = 0x01;
     /**
-     * The update operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     * 更新操作。其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_UPDATE = 0x02;
     /**
-     * The delete operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     * 删除操作。其主要用于覆盖 [[transactions()]] 以指定哪些操作是事务性的。
      */
     const OP_DELETE = 0x04;
     /**
-     * All three operations: insert, update, delete.
-     * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
+     * 所有三个操作：insert、update、delete。
+     * 这是表达式的快捷方式：OP_INSERT | OP_UPDATE | OP_DELETE。
      */
     const OP_ALL = 0x07;
 
 
     /**
-     * Loads default values from database table schema.
+     * 从数据库表结构加载默认值。
      *
-     * You may call this method to load default values after creating a new instance:
+     * 你可以在创建新实例后调用此方法以加载默认值：
      *
      * ```php
      * // class Customer extends \yii\db\ActiveRecord
@@ -109,9 +109,9 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->loadDefaultValues();
      * ```
      *
-     * @param bool $skipIfSet whether existing value should be preserved.
-     * This will only set defaults for attributes that are `null`.
-     * @return $this the model instance itself.
+     * @param bool $skipIfSet 是否应保留现有值。
+     * 这只会为 `null` 属性设置默认值。
+     * @return $this 模型实例本身。
      */
     public function loadDefaultValues($skipIfSet = true)
     {
@@ -125,10 +125,10 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the database connection used by this AR class.
-     * By default, the "db" application component is used as the database connection.
-     * You may override this method if you want to use a different database connection.
-     * @return Connection the database connection used by this AR class.
+     * 返回此 AR 类使用的数据库连接。
+     * 默认情况下，"db" 组件用作数据库连接。
+     * 如果要使用其他数据库连接，可以重写此方法。
+     * @return Connection 此 AR 类使用的数据库连接。
      */
     public static function getDb()
     {
@@ -136,22 +136,22 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Creates an [[ActiveQuery]] instance with a given SQL statement.
+     * 使用给定的 SQL 语句创建 [[ActiveQuery]] 实例。
      *
-     * Note that because the SQL statement is already specified, calling additional
-     * query modification methods (such as `where()`, `order()`) on the created [[ActiveQuery]]
-     * instance will have no effect. However, calling `with()`, `asArray()` or `indexBy()` is
-     * still fine.
+     * 请注意，因为已经指定了 SQL 语句，
+     * 所以在创建的 [[ActiveQuery]] 实例上调用其他查询修改方法（例如 `where()`，`order()`），
+     * 将不起作用，
+     * 但是，调用 `with()`，`asArray()` 或 `indexBy()` 仍然没问题。
      *
-     * Below is an example:
+     * 下面举个例子：
      *
      * ```php
      * $customers = Customer::findBySql('SELECT * FROM customer')->all();
      * ```
      *
-     * @param string $sql the SQL statement to be executed
-     * @param array $params parameters to be bound to the SQL statement during execution.
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance
+     * @param string $sql 要执行的 SQL 语句
+     * @param array $params 在执行期间绑定到 SQL 语句的参数。
+     * @return ActiveQuery 新创建的 [[ActiveQuery]] 实例
      */
     public static function findBySql($sql, $params = [])
     {
@@ -162,11 +162,11 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Finds ActiveRecord instance(s) by the given condition.
-     * This method is internally called by [[findOne()]] and [[findAll()]].
-     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws InvalidConfigException if there is no primary key defined.
+     * 按给定的条件查找 ActiveRecord 实例。
+     * 此方法由 [[findOne()]] 和 [[findAll()]] 在内部调用。
+     * @param mixed $condition 有关此参数的说明请参阅 [[findOne()]]
+     * @return ActiveQueryInterface 新创建的 [[ActiveQueryInterface|ActiveQuery]] 实例。
+     * @throws InvalidConfigException 如果没有定义主键，则抛出异常。
      * @internal
      */
     protected static function findByCondition($condition)
@@ -194,13 +194,13 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Filters array condition before it is assiged to a Query filter.
+     * 在将数组条件分配给查询过滤器之前对其进行过滤。
      *
-     * This method will ensure that an array condition only filters on existing table columns.
+     * 此方法将确保数组条件仅过滤现有表列。
      *
-     * @param array $condition condition to filter.
-     * @return array filtered condition.
-     * @throws InvalidArgumentException in case array contains unsafe values.
+     * @param array $condition 过滤条件。
+     * @return array 过滤后的条件。
+     * @throws InvalidArgumentException 当数组中包含不安全的值时，抛出异常。
      * @since 2.0.15
      * @internal
      */
@@ -243,19 +243,19 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Updates the whole table using the provided attribute values and conditions.
+     * 使用提供的属性值和条件更新整个表。
      *
-     * For example, to change the status to be 1 for all customers whose status is 2:
+     * 比如，要将所有状态为 2 的客户的状态更改为 1：
      *
      * ```php
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
-     * > Warning: If you do not specify any condition, this method will update **all** rows in the table.
+     * > 警告：如果未指定任何条件，则此方法将更新表中的**所有**行。
      *
-     * Note that this method will not trigger any events. If you need [[EVENT_BEFORE_UPDATE]] or
-     * [[EVENT_AFTER_UPDATE]] to be triggered, you need to [[find()|find]] the models first and then
-     * call [[update()]] on each of them. For example an equivalent of the example above would be:
+     * 注意，此方法不会触发任何事件，如果需要触发 [[EVENT_BEFORE_UPDATE]] 或 [[EVENT_AFTER_UPDATE]] ，
+     * 则首先需要 [[find()|find]] 模型，然后在每个模型上调用 [[update()]]。
+     * 例如，下面的例子和前面的例子作用是相同的：
      *
      * ```php
      * $models = Customer::find()->where('status = 2')->all();
@@ -265,13 +265,13 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
+     * 对于大量模型，可以考虑使用 [[ActiveQuery::each()]] 将内存使用限制在规定范围内。
      *
-     * @param array $attributes attribute values (name-value pairs) to be saved into the table
-     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return int the number of rows updated
+     * @param array $attributes 要保存在表中的属性值（键值对）
+     * @param string|array $condition 将放在 UPDATE SQL 的 WHERE 部分中的条件。
+     * 有关如何指定此参数，请阅读 [[Query::where()]]。
+     * @param array $params 要绑定到查询的参数 (name => value)。
+     * @return int 更新的行数
      */
     public static function updateAll($attributes, $condition = '', $params = [])
     {
@@ -282,23 +282,23 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Updates the whole table using the provided counter changes and conditions.
+     * 使用提供的计数器更改条件更新整个表。
      *
-     * For example, to increment all customers' age by 1,
+     * 例如，要将所有客户的年龄增加 1，
      *
      * ```php
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
-     * Note that this method will not trigger any events.
+     * 注意，此方法不会触发任何事件。
      *
-     * @param array $counters the counters to be updated (attribute name => increment value).
-     * Use negative values if you want to decrement the counters.
-     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
-     * @return int the number of rows updated
+     * @param array $counters 要更新的计数器 (attribute name => increment value)。
+     * 如果要递减计数器，请使用负值。
+     * @param string|array $condition 将放在 UPDATE SQL 的 WHERE 部分中的条件。
+     * 有关如何指定此参数，请阅读 [[Query::where()]]。
+     * @param array $params 要绑定到查询的参数 (name => value)。
+     * 不要将参数命名为 `:bp0`，`:bp1` 等，因为它们是由这个方法内部使用的。
+     * @return int 更新的行数
      */
     public static function updateAllCounters($counters, $condition = '', $params = [])
     {
@@ -314,19 +314,19 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Deletes rows in the table using the provided conditions.
+     * 使用提供的条件删除表中的行。
      *
-     * For example, to delete all customers whose status is 3:
+     * 例如，要删除所有状态为 3 的客户：
      *
      * ```php
      * Customer::deleteAll('status = 3');
      * ```
      *
-     * > Warning: If you do not specify any condition, this method will delete **all** rows in the table.
+     * > 警告：如果未指定任何条件，则此方法将删除表中的**所有**行。
      *
-     * Note that this method will not trigger any events. If you need [[EVENT_BEFORE_DELETE]] or
-     * [[EVENT_AFTER_DELETE]] to be triggered, you need to [[find()|find]] the models first and then
-     * call [[delete()]] on each of them. For example an equivalent of the example above would be:
+     * 注意，此方法不会触发任何事件。如果需要触发 [[EVENT_BEFORE_DELETE]] 或 [[EVENT_AFTER_DELETE]]，
+     * 则首先需要 [[find()|find]] 模型，然后再每个模型上调用 [[delete()]]。
+     * 例如，下面的例子和前面的例子作用是相同的：
      *
      * ```php
      * $models = Customer::find()->where('status = 3')->all();
@@ -335,12 +335,12 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
+     * 对于大量模型，可以考虑使用 [[ActiveQuery::each()]] 将内存使用限制在规定范围内。
      *
-     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return int the number of rows deleted
+     * @param string|array $condition 将放在 DELETE SQL 的 WHERE 部分中的条件。
+     * 有关如何指定此参数，请阅读 [[Query::where()]]。
+     * @param array $params 要绑定到查询的参数 (name => value)。
+     * @return int 删除的行数
      */
     public static function deleteAll($condition = null, $params = [])
     {
@@ -352,7 +352,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @return ActiveQuery 新建的 [[ActiveQuery]] 实例。
      */
     public static function find()
     {
@@ -360,12 +360,12 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Declares the name of the database table associated with this AR class.
-     * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
-     * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is `tbl_`,
-     * `Customer` becomes `tbl_customer`, and `OrderItem` becomes `tbl_order_item`. You may override this method
-     * if the table is not named after this convention.
-     * @return string the table name
+     * 声明与此 AR 类关联的数据库表的名称。
+     * 默认情况下，此方法通过使用前缀 [[Connection::tablePrefix]] 调用 [[Inflector::camel2id()]] 来返回类名作为表名。
+     * 例如，如果 [[Connection::tablePrefix]] 是 `tbl_`，
+     * 则 `Customer` 变为 `tbl_customer`，`OrderItem` 变为 `tbl_order_item`
+     * 如果未按约定命名表，则可以重写此方法。
+     * @return string 表名
      */
     public static function tableName()
     {
@@ -373,9 +373,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the schema information of the DB table associated with this AR class.
-     * @return TableSchema the schema information of the DB table associated with this AR class.
-     * @throws InvalidConfigException if the table for the AR class does not exist.
+     * 返回与此 AR 类关联的 DB 表的结构信息。
+     * @return TableSchema 与此 AR 类关联的 DB 表的结构信息。
+     * @throws InvalidConfigException 如果 AR 类的表不存在，抛出异常。
      */
     public static function getTableSchema()
     {
@@ -391,17 +391,17 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the primary key name(s) for this AR class.
-     * The default implementation will return the primary key(s) as declared
-     * in the DB table that is associated with this AR class.
+     * 返回此 AR 类的主键名称。
+     * 默认实现将返回与此 AR 类
+     * 关联的 DB 表中声明的主键。
      *
-     * If the DB table does not declare any primary key, you should override
-     * this method to return the attributes that you want to use as primary keys
-     * for this AR class.
+     * 如果 DB 表中为声明任何主键，
+     * 则应重写此方法，
+     * 以返回要用作此 AR 类的主键属性。
      *
-     * Note that an array should be returned even for a table with single primary key.
+     * 请注意，即使对于具有单个主键的表，也应返回一个数组。
      *
-     * @return string[] the primary keys of the associated database table.
+     * @return string[] 相关数据表的主键。
      */
     public static function primaryKey()
     {
@@ -409,9 +409,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns the list of all attribute names of the model.
-     * The default implementation will return all column names of the table associated with this AR class.
-     * @return array list of attribute names.
+     * 返回模型的所有的属性名称的列表。
+     * 默认实现将返回与此 AR 类关联的表的所有列名。
+     * @return array 属性名称列表。
      */
     public function attributes()
     {
@@ -419,14 +419,14 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Declares which DB operations should be performed within a transaction in different scenarios.
-     * The supported DB operations are: [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]],
-     * which correspond to the [[insert()]], [[update()]] and [[delete()]] methods, respectively.
-     * By default, these methods are NOT enclosed in a DB transaction.
+     * 声明应在不同场景的事务中执行那些 DB 操作。
+     * 支持的 DB 操作为 [[OP_INSERT]]，[[OP_UPDATE]] 以及 [[OP_DELETE]]，
+     * 分别对应 [[insert()]]，[[update()]] 以及 [[delete()]] 方法，
+     * 默认情况下，这些方法不包含在数据库事务中。
      *
-     * In some scenarios, to ensure data consistency, you may want to enclose some or all of them
-     * in transactions. You can do so by overriding this method and returning the operations
-     * that need to be transactional. For example,
+     * 在某些情况下，为保持数据一致性，
+     * 你可能希望将其中的部分或全部包含在事务中。
+     * 你可以通过重写此方法并返回需要进行事务处理的操作来完成此操作。例如，
      *
      * ```php
      * return [
@@ -438,12 +438,12 @@ class ActiveRecord extends BaseActiveRecord
      * ];
      * ```
      *
-     * The above declaration specifies that in the "admin" scenario, the insert operation ([[insert()]])
-     * should be done in a transaction; and in the "api" scenario, all the operations should be done
-     * in a transaction.
+     * 上述声明指定在 "admin" 场景中，
+     * 插入操作 ([[insert()]]) 应该在事务中完成；
+     * 在 "api" 场景中，所有的操作都应该在事务中完成。
      *
-     * @return array the declarations of transactional operations. The array keys are scenarios names,
-     * and the array values are the corresponding transaction operations.
+     * @return array 事务操作声明。数组的键是场景名称，
+     * 数组值是相应的事务操作。
      */
     public function transactions()
     {
@@ -465,29 +465,29 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Inserts a row into the associated database table using the attribute values of this record.
+     * 使用此属性的记录值将行插入关联的数据库表中。
      *
-     * This method performs the following steps in order:
+     * 此方法按顺序执行以下步骤：
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is `true`. If [[beforeValidate()]]
-     *    returns `false`, the rest of the steps will be skipped;
-     * 2. call [[afterValidate()]] when `$runValidation` is `true`. If validation
-     *    failed, the rest of the steps will be skipped;
-     * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
-     *    the rest of the steps will be skipped;
-     * 4. insert the record into database. If this fails, it will skip the rest of the steps;
-     * 5. call [[afterSave()]];
+     * 1. 当 `$runValidation` 为 `true` 时调用 [[beforeValidate()]]。
+     *    如果 [[beforeValidate()]] 返回 `false`，则跳过其余步骤；
+     * 2. 当 `$runValidation` 为 `true` 时调用 [[afterValidate()]]。
+     *    如果验证失败，则跳过其余步骤；
+     * 3. 调用 [[beforeSave()]]。当 [[beforeSave()]] 返回 `false`，
+     *    则跳过其余步骤；
+     * 4. 插入记录到数据库。如果插入记录失败，则跳过其余步骤；
+     * 5. 调用 [[afterSave()]]；
      *
-     * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-     * [[EVENT_AFTER_VALIDATE]], [[EVENT_BEFORE_INSERT]], and [[EVENT_AFTER_INSERT]]
-     * will be raised by the corresponding methods.
+     * 在上面的步骤 1，2，3 和 5 中，
+     * 将通过相应的方法引发事件 [[EVENT_BEFORE_VALIDATE]]，
+     * [[EVENT_AFTER_VALIDATE]]，[[EVENT_BEFORE_INSERT]]，以及 [[EVENT_AFTER_INSERT]]。
      *
-     * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
+     * 只有 [[dirtyAttributes|changed attribute values]] 才会插入到数据库中。
      *
-     * If the table's primary key is auto-incremental and is `null` during insertion,
-     * it will be populated with the actual value after insertion.
+     * 如果表的主键是自动增量并且在插入期间为 `null`，
+     * 则插入后将填充实际值。
      *
-     * For example, to insert a customer record:
+     * 例如，要插入 customer 记录：
      *
      * ```php
      * $customer = new Customer;
@@ -496,13 +496,13 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->insert();
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception|\Throwable in case insert failed.
+     * @param bool $runValidation 是否在保存记录之前执行验证（调用 [[validate()]]）。
+     * 默认为 `true`，即执行验证。如果验证失败，则记录不会保存到数据库中，
+     * 并且此方法将返回 `false`。
+     * @param array $attributes 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return bool 属性是否有效，以及是否成功插入记录。
+     * @throws \Exception|\Throwable 如果插入失败，则抛出异常。
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -535,10 +535,10 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Inserts an ActiveRecord into DB without considering transaction.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return bool whether the record is inserted successfully.
+     * 在不考虑事务的情况下将 ActiveRecord 插入到 DB 中。
+     * @param array $attributes 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return bool 是否成功插入记录。
      */
     protected function insertInternal($attributes = null)
     {
@@ -563,26 +563,26 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Saves the changes to this active record into the associated database table.
+     * 将对此活动记录的更改保存到关联的数据库表中。
      *
-     * This method performs the following steps in order:
+     * 此方法将按顺序执行一下步骤：
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is `true`. If [[beforeValidate()]]
-     *    returns `false`, the rest of the steps will be skipped;
-     * 2. call [[afterValidate()]] when `$runValidation` is `true`. If validation
-     *    failed, the rest of the steps will be skipped;
-     * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
-     *    the rest of the steps will be skipped;
-     * 4. save the record into database. If this fails, it will skip the rest of the steps;
-     * 5. call [[afterSave()]];
+     * 1. 当 `$runValidation` 为 `true` 时，调用 [[beforeValidate()]]。
+     *    如果 [[beforeValidate()]] 返回 `false`，则跳过其余步骤；
+     * 2. 当 `$runValidation` 为 `true` 时，调用 [[afterValidate()]]。
+     *    如果验证失败，则跳过其余步骤；
+     * 3. 调用 [[beforeSave()]]。如果 [[beforeSave()]] 返回 `false`，
+     *    则跳过其余步骤；
+     * 4. 保存记录到数据中。如果保存失败，则跳过余下步骤；
+     * 5. 调用 [[afterSave()]]；
      *
-     * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-     * [[EVENT_AFTER_VALIDATE]], [[EVENT_BEFORE_UPDATE]], and [[EVENT_AFTER_UPDATE]]
-     * will be raised by the corresponding methods.
+     * 在上面的步骤1，2，3，以及 5 中，
+     * 将通过相应的方法引发事件 [[EVENT_BEFORE_VALIDATE]]，
+     * [[EVENT_AFTER_VALIDATE]]，[[EVENT_BEFORE_UPDATE]]，以及 [[EVENT_AFTER_UPDATE]]。
      *
-     * Only the [[dirtyAttributes|changed attribute values]] will be saved into database.
+     * 只有 [[dirtyAttributes|changed attribute values]] 才会保存到数据库。
      *
-     * For example, to update a customer record:
+     * 例如，要更新 customer 记录：
      *
      * ```php
      * $customer = Customer::findOne($id);
@@ -591,9 +591,9 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->update();
      * ```
      *
-     * Note that it is possible the update does not affect any row in the table.
-     * In this case, this method will return 0. For this reason, you should use the following
-     * code to check if update() is successful or not:
+     * 注意，更新可能不会影响表中的任何行。
+     * 在该情况下，此方法有可能返回 0。
+     * 因此，应使用以下代码检查 update() 是否成功：
      *
      * ```php
      * if ($customer->update() !== false) {
@@ -603,16 +603,16 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return int|false the number of rows affected, or false if validation fails
-     * or [[beforeSave()]] stops the updating process.
-     * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     * being updated is outdated.
-     * @throws \Exception|\Throwable in case update failed.
+     * @param bool $runValidation 是否在保存记录之前执行验证 （调用 [[validate()]]）。
+     * 默认为 `true`，即执行验证。如果验证失败，则记录不会保存到数据库中，
+     * 并且此方法将返回 `false`。
+     * @param array $attributeNames 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return int|false 受影响的行数，如果验证失败或 [[beforeSave()]] 停止更新过程，
+     * 则为 false。
+     * @throws StaleObjectException 如果启用了 [[optimisticLock|optimistic locking]]
+     * 并且正在更新的数据已过时，则抛出异常。
+     * @throws \Exception|\Throwable 万一更新失败，则抛出异常。
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -645,23 +645,23 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Deletes the table row corresponding to this active record.
+     * 删除与此活动记录对应的表行。
      *
-     * This method performs the following steps in order:
+     * 此方法将按顺序执行以下步骤：
      *
-     * 1. call [[beforeDelete()]]. If the method returns `false`, it will skip the
-     *    rest of the steps;
-     * 2. delete the record from the database;
-     * 3. call [[afterDelete()]].
+     * 1. 调用 [[beforeDelete()]]。
+     *    如果该方法返回 `false`，则跳过其余步骤；
+     * 2. 从数据库删除记录；
+     * 3. 调用 [[afterDelete()]]。
      *
-     * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
-     * will be raised by the corresponding methods.
+     * 在以上步骤 1 和 3 中，
+     * 将通过相应的方法引发事件 [[EVENT_BEFORE_DELETE]] 和 [[EVENT_AFTER_DELETE]]。
      *
-     * @return int|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
-     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
-     * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     * being deleted is outdated.
-     * @throws \Exception|\Throwable in case delete failed.
+     * @return int|false 删除的行数，如果由于某种原因删除失败，则为 `false`。
+     * 注意，即使删除执行成功，删除的行数也可能为 0。
+     * @throws StaleObjectException 如果启用了 [[optimisticLock|optimistic locking]]
+     * 并且当正在删除的数据已过时，则抛出异常。
+     * @throws \Exception|\Throwable 万一删除失败，则抛出异常。
      */
     public function delete()
     {
@@ -689,9 +689,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Deletes an ActiveRecord without considering transaction.
-     * @return int|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
-     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+     * 删除 ActiveRecord 而不考虑事务。
+     * @return int|false 删除的行数，如果由于某种原因删除失败，则为 `false`。
+     * 注意，即使删除执行成功，删除的行数也可能为 0。
      * @throws StaleObjectException
      */
     protected function deleteInternal()
@@ -718,11 +718,11 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns a value indicating whether the given active record is the same as the current one.
-     * The comparison is made by comparing the table names and the primary key values of the two active records.
-     * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-     * @param ActiveRecord $record record to compare to
-     * @return bool whether the two active records refer to the same row in the same database table.
+     * 返回一个给定值，指示给定的活动记录是否与当前记录相同。
+     * 通过比较两个活动记录的表名和主键值来进行比较。
+     * 如果其中一个记录 [[isNewRecord|is new]] 也会被认为不相同。
+     * @param ActiveRecord $record 要比较记录
+     * @return bool 两个活动记录是否引用同一数据库表中的同一行。
      */
     public function equals($record)
     {
@@ -734,9 +734,9 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns a value indicating whether the specified operation is transactional in the current [[$scenario]].
-     * @param int $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
-     * @return bool whether the specified operation is transactional in the current [[scenario]].
+     * 返回一个值，该值表示指定的操作在当前 [[$scenario]] 中是否为事务性操作。
+     * @param int $operation 要检查的操作。可能的值为 [[OP_INSERT]]，[[OP_UPDATE]] 以及 [[OP_DELETE]]。
+     * @return bool 指定的操作在当前 [[scenario]] 中是否是事务性的。
      */
     public function isTransactional($operation)
     {

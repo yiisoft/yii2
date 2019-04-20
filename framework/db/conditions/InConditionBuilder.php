@@ -13,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class InConditionBuilder builds objects of [[InCondition]]
+ * 类 InConditionBuilder 构建 [[InCondition]] 类的对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -24,12 +24,12 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|InCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|InCondition $expression 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的原始 SQL 语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
@@ -76,12 +76,12 @@ class InConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds $values to be used in [[InCondition]]
+     * 构建要在 [[InCondition]] 中使用的 $values
      *
      * @param ConditionInterface|InCondition $condition
      * @param array $values
-     * @param array $params the binding parameters
-     * @return array of prepared for SQL placeholders
+     * @param array $params 绑定参数
+     * @return array 为 SQL 占位符准备的数组
      */
     protected function buildValues(ConditionInterface $condition, $values, &$params)
     {
@@ -105,7 +105,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds SQL for IN condition.
+     * 为 IN 条件构建 SQL。
      *
      * @param string $operator
      * @param array|string $columns
@@ -135,7 +135,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds SQL for IN condition.
+     * 为 IN 条件构建 SQL。
      *
      * @param string $operator
      * @param array|\Traversable $columns

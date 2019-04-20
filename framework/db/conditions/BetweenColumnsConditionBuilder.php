@@ -13,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]]
+ * 类 BetweenColumnsConditionBuilder 构建 [[BetweenColumnsCondition]] 类的对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -24,12 +24,12 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|BetweenColumnsCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|BetweenColumnsCondition $expression 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的 SQL语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
@@ -43,10 +43,10 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Prepares column name to be used in SQL statement.
+     * 准备要在 SQL 语句中使用的列名。
      *
      * @param Query|ExpressionInterface|string $columnName
-     * @param array $params the binding parameters.
+     * @param array $params 绑定参数。
      * @return string
      */
     protected function escapeColumnName($columnName, &$params = [])
@@ -64,7 +64,7 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Attaches $value to $params array and returns placeholder.
+     * 将 $value 附加到 $params 数组并返回占位符。
      *
      * @param mixed $value
      * @param array $params passed by reference

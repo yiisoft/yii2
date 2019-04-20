@@ -8,7 +8,7 @@
 namespace yii\console;
 
 /**
- * The console Response represents the result of a console application.
+ * 控制台响应表示控制台应用程序的结果。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -10,7 +10,7 @@ namespace yii\db\oci;
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilder is the schema builder for Oracle databases.
+ * ColumnSchemaBuilder 类是 Oracle 数据库的数据库结构构建器。
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @author Chris Harris <chris@buckshotsoftware.com>

@@ -12,10 +12,10 @@ use yii\console\Controller;
 use yii\helpers\Console;
 
 /**
- * Runs PHP built-in web server.
+ * 运行 PHP 内置 web 服务器。
  *
- * In order to access server from remote machines use 0.0.0.0:8000. That is especially useful when running server in
- * a virtual machine.
+ * 要从远程计算机访问服务器，请使用 0.0.0.0:8000。这在虚拟机中运行服务器
+ * 时特别有用。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0.7
@@ -28,24 +28,24 @@ class ServeController extends Controller
     const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
 
     /**
-     * @var int port to serve on.
+     * @var int 提供服务的端口。
      */
     public $port = 8080;
     /**
-     * @var string path or [path alias](guide:concept-aliases) to directory to serve
+     * @var string 路径或 [path alias](guide:concept-aliases) 到服务的目录
      */
     public $docroot = '@app/web';
     /**
-     * @var string path to router script.
+     * @var string 路由器脚本的路径。
      * See https://secure.php.net/manual/en/features.commandline.webserver.php
      */
     public $router;
 
 
     /**
-     * Runs PHP built-in web server.
+     * 运行 PHP 内置 web 服务器。
      *
-     * @param string $address address to serve on. Either "host" or "host:port".
+     * @param string $address 服务器地址。"host" 或 "host:port"。
      *
      * @return int
      */
@@ -108,8 +108,8 @@ class ServeController extends Controller
     }
 
     /**
-     * @param string $address server address
-     * @return bool if address is already in use
+     * @param string $address 服务器地址
+     * @return bool 地址是否已被使用
      */
     protected function isAddressTaken($address)
     {

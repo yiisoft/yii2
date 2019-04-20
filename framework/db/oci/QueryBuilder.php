@@ -17,7 +17,7 @@ use yii\helpers\StringHelper;
 use yii\db\ExpressionInterface;
 
 /**
- * QueryBuilder is the query builder for Oracle databases.
+ * QueryBuilder 类是 Oracle 数据库的查询构建器。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,7 +25,7 @@ use yii\db\ExpressionInterface;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）到物理列类型（值）的映射。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'NUMBER(10) NOT NULL PRIMARY KEY',
@@ -95,11 +95,11 @@ EOD;
     }
 
     /**
-     * Builds a SQL statement for renaming a DB table.
+     * 构建用于重命名数据库表的 SQL 语句。
      *
-     * @param string $table the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
+     * @param string $table 要重命名的表。该方法将正确引用该名称。
+     * @param string $newName 新的表名。该方法将正确引用该名称。
+     * @return string 用于重命名数据库表的 SQL 语句。
      */
     public function renameTable($table, $newName)
     {
@@ -107,14 +107,14 @@ EOD;
     }
 
     /**
-     * Builds a SQL statement for changing the definition of a column.
+     * 构建用于更改列定义的 SQL 语句。
      *
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
-     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
-     * @return string the SQL statement for changing the definition of a column.
+     * @param string $table 要更改其列的表。该方法将正确引用表名。
+     * @param string $column 要更改的列的名称。该方法将正确引用该名称。
+     * @param string $type 新的列类型。将调用 [[getColumnType]] 方法转换抽象列类型（如果有）转换为物理列类型，
+     * 任何为被识别为抽象列类型的内容都将保留在生成的 SQL 语句中。
+     * 例如，`string` 被转换成 `varchar(255)`，而 `string not null` 会被转换成 `varchar(255) not null`。
+     * @return string 用于更改列定义的 SQL 语句。
      */
     public function alterColumn($table, $column, $type)
     {
@@ -124,11 +124,11 @@ EOD;
     }
 
     /**
-     * Builds a SQL statement for dropping an index.
+     * 构建用于删除索引的 SQL 语句。
      *
-     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping an index.
+     * @param string $name 要删除的索引的名称。该方法将正确引用该名称。
+     * @param string $table 要删除其索引的表。该方法将正确引用该名称。
+     * @return string 用于删除索引的 SQL 语句。
      */
     public function dropIndex($name, $table)
     {
@@ -274,9 +274,9 @@ EOD;
     }
 
     /**
-     * Generates a batch INSERT SQL statement.
+     * 生成批量插入的 SQL 语句，
      *
-     * For example,
+     * 举个例子，
      *
      * ```php
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
@@ -286,12 +286,12 @@ EOD;
      * ]);
      * ```
      *
-     * Note that the values in each row must match the corresponding column names.
+     * 请注意，每行中的值必须与相应的列名匹配。
      *
-     * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column names
-     * @param array|\Generator $rows the rows to be batch inserted into the table
-     * @return string the batch INSERT SQL statement
+     * @param string $table 要插入新行的表。
+     * @param array $columns 列名
+     * @param array|\Generator $rows 要批量插入到表中的行
+     * @return string 批量插入的 SQL 语句
      */
     public function batchInsert($table, $columns, $rows, &$params = [])
     {

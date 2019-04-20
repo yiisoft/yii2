@@ -10,7 +10,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * Class BetweenCondition represents a `BETWEEN` condition.
+ * BetweenCondition 类表示 `BETWEEN` 条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -18,30 +18,30 @@ use yii\base\InvalidArgumentException;
 class BetweenCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @var string $operator 要使用的运算符（例如：`BETWEEN` or `NOT BETWEEN`）
      */
     private $operator;
     /**
-     * @var mixed the column name to the left of [[operator]]
+     * @var mixed [[operator]] 左侧的列名
      */
     private $column;
     /**
-     * @var mixed beginning of the interval
+     * @var mixed 间隔开头
      */
     private $intervalStart;
     /**
-     * @var mixed end of the interval
+     * @var mixed 间隔结尾
      */
     private $intervalEnd;
 
 
     /**
-     * Creates a condition with the `BETWEEN` operator.
+     * 使用 `BETWEEN` 运算符创建条件。
      *
-     * @param mixed $column the literal to the left of $operator
-     * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param mixed $intervalStart beginning of the interval
-     * @param mixed $intervalEnd end of the interval
+     * @param mixed $column $operator 左边的文字
+     * @param string $operator 要使用的运算符（例如：`BETWEEN` or `NOT BETWEEN`）
+     * @param mixed $intervalStart 间隔开头
+     * @param mixed $intervalEnd 间隔结尾
      */
     public function __construct($column, $operator, $intervalStart, $intervalEnd)
     {
@@ -85,7 +85,7 @@ class BetweenCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException if wrong number of operands have been given.
+     * @throws InvalidArgumentException 如果已给出错误的操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {

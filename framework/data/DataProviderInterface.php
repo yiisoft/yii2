@@ -8,12 +8,12 @@
 namespace yii\data;
 
 /**
- * DataProviderInterface is the interface that must be implemented by data provider classes.
+ * DataProviderInterface是数据提供器类必须实现的接口。
  *
- * Data providers are components that sort and paginate data, and provide them to widgets
- * such as [[\yii\grid\GridView]], [[\yii\widgets\ListView]].
+ * 数据提供器是对数据进行排序和分页的组件，并将其提供给小部件
+ * 如 [[\yii\grid\GridView]]，[[\yii\widgets\ListView]]。
  *
- * For more details and usage information on DataProviderInterface, see the [guide article on data providers](guide:output-data-providers).
+ * 有关 DataProviderInterface 的详细信息和使用信息，请参阅 [guide article on data providers](guide:output-data-providers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,52 +21,52 @@ namespace yii\data;
 interface DataProviderInterface
 {
     /**
-     * Prepares the data models and keys.
+     * 准备数据模型和键。
      *
-     * This method will prepare the data models and keys that can be retrieved via
-     * [[getModels()]] and [[getKeys()]].
+     * 此方法将准备可通过 [[getModels()]] 和 [[getKeys()]] 检索的
+     * 数据模型和密钥。
      *
-     * This method will be implicitly called by [[getModels()]] and [[getKeys()]] if it has not been called before.
+     * 如果没有调用此方法，则它将由 [[getModels()]] 和 [[getKeys()]] 隐式调用。
      *
-     * @param bool $forcePrepare whether to force data preparation even if it has been done before.
+     * @param bool $forcePrepare 是否强制进行数据准备，即使之前已经进行过。
      */
     public function prepare($forcePrepare = false);
 
     /**
-     * Returns the number of data models in the current page.
-     * This is equivalent to `count($provider->getModels())`.
-     * When [[getPagination|pagination]] is false, this is the same as [[getTotalCount|totalCount]].
-     * @return int the number of data models in the current page.
+     * 返回当前页中的数据模型数。
+     * 这相当于 `count($provider->getModels())`。
+     * 当 [[getPagination|pagination]] 为 false 时，这相当于 [[getTotalCount|totalCount]]。
+     * @return int 当前页中的数据模型数。
      */
     public function getCount();
 
     /**
-     * Returns the total number of data models.
-     * When [[getPagination|pagination]] is false, this is the same as [[getCount|count]].
-     * @return int total number of possible data models.
+     * 返回数据模型总数。
+     * 当 [[getPagination|pagination]] 为 false 时，这相当于 [[getCount|count]]。
+     * @return int 数据模型总数。
      */
     public function getTotalCount();
 
     /**
-     * Returns the data models in the current page.
-     * @return array the list of data models in the current page.
+     * 返回当前页中的数据模型。
+     * @return array 当前页中的数据模型列表。
      */
     public function getModels();
 
     /**
-     * Returns the key values associated with the data models.
-     * @return array the list of key values corresponding to [[getModels|models]]. Each data model in [[getModels|models]]
-     * is uniquely identified by the corresponding key value in this array.
+     * 返回与数据模型关联的键值。
+     * @return array 与 [[getModels|models]] 对应的键值列表。[[getModels|models]] 中的每个数据模型
+     * 都由该数组中相应的键值唯一标识。
      */
     public function getKeys();
 
     /**
-     * @return Sort the sorting object. If this is false, it means the sorting is disabled.
+     * @return Sort 排序对象。如果为 false，则表示排序被禁用。
      */
     public function getSort();
 
     /**
-     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
+     * @return Pagination|false 分页对象。如果为 false，则表示禁用分页。
      */
     public function getPagination();
 }

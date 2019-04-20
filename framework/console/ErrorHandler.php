@@ -13,10 +13,10 @@ use yii\base\UserException;
 use yii\helpers\Console;
 
 /**
- * ErrorHandler handles uncaught PHP errors and exceptions.
+ * ErrorHandler 处理未捕获的 PHP 错误和异常。
  *
- * ErrorHandler is configured as an application component in [[\yii\base\Application]] by default.
- * You can access that instance via `Yii::$app->errorHandler`.
+ * ErrorHandler 在 [[\yii\base\Application]] 中默认被配置为饮用程序组建。
+ * 你可以通过 `Yii::$app->errorHandler` 访问该实例。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -24,8 +24,8 @@ use yii\helpers\Console;
 class ErrorHandler extends \yii\base\ErrorHandler
 {
     /**
-     * Renders an exception using ansi format for console output.
-     * @param \Exception $exception the exception to be rendered.
+     * 使用 ansi 格式为控制台输出呈现异常。
+     * @param \Exception $exception 要呈现的异常。
      */
     protected function renderException($exception)
     {
@@ -68,11 +68,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Colorizes a message for console output.
-     * @param string $message the message to colorize.
-     * @param array $format the message format.
-     * @return string the colorized message.
-     * @see Console::ansiFormat() for details on how to specify the message format.
+     * 对控制台输出的消息进行着色处理。
+     * @param string $message 要着色的信息。
+     * @param array $format 消息格式。
+     * @return string 彩色信息。
+     * @see Console::ansiFormat() 有关如何指定消息格式的详细信息。
      */
     protected function formatMessage($message, $format = [Console::FG_RED, Console::BOLD])
     {

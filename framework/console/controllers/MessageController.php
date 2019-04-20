@@ -19,20 +19,20 @@ use yii\helpers\VarDumper;
 use yii\i18n\GettextPoFile;
 
 /**
- * Extracts messages to be translated from source files.
+ * 从源文件中提取要翻译的消息。
  *
- * The extracted messages can be saved the following depending on `format`
- * setting in config file:
+ * 根据配置文件中的 `format` 设置，提取的消息可以
+ * 保存如下：
  *
- * - PHP message source files.
- * - ".po" files.
- * - Database.
+ * - PHP 消息源文件。
+ * - ".po" 文件。
+ * - 数据库。
  *
- * Usage:
- * 1. Create a configuration file using the 'message/config' command:
+ * 用法：
+ * 1. 通过 'message/config' 命令创建配置文件：
  *    yii message/config /path/to/myapp/messages/config.php
- * 2. Edit the created config file, adjusting it for your web application needs.
- * 3. Run the 'message/extract' command, using created config:
+ * 2. 编辑创建的配置文件，根据 Web 应用程序的需要对其进行调整。
+ * 3. 运行 'message/extract' 命令，使用创建的配置：
  *    yii message /path/to/myapp/messages/config.php
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -41,54 +41,54 @@ use yii\i18n\GettextPoFile;
 class MessageController extends \yii\console\Controller
 {
     /**
-     * @var string controller default action ID.
+     * @var string 控制器默认动作 ID。
      */
     public $defaultAction = 'extract';
     /**
-     * @var string required, root directory of all source files.
+     * @var string 必须，所有源文件的根目录。
      */
     public $sourcePath = '@yii';
     /**
-     * @var string required, root directory containing message translations.
+     * @var string 必须，包含消息转换的根目录。
      */
     public $messagePath = '@yii/messages';
     /**
-     * @var array required, list of language codes that the extracted messages
-     * should be translated to. For example, ['zh-CN', 'de'].
+     * @var array 必须，将提取的消息转换为的语言代码列表。
+     * 例如，['zh-CN', 'de']。
      */
     public $languages = [];
     /**
-     * @var string the name of the function for translating messages.
-     * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
-     * translated. You may use a string for single function name or an array for
-     * multiple function names.
+     * @var string 用于翻译消息的函数的名称。
+     * 默认为 'Yii::t'。此标记用作查找要翻译的消息的标记。
+     * 你可以对单个函数名使用字符串，
+     * 或对多个函数名使用数组。
      */
     public $translator = 'Yii::t';
     /**
-     * @var bool whether to sort messages by keys when merging new messages
-     * with the existing ones. Defaults to false, which means the new (untranslated)
-     * messages will be separated from the old (translated) ones.
+     * @var bool 是否在将新消息与现有消息合并时按键对消息进行排序。
+     * 默认为 false，也就是说新的（untranslated）
+     * 消息将从旧的（translated）消息中分离出来。
      */
     public $sort = false;
     /**
-     * @var bool whether the message file should be overwritten with the merged messages
+     * @var bool 是否应用合并的消息覆盖消息文件
      */
     public $overwrite = true;
     /**
-     * @var bool whether to remove messages that no longer appear in the source code.
-     * Defaults to false, which means these messages will NOT be removed.
+     * @var bool 是否删除不再出现在源代码中的消息。
+     * 默认值为 false，这意味着这些消息将不会被删除。
      */
     public $removeUnused = false;
     /**
-     * @var bool whether to mark messages that no longer appear in the source code.
-     * Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
+     * @var bool 是否标记不再出现在源代码中的消息。
+     * 默认值为 true，这意味着这些消息中的每一条都将包含一对 '@@' 标记。
      */
     public $markUnused = true;
     /**
-     * @var array list of patterns that specify which files/directories should NOT be processed.
-     * If empty or not set, all files/directories will be processed.
-     * See helpers/FileHelper::findFiles() description for pattern matching rules.
-     * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
+     * @var array 指定不应处理哪些文件/目录的模式列表。
+     * 如果为空或未设置，将处理所有文件/目录。
+     * 查看 helpers/FileHelper::findFiles() 模式匹配规则的说明。
+     * 如果文件/目录与 "only" 和 "except" 中的模式都匹配，则不会对其进行处理。
      */
     public $except = [
         '.svn',
@@ -101,51 +101,51 @@ class MessageController extends \yii\console\Controller
         '/BaseYii.php', // contains examples about Yii:t()
     ];
     /**
-     * @var array list of patterns that specify which files (not directories) should be processed.
-     * If empty or not set, all files will be processed.
-     * See helpers/FileHelper::findFiles() description for pattern matching rules.
-     * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
+     * @var array 指定应处理哪些文件(而不是目录)的模式列表。
+     * 如果为空或未设置，则将处理所有文件。
+     * 查看 helpers/FileHelper::findFiles() 模式匹配规则的说明。
+     * 如果文件/目录与 "only" 和 "except"，则不会对其进行处理。
      */
     public $only = ['*.php'];
     /**
-     * @var string generated file format. Can be "php", "db", "po" or "pot".
+     * @var string 生成的文件格式。可以是 "php"，"db"，"po" 或者 "pot"。
      */
     public $format = 'php';
     /**
-     * @var string connection component ID for "db" format.
+     * @var string "db" 格式的连接组件 ID。
      */
     public $db = 'db';
     /**
-     * @var string custom name for source message table for "db" format.
+     * @var string "db" 格式的源消息表的自定义名称。
      */
     public $sourceMessageTable = '{{%source_message}}';
     /**
-     * @var string custom name for translation message table for "db" format.
+     * @var string "db" 格式的转换消息表的自定义名称。
      */
     public $messageTable = '{{%message}}';
     /**
-     * @var string name of the file that will be used for translations for "po" format.
+     * @var string 将用于翻译 "po" 格式的文件的名称。
      */
     public $catalog = 'messages';
     /**
-     * @var array message categories to ignore. For example, 'yii', 'app*', 'widgets/menu', etc.
+     * @var array 要忽略的消息类别。例如 'yii'，'app*'，'widgets/menu'，等。
      * @see isCategoryIgnored
      */
     public $ignoreCategories = [];
     /**
-     * @var string File header in generated PHP file with messages. This property is used only if [[$format]] is "php".
+     * @var string 生成的带有消息的 PHP 文件中的文件头。此属性仅用于如果 [[$format]] 是 "php"。
      * @since 2.0.13
      */
     public $phpFileHeader = '';
     /**
-     * @var string|null DocBlock used for messages array in generated PHP file. If `null`, default DocBlock will be used.
-     * This property is used only if [[$format]] is "php".
+     * @var string|null 在生成的 PHP 文件中用于消息数组的 DocBlock。如果是 `null`，将使用默认的 DocBlock。
+     * 此属性仅用于如果 [[$format]] 是 "php"。
      * @since 2.0.13
      */
     public $phpDocBlock;
 
     /**
-     * @var array Config for messages extraction.
+     * @var array 用于消息提取的配置。
      * @see actionExtract()
      * @see initConfig()
      * @since 2.0.13
@@ -205,15 +205,15 @@ class MessageController extends \yii\console\Controller
     }
 
     /**
-     * Creates a configuration file for the "extract" command using command line options specified.
+     * 使用指定的命令行选项为 "extract" 命令创建配置文件。
      *
-     * The generated configuration file contains parameters required
-     * for source code messages extraction.
-     * You may use this configuration file with the "extract" command.
+     * 生成的配置文件包含源代码消息
+     * 提取所需的参数。
+     * 你可以将此配置文件与 "extract" 命令一起使用。
      *
-     * @param string $filePath output file name or alias.
-     * @return int CLI exit code
-     * @throws Exception on failure.
+     * @param string $filePath 输出文件名或别名。
+     * @return int CLI 退出代码
+     * @throws Exception 失败的时候。
      */
     public function actionConfig($filePath)
     {
@@ -253,15 +253,15 @@ EOD;
     }
 
     /**
-     * Creates a configuration file template for the "extract" command.
+     * 为 "extract" 命令创建配置文件模板。
      *
-     * The created configuration file contains detailed instructions on
-     * how to customize it to fit for your needs. After customization,
-     * you may use this configuration file with the "extract" command.
+     * 创建的配置文件包含有关
+     * 如何根据您的需要对其进行自定义的详细说明。定制后，
+     * 您可以将此配置文件与 "extract" 命令配合使用。
      *
-     * @param string $filePath output file name or alias.
-     * @return int CLI exit code
-     * @throws Exception on failure.
+     * @param string $filePath 输出文件名或别名。
+     * @return int CLI 退出代码
+     * @throws Exception 失败的时候。
      */
     public function actionConfigTemplate($filePath)
     {
@@ -283,15 +283,15 @@ EOD;
     }
 
     /**
-     * Extracts messages to be translated from source code.
+     * 从源代码中提取要翻译的消息。
      *
-     * This command will search through source code files and extract
-     * messages that need to be translated in different languages.
+     * 此命令将搜索源代码文件
+     * 并提取需要翻译为不同语言的消息。
      *
-     * @param string $configFile the path or alias of the configuration file.
-     * You may use the "yii message/config" command to generate
-     * this file and then customize it for your needs.
-     * @throws Exception on failure.
+     * @param string $configFile 配置文件的路径或别名。
+     * 你可以使用 "yii message/config" 命令以生成
+     * 此文件，然后根据您的需要对其进行自定义。
+     * @throws Exception 失败的时候。
      */
     public function actionExtract($configFile = null)
     {
@@ -338,7 +338,7 @@ EOD;
     }
 
     /**
-     * Saves messages to database.
+     * 将消息保存到数据库。
      *
      * @param array $messages
      * @param Connection $db
@@ -460,12 +460,12 @@ EOD;
     }
 
     /**
-     * Extracts messages from a file.
+     * 从文件中提取消息。
      *
-     * @param string $fileName name of the file to extract messages from
-     * @param string $translator name of the function used to translate messages
-     * @param array $ignoreCategories message categories to ignore.
-     * This parameter is available since version 2.0.4.
+     * @param string $fileName 要从中提取消息的文件的名称。
+     * @param string $translator 用于翻译消息的函数的名称。
+     * @param array $ignoreCategories 要忽略的消息类别。
+     * 此参数自版本 2.0.4。起可用
      * @return array
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])
@@ -489,11 +489,11 @@ EOD;
     }
 
     /**
-     * Extracts messages from a parsed PHP tokens list.
-     * @param array $tokens tokens to be processed.
-     * @param array $translatorTokens translator tokens.
-     * @param array $ignoreCategories message categories to ignore.
-     * @return array messages.
+     * 从解析的 PHP 令牌列表中提取消息。
+     * @param array $tokens 要处理的令牌。
+     * @param array $translatorTokens 翻译令牌。
+     * @param array $ignoreCategories 要忽略的消息类别。
+     * @return array messages。
      */
     protected function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
     {
@@ -580,15 +580,15 @@ EOD;
     }
 
     /**
-     * The method checks, whether the $category is ignored according to $ignoreCategories array.
+     * 方法检查，$category 是否被忽略根据 $ignoreCategories 数组。
      *
-     * Examples:
+     * 例如：
      *
-     * - `myapp` - will be ignored only `myapp` category;
-     * - `myapp*` - will be ignored by all categories beginning with `myapp` (`myapp`, `myapplication`, `myapprove`, `myapp/widgets`, `myapp.widgets`, etc).
+     * - `myapp` - 将仅被忽略 `myapp` 类别；
+     * - `myapp*` - 将被忽略所有以 `myapp`（`myapp`，`myapplication`，`myapprove`，`myapp/widgets`，`myapp.widgets`，等）开头的类别。
      *
-     * @param string $category category that is checked
-     * @param array $ignoreCategories message categories to ignore.
+     * @param string $category 选中的类别
+     * @param array $ignoreCategories 要忽略的消息类别。
      * @return bool
      * @since 2.0.7
      */
@@ -609,7 +609,7 @@ EOD;
     }
 
     /**
-     * Finds out if two PHP tokens are equal.
+     * 查找两个 PHP 标记是否相等。
      *
      * @param array|string $a
      * @param array|string $b
@@ -629,7 +629,7 @@ EOD;
     }
 
     /**
-     * Finds out a line of the first non-char PHP token found.
+     * 查找找到的第一个 non-char PHP 标记的一行。
      *
      * @param array $tokens
      * @return int|string
@@ -647,14 +647,14 @@ EOD;
     }
 
     /**
-     * Writes messages into PHP files.
+     * 将消息写入 PHP 文件。
      *
      * @param array $messages
-     * @param string $dirName name of the directory to write to
-     * @param bool $overwrite if existing file should be overwritten without backup
-     * @param bool $removeUnused if obsolete translations should be removed
-     * @param bool $sort if translations should be sorted
-     * @param bool $markUnused if obsolete translations should be marked
+     * @param string $dirName 要写入的目录的名称
+     * @param bool $overwrite 如果在没有备份的情况下覆盖现有文件
+     * @param bool $removeUnused 如果应删除过时的译文
+     * @param bool $sort 如果翻译需要排序
+     * @param bool $markUnused 如果应标记过时的译文
      */
     protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)
     {
@@ -674,16 +674,16 @@ EOD;
     }
 
     /**
-     * Writes category messages into PHP file.
+     * 将类别消息写入 PHP 文件。
      *
      * @param array $messages
-     * @param string $fileName name of the file to write to
-     * @param bool $overwrite if existing file should be overwritten without backup
-     * @param bool $removeUnused if obsolete translations should be removed
-     * @param bool $sort if translations should be sorted
-     * @param string $category message category
-     * @param bool $markUnused if obsolete translations should be marked
-     * @return int exit code
+     * @param string $fileName 要写入的文件的名称
+     * @param bool $overwrite 如果在没有备份的情况下覆盖现有文件
+     * @param bool $removeUnused 如果应删除过时的译文
+     * @param bool $sort 如果翻译需要排序
+     * @param string $category 消息类别
+     * @param bool $markUnused 如果应标记过时的译文
+     * @return int 退出代码
      */
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
     {
@@ -756,15 +756,15 @@ EOD;
     }
 
     /**
-     * Writes messages into PO file.
+     * 将消息写入 PO 文件。
      *
      * @param array $messages
-     * @param string $dirName name of the directory to write to
-     * @param bool $overwrite if existing file should be overwritten without backup
-     * @param bool $removeUnused if obsolete translations should be removed
-     * @param bool $sort if translations should be sorted
-     * @param string $catalog message catalog
-     * @param bool $markUnused if obsolete translations should be marked
+     * @param string $dirName 要写入的目录的名称
+     * @param bool $overwrite 如果在没有备份的情况下覆盖现有文件
+     * @param bool $removeUnused 如果应删除过时的译文
+     * @param bool $sort 如果翻译需要排序
+     * @param string $catalog 消息目录
+     * @param bool $markUnused 如果应标记过时的译文
      */
     protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)
     {
@@ -852,11 +852,11 @@ EOD;
     }
 
     /**
-     * Writes messages into POT file.
+     * 将消息写入 POT 文件。
      *
      * @param array $messages
-     * @param string $dirName name of the directory to write to
-     * @param string $catalog message catalog
+     * @param string $dirName 要写入的目录的名称
+     * @param string $catalog 消息目录
      * @since 2.0.6
      */
     protected function saveMessagesToPOT($messages, $dirName, $catalog)
@@ -902,7 +902,7 @@ EOD;
 
     /**
      * @param string $configFile
-     * @throws Exception If configuration file does not exists.
+     * @throws Exception 如果配置文件不存在。
      * @since 2.0.13
      */
     protected function initConfig($configFile)

@@ -12,7 +12,7 @@ use yii\db\Constraint;
 use yii\db\Expression;
 
 /**
- * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
+ * MS SQL Server（版本要求 2008 以及 2008 以上版本）数据库查询构建器。
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -20,7 +20,7 @@ use yii\db\Expression;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
+     * @var array 从抽象列类型（键）到物理列类型（值）的映射。
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
@@ -76,12 +76,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
-     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     * 为 SQL SERVER 2012 或更高版本构建的 BY/LIMIT/OFFSET 子句。
+     * @param string $sql 现有的 SQL 语句（语句中不包含 ORDER BY/LIMIT/OFFSET）
+     * @param array $orderBy 按列排序。有关如何指定此参数的详细信息，参阅 [[\yii\db\Query::orderBy]]。
+     * @param int $limit 限制量。更多细节，请参阅 [[\yii\db\Query::limit]]。
+     * @param int $offset 偏移量。更多细节，请参阅 [[\yii\db\Query::offset]]。
+     * @return string 包含 ORDER BY/LIMIT/OFFSET 的 SQL 语句（假如有的话）
      */
     protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -103,12 +103,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
-     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     * 为 SQL SERVER 2005 到 2008 版本构建的 BY/LIMIT/OFFSET 子句。
+     * @param string $sql 现有的 SQL 语句（语句中不包含 ORDER BY/LIMIT/OFFSET）
+     * @param array $orderBy 按列排序。有关如何指定此参数的详细信息，参阅 [[\yii\db\Query::orderBy]]。
+     * @param int $limit 限制量。更多细节，请参阅 [[\yii\db\Query::limit]]。
+     * @param int $offset 偏移量。更多细节，请参阅 [[\yii\db\Query::offset]]。
+     * @return string 包含 ORDER BY/LIMIT/OFFSET 的 SQL 语句（假如有的话）
      */
     protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -133,10 +133,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
+     * 构建用于重新命名数据库表名的 SQL 语句。
+     * @param string $oldName 要重命名的表名。该方法将正确引用表名。
+     * @param string $newName 表的新名称。该方法将正确引用表名。
+     * @return string 用于重命名数据库表名的 SQL 语句。
      */
     public function renameTable($oldName, $newName)
     {
@@ -144,11 +144,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
+     * 构建对列名重命名的 SQL 语句。
+     * @param string $table 要重命名的列所在表的名称。该方法将正确引用表名。
+     * @param string $oldName 旧的列名. 该方法将正确引用列名。
+     * @param string $newName 新的列名。该方法将正确引用列名。
+     * @return string 用于重命名数据库表列名的 SQL 语句。
      */
     public function renameColumn($table, $oldName, $newName)
     {
@@ -159,13 +159,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
-     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
-     * @return string the SQL statement for changing the definition of a column.
+     * 构建用于更改列定义的 SQL 语句。
+     * @param string $table 要更改列的表名。该方法将正确引用表名。
+     * @param string $column 要更改的列的名称。该方法将正确引用列名
+     * @param string $type 新的列类型。将调用 [[getColumnType]] 方法将抽象列类型（存在的话）转换为物理列类型。
+     * 任何未被识别未抽象类型的内容都将保留在生成的 SQL 语句中。例如，`string` 将被转换为 `varchar(255)`，
+     * 而 `string not null` 会被转换成 `varchar(255) not null`。
+     * @return string 用于更改列而定义的 SQL 语句。
      */
     public function alterColumn($table, $column, $type)
     {
@@ -197,14 +197,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     * 创建用于重置表主键的序列值的 SQL 语句。
+     * 序列将被重置，
+     * 以便于下一个新行插入的主键具有指定的值或者为 1。
+     * @param string $tableName 要重建主键序列的数据库表名。
+     * @param mixed $value 插入的下一个新行的主键的值。如果未设置此值，
+     * 则下一个新行的主键值将为 1。
+     * @return string 用于重置主键序列的 SQL 语句
+     * @throws InvalidArgumentException 如果该表不存在，或没有与之关联的序列，则抛出异常。
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -227,11 +227,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table the table name.
-     * @return string the SQL statement for checking integrity
+     * 构建用于启用或禁用数据完整性检查的 SQL 语句。
+     * @param bool $check 是否启用或禁用数据完整性检查。
+     * @param string $schema 表架构。
+     * @param string $table 表名。
+     * @return string 用于检查数据完整性的 SQL 语句
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
@@ -287,10 +287,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Returns an array of column names given model name.
+     * 返回给定模型的列名数组。
      *
-     * @param string $modelClass name of the model class
-     * @return array|null array of column names
+     * @param string $modelClass 模型类名
+     * @return array|null 模型列名数组
      */
     protected function getAllColumnNames($modelClass = null)
     {
@@ -303,7 +303,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @return bool whether the version of the MSSQL being used is older than 2012.
+     * @return bool 所使用的 MSSQL 版本是否早于 MSSQL 2012。
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      * @deprecated 2.0.14 Use [[Schema::getServerVersion]] with [[\version_compare()]].
@@ -323,10 +323,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     * @param string $table the table that data will be saved into.
-     * @param array $columns the column data (name => value) to be saved into the table.
-     * @return array normalized columns
+     * 将要保存在表中的数据规范化，如果有必要，则执行额外的准备工作和类型转换。
+     * @param string $table 将数据保存到其中的表。
+     * @param array $columns 要保存到表中的列数据（name => value）。
+     * @return array 标准化列
      */
     private function normalizeTableRowData($table, $columns, &$params)
     {

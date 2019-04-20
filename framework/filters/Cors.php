@@ -14,12 +14,12 @@ use yii\web\Request;
 use yii\web\Response;
 
 /**
- * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+ * Cors 过滤工具 [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
  *
- * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
- * but allow the developer to grant access to third party code (ajax calls from external domain).
+ * 请务必仔细阅读 CORS 能做的和不能做的事情。CORS 不保护您的 API，
+ * 但是允许开发人员授予对第三方代码的访问权限（来自外部域的 Ajax 调用）。
  *
- * You may use CORS filter by attaching it as a behavior to a controller or module, like the following,
+ * 您可以通过将 CORS 筛选器作为行为附加到控制器或模块来使用 CORS 筛选器，如下所示：
  *
  * ```php
  * public function behaviors()
@@ -32,7 +32,7 @@ use yii\web\Response;
  * }
  * ```
  *
- * The CORS filter can be specialized to restrict parameters, like this,
+ * CORS 过滤器可以专门用于限制参数，如下所示，
  * [MDN CORS Information](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
  *
  * ```php
@@ -61,8 +61,8 @@ use yii\web\Response;
  * }
  * ```
  *
- * For more information on how to add the CORS filter to a controller, see
- * the [Guide on REST controllers](guide:rest-controllers#cors).
+ * 有关如何将 CORS 过滤器添加到控制器的详细信息，
+ * 请参见 [Guide on REST controllers](guide:rest-controllers#cors)。
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
@@ -70,19 +70,19 @@ use yii\web\Response;
 class Cors extends ActionFilter
 {
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request 当前请求。如果未设置，将使用 `request` 应用程序组件。
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response 要发送的响应。如果未设置，将使用 `response` 应用程序组件。
      */
     public $response;
     /**
-     * @var array define specific CORS rules for specific actions
+     * @var array 定义特定操作的特定 CORS 规则
      */
     public $actions = [];
     /**
-     * @var array Basic headers handled for the CORS requests.
+     * @var array  为CORS请求处理的 Basic headers。
      */
     public $cors = [
         'Origin' => ['*'],
@@ -118,8 +118,8 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Override settings for specific action.
-     * @param \yii\base\Action $action the action settings to override
+     * 覆盖特定操作的设置。
+     * @param \yii\base\Action $action 要覆盖的操作设置
      */
     public function overrideDefaultSettings($action)
     {
@@ -135,8 +135,8 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Extract CORS headers from the request.
-     * @return array CORS headers to handle
+     * 从请求中提取 CORS 标头。
+     * @return array 要处理的 CORS 标头
      */
     public function extractHeaders()
     {
@@ -153,9 +153,9 @@ class Cors extends ActionFilter
     }
 
     /**
-     * For each CORS headers create the specific response.
-     * @param array $requestHeaders CORS headers we have detected
-     * @return array CORS headers ready to be sent
+     * 对于每个 CORS 头创建特定的响应。
+     * @param array $requestHeaders 我们检测到的 CORS headers
+     * @return array CORS headers 准备发送
      */
     public function prepareHeaders($requestHeaders)
     {
@@ -202,10 +202,10 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Handle classic CORS request to avoid duplicate code.
-     * @param string $type the kind of headers we would handle
-     * @param array $requestHeaders CORS headers request by client
-     * @param array $responseHeaders CORS response headers sent to the client
+     * 处理经典 CORS 请求以避免重复代码。
+     * @param string $type 我们将处理的头部类型
+     * @param array $requestHeaders 客户端请求 CORS 标头
+     * @param array $responseHeaders 发送到客户端的 CORS 响应标头
      */
     protected function prepareAllowHeaders($type, $requestHeaders, &$responseHeaders)
     {
@@ -226,9 +226,9 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Adds the CORS headers to the response.
+     * 将 CORS 标头添加到响应中。
      * @param Response $response
-     * @param array $headers CORS headers which have been computed
+     * @param array $headers  已计算的 CORS 标头
      */
     public function addCorsHeaders($response, $headers)
     {
@@ -241,13 +241,13 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Convert any string (including php headers with HTTP prefix) to header format.
+     * 将任何字符串（包括带 HTTP 前缀的 php headers）转换为头格式。
      *
-     * Example:
+     * 例如：
      *  - X-PINGOTHER -> X-Pingother
      *  - X_PINGOTHER -> X-Pingother
-     * @param string $string string to convert
-     * @return string the result in "header" format
+     * @param string $string 要转换的字符串
+     * @return string 结果是 "header" 格式
      */
     protected function headerize($string)
     {
@@ -259,13 +259,13 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Convert any string (including php headers with HTTP prefix) to header format.
+     * 将任何字符串（包括带 HTTP 前缀的 php headers）转换为头格式。
      *
-     * Example:
+     * 例如：
      *  - X-Pingother -> HTTP_X_PINGOTHER
      *  - X PINGOTHER -> HTTP_X_PINGOTHER
-     * @param string $string string to convert
-     * @return string the result in "php $_SERVER header" format
+     * @param string $string 要转换的字符串
+     * @return string 结果是 "php $_SERVER header" 格式
      */
     protected function headerizeToPhp($string)
     {

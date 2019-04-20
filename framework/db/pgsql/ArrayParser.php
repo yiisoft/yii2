@@ -8,7 +8,7 @@
 namespace yii\db\pgsql;
 
 /**
- * The class converts PostgreSQL array representation to PHP array
+ * 该类将 PostgreSQL 数组表示转换为 PHP 数组
  *
  * @author Sergei Tigrov <rrr-r@ya.ru>
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
@@ -17,15 +17,15 @@ namespace yii\db\pgsql;
 class ArrayParser
 {
     /**
-     * @var string Character used in array
+     * @var string 数组中使用的字符
      */
     private $delimiter = ',';
 
 
     /**
-     * Convert array from PostgreSQL to PHP
+     * 将数组从 PostgreSQL 转换为 PHP
      *
-     * @param string $value string to be converted
+     * @param string $value 要转换的字符串
      * @return array|null
      */
     public function parse($value)
@@ -42,10 +42,10 @@ class ArrayParser
     }
 
     /**
-     * Pares PgSQL array encoded in string
+     * 解析 PgSQL 以字符串编码
      *
      * @param string $value
-     * @param int $i parse starting position
+     * @param int $i 解析起始位置
      * @return array
      */
     private function parseArray($value, &$i = 0)
@@ -76,10 +76,10 @@ class ArrayParser
     }
 
     /**
-     * Parses PgSQL encoded string
+     * 解析 PgSQL 编码字符串
      *
      * @param string $value
-     * @param int $i parse starting position
+     * @param int $i 解析起始位置
      * @return null|string
      */
     private function parseString($value, &$i)

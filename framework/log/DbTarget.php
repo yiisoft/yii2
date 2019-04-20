@@ -15,17 +15,17 @@ use yii\di\Instance;
 use yii\helpers\VarDumper;
 
 /**
- * DbTarget stores log messages in a database table.
+ * DbTarget 将日志消息存储在数据库中。
  *
- * The database connection is specified by [[db]]. Database schema could be initialized by applying migration:
+ * 数据库连接由 [[db] 指定。可以通过应用迁移来初始化数据库模式：
  *
  * ```
  * yii migrate --migrationPath=@yii/log/migrations/
  * ```
  *
- * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
+ * 如果您不想使用迁移并且需要 SQL，则所有数据库的文件都位于迁移目录中。
  *
- * You may change the name of the table used to store the data by setting [[logTable]].
+ * 您可以通过设置 [[logTable]] 来更改用于存储数据的表的名称。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -33,22 +33,22 @@ use yii\helpers\VarDumper;
 class DbTarget extends Target
 {
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
-     * After the DbTarget object is created, if you want to change this property, you should only assign it
-     * with a DB connection object.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件 ID
+     * 创建 DbTarget
+     * 对象后，只有当它是数据库连接对象时，才可以更改属性。
+     * 从 2.0.2 版开始，这也可以是用于创建对象的配置数组。
      */
     public $db = 'db';
     /**
-     * @var string name of the DB table to store cache content. Defaults to "log".
+     * @var string 用于存储缓存内容的表的名称。默认为“log”。
      */
     public $logTable = '{{%log}}';
 
 
     /**
-     * Initializes the DbTarget component.
-     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-     * @throws InvalidConfigException if [[db]] is invalid.
+     * 初始化 DbTarget 组件。
+     * 此方法将初始化 [[db]] 属性以确保它引用有效的数据库连接。
+     * @throws InvalidConfigException 如果 [[db]] 无效。
      */
     public function init()
     {
@@ -57,8 +57,8 @@ class DbTarget extends Target
     }
 
     /**
-     * Stores log messages to DB.
-     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * 将日志消息存储到数据库。
+     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException。
      * @throws Exception
      * @throws LogRuntimeException
      */

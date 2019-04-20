@@ -14,14 +14,14 @@ use yii\web\Controller;
 use yii\web\MethodNotAllowedHttpException;
 
 /**
- * VerbFilter is an action filter that filters by HTTP request methods.
+ * VerbFilter 是一个操作过滤器它通过 HTTP 请求方法进行过滤。
  *
- * It allows to define allowed HTTP request methods for each action and will throw
- * an HTTP 405 error when the method is not allowed.
+ * 它允许为每个操作定义允许的 HTTP 请求方法
+ * 并将在不允许该方法时引发 HTTP 405 错误。
  *
- * To use VerbFilter, declare it in the `behaviors()` method of your controller class.
- * For example, the following declarations will define a typical set of allowed
- * request methods for REST CRUD actions.
+ * 要使用 VerbFilter，请在控制器类的 `behaviors()` 方法中声明它。
+ * 例如，以下声明将为
+ * REST CRUD 操作定义一组典型的允许请求方法。
  *
  * ```php
  * public function behaviors()
@@ -48,16 +48,16 @@ use yii\web\MethodNotAllowedHttpException;
 class VerbFilter extends Behavior
 {
     /**
-     * @var array this property defines the allowed request methods for each action.
-     * For each action that should only support limited set of request methods
-     * you add an entry with the action id as array key and an array of
-     * allowed methods (e.g. GET, HEAD, PUT) as the value.
-     * If an action is not listed all request methods are considered allowed.
+     * @var array 此属性为每个操作定义允许的请求方法。
+     * 对于应该只支持有限的请求方法集的每个操作
+     * 您添加一个条目，其中操作 id 作为数组键
+     * 允许的方法数组（例如 GET， HEAD， PUT）作为值。
+     * 如果未列出操作则认为所有请求方法都是允许的。
      *
-     * You can use `'*'` to stand for all actions. When an action is explicitly
-     * specified, it takes precedence over the specification given by `'*'`.
+     * 你可以用 `'*'` 来代表所有的行动。当一个动作是显式的
+     * 指定的，它则优先于 `'*'` 所给出的规范。
      *
-     * For example,
+     * 例如，
      *
      * ```php
      * [
@@ -72,8 +72,8 @@ class VerbFilter extends Behavior
 
 
     /**
-     * Declares event handlers for the [[owner]]'s events.
-     * @return array events (array keys) and the corresponding event handler methods (array values).
+     * 声明 [[owner]]'s 事件的事件处理程序。
+     * @return array 事件（数组键）和相应的事件处理程序方法（数组值）。
      */
     public function events()
     {
@@ -83,7 +83,7 @@ class VerbFilter extends Behavior
     /**
      * @param ActionEvent $event
      * @return bool
-     * @throws MethodNotAllowedHttpException when the request method is not allowed.
+     * @throws MethodNotAllowedHttpException 当不允许请求方法时。
      */
     public function beforeAction($event)
     {
