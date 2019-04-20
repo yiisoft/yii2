@@ -168,7 +168,7 @@ class Dispatcher extends Component
      * 默认为 1000，表示每 1000 条消息执行一次 [[Logger::flush()]] 方法。
      * 如果您不希望在应用程序终止之前发送消息，请将此属性设置为 0。
      * 此属性主要影响记录消息占用的内存量。
-     * 值越小意味着内存越少，但由于更加频繁的执行 [[Logger::flush()]] ，会增加执行时间。
+     * 值越小意味着内存越少，但由于更加频繁的执行 [[Logger::flush()]]，会增加执行时间。
      */
     public function setFlushInterval($value)
     {
