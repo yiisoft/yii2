@@ -11,7 +11,7 @@ use Yii;
 use yii\helpers\VarDumper;
 
 /**
- * SyslogTarget 将日志写入系统日志（ syslog ）中。
+ * SyslogTarget 将日志写入系统日志（syslog）中。
  *
  * @author miramir <gmiramir@gmail.com>
  * @since 2.0
@@ -19,11 +19,11 @@ use yii\helpers\VarDumper;
 class SyslogTarget extends Target
 {
     /**
-     * @var string 系统日志（ syslog ）标识
+     * @var string 系统日志（syslog）标识
      */
     public $identity;
     /**
-     * @var int 系统日志（ syslog ）类型
+     * @var int 系统日志（syslog）类型
      */
     public $facility = LOG_USER;
     /**
@@ -60,7 +60,7 @@ class SyslogTarget extends Target
     }
 
     /**
-     * 将日志消息写入系统日志（ syslog ）中。
+     * 将日志消息写入系统日志（syslog）中。
      * 从版本 2.0.14 开始，如果日志无法导出，将抛出异常 LogRuntimeException。
      * @throws LogRuntimeException
      */
