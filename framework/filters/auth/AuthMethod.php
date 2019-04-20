@@ -17,7 +17,7 @@ use yii\web\UnauthorizedHttpException;
 use yii\web\User;
 
 /**
- * AuthMethod is a base class implementing the [[AuthInterface]] interface.
+ * AuthMethod 是实现 [[AuthInterface]] 接口的基类。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,22 +25,22 @@ use yii\web\User;
 abstract class AuthMethod extends ActionFilter implements AuthInterface
 {
     /**
-     * @var User the user object representing the user authentication status. If not set, the `user` application component will be used.
+     * @var User 表示用户身份验证状态的用户对象。如果没有设置，这个用户将使用应用程序组件。
      */
     public $user;
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request 当前请求。如果没有设置，这个请求将使用应用程序组件。
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response 要发送的响应。如果没有设置，这个响应将使用应用程序组件。
      */
     public $response;
     /**
-     * @var array list of action IDs that this filter will be applied to, but auth failure will not lead to error.
-     * It may be used for actions, that are allowed for public, but return some additional data for authenticated users.
-     * Defaults to empty, meaning authentication is not optional for any action.
-     * Since version 2.0.10 action IDs can be specified as wildcards, e.g. `site/*`.
+     * @var array 此筛选器将应用于的操作行为 IDs 的数组列表，但是身份验证失败不会导致错误。
+     * 它可能被用于行动，那是允许公开的，但是返回一些已验证用户的附加数据。
+     * 默认空，意思是不可选认证的任何行动。
+     * Since version 2.0.10 action IDs 可以指定为通配符，例如 `site/*`。
      * @see isOptional()
      * @since 2.0.7
      */
@@ -94,10 +94,10 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     }
 
     /**
-     * Checks, whether authentication is optional for the given action.
+     * 检查，给定操作的身份验证是否可选。
      *
-     * @param Action $action action to be checked.
-     * @return bool whether authentication is optional or not.
+     * @param Action $action 要检查的操作。
+     * @return bool 身份验证是否可选。
      * @see optional
      * @since 2.0.7
      */

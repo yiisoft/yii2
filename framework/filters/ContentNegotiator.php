@@ -16,21 +16,21 @@ use yii\web\Response;
 use yii\web\UnsupportedMediaTypeHttpException;
 
 /**
- * ContentNegotiator supports response format negotiation and application language negotiation.
+ * ContentNegotiator 支持响应格式协商和应用程序语言协商。
  *
- * When the [[formats|supported formats]] property is specified, ContentNegotiator will support response format
- * negotiation based on the value of the GET parameter [[formatParam]] and the `Accept` HTTP header.
- * If a match is found, the [[Response::format]] property will be set as the chosen format.
- * The [[Response::acceptMimeType]] as well as [[Response::acceptParams]] will also be updated accordingly.
+ * 如果指定 [[formats|supported formats]] 属性， ContentNegotiator 将支持
+ * 基于 GET 参数 [[formatParam]] 的值和`Accept` HTTP header 的响应格式协商。
+ * 如果找到匹配，[[Response::format]] 属性将设置为所选的格式。
+ * [[Response::acceptMimeType]] 以及 [[Response::acceptParams]] 也将相应更新。
  *
- * When the [[languages|supported languages]] is specified, ContentNegotiator will support application
- * language negotiation based on the value of the GET parameter [[languageParam]] and the `Accept-Language` HTTP header.
- * If a match is found, the [[\yii\base\Application::language]] property will be set as the chosen language.
+ * 如果指定了 [[languages|supported languages]]， ContentNegotiator 程序将支持
+ * 基于 GET 参数 [[languageParam]] 和`Accept-Language` HTTP header 的值进行应用程序语言协商。
+ * 如果找到匹配，[[\yii\base\Application::language]] 属性将设置为选择的语言。
  *
- * You may use ContentNegotiator as a bootstrapping component as well as an action filter.
+ * 您可以将 ContentNegotiator 程序用作引导组件和操作筛选器。
  *
- * The following code shows how you can use ContentNegotiator as a bootstrapping component. Note that in this case,
- * the content negotiation applies to the whole application.
+ * 下面的代码显示如何将 ContentNegotiator 程序用作引导组件。注意在这种情况下，
+ * 内容协商适用于整个应用程序。
  *
  * ```php
  * // in application configuration
@@ -53,9 +53,9 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * ];
  * ```
  *
- * The following code shows how you can use ContentNegotiator as an action filter in either a controller or a module.
- * In this case, the content negotiation result only applies to the corresponding controller or module, or even
- * specific actions if you configure the `only` or `except` property of the filter.
+ * 下面的代码显示了如何在控制器或模块中将 ContentNegotiator 程序用作操作筛选器。
+ * 在这种情况下，内容协商结果仅适用于相应的控制器或模块，或者
+ * 如果您配置过滤器的 `only` 或`except` 属性甚至还可以配置特定的操作。
  *
  * ```php
  * use yii\web\Response;
@@ -86,45 +86,45 @@ use yii\web\UnsupportedMediaTypeHttpException;
 class ContentNegotiator extends ActionFilter implements BootstrapInterface
 {
     /**
-     * @var string the name of the GET parameter that specifies the response format.
-     * Note that if the specified format does not exist in [[formats]], a [[UnsupportedMediaTypeHttpException]]
-     * exception will be thrown.  If the parameter value is empty or if this property is null,
-     * the response format will be determined based on the `Accept` HTTP header only.
+     * @var string 指定响应格式的 GET 参数的名称。
+     * 请注意如果 [[formats]] 中不存在指定的格式，
+     * 则将引发 [[UnsupportedMediaTypeHttpException]] 异常。如果参数值为空或此属性为空，
+     * 响应格式将仅根据 `Accept` HTTP header 确定。
      * @see formats
      */
     public $formatParam = '_format';
     /**
-     * @var string the name of the GET parameter that specifies the [[\yii\base\Application::language|application language]].
-     * Note that if the specified language does not match any of [[languages]], the first language in [[languages]]
-     * will be used. If the parameter value is empty or if this property is null,
-     * the application language will be determined based on the `Accept-Language` HTTP header only.
+     * @var string 指定 [[\yii\base\Application::language|application language]] 的 GET 参数的名称。
+     * 请注意，如果指定的语言与 [[languages]] 中的任何一种不匹配，将使用 [[languages]] 的
+     * 第一种语言。如果参数值为空或此属性为空，
+     * 应用程序语言将仅根据`Accept-Language` HTTP header 确定。
      * @see languages
      */
     public $languageParam = '_lang';
     /**
-     * @var array list of supported response formats. The keys are MIME types (e.g. `application/json`)
-     * while the values are the corresponding formats (e.g. `html`, `json`) which must be supported
-     * as declared in [[\yii\web\Response::formatters]].
+     * @var array 支持的响应格式列表。键是MIME类型（例如 `application/json`）
+     * 而值是相应的格式（例如 `html`，`json`）
+     * 必须按照 [[\yii\web\Response::formatters]] 中的声明予以支持。
      *
-     * If this property is empty or not set, response format negotiation will be skipped.
+     * 如果此属性为空或未设置，则将跳过响应格式协商。
      */
     public $formats;
     /**
-     * @var array a list of supported languages. The array keys are the supported language variants (e.g. `en-GB`, `en-US`),
-     * while the array values are the corresponding language codes (e.g. `en`, `de`) recognized by the application.
+     * @var array 支持的语言列表。数组键是受支持的语言变体（例如，`en-GB`，`en-US`），
+     * 数组值是应用程序识别的相应语言代码（例如。 `en`, `de`）。
      *
-     * Array keys are not always required. When an array value does not have a key, the matching of the requested language
-     * will be based on a language fallback mechanism. For example, a value of `en` will match `en`, `en_US`, `en-US`, `en-GB`, etc.
+     * 并非总是需要阵列密钥。当数组值没有键时，所请求的语言的匹配
+     * 将基于语言回退机制。例如，值 `en` 将要与 `en`，`en_US`，`en-US`，`en-GB`，等匹配。
      *
-     * If this property is empty or not set, language negotiation will be skipped.
+     * 如果此属性为空或未设置，则将跳过语言协商。
      */
     public $languages;
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request 当前请求。如果未设置，将使用 `request` 应用程序组件。
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response 要发送的响应。如果未设置，将使用 `response` 应用程序组件。
      */
     public $response;
 
@@ -147,7 +147,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     }
 
     /**
-     * Negotiates the response format and application language.
+     * 协商响应格式和应用程序语言。
      */
     public function negotiate()
     {
@@ -168,11 +168,11 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     }
 
     /**
-     * Negotiates the response format.
+     * 协商响应格式。
      * @param Request $request
      * @param Response $response
-     * @throws BadRequestHttpException if an array received for GET parameter [[formatParam]].
-     * @throws UnsupportedMediaTypeHttpException if none of the requested content types is accepted.
+     * @throws BadRequestHttpException 如果接收到用于 GET 参数的数组 [[formatParam]]。
+     * @throws UnsupportedMediaTypeHttpException 如果没有接受任何请求的内容类型。
      */
     protected function negotiateContentType($request, $response)
     {
@@ -220,9 +220,9 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     }
 
     /**
-     * Negotiates the application language.
+     * 协商应用程序语言。
      * @param Request $request
-     * @return string the chosen language
+     * @return string 所选语言
      */
     protected function negotiateLanguage($request)
     {
@@ -258,10 +258,10 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     }
 
     /**
-     * Returns a value indicating whether the requested language matches the supported language.
-     * @param string $requested the requested language code
-     * @param string $supported the supported language code
-     * @return bool whether the requested language is supported
+     * 返回一个值该值指示请求的语言是否与支持的语言匹配。
+     * @param string $requested 请求的语言代码
+     * @param string $supported 支持的语言代码
+     * @return bool 是否支持所请求的语言
      */
     protected function isLanguageSupported($requested, $supported)
     {

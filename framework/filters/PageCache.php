@@ -18,14 +18,14 @@ use yii\di\Instance;
 use yii\web\Response;
 
 /**
- * PageCache implements server-side caching of whole pages.
+ * PageCache 实现整个页面的服务器端缓存。
  *
- * It is an action filter that can be added to a controller and handles the `beforeAction` event.
+ * 它是一个动作过滤器可以添加到控制器中并处理 `beforeAction` 事件。
  *
- * To use PageCache, declare it in the `behaviors()` method of your controller class.
- * In the following example the filter will be applied to the `index` action and
- * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
- * It also stores different versions of the page depending on the application language.
+ * 要使用 PageCache，请在控制器类的 `behaviors()` 方法中声明它。
+ * 在下面的示例中过滤器将应用于 `index` 操作
+ * 并缓存整个页面最多60秒或者直到 POST 表中的条目数发生变化。
+ * 它还根据应用程序语言存储不同版本的页面。
  *
  * ```php
  * public function behaviors()
@@ -56,32 +56,32 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     use DynamicContentAwareTrait;
 
     /**
-     * Page cache version, to detect incompatibilities in cached values when the
-     * data format of the cache changes.
+     * 页缓存版本，用于在缓存的数据格式更改时
+     * 检测缓存值中的不兼容性。
      */
     const PAGE_CACHE_VERSION = 1;
 
     /**
-     * @var bool whether the content being cached should be differentiated according to the route.
-     * A route consists of the requested controller ID and action ID. Defaults to `true`.
+     * @var bool 是否应根据路由区分要缓存的内容。
+     * 路由请求的控制器 ID 和操作 ID 组成。默认值为`true`。
      */
     public $varyByRoute = true;
     /**
-     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
-     * After the PageCache object is created, if you want to change this property,
-     * you should only assign it with a cache object.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var CacheInterface|array|string 缓存对象或缓存对象的应用程序组件 ID 。
+     * 创建 PageCache 对象后，如果要更改此属性，
+     * 您应该只用缓存对象来分配它。
+     * 从版本 2.0.2 开始，这也可以是用于创建对象的配置数组。
      */
     public $cache = 'cache';
     /**
-     * @var int number of seconds that the data can remain valid in cache.
-     * Use `0` to indicate that the cached data will never expire.
+     * @var int 数据在缓存中保持有效的秒数。
+     * 使用 `0` 指示缓存的数据永远不会过期。
      */
     public $duration = 60;
     /**
-     * @var array|Dependency the dependency that the cached content depends on.
-     * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
-     * For example,
+     * @var array|Dependency 缓存内容所依赖的依赖项。
+     * 这可以是一个 [[Dependency]] 对象也可以是用于创建依赖项对象的配置数组。
+     * 例如，
      *
      * ```php
      * [
@@ -90,18 +90,18 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * ]
      * ```
      *
-     * would make the output cache depend on the last modified time of all posts.
-     * If any post has its modification time changed, the cached content would be invalidated.
+     * 将使输出缓存取决于所有 POST 的上次修改时间。
+     * 如果任何帖子的修改时间发生更改，则缓存的内容将无效。
      *
-     * If [[cacheCookies]] or [[cacheHeaders]] is enabled, then [[\yii\caching\Dependency::reusable]] should be enabled as well to save performance.
-     * This is because the cookies and headers are currently stored separately from the actual page content, causing the dependency to be evaluated twice.
+     * 如果启用 [[cacheCookies]] 或者 [[cacheHeaders]]，然后应该启用 [[\yii\caching\Dependency::reusable]] 节省性能。
+     * 这是因为 cookies 和 headers 当前是与实际页面内容分开存储的，从而导致对依赖项进行两次计算。
      */
     public $dependency;
     /**
-     * @var string[]|string list of factors that would cause the variation of the content being cached.
-     * Each factor is a string representing a variation (e.g. the language, a GET parameter).
-     * The following variation setting will cause the content to be cached in different versions
-     * according to the current application language:
+     * @var string[]|string 将导致缓存内容更改的因素列表。
+     * 每个因素都是表示变体的字符串（例如语言，一个 GET 参数）。
+     * 以下更改设置将根据
+     * 当前应用程序语言将内容缓存到不同版本中：
      *
      * ```php
      * [
@@ -111,26 +111,26 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public $variations;
     /**
-     * @var bool whether to enable the page cache. You may use this property to turn on and off
-     * the page cache according to specific setting (e.g. enable page cache only for GET requests).
+     * @var bool 是否启用页面缓存。 您可以使用此属性根据
+     * 特定设置打开和关闭页缓存（例如仅对 GET 请求启用页缓存）。
      */
     public $enabled = true;
     /**
-     * @var \yii\base\View the view component to use for caching. If not set, the default application view component
-     * [[\yii\web\Application::view]] will be used.
+     * @var \yii\base\View 用于缓存的视图组件。如果未设置，默认应用程序
+     * [[\yii\web\Application::view]] 视图组件。
      */
     public $view;
     /**
-     * @var bool|array a boolean value indicating whether to cache all cookies, or an array of
-     * cookie names indicating which cookies can be cached. Be very careful with caching cookies, because
-     * it may leak sensitive or private data stored in cookies to unwanted users.
+     * @var bool|array 指示是否缓存所有 cookies 或数组的布尔值 cookies 名称
+     * 该名称指示可缓存哪些 cookies。要非常小心地缓存 cookies，因为它
+     * 可能泄漏存储在 cookies 中的敏感或私有数据给不需要的用户。
      * @since 2.0.4
      */
     public $cacheCookies = false;
     /**
-     * @var bool|array a boolean value indicating whether to cache all HTTP headers, or an array of
-     * HTTP header names (case-insensitive) indicating which HTTP headers can be cached.
-     * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
+     * @var bool|array 指示是否缓存所有 HTTP headers 的布尔值，或者一个
+     * HTTP header 名称（大小写不敏感）数组指示可以缓存哪些 HTTP headers
+     * 注意：如果您的 HTTP headers 包含敏感信息，你应该列出白名单哪些 headers 可以缓存。
      * @since 2.0.4
      */
     public $cacheHeaders = true;
@@ -148,10 +148,10 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * 在执行操作之前调用此方法（在所有可能的筛选器之后）。
+     * 您可以重写此方法来完成该操作的最后一刻做准备。
+     * @param Action $action 要执行的行动。
+     * @return bool 是否应继续执行这项行动。
      */
     public function beforeAction($action)
     {
@@ -182,10 +182,10 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * This method is invoked right before the response caching is to be started.
-     * You may override this method to cancel caching by returning `false` or store an additional data
-     * in a cache entry by returning an array instead of `true`.
-     * @return bool|array whether to cache or not, return an array instead of `true` to store an additional data.
+     * 在启动响应缓存之前调用此方法。
+     * 您可以通过返回 `false` 来重写此方法以取消缓存也可以通过返回数组而
+     * 不是 `true` 来将其他数据存储在缓存条目中。
+     * @return bool|array 无论是否缓存，返回一个数组而不是 `true` 来存储其他数据。
      * @since 2.0.11
      */
     public function beforeCacheResponse()
@@ -194,9 +194,9 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * This method is invoked right after the response restoring is finished (but before the response is sent).
-     * You may override this method to do last-minute preparation before the response is sent.
-     * @param array|null $data an array of an additional data stored in a cache entry or `null`.
+     * 此方法是在响应恢复完成后（但在响应发送之前）调用的。
+     * 您可以重写此方法以便在发送响应之前进行最后一刻的准备。
+     * @param array|null $data 存储在缓存条目或 `null` 中的附加数据的数组。
      * @since 2.0.11
      */
     public function afterRestoreResponse($data)
@@ -204,9 +204,9 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * Restores response properties from the given data.
-     * @param Response $response the response to be restored.
-     * @param array $data the response property data.
+     * 从给定数据恢复响应属性。
+     * @param Response $response 需要恢复的响应。
+     * @param array $data 响应属性数据。
      * @since 2.0.3
      */
     protected function restoreResponse($response, $data)
@@ -226,7 +226,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * Caches response properties.
+     * 缓存响应属性。
      * @since 2.0.3
      */
     public function cacheResponse()
@@ -260,10 +260,10 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * Inserts (or filters/ignores according to config) response headers/cookies into a cache data array.
-     * @param Response $response the response.
-     * @param string $collectionName currently it's `headers` or `cookies`.
-     * @param array $data the cache data.
+     * 将响应 headers/cookies 插入（或过滤/根据配置忽略）到缓存数据数组中。
+     * @param Response $response 响应。
+     * @param string $collectionName 目前，它是 `headers` 或者 `cookies`。
+     * @param array $data 缓存数据。
      */
     private function insertResponseCollectionIntoData(Response $response, $collectionName, array &$data)
     {
@@ -289,7 +289,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * @return array the key used to cache response properties.
+     * @return 数组用于缓存响应属性的键。
      * @since 2.0.3
      */
     protected function calculateCacheKey()

@@ -11,12 +11,12 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * CompositeAuth is an action filter that supports multiple authentication methods at the same time.
+ * CompositeAuth 是一个同时支持多种身份验证方法的操作筛选器。
  *
- * The authentication methods contained by CompositeAuth are configured via [[authMethods]],
- * which is a list of supported authentication class configurations.
+ * CompositeAuth 包含的身份验证方法是通过 [[authMethods]] 配置的，
+ * 这是受支持的身份验证类配置的列表。
  *
- * The following example shows how to support three authentication methods:
+ * 下面的示例演示如何支持三种身份验证方法:
  *
  * ```php
  * public function behaviors()
@@ -39,12 +39,12 @@ use yii\base\InvalidConfigException;
 class CompositeAuth extends AuthMethod
 {
     /**
-     * @var array the supported authentication methods. This property should take a list of supported
-     * authentication methods, each represented by an authentication class or configuration.
+     * @var array 支持的身份验证方法。此属性应采用受支持
+     * 的身份验证方法列表，每个都由身份验证类或配置表示。
      *
-     * If this property is empty, no authentication will be performed.
+     * 如果此属性为空，则不会执行任何身份验证。
      *
-     * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interface.
+     * 注意，auth 方法类必须实现 [[\yii\filters\auth\AuthInterface]] 接口。
      */
     public $authMethods = [];
 
