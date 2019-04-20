@@ -11,7 +11,7 @@ use Yii;
 use yii\helpers\VarDumper;
 
 /**
- * SyslogTarget writes log to syslog.
+ * SyslogTarget 将日志写入系统日志（syslog）中。
  *
  * @author miramir <gmiramir@gmail.com>
  * @since 2.0
@@ -19,23 +19,23 @@ use yii\helpers\VarDumper;
 class SyslogTarget extends Target
 {
     /**
-     * @var string syslog identity
+     * @var string 系统日志（syslog）标识
      */
     public $identity;
     /**
-     * @var int syslog facility.
+     * @var int 系统日志（syslog）类型
      */
     public $facility = LOG_USER;
     /**
-     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](http://php.net/openlog).
-     * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
-     * @see http://php.net/openlog for available options.
+     * @var int openlog（打开与系统记录器的连接）选项。这是传递给函数 [openlog()](http://php.net/openlog) 中 `$option` 参数的值。
+     * 当值为 `null` 时，表示使用默认值 `LOG_ODELAY | LOG_PID`。
+     * @see 访问 http://php.net/openlog 可获取更多可用选项。
      * @since 2.0.11
      */
     public $options;
 
     /**
-     * @var array syslog levels
+     * @var array 系统日志（syslog）级别
      */
     private $_syslogLevels = [
         Logger::LEVEL_TRACE => LOG_DEBUG,
@@ -60,8 +60,8 @@ class SyslogTarget extends Target
     }
 
     /**
-     * Writes log messages to syslog.
-     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * 将日志消息写入系统日志（syslog）中。
+     * 从版本 2.0.14 开始，如果日志无法导出，将抛出异常 LogRuntimeException。
      * @throws LogRuntimeException
      */
     public function export()

@@ -12,13 +12,13 @@ use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 
 /**
- * FileTarget records log messages in a file.
+ * FileTarget 在文件中记录日志消息。
  *
- * The log file is specified via [[logFile]]. If the size of the log file exceeds
- * [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
- * the current log file by suffixing the file name with '.1'. All existing log
- * files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
- * The property [[maxLogFiles]] specifies how many history files to keep.
+ * 日志文件通过 [[logFile]] 指定。
+ * 如果日志文件的大小超过 [[maxFileSize]]（以千字节为单位），将启用日志文件轮换。
+ * 会使用 '.1' 后缀文件名来重命名当前日志文件。
+ * 所有现有的日志文件向后移动一个位置，即 '.1' 到 '.2'，'.2' 到 '.3'，依此类推。
+ * 属性 [[maxLogFiles]] 指定要保留的历史文件数。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,56 +26,56 @@ use yii\helpers\FileHelper;
 class FileTarget extends Target
 {
     /**
-     * @var string log file path or [path alias](guide:concept-aliases). If not set, it will use the "@runtime/logs/app.log" file.
-     * The directory containing the log files will be automatically created if not existing.
+     * @var string 日志文件路径或[路径别名]（概念别名）。如果未设置，它将使用“@runtime/logs/app.log”文件。
+     * 如果不存在，将自动创建包含日志文件的目录。
      */
     public $logFile;
     /**
-     * @var bool whether log files should be rotated when they reach a certain [[maxFileSize|maximum size]].
-     * Log rotation is enabled by default. This property allows you to disable it, when you have configured
-     * an external tools for log rotation on your server.
+     * @var bool 当日志文件达到某个 [[maxFileSize|maximum size]] 时是否应该轮换日志文件。
+     * 默认情况下已启用日志轮换。
+     * 当您在服务器上配置了用于日志轮换的外部工具时，允许您通过此属性禁用它。
      * @since 2.0.3
      */
     public $enableRotation = true;
     /**
-     * @var int maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
+     * @var int 最大日志文件大小，以千字节为单位。默认为 10240，表示 10MB。
      */
-    public $maxFileSize = 10240; // in KB
+    public $maxFileSize = 10240; // 以KB为单位
     /**
-     * @var int number of log files used for rotation. Defaults to 5.
+     * @var int 用于轮换的日志文件数。默认为 5。
      */
     public $maxLogFiles = 5;
     /**
-     * @var int the permission to be set for newly created log files.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * If not set, the permission will be determined by the current environment.
+     * @var int 为新创建的日志文件设置的权限。
+     * 该值将由 PHP chmod() 函数使用。没有默认值。
+     * 如果未设置，权限将由当前环境确定。
      */
     public $fileMode;
     /**
-     * @var int the permission to be set for newly created directories.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * Defaults to 0775, meaning the directory is read-writable by owner and group,
-     * but read-only for other users.
+     * @var int 为新创建的目录设置的权限。
+     * 该值将由 PHP chmod() 函数使用。没有默认值。
+     * 默认为 0775，表示目录所有者和组可读写，其他用户只读。
+     *
      */
     public $dirMode = 0775;
     /**
-     * @var bool Whether to rotate log files by copy and truncate in contrast to rotation by
-     * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
-     * systems which do not play well with rename on open files. Rotation by renaming however is
-     * a bit faster.
+     * @var bool 是否通过复制和截断来轮换日志文件，而不是通过重命名文件。
+     * 默认为 'true'，以便与日志跟踪程序更兼容。
+     * 并且在 Windows 系统中不能很好地重命名已打开的文件。
+     * 但是，通过重命名进行轮换要快一点。
      *
-     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
-     * function does not work with files that are opened by some process is described in a
-     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation. By setting rotateByCopy to `true` you can work
-     * around this problem.
+     * 在PHP文档中 [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274)
+     * 中描述了 Windows
+     * 系统中 [rename()](http://www.php.net/manual/en/function.rename.php) 函数不能与某些进程打开的文件一起使用的问题。
+     * 您可以通过将 rotateByCopy
+     * 设置为 `true` 解决此问题。
      */
     public $rotateByCopy = true;
 
 
     /**
-     * Initializes the route.
-     * This method is invoked after the route is created by the route manager.
+     * 初始化路由。
+     * 路由管理器创建路由后调用此方法。
      */
     public function init()
     {
@@ -94,10 +94,10 @@ class FileTarget extends Target
     }
 
     /**
-     * Writes log messages to a file.
-     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
-     * @throws InvalidConfigException if unable to open the log file for writing
-     * @throws LogRuntimeException if unable to write complete log to file
+     * 将日志消息写入文件。
+     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException 异常。
+     * @throws InvalidConfigException 如果无法打开日志文件进行写入
+     * @throws LogRuntimeException 如果无法将完整的日志写入文件
      */
     public function export()
     {
@@ -146,7 +146,7 @@ class FileTarget extends Target
     }
 
     /**
-     * Rotates log files.
+     * 轮换日志文件。
      */
     protected function rotateFiles()
     {
@@ -170,7 +170,7 @@ class FileTarget extends Target
     }
 
     /***
-     * Clear log file without closing any other process open handles
+     * 清除日志文件而不关闭任何其他进程打开句柄
      * @param string $rotateFile
      */
     private function clearLogFile($rotateFile)
@@ -182,7 +182,7 @@ class FileTarget extends Target
     }
 
     /***
-     * Copy rotated file into new file
+     * 将轮换的文件复制到新文件中
      * @param string $rotateFile
      * @param string $newFile
      */
@@ -195,7 +195,7 @@ class FileTarget extends Target
     }
 
     /**
-     * Renames rotated file into new file
+     * 将轮换的文件重命名为新文件
      * @param string $rotateFile
      * @param string $newFile
      */
