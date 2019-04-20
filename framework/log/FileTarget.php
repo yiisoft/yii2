@@ -15,10 +15,10 @@ use yii\helpers\FileHelper;
  * FileTarget 在文件中记录日志消息。
  *
  * 日志文件通过 [[logFile]] 指定。
- * 如果日志文件的大小超过 [[maxFileSize]] （以千字节为单位），将启用日志文件轮换。会使用 '.1' 后缀文件名来重命名当前日志文件。
- * 所有现有的日志文件向后移动一个位置，即 '.1' 到 '.2' ，'.2' 到 '.3'，依此类推。
+ * 如果日志文件的大小超过 [[maxFileSize]]（以千字节为单位），将启用日志文件轮换。
+ * 会使用 '.1' 后缀文件名来重命名当前日志文件。
+ * 所有现有的日志文件向后移动一个位置，即 '.1' 到 '.2'，'.2' 到 '.3'，依此类推。
  * 属性 [[maxLogFiles]] 指定要保留的历史文件数。
- *
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,7 +26,7 @@ use yii\helpers\FileHelper;
 class FileTarget extends Target
 {
     /**
-     * @var string 日志文件路径或[路径别名]（概念别名）。如果未设置，它将使用 “@runtime/logs/app.log” 文件。
+     * @var string 日志文件路径或[路径别名]（概念别名）。如果未设置，它将使用“@runtime/logs/app.log”文件。
      * 如果不存在，将自动创建包含日志文件的目录。
      */
     public $logFile;
@@ -60,7 +60,7 @@ class FileTarget extends Target
     public $dirMode = 0775;
     /**
      * @var bool 是否通过复制和截断来轮换日志文件，而不是通过重命名文件。
-     * 默认为 'true' ，以便与日志跟踪程序更兼容。
+     * 默认为 'true'，以便与日志跟踪程序更兼容。
      * 并且在 Windows 系统中不能很好地重命名已打开的文件。
      * 但是，通过重命名进行轮换要快一点。
      *
