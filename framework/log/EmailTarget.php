@@ -46,7 +46,7 @@ class EmailTarget extends Target
 {
     /**
      * @var array 用于创建 [[\yii\mail\MessageInterface|message]] 对象的配置数组。
-     * 请注意，必须设置 “to” 选项，该选项指定目标电子邮件地址。
+     * 请注意，必须设置“to”选项，该选项指定目标电子邮件地址。
      */
     public $message = [];
     /**
