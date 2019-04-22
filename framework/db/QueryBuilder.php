@@ -342,6 +342,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function insert($table, $columns, &$params)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
         return 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
@@ -448,6 +449,8 @@ class QueryBuilder extends \yii\base\BaseObject
         if (empty($rows)) {
             return '';
         }
+        
+        $table = $this->db->schema->normalizeTableName($table);
 
         $schema = $this->db->getSchema();
         if (($tableSchema = $schema->getTableSchema($table)) !== null) {
@@ -622,6 +625,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function update($table, $columns, $condition, &$params)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         list($lines, $params) = $this->prepareUpdateSets($table, $columns, $params);
         $sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
         $where = $this->buildWhere($condition, $params);
@@ -643,7 +647,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -676,6 +679,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function delete($table, $condition, &$params)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         $sql = 'DELETE FROM ' . $this->db->quoteTableName($table);
         $where = $this->buildWhere($condition, $params);
 
@@ -718,6 +722,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 $cols[] = "\t" . $type;
             }
         }
+        $table = $this->db->schema->normalizeTableName($table);
         $sql = 'CREATE TABLE ' . $this->db->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 
         return $options === null ? $sql : $sql . ' ' . $options;
@@ -731,6 +736,8 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function renameTable($oldName, $newName)
     {
+        $oldName = $this->db->schema->normalizeTableName($oldName);
+        $newName = $this->db->schema->normalizeTableName($newName);
         return 'RENAME TABLE ' . $this->db->quoteTableName($oldName) . ' TO ' . $this->db->quoteTableName($newName);
     }
 
@@ -741,6 +748,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropTable($table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'DROP TABLE ' . $this->db->quoteTableName($table);
     }
 
@@ -761,6 +769,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $columns[$i] = $this->db->quoteColumnName($col);
         }
 
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
             . $this->db->quoteColumnName($name) . ' PRIMARY KEY ('
             . implode(', ', $columns) . ')';
@@ -774,6 +783,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropPrimaryKey($name, $table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
     }
@@ -785,6 +795,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function truncateTable($table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'TRUNCATE TABLE ' . $this->db->quoteTableName($table);
     }
 
@@ -799,6 +810,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addColumn($table, $column, $type)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' ADD ' . $this->db->quoteColumnName($column) . ' '
             . $this->getColumnType($type);
@@ -812,6 +824,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropColumn($table, $column)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' DROP COLUMN ' . $this->db->quoteColumnName($column);
     }
@@ -825,6 +838,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function renameColumn($table, $oldName, $newName)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' RENAME COLUMN ' . $this->db->quoteColumnName($oldName)
             . ' TO ' . $this->db->quoteColumnName($newName);
@@ -842,6 +856,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function alterColumn($table, $column, $type)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' CHANGE '
             . $this->db->quoteColumnName($column) . ' '
             . $this->db->quoteColumnName($column) . ' '
@@ -864,6 +879,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         $sql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' ADD CONSTRAINT ' . $this->db->quoteColumnName($name)
             . ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
@@ -887,6 +903,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropForeignKey($name, $table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
     }
@@ -903,6 +920,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
             . $this->db->quoteTableName($name) . ' ON '
             . $this->db->quoteTableName($table)
@@ -917,6 +935,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropIndex($name, $table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'DROP INDEX ' . $this->db->quoteTableName($name) . ' ON ' . $this->db->quoteTableName($table);
     }
 
@@ -934,6 +953,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addUnique($name, $table, $columns)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         if (is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
         }
@@ -957,6 +977,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropUnique($name, $table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
     }
@@ -973,6 +994,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addCheck($name, $table, $expression)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
             . $this->db->quoteColumnName($name) . ' CHECK (' . $this->db->quoteSql($expression) . ')';
     }
@@ -988,6 +1010,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropCheck($name, $table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
     }
@@ -1007,6 +1030,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addDefaultValue($name, $table, $column, $value)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         throw new NotSupportedException($this->db->getDriverName() . ' does not support adding default value constraints.');
     }
 
@@ -1022,6 +1046,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropDefaultValue($name, $table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         throw new NotSupportedException($this->db->getDriverName() . ' does not support dropping default value constraints.');
     }
 
@@ -1053,6 +1078,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function executeResetSequence($table, $value = null)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         $this->db->createCommand()->resetSequence($table, $value)->execute();
     }
 
@@ -1080,6 +1106,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS ' . $this->db->quoteValue($comment);
     }
 
@@ -1093,6 +1120,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function addCommentOnTable($table, $comment)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . ' IS ' . $this->db->quoteValue($comment);
     }
 
@@ -1106,6 +1134,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropCommentFromColumn($table, $column)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS NULL';
     }
 
@@ -1118,6 +1147,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropCommentFromTable($table)
     {
+        $table = $this->db->schema->normalizeTableName($table);
         return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . ' IS NULL';
     }
 
@@ -1136,13 +1166,14 @@ class QueryBuilder extends \yii\base\BaseObject
             list($rawQuery, $params) = $this->build($subQuery);
             array_walk(
                 $params,
-                function(&$param) {
+                function (&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );
             $subQuery = strtr($rawQuery, $params);
         }
 
+        $viewName = $this->db->schema->normalizeTableName($viewName);
         return 'CREATE VIEW ' . $this->db->quoteTableName($viewName) . ' AS ' . $subQuery;
     }
 
@@ -1155,6 +1186,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function dropView($viewName)
     {
+        $viewName = $this->db->schema->normalizeTableName($viewName);
         return 'DROP VIEW ' . $this->db->quoteTableName($viewName);
     }
 
@@ -1274,7 +1306,7 @@ class QueryBuilder extends \yii\base\BaseObject
         if (empty($tables)) {
             return '';
         }
-
+        $tables = $this->db->schema->normalizeTableName($tables);
         $tables = $this->quoteTableNames($tables, $params);
 
         return 'FROM ' . implode(', ', $tables);
@@ -1298,7 +1330,8 @@ class QueryBuilder extends \yii\base\BaseObject
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
             list($joinType, $table) = $join;
-            $tables = $this->quoteTableNames((array) $table, $params);
+            $tables = $this->db->schema->normalizeTableName((array)$table);
+            $tables = $this->quoteTableNames($tables, $params);
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
             if (isset($join[2])) {
