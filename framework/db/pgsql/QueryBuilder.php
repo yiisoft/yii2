@@ -249,14 +249,52 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function alterColumn($table, $column, $type)
     {
+        $columnName = $this->db->quoteColumnName($column);
+        $tableName = $this->db->quoteTableName($table);
+
         // https://github.com/yiisoft/yii2/issues/4492
         // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
-        if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
-            $type = 'TYPE ' . $this->getColumnType($type);
+        if (preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
+            return "ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$type}";
         }
 
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-            . $this->db->quoteColumnName($column) . ' ' . $type;
+        $type = 'TYPE ' . $this->getColumnType($type);
+
+        $multiAlterStatement = [];
+        $constraintPrefix = preg_replace('[^a-zA-Z0-9_]', '', $table . '_' . $column);
+
+        if (preg_match('/\s+(DEFAULT|default)\s+(["\']?\w+["\']?)/', $type, $matches)) {
+            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', '', $type);
+            $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET DEFAULT {$matches[2]}";
+        } else {
+            // safe to drop default even if there was none in the first place
+            $multiAlterStatement[] = "ALTER COLUMN {$columnName} DROP DEFAULT";
+        }
+
+        if (preg_match('/\s+NOT\s+NULL/i', $type)) {
+            $type = preg_replace('/\s+NOT\s+NULL/i', '', $type);
+            $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET NOT NULL";
+        } else {
+            // remove additional null if any
+            $type = preg_replace('/\s+NULL/i', '', $type);
+            // safe to drop not null even if there was none in the first place
+            $multiAlterStatement[] = "ALTER COLUMN {$columnName} DROP NOT NULL";
+        }
+
+        if (preg_match('/\s+(CHECK|check)\s+\((.+)\)/', $type, $matches)) {
+            $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
+            $multiAlterStatement[] = "ADD CONSTRAINT {$constraintPrefix}_check CHECK ({$matches[2]})";
+        }
+
+        if (preg_match('/\s+UNIQUE/i', $type)) {
+            $type = preg_replace('/\s+UNIQUE/i', '', $type);
+            $multiAlterStatement[] = "ADD UNIQUE ({$columnName})";
+        }
+
+        // add what's left at the beginning
+        array_unshift($multiAlterStatement, 'ALTER COLUMN ' . $columnName . ' ' . $type);
+
+        return 'ALTER TABLE ' . $tableName . ' ' . implode(', ', $multiAlterStatement);
     }
 
     /**
