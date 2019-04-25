@@ -261,18 +261,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $type = 'TYPE ' . $this->getColumnType($type);
 
         $multiAlterStatement = [];
-        $constraintPrefix = preg_replace('[^a-zA-Z0-9_]', '', $table . '_' . $column);
+        $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
 
-        if (preg_match('/\s+(DEFAULT|default)\s+(["\']?\w+["\']?)/', $type, $matches)) {
+        if (preg_match('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', $type, $matches)) {
             $type = preg_replace('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', '', $type);
-            $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET DEFAULT {$matches[2]}";
+            $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET DEFAULT {$matches[1]}";
         } else {
             // safe to drop default even if there was none in the first place
             $multiAlterStatement[] = "ALTER COLUMN {$columnName} DROP DEFAULT";
         }
 
-        if (preg_match('/\s+NOT\s+NULL/i', $type)) {
-            $type = preg_replace('/\s+NOT\s+NULL/i', '', $type);
+        $type = preg_replace('/\s+NOT\s+NULL/i', '', $type, -1, $count);
+        if ($count) {
             $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET NOT NULL";
         } else {
             // remove additional null if any
@@ -281,18 +281,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $multiAlterStatement[] = "ALTER COLUMN {$columnName} DROP NOT NULL";
         }
 
-        if (preg_match('/\s+(CHECK|check)\s+\((.+)\)/', $type, $matches)) {
+        if (preg_match('/\s+CHECK\s+\((.+)\)/i', $type, $matches)) {
             $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
-            $multiAlterStatement[] = "ADD CONSTRAINT {$constraintPrefix}_check CHECK ({$matches[2]})";
+            $multiAlterStatement[] = "ADD CONSTRAINT {$constraintPrefix}_check CHECK ({$matches[1]})";
         }
 
-        if (preg_match('/\s+UNIQUE/i', $type)) {
-            $type = preg_replace('/\s+UNIQUE/i', '', $type);
+        $type = preg_replace('/\s+UNIQUE/i', '', $type, -1, $count);
+        if ($count) {
             $multiAlterStatement[] = "ADD UNIQUE ({$columnName})";
         }
 
         // add what's left at the beginning
-        array_unshift($multiAlterStatement, 'ALTER COLUMN ' . $columnName . ' ' . $type);
+        array_unshift($multiAlterStatement, "ALTER COLUMN {$columnName} {$type}");
 
         return 'ALTER TABLE ' . $tableName . ' ' . implode(', ', $multiAlterStatement);
     }
