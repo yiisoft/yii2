@@ -515,7 +515,7 @@ class PhpDocController extends Controller
             return false;
         }
 
-        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object' && !$ref->isSubclassOf('yii\base\BaseObject') && $className != 'yii\base\BaseObject') {
+        if ($this->isBaseObject($className, $ref)) {
             $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\BaseObject.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }
@@ -661,13 +661,17 @@ class PhpDocController extends Controller
             $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
             if (\count($interfaces) == 1) {
                 return false;
-            } elseif (\count($interfaces) > 1) {
+            }
+
+            if (\count($interfaces) > 1) {
                 $this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
             } else {
                 $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.*)\n\}(\n|$)#', $file);
                 if (\count($traits) == 1) {
                     return false;
-                } elseif (\count($traits) > 1) {
+                }
+
+                if (\count($traits) > 1) {
                     $this->stderr("[ERR] There should be only one class/trait/interface in a file: $fileName\n", Console::FG_RED);
                 } else {
                     $this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
@@ -720,32 +724,12 @@ class PhpDocController extends Controller
                                   . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';
                         }
                     } elseif (isset($prop['get'])) {
-                        // check if parent class has setter defined
-                        $c = $className;
-                        $parentSetter = false;
-                        while ($parent = get_parent_class($c)) {
-                            if (method_exists($parent, 'set' . ucfirst($propName))) {
-                                $parentSetter = true;
-                                break;
-                            }
-                            $c = $parent;
-                        }
-                        if (!$parentSetter) {
+                        if (!$this->hasSetterInParents($className, $propName)) {
                             $note = ' This property is read-only.';
                             //$docline .= '-read';
                         }
                     } elseif (isset($prop['set'])) {
-                        // check if parent class has getter defined
-                        $c = $className;
-                        $parentGetter = false;
-                        while ($parent = get_parent_class($c)) {
-                            if (method_exists($parent, 'set' . ucfirst($propName))) {
-                                $parentGetter = true;
-                                break;
-                            }
-                            $c = $parent;
-                        }
-                        if (!$parentGetter) {
+                        if (!$this->hasGetterInParents($className, $propName)) {
                             $note = ' This property is write-only.';
                             //$docline .= '-write';
                         }
@@ -818,5 +802,53 @@ class PhpDocController extends Controller
             return sha1($string);
         }
         return hash('sha256', $string);
+    }
+
+    /**
+     * @param string $className
+     * @param string $propName
+     * @return bool
+     */
+    protected function hasGetterInParents($className, $propName)
+    {
+        $class = $className;
+        while ($parent = get_parent_class($class)) {
+            if (method_exists($parent, 'get' . ucfirst($propName))) {
+                return true;
+            }
+            $class = $parent;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $className
+     * @param string $propName
+     * @return bool
+     */
+    protected function hasSetterInParents($className, $propName)
+    {
+        $class = $className;
+        while ($parent = get_parent_class($class)) {
+            if (method_exists($parent, 'set' . ucfirst($propName))) {
+                return true;
+            }
+            $class = $parent;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $className
+     * @param \ReflectionClass $ref
+     * @return bool
+     */
+    protected function isBaseObject($className, \ReflectionClass $ref)
+    {
+        $isDepreceatedObject = false;
+        if (PHP_VERSION_ID <= 70100) {
+            $isDepreceatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
+        }
+        return !$isDepreceatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
     }
 }

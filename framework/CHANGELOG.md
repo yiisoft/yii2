@@ -1,14 +1,38 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.17 under development
+2.0.19 under development
 ------------------------
 
-- Bug #17185: Fixed `AssetManager` timestamp appending when a file is published manually (GHopperMSK)
-- Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
+- no changes in this release.
+
+
+2.0.18 April 23, 2019
+---------------------
+
+- Bug #16589: Fixed not using `defaultValue` in `BlameableBehavior` for console app (evil1)
+- Bug #16820: `yii\filters\Cors::prepareHeaders()` now accepts Access-Control-Allow-Headers in preflight response (georgezim85)
+- Bug #17220: Fixed error when using non-InputWidget in active form field (s1lver)
+- Bug #17235: `yii\helpers\FileHelper::normalizePath()` now accepts stream wrappers (razvanphp)
+- Bug #17268: Fixed Formatter didn't take power into account (samdark)
+
+
+2.0.17 March 22, 2019
+---------------------
+
+- Bug #9438, #13740, #15037: Handle DB session callback custom fields before session closed (lubosdz)
+- Bug #16158: Fix multiple select validation was trigged on other fields blur event (GHopperMSK)
+- Bug #16335: Fixed in `yii\filters\AccessRule::matchIP()` user IP validation with netmask in rule (omentes)
+- Bug #16681: `ActiveField::inputOptions` were not used during some widgets rendering (GHopperMSK)
 - Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
-- Bug #17180: Do not populate `yii\web\Response::$response` when response code is 204 (mikk150)
 - Bug #17124: Fixed ErrorException when run `./yii fixture/unload` without arguments (ricpelo)
+- Bug #17127: `yii\db\ActiveRecord::findOne()` now accepts table aliases (albertborsos)
+- Bug #17133: Fixed aliases rendering during help generation for a console command (GHopperMSK)
+- Bug #17152: Fixed error page when using traceline option (asamats)
+- Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
+- Bug #17180: Do not populate `yii\web\Response::$response` when response code is 204 (mikk150)
+- Bug #17185: Fixed `AssetManager` timestamp appending when a file is published manually (GHopperMSK)
+- Bug #17215: Improved security for servers running PHP 7.0.0+ (brandonkelly)
 
 
 2.0.16.1 February 28, 2019

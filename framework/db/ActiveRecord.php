@@ -187,10 +187,31 @@ class ActiveRecord extends BaseActiveRecord
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         } elseif (is_array($condition)) {
-            $condition = static::filterCondition($condition);
+            $aliases = static::filterValidAliases($query);
+            $condition = static::filterCondition($condition, $aliases);
         }
 
         return $query->andWhere($condition);
+    }
+
+    /**
+     * Returns table aliases which are not the same as the name of the tables.
+     *
+     * @param Query $query
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidAliases(Query $query)
+    {
+        $tables = $query->getTablesUsedInFrom();
+
+        $aliases = array_diff(array_keys($tables), $tables);
+
+        return array_map(function ($alias) {
+            return preg_replace('/{{([\w]+)}}/', '$1', $alias);
+        }, array_values($aliases));
     }
 
     /**
@@ -199,16 +220,41 @@ class ActiveRecord extends BaseActiveRecord
      * This method will ensure that an array condition only filters on existing table columns.
      *
      * @param array $condition condition to filter.
+     * @param array $aliases
      * @return array filtered condition.
      * @throws InvalidArgumentException in case array contains unsafe values.
+     * @throws InvalidConfigException
      * @since 2.0.15
      * @internal
      */
-    protected static function filterCondition(array $condition)
+    protected static function filterCondition(array $condition, array $aliases = [])
     {
         $result = [];
         $db = static::getDb();
-        // valid column names are table column names or column names prefixed with table name
+        $columnNames = static::filterValidColumnNames($db, $aliases);
+
+        foreach ($condition as $key => $value) {
+            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
+                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
+            }
+            $result[$key] = is_array($value) ? array_values($value) : $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Valid column names are table column names or column names prefixed with table name or table alias
+     *
+     * @param Connection $db
+     * @param array $aliases
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidColumnNames($db, array $aliases)
+    {
         $columnNames = [];
         $tableName = static::tableName();
         $quotedTableName = $db->quoteTableName($tableName);
@@ -218,15 +264,14 @@ class ActiveRecord extends BaseActiveRecord
             $columnNames[] = $db->quoteColumnName($columnName);
             $columnNames[] = "$tableName.$columnName";
             $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
-        }
-        foreach ($condition as $key => $value) {
-            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
-                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
+            foreach ($aliases as $tableAlias) {
+                $columnNames[] = "$tableAlias.$columnName";
+                $quotedTableAlias = $db->quoteTableName($tableAlias);
+                $columnNames[] = $db->quoteSql("$quotedTableAlias.[[$columnName]]");
             }
-            $result[$key] = is_array($value) ? array_values($value) : $value;
         }
 
-        return $result;
+        return $columnNames;
     }
 
     /**

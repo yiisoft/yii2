@@ -17,6 +17,7 @@ use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\CustomerWithAlias;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\CustomerQuery;
@@ -1660,55 +1661,99 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         CustomerQuery::$joinWithProfile = false;
     }
 
+    /**
+     * @dataProvider filterTableNamesFromAliasesProvider
+     * @param $fromParams
+     * @param $expectedAliases
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function testFilterTableNamesFromAliases($fromParams, $expectedAliases)
+    {
+        $query = Customer::find()->from($fromParams);
+        $aliases = $this->invokeMethod(\Yii::createObject(Customer::className()), 'filterValidAliases', [$query]);
+
+        $this->assertEquals($expectedAliases, $aliases);
+    }
+
+    public function filterTableNamesFromAliasesProvider()
+    {
+        return [
+            'table name as string'         => ['customer', []],
+            'table name as array'          => [['customer'], []],
+            'table names'                  => [['customer', 'order'], []],
+            'table name and a table alias' => [['customer', 'ord' => 'order'], ['ord']],
+            'table alias'                  => [['csr' => 'customer'], ['csr']],
+            'table aliases'                => [['csr' => 'customer', 'ord' => 'order'], ['csr', 'ord']],
+        ];
+    }
+
     public function legalValuesForFindByCondition()
     {
         return [
-            [['id' => 1]],
-            [['customer.id' => 1]],
-            [['[[id]]' => 1]],
-            [['{{customer}}.[[id]]' => 1]],
-            [['{{%customer}}.[[id]]' => 1]],
+            [Customer::className(), ['id' => 1]],
+            [Customer::className(), ['customer.id' => 1]],
+            [Customer::className(), ['[[id]]' => 1]],
+            [Customer::className(), ['{{customer}}.[[id]]' => 1]],
+            [Customer::className(), ['{{%customer}}.[[id]]' => 1]],
+
+            [CustomerWithAlias::className(), ['id' => 1]],
+            [CustomerWithAlias::className(), ['customer.id' => 1]],
+            [CustomerWithAlias::className(), ['[[id]]' => 1]],
+            [CustomerWithAlias::className(), ['{{customer}}.[[id]]' => 1]],
+            [CustomerWithAlias::className(), ['{{%customer}}.[[id]]' => 1]],
+            [CustomerWithAlias::className(), ['csr.id' => 1]],
+            [CustomerWithAlias::className(), ['{{csr}}.[[id]]' => 1]],
         ];
     }
 
     /**
      * @dataProvider legalValuesForFindByCondition
      */
-    public function testLegalValuesForFindByCondition($validFilter)
+    public function testLegalValuesForFindByCondition($modelClassName, $validFilter)
     {
         /** @var Query $query */
-        $query = $this->invokeMethod(new Customer(), 'findByCondition', [$validFilter]);
+        $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
         Customer::getDb()->queryBuilder->build($query);
     }
 
     public function illegalValuesForFindByCondition()
     {
         return [
-            [['id' => ['`id`=`id` and 1' => 1]]],
-            [['id' => [
+            [Customer::className(), ['id' => ['`id`=`id` and 1' => 1]]],
+            [Customer::className(), ['id' => [
                 'legal' => 1,
                 '`id`=`id` and 1' => 1,
             ]]],
-            [['id' => [
+            [Customer::className(), ['id' => [
                 'nested_illegal' => [
                     'false or 1=' => 1
                 ]
             ]]],
-            [
-                [['true--' => 1]]
-            ],
+            [Customer::className(), [['true--' => 1]]],
+
+            [CustomerWithAlias::className(), ['csr.id' => ['`csr`.`id`=`csr`.`id` and 1' => 1]]],
+            [CustomerWithAlias::className(), ['csr.id' => [
+                'legal' => 1,
+                '`csr`.`id`=`csr`.`id` and 1' => 1,
+            ]]],
+            [CustomerWithAlias::className(), ['csr.id' => [
+                'nested_illegal' => [
+                    'false or 1=' => 1
+                ]
+            ]]],
+            [CustomerWithAlias::className(), [['true--' => 1]]],
         ];
     }
 
     /**
      * @dataProvider illegalValuesForFindByCondition
      */
-    public function testValueEscapingInFindByCondition($filterWithInjection)
+    public function testValueEscapingInFindByCondition($modelClassName, $filterWithInjection)
     {
         $this->expectException('yii\base\InvalidArgumentException');
         $this->expectExceptionMessageRegExp('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
         /** @var Query $query */
-        $query = $this->invokeMethod(new Customer(), 'findByCondition', $filterWithInjection);
+        $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', $filterWithInjection);
         Customer::getDb()->queryBuilder->build($query);
     }
 

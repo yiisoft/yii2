@@ -326,7 +326,7 @@ Ainsi l'exemple de code suivant est vulnérable :
 ```php
 // Code vulnérable:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value est sûre, mais le nom  $column n'est pas encodé !
 ```
