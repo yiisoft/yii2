@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.19 under development
 ------------------------
 
-- no changes in this release.
+- Bug #12077, #12135, #17263: Fixed PostgreSQL version of `alterColumn()` to accept properly `ColumnSchemaBuilder` definition of column (bizley)
 
 
 2.0.18 April 23, 2019
