@@ -1281,7 +1281,11 @@ trait ActiveRecordTestTrait
      */
     public function testViaWithCallable()
     {
-        $order = Order::findOne(2);
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        /* @var Order $order */
+        $order = $orderClass::findOne(2);
 
         $expensiveItems = $order->expensiveItemsUsingViaWithCallable;
         $cheapItems = $order->cheapItemsUsingViaWithCallable;
