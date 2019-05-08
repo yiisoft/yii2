@@ -448,6 +448,7 @@ return [
     'mime' => 'message/rfc822',
     'mj2' => 'video/mj2',
     'mjp2' => 'video/mj2',
+    'mjs' => 'text/javascript',
     'mk3d' => 'video/x-matroska',
     'mka' => 'audio/x-matroska',
     'mks' => 'video/x-matroska',
