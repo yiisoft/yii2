@@ -497,7 +497,8 @@ class Validator extends Component
     public function getAttributeNames()
     {
         return array_map(function ($attribute) {
-            return ltrim($attribute, '!');
+            // ltrim will convert int values into strings which wont return numeric attributes when using strict compare in in_array when using getValidationAttributes()
+            return is_int($attribute) ? $attribute : ltrim($attribute, '!');
         }, $this->attributes);
     }
 }
