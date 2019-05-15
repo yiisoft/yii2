@@ -316,7 +316,7 @@ class ValidatorTest extends TestCase
     {
         $model = new DynamicModel();
         $model->defineAttribute(1);
-        $model->addRule([1], SafeValidator::class);
+        $model->addRule([1], SafeValidator::className());
     
         $this->assertNull($model->{1});
         $this->assertTrue($model->validate([1]));

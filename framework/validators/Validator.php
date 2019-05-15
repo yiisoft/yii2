@@ -284,7 +284,8 @@ class Validator extends Component
         $newAttributes = [];
         $attributeNames = $this->getAttributeNames();
         foreach ($attributes as $attribute) {
-            if (in_array($attribute, $attributeNames, true)) {
+            // do not strict compare, otherwise int attributes would fail due to to string conversion in getAttributeNames() using ltrim().
+            if (in_array($attribute, $attributeNames, false)) {
                 $newAttributes[] = $attribute;
             }
         }
@@ -497,8 +498,7 @@ class Validator extends Component
     public function getAttributeNames()
     {
         return array_map(function ($attribute) {
-            // ltrim will convert int values into strings which wont return numeric attributes when using strict compare in in_array when using getValidationAttributes()
-            return is_int($attribute) ? $attribute : ltrim($attribute, '!');
+            return ltrim($attribute, '!');
         }, $this->attributes);
     }
 }
