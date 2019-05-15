@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.19 under development
 ------------------------
 
+- Bug #17233: Fixed bug with integer model attribute names in Validator class (nadar)
 - Bug #12077, #12135, #17263: Fixed PostgreSQL version of `alterColumn()` to accept properly `ColumnSchemaBuilder` definition of column (bizley)
 - Bug #17306: Added ".mjs" extensions to mimetypes meta (samdark)
 
