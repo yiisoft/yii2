@@ -1,10 +1,20 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.18 under development
+2.0.19 under development
 ------------------------
 
+- Bug #12077, #12135, #17263: Fixed PostgreSQL version of `alterColumn()` to accept properly `ColumnSchemaBuilder` definition of column (bizley)
+- Bug #17306: Added ".mjs" extensions to mimetypes meta (samdark)
+
+2.0.18 April 23, 2019
+---------------------
+
+- Bug #16589: Fixed not using `defaultValue` in `BlameableBehavior` for console app (evil1)
+- Bug #16820: `yii\filters\Cors::prepareHeaders()` now accepts Access-Control-Allow-Headers in preflight response (georgezim85)
 - Bug #17220: Fixed error when using non-InputWidget in active form field (s1lver)
+- Bug #17235: `yii\helpers\FileHelper::normalizePath()` now accepts stream wrappers (razvanphp)
+- Bug #17268: Fixed Formatter didn't take power into account (samdark)
 
 
 2.0.17 March 22, 2019

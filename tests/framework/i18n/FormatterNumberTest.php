@@ -164,6 +164,10 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('123.1', $this->formatter->asDecimal($value, 1));
         $this->assertSame('123', $this->formatter->asDecimal($value, 0));
 
+        // power values
+        $this->assertSame('2,000', $this->formatter->asDecimal(2e3));
+        $this->assertSame('0', $this->formatter->asDecimal(1E-10));
+
         $value = 123;
         $this->assertSame('123', $this->formatter->asDecimal($value));
         $this->assertSame('123.00', $this->formatter->asDecimal($value, 2));
@@ -226,7 +230,9 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('0.00', $this->formatter->asDecimal('0.00'));
         $this->assertSame('0.01', $this->formatter->asDecimal('00000000000000.0100000000000'));
 
+        // power values
         $this->assertSame('2,000.00', $this->formatter->asDecimal(2e3));
+        $this->assertSame('0.00', $this->formatter->asDecimal(1E-10));
 
         $this->formatter->decimalSeparator = ',';
         $this->formatter->thousandSeparator = '.';
@@ -310,6 +316,9 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('$123.20', $this->formatter->asCurrency('123.20'));
         $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
         $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
+
+        // power values
+        $this->assertSame('$0.00', $this->formatter->asCurrency(1E-10));
 
         $this->formatter->locale = 'en-US';
         $this->formatter->currencyCode = 'USD';
@@ -473,6 +482,9 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('USD 0.00', $this->formatter->asCurrency('0'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency(-123.45));
+
+        // power values
+        $this->assertSame('USD 0.00', $this->formatter->asCurrency(1E-10));
 
         $this->formatter->currencyCode = 'EUR';
         $this->assertSame('EUR 123.00', $this->formatter->asCurrency('123'));

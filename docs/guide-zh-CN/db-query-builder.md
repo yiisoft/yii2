@@ -327,7 +327,7 @@ $query->where([$column => $value]);
 ```php
 // 易受攻击的代码：
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value 是安全的，但是 $column 名不会被转义处理！
 ```

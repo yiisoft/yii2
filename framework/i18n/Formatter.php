@@ -1806,13 +1806,22 @@ class Formatter extends Component
      */
     protected function normalizeNumericStringValue($value)
     {
-        $separatorPosition = strrpos($value, '.');
+        $powerPosition = strrpos($value, 'E');
+        if ($powerPosition !== false) {
+            $valuePart = substr($value, 0, $powerPosition);
+            $powerPart = substr($value, $powerPosition + 1);
+        } else {
+            $powerPart = null;
+            $valuePart = $value;
+        }
+
+        $separatorPosition = strrpos($valuePart, '.');
 
         if ($separatorPosition !== false) {
-            $integerPart = substr($value, 0, $separatorPosition);
-            $fractionalPart = substr($value, $separatorPosition + 1);
+            $integerPart = substr($valuePart, 0, $separatorPosition);
+            $fractionalPart = substr($valuePart, $separatorPosition + 1);
         } else {
-            $integerPart = $value;
+            $integerPart = $valuePart;
             $fractionalPart = null;
         }
 
@@ -1824,13 +1833,21 @@ class Formatter extends Component
         if ($fractionalPart !== null) {
             // truncate insignificant zeros
             $fractionalPart = rtrim($fractionalPart, '0');
+
+            if (empty($fractionalPart)) {
+                $fractionalPart = $powerPart !== null ? '0' : null;
+            }
         }
 
         $normalizedValue = $integerPart;
-        if (!empty($fractionalPart)) {
+        if ($fractionalPart !== null) {
             $normalizedValue .= '.' . $fractionalPart;
         } elseif ($normalizedValue === '-0') {
             $normalizedValue = '0';
+        }
+
+        if ($powerPart !== null) {
+            $normalizedValue .= 'E' . $powerPart;
         }
 
         return $normalizedValue;

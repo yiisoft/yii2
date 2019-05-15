@@ -448,6 +448,7 @@ return [
     'mime' => 'message/rfc822',
     'mj2' => 'video/mj2',
     'mjp2' => 'video/mj2',
+    'mjs' => 'text/javascript',
     'mk3d' => 'video/x-matroska',
     'mka' => 'audio/x-matroska',
     'mks' => 'video/x-matroska',
@@ -479,6 +480,7 @@ return [
     'mpkg' => 'application/vnd.apple.installer+xml',
     'mpm' => 'application/vnd.blueice.multipass',
     'mpn' => 'application/vnd.mophun.application',
+    0 => 'application/vnd.lotus-1-2-3',
     'mpp' => 'application/vnd.ms-project',
     'mpt' => 'application/vnd.ms-project',
     'mpy' => 'application/vnd.ibm.minipay',
@@ -991,5 +993,4 @@ return [
     'zir' => 'application/vnd.zul',
     'zirz' => 'application/vnd.zul',
     'zmm' => 'application/vnd.handheld-entertainment+xml',
-    123 => 'application/vnd.lotus-1-2-3',
 ];
