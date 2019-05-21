@@ -52,7 +52,7 @@ class EntryForm extends Model
     هذا ال class يرث ال [[yii\base\Model]], وهو base class تم تصميمه من خلال ال Yii, وبشكل عام وظيفته هي تثمثيل البيانات الخاصة بأي نموذج.
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: يتم إستخدام ال  [[yii\base\Model]] كأصل لل model class <b>ولا</b> يرتبط بجداول قواعد البيانات. ويستخدم ال  [[yii\db\ActiveRecord]]  بالشكل الإعتيادي ليكون هو الأصل الذي من خلاله يتم الإرتباط بجداول بقواعد البيانات. 
 </p></blockquote>
 
@@ -126,7 +126,7 @@ class SiteController extends Controller
 </p>
 
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: يمثل التعبير Yii::$app ال  <a href="../guide/structure-applications.md">Application</a> instance الذي يمكن الوصول اليه من خلال ال singleton <br />(singleton globally accessible). وهو أيضا  <a href="../guide/concept-service-locator.md">service locator</a>  بحيث يوفر الدعم لل components مثل ال request, response, db..الخ، لدعم وظائف محددة. مثلا في المثال الموجود في الأعلى، فإن ال request هو component من ال application instance والذي يستخدم للوصول الى البيانات الموجودة داخل ال $_POST. 
 </p></blockquote>
 
@@ -134,7 +134,7 @@ class SiteController extends Controller
     إذا كان كل شيء على ما يرام، فسوف يقوم ال action بجلب ال view التالية: <code>entry-confirm</code>، وذلك لتأكيد أن العملية قد تمت بنجاح بالنسبة للمستخدم، أما إن كانت البيانات غير صحيحة، أو لم يتم إرسال أي بيانات، فإن ال view <code>entry</code> هي التي سيتم جلبها وعرضها للمستخدم، حيث يتم عرض ال Html form، مع أي رسائل تحذير بخصوص الأخطاء التي تم العثور عليها من عملية التحقق.
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
 ملاحظة: في هذا المثال البسيط، نعرض صفحة التأكيد فقط عند إرسال البيانات بشكل صحيح. عند الممارسة العملية، يجب عليك استخدام [[yii\web\Controller::refresh()|refresh()]] أو [[yii\web\Controller::redirect()|redirect()]] لتجنب أي مشكلة تحصل عن طريق ال resubmission والتي تندرج تحت العنوان <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">form resubmission problems</a>.
 </p></blockquote>
 
@@ -217,7 +217,7 @@ http://hostname/index.php?r=site%2Fentry
     إن السحر الموجود لدينا هنا، هو كيفية العمل الخاصة بالشيفرة البرمجية لل form،  والتي تعمل بالخفاء، إن إجراء التحقق عن صحة البيانات يتم في البداية من جانب العميل -client side- وذلك باستخدام الجافا سكربت، ومن ثم -بعد تجاوز التحقق الخاص بالجافا سكربت- بتم تنفيذ التحقق من جانب ال server-side عبر ال PHP. ال  [[yii\widgets\ActiveForm]] ذكية بما فيه الكفاية لاستخراج ال rule الخاصة بالتحقق والتي قمت بإنشائها وتعريفها داخل ال <code>EntryForm</code>، ومن ثم تحويل هذه القواعد إلى شيفرة برمجية بالجافا سكربت قابلة للتنفيذ، ومن ثم استخدام هذه الشيفرة من قبل الجافا سكربت لإجراء التحقق من صحة البيانات. في حال قمت بإيقاف الجافا سكربت في المتصفح الخاص بك، سوف يستمر إجراء التحقق من جانب الخادم -server side-، كما هو موضح في ال action المسمى <code>actionEntry()</code>. وهذا يضمن صحة البيانات في جميع الظروف.
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="warning"><p dir="rtl">
     تحذير: التحقق من جانب العميل -client side-  يوفر تجربة أفضل للمستخدم، لكن يجب الأخذ بعين الإعتبار أن التحقق من جانب الخادم -server- مطلوب دائمًا، سواء تم التحقق من جانب العميل أم لا.
 </p></blockquote>
 
@@ -234,7 +234,7 @@ http://hostname/index.php?r=site%2Fentry
 <?= $form->field($model, 'email')->label('Your Email') ?>
 ```
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: يوفر ال Yii العديد من ال widgets لمساعدتك في إنشاء views معقدة وديناميكية بسرعة. كما أنك ستتعلم في وقت لاحق كيف يمكنك إنشاء widget جديد، وستكتشف أن الموضوع سهل وبسيط، مما سيدفعك إلى كتابة الشيفرة البرمجية الخاصة بك داخل ال widget، والذي بدوره سيجعل من هذه الشيفرة قابلة للتطوير والإستخدام في أكثر من مكان في المستقبل. 
 </p></blockquote>
 

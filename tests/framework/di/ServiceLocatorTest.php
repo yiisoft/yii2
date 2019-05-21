@@ -94,21 +94,21 @@ class ServiceLocatorTest extends TestCase
     {
         $config = [
             'components' => [
-                'captcha' => [
+                'inputWidget' => [
                     'name' => 'foo bar',
-                    'class' => 'yii\captcha\Captcha',
+                    'class' => 'yii\widgets\InputWidget',
                 ],
             ],
         ];
 
         $app = new ServiceLocator($config);
 
-        $this->assertTrue(isset($app->captcha->name));
-        $this->assertNotEmpty($app->captcha->name);
+        $this->assertTrue(isset($app->inputWidget->name));
+        $this->assertNotEmpty($app->inputWidget->name);
 
-        $this->assertEquals('foo bar', $app->captcha->name);
+        $this->assertEquals('foo bar', $app->inputWidget->name);
 
-        $this->assertTrue(isset($app->captcha->name));
-        $this->assertNotEmpty($app->captcha->name);
+        $this->assertTrue(isset($app->inputWidget->name));
+        $this->assertNotEmpty($app->inputWidget->name);
     }
 }

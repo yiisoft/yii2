@@ -68,7 +68,7 @@ return [
 
 配置数据库连接时， 你应该总是通过 [[yii\db\Connection::dsn|dsn]] 属性来指明它的数据源名称 (DSN) 。
 不同的数据库有着不同的 DSN 格式。
-请参考 [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) 来获得更多细节。下面是一些例子：
+请参考 [PHP manual](https://secure.php.net/manual/en/function.PDO-construct.php) 来获得更多细节。下面是一些例子：
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -184,7 +184,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-绑定参数是通过 [预处理语句](http://php.net/manual/en/mysqli.quickstart.prepared-statements.php) 实现的。
+绑定参数是通过 [预处理语句](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php) 实现的。
 除了防止 SQL 注入攻击，它也可以通过一次预处理 SQL 语句，
 使用不同参数多次执行，来提升性能。例如：
 

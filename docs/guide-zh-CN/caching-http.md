@@ -131,7 +131,7 @@ Cache-Control: public, max-age=3600
 为了避免此问题，默认情况下 `HttpCache` 禁止自动发送这些头。
 想改变这一行为，可以配置 [[yii\filters\HttpCache::sessionCacheLimiter]] 属性。
 该属性接受一个字符串值，包括 `public`，`private`，`private_no_expire`，和 `nocache`。
-请参考 PHP 手册中的[缓存限制器](http://www.php.net/manual/en/function.session-cache-limiter.php)
+请参考 PHP 手册中的[缓存限制器](https://secure.php.net/manual/en/function.session-cache-limiter.php)
 了解这些值的含义。
 
 

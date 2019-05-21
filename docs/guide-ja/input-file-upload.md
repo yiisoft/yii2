@@ -123,7 +123,7 @@ class SiteController extends Controller
 最初に、モデル・クラスを修正して、`file` 検証規則に `maxFiles` オプションを追加して、アップロードを許可されるファイルの最大数を制限しなければなりません。
 `maxFiles` を `0` に設定することは、同時にアップロード出来るファイル数に制限がないことを意味します。
 同時にアップロードすることを許されるファイルの数は、また、PHP のディレクティブ
-[`max_file_uploads`](http://php.net/manual/ja/ini.core.php#ini.max-file-uploads) (デフォルト値は 20) によっても制限されます。
+[`max_file_uploads`](https://secure.php.net/manual/ja/ini.core.php#ini.max-file-uploads) (デフォルト値は 20) によっても制限されます。
 `upload()` メソッドも、アップロードされた複数のファイルを一つずつ保存するように修正しなければなりません。
 
 ```php

@@ -1800,6 +1800,11 @@ EOD;
         $expected = '/([a-z0-9-]+)/gim';
         $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/Ugimex');
         $this->assertSame($expected, $actual);
+
+        // Make sure that just allowed REGEX modifiers remain after the escaping
+        $expected = '/([a-z0-9-]+)/ugim';
+        $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/dugimex');
+        $this->assertSame($expected, $actual);
     }
 
     public function testActiveDropDownList()

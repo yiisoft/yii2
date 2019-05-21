@@ -67,7 +67,7 @@ use yii\helpers\Html;
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを構築することが出来ます。
 
 > Note: いくつかのウィジェットは、[[yii\base\Widget::end()]] が呼ばれるときに囲んだコンテンツを調整するため、
-> [出力バッファリング](http://php.net/manual/ja/book.outcontrol.php) を使用します。
+> [出力バッファリング](https://secure.php.net/manual/ja/book.outcontrol.php) を使用します。
 > この理由から、[[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しは、同じビュー・ファイルの中で発生するものと想定されています。
 > この規則に従わない場合は、予期しない出力結果が生じ得ます。
 

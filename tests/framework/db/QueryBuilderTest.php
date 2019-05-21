@@ -1130,6 +1130,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '([[id]], [[name]]) IN ((:qp0, :qp1))',
                 [':qp0' => 1, ':qp1' => 'oy'],
             ],
+            'composite in (just one column)' => [
+                ['in', ['id'], [['id' => 1, 'name' => 'Name1'], ['id' => 2, 'name' => 'Name2']]],
+                '[[id]] IN (:qp0, :qp1)',
+                [':qp0' => 1, ':qp1' => 2],
+            ],
+            'composite in using array objects (just one column)' => [
+                ['in', new TraversableObject(['id']), new TraversableObject([
+                    ['id' => 1, 'name' => 'Name1'],
+                    ['id' => 2, 'name' => 'Name2'],
+                ])],
+                '[[id]] IN (:qp0, :qp1)',
+                [':qp0' => 1, ':qp1' => 2],
+            ],
 
             // in using array objects.
             [['id' => new TraversableObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],

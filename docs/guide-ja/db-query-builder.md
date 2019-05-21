@@ -281,6 +281,7 @@ $query->where([$column => $value]);
   このメソッドは、カラム名を適切に引用符で囲み、値域の値をエスケープします。
   `in` 演算子はまた複合カラムをもサポートしています。
   その場合、オペランド 1 はカラム名の配列とし、オペランド 2 は配列の配列、または、複合カラムの値域を表す `Query` オブジェクトでなければなりません。
+  例えば、`['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` は `(id, name) IN ((1, 'oy'))` を生成します。
 
 - `not in`: 生成される条件において `IN` が `NOT IN` に置き換えられる以外は、`in` と同じです。
 
@@ -327,7 +328,7 @@ $query->where([$column => $value]);
 ```php
 // 脆弱なコード:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where([$column => $value]);
 // $value は安全です。しかし、$column の名前はエンコードされません。
 ```
@@ -772,7 +773,7 @@ foreach ($query->each() as $username => $user) {
 #### MySQL におけるバッチ・クエリの制約 <span id="batch-query-mysql"></span>
 
 MySQL のバッチ・クエリの実装は PDO ドライバのライブラリに依存しています。デフォルトでは、MySQL のクエリは
-[`バッファ・モード`](http://php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
+[`バッファ・モード`](https://secure.php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
 このことが、カーソルを使ってデータを取得する目的を挫折させます。というのは、バッファ・モードでは、
 ドライバによって結果セット全体がクライアントのメモリに読み込まれることを防止できないからです。
 

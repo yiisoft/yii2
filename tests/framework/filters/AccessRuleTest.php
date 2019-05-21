@@ -524,4 +524,45 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
     }
+    
+    public function testMatchIPMask()
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule();
+
+        // no match
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $rule->ips = ['127.0.0.32/27'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        // match
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $rule->ips = ['127.0.0.1/27'];
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        // match, IPv6
+        $_SERVER['REMOTE_ADDR'] = '2a01:4f8:120:7202::2';
+        $rule->ips = ['2a01:4f8:120:7202::2/127'];
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        // no match, IPv6
+        $_SERVER['REMOTE_ADDR'] = '2a01:4f8:120:7202::ffff';
+        $rule->ips = ['2a01:4f8:120:7202::2/123'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
 }

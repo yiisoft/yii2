@@ -357,7 +357,7 @@ More details about this property can be found in the [Internationalization](tuto
 
 This property is provided as an alternative way of setting the default time zone of the PHP runtime.
 By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example:
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). For example:
 
 ```php
 [

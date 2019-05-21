@@ -31,15 +31,15 @@ Yii 2.0 requiert PHP 5.4 ou plus, ce qui est une grosse amélioration par rappor
 Par conséquent, il y a beaucoup de différences au niveau du langage auxquelles vous devriez prêter attention.
 Voici un résumé des principaux changements concernant PHP:
 
-- [Espaces de noms](http://php.net/manual/fr/language.namespaces.php).
-- [Fonctions anonymes](http://php.net/manual/fr/functions.anonymous.php).
+- [Espaces de noms](https://secure.php.net/manual/fr/language.namespaces.php).
+- [Fonctions anonymes](https://secure.php.net/manual/fr/functions.anonymous.php).
 - Syntaxe courte pour les tableaux : `[...éléments...]` est utilisé au lieu de `array(...éléments...)`.
 - Syntaxe courte pour echo : `<?=` est utilisé dans les vues. Cela ne pose aucun problème à partir de PHP 5.4.
-- [Classes SPL et interfaces](http://php.net/manual/fr/book.spl.php).
-- [Late Static Bindings (résolution statique à la volée)](http://php.net/manual/fr/language.oop5.late-static-bindings.php).
-- [Date et heure](http://php.net/manual/fr/book.datetime.php).
-- [Traits](http://php.net/manual/fr/language.oop5.traits.php).
-- [intl](http://php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl` pour les fonctionnalités
+- [Classes SPL et interfaces](https://secure.php.net/manual/fr/book.spl.php).
+- [Late Static Bindings (résolution statique à la volée)](https://secure.php.net/manual/fr/language.oop5.late-static-bindings.php).
+- [Date et heure](https://secure.php.net/manual/fr/book.datetime.php).
+- [Traits](https://secure.php.net/manual/fr/language.oop5.traits.php).
+- [intl](https://secure.php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl` pour les fonctionnalités
   d'internationalisation.
 
 
@@ -293,7 +293,7 @@ Reportez-vous à la section [Commandes console](tutorial-console.md) pour plus d
 I18N
 ----
 
-Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](http://pecl.php.net/package/intl).
+Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](https://pecl.php.net/package/intl).
 
 La traduction des messages est désormais effectuée via le composant d'application `i18n`.
 Ce composant gère un ensemble de sources de messages, ce qui vous permet d'utiliser différentes

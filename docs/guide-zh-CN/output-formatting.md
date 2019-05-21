@@ -45,7 +45,7 @@ echo Yii::$app->formatter->format(0.125, ['percent', 2]);
 > 不要使用这个组件，
 > 而应该使用 [[yii\validators\DateValidator]] 和 [[yii\validators\NumberValidator]] 进行用户输入格式化
 > 对于机器可读的日期和时间格式之间的简单转换，
-> PHP 方法 [date()](http://php.net/manual/en/function.date.php) 就足够了。
+> PHP 方法 [date()](https://secure.php.net/manual/en/function.date.php) 就足够了。
 
 ## 配置 Formatter（Configuring Formatter） <span id="configuring-formatter"></span>
 
@@ -86,7 +86,7 @@ return [
 [[yii\i18n\Formatter::timeFormat|timeFormat]], 和 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]] 即可。
 
 同时，你还可以配置它使用 [ICU syntax](http://userguide.icu-project.org/formatparse/datetime)，
-同时你也可以配置它使用 [PHP date() 语法](http://php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
+同时你也可以配置它使用 [PHP date() 语法](https://secure.php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
 例如，
 
 ```php
@@ -175,7 +175,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 
 如果你想要进行更高级的配置, 可以使用 [[yii\i18n\Formatter::numberFormatterOptions]] 和 
 [[yii\i18n\Formatter::numberFormatterTextOptions]]，
-[NumberFormatter class](http://php.net/manual/en/class.numberformatter.php) 来进行格式化。
+[NumberFormatter class](https://secure.php.net/manual/en/class.numberformatter.php) 来进行格式化。
 例如，为了调整小数部分的最大值和最小值，你可以配置 [[yii\i18n\Formatter::numberFormatterOptions]] 如下：
 
 ```php
@@ -235,7 +235,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 默认配置下，当前 [[yii\i18n\Formatter::locale|locale]] 决定于 [[yii\base\Application::language]].
 你可以覆盖 [[yii\i18n\Formatter::locale]] 属性来满足不同的需要。
 
-> Note: Yii formatter 依赖 [PHP intl extension](http://php.net/manual/en/book.intl.php) 
+> Note: Yii formatter 依赖 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) 
 > 来进行本地数据格式化
 > 因为不同的 ICU 库可能会导致不同的输出，所以请在你的所有机器上保持 ICU 库的一致性。
 > 请参阅 [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment)。

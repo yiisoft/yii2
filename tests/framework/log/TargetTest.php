@@ -92,6 +92,10 @@ class TargetTest extends TestCase
                 'C', 'C.C_a',
                 'D',
             ],
+            'maskVars' => [
+                'C.C_b',
+                'D.D_a'
+            ]
         ]);
         $GLOBALS['A'] = [
             'A_a' => 1,
@@ -105,7 +109,7 @@ class TargetTest extends TestCase
         ];
         $GLOBALS['C'] = [
             'C_a' => 1,
-            'C_b' => 1,
+            'C_b' => 'mySecret',
             'C_c' => 1,
         ];
         $GLOBALS['E'] = [
@@ -129,6 +133,8 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_a', $context);
         $this->assertNotContains('E_b', $context);
         $this->assertNotContains('E_c', $context);
+        $this->assertNotContains('mySecret', $context);
+        $this->assertContains('***', $context);
     }
 
     /**
@@ -204,15 +210,15 @@ class TargetTest extends TestCase
 
         $target->microtime = true;
 
-        $expectedWithMicro = '2017-10-16 13:26:30.6083 [info][application] message';
+        $expectedWithMicro = '2017-10-16 13:26:30.608300 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
 
         $timestamp = 1508160390;
 
-        $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
+        $expectedWithMicro = '2017-10-16 13:26:30.000000 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
-        $this->assertSame($expectedWithoutMicro, $formatted);
+        $this->assertSame($expectedWithMicro, $formatted);
     }
 }
 

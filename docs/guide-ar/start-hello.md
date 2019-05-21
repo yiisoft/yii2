@@ -25,7 +25,7 @@
     لإنشاء صفحة "Hello"، ستقوم بإنشاء <code>say</code> <a href="../guide/structure-controllers.md#creating-actions">action</a> والذي بدوره سيقوم  بقراءة ال <code>message</code> parameter من ال request، ومن ثم عرض ال <code>message</code> مرة أخرى إلى المستخدم. إذا كان ال request لا يحمل معه ال message parameter فإن ال action سيقوم بطباعة message إفتراضية وهي "Hello".
 </p>
 
-<blockqoute><p dir="rtl">
+<blockqoute class="info"><p dir="rtl">
     معلومة: ال <a href="../guide/structure-controllers.md#creating-actions">Actions</a> هي الكائنات(objects) التي يمكن للمستخدمين من الوصول اليها وتنفيذ ما في بداخلها بشكل مباشر.  يتم تجميع هذه ال Actions بواسطة ال <a href="../guide/structure-controllers.md">controllers</a>. ونتيجة لذلك فإن ال response الراجعة للمستخدم ستكون هي نتيجة التنفيذ الخاصة بال action. 
 </p></blockqoute>
 
@@ -120,7 +120,7 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
     إذا قمت بحذف ال <code>message</code> parameter من ال URL ، فسترى الصفحة تعرض كلمة <code>" Hello "</code> فقط. ويرجع ذلك إلى أن "message" يتم تمريرها ك parameter إلى ال  <code>actionSay()</code>، وعندما يتم حذفها، سيتم استخدام القيمة الافتراضية وهي <code>"Hello"</code> بدلاً من ذلك.
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: تتشارك الصفحة الجديدة مع الصفحات الأخرى بالتطبيق بنفس ال Header وال Footer وذلك بسبب الدالة  [[yii\web\Controller::render() | render ()]] والتي ستقوم بشكل تلقائي بتضمين النتيجة الخاصة بصفحة ال view <code>say</code> مع صفحة ال <a href="../guide/structure-views.md#layouts">Layout</a>، والتي يمكنك أن تجدها داخل المسار التالي: <code>views/layouts/main.php</code>
 </p></blockquote>
 

@@ -51,7 +51,7 @@ At this point, you have a database named `yii2basic`, and within it a `country` 
 Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
 
-Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
+Before proceeding, make sure you have installed both the [PDO](https://secure.php.net/manual/en/book.pdo.php) PHP extension and
 the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
 if your application uses a relational database.
 
