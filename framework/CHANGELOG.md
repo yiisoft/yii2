@@ -1,14 +1,15 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.19 under development
-------------------------
+2.0.19 May 21, 2019
+-------------------
 
-- Bug #17233: Fixed bug with integer model attribute names in Validator class (nadar)
 - Bug #12077, #12135, #17263: Fixed PostgreSQL version of `alterColumn()` to accept properly `ColumnSchemaBuilder` definition of column (bizley)
+- Bug #16918: Console Table widget variables visibility was changed to protected to allow extending it (samdark)
+- Bug #17233: Fixed bug with integer model attribute names in Validator class (nadar)
 - Bug #17306: Added ".mjs" extensions to mimetypes meta (samdark)
 - Bug #17313: Support jQuery 3.4 (samdark)
-- Bug #16918: Console Table widget variables visibility was changed to protected to allow extending it (samdark)
+
 
 2.0.18 April 23, 2019
 ---------------------
