@@ -19,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Get a version overview:
  *
- *     ./build release/info
+ *     ./build/build release/info
  *
  * run it with `--update` to fetch tags for all repos:
  *
@@ -27,13 +27,13 @@ use yii\helpers\FileHelper;
  *
  * Make a framework release (apps are always in line with framework):
  *
- *     ./build release framework
- *     ./build release app-basic
- *     ./build release app-advanced
+ *     ./build/build release framework
+ *     ./build/build release app-basic
+ *     ./build/build release app-advanced
  *
  * Make an extension release (e.g. for redis):
  *
- *     ./build release redis
+ *     ./build/build release redis
  *
  * Be sure to check the help info for individual sub-commands:
  *
@@ -627,7 +627,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build/build release/package app-$name\n");
 
         $this->stdout("\n");
     }
