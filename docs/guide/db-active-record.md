@@ -1241,7 +1241,7 @@ Note that this differs from our earlier example which only brings back customers
 
 #### Relation table aliases <span id="relation-table-aliases"></span>
 
-As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
+As noted before, when using JOIN in a query, we need to disambiguate column names. Therefore often an alias is
 defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
 
 ```php
