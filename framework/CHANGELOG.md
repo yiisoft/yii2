@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.20 under development
 ------------------------
 
-- no changes in this release.
+- Bug #16509: Fixed console command help text wordwrap for multi-byte strings (alexkart)
 
 
 2.0.19 May 21, 2019
