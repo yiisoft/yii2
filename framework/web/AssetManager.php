@@ -209,9 +209,8 @@ class AssetManager extends Component
     {
         parent::init();
         $this->basePath = Yii::getAlias($this->basePath);
-        if (!is_dir($this->basePath)) {
-            throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
-        }
+        
+        FileHelper::createDirectory($logPath, $this->dirMode, true);
 
         $this->basePath = realpath($this->basePath);
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
