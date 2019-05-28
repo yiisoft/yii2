@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #16509: Fixed console command help text wordwrap for multi-byte strings (alexkart)
+- Bug #17299: Fixed adding of input error class in `\yii\widgets\ActiveField::widget` (alexkart)
 
 
 2.0.19 May 21, 2019

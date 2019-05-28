@@ -763,6 +763,7 @@ class ActiveField extends Component
      * @param string $class the widget class name.
      * @param array $config name-value pairs that will be used to initialize the widget.
      * @return $this the field object itself.
+     * @throws \Exception
      */
     public function widget($class, $config = [])
     {
@@ -777,14 +778,15 @@ class ActiveField extends Component
                 }
             }
             $config['field'] = $this;
-            if (isset($config['options'])) {
-                if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-                    $this->addErrorClassIfNeeded($config['options']);
-                }
-
-                $this->addAriaAttributes($config['options']);
-                $this->adjustLabelFor($config['options']);
+            if (!isset($config['options'])) {
+                $config['options'] = [];
             }
+            if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+                $this->addErrorClassIfNeeded($config['options']);
+            }
+
+            $this->addAriaAttributes($config['options']);
+            $this->adjustLabelFor($config['options']);
         }
 
         $this->parts['{input}'] = $class::widget($config);
