@@ -553,6 +553,31 @@ EOD;
         $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
     }
 
+    public function testWidgetOptions()
+    {
+        $this->activeField->form->validationStateOn = ActiveForm::VALIDATION_STATE_ON_INPUT;
+        $this->activeField->model->addError('attributeName', 'error');
+
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'form-control has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+
+        $this->activeField->inputOptions = [];
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+    }
+
     /**
      * @depends testHiddenInput
      *
