@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #16509: Fixed console command help text wordwrap for multi-byte strings (alexkart)
 - Bug #17299: Fixed adding of input error class in `\yii\widgets\ActiveField::widget` (alexkart)
 - Bug #17328: Added mime aliases for BMP and SVG files (cmoeke)
+- Bug #17336: Fixed wildcard matching in Event::hasHandlers() (samdark)
 
 
 2.0.19 May 21, 2019
