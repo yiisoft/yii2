@@ -191,7 +191,6 @@ describe('yii.activeForm', function () {
 
             before(function () {
                 afterValidateSpy = sinon.spy(function (event, data) {
-                  console.log(data);
                     eventData = data;
                 });
             });
