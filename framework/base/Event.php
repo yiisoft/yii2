@@ -225,8 +225,8 @@ class Event extends BaseObject
         );
 
         // regular events
-        foreach ($classes as $class) {
-            if (!empty(self::$_events[$name][$class])) {
+        foreach ($classes as $className) {
+            if (!empty(self::$_events[$name][$className])) {
                 return true;
             }
         }
@@ -240,8 +240,8 @@ class Event extends BaseObject
                 if (empty($handlers)) {
                     continue;
                 }
-                foreach ($classes as $class) {
-                    if (!StringHelper::matchWildcard($classWildcard, $class)) {
+                foreach ($classes as $className) {
+                    if (StringHelper::matchWildcard($classWildcard, $className, ['escape' => false])) {
                         return true;
                     }
                 }
