@@ -241,7 +241,7 @@ class Event extends BaseObject
                     continue;
                 }
                 foreach ($classes as $class) {
-                    if (!StringHelper::matchWildcard($classWildcard, $class)) {
+                    if (StringHelper::matchWildcard($classWildcard, $class)) {
                         return true;
                     }
                 }
