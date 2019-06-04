@@ -705,19 +705,19 @@
             return false;
         }
 
+        var errorAttributes = [];
+        var $input = findInput($form, this);
+        $.each(data.attributes, function () {
+            if (!$input.is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
+                errorAttributes.push(this);
+            }
+        });
+
+        $form.trigger(events.afterValidate, [messages, errorAttributes]);
+
+        updateSummary($form, messages);
+
         if (submitting) {
-            var errorAttributes = [];
-            var $input = findInput($form, this);
-            $.each(data.attributes, function () {
-                if (!$input.is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
-                }
-            });
-
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
-
-            updateSummary($form, messages);
-
             if (errorAttributes.length) {
                 if (data.settings.scrollToError) {
                     var top = $form.find($.map(errorAttributes, function(attribute) {
