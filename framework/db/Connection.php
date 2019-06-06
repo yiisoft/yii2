@@ -441,6 +441,10 @@ class Connection extends Component
      * @var array query cache parameters for the [[cache()]] calls
      */
     private $_queryCacheInfo = [];
+    /**
+     * @var string[] quoted column name cache for [[quoteColumnName()]] calls
+     */
+    private $_quotedColumnNames;
 
 
     /**
@@ -904,7 +908,10 @@ class Connection extends Component
      */
     public function quoteColumnName($name)
     {
-        return $this->getSchema()->quoteColumnName($name);
+        if (isset($this->_quotedColumnNames[$name])) {
+            return $this->_quotedColumnNames[$name];
+        }
+        return $this->_quotedColumnNames[$name] = $this->getSchema()->quoteColumnName($name);
     }
 
     /**
