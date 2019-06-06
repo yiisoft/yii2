@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.21 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17341: Fixed error from yii.activeForm.js in strict mode (mikehaertl)
 
 
 2.0.20 June 04, 2019
