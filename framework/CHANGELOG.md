@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #17341: Fixed error from yii.activeForm.js in strict mode (mikehaertl)
 - Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
+- Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
 
 
 2.0.20 June 04, 2019
