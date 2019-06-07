@@ -656,8 +656,12 @@ PATTERN;
         foreach ($columns as $columnAlias => $columnDefinition) {
             if (is_string($columnAlias)) {
                 $select[$columnAlias] = $columnDefinition;
-            } else if (is_string($columnDefinition) && preg_match('/^\w+$/', $columnDefinition)) {
-                $select[$columnDefinition] = $columnDefinition;
+            } elseif (is_string($columnDefinition) && strpos($columnDefinition, '(') === false) {
+                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $columnDefinition, $matches)) {
+                    $select[$matches[2]] = $matches[1];
+                } else {
+                    $select[$columnDefinition] = $columnDefinition;
+                }
             } else {
                 $select[] = $columnDefinition;
             }

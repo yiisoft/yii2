@@ -32,42 +32,42 @@ abstract class QueryTest extends DatabaseTestCase
 
         $query = new Query();
         $query->addSelect('email');
-        $this->assertEquals(['email'], $query->select);
+        $this->assertEquals(['email' => 'email'], $query->select);
 
         $query = new Query();
         $query->select('id, name');
         $query->addSelect('email');
-        $this->assertEquals(['id', 'name', 'email'], $query->select);
+        $this->assertEquals(['id' => 'id', 'name' => 'name', 'email' => 'email'], $query->select);
 
         $query = new Query();
         $query->select('name, lastname');
         $query->addSelect('name');
-        $this->assertEquals(['name', 'lastname'], $query->select);
+        $this->assertEquals(['name' => 'name', 'lastname' => 'lastname'], $query->select);
 
         $query = new Query();
         $query->addSelect(['*', 'abc']);
         $query->addSelect(['*', 'bca']);
-        $this->assertEquals(['*', 'abc', 'bca'], $query->select);
+        $this->assertEquals(['*', 'abc' => 'abc', 'bca' => 'bca'], $query->select);
 
         $query = new Query();
         $query->addSelect(['field1 as a', 'field 1 as b']);
-        $this->assertEquals(['field1 as a', 'field 1 as b'], $query->select);
+        $this->assertEquals(['a' => 'field1', 'b' => 'field1'], $query->select);
 
         $query = new Query();
         $query->select(['name' => 'firstname', 'lastname']);
         $query->addSelect(['firstname', 'surname' => 'lastname']);
         $query->addSelect(['firstname', 'lastname']);
-        $this->assertEquals(['name' => 'firstname', 'lastname', 'firstname', 'surname' => 'lastname'], $query->select);
+        $this->assertEquals(['name' => 'firstname', 'lastname' => 'lastname', 'firstname' => 'firstname', 'surname' => 'lastname'], $query->select);
 
         $query = new Query();
         $query->select('name, name, name as X, name as X');
-        $this->assertEquals(['name', 'name as X'], array_values($query->select));
+        $this->assertEquals(['name' => 'name', 'X' => 'name'], array_values($query->select));
 
         /** @see https://github.com/yiisoft/yii2/issues/15676 */
         $query = (new Query())->select('id');
-        $this->assertSame(['id'], $query->select);
+        $this->assertSame(['id' => 'id'], $query->select);
         $query->select(['id', 'brand_id']);
-        $this->assertSame(['id', 'brand_id'], $query->select);
+        $this->assertSame(['id' => 'id', 'brand_id' => 'brand_id'], $query->select);
 
         /** @see https://github.com/yiisoft/yii2/issues/15676 */
         $query = (new Query())->select(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)']);
