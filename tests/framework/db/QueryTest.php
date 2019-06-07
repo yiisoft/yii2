@@ -20,7 +20,7 @@ abstract class QueryTest extends DatabaseTestCase
         // default
         $query = new Query();
         $query->select('*');
-        $this->assertEquals(['*'], $query->select);
+        $this->assertEquals(['*' => '*'], $query->select);
         $this->assertNull($query->distinct);
         $this->assertNull($query->selectOption);
 
@@ -47,7 +47,7 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->addSelect(['*', 'abc']);
         $query->addSelect(['*', 'bca']);
-        $this->assertEquals(['*', 'abc' => 'abc', 'bca' => 'bca'], $query->select);
+        $this->assertEquals(['*' => '*', 'abc' => 'abc', 'bca' => 'bca'], $query->select);
 
         $query = new Query();
         $query->addSelect(['field1 as a', 'field 1 as b']);
