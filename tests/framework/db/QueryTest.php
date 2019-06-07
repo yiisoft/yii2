@@ -73,11 +73,11 @@ abstract class QueryTest extends DatabaseTestCase
         $query = (new Query())->select(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)']);
         $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)'], $query->select);
         $query->addSelect(['LEFT(name,7) as test']);
-        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
         $query->addSelect(['LEFT(name,7) as test']);
-        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
         $query->addSelect(['test' => 'LEFT(name,7)']);
-        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test', 'test' => 'LEFT(name,7)'], $query->select);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
 
         /** @see https://github.com/yiisoft/yii2/issues/15731 */
         $selectedCols = [

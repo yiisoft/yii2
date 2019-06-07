@@ -655,14 +655,16 @@ PATTERN;
         $select = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
             if (is_string($columnAlias)) {
+                // Already in the normalized format, good for them
                 $select[$columnAlias] = $columnDefinition;
+            } elseif (is_string($columnDefinition) && preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $columnDefinition, $matches)) {
+                // Using "columnName as alias" or "columnName alias" syntax
+                $select[$matches[2]] = $matches[1];
             } elseif (is_string($columnDefinition) && strpos($columnDefinition, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $columnDefinition, $matches)) {
-                    $select[$matches[2]] = $matches[1];
-                } else {
-                    $select[$columnDefinition] = $columnDefinition;
-                }
+                // Normal column name, just alias it to itself to ensure it's not selected twice
+                $select[$columnDefinition] = $columnDefinition;
             } else {
+                // Either a string calling a function, DB expression, or sub-query
                 $select[] = $columnDefinition;
             }
         }
