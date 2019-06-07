@@ -61,7 +61,7 @@ abstract class QueryTest extends DatabaseTestCase
 
         $query = new Query();
         $query->select('name, name, name as X, name as X');
-        $this->assertEquals(['name' => 'name', 'X' => 'name'], array_values($query->select));
+        $this->assertEquals(['name' => 'name', 'X' => 'name'], $query->select);
 
         /** @see https://github.com/yiisoft/yii2/issues/15676 */
         $query = (new Query())->select('id');
