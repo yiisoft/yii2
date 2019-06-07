@@ -26,7 +26,7 @@ abstract class QueryTest extends DatabaseTestCase
 
         $query = new Query();
         $query->select('id, name', 'something')->distinct(true);
-        $this->assertEquals(['id', 'name'], $query->select);
+        $this->assertEquals(['id' => 'id', 'name' => 'name'], $query->select);
         $this->assertTrue($query->distinct);
         $this->assertEquals('something', $query->selectOption);
 
