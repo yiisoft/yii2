@@ -649,7 +649,7 @@ PATTERN;
     {
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
-        } else if (!is_array($columns)) {
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $select = [];
