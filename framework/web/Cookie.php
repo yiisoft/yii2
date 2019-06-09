@@ -17,6 +17,9 @@ namespace yii\web;
  */
 class Cookie extends \yii\base\BaseObject
 {
+    const SAMESITE_LAX = 'Lax';
+    const SAMESITE_STRICT = 'Strict';
+
     /**
      * @var string name of the cookie
      */
@@ -61,6 +64,7 @@ class Cookie extends \yii\base\BaseObject
      * @since 2.0.21
      */
     public $samesite = null;
+
 
     /**
      * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
