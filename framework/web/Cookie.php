@@ -48,7 +48,19 @@ class Cookie extends \yii\base\BaseObject
      * such as JavaScript, which can effectively help to reduce identity theft through XSS attacks.
      */
     public $httpOnly = true;
-
+    /**
+     * @var string SameSite prevents the browser from sending this cookie along with cross-site requests.
+     * Please note that this feature is only supported in PHP version >= 7.3.0 
+     * For securtiy, an exception will be thrown if `samesite` is set in an unsupported version of PHP.
+     * To use this feature across different PHP versions check the version first. E.g.
+     * ```php
+     * $cookie->samesite = PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAMESITE_LAX : null,
+     * ```
+     * See https://www.owasp.org/index.php/SameSite for more information about samesite.
+     *
+     * @since 2.0.21
+     */
+    public $samesite = null;
 
     /**
      * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
