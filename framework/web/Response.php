@@ -408,11 +408,11 @@ class Response extends \yii\base\Response
                     'domain' => $cookie->domain,
                     'secure' => $cookie->secure,
                     'httpOnly' => $cookie->httpOnly,
-                    'samesite' => $cookie->samesite ?? null,
+                    'sameSite' => $cookie->sameSite ?? null,
                 ]);
             } else {
-                if (!is_null($cookie->samesite)) {
-                    throw new InvalidConfigException(get_class($cookie) . '::samesite is not supported on PHP versions < 7.3.0 (set it to null on this environment)');
+                if (!is_null($cookie->sameSite)) {
+                    throw new InvalidConfigException(get_class($cookie) . '::sameSite is not supported on PHP versions < 7.3.0 (set it to null on this environment)');
                 }
                 setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
