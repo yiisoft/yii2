@@ -17,7 +17,21 @@ namespace yii\web;
  */
 class Cookie extends \yii\base\BaseObject
 {
+    /**
+     * SameSite policy Lax will prevent the cookie from being sent by the browser in all cross-site browsing context
+     * during CSRF-prone request methods (e.g. POST, PUT, PATCH etc).
+     * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will not include the cookie, however a GET request will.
+     * When a user follows a link from https://otherdomain.com to https://yourdomain.com it will include the cookie
+     * @see $sameSite
+     */
     const SAME_SITE_LAX = 'Lax';
+    /**
+     * SameSite policy Strict will prevent the cookie from being sent by the browser in all cross-site browsing context
+     * regardless of the request method and even when following a regular link.
+     * E.g. a GET request from https://otherdomain.com to https://yourdomain.com or a user following a link from
+     * https://otherdomain.com to https://yourdomain.com will not include the cookie.
+     * @see $sameSite
+     */
     const SAME_SITE_STRICT = 'Strict';
 
     /**
