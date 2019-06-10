@@ -253,7 +253,7 @@ class ContactAction extends Action
 
 > Warning: Disabling CSRF will allow any site to send POST requests to your site. It is important to implement extra validation such as checking an IP address or a secret token in this case.
 
-> Note: Since version 2.0.21 Yii also supports the `sameSite` cookie setting (this also requires PHP version 7.3.0 or higher).
+> Note: Since version 2.0.21 Yii supports the `sameSite` cookie setting (requires PHP version 7.3.0 or higher).
   Setting the sameSite cookie setting does not make the above obsolete since not all browsers support the sameSite option yet.
   See the [Sessions and Cookies sameSite option](runtime-sessions-cookies.md#samesite) for more information.
 
