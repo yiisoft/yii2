@@ -408,7 +408,7 @@ class Response extends \yii\base\Response
                     'domain' => $cookie->domain,
                     'secure' => $cookie->secure,
                     'httpOnly' => $cookie->httpOnly,
-                    'sameSite' => $cookie->sameSite ?? null,
+                    'sameSite' => !empty($cookie->sameSite) ? $cookie->sameSite : null,
                 ]);
             } else {
                 if (!is_null($cookie->sameSite)) {
