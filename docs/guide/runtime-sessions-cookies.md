@@ -382,7 +382,7 @@ secure flag it will only include the cookie when the request is sent over a secu
 You may read the [SecureFlag wiki article](https://www.owasp.org/index.php/SecureFlag) for more details.
 
 ### sameSite
-Starting at Yii 2.0.21 the [[yii\web\Cookie::sameSite]] setting is supported, this also requires PHP version 7.3.0 or higher.
+Starting with Yii 2.0.21 the [[yii\web\Cookie::sameSite]] setting is supported. It requires PHP version 7.3.0 or higher.
 The purpose of the sameSite setting is to prevent CSRF (Cross-Site Request Forgery) attacks.
 If the browsers supports the sameSite setting it will only include the cookie according to the specified policy ('Lax' or 'Strict').
 You may read the [SameSite wiki article](https://www.owasp.org/index.php/SameSite) for more details.
