@@ -367,15 +367,15 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
-     * Starting at Yii 2.0.21 `sameSite` is also supported, this also requires PHP version 7.3.0 or higher.
-     * For securtiy, an exception will be thrown if `sameSite` is set in an unsupported version of PHP.
+     * Starting with Yii 2.0.21 `sameSite` is also supported. It requires PHP version 7.3.0 or higher.
+     * For securtiy, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
      * To use this feature across different PHP versions check the version first. E.g.
      * ```php
      * [
      *     'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
      * ]
      * ```
-     * See https://www.owasp.org/index.php/SameSite for more information about sameSite
+     * See https://www.owasp.org/index.php/SameSite for more information about `sameSite`.
      *
      * @throws InvalidArgumentException if the parameters are incomplete.
      * @see https://secure.php.net/manual/en/function.session-set-cookie-params.php
@@ -399,7 +399,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                 session_set_cookie_params($data);
             } else {
                 if (!empty($data['sameSite'])) {
-                    throw new InvalidConfigException('sameSite cookie is not supported on PHP versions < 7.3.0 (set it to null on this environment)');
+                    throw new InvalidConfigException('sameSite cookie is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
                 }
                 session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
             }

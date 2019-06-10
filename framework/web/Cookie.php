@@ -67,8 +67,8 @@ class Cookie extends \yii\base\BaseObject
     public $httpOnly = true;
     /**
      * @var string SameSite prevents the browser from sending this cookie along with cross-site requests.
-     * Please note that this feature is only supported in PHP version >= 7.3.0 
-     * For securtiy, an exception will be thrown if `sameSite` is set in an unsupported version of PHP.
+     * Please note that this feature is only supported since PHP 7.3.0 
+     * For better security, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
      * To use this feature across different PHP versions check the version first. E.g.
      * ```php
      * $cookie->sameSite = PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
@@ -77,7 +77,7 @@ class Cookie extends \yii\base\BaseObject
      *
      * @since 2.0.21
      */
-    public $sameSite = null;
+    public $sameSite;
 
 
     /**

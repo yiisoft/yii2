@@ -412,7 +412,7 @@ class Response extends \yii\base\Response
                 ]);
             } else {
                 if (!is_null($cookie->sameSite)) {
-                    throw new InvalidConfigException(get_class($cookie) . '::sameSite is not supported on PHP versions < 7.3.0 (set it to null on this environment)');
+                    throw new InvalidConfigException(get_class($cookie) . '::sameSite is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
                 }
                 setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
