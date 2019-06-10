@@ -378,7 +378,7 @@ You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnl
 
 ### secure
 The purpose of the secure flag is to prevent cookies from being send in clear text. If the browser supports the
-secure flag it will only include the cookie when the request is send over a secure (TLS) connection.
+secure flag it will only include the cookie when the request is sent over a secure (TLS) connection.
 You may read the [SecureFlag wiki article](https://www.owasp.org/index.php/SecureFlag) for more details.
 
 ### sameSite
