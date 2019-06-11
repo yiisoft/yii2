@@ -459,9 +459,9 @@
                         $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
 
                     $errorElement.removeClass(
-                        data.settings.validatingCssClass + ' ' +
-                            data.settings.errorCssClass + ' ' +
-                            data.settings.successCssClass
+                      data.settings.validatingCssClass + ' ' +
+                      data.settings.errorCssClass + ' ' +
+                      data.settings.successCssClass
                     );
                     $container.find(this.error).html('');
                 });
@@ -708,9 +708,9 @@
         var errorAttributes = [];
         var $input = findInput($form, this);
         $.each(data.attributes, function () {
-            var attrHasError = (submitting && updateInput($form, this, messages)) || (!submitting && hasError($form, this, messages));
+            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form, this, messages));
 
-            if (!$input.is(":disabled") && !this.cancelled && attrHasError) {
+            if (!$input.is(":disabled") && !this.cancelled && hasError) {
                 errorAttributes.push(this);
             }
         });
@@ -788,7 +788,7 @@
     var updateInput = function ($form, attribute, messages) {
         var data = $form.data('yiiActiveForm'),
             $input = findInput($form, attribute),
-            hasError = hasError($form, attribute, messages);
+            hasError = attrHasError($form, attribute, messages);
 
         if (!$.isArray(messages[attribute.id])) {
             messages[attribute.id] = [];
@@ -809,11 +809,11 @@
                     $error.html(messages[attribute.id][0]);
                 }
                 $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
-                    .addClass(data.settings.errorCssClass);
+                  .addClass(data.settings.errorCssClass);
             } else {
                 $error.empty();
                 $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
-                    .addClass(data.settings.successCssClass);
+                  .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);
         }
@@ -823,14 +823,14 @@
         return hasError;
     };
 
-  /**
-   * Checks if a particular attribute has an error
-   * @param $form the form jQuery object
-   * @param attribute object the configuration for a particular attribute.
-   * @param messages array the validation error messages
-   * @return boolean whether there is a validation error for the specified attribute
-   */
-    var hasError = function ($form, attribute, messages) {
+    /**
+     * Checks if a particular attribute has an error
+     * @param $form the form jQuery object
+     * @param attribute object the configuration for a particular attribute.
+     * @param messages array the validation error messages
+     * @return boolean whether there is a validation error for the specified attribute
+     */
+    var attrHasError = function ($form, attribute, messages) {
         var $input = findInput($form, attribute),
             hasError = false;
 
