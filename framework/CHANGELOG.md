@@ -9,7 +9,7 @@ Yii Framework 2 Change Log
 - Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
 - Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
 - Enh #17353: Added `sameSite` support for `yii\web\Cookie` and `yii\web\Session::cookieParams` (rhertogh)
-
+- Bug #17325  Fixed `yii\db\mysql\Schema::findTableNames()` will not return Views, added `yii\db\mysql\Schema::findViewNames()` (maximw)
 
 2.0.20 June 04, 2019
 --------------------

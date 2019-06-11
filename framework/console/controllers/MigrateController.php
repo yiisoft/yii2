@@ -314,12 +314,7 @@ class MigrateController extends BaseMigrateController
                 $db->createCommand()->dropTable($schema->name)->execute();
                 $this->stdout("Table {$schema->name} dropped.\n");
             } catch (\Exception $e) {
-                if (strpos($e->getMessage(), 'DROP VIEW to delete view') !== false) {
-                    $db->createCommand()->dropView($schema->name)->execute();
-                    $this->stdout("View {$schema->name} dropped.\n");
-                } else {
-                    $this->stdout("Cannot drop {$schema->name} Table .\n");
-                }
+                $this->stdout("Cannot drop {$schema->name} table .\n");
             }
         }
     }

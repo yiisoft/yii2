@@ -106,12 +106,19 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function findTableNames($schema = '')
     {
-        $sql = 'SHOW TABLES';
-        if ($schema !== '') {
-            $sql .= ' FROM ' . $this->quoteSimpleTableName($schema);
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
         }
 
-        return $this->db->createCommand($sql)->queryColumn();
+        $sql = <<<'SQL'
+SELECT
+`s`.`TABLE_NAME` AS `name`
+FROM `information_schema`.`TABLES` AS `s`
+WHERE `s`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE())
+ORDER BY `name` ASC
+SQL;
+
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 
     /**
@@ -580,5 +587,25 @@ SQL;
         }
 
         return $result[$returnType];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findViewNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+
+        $sql = <<<'SQL'
+SELECT
+`s`.`TABLE_NAME` AS `name`
+FROM `information_schema`.`VIEWS` AS `s`
+WHERE `s`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE())
+ORDER BY `name` ASC
+SQL;
+
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 }
