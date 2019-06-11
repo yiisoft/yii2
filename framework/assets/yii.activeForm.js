@@ -705,12 +705,12 @@
             return false;
         }
 
-        var errorAttributes = [];
-        var $input = findInput($form, this);
+        var errorAttributes = [], $input;
         $.each(data.attributes, function () {
-            if (!$input.is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
+           $input = findInput($form, this);
+           if (!$input.is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
                 errorAttributes.push(this);
-            }
+           }
         });
 
         $form.trigger(events.afterValidate, [messages, errorAttributes]);
