@@ -442,6 +442,10 @@ class Connection extends Component
      */
     private $_queryCacheInfo = [];
     /**
+     * @var string[] quoted table name cache for [[quoteTableName()]] calls
+     */
+    private $_quotedTableNames;
+    /**
      * @var string[] quoted column name cache for [[quoteColumnName()]] calls
      */
     private $_quotedColumnNames;
@@ -895,7 +899,10 @@ class Connection extends Component
      */
     public function quoteTableName($name)
     {
-        return $this->getSchema()->quoteTableName($name);
+        if (isset($this->_quotedTableNames[$name])) {
+            return $this->_quotedTableNames[$name];
+        }
+        return $this->_quotedTableNames[$name] = $this->getSchema()->quoteTableName($name);
     }
 
     /**
