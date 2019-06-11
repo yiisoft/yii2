@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Enh #17344: Improved performance of `yii\db\Connection::addSelect()` (brandonkelly)
 - Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
 - Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
+- Enh #17353: Added `sameSite` support for `yii\web\Cookie` and `yii\web\Session::cookieParams` (rhertogh)
 
 
 2.0.20 June 04, 2019
