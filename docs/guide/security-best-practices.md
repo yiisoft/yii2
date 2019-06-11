@@ -253,9 +253,14 @@ class ContactAction extends Action
 
 > Warning: Disabling CSRF will allow any site to send POST requests to your site. It is important to implement extra validation such as checking an IP address or a secret token in this case.
 
+> Note: Since version 2.0.21 Yii supports the `sameSite` cookie setting (requires PHP version 7.3.0 or higher).
+  Setting the `sameSite` cookie setting does not make the above obsolete since not all browsers support the setting yet.
+  See the [Sessions and Cookies sameSite option](runtime-sessions-cookies.md#samesite) for more information.
+
 Further reading on the topic:
 
 - <https://www.owasp.org/index.php/CSRF>
+- <https://www.owasp.org/index.php/SameSite>
 
 
 Avoiding file exposure
@@ -300,6 +305,10 @@ provided by the H5BP project:
 - [Apache](https://github.com/h5bp/server-configs-apache).
 - [IIS](https://github.com/h5bp/server-configs-iis).
 - [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
+
+> Note: When TLS is configured it is recommended that (session) cookies are send over TLS exclusively.
+  This is achieved by setting the `secure` flag for sessions and/or cookies.
+  See the [Sessions and Cookies secure flag](runtime-sessions-cookies.md#secure) for more information.
 
 
 Secure Server configuration
