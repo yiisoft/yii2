@@ -708,7 +708,9 @@
         var errorAttributes = [];
         var $input = findInput($form, this);
         $.each(data.attributes, function () {
-            if (!$input.is(":disabled") && !this.cancelled && ((!submitting && hasError($form, this, messages)) || (submitting && updateInput($form, this, messages)))) {
+            var attrHasError = (submitting && updateInput($form, this, messages)) || (!submitting && hasError($form, this, messages));
+
+            if (!$input.is(":disabled") && !this.cancelled && attrHasError) {
                 errorAttributes.push(this);
             }
         });
