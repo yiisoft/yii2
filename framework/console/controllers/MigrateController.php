@@ -317,6 +317,19 @@ class MigrateController extends BaseMigrateController
                 $this->stdout("Cannot drop {$schema->name} table .\n");
             }
         }
+
+        // Then drop the views:
+        if (method_exists($db->schema, 'getViewNames')) {
+            $schemas = $db->schema->getViewNames();
+            foreach ($schemas as $schema) {
+                try {
+                    $db->createCommand()->dropView($schema->name)->execute();
+                    $this->stdout("View {$schema->name} dropped.\n");
+                } catch (\Exception $e) {
+                    $this->stdout("Cannot drop {$schema->name} view .\n");
+                }
+            }
+        }
     }
 
     /**

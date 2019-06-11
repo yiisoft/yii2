@@ -17,6 +17,7 @@ use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
+use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -28,6 +29,7 @@ use yii\helpers\ArrayHelper;
 class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
+    use ViewFinderTrait;
 
     /**
      * {@inheritdoc}
