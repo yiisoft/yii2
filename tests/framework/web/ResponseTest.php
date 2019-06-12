@@ -254,4 +254,14 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertSame($content, '');
         $this->assertNull($response->stream);
     }
+
+    public function testSendFileWithInvalidCharactersInFileName()
+    {
+        $response = new Response();
+        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+
+        $response->sendFile($dataFile, "test\x7Ftest.txt");
+
+        $this->assertSame("attachment; filename=\"test_test.txt\"; filename*=utf-8''test%7Ftest.txt", $response->headers['content-disposition']);
+    }
 }

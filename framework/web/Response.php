@@ -781,8 +781,8 @@ class Response extends \yii\base\Response
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
         $fallbackName = str_replace(
-            ['%', '/', '\\', '"'],
-            ['_', '_', '_', '\\"'],
+            ['%', '/', '\\', '"', "\x7F"],
+            ['_', '_', '_', '\\"', '_'],
             Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
         );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));

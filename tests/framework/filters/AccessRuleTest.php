@@ -363,6 +363,30 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertTrue($rule->allows($action, $user, $request));
     }
 
+    /**
+     * Test that callable object can be used as roleParams values
+     */
+    public function testMatchRoleWithRoleParamsCallable()
+    {
+        $action = $this->mockAction();
+        $action->id = 'update';
+
+        $auth = $this->mockAuthManager();
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'roles' => ['updatePost'],
+            'actions' => ['update'],
+            'roleParams' => new RoleParamCallableObject(),
+        ]);
+
+        $user = $this->mockUser('user2');
+        $user->accessChecker = $auth;
+
+        $this->assertEquals(true, $rule->allows($action, $user, $request));
+    }
+
     public function testMatchVerb()
     {
         $action = $this->mockAction();
@@ -564,5 +588,13 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
+    }
+}
+
+class RoleParamCallableObject
+{
+    public function __invoke()
+    {
+        return ['authorID' => 'user2'];
     }
 }
