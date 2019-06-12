@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
 - Enh #17353: Added `sameSite` support for `yii\web\Cookie` and `yii\web\Session::cookieParams` (rhertogh)
 - Bug #17341: Allow callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
+- Bug #17070: Strip invalid character from fallback file name (alexkart)
 
 
 2.0.20 June 04, 2019
