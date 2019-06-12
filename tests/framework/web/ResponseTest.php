@@ -262,10 +262,6 @@ class ResponseTest extends \yiiunit\TestCase
 
         $response->sendFile($dataFile, "test\x7Ftest.txt");
 
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-
         $this->assertSame("attachment; filename=\"test_test.txt\"; filename*=utf-8''test%7Ftest.txt", $response->headers['content-disposition']);
     }
 }
