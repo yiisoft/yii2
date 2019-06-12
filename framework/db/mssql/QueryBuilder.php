@@ -252,11 +252,46 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     */
+    protected function mountCommonSqlForCommentAddition($comment, $table, $column = null)
+    {
+        $tableSchema = $this->db->schema->getTableSchema($table);
+
+        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
+        $tableName = "N'{$tableSchema->name}'";
+        $columnName = $column ? "N'$column'" : null;
+        $comment = "N" . $this->db->quoteValue($comment);
+
+        $functionParams = "
+            @name = N'MS_description',
+            @value = $comment,
+            @level0type = N'SCHEMA', @level0name = $schemaName,
+            @level1type = N'TABLE', @level1name = $tableName"
+            . ($column ? ", @level2type = N'COLUMN', @level2name = $columnName" : '') . ';';
+
+        return "
+            IF NOT EXISTS (
+                    SELECT 1
+                    FROM fn_listextendedproperty (
+                        N'MS_description',
+                        'SCHEMA', $schemaName,
+                        'TABLE', $tableName,
+                        " . ($column ? "'COLUMN', $columnName " : ' DEFAULT, DEFAULT ') . "
+                    )
+            )
+                EXEC sys.sp_addextendedproperty $functionParams
+            ELSE
+                EXEC sys.sp_updateextendedproperty $functionParams
+        ";
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+        return $this->mountCommonSqlForCommentAddition($comment, $table, $column);
     }
 
     /**
@@ -265,7 +300,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnTable($table, $comment)
     {
-        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+        return $this->mountCommonSqlForCommentAddition($comment, $table) ;
     }
 
     /**
