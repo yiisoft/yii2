@@ -220,6 +220,22 @@ class TargetTest extends TestCase
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
     }
+
+    public function testCollectMessageStructure()
+    {
+        $target = new TestTarget(['logVars' => ['_SERVER']]);
+        static::$messages = [];
+
+        $messages = [
+            ['test', 1, 'application', 1560428356.212978, [], 1888416]
+        ];
+
+        $target->collect($messages, false);
+
+        $this->assertCount(2, static::$messages);
+        $this->assertCount(6, static::$messages[0]);
+        $this->assertCount(6, static::$messages[1]);
+    }
 }
 
 class TestTarget extends Target
