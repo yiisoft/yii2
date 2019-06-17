@@ -640,7 +640,6 @@ class BaseArrayHelper
         if (is_scalar($direction)) {
             $direction = array_fill(0, $n, $direction);
         } elseif (count($direction) !== $n) {
-            // TODO
             throw new InvalidArgumentException('The length of $direction parameter must be the same as that of $keys.');
         }
         if (is_scalar($sortFlag)) {
@@ -649,9 +648,9 @@ class BaseArrayHelper
             throw new InvalidArgumentException('The length of $sortFlag parameter must be the same as that of $keys.');
         }
         $args = [];
-        foreach ($keys as $i => $key) {
+        foreach ($keys as $i => $k) {
             $flag = $sortFlag[$i];
-            $args[] = static::getColumn($array, $key);
+            $args[] = static::getColumn($array, $k);
             $args[] = $direction[$i];
             $args[] = $flag;
         }
