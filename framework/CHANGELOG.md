@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #17341: Allowed callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
 - Bug #17070: Striped invalid character from fallback file name in `Content-Disposition` header when using `\yii\web\Response::sendFile` (alexkart)
 - Bug #16565: Added missing parts of the context message in `\yii\log\Target::collect` (alexkart)
+- Bug #17332: Trigger 'change' for checkboxes in GridView (andrii-borysov-me)
 
 
 2.0.20 June 04, 2019
