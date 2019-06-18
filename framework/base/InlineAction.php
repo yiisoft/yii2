@@ -31,7 +31,7 @@ class InlineAction extends Action
     /**
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
-     * @param string $actionMethod the controller method that this inline action is associated with
+     * @param string|\Closure $actionMethod the controller method or closure that this inline action is associated with
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($id, $controller, $actionMethod, $config = [])
@@ -49,9 +49,18 @@ class InlineAction extends Action
     public function runWithParams($params)
     {
         $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
+        if ($this->actionMethod instanceof \Closure) {
+            $label = 'function()';
+        } else {
+            $label = get_class($this->controller) . '::' . $this->actionMethod . '()';
+        }
+        Yii::debug('Running action: ' . $label, __METHOD__);
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
+        }
+
+        if ($this->actionMethod instanceof \Closure) {
+            return call_user_func_array($this->actionMethod, $args);
         }
 
         return call_user_func_array([$this->controller, $this->actionMethod], $args);

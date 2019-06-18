@@ -17,6 +17,15 @@ class FakeController extends Controller
 {
     public $enableCsrfValidation = false;
 
+    public function actions()
+    {
+        return [
+            'closure' => function(array $values, $value, $other = 'default') {
+                return [$values, $value, $other];
+            },
+        ];
+    }
+
     public function actionAksi1($fromGet, $other = 'default')
     {
     }

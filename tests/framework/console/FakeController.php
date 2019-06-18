@@ -32,6 +32,15 @@ class FakeController extends Controller
         return $wasCalled;
     }
 
+    public function actions()
+    {
+        return [
+            'closure' => function(array $values, $value, $other = 'default') {
+                return [$values, $value, $other];
+            },
+        ];
+    }
+
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), [

@@ -117,7 +117,11 @@ class Controller extends \yii\base\Controller
     public function bindActionParams($action, $params)
     {
         if ($action instanceof InlineAction) {
-            $method = new \ReflectionMethod($this, $action->actionMethod);
+            if ($action->actionMethod instanceof \Closure) {
+                $method = new \ReflectionFunction($action->actionMethod);
+            } else {
+                $method = new \ReflectionMethod($this, $action->actionMethod);
+            }
         } else {
             $method = new \ReflectionMethod($action, 'run');
         }

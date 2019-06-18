@@ -75,6 +75,13 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
     }
 
+    public function testClosureAction()
+    {
+        $params = ['values' => ['d426', 'mdmunir'], 'value' => 'single'];
+        $result = $this->controller->runAction('closure', $params);
+        $this->assertEquals([['d426', 'mdmunir'], 'single', 'default'], $result);
+    }
+
     protected function setUp()
     {
         parent::setUp();

@@ -105,6 +105,15 @@ class ControllerTest extends TestCase
         $this->assertResponseStatus($status, $response);
     }
 
+    public function testClosureAction()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $params = ['d426,mdmunir', 'single'];
+        $result = $controller->runAction('closure', $params);
+        $this->assertEquals([['d426', 'mdmunir'], 'single', 'default'], $result);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/12028
      */

@@ -161,7 +161,11 @@ class Controller extends \yii\base\Controller
     public function bindActionParams($action, $params)
     {
         if ($action instanceof InlineAction) {
-            $method = new \ReflectionMethod($this, $action->actionMethod);
+            if ($action->actionMethod instanceof \Closure) {
+                $method = new \ReflectionFunction($action->actionMethod);
+            } else {
+                $method = new \ReflectionMethod($this, $action->actionMethod);
+            }
         } else {
             $method = new \ReflectionMethod($action, 'run');
         }
@@ -600,7 +604,11 @@ class Controller extends \yii\base\Controller
     {
         if (!isset($this->_reflections[$action->id])) {
             if ($action instanceof InlineAction) {
-                $this->_reflections[$action->id] = new \ReflectionMethod($this, $action->actionMethod);
+                if ($action->actionMethod instanceof \Closure) {
+                    $this->_reflections[$action->id] = new \ReflectionFunction($action->actionMethod);
+                } else {
+                    $this->_reflections[$action->id] = new \ReflectionMethod($this, $action->actionMethod);
+                }
             } else {
                 $this->_reflections[$action->id] = new \ReflectionMethod($action, 'run');
             }

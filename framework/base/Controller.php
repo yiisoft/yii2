@@ -91,7 +91,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * This method is meant to be overwritten to declare external actions for the controller.
      * It should return an array, with array keys being action IDs, and array values the corresponding
-     * action class names or action configuration arrays. For example,
+     * action class names, action configuration arrays, or closures. For example,
      *
      * ```php
      * return [
@@ -101,11 +101,15 @@ class Controller extends Component implements ViewContextInterface
      *         'property1' => 'value1',
      *         'property2' => 'value2',
      *     ],
+     *     'action3' => function($param1, $param2) {
+     *         // ...
+     *     },
      * ];
      * ```
      *
      * [[\Yii::createObject()]] will be used later to create the requested action
-     * using the configuration provided here.
+     * using the configurations provided here, unless a closure is defined, in which
+     * case an [[InlineAction]] object will be created.
      */
     public function actions()
     {
@@ -224,6 +228,9 @@ class Controller extends Component implements ViewContextInterface
 
         $actionMap = $this->actions();
         if (isset($actionMap[$id])) {
+            if ($actionMap[$id] instanceof \Closure) {
+                return new InlineAction($id, $this, $actionMap[$id]);
+            }
             return Yii::createObject($actionMap[$id], [$id, $this]);
         } elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
             $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
