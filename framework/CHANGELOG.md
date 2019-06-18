@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #17299: Fixed adding of input error class in `\yii\widgets\ActiveField::widget` (alexkart)
 - Bug #17328: Added mime aliases for BMP and SVG files (cmoeke)
 - Bug #17336: Fixed wildcard matching in Event::hasHandlers() (samdark)
+- Bug #12080: Fixed afterValidate triggering when any validation occurs (czzplnm)
 
 
 2.0.19 May 21, 2019
