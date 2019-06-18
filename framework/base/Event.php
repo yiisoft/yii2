@@ -233,7 +233,7 @@ class Event extends BaseObject
 
         // wildcard events
         foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
-            if (!StringHelper::matchWildcard($nameWildcard, $name)) {
+            if (!StringHelper::matchWildcard($nameWildcard, $name, ['escape' => false])) {
                 continue;
             }
             foreach ($classHandlers as $classWildcard => $handlers) {

@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
 - Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
 - Enh #17353: Added `sameSite` support for `yii\web\Cookie` and `yii\web\Session::cookieParams` (rhertogh)
+- Bug #17356: MSSQL Schema was not detecting string field size (ricarnevale, sdlins)
 - Bug #17341: Allowed callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
 - Bug #17070: Striped invalid character from fallback file name in `Content-Disposition` header when using `\yii\web\Response::sendFile` (alexkart)
 - Bug #16565: Added missing parts of the context message in `\yii\log\Target::collect` (alexkart)
@@ -22,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #17299: Fixed adding of input error class in `\yii\widgets\ActiveField::widget` (alexkart)
 - Bug #17328: Added mime aliases for BMP and SVG files (cmoeke)
 - Bug #17336: Fixed wildcard matching in Event::hasHandlers() (samdark)
+- Bug #12080: Fixed afterValidate triggering when any validation occurs (czzplnm)
 
 
 2.0.19 May 21, 2019

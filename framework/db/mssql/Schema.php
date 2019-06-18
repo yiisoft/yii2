@@ -399,7 +399,15 @@ SQL;
 SELECT
  [t1].[column_name],
  [t1].[is_nullable],
- [t1].[data_type],
+ CASE WHEN [t1].[data_type] IN ('char','varchar','nchar','nvarchar','binary','varbinary') THEN
+    CASE WHEN [t1].[character_maximum_length] = NULL OR [t1].[character_maximum_length] = -1 THEN
+        [t1].[data_type]
+    ELSE
+        [t1].[data_type] + '(' + LTRIM(RTRIM(CONVERT(CHAR,[t1].[character_maximum_length]))) + ')'
+    END
+ ELSE
+    [t1].[data_type]
+ END AS 'data_type',
  [t1].[column_default],
  COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
  (
