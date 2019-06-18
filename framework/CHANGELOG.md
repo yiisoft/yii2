@@ -1,19 +1,19 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.21 under development
-------------------------
+2.0.21 June 18, 2019
+--------------------
 
+- Bug #16565: Added missing parts of the context message in `\yii\log\Target::collect` (alexkart)
+- Bug #17070: Striped invalid character from fallback file name in `Content-Disposition` header when using `\yii\web\Response::sendFile` (alexkart)
+- Bug #17332: Trigger 'change' for checkboxes in GridView (andrii-borysov-me)
 - Bug #17341: Fixed error from yii.activeForm.js in strict mode (mikehaertl)
+- Bug #17341: Allowed callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
+- Bug #17356: MSSQL Schema was not detecting string field size (ricarnevale, sdlins)
 - Enh #17344: Improved performance of `yii\db\Connection::addSelect()` (brandonkelly)
 - Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
 - Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
 - Enh #17353: Added `sameSite` support for `yii\web\Cookie` and `yii\web\Session::cookieParams` (rhertogh)
-- Bug #17356: MSSQL Schema was not detecting string field size (ricarnevale, sdlins)
-- Bug #17341: Allowed callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
-- Bug #17070: Striped invalid character from fallback file name in `Content-Disposition` header when using `\yii\web\Response::sendFile` (alexkart)
-- Bug #16565: Added missing parts of the context message in `\yii\log\Target::collect` (alexkart)
-- Bug #17332: Trigger 'change' for checkboxes in GridView (andrii-borysov-me)
 
 
 2.0.20 June 04, 2019
