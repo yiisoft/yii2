@@ -123,6 +123,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Asserts that a haystack contains a needle ignoring line endings.
+     *
+     * @param mixed $needle
+     * @param mixed $haystack
+     * @param string $message
+     */
+    protected function assertContainsWithoutLE($needle, $haystack, $message = '')
+    {
+        $needle = str_replace("\r\n", "\n", $needle);
+        $haystack = str_replace("\r\n", "\n", $haystack);
+
+        $this->assertContains($needle, $haystack, $message);
+    }
+
+    /**
      * Invokes a inaccessible method.
      * @param $object
      * @param $method
