@@ -42,4 +42,45 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['4: default'][2] = [];
         return $result;
     }
+
+    public function testGetStringFieldsSize()
+    {
+        /* @var $db Connection */
+        $db = $this->getConnection();
+
+        /* @var $schema Schema */
+        $schema = $db->schema;
+
+        $columns = $schema->getTableSchema('type', false)->columns;
+
+        foreach ($columns as $name => $column) {
+            $type = $column->type;
+            $size = $column->size;
+            $dbType = $column->dbType;
+
+            if (strpos($name, 'char_') === 0) {
+                switch ($name) {
+                    case 'char_col':
+                        $expectedType = 'char';
+                        $expectedSize = 100;
+                        $expectedDbType = 'char(100)';
+                        break;
+                    case 'char_col2':
+                        $expectedType = 'string';
+                        $expectedSize = 100;
+                        $expectedDbType = "varchar(100)";
+                        break;
+                    case 'char_col3':
+                        $expectedType = 'text';
+                        $expectedSize = null;
+                        $expectedDbType = 'text';
+                        break;
+                }
+
+                $this->assertEquals($expectedType, $type);
+                $this->assertEquals($expectedSize, $size);
+                $this->assertEquals($expectedDbType, $dbType);
+            }
+        }
+    }
 }

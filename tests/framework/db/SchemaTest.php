@@ -54,8 +54,12 @@ abstract class SchemaTest extends DatabaseTestCase
     {
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
+            if ($name === PDO::ATTR_EMULATE_PREPARES && $connection->driverName === 'sqlsrv') {
+                continue;
+            }
             $connection->pdo->setAttribute($name, $value);
         }
+
         /* @var $schema Schema */
         $schema = $connection->schema;
 
@@ -78,6 +82,9 @@ abstract class SchemaTest extends DatabaseTestCase
     {
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
+            if ($name === PDO::ATTR_EMULATE_PREPARES && $connection->driverName === 'sqlsrv') {
+                continue;
+            }
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -568,7 +575,7 @@ abstract class SchemaTest extends DatabaseTestCase
             'somecolUnique' => ['somecol'],
             'someCol2Unique' => ['someCol2'],
         ], $uniqueIndexes);
-        
+
         // see https://github.com/yiisoft/yii2/issues/13814
         $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
 
