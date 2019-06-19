@@ -903,6 +903,7 @@ EOD;
             $categoryFileName = str_replace($dirName, '', $messageFile);
             $categoryFileName = ltrim($categoryFileName, DIRECTORY_SEPARATOR);
             $category = preg_replace('#\.php$#', '', $categoryFileName);
+            $category = str_replace(DIRECTORY_SEPARATOR, '/', $category);
 
             if (!in_array($category, $existingCategories, true)) {
                 unlink($messageFile);
