@@ -610,7 +610,7 @@ $query1->union($query2);
 - [[yii\db\Query::one()|one()]]：返回结果集的第一行。
 - [[yii\db\Query::column()|column()]]：返回结果集的第一列。
 - [[yii\db\Query::scalar()|scalar()]]：返回结果集的第一行第一列的标量值。
-- [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包结果集的值。
+- [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包含结果集的值。
 - [[yii\db\Query::count()|count()]]：返回 `COUNT` 查询的结果。
 - 其它集合查询方法：包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
   [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等。`$q` 是一个必选参数，
