@@ -395,9 +395,24 @@ class DateValidator extends Validator
         // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
         $parsePos = 0;
         $parsedDate = @$formatter->parse($value, $parsePos);
-        if ($parsedDate === false || $parsePos !== mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
+        $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
+        if ($parsedDate === false || $parsePos !== $valueLength || !$this->validateStrictIntl($value, $parsedDate, $formatter)) {
             return false;
         }
+
+        return $parsedDate;
+    }
+
+    /**
+     * Performs strict date format validation
+     *
+     * @param $value string date
+     * @param $parsedDate string parsed date
+     * @param IntlDateFormatter $formatter formatter
+     * @return bool
+     */
+    private function validateStrictIntl($value, $parsedDate, IntlDateFormatter $formatter)
+    {
         if ($this->strictDateFormat) {
             $checkDate = $formatter->format($parsedDate);
             if ($checkDate !== $value) {
@@ -405,7 +420,7 @@ class DateValidator extends Validator
             }
         }
 
-        return $parsedDate;
+        return true;
     }
 
     /**
@@ -421,7 +436,7 @@ class DateValidator extends Validator
 
         $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
         $errors = DateTime::getLastErrors();
-        if ($date === false || $errors['error_count'] || $errors['warning_count']) {
+        if ($date === false || $errors['error_count'] || $errors['warning_count'] || !$this->validateStrictPHP($value, $format, $date)) {
             return false;
         }
         if ($this->strictDateFormat) {
@@ -436,6 +451,26 @@ class DateValidator extends Validator
         }
 
         return $date->getTimestamp();
+    }
+
+    /**
+     * Performs strict date format validation
+     *
+     * @param $value string date
+     * @param $format string date format
+     * @param DateTime $date parsed date
+     * @return bool
+     */
+    private function validateStrictPHP($value, $format, DateTime $date)
+    {
+        if ($this->strictDateFormat) {
+            $checkDate = $date->format($format);
+            if ($checkDate !== $value) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
