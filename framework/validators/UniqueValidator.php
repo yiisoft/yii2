@@ -193,7 +193,7 @@ class UniqueValidator extends Validator
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
                 
                 // any with relation can't be loaded because related fields are not selected
-                $query->with = null;
+                $query->with = $query->joinWith = null;
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
