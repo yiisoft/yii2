@@ -439,12 +439,6 @@ class DateValidator extends Validator
         if ($date === false || $errors['error_count'] || $errors['warning_count'] || !$this->validateStrictPHP($value, $format, $date)) {
             return false;
         }
-        if ($this->strictDateFormat) {
-            $checkDate = $date->format($format);
-            if ($checkDate !== $value) {
-                return false;
-            }
-        }
 
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
