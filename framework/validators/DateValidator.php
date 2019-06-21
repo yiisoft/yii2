@@ -373,6 +373,31 @@ class DateValidator extends Validator
      */
     private function parseDateValueIntl($value, $format)
     {
+        $formatter = $this->getIntlDateFormatter($format);
+        // enable strict parsing to avoid getting invalid date values
+        $formatter->setLenient(false);
+
+        // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
+        // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
+        $parsePos = 0;
+        $parsedDate = @$formatter->parse($value, $parsePos);
+        $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
+        if ($parsedDate === false || $parsePos !== $valueLength || !$this->validateStrictIntl($value, $parsedDate, $formatter)) {
+            return false;
+        }
+
+        return $parsedDate;
+    }
+
+    /**
+     * Creates IntlDateFormatter
+     *
+     * @param $format string date format
+     * @return IntlDateFormatter
+     * @throws InvalidConfigException
+     */
+    private function getIntlDateFormatter($format)
+    {
         if (isset($this->_dateFormats[$format])) {
             if ($this->type === self::TYPE_DATE) {
                 $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
@@ -388,19 +413,8 @@ class DateValidator extends Validator
             $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
             $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $hasTimeInfo ? $this->timeZone : 'UTC', null, $format);
         }
-        // enable strict parsing to avoid getting invalid date values
-        $formatter->setLenient(false);
 
-        // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
-        // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
-        $parsePos = 0;
-        $parsedDate = @$formatter->parse($value, $parsePos);
-        $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
-        if ($parsedDate === false || $parsePos !== $valueLength || !$this->validateStrictIntl($value, $parsedDate, $formatter)) {
-            return false;
-        }
-
-        return $parsedDate;
+        return $formatter;
     }
 
     /**
