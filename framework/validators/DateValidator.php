@@ -398,21 +398,31 @@ class DateValidator extends Validator
      */
     private function getIntlDateFormatter($format)
     {
-        if (isset($this->_dateFormats[$format])) {
-            if ($this->type === self::TYPE_DATE) {
-                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
-            } elseif ($this->type === self::TYPE_DATETIME) {
-                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $this->timeZone);
-            } elseif ($this->type === self::TYPE_TIME) {
-                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $this->timeZone);
-            } else {
-                throw new InvalidConfigException('Unknown validation type set for DateValidator::$type: ' . $this->type);
-            }
-        } else {
+        if (!isset($this->_dateFormats[$format])) {
             // if no time was provided in the format string set time to 0 to get a simple date timestamp
             $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
             $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $hasTimeInfo ? $this->timeZone : 'UTC', null, $format);
+
+            return $formatter;
         }
+
+        if ($this->type === self::TYPE_DATE) {
+            $dateType = $this->_dateFormats[$format];
+            $timeType = IntlDateFormatter::NONE;
+            $timeZone = 'UTC';
+        } elseif ($this->type === self::TYPE_DATETIME) {
+            $dateType = $this->_dateFormats[$format];
+            $timeType = $this->_dateFormats[$format];
+            $timeZone = $this->timeZone;
+        } elseif ($this->type === self::TYPE_TIME) {
+            $dateType = IntlDateFormatter::NONE;
+            $timeType = $this->_dateFormats[$format];
+            $timeZone = $this->timeZone;
+        } else {
+            throw new InvalidConfigException('Unknown validation type set for DateValidator::$type: ' . $this->type);
+        }
+
+        $formatter = new IntlDateFormatter($this->locale, $dateType, $timeType, $timeZone);
 
         return $formatter;
     }
