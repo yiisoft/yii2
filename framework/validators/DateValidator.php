@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use DateTime;
+use Exception;
 use IntlDateFormatter;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -194,6 +195,13 @@ class DateValidator extends Validator
      * @since 2.0.4
      */
     public $minString;
+    /**
+     * @var bool set this parameter to true if you need strict date format validation (e.g. only such dates pass
+     * validation for the following format 'yyyy-MM-dd': '0011-03-25', '2019-04-30' etc. and not '18-05-15',
+     * '2017-Mar-14' etc. which pass validation if this parameter is set to false)
+     * @since 2.0.22
+     */
+    public $strictDateFormat = false;
 
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
@@ -239,10 +247,10 @@ class DateValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
         if ($this->maxString === null) {
-            $this->maxString = (string) $this->max;
+            $this->maxString = (string)$this->max;
         }
         if ($this->minString === null) {
-            $this->minString = (string) $this->min;
+            $this->minString = (string)$this->min;
         }
         if ($this->max !== null && is_string($this->max)) {
             $timestamp = $this->parseDateValue($this->max);
@@ -335,6 +343,7 @@ class DateValidator extends Validator
      * @param string $value string representing date
      * @param string $format expected date format
      * @return int|false a UNIX timestamp or `false` on failure.
+     * @throws InvalidConfigException
      */
     private function parseDateValueFormat($value, $format)
     {
@@ -389,6 +398,12 @@ class DateValidator extends Validator
         if ($parsedDate === false || $parsePos !== mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
             return false;
         }
+        if ($this->strictDateFormat) {
+            $checkDate = $formatter->format($parsedDate);
+            if ($checkDate !== $value) {
+                return false;
+            }
+        }
 
         return $parsedDate;
     }
@@ -409,6 +424,12 @@ class DateValidator extends Validator
         if ($date === false || $errors['error_count'] || $errors['warning_count']) {
             return false;
         }
+        if ($this->strictDateFormat) {
+            $checkDate = $date->format($format);
+            if ($checkDate !== $value) {
+                return false;
+            }
+        }
 
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
@@ -422,6 +443,7 @@ class DateValidator extends Validator
      * @param int $timestamp
      * @param string $format
      * @return string
+     * @throws Exception
      */
     private function formatTimestamp($timestamp, $format)
     {
