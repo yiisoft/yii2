@@ -250,9 +250,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $command;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function mountCommonSqlForCommentAddition($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
@@ -300,7 +297,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnTable($table, $comment)
     {
-        return $this->mountCommonSqlForCommentAddition($comment, $table) ;
+        return $this->mountCommonSqlForCommentAddition($comment, $table);
     }
 
     /**
