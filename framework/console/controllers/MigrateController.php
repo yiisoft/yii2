@@ -526,7 +526,7 @@ class MigrateController extends BaseMigrateController
     /**
      * Splits field into chunks
      *
-     * @param $field
+     * @param string $field
      * @return array|array[]|false|string[]
      */
     protected function splitFieldIntoChunks($field)
