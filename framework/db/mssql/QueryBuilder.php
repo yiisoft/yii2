@@ -305,11 +305,39 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     */
+    protected function mountCommonSqlForCommentRemoval($table, $column = null)
+    {
+        $tableSchema = $this->db->schema->getTableSchema($table);
+
+        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
+        $tableName = "N'{$tableSchema->name}'";
+        $columnName = $column ? "N'$column'" : null;
+
+        return "
+            IF EXISTS (
+                    SELECT 1
+                    FROM fn_listextendedproperty (
+                        N'MS_description',
+                        'SCHEMA', $schemaName,
+                        'TABLE', $tableName,
+                        " . ($column ? "'COLUMN', $columnName " : ' DEFAULT, DEFAULT ') . "
+                    )
+            )
+                EXEC sys.sp_dropextendedproperty
+                    @name = N'MS_description',
+                    @level0type = N'SCHEMA', @level0name = $schemaName,
+                    @level1type = N'TABLE', @level1name = $tableName"
+                    . ($column ? ", @level2type = N'COLUMN', @level2name = $columnName" : '') . ';';
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
     {
-        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+        return $this->mountCommonSqlForCommentRemoval($table, $column);
     }
 
     /**
@@ -318,7 +346,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromTable($table)
     {
-        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+        return $this->mountCommonSqlForCommentRemoval($table);
     }
 
     /**
