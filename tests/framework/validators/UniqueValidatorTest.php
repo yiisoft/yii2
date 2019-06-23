@@ -460,8 +460,8 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testFindModelJoinWith()
     {
         $validator = new UniqueValidator([
-                                             'targetAttribute' => ['status', 'profile_id'],
-                                         ]);
+            'targetAttribute' => ['status', 'profile_id'],
+        ]);
         $model = JoinWithCustomer::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
