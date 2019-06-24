@@ -532,8 +532,7 @@ class MigrateController extends BaseMigrateController
     protected function splitFieldIntoChunks($field)
     {
         $hasDoubleQuotes = false;
-        $regex = "/defaultValue\(.*?:.*?\)/";
-        preg_match_all($regex, $field, $matches);
+        preg_match_all('/defaultValue\(.*?:.*?\)/', $field, $matches);
         if (isset($matches[0][0])) {
             $hasDoubleQuotes = true;
             $originalDefaultValue = $matches[0][0];
@@ -545,7 +544,7 @@ class MigrateController extends BaseMigrateController
 
         if (is_array($chunks) && $hasDoubleQuotes) {
             foreach ($chunks as $key => $chunk) {
-                $chunks[$key] = str_replace($defaultValue, $origDefaultValue, $chunk);
+                $chunks[$key] = str_replace($defaultValue, $originalDefaultValue, $chunk);
             }
         }
 
