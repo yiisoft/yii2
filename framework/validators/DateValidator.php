@@ -382,7 +382,7 @@ class DateValidator extends Validator
         $parsePos = 0;
         $parsedDate = @$formatter->parse($value, $parsePos);
         $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
-        if ($parsedDate === false || $parsePos !== $valueLength || !$this->validateStrictIntl($value, $parsedDate, $formatter)) {
+        if ($parsedDate === false || $parsePos !== $valueLength || ($this->strictDateFormat && !($formatter->format($parsedDate) === $value))) {
             return false;
         }
 
@@ -425,26 +425,6 @@ class DateValidator extends Validator
         $formatter = new IntlDateFormatter($this->locale, $dateType, $timeType, $timeZone);
 
         return $formatter;
-    }
-
-    /**
-     * Performs strict date format validation
-     *
-     * @param $value string date
-     * @param $parsedDate string parsed date
-     * @param IntlDateFormatter $formatter formatter
-     * @return bool
-     */
-    private function validateStrictIntl($value, $parsedDate, IntlDateFormatter $formatter)
-    {
-        if ($this->strictDateFormat) {
-            $checkDate = $formatter->format($parsedDate);
-            if ($checkDate !== $value) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
