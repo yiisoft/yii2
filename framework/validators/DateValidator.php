@@ -382,7 +382,7 @@ class DateValidator extends Validator
         $parsePos = 0;
         $parsedDate = @$formatter->parse($value, $parsePos);
         $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
-        if ($parsedDate === false || $parsePos !== $valueLength || ($this->strictDateFormat && !($formatter->format($parsedDate) === $value))) {
+        if ($parsedDate === false || $parsePos !== $valueLength || ($this->strictDateFormat && $formatter->format($parsedDate) !== $value)) {
             return false;
         }
 
@@ -440,7 +440,7 @@ class DateValidator extends Validator
 
         $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
         $errors = DateTime::getLastErrors();
-        if ($date === false || $errors['error_count'] || $errors['warning_count'] || !$this->validateStrictPHP($value, $format, $date)) {
+        if ($date === false || $errors['error_count'] || $errors['warning_count'] || ($this->strictDateFormat && $date->format($format) !== $value)) {
             return false;
         }
 
@@ -449,26 +449,6 @@ class DateValidator extends Validator
         }
 
         return $date->getTimestamp();
-    }
-
-    /**
-     * Performs strict date format validation
-     *
-     * @param $value string date
-     * @param $format string date format
-     * @param DateTime $date parsed date
-     * @return bool
-     */
-    private function validateStrictPHP($value, $format, DateTime $date)
-    {
-        if ($this->strictDateFormat) {
-            $checkDate = $date->format($format);
-            if ($checkDate !== $value) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
