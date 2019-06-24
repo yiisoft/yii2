@@ -536,12 +536,12 @@ class MigrateController extends BaseMigrateController
         preg_match_all($regex, $field, $matches);
         if (isset($matches[0][0])) {
             $hasDoubleQuotes = true;
-            $origDefaultValue = $matches[0][0];
-            $defaultValue = str_replace(':', '{{colon}}', $origDefaultValue);
-            $field = str_replace($origDefaultValue, $defaultValue, $field);
+            $originalDefaultValue = $matches[0][0];
+            $defaultValue = str_replace(':', '{{colon}}', $originalDefaultValue);
+            $field = str_replace($originalDefaultValue, $defaultValue, $field);
         }
 
-        $chunks = preg_split('/\s?:\s?/', $field, null);
+        $chunks = preg_split('/\s?:\s?/', $field);
 
         if (is_array($chunks) && $hasDoubleQuotes) {
             foreach ($chunks as $key => $chunk) {
