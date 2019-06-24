@@ -242,6 +242,11 @@ class MigrateControllerTest extends TestCase
                     order_id:integer:foreignKey(user_order):notNull,
                     created_at:dateTime:notNull',
             ]);
+
+            $this->assertCommandCreatedFile('add_two_columns_test', 'add_field_1_column_field_2_column_to_' . $table . '_table', $table, [
+                'fields' => 'field_1:string(10):notNull,
+                    field_2:text:notNull',
+            ]);
         }
     }
 
