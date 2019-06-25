@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.22 under development
 ------------------------
 
-- no changes in this release.
+- Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
 
 
 2.0.21 June 18, 2019
