@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
+- Bug #16394: Fixed issues in `migrate/create` when specifying default values with colons and adding multiple columns (alexkart)
 
 
 2.0.21 June 18, 2019
