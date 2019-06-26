@@ -488,7 +488,7 @@ class MigrateController extends BaseMigrateController
         $foreignKeys = [];
 
         foreach ($this->fields as $index => $field) {
-            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $chunks = $this->splitFieldIntoChunks($field);
             $property = array_shift($chunks);
 
             foreach ($chunks as $i => &$chunk) {
@@ -521,6 +521,34 @@ class MigrateController extends BaseMigrateController
             'fields' => $fields,
             'foreignKeys' => $foreignKeys,
         ];
+    }
+
+    /**
+     * Splits field into chunks
+     *
+     * @param string $field
+     * @return array|array[]|false|string[]
+     */
+    protected function splitFieldIntoChunks($field)
+    {
+        $hasDoubleQuotes = false;
+        preg_match_all('/defaultValue\(.*?:.*?\)/', $field, $matches);
+        if (isset($matches[0][0])) {
+            $hasDoubleQuotes = true;
+            $originalDefaultValue = $matches[0][0];
+            $defaultValue = str_replace(':', '{{colon}}', $originalDefaultValue);
+            $field = str_replace($originalDefaultValue, $defaultValue, $field);
+        }
+
+        $chunks = preg_split('/\s?:\s?/', $field);
+
+        if (is_array($chunks) && $hasDoubleQuotes) {
+            foreach ($chunks as $key => $chunk) {
+                $chunks[$key] = str_replace($defaultValue, $originalDefaultValue, $chunk);
+            }
+        }
+
+        return $chunks;
     }
 
     /**
