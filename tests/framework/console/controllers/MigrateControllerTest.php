@@ -286,9 +286,17 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Test the migrate:fresh command.
+     * @dataProvider refreshMigrationDataProvider
+     * @param $db
+     * @throws \yii\db\Exception
      */
-    public function testRefreshMigration()
+    public function testRefreshMigration($db)
     {
+        if ($db === 'mysql') {
+            Yii::$app->db->close();
+            Yii::$app->db->dsn = 'mysql:host=127.0.0.1;dbname=yiitest';
+        }
+
         Yii::$app->db->createCommand('create table hall_of_fame(id int, string varchar(255))')
             ->execute();
 
@@ -308,6 +316,14 @@ class MigrateControllerTest extends TestCase
 
         // Migration was restarted
         $this->assertContains('No new migrations found. Your system is up-to-date.', $result);
+    }
+
+    public function refreshMigrationDataProvider()
+    {
+        return [
+            ['default'],
+            ['mysql'],
+        ];
     }
 
     /**
