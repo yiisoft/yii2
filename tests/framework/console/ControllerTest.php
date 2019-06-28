@@ -165,6 +165,8 @@ class ControllerTest extends TestCase
     public function testGetActionHelpSummaryOnNull()
     {
         $controller = new FakeController('fake', Yii::$app);
+
+        $controller->color = false;
         $helpSummary = $controller->getActionHelpSummary(null);
         $this->assertEquals('Action not found.', $helpSummary);
 

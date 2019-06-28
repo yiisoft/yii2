@@ -250,17 +250,16 @@ class Controller extends Component implements ViewContextInterface
         $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
         if (!method_exists($this, $methodName)) {
             $methods = (new \ReflectionClass($this))->getMethods(\ReflectionMethod::IS_PUBLIC);
-            $methodNames = array_filter(array_map(function ($item) {
+            $methodNames = array_map(static function ($item) {
                 return [
                     'original_name' => $item->name,
                     'name' => strtolower(str_replace('_', '', $item->name)),
                 ];
-            }, array_filter($methods, function ($item) {
-                return get_class($this) === $item->class;
-            })), function ($item) use ($methodName) {
+            }, $methods);
+            $matchedMethodNames = array_filter($methodNames, static function ($item) use ($methodName) {
                 return strtolower($methodName) === $item['name'];
             });
-            $methodName = array_shift($methodNames)['original_name'];
+            $methodName = array_shift($matchedMethodNames)['original_name'];
         }
 
         return $methodName;
