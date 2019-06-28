@@ -226,8 +226,8 @@ class Controller extends Component implements ViewContextInterface
         if (isset($actionMap[$id])) {
             return Yii::createObject($actionMap[$id], [$id, $this]);
         } elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
-            $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
-            if (method_exists($this, $methodName)) {
+            $methodName = $this->getMethodNameById($id);
+            if ($methodName !== null) {
                 $method = new \ReflectionMethod($this, $methodName);
                 if ($method->isPublic() && $method->getName() === $methodName) {
                     return new InlineAction($id, $this, $methodName);
@@ -236,6 +236,34 @@ class Controller extends Component implements ViewContextInterface
         }
 
         return null;
+    }
+
+    /**
+     * Finds action method name by action ID
+     *
+     * @param $id string the action ID
+     * @return string|null action method name
+     * @throws \ReflectionException
+     */
+    private function getMethodNameById($id)
+    {
+        $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
+        if (!method_exists($this, $methodName)) {
+            $methods = (new \ReflectionClass($this))->getMethods(\ReflectionMethod::IS_PUBLIC);
+            $methodNames = array_filter(array_map(function ($item) {
+                return [
+                    'original_name' => $item->name,
+                    'name' => strtolower(str_replace('_', '', $item->name)),
+                ];
+            }, array_filter($methods, function ($item) {
+                return get_class($this) === $item->class;
+            })), function ($item) use ($methodName) {
+                return strtolower($methodName) === $item['name'];
+            });
+            $methodName = array_shift($methodNames)['original_name'];
+        }
+
+        return $methodName;
     }
 
     /**
