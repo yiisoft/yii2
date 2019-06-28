@@ -662,7 +662,8 @@ PATTERN;
             if (is_string($columnDefinition)) {
                 if (
                     preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $columnDefinition, $matches) &&
-                    !preg_match('/^\d+$/', $matches[2])
+                    !preg_match('/^\d+$/', $matches[2]) &&
+                    strpos($matches[2], '.') === false
                 ) {
                     // Using "columnName as alias" or "columnName alias" syntax
                     $select[$matches[2]] = $matches[1];

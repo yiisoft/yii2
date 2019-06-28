@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #16394: Fixed issues in `migrate/create` when specifying default values with colons and adding multiple columns (alexkart)
 - Bug #17341: Re-added fix for error from yii.activeForm.js in strict mode (mikehaertl)
 - Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
+- Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
 
 
 2.0.21 June 18, 2019
