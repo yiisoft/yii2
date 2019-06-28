@@ -97,6 +97,11 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertSame($selectedCols, $query->select);
         $query->select($selectedCols);
         $this->assertSame($selectedCols, $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/17384 */
+        $query = new Query();
+        $query->select('DISTINCT ON(tour_dates.date_from) tour_dates.date_from, tour_dates.id');
+        $this->assertEquals(['DISTINCT ON(tour_dates.date_from) tour_dates.date_from', 'tour_dates.id' => 'tour_dates.id'], $query->select);
     }
 
     public function testFrom()
