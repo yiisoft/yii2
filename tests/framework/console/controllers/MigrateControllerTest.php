@@ -295,6 +295,7 @@ class MigrateControllerTest extends TestCase
         if ($db === 'mysql') {
             Yii::$app->db->close();
             Yii::$app->db->dsn = 'mysql:host=127.0.0.1;dbname=yiitest';
+            Yii::$app->db->username = 'travis';
         }
 
         Yii::$app->db->createCommand('create table hall_of_fame(id int, string varchar(255))')
