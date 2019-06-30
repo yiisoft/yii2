@@ -314,7 +314,7 @@ class MigrateController extends BaseMigrateController
                 $db->createCommand()->dropTable($schema->name)->execute();
                 $this->stdout("Table {$schema->name} dropped.\n");
             } catch (\Exception $e) {
-                if (strpos($e->getMessage(), 'DROP VIEW to delete view') !== false) {
+                if ($this->isViewRelated($e->getMessage())) {
                     $db->createCommand()->dropView($schema->name)->execute();
                     $this->stdout("View {$schema->name} dropped.\n");
                 } else {
@@ -322,6 +322,27 @@ class MigrateController extends BaseMigrateController
                 }
             }
         }
+    }
+
+    /**
+     * Determines whether the error message is related to deleting a view or not
+     * @param $errorMessage
+     * @return bool
+     */
+    private function isViewRelated($errorMessage)
+    {
+        $dropViewErrors = [
+            'DROP VIEW to delete view', // SQLite
+            'SQLSTATE[42S02]', // MySQL
+        ];
+
+        foreach ($dropViewErrors as $dropViewError) {
+            if (strpos($errorMessage, $dropViewError) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
