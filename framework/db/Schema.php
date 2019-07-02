@@ -494,7 +494,7 @@ abstract class Schema extends BaseObject
 
     /**
      * Splits full table name into parts
-     * @param $name string
+     * @param string $name
      * @return array
      * @since 2.0.22
      */
