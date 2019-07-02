@@ -494,8 +494,9 @@ abstract class Schema extends BaseObject
 
     /**
      * Splits full table name into parts
-     * @param $name
+     * @param $name string
      * @return array
+     * @since 2.0.22
      */
     protected function getTableNameParts($name)
     {

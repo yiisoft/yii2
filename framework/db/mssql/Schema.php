@@ -128,8 +128,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritDoc}
-     * @param $name
-     * @return array|mixed
+     * @param $name string
+     * @return array
      */
     protected function getTableNameParts($name)
     {
