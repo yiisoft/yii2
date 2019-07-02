@@ -326,7 +326,7 @@ class MigrateController extends BaseMigrateController
 
     /**
      * Determines whether the error message is related to deleting a view or not
-     * @param $errorMessage
+     * @param string $errorMessage
      * @return bool
      */
     private function isViewRelated($errorMessage)
@@ -548,7 +548,7 @@ class MigrateController extends BaseMigrateController
      * Splits field into chunks
      *
      * @param string $field
-     * @return array|array[]|false|string[]
+     * @return string[]|false
      */
     protected function splitFieldIntoChunks($field)
     {
