@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
 - Bug #17325: Fixed "Cannot drop view" for MySQL while `migrate/fresh` (alexkart)
 - Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
+- Bug #17057: Fixed issues with table names that contain special characters or keywords in MSSQL (alexkart)
 
 
 2.0.21 June 18, 2019
