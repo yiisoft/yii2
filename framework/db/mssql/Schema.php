@@ -177,8 +177,12 @@ FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
 ORDER BY [t].[table_name]
 SQL;
+        $tables = $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+        $tables = array_map(static function ($item) {
+            return '[' . $item . ']';
+        }, $tables);
 
-        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+        return $tables;
     }
 
     /**
