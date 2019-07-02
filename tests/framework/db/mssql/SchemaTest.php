@@ -83,4 +83,54 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             }
         }
     }
+
+    /**
+     * @dataProvider quoteTableNameDataProvider
+     * @param $name
+     * @param $expectedName
+     * @throws \yii\base\NotSupportedException
+     */
+    public function testQuoteTableName($name, $expectedName)
+    {
+        $schema = $this->getConnection()->getSchema();
+        $quotedName = $schema->quoteTableName($name);
+        $this->assertEquals($expectedName, $quotedName);
+    }
+
+    public function quoteTableNameDataProvider()
+    {
+        return [
+            ['test', '[test]'],
+            ['test.test', '[test].[test]'],
+            ['test.test.test', '[test].[test].[test]'],
+            ['[test]', '[test]'],
+            ['[test].[test]', '[test].[test]'],
+            ['test.[test.test]', '[test].[test.test]'],
+            ['test.test.[test.test]', '[test].[test].[test.test]'],
+            ['[test].[test.test]', '[test].[test.test]'],
+        ];
+    }
+
+    /**
+     * @dataProvider getTableSchemaDataProvider
+     * @param $name
+     * @param $expectedName
+     * @throws \yii\base\NotSupportedException
+     */
+    public function testGetTableSchema($name, $expectedName)
+    {
+        $schema = $this->getConnection()->getSchema();
+        $tableSchema = $schema->getTableSchema($name);
+        $this->assertEquals($expectedName, $tableSchema->name);
+    }
+
+    public function getTableSchemaDataProvider()
+    {
+        return [
+            ['[dbo].[profile]', 'profile'],
+            ['dbo.profile', 'profile'],
+            ['profile', 'profile'],
+            ['dbo.[table.with.special.characters]', 'table.with.special.characters'],
+        ];
+    }
 }

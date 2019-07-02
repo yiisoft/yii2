@@ -15,7 +15,6 @@ use yii\base\NotSupportedException;
 use yii\caching\Cache;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
-use yii\helpers\StringHelper;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -485,12 +484,22 @@ abstract class Schema extends BaseObject
         if (strpos($name, '.') === false) {
             return $this->quoteSimpleTableName($name);
         }
-        $parts = explode('.', $name);
+        $parts = $this->getTableNameParts($name);
         foreach ($parts as $i => $part) {
             $parts[$i] = $this->quoteSimpleTableName($part);
         }
 
         return implode('.', $parts);
+    }
+
+    /**
+     * Splits full table name into parts
+     * @param $name
+     * @return array
+     */
+    protected function getTableNameParts($name)
+    {
+        return explode('.', $name);
     }
 
     /**
@@ -661,7 +670,7 @@ abstract class Schema extends BaseObject
         }
         $message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-        return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
+        return new $exceptionClass($message, $errorInfo, (int)$e->getCode(), $e);
     }
 
     /**
