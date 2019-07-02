@@ -21,6 +21,7 @@ IF OBJECT_ID('[T_constraints_3]', 'U') IS NOT NULL DROP TABLE [T_constraints_3];
 IF OBJECT_ID('[T_constraints_2]', 'U') IS NOT NULL DROP TABLE [T_constraints_2];
 IF OBJECT_ID('[T_constraints_1]', 'U') IS NOT NULL DROP TABLE [T_constraints_1];
 IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
+IF OBJECT_ID('[table.with.special.characters]', 'U') IS NOT NULL DROP TABLE [table.with.special.characters];
 
 CREATE TABLE [dbo].[profile] (
     [id] [int] IDENTITY NOT NULL,
@@ -89,7 +90,9 @@ CREATE TABLE [dbo].[order_item] (
         [item_id] ASC
     ) ON [PRIMARY]
 
-);CREATE TABLE [dbo].[order_item_with_null_fk] (
+);
+
+CREATE TABLE [dbo].[order_item_with_null_fk] (
     [order_id] [int],
     [item_id] [int],
     [quantity] [int] NOT NULL,
@@ -310,4 +313,8 @@ CREATE TABLE [T_upsert]
     [orders] INT NOT NULL DEFAULT 0,
     [profile_id] INT NULL,
     UNIQUE ([email], [recovery_email])
+);
+
+CREATE TABLE [dbo].[table.with.special.characters] (
+    [id] [int]
 );

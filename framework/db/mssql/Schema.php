@@ -98,7 +98,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     protected function resolveTableName($name)
     {
         $resolvedName = new TableSchema();
-        $parts = explode('.', str_replace(['[', ']'], '', $name));
+        $parts = $this->getTableNameParts($name);
         $partCount = count($parts);
         if ($partCount === 4) {
             // server name, catalog name, schema name and table name passed
@@ -124,6 +124,25 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         }
 
         return $resolvedName;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param string $name
+     * @return array
+     * @since 2.0.22
+     */
+    protected function getTableNameParts($name)
+    {
+        $parts = [$name];
+        preg_match_all('/([^.\[\]]+)|\[([^\[\]]+)\]/', $name, $matches);
+        if (isset($matches[0]) && is_array($matches[0]) && !empty($matches[0])) {
+            $parts = $matches[0];
+        }
+
+        $parts = str_replace(['[', ']'], '', $parts);
+
+        return $parts;
     }
 
     /**
@@ -223,8 +242,8 @@ SQL;
         $result = [];
         foreach ($indexes as $name => $index) {
             $result[] = new IndexConstraint([
-                'isPrimary' => (bool) $index[0]['index_is_primary'],
-                'isUnique' => (bool) $index[0]['index_is_unique'],
+                'isPrimary' => (bool)$index[0]['index_is_primary'],
+                'isUnique' => (bool)$index[0]['index_is_unique'],
                 'name' => $name,
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
@@ -297,7 +316,7 @@ SQL;
      */
     protected function resolveTableNames($table, $name)
     {
-        $parts = explode('.', str_replace(['[', ']'], '', $name));
+        $parts = $this->getTableNameParts($name);
         $partCount = count($parts);
         if ($partCount === 4) {
             // server name, catalog name, schema name and table name passed
@@ -349,9 +368,9 @@ SQL;
             }
             if (!empty($matches[2])) {
                 $values = explode(',', $matches[2]);
-                $column->size = $column->precision = (int) $values[0];
+                $column->size = $column->precision = (int)$values[0];
                 if (isset($values[1])) {
-                    $column->scale = (int) $values[1];
+                    $column->scale = (int)$values[1];
                 }
                 if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
                     $column->type = 'boolean';

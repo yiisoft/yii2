@@ -142,6 +142,11 @@ class MigrateControllerTest extends TestCase
              body:text:notNull:defaultValue(",test"),
              test:custom(11,2,"s"):notNull',
         ]);
+
+        $this->assertCommandCreatedFile('create_field_with_colon_default_values', 'create_test_table', 'test', [
+            'fields' => 'field_1:dateTime:notNull:defaultValue(\'0000-00-00 00:00:00\'),
+             field_2:string:defaultValue(\'default:value\')',
+        ]);
     }
 
     public function testUpdatingLongNamedMigration()
@@ -171,7 +176,7 @@ class MigrateControllerTest extends TestCase
 
     public function testCreateLongNamedMigration()
     {
-        $this->setOutputCallback(function($output) {
+        $this->setOutputCallback(function ($output) {
             return null;
         });
 
@@ -237,6 +242,11 @@ class MigrateControllerTest extends TestCase
                     order_id:integer:foreignKey(user_order):notNull,
                     created_at:dateTime:notNull',
             ]);
+
+            $this->assertCommandCreatedFile('add_two_columns_test', 'add_field_1_column_field_2_column_to_' . $table . '_table', $table, [
+                'fields' => 'field_1:string(10):notNull,
+                    field_2:text:notNull',
+            ]);
         }
     }
 
@@ -276,9 +286,16 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Test the migrate:fresh command.
+     * @dataProvider refreshMigrationDataProvider
+     * @param $db
+     * @throws \yii\db\Exception
      */
-    public function testRefreshMigration()
+    public function testRefreshMigration($db)
     {
+        if ($db !== 'default') {
+            $this->switchDbConnection($db);
+        }
+
         Yii::$app->db->createCommand('create table hall_of_fame(id int, string varchar(255))')
             ->execute();
 
@@ -298,6 +315,14 @@ class MigrateControllerTest extends TestCase
 
         // Migration was restarted
         $this->assertContains('No new migrations found. Your system is up-to-date.', $result);
+    }
+
+    public function refreshMigrationDataProvider()
+    {
+        return [
+            ['default'],
+            ['mysql'],
+        ];
     }
 
     /**

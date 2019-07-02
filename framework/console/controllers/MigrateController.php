@@ -314,7 +314,7 @@ class MigrateController extends BaseMigrateController
                 $db->createCommand()->dropTable($schema->name)->execute();
                 $this->stdout("Table {$schema->name} dropped.\n");
             } catch (\Exception $e) {
-                if (strpos($e->getMessage(), 'DROP VIEW to delete view') !== false) {
+                if ($this->isViewRelated($e->getMessage())) {
                     $db->createCommand()->dropView($schema->name)->execute();
                     $this->stdout("View {$schema->name} dropped.\n");
                 } else {
@@ -322,6 +322,27 @@ class MigrateController extends BaseMigrateController
                 }
             }
         }
+    }
+
+    /**
+     * Determines whether the error message is related to deleting a view or not
+     * @param $errorMessage
+     * @return bool
+     */
+    private function isViewRelated($errorMessage)
+    {
+        $dropViewErrors = [
+            'DROP VIEW to delete view', // SQLite
+            'SQLSTATE[42S02]', // MySQL
+        ];
+
+        foreach ($dropViewErrors as $dropViewError) {
+            if (strpos($errorMessage, $dropViewError) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -488,7 +509,7 @@ class MigrateController extends BaseMigrateController
         $foreignKeys = [];
 
         foreach ($this->fields as $index => $field) {
-            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $chunks = $this->splitFieldIntoChunks($field);
             $property = array_shift($chunks);
 
             foreach ($chunks as $i => &$chunk) {
@@ -521,6 +542,34 @@ class MigrateController extends BaseMigrateController
             'fields' => $fields,
             'foreignKeys' => $foreignKeys,
         ];
+    }
+
+    /**
+     * Splits field into chunks
+     *
+     * @param string $field
+     * @return array|array[]|false|string[]
+     */
+    protected function splitFieldIntoChunks($field)
+    {
+        $hasDoubleQuotes = false;
+        preg_match_all('/defaultValue\(.*?:.*?\)/', $field, $matches);
+        if (isset($matches[0][0])) {
+            $hasDoubleQuotes = true;
+            $originalDefaultValue = $matches[0][0];
+            $defaultValue = str_replace(':', '{{colon}}', $originalDefaultValue);
+            $field = str_replace($originalDefaultValue, $defaultValue, $field);
+        }
+
+        $chunks = preg_split('/\s?:\s?/', $field);
+
+        if (is_array($chunks) && $hasDoubleQuotes) {
+            foreach ($chunks as $key => $chunk) {
+                $chunks[$key] = str_replace($defaultValue, $originalDefaultValue, $chunk);
+            }
+        }
+
+        return $chunks;
     }
 
     /**
