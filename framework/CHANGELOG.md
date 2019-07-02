@@ -1,17 +1,17 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.22 under development
-------------------------
+2.0.22 July 02, 2019
+--------------------
 
-- Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
 - Bug #16394: Fixed issues in `migrate/create` when specifying default values with colons and adding multiple columns (alexkart)
-- Bug #17341: Re-added fix for error from yii.activeForm.js in strict mode (mikehaertl)
-- Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
-- Bug #17325: Fixed "Cannot drop view" for MySQL while `migrate/fresh` (alexkart)
-- Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
 - Bug #17057: Fixed issues with table names that contain special characters or keywords in MSSQL (alexkart)
+- Bug #17325: Fixed "Cannot drop view" for MySQL while `migrate/fresh` (alexkart)
+- Bug #17341: Re-added fix for error from yii.activeForm.js in strict mode (mikehaertl)
+- Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
 - Bug #17389: Fixed `UniqueValidator` to work with Active Record having `joinWith()` in its `find()` (garthpmurray)
+- Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
+- Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
 
 
 2.0.21 June 18, 2019
