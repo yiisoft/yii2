@@ -453,6 +453,24 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         }
     }
     
+    /**
+     * Test join with doesn't attempt to eager load joinWith relations
+     * @see https://github.com/yiisoft/yii2/issues/17389
+     */
+    public function testFindModelJoinWith()
+    {
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['status', 'profile_id'],
+        ]);
+        $model = JoinWithCustomer::find()->one();
+        try {
+            $validator->validateAttribute($model, 'email');
+            $this->assertTrue(true);
+        } catch (\Exception $exception) {
+            $this->fail('Query is crashed because "joinWith" relation cannot be loaded');
+        }
+    }
+    
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();
@@ -486,6 +504,16 @@ class WithCustomer extends Customer {
 
         $res->with('profile');
 
+        return $res;
+    }
+}
+
+class JoinWithCustomer extends Customer {
+    public static function find() {
+        $res = parent::find();
+        
+        $res->joinWith('profile');
+        
         return $res;
     }
 }

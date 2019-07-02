@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #17325: Fixed "Cannot drop view" for MySQL while `migrate/fresh` (alexkart)
 - Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
 - Bug #17057: Fixed issues with table names that contain special characters or keywords in MSSQL (alexkart)
+- Bug #17389: Fixed `UniqueValidator` to work with Active Record having `joinWith()` in its `find()` (garthpmurray)
 
 
 2.0.21 June 18, 2019
