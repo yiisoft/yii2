@@ -54,8 +54,35 @@ for both A and B.
 Upgrade from Yii 2.0.20
 -----------------------
 
-* `yii\db\Query::select()` and `addSelect()` now normalize the columns when saving them to `$this->select`, so code
-  that works directly with that property directly may need to be modified.
+* `yii\db\Query::select()` and `addSelect()` now normalize the format that columns are stored in when saving them 
+  to `$this->select`, so code that works directly with that property may need to be modified.
+  
+  For the following code:
+  
+  ```php
+  $a = $query->select('*');
+  $b = $query->select('id, name');
+  ```
+  
+  The value was stored as is i.e.
+  
+  ```php
+  // a
+  ['*']
+  
+  // b
+  ['id', 'name']
+  ``` 
+  
+  Now it is stored as
+  
+  ```php
+  // a
+  ['*' => '*']
+  
+  // b
+  ['id' => 'id', 'name' => 'name']
+  ```
 
 Upgrade from Yii 2.0.16
 -----------------------
