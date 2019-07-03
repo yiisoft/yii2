@@ -411,6 +411,18 @@ class BaseInflector
     }
 
     /**
+     * Converts a CamelCase action name into an ID in lowercase.
+     * Words in the ID are concatenated using the specified character '-'.
+     * For example, 'CreateUser' will be converted to 'create-user'.
+     * @param string $name the string to be converted
+     * @return string the resulting ID
+     */
+    public static function camel2idAction($name)
+    {
+        return mb_strtolower(trim(preg_replace('/\p{Lu}/u', '-\0', $name), '-'), self::encoding());
+    }
+
+    /**
      * Converts any "CamelCased" into an "underscored_word".
      * @param string $words the word(s) to underscore
      * @return string

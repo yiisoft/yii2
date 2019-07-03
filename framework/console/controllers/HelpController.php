@@ -212,7 +212,7 @@ class HelpController extends Controller
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
             if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strncmp($name, 'action', 6) === 0) {
-                $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
+                $actions[] = Inflector::camel2idAction(substr($name, 6));
             }
         }
         sort($actions);
@@ -258,7 +258,7 @@ class HelpController extends Controller
                 if ($this->validateControllerClass($controllerClass)) {
                     $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
 
-                    $command = Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
+                    $command = Inflector::camel2idAction(substr(basename($file), 0, -14));
                     if (!empty($dir)) {
                         $command = $dir . '/' . $command;
                     }
@@ -532,7 +532,7 @@ class HelpController extends Controller
     protected function formatOptionAliases($controller, $option)
     {
         foreach ($controller->optionAliases() as $name => $value) {
-            if (Inflector::camel2id($value, '-', true) === $option) {
+            if (Inflector::camel2idAction($value) === $option) {
                 return ', -' . $name;
             }
         }

@@ -71,9 +71,9 @@ class ControllerTest extends TestCase
             ['\yiiunit\framework\base\TestController', 'non-existent-id', null],
             ['\yiiunit\framework\base\TestController', 'test3', 'actionTest3'],
             ['\yiiunit\framework\base\TestController', 'test-test', 'actionTestTest'],
-            ['\yiiunit\framework\base\Test1Controller', 'test-test', 'actionTest_test'],
-            ['\yiiunit\framework\base\Test1Controller', 'test-1', 'actionTest_1'],
-            ['\yiiunit\framework\base\Test1Controller', 'test-test-test-2', 'actionTestTest_test_2'],
+            ['\yiiunit\framework\base\Test1Controller', 'test_test', 'actionTest_test'],
+            ['\yiiunit\framework\base\Test1Controller', 'test_1', 'actionTest_1'],
+            ['\yiiunit\framework\base\Test1Controller', 'test-test_test_2', 'actionTestTest_test_2'],
         ];
     }
 }
