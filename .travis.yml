@@ -128,10 +128,10 @@ matrix:
       # overwrite services used for PHP tests
       services:
 
-allow_failures:
-  - php: nightly
-  - php: hhvm-3.21
-  - php: hhvm-3.24
+  allow_failures:
+    - php: nightly
+    - php: hhvm-3.21
+    - php: hhvm-3.24
 
 install:
   - |
@@ -173,8 +173,8 @@ before_script:
   # `ps_files_cleanup_dir: opendir(/var/lib/hhvm/sessions) failed: Permission denied (13)`
   #
   - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-      echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
-      echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
+    echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
+    echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
     fi
 
   # show some versions and env information
