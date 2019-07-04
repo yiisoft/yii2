@@ -33,12 +33,14 @@ env:
     - TASK_TESTS_JS=0
     - TASK_TESTS_COVERAGE=0
     - TRAVIS_SECOND_USER=travis_two
+    - PHPUNIT_EXCLUDE_GROUP=mssql,oci,wincache,xcache,zenddata,cubrid
 
 
 services:
   - memcached
   - mysql
   - postgresql
+  - docker
 
 # cache vendor dirs
 cache:
@@ -62,12 +64,16 @@ matrix:
   fast_finish: true
   include:
     - php: 7.3
+      env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
     - php: 7.2
+      env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
     # run tests coverage on PHP 7.1
     - php: 7.1
-      env: TASK_TESTS_COVERAGE=1
+      env:
+        - TASK_TESTS_COVERAGE=1
+        - PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
     - php: 7.0
 
@@ -145,6 +151,7 @@ install:
       tests/data/travis/apc-setup.sh
       tests/data/travis/memcache-setup.sh
       tests/data/travis/imagick-setup.sh
+      source tests/data/travis/mssql-setup.sh
     fi
 
   # setup JS test
@@ -166,8 +173,8 @@ before_script:
   # `ps_files_cleanup_dir: opendir(/var/lib/hhvm/sessions) failed: Permission denied (13)`
   #
   - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-      echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
-      echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
+    echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
+    echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
     fi
 
   # show some versions and env information
@@ -217,7 +224,7 @@ script:
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group $PHPUNIT_EXCLUDE_GROUP
     fi
 
   # JS tests
