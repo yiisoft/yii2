@@ -351,9 +351,9 @@ class BaseInflector
      * Converts a word like "send_email" to "SendEmail". It
      * will remove non alphanumeric character from the word, so
      * "who's online" will be converted to "WhoSOnline".
-     * @see variablize()
      * @param string $word the word to CamelCase
      * @return string
+     * @see variablize()
      */
     public static function camelize($word)
     {
@@ -408,18 +408,6 @@ class BaseInflector
     public static function id2camel($id, $separator = '-')
     {
         return str_replace(' ', '', StringHelper::mb_ucwords(str_replace($separator, ' ', $id), self::encoding()));
-    }
-
-    /**
-     * Converts a CamelCase action name into an ID in lowercase.
-     * Words in the ID are concatenated using the specified character '-'.
-     * For example, 'CreateUser' will be converted to 'create-user'.
-     * @param string $name the string to be converted
-     * @return string the resulting ID
-     */
-    public static function camel2idAction($name)
-    {
-        return mb_strtolower(trim(preg_replace('/\p{Lu}/u', '-\0', $name), '-'), self::encoding());
     }
 
     /**

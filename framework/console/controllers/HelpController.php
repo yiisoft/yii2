@@ -12,7 +12,6 @@ use yii\base\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
-use yii\helpers\Inflector;
 
 /**
  * Provides help information about console commands.
@@ -212,7 +211,7 @@ class HelpController extends Controller
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
             if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strncmp($name, 'action', 6) === 0) {
-                $actions[] = Inflector::camel2idAction(substr($name, 6));
+                $actions[] = $this->camel2id(substr($name, 6));
             }
         }
         sort($actions);
@@ -258,7 +257,7 @@ class HelpController extends Controller
                 if ($this->validateControllerClass($controllerClass)) {
                     $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
 
-                    $command = Inflector::camel2idAction(substr(basename($file), 0, -14));
+                    $command = $this->camel2id(substr(basename($file), 0, -14));
                     if (!empty($dir)) {
                         $command = $dir . '/' . $command;
                     }
@@ -532,7 +531,7 @@ class HelpController extends Controller
     protected function formatOptionAliases($controller, $option)
     {
         foreach ($controller->optionAliases() as $name => $value) {
-            if (Inflector::camel2idAction($value) === $option) {
+            if ($this->camel2id($value) === $option) {
                 return ', -' . $name;
             }
         }
@@ -556,5 +555,17 @@ class HelpController extends Controller
     protected function getDefaultHelpHeader()
     {
         return "\nThis is Yii version " . \Yii::getVersion() . ".\n";
+    }
+
+    /**
+     * Converts a CamelCase action name into an ID in lowercase.
+     * Words in the ID are concatenated using the specified character '-'.
+     * For example, 'CreateUser' will be converted to 'create-user'.
+     * @param string $name the string to be converted
+     * @return string the resulting ID
+     */
+    protected function camel2id($name)
+    {
+        return mb_strtolower(trim(preg_replace('/\p{Lu}/u', '-\0', $name), '-'), 'UTF-8');
     }
 }
