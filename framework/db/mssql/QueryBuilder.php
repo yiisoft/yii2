@@ -256,7 +256,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+        return "sp_addextendedproperty  @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level0type = N'Schema', @level0name = {$this->db->schema->defaultSchema}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
     }
 
     /**
@@ -265,7 +265,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnTable($table, $comment)
     {
-        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+        return "sp_addextendedproperty  @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level0type = N'Schema', @level0name = {$this->db->schema->defaultSchema}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
     }
 
     /**
@@ -274,7 +274,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromColumn($table, $column)
     {
-        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+        return "sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = {$this->db->schema->defaultSchema}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
     }
 
     /**
@@ -283,7 +283,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromTable($table)
     {
-        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+        return "sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = {$this->db->schema->defaultSchema}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
     }
 
     /**
