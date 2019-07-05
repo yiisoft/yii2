@@ -37,9 +37,9 @@ $config = [
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
         'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=localhost;Database=test',
-            'username' => '',
-            'password' => '',
+            'dsn' => 'sqlsrv:Server=localhost,1433;Database=yiitest',
+            'username' => 'SA',
+            'password' => 'YourStrong!Passw0rd',
             'fixture' => __DIR__ . '/mssql.sql',
         ],
         'pgsql' => [
