@@ -12,6 +12,7 @@ use yii\base\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * Provides help information about console commands.
@@ -257,7 +258,7 @@ class HelpController extends Controller
                 if ($this->validateControllerClass($controllerClass)) {
                     $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
 
-                    $command = $this->camel2id(substr(basename($file), 0, -14));
+                    $command = Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
                     if (!empty($dir)) {
                         $command = $dir . '/' . $command;
                     }
@@ -531,7 +532,7 @@ class HelpController extends Controller
     protected function formatOptionAliases($controller, $option)
     {
         foreach ($controller->optionAliases() as $name => $value) {
-            if ($this->camel2id($value) === $option) {
+            if (Inflector::camel2id($value, '-', true) === $option) {
                 return ', -' . $name;
             }
         }
@@ -564,7 +565,7 @@ class HelpController extends Controller
      * @param string $name the string to be converted
      * @return string the resulting ID
      */
-    protected function camel2id($name)
+    private function camel2id($name)
     {
         return mb_strtolower(trim(preg_replace('/\p{Lu}/u', '-\0', $name), '-'), 'UTF-8');
     }
