@@ -250,13 +250,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $command;
     }
 
-    protected function mountCommonSqlForCommentAddition($comment, $table, $column = null)
+    protected function buildAddCommentSql($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
 
         $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
-        $tableName = "N'{$tableSchema->name}'";
-        $columnName = $column ? "N'$column'" : null;
+        $tableName = "N" . $this->db->quoteValue($tableSchema->name);
+        $columnName = $column ? "N" . $this->db->quoteValue($column) : null;
         $comment = "N" . $this->db->quoteValue($comment);
 
         $functionParams = "
@@ -288,7 +288,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        return $this->mountCommonSqlForCommentAddition($comment, $table, $column);
+        return $this->buildAddCommentSql($comment, $table, $column);
     }
 
     /**
@@ -297,19 +297,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnTable($table, $comment)
     {
-        return $this->mountCommonSqlForCommentAddition($comment, $table);
+        return $this->buildAddCommentSql($comment, $table);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function mountCommonSqlForCommentRemoval($table, $column = null)
+    protected function buildRemoveCommentSql($table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
 
         $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
-        $tableName = "N'{$tableSchema->name}'";
-        $columnName = $column ? "N'$column'" : null;
+        $tableName = "N" . $this->db->quoteValue($tableSchema->name);
+        $columnName = $column ? "N" . $this->db->quoteValue($column) : null;
 
         return "
             IF EXISTS (
@@ -334,7 +334,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromColumn($table, $column)
     {
-        return $this->mountCommonSqlForCommentRemoval($table, $column);
+        return $this->buildRemoveCommentSql($table, $column);
     }
 
     /**
@@ -343,7 +343,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromTable($table)
     {
-        return $this->mountCommonSqlForCommentRemoval($table);
+        return $this->buildRemoveCommentSql($table);
     }
 
     /**
