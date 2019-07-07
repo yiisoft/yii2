@@ -411,7 +411,7 @@ SQL;
     protected function findColumns($table)
     {
         $columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
-        $whereSql = "[t1].[table_name] = '{$table->name}'";
+        $whereSql = "[t1].[table_name] = " . $this->db->quoteValue($table->name);
         if ($table->catalogName !== null) {
             $columnsTableName = "{$table->catalogName}.{$columnsTableName}";
             $whereSql .= " AND [t1].[table_catalog] = '{$table->catalogName}'";
