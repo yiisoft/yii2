@@ -75,7 +75,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             FROM fn_listextendedproperty (
                 N'MS_description',
                 'SCHEMA', N'dbo',
-                'TABLE', N'$table',
+                'TABLE', N" . $db->quoteValue($table) . ",
                 DEFAULT, DEFAULT
         )";
         return $db->createCommand($sql)->queryAll();
@@ -88,8 +88,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             FROM fn_listextendedproperty (
                 N'MS_description',
                 'SCHEMA', N'dbo',
-                'TABLE', N'$table',
-                'COLUMN', N'$column'
+                'TABLE', N" . $db->quoteValue($table) . ",
+                'COLUMN', N" . $db->quoteValue($column) . "
         )";
         return $db->createCommand($sql)->queryAll();
     }
@@ -173,6 +173,31 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ], $result[0]);
     }
 
+    public function testCommentAdditionOnQuotedTableOrColumn()
+    {
+        $table = 'stranger \'table';
+        $tableComment = 'A comment for stranger \'table.';
+        $this->runAddCommentOnTable($tableComment, $table);
+        $resultTable = $this->getCommmentsFromTable($table);
+        $this->assertEquals([
+            'objtype' => 'TABLE',
+            'objname' => $table,
+            'name' => 'MS_description',
+            'value' => $tableComment,
+        ], $resultTable[0]);
+
+        $column = 'stranger \'field';
+        $columnComment = 'A comment for stranger \'field column in stranger \'table.';
+        $this->runAddCommentOnColumn($columnComment, $table, $column);
+        $resultColumn = $this->getCommentsFromColumn($table, $column);
+        $this->assertEquals([
+            'objtype' => 'COLUMN',
+            'objname' => $column,
+            'name' => 'MS_description',
+            'value' => $columnComment,
+        ], $resultColumn[0]);
+    }
+
     public function testCommentRemovalFromTableAndFromColumn()
     {
         $table = 'profile';
@@ -188,6 +213,33 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->runDropCommentFromColumn($table, $column);
         $result = $this->getCommentsFromColumn($table, $column);
         $this->assertEquals([], $result);
+    }
+
+    public function testCommentRemovalFromQuotedTableOrColumn()
+    {
+        $table = 'stranger \'table';
+        $tableComment = 'A comment for stranger \'table.';
+        $this->runAddCommentOnTable($tableComment, $table);
+        $this->runDropCommentFromTable($table);
+        $result = $this->getCommmentsFromTable($table);
+        $this->assertEquals([], $result);
+
+        $column = 'stranger \'field';
+        $columnComment = 'A comment for stranger \'field in stranger \'table.';
+        $this->runAddCommentOnColumn($columnComment, $table, $column);
+        $this->runDropCommentFromColumn($table, $column);
+        $result = $this->getCommentsFromColumn($table, $column);
+        $this->assertEquals([], $result);
+    }
+
+    public function testCommentColumn()
+    {
+        $this->markTestSkipped("Testing the behavior, not sql generation anymore.");
+    }
+
+    public function testCommentTable()
+    {
+        $this->markTestSkipped("Testing the behavior, not sql generation anymore.");
     }
 
     /**
