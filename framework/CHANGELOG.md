@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #17389: Fixed `UniqueValidator` to work with Active Record having `joinWith()` in its `find()` (garthpmurray)
 - Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
 - Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
+- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
 
 
 2.0.21 June 18, 2019
