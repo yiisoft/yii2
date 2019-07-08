@@ -1071,9 +1071,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($this->columnTypes() as $item) {
             /** @var ColumnSchemaBuilder $builder */
             list($column, $builder, $expected) = $item;
-            $expectedColumnSchemaBuilder = isset($item[3]) ? $item[3] : $column;
-            if (is_array($expectedColumnSchemaBuilder) && isset($expectedColumnSchemaBuilder[$this->driverName])) {
-                $expectedColumnSchemaBuilder = $expectedColumnSchemaBuilder[$this->driverName];
+            if (isset($item[3][$this->driverName])) {
+                $expectedColumnSchemaBuilder = $item[3][$this->driverName];
+            } elseif (isset($item[3]) && !is_array($item[3])) {
+                $expectedColumnSchemaBuilder = $item[3];
+            } else {
+                $expectedColumnSchemaBuilder = $column;
             }
 
             $this->assertEquals($expected, $qb->getColumnType($column));
