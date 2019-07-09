@@ -42,10 +42,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Exception
-     * @return QueryBuilder
      * @param bool $reset
      * @param bool $open
+     * @return QueryBuilder
+     * @throws \Exception
      */
     protected function getQueryBuilder($reset = true, $open = false)
     {
@@ -1096,11 +1096,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($this->columnTypes() as $item) {
             list($column, $builder, $expected) = $item;
             if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
-                  strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
-                  strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
-                  strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
-                  strncmp(substr($column, -5), 'FIRST', 5) === 0
-                )) {
+                strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
+                strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
+                strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
+                strncmp(substr($column, -5), 'FIRST', 5) === 0
+            )) {
                 $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
@@ -1151,7 +1151,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
 
-            [['in', 'id', 1],   '[[id]]=:qp0', [':qp0' => 1]],
+            [['in', 'id', 1], '[[id]]=:qp0', [':qp0' => 1]],
             [['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1]],
             [['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1]],
             'composite in' => [
@@ -1296,13 +1296,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array $condition
      * @param string $expected
      * @param array $expectedParams
+     * @throws \Exception
      */
     public function testBuildCondition($condition, $expected, $expectedParams)
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $query = (new Query())->where($condition);
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
@@ -1629,17 +1626,17 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $query = new Query();
         $secondQuery = new Query();
         $secondQuery->select('id')
-              ->from('TotalTotalExample t2')
-              ->where('w > 5');
+            ->from('TotalTotalExample t2')
+            ->where('w > 5');
         $thirdQuery = new Query();
         $thirdQuery->select('id')
-              ->from('TotalTotalExample t3')
-              ->where('w = 3');
+            ->from('TotalTotalExample t3')
+            ->where('w = 3');
         $query->select('id')
-              ->from('TotalExample t1')
-              ->where(['and', 'w > 0', 'x < 2'])
-              ->union($secondQuery)
-              ->union($thirdQuery, true);
+            ->from('TotalExample t1')
+            ->where(['and', 'w > 0', 'x < 2'])
+            ->union($secondQuery)
+            ->union($thirdQuery, true);
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
@@ -2154,7 +2151,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testInitFixtures
+     * @depends      testInitFixtures
      * @dataProvider upsertProvider
      * @param string $table
      * @param array $insertColumns
