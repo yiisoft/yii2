@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17413: Fixed MSSQL tests: `QueryBuilderTest::testGetColumnType()`, `QueryBuilderTest::testResetSequence()` (alexkart)
+- Bug #17419: Fix to call static method of an interface which is defined in the DI container (albertborsos)
 
 
 2.0.22 July 02, 2019
