@@ -2229,13 +2229,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array $columns
      * @param array $value
      * @param string $expected
+     * @throws \Exception
      */
     public function testBatchInsert($table, $columns, $value, $expected)
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $queryBuilder = $this->getQueryBuilder();
 
         $sql = $queryBuilder->batchInsert($table, $columns, $value);

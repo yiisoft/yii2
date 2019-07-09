@@ -113,9 +113,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $data = parent::batchInsertProvider();
 
-        $data['escape-danger-chars']['expected'] = 'INSERT INTO [customer] ([address]) VALUES ("SQL-danger chars are escaped: \'); --")';
-        $data['bool-false, bool2-null']['expected'] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (FALSE, NULL)';
-        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())';
+        $data['escape-danger-chars']['expected'] = "INSERT INTO [customer] ([address]) VALUES ('SQL-danger chars are escaped: ''); --')";
+        $data['bool-false, bool2-null']['expected'] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (0, NULL)';
+        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())';
 
         return $data;
     }
