@@ -416,4 +416,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getColumnType($type)
+    {
+        $columnType = parent::getColumnType($type);
+        // remove unsupported keywords
+        $columnType = preg_replace("/\s*comment '.*'/i", '', $columnType);
+        $columnType = preg_replace('/ first$/i', '', $columnType);
+
+        return $columnType;
+    }
 }

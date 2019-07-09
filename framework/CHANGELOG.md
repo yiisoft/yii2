@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.23 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17413: Fixed MSSQL tests: `QueryBuilderTest::testGetColumnType()`, `QueryBuilderTest::testResetSequence()` (alexkart)
 
 
 2.0.22 July 02, 2019

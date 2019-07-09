@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
@@ -163,7 +164,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'tinyint(1) NOT NULL DEFAULT 1',
                     'sqlite' => 'boolean NOT NULL DEFAULT 1',
-                    'sqlsrv' => 'tinyint(1) NOT NULL DEFAULT 1',
+                    'sqlsrv' => 'bit NOT NULL DEFAULT 1',
                     'cubrid' => 'smallint NOT NULL DEFAULT 1',
                 ],
             ],
@@ -175,7 +176,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'boolean',
                     'sqlite' => 'boolean',
                     'oci' => 'NUMBER(1)',
-                    'sqlsrv' => 'tinyint(1)',
+                    'sqlsrv' => 'bit',
                     'cubrid' => 'smallint',
                 ],
             ],
@@ -666,7 +667,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'smallint',
                     'sqlite' => 'tinyint',
                     'oci' => 'NUMBER(3)',
-                    'sqlsrv' => 'smallint',
+                    'sqlsrv' => 'tinyint',
                     'cubrid' => 'smallint',
                 ],
             ],
@@ -700,7 +701,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) CHECK (value LIKE "test%")',
                     'sqlite' => 'varchar(255) CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'varchar(255) CHECK (value LIKE "test%")',
+                    'sqlsrv' => 'nvarchar(255) CHECK (value LIKE "test%")',
                     'cubrid' => 'varchar(255) CHECK (value LIKE "test%")',
                 ],
             ],
@@ -720,7 +721,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'varchar(255) NOT NULL',
                     'sqlite' => 'varchar(255) NOT NULL',
                     'oci' => 'VARCHAR2(255) NOT NULL',
-                    'sqlsrv' => 'varchar(255) NOT NULL',
+                    'sqlsrv' => 'nvarchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL',
                 ],
             ],
@@ -730,7 +731,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(32) CHECK (value LIKE "test%")',
                     'sqlite' => 'varchar(32) CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'varchar(32) CHECK (value LIKE "test%")',
+                    'sqlsrv' => 'nvarchar(32) CHECK (value LIKE "test%")',
                     'cubrid' => 'varchar(32) CHECK (value LIKE "test%")',
                 ],
             ],
@@ -750,7 +751,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'varchar(32)',
                     'sqlite' => 'varchar(32)',
                     'oci' => 'VARCHAR2(32)',
-                    'sqlsrv' => 'varchar(32)',
+                    'sqlsrv' => 'nvarchar(32)',
                     'cubrid' => 'varchar(32)',
                 ],
             ],
@@ -762,7 +763,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'varchar(255)',
                     'sqlite' => 'varchar(255)',
                     'oci' => 'VARCHAR2(255)',
-                    'sqlsrv' => 'varchar(255)',
+                    'sqlsrv' => 'nvarchar(255)',
                     'cubrid' => 'varchar(255)',
                 ],
             ],
@@ -772,7 +773,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'text CHECK (value LIKE "test%")',
                     'sqlite' => 'text CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'text CHECK (value LIKE "test%")',
+                    'sqlsrv' => 'nvarchar(max) CHECK (value LIKE "test%")',
                     'cubrid' => 'varchar CHECK (value LIKE "test%")',
                 ],
             ],
@@ -792,24 +793,24 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'text NOT NULL',
                     'sqlite' => 'text NOT NULL',
                     'oci' => 'CLOB NOT NULL',
-                    'sqlsrv' => 'text NOT NULL',
+                    'sqlsrv' => 'nvarchar(max) NOT NULL',
                     'cubrid' => 'varchar NOT NULL',
                 ],
             ],
             [
-                Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")',
-                $this->text(255)->check('value LIKE "test%"'),
+                Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")',
+                $this->text()->check('value LIKE "test%"'),
                 [
                     'mysql' => 'text CHECK (value LIKE "test%")',
                     'sqlite' => 'text CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'text CHECK (value LIKE "test%")',
+                    'sqlsrv' => 'nvarchar(max) CHECK (value LIKE "test%")',
                     'cubrid' => 'varchar CHECK (value LIKE "test%")',
                 ],
                 Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")',
             ],
             [
-                Schema::TYPE_TEXT . '(255) CHECK (value LIKE \'test%\')',
-                $this->text(255)->check('value LIKE \'test%\''),
+                Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
+                $this->text()->check('value LIKE \'test%\''),
                 [
                     'postgres' => 'text CHECK (value LIKE \'test%\')',
                     'oci' => 'CLOB CHECK (value LIKE \'test%\')',
@@ -817,27 +818,27 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
             ],
             [
-                Schema::TYPE_TEXT . '(255) NOT NULL',
-                $this->text(255)->notNull(),
+                Schema::TYPE_TEXT . ' NOT NULL',
+                $this->text()->notNull(),
                 [
                     'mysql' => 'text NOT NULL',
                     'postgres' => 'text NOT NULL',
                     'sqlite' => 'text NOT NULL',
                     'oci' => 'CLOB NOT NULL',
-                    'sqlsrv' => 'text NOT NULL',
+                    'sqlsrv' => 'nvarchar(max) NOT NULL',
                     'cubrid' => 'varchar NOT NULL',
                 ],
                 Schema::TYPE_TEXT . ' NOT NULL',
             ],
             [
-                Schema::TYPE_TEXT . '(255)',
-                $this->text(255),
+                Schema::TYPE_TEXT,
+                $this->text(),
                 [
                     'mysql' => 'text',
                     'postgres' => 'text',
                     'sqlite' => 'text',
                     'oci' => 'CLOB',
-                    'sqlsrv' => 'text',
+                    'sqlsrv' => 'nvarchar(max)',
                     'cubrid' => 'varchar',
                 ],
                 Schema::TYPE_TEXT,
@@ -850,7 +851,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'text',
                     'sqlite' => 'text',
                     'oci' => 'CLOB',
-                    'sqlsrv' => 'text',
+                    'sqlsrv' => 'nvarchar(max)',
                     'cubrid' => 'varchar',
                 ],
             ],
@@ -905,7 +906,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'timestamp(0) NOT NULL',
                     'sqlite' => 'timestamp NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
-                    'sqlsrv' => 'timestamp NOT NULL',
+                    'sqlsrv' => 'datetime NOT NULL',
                     'cubrid' => 'timestamp NOT NULL',
                 ],
             ],
@@ -921,7 +922,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'timestamp(0)',
                     'sqlite' => 'timestamp',
                     'oci' => 'TIMESTAMP',
-                    'sqlsrv' => 'timestamp',
+                    'sqlsrv' => 'datetime',
                     'cubrid' => 'timestamp',
                 ],
             ],
@@ -931,7 +932,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'postgres' => 'timestamp(0) NULL DEFAULT NULL',
                     'sqlite' => 'timestamp NULL DEFAULT NULL',
-                    'sqlsrv' => 'timestamp NULL DEFAULT NULL',
+                    'sqlsrv' => 'datetime NULL DEFAULT NULL',
                     'cubrid' => 'timestamp NULL DEFAULT NULL',
                 ],
             ],
@@ -962,6 +963,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlsrv' => 'int',
                     'cubrid' => "int COMMENT 'test comment'",
                 ],
+                [
+                    'sqlsrv' => 'integer',
+                ]
             ],
             [
                 Schema::TYPE_PK . " COMMENT 'test comment'",
@@ -972,6 +976,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                 ],
+                [
+                    'sqlsrv' => 'pk',
+                ]
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
@@ -983,6 +990,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                 ],
+                [
+                    'sqlsrv' => 'pk',
+                ]
             ],
             [
                 Schema::TYPE_INTEGER . ' FIRST',
@@ -994,6 +1004,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlsrv' => 'int',
                     'cubrid' => 'int FIRST',
                 ],
+                [
+                    'sqlsrv' => 'integer',
+                ]
             ],
             [
                 Schema::TYPE_STRING . ' FIRST',
@@ -1002,9 +1015,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => 'varchar(255) FIRST',
                     'postgres' => 'varchar(255)',
                     'oci' => 'VARCHAR2(255)',
-                    'sqlsrv' => 'varchar(255)',
+                    'sqlsrv' => 'nvarchar(255)',
                     'cubrid' => 'varchar(255) FIRST',
                 ],
+                [
+                    'sqlsrv' => 'string',
+                ]
             ],
             [
                 Schema::TYPE_INTEGER . ' NOT NULL FIRST',
@@ -1016,6 +1032,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlsrv' => 'int NOT NULL',
                     'cubrid' => 'int NOT NULL FIRST',
                 ],
+                [
+                    'sqlsrv' => 'integer NOT NULL',
+                ]
             ],
             [
                 Schema::TYPE_STRING . ' NOT NULL FIRST',
@@ -1024,9 +1043,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => 'varchar(255) NOT NULL FIRST',
                     'postgres' => 'varchar(255) NOT NULL',
                     'oci' => 'VARCHAR2(255) NOT NULL',
-                    'sqlsrv' => 'varchar(255) NOT NULL',
+                    'sqlsrv' => 'nvarchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL FIRST',
                 ],
+                [
+                    'sqlsrv' => 'string NOT NULL',
+                ]
             ],
         ];
 
@@ -1044,15 +1066,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     public function testGetColumnType()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $qb = $this->getQueryBuilder();
 
         foreach ($this->columnTypes() as $item) {
+            /** @var ColumnSchemaBuilder $builder */
             list($column, $builder, $expected) = $item;
-            $expectedColumnSchemaBuilder = isset($item[3]) ? $item[3] : $column;
+            if (isset($item[3][$this->driverName])) {
+                $expectedColumnSchemaBuilder = $item[3][$this->driverName];
+            } elseif (isset($item[3]) && !is_array($item[3])) {
+                $expectedColumnSchemaBuilder = $item[3];
+            } else {
+                $expectedColumnSchemaBuilder = $column;
+            }
 
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));

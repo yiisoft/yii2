@@ -121,17 +121,13 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testResetSequence()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $qb = $this->getQueryBuilder();
 
         $expected = "DBCC CHECKIDENT ('[item]', RESEED, (SELECT COALESCE(MAX([id]),0) FROM [item])+1)";
         $sql = $qb->resetSequence('item');
         $this->assertEquals($expected, $sql);
 
-        $expected = "DBCC CHECKIDENT ('[item], RESEED, 4)";
+        $expected = "DBCC CHECKIDENT ('[item]', RESEED, 4)";
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
