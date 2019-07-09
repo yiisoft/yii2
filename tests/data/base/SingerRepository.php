@@ -8,6 +8,6 @@ class SingerRepository extends Component implements SingerRepositoryInterface
 {
     public static function dataModelClass()
     {
-        return Singer::class;
+        return Singer::className();
     }
 }
