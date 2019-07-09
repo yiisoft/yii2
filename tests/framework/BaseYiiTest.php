@@ -12,6 +12,7 @@ use yii\BaseYii;
 use yii\di\Container;
 use yii\log\Logger;
 use yiiunit\data\base\Singer;
+use yiiunit\data\base\SingerRepository;
 use yiiunit\TestCase;
 use yiiunit\data\base\CallableClass;
 
@@ -94,6 +95,19 @@ class BaseYiiTest extends TestCase
         }));
 
         $this->assertTrue(Yii::createObject(new CallableClass()));
+    }
+
+    public function testCreateObjectCallableArray()
+    {
+        Yii::$container = new Container([
+            'definitions' => [
+                'yiiunit\data\base\SingerRepositoryInterface' => 'yiiunit\data\base\SingerRepository',
+            ],
+        ]);
+
+        $this->assertEquals(Singer::className(), Yii::createObject([SingerRepository::className(), 'dataModelClass']));
+
+        $this->assertEquals(Singer::className(), Yii::createObject(['yiiunit\data\base\SingerRepositoryInterface', 'dataModelClass']));
     }
 
     public function testCreateObjectEmptyArrayException()
