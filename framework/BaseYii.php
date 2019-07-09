@@ -347,11 +347,10 @@ class BaseYii
             $class = $type['class'];
             unset($type['class']);
             return static::$container->get($class, $params, $type);
-        } elseif (is_callable($type, true)) {
-            if (!is_callable($type, false)) {
-                $class = get_class(static::createObject($type[0]));
-                $type[0] = $class;
-            }
+        } elseif (is_callable($type, true) && is_callable($type)) {
+            return static::$container->invoke($type, $params);
+        } elseif (is_callable($type, true) && !is_callable($type)) {
+            $type[0] = get_class(static::createObject($type[0]));
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
