@@ -52,10 +52,6 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testGetTableNames($pdoAttributes)
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
             if ($name === PDO::ATTR_EMULATE_PREPARES && $connection->driverName === 'sqlsrv') {
@@ -68,14 +64,19 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $connection->schema;
 
         $tables = $schema->getTableNames();
-        $this->assertTrue(\in_array('customer', $tables));
-        $this->assertTrue(\in_array('category', $tables));
-        $this->assertTrue(\in_array('item', $tables));
-        $this->assertTrue(\in_array('order', $tables));
-        $this->assertTrue(\in_array('order_item', $tables));
-        $this->assertTrue(\in_array('type', $tables));
-        $this->assertTrue(\in_array('animal', $tables));
-        $this->assertTrue(\in_array('animal_view', $tables));
+        if ($this->driverName === 'sqlsrv') {
+            $tables = array_map(static function ($item) {
+                return trim($item, '[]');
+            }, $tables);
+        }
+        $this->assertContains('customer', $tables);
+        $this->assertContains('category', $tables);
+        $this->assertContains('item', $tables);
+        $this->assertContains('order', $tables);
+        $this->assertContains('order_item', $tables);
+        $this->assertContains('type', $tables);
+        $this->assertContains('animal', $tables);
+        $this->assertContains('animal_view', $tables);
     }
 
     /**
@@ -197,7 +198,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider tableSchemaCachePrefixesProvider
-     * @depends testSchemaCache
+     * @depends      testSchemaCache
      */
     public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
     {
@@ -540,7 +541,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (\is_object($expected['defaultValue'])) {
                 $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
-                $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
+                $this->assertEquals((string)$expected['defaultValue'], (string)$column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
@@ -811,7 +812,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $newArray = [];
         foreach ($array as $value) {
             if ($value instanceof Constraint) {
-                $key = (array) $value;
+                $key = (array)$value;
                 unset($key['name'], $key['foreignSchemaName']);
                 foreach ($key as $keyName => $keyValue) {
                     if ($keyValue instanceof AnyCaseValue) {
@@ -851,7 +852,7 @@ abstract class SchemaTest extends DatabaseTestCase
             return;
         }
 
-        foreach (array_keys((array) $expectedConstraint) as $name) {
+        foreach (array_keys((array)$expectedConstraint) as $name) {
             if ($expectedConstraint->$name instanceof AnyValue) {
                 $actualConstraint->$name = $expectedConstraint->$name;
             } elseif ($expectedConstraint->$name instanceof AnyCaseValue) {
