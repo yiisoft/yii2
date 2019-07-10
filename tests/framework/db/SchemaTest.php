@@ -233,10 +233,6 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testCompositeFk()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
@@ -560,7 +556,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testFindUniqueIndexes()
     {
         if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
+            $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
         }
 
         $db = $this->getConnection();

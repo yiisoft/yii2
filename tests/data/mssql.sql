@@ -1,3 +1,4 @@
+IF OBJECT_ID('[dbo].[composite_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[composite_fk];
 IF OBJECT_ID('[dbo].[order_item]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item];
 IF OBJECT_ID('[dbo].[order_item_with_null_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item_with_null_fk];
 IF OBJECT_ID('[dbo].[item]', 'U') IS NOT NULL DROP TABLE [dbo].[item];
@@ -90,6 +91,18 @@ CREATE TABLE [dbo].[order_item] (
         [item_id] ASC
     ) ON [PRIMARY]
 
+);
+
+create table [dbo].[composite_fk]
+(
+    id int not null
+        constraint composite_fk_pk
+            primary key nonclustered,
+    order_id int not null,
+    item_id int not null,
+    constraint FK_composite_fk_order_item
+        foreign key (order_id, item_id) references order_item
+            on delete cascade
 );
 
 CREATE TABLE [dbo].[order_item_with_null_fk] (
