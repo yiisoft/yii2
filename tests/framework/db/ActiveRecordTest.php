@@ -1168,17 +1168,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $model = new Type();
         $model->loadDefaultValues();
-        $this->assertEquals(0, $model->int_col2);
-        $this->assertEquals("('something')", $model->char_col2);
-        $this->assertEquals(0, $model->float_col2);
-        $this->assertEquals("('33.22')", $model->numeric_col);
-        $this->assertEquals(0, $model->bool_col2);
+        $this->assertEquals(1, $model->int_col2);
+        $this->assertEquals('something', $model->char_col2);
+        $this->assertEquals(1.23, $model->float_col2);
+        $this->assertEquals(33.22, $model->numeric_col);
+        $this->assertEquals(true, $model->bool_col2);
 
         if ($this instanceof CubridActiveRecordTest) {
             // cubrid has non-standard timestamp representation
             $this->assertEquals('12:00:00 AM 01/01/2002', $model->time);
         } else {
-            $this->assertEquals("('2002-01-01 00:00:00')", $model->time);
+            $this->assertEquals('2002-01-01 00:00:00', $model->time);
         }
 
         $model = new Type();
@@ -1191,7 +1191,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $model->char_col2 = 'not something';
 
         $model->loadDefaultValues(false);
-        $this->assertEquals("('something')", $model->char_col2);
+        $this->assertEquals('something', $model->char_col2);
     }
 
     public function testUnlinkAllViaTable()
