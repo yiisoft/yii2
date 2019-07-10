@@ -492,10 +492,6 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testNegativeDefaultValues()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
@@ -510,10 +506,6 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testColumnSchema()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $columns = $this->getExpectedColumns();
 
         $table = $this->getConnection(false)->schema->getTableSchema('type', true);

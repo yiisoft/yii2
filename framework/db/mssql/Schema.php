@@ -30,6 +30,10 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\mssql\ColumnSchema';
+    /**
      * @var string the default schema used for the current session.
      */
     public $defaultSchema = 'dbo';
