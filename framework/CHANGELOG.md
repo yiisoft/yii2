@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17413: Fixed MSSQL tests: `QueryBuilderTest::testGetColumnType()`, `QueryBuilderTest::testResetSequence()` (alexkart)
+- Bug #17420: Fixed loading of column default values for MSSQL (alexkart)
 
 
 2.0.22 July 02, 2019
