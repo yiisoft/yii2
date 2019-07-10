@@ -628,10 +628,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testJoinWithAlias($aliasMethod)
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         // left join and eager loading
         /** @var ActiveQuery $query */
         $query = Order::find()->joinWith(['customer c']);
@@ -702,7 +698,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             'items i' => function ($q) use ($aliasMethod) {
                 /* @var $q ActiveQuery */
                 if ($aliasMethod === 'explicit') {
-                    $q->orderBy('{{i}}.[[id]]');
+                    $q->orderBy('{{i}}.id');
                 } elseif ($aliasMethod === 'querysyntax') {
                     $q->orderBy('{{@item}}.id');
                 } elseif ($aliasMethod === 'applyAlias') {

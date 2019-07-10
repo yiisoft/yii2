@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db\mssql;
 
 use yii\db\Query;
+use yiiunit\data\base\TraversableObject;
 
 /**
  * @group db
@@ -112,9 +113,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $data = parent::batchInsertProvider();
 
-        $data['escape-danger-chars']['expected'] = 'INSERT INTO [customer] ([address]) VALUES ("SQL-danger chars are escaped: \'); --")';
-        $data['bool-false, bool2-null']['expected'] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (FALSE, NULL)';
-        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())';
+        $data['escape-danger-chars']['expected'] = "INSERT INTO [customer] ([address]) VALUES ('SQL-danger chars are escaped: ''); --')";
+        $data['bool-false, bool2-null']['expected'] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (0, NULL)';
+        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())';
 
         return $data;
     }
@@ -174,5 +175,25 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             $newData[$testName] = array_replace($newData[$testName], $data);
         }
         return $newData;
+    }
+
+    public function conditionProvider()
+    {
+        $data = parent::conditionProvider();
+        $data['composite in'] = [
+            ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
+            '(([id] = :qp0 AND [name] = :qp1))',
+            [':qp0' => 1, ':qp1' => 'oy'],
+        ];
+        $data['composite in using array objects'] = [
+            ['in', new TraversableObject(['id', 'name']), new TraversableObject([
+                ['id' => 1, 'name' => 'oy'],
+                ['id' => 2, 'name' => 'yo'],
+            ])],
+            '(([id] = :qp0 AND [name] = :qp1) OR ([id] = :qp2 AND [name] = :qp3))',
+            [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
+        ];
+
+        return $data;
     }
 }

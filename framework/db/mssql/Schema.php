@@ -573,7 +573,10 @@ SQL;
 
         $table->foreignKeys = [];
         foreach ($rows as $row) {
-            $table->foreignKeys[$row['fk_name']] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
+            if (!isset($table->foreignKeys[$row['fk_name']])) {
+                $table->foreignKeys[$row['fk_name']][] = $row['uq_table_name'];
+            }
+            $table->foreignKeys[$row['fk_name']][$row['fk_column_name']] = $row['uq_column_name'];
         }
     }
 
