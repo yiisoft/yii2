@@ -1373,6 +1373,7 @@ SQL;
     public function testAutoRefreshTableSchema()
     {
         if ($this->driverName === 'sqlsrv') {
+            // related to https://github.com/yiisoft/yii2/pull/17364
             $this->markTestSkipped('Should be fixed');
         }
 
