@@ -63,6 +63,15 @@ class CustomDirectoryFixture extends ActiveFixture
     public $modelClass = 'yiiunit\data\ar\Customer';
 
     public $dataDirectory = '@app/framework/test/custom';
+
+    public function beforeLoad()
+    {
+        if ($this->db->driverName === 'sqlsrv') {
+            $this->db->createCommand()->truncateTable('customer')->execute();
+        }
+
+        parent::beforeLoad();
+    }
 }
 
 class AnimalFixture extends ActiveFixture
@@ -153,10 +162,6 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testGetData()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
@@ -194,10 +199,6 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testDataDirectory()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $test = new CustomDirectoryDbTestCase();
 
         $test->setUp();
@@ -212,10 +213,6 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testDataPath()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $test = new DataPathDbTestCase();
 
         $test->setUp();
