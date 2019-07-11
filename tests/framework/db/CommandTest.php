@@ -13,7 +13,6 @@ use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
 use yii\db\Expression;
-use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
 
@@ -218,7 +217,7 @@ SQL;
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
-            $this->assertEquals($boolCol, (int) $row['bool_col']);
+            $this->assertEquals($boolCol, (int)$row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
         }
@@ -237,7 +236,7 @@ SQL;
 
     public function paramsNonWhereProvider()
     {
-        return[
+        return [
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR(name, :len)'],
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email'],
@@ -428,10 +427,6 @@ SQL;
      */
     public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $command = $this->getConnection()->createCommand();
         $command->batchInsert($table, $columns, $values);
         $command->prepare(false);
@@ -467,22 +462,22 @@ SQL;
      */
     public function testNoTablenameReplacement()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $db = $this->getConnection();
 
         $db->createCommand()->insert(
             '{{customer}}',
             [
-                'id' => 43,
                 'name' => 'Some {{weird}} name',
                 'email' => 'test@example.com',
                 'address' => 'Some {{%weird}} address',
             ]
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        if ($this->driverName === 'pgsql') {
+            $customerId = $db->getLastInsertID('public.customer_id_seq');
+        } else {
+            $customerId = $db->getLastInsertID();
+        }
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{weird}} name', $customer['name']);
         $this->assertEquals('Some {{%weird}} address', $customer['address']);
 
@@ -492,9 +487,9 @@ SQL;
                 'name' => 'Some {{updated}} name',
                 'address' => 'Some {{%updated}} address',
             ],
-            ['id' => 43]
+            ['id' => $customerId]
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{updated}} name', $customer['name']);
         $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
@@ -519,10 +514,10 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                    '{{customer}}.[[email]] as name',
-                    '[[name]] as email',
-                    '[[address]]',
-                ]
+                '{{customer}}.[[email]] as name',
+                '[[name]] as email',
+                '[[address]]',
+            ]
         )
             ->from('{{customer}}')
             ->where([
@@ -649,14 +644,14 @@ SQL;
         switch ($this->driverName) {
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
-            break;
+                break;
             case 'cubrid':
             case 'mysql':
                 $expression = 'YEAR(NOW())';
-            break;
+                break;
             case 'sqlite':
                 $expression = "strftime('%Y')";
-            break;
+                break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
         }
@@ -678,10 +673,6 @@ SQL;
 
     public function testsInsertQueryAsColumnValue()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $time = time();
 
         $db = $this->getConnection();
@@ -689,29 +680,33 @@ SQL;
 
         $command = $db->createCommand();
         $command->insert('{{order}}', [
-            'id' => 42,
             'customer_id' => 1,
             'created_at' => $time,
             'total' => 42,
         ])->execute();
+        if ($this->driverName === 'pgsql') {
+            $orderId = $db->getLastInsertID('public.order_id_seq');
+        } else {
+            $orderId = $db->getLastInsertID();
+        }
 
         $columnValueQuery = new \yii\db\Query();
-        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => '42']);
+        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();
         $command->insert(
             '{{order_with_null_fk}}',
             [
-                'customer_id' => 42,
+                'customer_id' => $orderId,
                 'created_at' => $columnValueQuery,
                 'total' => 42,
             ]
         )->execute();
 
-        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
+        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId)->queryScalar());
 
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
-        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = 42')->execute();
+        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
     }
 
     public function testCreateTable()
@@ -1386,6 +1381,8 @@ SQL;
     public function testAutoRefreshTableSchema()
     {
         if ($this->driverName === 'sqlsrv') {
+
+            // related to https://github.com/yiisoft/yii2/pull/17364
             $this->markTestSkipped('Should be fixed');
         }
 
