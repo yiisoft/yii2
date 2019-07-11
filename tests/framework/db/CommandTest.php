@@ -428,10 +428,6 @@ SQL;
      */
     public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $command = $this->getConnection()->createCommand();
         $command->batchInsert($table, $columns, $values);
         $command->prepare(false);
