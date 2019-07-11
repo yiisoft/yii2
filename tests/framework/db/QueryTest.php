@@ -120,6 +120,7 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     use GetTablesAliasTestTrait;
+
     protected function createQuery()
     {
         return new Query();
@@ -338,13 +339,9 @@ abstract class QueryTest extends DatabaseTestCase
 
     public function testUnion()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $connection = $this->getConnection();
-        $query = new Query();
-        $query->select(['id', 'name'])
+        $query = (new Query())
+            ->select(['id', 'name'])
             ->from('item')
             ->limit(2)
             ->union(
@@ -605,7 +602,7 @@ abstract class QueryTest extends DatabaseTestCase
             ->where($whereCondition)
             ->count('*', $db);
         if (is_numeric($result)) {
-            $result = (int) $result;
+            $result = (int)$result;
         }
 
         return $result;
