@@ -472,7 +472,11 @@ SQL;
                 'address' => 'Some {{%weird}} address',
             ]
         )->execute();
-        $customerId = $db->getLastInsertID();
+        if ($this->driverName === 'pgsql') {
+            $customerId = $db->getLastInsertID('public.customer_id_seq');
+        } else {
+            $customerId = $db->getLastInsertID();
+        }
         $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{weird}} name', $customer['name']);
         $this->assertEquals('Some {{%weird}} address', $customer['address']);
@@ -680,7 +684,11 @@ SQL;
             'created_at' => $time,
             'total' => 42,
         ])->execute();
-        $orderId = $db->getLastInsertID();
+        if ($this->driverName === 'pgsql') {
+            $orderId = $db->getLastInsertID('public.order_id_seq');
+        } else {
+            $orderId = $db->getLastInsertID();
+        }
 
         $columnValueQuery = new \yii\db\Query();
         $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
