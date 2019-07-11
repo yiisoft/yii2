@@ -442,10 +442,6 @@ abstract class QueryTest extends DatabaseTestCase
 
     public function testCount()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $db = $this->getConnection();
 
         $count = (new Query())->from('customer')->count('*', $db);
@@ -454,7 +450,7 @@ abstract class QueryTest extends DatabaseTestCase
         $count = (new Query())->from('customer')->where(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
 
-        $count = (new Query())->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
+        $count = (new Query())->select('[[status]], COUNT([[id]]) cnt')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
 
         // testing that orderBy() should be ignored here as it does not affect the count anyway.
