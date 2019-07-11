@@ -87,17 +87,10 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
 
     public function testActiveQuery()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $db = $this->getConnection();
 
         $query = Customer::find()->orderBy('id');
-        $customers = [];
-        foreach ($query->batch(2, $db) as $models) {
-            $customers = array_merge($customers, $models);
-        }
+        $customers = $this->getAllRowsFromBach($query->batch(2, $db));
         $this->assertCount(3, $customers);
         $this->assertEquals('user1', $customers[0]->name);
         $this->assertEquals('user2', $customers[1]->name);
@@ -105,12 +98,9 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
 
         // batch with eager loading
         $query = Customer::find()->with('orders')->orderBy('id');
-        $customers = [];
-        foreach ($query->batch(2, $db) as $models) {
-            $customers = array_merge($customers, $models);
-            foreach ($models as $model) {
-                $this->assertTrue($model->isRelationPopulated('orders'));
-            }
+        $customers = $this->getAllRowsFromBach($query->batch(2, $db));
+        foreach ($customers as $customer) {
+            $this->assertTrue($customer->isRelationPopulated('orders'));
         }
         $this->assertCount(3, $customers);
         $this->assertCount(1, $customers[0]->orders);
