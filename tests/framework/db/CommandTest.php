@@ -669,10 +669,6 @@ SQL;
 
     public function testsInsertQueryAsColumnValue()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $time = time();
 
         $db = $this->getConnection();
@@ -680,29 +676,29 @@ SQL;
 
         $command = $db->createCommand();
         $command->insert('{{order}}', [
-            'id' => 42,
             'customer_id' => 1,
             'created_at' => $time,
             'total' => 42,
         ])->execute();
+        $orderId = $db->getLastInsertID();
 
         $columnValueQuery = new \yii\db\Query();
-        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => '42']);
+        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();
         $command->insert(
             '{{order_with_null_fk}}',
             [
-                'customer_id' => 42,
+                'customer_id' => $orderId,
                 'created_at' => $columnValueQuery,
                 'total' => 42,
             ]
         )->execute();
 
-        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
+        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId)->queryScalar());
 
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
-        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = 42')->execute();
+        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
     }
 
     public function testCreateTable()
