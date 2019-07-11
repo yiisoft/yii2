@@ -13,7 +13,6 @@ use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
 use yii\db\Expression;
-use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
 
@@ -218,7 +217,7 @@ SQL;
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
-            $this->assertEquals($boolCol, (int) $row['bool_col']);
+            $this->assertEquals($boolCol, (int)$row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
         }
@@ -237,7 +236,7 @@ SQL;
 
     public function paramsNonWhereProvider()
     {
-        return[
+        return [
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR(name, :len)'],
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email'],
@@ -463,22 +462,18 @@ SQL;
      */
     public function testNoTablenameReplacement()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $db = $this->getConnection();
 
         $db->createCommand()->insert(
             '{{customer}}',
             [
-                'id' => 43,
                 'name' => 'Some {{weird}} name',
                 'email' => 'test@example.com',
                 'address' => 'Some {{%weird}} address',
             ]
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $customerId = $db->getLastInsertID();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{weird}} name', $customer['name']);
         $this->assertEquals('Some {{%weird}} address', $customer['address']);
 
@@ -488,9 +483,9 @@ SQL;
                 'name' => 'Some {{updated}} name',
                 'address' => 'Some {{%updated}} address',
             ],
-            ['id' => 43]
+            ['id' => $customerId]
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{updated}} name', $customer['name']);
         $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
@@ -515,10 +510,10 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                    '{{customer}}.[[email]] as name',
-                    '[[name]] as email',
-                    '[[address]]',
-                ]
+                '{{customer}}.[[email]] as name',
+                '[[name]] as email',
+                '[[address]]',
+            ]
         )
             ->from('{{customer}}')
             ->where([
@@ -645,14 +640,14 @@ SQL;
         switch ($this->driverName) {
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
-            break;
+                break;
             case 'cubrid':
             case 'mysql':
                 $expression = 'YEAR(NOW())';
-            break;
+                break;
             case 'sqlite':
                 $expression = "strftime('%Y')";
-            break;
+                break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
         }
