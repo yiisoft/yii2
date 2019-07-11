@@ -145,10 +145,6 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testGetModel()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
