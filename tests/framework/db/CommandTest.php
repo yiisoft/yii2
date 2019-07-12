@@ -477,7 +477,6 @@ SQL;
         } else {
             $customerId = $db->getLastInsertID();
         }
-        $customerId = $db->getLastInsertID();
         $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{weird}} name', $customer['name']);
         $this->assertEquals('Some {{%weird}} address', $customer['address']);

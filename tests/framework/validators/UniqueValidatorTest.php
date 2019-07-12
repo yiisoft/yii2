@@ -95,10 +95,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeDefault()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $val = new UniqueValidator();
         $m = ValidatorTestMainModel::find()->one();
         $val->validateAttribute($m, 'id');
@@ -113,7 +109,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
         $m = new ValidatorTestRefModel();
-        $m->id = 7;
         $m->ref = 12121;
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
@@ -128,10 +123,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeOfNonARModel()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
         $m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
         $val->validateAttribute($m, 'attr_1');
@@ -142,10 +133,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateNonDatabaseAttribute()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
         /** @var ValidatorTestMainModel $m */
         $m = ValidatorTestMainModel::findOne(1);
@@ -221,14 +208,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateTargetClass()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
-        // Check whether "Description" and "address" aren't equal
+        // Check whether "Description" and "name" aren't equal
         $val = new UniqueValidator([
             'targetClass' => Customer::className(),
-            'targetAttribute' => ['description' => 'address'],
+            'targetAttribute' => ['description' => 'name'],
         ]);
 
         /** @var Profile $m */
@@ -238,16 +221,16 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertFalse($m->hasErrors('description'));
 
         // ID of Profile is not equal to ID of Customer
-        // (1, description = address2) <=> (2, address = address2)
-        $m->description = 'address2';
+        // (1, description = user2) <=> (2, name = user2)
+        $m->description = 'user2';
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
         $m->clearErrors('description');
 
         // ID of Profile IS equal to ID of Customer
-        // (1, description = address1) <=> (1, address = address1)
+        // (1, description = user1) <=> (1, name = user1)
         // https://github.com/yiisoft/yii2/issues/10263
-        $m->description = 'address1';
+        $m->description = 'user1';
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
     }
@@ -294,44 +277,32 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateEmptyAttributeInStringField()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         ValidatorTestMainModel::deleteAll();
 
         $val = new UniqueValidator();
 
         $m = new ValidatorTestMainModel(['field1' => '']);
-        $m->id = 1;
         $val->validateAttribute($m, 'field1');
         $this->assertFalse($m->hasErrors('field1'));
         $m->save(false);
 
         $m = new ValidatorTestMainModel(['field1' => '']);
-        $m->id = 2;
         $val->validateAttribute($m, 'field1');
         $this->assertTrue($m->hasErrors('field1'));
     }
 
     public function testValidateEmptyAttributeInIntField()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         ValidatorTestRefModel::deleteAll();
 
         $val = new UniqueValidator();
 
         $m = new ValidatorTestRefModel(['ref' => 0]);
-        $m->id = 1;
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
         $m->save(false);
 
         $m = new ValidatorTestRefModel(['ref' => 0]);
-        $m->id = 2;
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
     }
@@ -424,17 +395,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
      */
     public function testAmbiguousColumnName()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $validator = new UniqueValidator([
             'filter' => function ($query) {
                 $query->joinWith('items', false);
             },
         ]);
         $model = new Order();
-        $model->id = 42;
         $model->customer_id = 1;
         $model->total = 800;
         $model->save(false);
@@ -448,17 +414,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
      */
     public function testExpressionInAttributeColumnName()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $validator = new UniqueValidator([
             'targetAttribute' => [
                 'title' => 'LOWER(title)',
             ],
         ]);
         $model = new Document();
-        $model->id = 42;
         $model->title = 'Test';
         $model->content = 'test';
         $model->version = 1;

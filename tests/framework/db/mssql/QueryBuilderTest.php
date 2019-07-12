@@ -70,6 +70,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testCommentColumn()
     {
+        // related to https://github.com/yiisoft/yii2/pull/17364
         $this->markTestSkipped('Should be fixed');
 
         $qb = $this->getQueryBuilder();
@@ -85,9 +86,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testCommentTable()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
+        // related to https://github.com/yiisoft/yii2/pull/17364
+        $this->markTestSkipped('Should be fixed');
 
         $qb = $this->getQueryBuilder();
 
