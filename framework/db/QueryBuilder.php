@@ -1228,9 +1228,10 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function buildSelect($columns, &$params, $distinct = false, $selectOption = null)
     {
-        $select = $distinct ? 'SELECT DISTINCT' : 'SELECT';
-        if ($selectOption !== null) {
-            $select .= ' ' . $selectOption;
+        $select = $selectOption !== null ? 'SELECT ' . $selectOption : 'SELECT';
+
+        if ($distinct) {
+            $select .= ' DISTINCT';
         }
 
         if (empty($columns)) {
