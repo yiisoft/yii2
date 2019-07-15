@@ -150,6 +150,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
 
     /**
      * Reads and collects rows for batch
+     * @since 2.0.23
      * @return array
      */
     protected function getRows()
