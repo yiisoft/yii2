@@ -135,6 +135,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
     /**
      * Fetches the next batch of data.
      * @return array the data fetched
+     * @throws Exception
      */
     protected function fetchData()
     {
@@ -142,6 +143,17 @@ class BatchQueryResult extends BaseObject implements \Iterator
             $this->_dataReader = $this->query->createCommand($this->db)->query();
         }
 
+        $rows = $this->getRows();
+
+        return $this->query->populate($rows);
+    }
+
+    /**
+     * Reads and collects rows for batch
+     * @return array
+     */
+    protected function getRows()
+    {
         $rows = [];
         $count = 0;
 
@@ -155,7 +167,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
             }
         }
 
-        return $this->query->populate($rows);
+        return $rows;
     }
 
     /**
