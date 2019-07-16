@@ -6,6 +6,11 @@ Yii Framework 2 Change Log
 
 - Bug #17413: Fixed MSSQL tests: `QueryBuilderTest::testGetColumnType()`, `QueryBuilderTest::testResetSequence()` (alexkart)
 - Bug #17419: Fix to call static method of an interface which is defined in the DI container (albertborsos)
+- Bug #17413, #17418, #17426, #17431: Fixed MSSQL tests (alexkart)
+- Bug #17420: Fixed loading of column default values for MSSQL (alexkart)
+- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
+- Bug #17435: Fixed `i18n_init` migration for MSSQL (alexkart)
+- Bug #10023: Fixed MSSQL "There are no more rows in the active result set" exception when using `each()` and `batch()` (alexkart)
 
 
 2.0.22 July 02, 2019
@@ -19,7 +24,6 @@ Yii Framework 2 Change Log
 - Bug #17389: Fixed `UniqueValidator` to work with Active Record having `joinWith()` in its `find()` (garthpmurray)
 - Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
 - Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
-- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
 
 
 2.0.21 June 18, 2019

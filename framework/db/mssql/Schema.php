@@ -8,7 +8,6 @@
 namespace yii\db\mssql;
 
 use yii\db\CheckConstraint;
-use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
@@ -29,6 +28,10 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ViewFinderTrait;
     use ConstraintFinderTrait;
 
+    /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\mssql\ColumnSchema';
     /**
      * @var string the default schema used for the current session.
      */
@@ -569,7 +572,10 @@ SQL;
 
         $table->foreignKeys = [];
         foreach ($rows as $row) {
-            $table->foreignKeys[$row['fk_name']] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
+            if (!isset($table->foreignKeys[$row['fk_name']])) {
+                $table->foreignKeys[$row['fk_name']][] = $row['uq_table_name'];
+            }
+            $table->foreignKeys[$row['fk_name']][$row['fk_column_name']] = $row['uq_column_name'];
         }
     }
 

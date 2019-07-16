@@ -120,6 +120,7 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     use GetTablesAliasTestTrait;
+
     protected function createQuery()
     {
         return new Query();
@@ -338,13 +339,9 @@ abstract class QueryTest extends DatabaseTestCase
 
     public function testUnion()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $connection = $this->getConnection();
-        $query = new Query();
-        $query->select(['id', 'name'])
+        $query = (new Query())
+            ->select(['id', 'name'])
             ->from('item')
             ->limit(2)
             ->union(
@@ -445,10 +442,6 @@ abstract class QueryTest extends DatabaseTestCase
 
     public function testCount()
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('Should be fixed');
-        }
-
         $db = $this->getConnection();
 
         $count = (new Query())->from('customer')->count('*', $db);
@@ -457,7 +450,7 @@ abstract class QueryTest extends DatabaseTestCase
         $count = (new Query())->from('customer')->where(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
 
-        $count = (new Query())->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
+        $count = (new Query())->select('[[status]], COUNT([[id]]) cnt')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
 
         // testing that orderBy() should be ignored here as it does not affect the count anyway.
@@ -605,7 +598,7 @@ abstract class QueryTest extends DatabaseTestCase
             ->where($whereCondition)
             ->count('*', $db);
         if (is_numeric($result)) {
-            $result = (int) $result;
+            $result = (int)$result;
         }
 
         return $result;
