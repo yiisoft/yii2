@@ -121,7 +121,11 @@ class Container extends Component
      */
     private $_dependencies = [];
 
-
+    /*
+     * @var boolean use ArrayHelper::merge() instead array_merge when merge class definition
+     */
+    public $mergeDefinitionRecursive = false;
+    
     /**
      * Returns an instance of the requested class.
      *
@@ -165,7 +169,7 @@ class Container extends Component
             $concrete = $definition['class'];
             unset($definition['class']);
 
-            $config = array_merge($definition, $config);
+            $config = $this->mergeDefinitionRecursive ? ArrayHelper::merge($definition, $config) : array_merge($definition, $config);
             $params = $this->mergeParams($class, $params);
 
             if ($concrete === $class) {
