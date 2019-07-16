@@ -168,8 +168,9 @@ class Container extends Component
         } elseif (is_array($definition)) {
             $concrete = $definition['class'];
             unset($definition['class']);
+            $afterMerge = ArrayHelper::remove($definition, 'afterMerge', []);
 
-            $config = $this->mergeDefinitionRecursive ? ArrayHelper::merge($definition, $config) : array_merge($definition, $config);
+            $config = $this->mergeDefinitionRecursive ? ArrayHelper::merge($definition, $config, $afterMerge) : array_merge($definition, $config, $afterMerge);
             $params = $this->mergeParams($class, $params);
 
             if ($concrete === $class) {
