@@ -67,7 +67,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      */
     private $_key;
     /**
-     * @var string MSSQL exception that is thrown when last batch size less than specified batch size
+     * @var int MSSQL error code for exception that is thrown when last batch is size less than specified batch size
      * @see https://github.com/yiisoft/yii2/issues/10023
      */
     private $mssqlNoMoreRowsErrorCode = -13;
