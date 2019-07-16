@@ -70,7 +70,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      * @var string MSSQL exception that is thrown when last batch size less than specified batch size
      * @see https://github.com/yiisoft/yii2/issues/10023
      */
-    private $mssqlNoMoreRowsErrorMessage = 'SQLSTATE[IMSSP]: There are no more rows in the active result set.  Since this result set is not scrollable, no more data may be retrieved.';
+    private $mssqlNoMoreRowsErrorCode = -13;
 
     /**
      * Destructor.
@@ -163,7 +163,8 @@ class BatchQueryResult extends BaseObject implements \Iterator
                 $rows[] = $row;
             }
         } catch (\PDOException $e) {
-            if ($e->getMessage() !== $this->mssqlNoMoreRowsErrorMessage) {
+            $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
+            if ($this->db->driverName !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
                 throw $e;
             }
         }
