@@ -1,14 +1,14 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.23 under development
-------------------------
+2.0.23 July 16, 2019
+--------------------
 
+- Bug #10023: Fixed MSSQL "There are no more rows in the active result set" exception when using `each()` and `batch()` (alexkart)
+- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
 - Bug #17413, #17418, #17426, #17431: Fixed MSSQL tests (alexkart)
 - Bug #17420: Fixed loading of column default values for MSSQL (alexkart)
-- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
 - Bug #17435: Fixed `i18n_init` migration for MSSQL (alexkart)
-- Bug #10023: Fixed MSSQL "There are no more rows in the active result set" exception when using `each()` and `batch()` (alexkart)
 
 
 2.0.22 July 02, 2019

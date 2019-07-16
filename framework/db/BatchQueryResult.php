@@ -72,6 +72,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      */
     private $mssqlNoMoreRowsErrorCode = -13;
 
+
     /**
      * Destructor.
      */
