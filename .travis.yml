@@ -133,15 +133,13 @@ matrix:
     - php: hhvm-3.21
     - php: hhvm-3.24
 
-install:
-  - |
-    if [[ $TASK_TESTS_COVERAGE != 1 && $TRAVIS_PHP_VERSION != hhv* ]]; then
-      # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
-      phpenv config-rm xdebug.ini || echo "xdebug is not installed"
-    fi
+before_install:
+  - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
 
+install:
   # install composer dependencies
   - travis_retry composer self-update
+  - travis_retry composer global require hirak/prestissimo
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
@@ -224,7 +222,7 @@ script:
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group $PHPUNIT_EXCLUDE_GROUP
+      phpdbg -qrr vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group $PHPUNIT_EXCLUDE_GROUP
     fi
 
   # JS tests
