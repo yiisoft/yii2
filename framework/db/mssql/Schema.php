@@ -739,4 +739,16 @@ SQL;
 
         return $result[$returnType];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function quoteColumnName($name)
+    {
+        if (preg_match('/^\[.*\]$/', $name)) {
+            return $name;
+        }
+
+        return parent::quoteColumnName($name);
+    }
 }
