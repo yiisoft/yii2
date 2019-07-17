@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.24 under development
 ------------------------
 
-- no changes in this release.
+- Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
 
 
 2.0.23 July 16, 2019
