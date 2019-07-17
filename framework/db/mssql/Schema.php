@@ -745,7 +745,7 @@ SQL;
      */
     public function quoteColumnName($name)
     {
-        if (strpos($name, '[') !== false) {
+        if (preg_match('/^\[.*\]$/', $name)) {
             return $name;
         }
 
