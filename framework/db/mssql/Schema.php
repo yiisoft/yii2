@@ -739,4 +739,16 @@ SQL;
 
         return $result[$returnType];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function quoteColumnName($name)
+    {
+        if (strpos($name, '[') !== false) {
+            return $name;
+        }
+
+        return parent::quoteColumnName($name);
+    }
 }
