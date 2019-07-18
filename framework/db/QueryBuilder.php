@@ -1738,6 +1738,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * Extracts table alias if there is one or returns false
      * @param $table
      * @return bool|array
+     * @since 2.0.24
      */
     protected function extractAlias($table)
     {
