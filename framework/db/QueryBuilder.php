@@ -1739,7 +1739,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param $table
      * @return bool|array
      */
-    private function extractAlias($table)
+    protected function extractAlias($table)
     {
         if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) {
             return $matches;

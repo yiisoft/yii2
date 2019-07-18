@@ -201,11 +201,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $data = parent::buildFromDataProvider();
         $data[] = ['[test]', '[[test]]'];
-        $data[] = ['[test] [t1]', '[[test]] [t1]'];
-        $data[] = ['[table.name]', '[[table.name]'];
-        $data[] = ['[table.name.with.dots]', '[[table.name.with.dots]'];
-        //$data[] = ['[table name]', '[[table name]'];
-        //$data[] = ['[table name with spaces]', '[[table name with spaces]'];
+        $data[] = ['[test] [t1]', '[[test]] [[t1]]'];
+        $data[] = ['[table.name]', '[[table.name]]'];
+        $data[] = ['[table.name.with.dots]', '[[table.name.with.dots]]'];
+        $data[] = ['[table name]', '[[table name]]'];
+        $data[] = ['[table name with spaces]', '[[table name with spaces]]'];
 
         return $data;
     }
