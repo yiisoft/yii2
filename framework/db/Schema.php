@@ -862,4 +862,29 @@ abstract class Schema extends BaseObject
             new TagDependency(['tags' => $this->getCacheTag()])
         );
     }
+
+
+    /**
+     * Normalizes table and views names by including schema name.
+     * @param string|array $name Table or View name
+     */
+    public function normalizeTableName($name)
+    {
+        if (is_array($name)) {
+            $normalizedTables = [];
+            foreach ($name as $table) {
+                $normalizedTables[] = $this->normalizeTableName($table);
+            }
+
+            return $normalizedTables;
+        }
+        //already contains  schema, don't add it
+        if (strpos($name, '.') !== false) {
+            return $name;
+        }
+        if ($this->defaultSchema === null || strpos($name, '.') !== false) {
+            return $name;
+        }
+        return "{$this->defaultSchema}.{$name}";
+    }
 }
