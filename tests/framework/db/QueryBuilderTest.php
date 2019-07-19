@@ -1292,6 +1292,29 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
+     * @dataProvider buildFromDataProvider
+     * @param $table
+     * @param $expected
+     * @throws \Exception
+     */
+    public function testBuildFrom($table, $expected)
+    {
+        $params = [];
+        $sql = $this->getQueryBuilder()->buildFrom([$table], $params);
+        $this->assertEquals('FROM ' . $this->replaceQuotes($expected), $sql);
+    }
+
+    public function buildFromDataProvider()
+    {
+        return [
+            ['test t1', '[[test]] [[t1]]'],
+            ['test as t1', '[[test]] [[t1]]'],
+            ['test AS t1', '[[test]] [[t1]]'],
+            ['test', '[[test]]'],
+        ];
+    }
+
+    /**
      * @dataProvider conditionProvider
      * @param array $condition
      * @param string $expected
