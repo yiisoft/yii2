@@ -250,6 +250,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $command;
     }
 
+     /**
+     * Builds a SQL command for adding or updating a comment to table or column. The command builded will check if a comment
+     * already exists. If so, it will be updated, or it will be added otherwise.
+     *
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @param string $table the table to be commented or whose column is to be commented. The table name will be
+     * properly quoted by the method.
+     * @param string $column optional. The name of the column to be commented. If empty, the command will add the
+     * comment to the table instead. The column name will be properly quoted by the method.
+     * @return string the SQL statement for adding comment.
+     * @since 2.0.24
+     */
     protected function buildAddCommentSql($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
@@ -301,7 +313,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * Builds a SQL command for removing a comment of a table or column. The command builded will check if a comment
+     * already exists before trying to perform the removing.
+     *
+     * @param string $table the table that will have the comment removed or whose column will have the comment removed.
+     * The table name will be properly quoted by the method.
+     * @param string $column optional. The name of the column whose comment will be removed. If empty, the command
+     * will remove the comment from the table instead. The column name will be properly quoted by the method.
+     * @return string the SQL statement for removing the comment.
+     * @since 2.0.24
      */
     protected function buildRemoveCommentSql($table, $column = null)
     {
