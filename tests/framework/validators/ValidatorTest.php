@@ -17,6 +17,7 @@ use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestFunctionModel;
 use yiiunit\data\validators\TestValidator;
 use yiiunit\TestCase;
+use yii\validators\SafeValidator;
 
 /**
  * @group validators
@@ -305,5 +306,22 @@ class ValidatorTest extends TestCase
         $validator->attributes = ['email2'];
         $model->getValidators()->append($validator);
         $this->assertFalse($model->validate());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17233
+     * @see https://github.com/yiisoft/yii2/pull/17234
+     */
+    public function testScalarAttributeNames()
+    {
+        $model = new DynamicModel();
+        $model->defineAttribute(1);
+        $model->addRule([1], SafeValidator::className());
+    
+        $this->assertNull($model->{1});
+        $this->assertTrue($model->validate([1]));
+
+        $validator = SafeValidator::createValidator('safe', $model, [1]);
+        $this->assertSame([1], $validator->getValidationAttributes(1));
     }
 }

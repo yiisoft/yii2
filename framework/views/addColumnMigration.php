@@ -10,7 +10,7 @@
 /* @var $fields array the fields */
 
 preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches);
-$columns = $matches[1];
+$columns = str_replace('_column_', ', ', $matches[1]);
 
 echo "<?php\n";
 if (!empty($namespace)) {

@@ -379,6 +379,19 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
+     * Returns table columns info.
+     * @param string $tableName table name
+     * @return array
+     */
+    private function loadTableColumnsInfo($tableName)
+    {
+        $tableColumns = $this->db->createCommand('PRAGMA TABLE_INFO (' . $this->quoteValue($tableName) . ')')->queryAll();
+        $tableColumns = $this->normalizePdoRowKeyCase($tableColumns, true);
+
+        return ArrayHelper::index($tableColumns, 'cid');
+    }
+
+    /**
      * Loads multiple types of constraints and returns the specified ones.
      * @param string $tableName table name.
      * @param string $returnType return type:
@@ -397,9 +410,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
              * SQLite may not have an "origin" column in INDEX_LIST
              * See https://www.sqlite.org/src/info/2743846cdba572f6
              */
-            $tableColumns = $this->db->createCommand('PRAGMA TABLE_INFO (' . $this->quoteValue($tableName) . ')')->queryAll();
-            $tableColumns = $this->normalizePdoRowKeyCase($tableColumns, true);
-            $tableColumns = ArrayHelper::index($tableColumns, 'cid');
+            $tableColumns = $this->loadTableColumnsInfo($tableName);
         }
         $result = [
             'primaryKey' => null,
@@ -436,6 +447,25 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
                 ]);
             }
         }
+
+        if ($result['primaryKey'] === null) {
+            /*
+             * Additional check for PK in case of INTEGER PRIMARY KEY with ROWID
+             * See https://www.sqlite.org/lang_createtable.html#primkeyconst
+             */
+            if ($tableColumns === null) {
+                $tableColumns = $this->loadTableColumnsInfo($tableName);
+            }
+            foreach ($tableColumns as $tableColumn) {
+                if ($tableColumn['pk'] > 0) {
+                    $result['primaryKey'] = new Constraint([
+                        'columnNames' => [$tableColumn['name']],
+                    ]);
+                    break;
+                }
+            }
+        }
+
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }

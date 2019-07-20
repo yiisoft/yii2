@@ -270,11 +270,11 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the expression building process.
      * @return string the SQL statement that will not be neither quoted nor encoded before passing to DBMS
-     * @see ExpressionInterface
+     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
      * @see ExpressionBuilderInterface
      * @see expressionBuilders
      * @since 2.0.14
-     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
+     * @see ExpressionInterface
      */
     public function buildExpression(ExpressionInterface $expression, &$params = [])
     {
@@ -289,9 +289,9 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param ExpressionInterface $expression
      * @return ExpressionBuilderInterface
-     * @see expressionBuilders
-     * @since 2.0.14
      * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
+     * @since 2.0.14
+     * @see expressionBuilders
      */
     public function getExpressionBuilder(ExpressionInterface $expression)
     {
@@ -488,7 +488,7 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+            . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 
     /**
@@ -685,7 +685,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Builds a SQL statement for creating a new DB table.
      *
-     * The columns in the new  table should be specified as name-definition pairs (e.g. 'name' => 'string'),
+     * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
      * where name stands for a column name which will be properly quoted by the method, and definition
      * stands for the column type which can contain an abstract DB type.
      * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
@@ -1028,16 +1028,32 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
+     * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence will be reset
      * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     * the next new row's primary key will have the maximum existing value +1.
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
     public function resetSequence($table, $value = null)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support resetting sequence.');
+    }
+
+    /**
+     * Execute a SQL statement for resetting the sequence value of a table's primary key.
+     * Reason for execute is that some databases (Oracle) need several queries to do so.
+     * The sequence is reset such that the primary key of the next new row inserted
+     * will have the specified value or the maximum existing value +1.
+     * @param string $table the name of the table whose primary key sequence is reset
+     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value +1.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     * @since 2.0.16
+     */
+    public function executeResetSequence($table, $value = null)
+    {
+        $this->db->createCommand()->resetSequence($table, $value)->execute();
     }
 
     /**
@@ -1120,7 +1136,7 @@ class QueryBuilder extends \yii\base\BaseObject
             list($rawQuery, $params) = $this->build($subQuery);
             array_walk(
                 $params,
-                function(&$param) {
+                function (&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );
@@ -1231,7 +1247,7 @@ class QueryBuilder extends \yii\base\BaseObject
             } elseif ($column instanceof Query) {
                 list($sql, $params) = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
-            } elseif (is_string($i)) {
+            } elseif (is_string($i) && $i !== $column) {
                 if (strpos($column, '(') === false) {
                     $column = $this->db->quoteColumnName($column);
                 }
@@ -1282,7 +1298,7 @@ class QueryBuilder extends \yii\base\BaseObject
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
             list($joinType, $table) = $join;
-            $tables = $this->quoteTableNames((array) $table, $params);
+            $tables = $this->quoteTableNames((array)$table, $params);
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
             if (isset($join[2])) {
@@ -1315,8 +1331,8 @@ class QueryBuilder extends \yii\base\BaseObject
                 }
                 $tables[$i] = "$table " . $this->db->quoteTableName($i);
             } elseif (strpos($table, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+                if ($tableWithAlias = $this->extractAlias($table)) { // with alias
+                    $tables[$i] = $this->db->quoteTableName($tableWithAlias[1]) . ' ' . $this->db->quoteTableName($tableWithAlias[2]);
                 } else {
                     $tables[$i] = $this->db->quoteTableName($table);
                 }
@@ -1438,7 +1454,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected function hasLimit($limit)
     {
-        return ($limit instanceof ExpressionInterface) || ctype_digit((string) $limit);
+        return ($limit instanceof ExpressionInterface) || ctype_digit((string)$limit);
     }
 
     /**
@@ -1448,7 +1464,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected function hasOffset($offset)
     {
-        return ($offset instanceof ExpressionInterface) || ctype_digit((string) $offset) && (string) $offset !== '0';
+        return ($offset instanceof ExpressionInterface) || ctype_digit((string)$offset) && (string)$offset !== '0';
     }
 
     /**
@@ -1527,7 +1543,7 @@ class QueryBuilder extends \yii\base\BaseObject
             return $this->buildExpression($condition, $params);
         }
 
-        return (string) $condition;
+        return (string)$condition;
     }
 
     /**
@@ -1536,8 +1552,8 @@ class QueryBuilder extends \yii\base\BaseObject
      * [[conditionClasses]] map.
      *
      * @param string|array $condition
-     * @see conditionClasses
      * @return ConditionInterface
+     * @see conditionClasses
      * @since 2.0.14
      */
     public function createConditionFromArray($condition)
@@ -1716,5 +1732,20 @@ class QueryBuilder extends \yii\base\BaseObject
         $params[$phName] = $value;
 
         return $phName;
+    }
+
+    /**
+     * Extracts table alias if there is one or returns false
+     * @param $table
+     * @return bool|array
+     * @since 2.0.24
+     */
+    protected function extractAlias($table)
+    {
+        if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) {
+            return $matches;
+        }
+
+        return false;
     }
 }

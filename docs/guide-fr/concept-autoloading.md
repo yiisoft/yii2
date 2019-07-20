@@ -1,7 +1,7 @@
 Chargement automatique des classes
 ==================================
 
-Yii compte sur le [mécanisme de chargement automatique des classes](http://www.php.net/manual/en/language.oop5.autoload.php) pour localiser et inclure tous les fichiers de classes requis. Il fournit un chargeur automatique de classes de haute performance qui est conforme à la [norme PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md). Le chargeur automatique est installé lorsque vous incluez le fichier `Yii.php`.
+Yii compte sur le [mécanisme de chargement automatique des classes](https://secure.php.net/manual/en/language.oop5.autoload.php) pour localiser et inclure tous les fichiers de classes requis. Il fournit un chargeur automatique de classes de haute performance qui est conforme à la [norme PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md). Le chargeur automatique est installé lorsque vous incluez le fichier `Yii.php`.
 
 > Note: pour simplifier la description, dans cette section, nous ne parlerons que du chargement automatique des classes. Néanmoins, gardez présent à l'esprit que le contenu que nous décrivons ici s'applique aussi au chargement automatique des interfaces et des traits. 
 
@@ -11,7 +11,7 @@ Utilisation du chargeur automatique de Yii <span id="using-yii-autoloader"></spa
 
 Pour utiliser le chargeur automatique de classes de Yii, vous devez suivre deux règles simples lorsque vous créez et nommez vos classes :
 
-* Chaque classe doit être placée sous un [espace de noms](http://php.net/manual/en/language.namespaces.php) (p. ex. `foo\bar\MyClass`)
+* Chaque classe doit être placée sous un [espace de noms](https://secure.php.net/manual/en/language.namespaces.php) (p. ex. `foo\bar\MyClass`)
 * Chaque classe doit être sauvegardée sous forme d'un fichier individuel dont le chemin est déterminé par l'algorithme suivant : 
 
 ```php
@@ -24,6 +24,10 @@ For exemple, si le nom de classe et l'espace de noms sont `foo\bar\MyClass`, l'[
 Lorsque vous utilisez le [modèle de projet *basic*](start-installation.md), vous pouvez placer vos classes sous l'espace de noms de niveau le plus haut `app` afin qu'elles puissent être chargées automatiquement par Yii sans avoir besoin de définir un nouvel alias. Cela est dû au fait que `@app` est un [alias prédéfini](concept-aliases.md#predefined-aliases), et qu'un nom de classe comme `app\components\MyClass` peut être résolu en le fichier de classe `AppBasePath/components/MyClass.php`, en appliquant l'algorithme précédemment décrit. 
 
 Dans le [modèle de projet avancé](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), chaque niveau possède son propre alias. Par exemple, le niveau « interface utilisateur » a l'alias `@frontend`, tandis que le niveau « interface d'administration » a l'alias `@backend`. En conséquence, vous pouvez mettre les classes de l'interface utilisateur sous l'espace de noms `frontend`, tandis que les classes de l'interface d'administration sont sous l'espace de noms `backend`. Cela permet à ces classes d'être chargées automatiquement par le chargeur automatique de Yii. 
+
+Pour ajouter un espace de noms personnalisé au chargeur automatique, vous devez définir un alias pour le dossier de base de l'espace de noms en utilisant  [[Yii::setAlias()]].
+Par exemple, pour charger des classes de l'espace de noms `foo` qui se trouvent dans le dossier `path/to/foo`, vous appelez `Yii::setAlias('@foo', 'path/to/foo')`.
+
 
 Table de mise en correspondance des classes <span id="class-map"></span>
 -------------------------------------------

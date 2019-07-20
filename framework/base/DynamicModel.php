@@ -142,7 +142,8 @@ class DynamicModel extends Model
     /**
      * Returns a value indicating whether the model has an attribute with the specified name.
      * @param string $name the name of the attribute
-     * @return bool whether the model has an attribute with the specified name
+     * @return bool whether the model has an attribute with the specified name.
+     * @since 2.0.16
      */
     public function hasAttribute($name)
     {

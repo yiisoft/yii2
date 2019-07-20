@@ -112,7 +112,7 @@ class MigrateController extends BaseMigrateController
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
      */
-    public $useTablePrefix = false;
+    public $useTablePrefix = true;
     /**
      * @var array column definition strings used for creating migration code.
      *
@@ -310,9 +310,39 @@ class MigrateController extends BaseMigrateController
 
         // Then drop the tables:
         foreach ($schemas as $schema) {
-            $db->createCommand()->dropTable($schema->name)->execute();
-            $this->stdout("Table {$schema->name} dropped.\n");
+            try {
+                $db->createCommand()->dropTable($schema->name)->execute();
+                $this->stdout("Table {$schema->name} dropped.\n");
+            } catch (\Exception $e) {
+                if ($this->isViewRelated($e->getMessage())) {
+                    $db->createCommand()->dropView($schema->name)->execute();
+                    $this->stdout("View {$schema->name} dropped.\n");
+                } else {
+                    $this->stdout("Cannot drop {$schema->name} Table .\n");
+                }
+            }
         }
+    }
+
+    /**
+     * Determines whether the error message is related to deleting a view or not
+     * @param string $errorMessage
+     * @return bool
+     */
+    private function isViewRelated($errorMessage)
+    {
+        $dropViewErrors = [
+            'DROP VIEW to delete view', // SQLite
+            'SQLSTATE[42S02]', // MySQL
+        ];
+
+        foreach ($dropViewErrors as $dropViewError) {
+            if (strpos($errorMessage, $dropViewError) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -479,7 +509,7 @@ class MigrateController extends BaseMigrateController
         $foreignKeys = [];
 
         foreach ($this->fields as $index => $field) {
-            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $chunks = $this->splitFieldIntoChunks($field);
             $property = array_shift($chunks);
 
             foreach ($chunks as $i => &$chunk) {
@@ -512,6 +542,34 @@ class MigrateController extends BaseMigrateController
             'fields' => $fields,
             'foreignKeys' => $foreignKeys,
         ];
+    }
+
+    /**
+     * Splits field into chunks
+     *
+     * @param string $field
+     * @return string[]|false
+     */
+    protected function splitFieldIntoChunks($field)
+    {
+        $hasDoubleQuotes = false;
+        preg_match_all('/defaultValue\(.*?:.*?\)/', $field, $matches);
+        if (isset($matches[0][0])) {
+            $hasDoubleQuotes = true;
+            $originalDefaultValue = $matches[0][0];
+            $defaultValue = str_replace(':', '{{colon}}', $originalDefaultValue);
+            $field = str_replace($originalDefaultValue, $defaultValue, $field);
+        }
+
+        $chunks = preg_split('/\s?:\s?/', $field);
+
+        if (is_array($chunks) && $hasDoubleQuotes) {
+            foreach ($chunks as $key => $chunk) {
+                $chunks[$key] = str_replace($defaultValue, $originalDefaultValue, $chunk);
+            }
+        }
+
+        return $chunks;
     }
 
     /**

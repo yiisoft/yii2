@@ -335,9 +335,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value) || $value === null)) {
-                    $exParams = [];
-                    $phName = $this->bindParam($value, $exParams);
-                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $exParams);
+                    $phName = $this->bindParam($value, $params);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $params);
                 }
             }
         }
@@ -416,5 +415,30 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function update($table, $columns, $condition, &$params)
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getColumnType($type)
+    {
+        $columnType = parent::getColumnType($type);
+        // remove unsupported keywords
+        $columnType = preg_replace("/\s*comment '.*'/i", '', $columnType);
+        $columnType = preg_replace('/ first$/i', '', $columnType);
+
+        return $columnType;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extractAlias($table)
+    {
+        if (preg_match('/^\[.*\]$/', $table)) {
+            return false;
+        }
+
+        return parent::extractAlias($table);
     }
 }

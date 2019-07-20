@@ -189,7 +189,7 @@ JS
 ```
 
 The above example code uses PHP
-[Heredoc syntax](http://php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
+[Heredoc syntax](https://secure.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
 preferred way of writing inline JavaScript, especially useful for code that is longer than a single line. The variable `$message` is created in PHP and
 thanks to [[yii\helpers\Json::htmlEncode|Json::htmlEncode]] it contains the 
 string in valid JS syntax, which can be inserted into the JavaScript code to place the dynamic string in the function call to `alert()`.

@@ -1,25 +1,25 @@
-Tests de Unidad 
-===============
+Pruebas unitarias
+=================
 
-> Note: Esta sección se encuentra en desarrollo.
+Un test unitario se encarga de verificar que una unidad simple de código funcione como se espera.
+Esto decir, dados diferentes parámetros de entrada, el test verifica que el método
+de la clase devuelve el resultado esperado.
+Normalmente los tests unitarios son desarrollados por la persona que escribe las clases testeadas.
 
-Un test de unidad se encarga de verificar que una unidad simple de código funcione como se espera. En la programación orientada a objetos,
-la unidad de código más básica es una clase. Por lo tanto, un test de unidad necesita verificar que cada método de la interfaz de la clase funciona apropiadamente.
-Esto quiere decir que, dando diferentes parámetros de entrada, el test verifica que el método devuelve el resultado esperado.
-Los tests de unidad son normalmente desarrollados por la persona que escribe las clases siendo testeadas.
+Los tests unitarios en Yii están construidos en base a PHPUnit y, opcionalmente, Codeception, por lo que se recomienda consultar su respectiva documentación:
 
-Los tests de unidad en Yii están construidos en base a PHPUnit y opcionalmente, Codeception, por lo que se recomineda consultar su respectiva documentación:
+- [Codeception para el _framework_ Yii](http://codeception.com/for/yii)
+- [Tests unitarios con Codeception](http://codeception.com/docs/05-UnitTests)
+- [Documentación de PHPUnit, empezando por el capítulo 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)
 
-- [Documentación de PHPUnit comienza en el capítulo 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
-- [Tests de Unidad con Codeception](http://codeception.com/docs/05-UnitTests).
+## Ejecución de tests en las plantillas básica y avanzada
 
-Ejecutar test de unidad de templates básicos y avanzados
---------------------------------------------------------
+Si ha empezado con la plantilla avanzada, consulte la [guía de testeo](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-testing.md)
+para más detalles sobre la ejecución de tests.
 
-Por favor consulta las instrucciones provistas en `apps/advanced/tests/README.md` y `apps/basic/tests/README.md`.
+Si ha empezado con la plantilla básica, consulte la [sección sobre testeo de su README](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing).
 
-Test de unidad del Framework
-----------------------------
+##Tests unitarios del framework
 
-Si quieres ejecutar tests de unidad para Yii en sí, consulta
-"[Comenzando a desarrollar con Yii 2](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)".
+Si desea ejecutar tests unitarios para el framework Yii en sí, consulte
+«[Comenzando con el desarrollo de Yii 2](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)».

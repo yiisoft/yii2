@@ -26,8 +26,13 @@ Yii fournit un jeu de commandes de migration en ligne de commande qui vous perme
 
 Tous ces outils sont accessibles via la commande `yii migrate`. Dans cette section nous décrivons en détails comment accomplir des tâches variées en utilisant ces outils. Vous pouvez aussi obtenir les conseils d'utilisation de chacun des outils via la commande d'aide `yii help migrate`.
 
-> Tip: les migrations peuvent non seulement affecter le schéma de base de données mais aussi ajuster les données existantes pour s'adapter au nouveau schéma, créer la hiérarchie RBAC (Role Based Acces Control - Contrôle d'accès basé sur les rôles), ou vider le cache.
+> Astuce : les migrations peuvent non seulement affecter le schéma de base de données mais aussi ajuster les données existantes pour s'adapter au nouveau schéma, créer la hiérarchie RBAC (Role Based Acces Control - Contrôle d'accès basé sur les rôles), ou vider le cache.
 
+> Note : lors de la manipulation de données utilisant une migration, vous pouvez trouver qu'utiliser vos classes  [Active Record](db-active-record.md) 
+> pour cela peut s'avérer utile parce qu'une partie de la logique y est déjà mise en œuvre. Soyez cependant conscient que, contrairement
+> au code écrit dans les migrations, dont la nature est de rester constant à jamais, la logique d'application est sujette à modification.
+> C'est pourquoi, lorsque vous utilisez des classes ActiveRecord dans le code d'une migration, des modifications de la logique de l'ActiveRecord peuvent accidentellement casser
+> des migrations existantes. Pour cette raison, le code des migrations devrait être conservé indépendant d'autres logiques d'application telles que celles des classes ActiveRecord.
 
 ## Création de migrations <span id="creating-migrations"></span>
 
@@ -81,7 +86,7 @@ class m150101_185401_create_news_table extends Migration
 
 Chaque migration de base de données est définie sous forme de classe PHP étendant la classe [[yii\db\Migration]]. Le nom de la classe de migration est généré automatiquement dans le format `m<YYMMDD_HHMMSS>_<Name>`, dans lequel :
 
-* `<YYMMDD_HHMMSS>` fait référence à l'horodatage UTC auquel la commande de création de la migration a été exécutée.
+* `<YYMMDD_HHMMSS>` fait référence à l'horodate UTC à laquelle la commande de création de la migration a été exécutée.
 * `<Name>` est le même que la valeur que vous donnez à l'argument `name` dans la commande.
 
 Dans la classe de migration, vous devez écrire du code dans la méthode `up()` qui effectue les modifications dans la structure de la base de données. Vous désirez peut-être écrire du code dans la méthode `down()` pour défaire les changements apportés par `up()`. La méthode `up()` est invoquée lorsque vous mettez à jour la base de données avec la migration, tandis que la méthode `down()` est invoquée lorsque vous ramenez la base de données à l'état antérieur. Le code qui suit montre comment mettre en œuvre la classe de migration pour créer une table `news` :
@@ -116,7 +121,7 @@ La classe de migration de base [[yii\db\Migration]] expose une connexion à une 
 
 Plutôt que d'utiliser des types physiques, lors de la création d'une table ou d'une colonne, vous devez utiliser des *types abstraits* afin que vos migrations soient indépendantes d'un système de gestion de base de données en particulier. La classe [[yii\db\Schema]] définit une jeu de constantes pour représenter les types abstraits pris en charge. Ces constantes sont nommées dans le format `TYPE_<Name>`. Par exemple, `TYPE_PK` fait référence au type clé primaire à auto-incrémentation ; `TYPE_STRING` fait référence au type chaîne de caractères. Lorsqu'une migration est appliquée à une base de données particulière, le type abstrait est converti dans le type physique correspondant. Dans le cas de MySQL, `TYPE_PK` est transformé en `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, tandis que `TYPE_STRING` est transformé en `varchar(255)`.
 
-Vous pouvez ajouter des contraintes additionnelles lors de l'utilisation des types abstraits. Dans l'exemple ci-dessus,` NOT NULL` est ajouté à `Schema::TYPE_STRING` pour spécifier que la colonne ne peut être *null* (nulle).
+Vous pouvez ajouter des contraintes additionnelles lors de l'utilisation des types abstraits. Dans l'exemple ci-dessus,` NOT NULL` est ajouté à `Schema::TYPE_STRING` pour spécifier que la colonne ne peut être `null` (nulle).
 
 > Info: la mise en correspondance entre les types abstraits et les types physiques est spécifiée par la propriété [[yii\db\QueryBuilder::$typeMap|$typeMap]] dans chacune des classes `QueryBuilder` concrètes.
 
@@ -377,6 +382,13 @@ Le mot clé `foreignKey` accepte un paramètre entre parenthèses qui est le nom
 
 Dans l'exemple ci-dessus `author_id:integer:notNull:foreignKey(user)` génère une colonne nommée `author_id` avec une clé étrangère pointant sur la table `user`, tandis que `category_id:integer:defaultValue(1):foreignKey` génère une colonne `category_id` avec une clé étrangère pointant sur la table `category`.
 
+Depuis la version 2.0.11, le mot clé `foreignKey` accepte un second paramètre, séparé par une espace. 
+Il accepte le nom de la colonne en relation pour la clé étrangère générée. 
+Si aucun second paramètre n'est passé, le nom de la colonne est retrouvé dans le schéma de table.
+Si aucun schéma n'existe, la clé primaire n'est pas définie ou est composite, le nom par défaut `id` est utilisé.
+
+
+
 ### Suppression de tables
 
 ```php
@@ -429,6 +441,11 @@ class m150811_220037_add_position_column_to_post_table extends Migration
         $this->dropColumn('post', 'position');
     }
 }
+```
+Vous pouvez spécifier de multiples colonnes comme suit :
+
+```
+yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,yyy:text"
 ```
 
 ### Supprimer une colonne
@@ -557,6 +574,9 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
 }
 ```
 
+Depuis la version 2.0.1, les noms de colonne des clés étrangères pour les tables de jonction sont recherchées dans le schéma de table.
+Dans le cas où la table n'est pas définie dans le schéma, ou quand la clé primaire n'est pas définie ou est composite, le nom par défaut `id` est utilisé.
+
 ### Migrations transactionnelles <span id="transactional-migrations"></span>
 
 En effectuant des migration de base de données complexes, il est important de garantir que chacune des migrations soit réussisse, soit échoue dans son ensemble, de manière à ce que la base de données reste cohérente et intègre. Pour atteindre ce but, il est recommandé que vous englobiez les opérations de base de données de chacune des migrations dans une [transaction](db-dao.md#performing-transactions).
@@ -631,10 +651,16 @@ Ci-dessous, nous présentons la liste de toutes les méthodes d'accès aux bases
 * [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: ajoute un commentaire à une table
 * [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: supprime un commentaire d'une table
 
-> Info: [[yii\db\Migration]] ne fournit pas une méthode de requête de base de données. C'est parce que, normalement, vous n'avez pas besoin d'afficher de messages supplémentaire à propos de l'extraction de données dans une base de données. C'est aussi parce que vous pouvez utiliser le puissant [constructeur de requêtes](db-query-builder.md) pour construire et exécuter des requêtes complexes. 
-
-> Note: lors de la manipulation des données en utilisant une migration, vous pouvez trouver qu'utiliser vos classes d'[enregistrement actif](db-active-record.md) pour cela peut être utile parce qu'une partie de la logique y est déjà mise en œuvre. Soyez conscient cependant que, par contraste avec le code écrit dans les migrations, dont la nature est de rester constant à jamais, la logique d'application est sujette à des changements. Ainsi, en utilisant un enregistrement actif dans du code de migration, les changements apportés à la logique dans la couche enregistrement actif peuvent casser accidentellement des migrations existantes. Pour cette raison, le code doit être gardé indépendant de toute autre logique d'application telle que les classes d'enregistrement actif. 
-
+> Info: [[yii\db\Migration]] 
+> ne fournit pas une méthode de requête de base de données. C'est parce que, normalement, vous n'avez pas besoin d'afficher de messages supplémentaire à propos de l'extraction de données dans une base de données. C'est aussi parce que vous pouvez utiliser le puissant [constructeur de requêtes](db-query-builder.md) pour construire et exécuter des requêtes complexes. 
+> L'utilisation du constructeur de requêtes dans une migration ressemble à ceci :
+>
+> ```php
+> // update status field for all users
+> foreach((new Query)->from('users')->each() as $user) {
+>     $this->update('users', ['status' => 1], ['id' => $user['id']]);
+> }
+> ```
 
 ## Application des migrations <span id="applying-migrations"></span>
 
@@ -644,13 +670,13 @@ Pour mettre une base de données à jour à sa dernière structure, vous devez a
 yii migrate
 ```
 
-Cette commande liste toutes les migrations qui n'ont pas encore été appliquées. Si vous confirmez que vous voulez appliquer ces migrations, cela provoque l'exécution des méthodes `up()` ou `safeUp()` de chacune des nouvelles migrations, l'une après l'autre, dans l'ordre de leur horodatage. Si l'une de ces migrations échoue, la commande se termine sans appliquer les migrations qui restent. 
+Cette commande liste toutes les migrations qui n'ont pas encore été appliquées. Si vous confirmez que vous voulez appliquer ces migrations, cela provoque l'exécution des méthodes `up()` ou `safeUp()` de chacune des nouvelles migrations, l'une après l'autre, dans l'ordre de leur horodate. Si l'une de ces migrations échoue, la commande se termine sans appliquer les migrations qui restent. 
 
-> Tip: dans le cas où votre serveur ne vous offre pas de ligne de commande, vous pouvez essayer [Web shell](https://github.com/samdark/yii2-webshell).
+> Astuce : dans le cas où votre serveur ne vous offre pas de ligne de commande, vous pouvez essayer [Web shell](https://github.com/samdark/yii2-webshell).
 
 Pour chaque migration qui n'a pas été appliqué avec succès, la commande insère une ligne dans une table de base de données nommée `migration` pour enregistrer les applications réussies de la migration. Cela permet à l'outil de migration d'identifier les migrations qui ont été appliquées et celles qui ne l'ont pas été. 
 
-> Info: l'outil de migration crée automatiquement la table de `migration` dans la base de données spécifiée par l'option [[yii\console\controllers\MigrateController::db|db]] de la commande. Par défaut, la base de données est spécifiée dans le [composant d'application](structure-application-components.md) `db`.
+> Info: l'outil de migration crée automatiquement la table `migration` dans la base de données spécifiée par l'option [[yii\console\controllers\MigrateController::db|db]] de la commande. Par défaut, la base de données est spécifiée dans le [composant d'application](structure-application-components.md) `db`.
 
 Parfois, vous désirez peut-être appliquer une ou quelques migrations plutôt que toutes les migrations disponibles. Vous pouvez le faire en spécifiant le nombre de migrations que vous voulez appliquer en exécutant la commande. Par exemple, la commande suivante essaye d'appliquer les trois prochaines migrations disponibles :
 
@@ -680,6 +706,8 @@ Pour défaire une ou plusieurs migrations que ont été appliquées auparavant, 
 yii migrate/down     # défait la migration appliquée le plus récemment
 yii migrate/down 3   # défait les 3 migrations appliquées le plus récemment 
 
+```
+
 > Note: toutes les migrations ne sont PAS réversibles. Essayer de défaire de telles migrations provoque une erreur et arrête tout le processus de retour à l'état initial.
 
 
@@ -690,10 +718,18 @@ Refaire (ré-appliquer) des migrations signifie d'abord défaire les migrations 
 ```
 yii migrate/redo        # refait la dernière migration appliquée 
 yii migrate/redo 3      # refait les 3 dernière migrations appliquées
+
 ```
 
 > Note: si une  migration n'est pas réversible, vous ne serez pas en mesure de la refaire.
 
+## Rafraîchir des Migrations <span id="refreshing-migrations"></span>
+
+Deepuis la version 2.0.13, vous pouvez supprimer toutes les tables et clés étrangères de la base de données et ré-appliquer toutes les migrations depuis le début. 
+```
+yii migrate/fresh       # Tronçonne la base de données et applique toutes les migrations depuis le début
+
+```
 
 ## Lister des migrations <span id="listing-migrations"></span>
 
@@ -735,11 +771,11 @@ La commande de migration possède quelques options en ligne de commande qui peuv
 
 * `migrationPath`: string (valeur par défaut `@app/migrations`), spécifie le dossier qui stocke tous les fichiers de classe de  migration. Cela peut être spécifié soit comme un chemin de dossier, soit comme un [alias](concept-aliases.md) de chemin. Notez que le dossier doit exister sinon la commande déclenche une erreur.
 
-* `migrationTable`: string (valeur par défaut `migration`), spécifie le nom de la table de base de données pour stocker l'historique de migration. La table es créée automatiquement par la commande si elle n'existe pas encore. Vous pouvez aussi la créer à la main en utilisant la structure `version varchar(255) primary key, apply_time integer`.
+* `migrationTable`: string (valeur par défaut `migration`), spécifie le nom de la table de base de données pour stocker l'historique de migration. La table est créée automatiquement par la commande si elle n'existe pas encore. Vous pouvez aussi la créer à la main en utilisant la structure `version varchar(255) primary key, apply_time integer`.
 
 * `db`: string (valeur par défaut `db`), spécifie l'identifiant du [composant d'application](structure-application-components.md) base de données. Il représente la base de données à laquelle les migrations sont appliquées avec cette commande. 
 
-* `templateFile`: string (valeur par défaut `@yii/views/migration.php`), spécifie le chemin vers le fichier modèle qui est utilisé pour générer le squelette des fichiers de classe de migration. Cela peut être spécifié soit sous forme de chemin de fichier, soit sous forme d'[alias](concept-aliases.md).de chemin. Le fichier modèle est un script PHP dans lequel vous pouvez utiliser une variable prédéfinie nommée `$className` pour obtenir le nom de la classe de migration. 
+* `templateFile`: string (valeur par défaut `@yii/views/migration.php`), spécifie le chemin vers le fichier modèle qui est utilisé pour générer le squelette des fichiers de classe de migration. Cela peut être spécifié soit sous forme de chemin de fichier, soit sous forme d'[alias](concept-aliases.md) de chemin. Le fichier modèle est un script PHP dans lequel vous pouvez utiliser une variable prédéfinie nommée `$className` pour obtenir le nom de la classe de migration. 
 
 * `generatorTemplateFiles`: array (valeur par défaut `[
         'create_table' => '@yii/views/createTableMigration.php',
@@ -749,14 +785,14 @@ La commande de migration possède quelques options en ligne de commande qui peuv
         'create_junction' => '@yii/views/createTableMigration.php'
   ]`), spécifie les fichiers modèles pour générer le code de migration. Voir "[Génération des migrations](#generating-migrations)" pour plus de détails.
 
-* `fields`: array (tableau) de chaîne de caractères de définition de colonnes utilisées pour créer le code de migration. Valeur par défaut `[]`. Le format de chacune des définitions est `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Par exemple, `--fields=name:string(12):notNull` produit une colonne chaîne de caractères de taille 12 qui n'est pas nulle.
+* `fields`: array (tableau) de chaîne de caractères de définition de colonnes utilisées pour créer le code de migration. Valeur par défaut `[]`. Le format de chacune des définitions est `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Par exemple, `--fields=name:string(12):notNull` produit une colonne chaîne de caractères de taille 12 qui n'est pas `null` (nulle).
 
 L'exemple suivant montre comment vous pouvez utiliser ces options. 
 
 Par exemple, si vous voulez appliquer des migrations à un module `forum` dont les fichiers de migration sont situés dans le dossier `migrations` du module, vous pouvez utiliser la commande suivante :
 
 ```
-# appliquer les migrations d'un module forum sans interactivité
+# Appliquer les migrations d'un module forum sans interactivité
 yii migrate --migrationPath=@app/modules/forum/migrations --interactive=0
 ```
 
@@ -778,7 +814,86 @@ return [
 
 Avec la configuration ci-dessus, à chaque fois que vous exécutez la commande de migration, la table `backend_migration` est utilisée pour enregistrer l'historique de migration. Vous n'avez plus besoin de le spécifier via l'option en ligne de commande `migrationTable`.
 
+### Migrations avec espaces de noms <span id="namespaced-migrations"></span>
 
+Depuis la version 2.0.10, vous pouvez utiliser les espaces de noms pour les classes de migration. Vous pouvez spécifier la liste des espaces de noms des migrations via 
+[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. L'utilisation des espaces de noms pour les classes de migration vous permet l'utilisation de plusieurs emplacement pour les sources des migrations. Par exemple :
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => null, // désactive les migration sans espace de noms si app\migrations est listé ci-dessous
+            'migrationNamespaces' => [
+                'app\migrations', // Migration ordinaires pour l'ensemble de l'application
+                'module\migrations', // Migrations pour le module de projet spécifique
+                'some\extension\migrations', // Migrations pour l'extension spécifique 
+            ],
+        ],
+    ],
+];
+```
+
+> Note : les migrations appliquées appartenant à des espaces de noms différent créent un historique de migration **unique**, p. ex. vous pouvez être incapable d'appliquer ou d'inverser des migrations d'un espace de noms particulier seulement.
+
+Lors des opérations sur les migrations avec espaces de noms : la création, l'inversion, etc. vous devez spécifier l'espace de nom complet avant le nom de la migration.
+Notez que le caractère barre oblique inversée (`\`) est en général considéré comme un caractère spécial dans l'interprète de commandes, c'est pourquoi vous devez l'échapper correctement pour éviter des erreurs d'interprète de commandes ou des comportements incorrects. Par exemple :
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note : les migrations spécifiées via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] 
+ne peuvent pas contenir un espace de noms, les migrations avec espaces de noms peuvent être appliquée via la propriété [[yii\console\controllers\MigrateController::migrationNamespaces]].
+
+Depuis la version 2.0.12, la propriété [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] 
+accepte également un tableau pour spécifier de multiples dossiers contenant des migrations sans espaces de noms.
+Cela a été ajouté principalement pour être utilisé dans des projets existants qui utilisent des migrations provenant de différents emplacements. Ces migrations viennent principalement de
+sources externes, comme les extensions à Yii développées par d'autres développeurs,
+qui ne peuvent être facilement modifiées pour utiliser les espaces de noms lors du démarrage avec la nouvelle approche.
+
+
+### Migrations séparées <span id="separated-migrations"></span>
+
+Parfois, l'utilisation d'un historique unique de migration pour toutes les migrations du projet n'est pas souhaité. Par exemple : vous pouvez installer une extension 'blog', qui contient des fonctionnalités complètement séparées et contient ses propres migrations, qui ne devraient pas affecter celles dédiées aux fonctionnalités principales du projet.
+Si vous voulez qui plusieurs migrations soient appliquées et complétement tracées séparément l'une de l'autre, vous pouvez configurer de multiples commandes de migration qui utilisent des espaces de noms différents et des tables d'historique de migration différentes :
+
+
+```php
+return [
+    'controllerMap' => [
+        // Common migrations for the whole application
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+            'migrationPath' => null,
+        ],
+        // Migrations for the specific project's module
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+            'migrationPath' => null,
+        ],
+        // Migrations for the specific extension
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@yii/rbac/migrations',
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+Notez que pour synchroniser la base de données vous devez maintenant exécuter plusieurs commandes au lieu d'une seule : 
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
 ## Migration de multiples base de données <span id="migrating-multiple-databases"></span>
 
 Par défaut, les migrations sont appliquées à la même base de données spécifiée par le [composant d'application](structure-application-components.md) `db`. Si vous voulez que celles-ci soient appliquées à des bases de données différentes, vous pouvez spécifier l'option en ligne de commande `db` comme indiqué ci-dessous :
@@ -810,7 +925,7 @@ La migration ci-dessus est appliquée à `db2`, même si vous spécifiez une aut
 
 Si vous avez de multiples migrations qui utilisent la même base de données, il est recommandé que vous créiez une classe de migration de base avec le code `init()` ci-dessus. Ensuite, chaque classe de migration peut étendre cette classe de base.
 
-> Tip: en plus de définir la propriété [[yii\db\Migration::db|db]], vous pouvez aussi opérer sur différentes bases de données en créant de nouvelles connexions à ces bases de données dans vos classes de migration. Ensuite,vous utilisez les [méthodes des objets d'accès aux bases de données](db-dao.md) avec ces connexions pour manipuler différentes bases de données.
+> Astuce : en plus de définir la propriété [[yii\db\Migration::db|db]], vous pouvez aussi opérer sur différentes bases de données en créant de nouvelles connexions à ces bases de données dans vos classes de migration. Ensuite,vous utilisez les [méthodes des objets d'accès aux bases de données](db-dao.md) avec ces connexions pour manipuler différentes bases de données.
 
 Une autre stratégie que vous pouvez adopter pour appliquer des migrations à de multiples bases de données est de tenir ces migrations de différentes bases de données dans des chemins différents. Ensuite vous pouvez appliquer les migrations à ces bases de données dans des commandes séparées comme ceci :
 

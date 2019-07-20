@@ -91,8 +91,7 @@ public function fields()
 
 ### Переопределение `extraFields()` <span id="overriding-extra-fields"></span>
 
-По умолчанию, [[yii\base\Model::extraFields()]] ничего не возвращает, а [[yii\db\ActiveRecord::extraFields()]]
-возвращает названия заданных в БД связей.
+По умолчанию, [[yii\base\Model::extraFields()]] и [[yii\db\ActiveRecord::extraFields()]] возвращают пустой массив.
 
 Формат возвращаемых `extraFields()` данных такой же как у `fields()`. Как правило, `extraFields()`
 используется для указания полей, значения которых являются объектами. Например учитывая следующее объявление полей

@@ -67,7 +67,7 @@ use yii\helpers\Html;
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを構築することが出来ます。
 
 > Note: いくつかのウィジェットは、[[yii\base\Widget::end()]] が呼ばれるときに囲んだコンテンツを調整するため、
-> [出力バッファリング](http://php.net/manual/ja/book.outcontrol.php) を使用します。
+> [出力バッファリング](https://secure.php.net/manual/ja/book.outcontrol.php) を使用します。
 > この理由から、[[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しは、同じビュー・ファイルの中で発生するものと想定されています。
 > この規則に従わない場合は、予期しない出力結果が生じ得ます。
 
@@ -85,6 +85,10 @@ use yii\helpers\Html;
 
 
 ## ウィジェットを作成する <span id="creating-widgets"></span>
+
+ウィジェットは必要に従って二つの異なる方法で作成することが出来ます。
+
+### 1: `widget()` メソッドを利用する
 
 ウィジェットを作成するためには、[[yii\base\Widget]] を拡張して、[[yii\base\Widget::init()]] および/または
 [[yii\base\Widget::run()]] メソッドをオーバーライドします。
@@ -128,6 +132,21 @@ use app\components\HelloWidget;
 <?= HelloWidget::widget(['message' => 'おはよう']) ?>
 ```
 
+
+ウィジェットが大きなかたまりのコンテントをレンダーする必要がある場合もあります。
+コンテントを `run()` の中に埋め込むことも出来ますが、もっと良い方法は、コンテントを [view](structure-views.md) に置き、
+[[yii\base\Widget::render()]] を呼んでレンダーする方法です。例えば、
+
+```php
+public function run()
+{
+    return $this->render('hello');
+}
+```
+
+### 2: `begin()` と `end()` のメソッドを利用する
+
+これは上記のものと少し異なるだけのものです。
 下記は `HelloWidget` の変種で、`begin()` と `end()` の間に包まれたコンテントを受け取り、
 それを HTML エンコードして表示するものです。
 
@@ -168,20 +187,15 @@ use app\components\HelloWidget;
 ?>
 <?php HelloWidget::begin(); ?>
 
-    ... タグを含みうるコンテント ...
+    一つまたはそれ以上の <strong>HTML</strong> <pre>タグ</pre> を含みうるサンプル・コンテント
+
+    このコンテントが大きくなりすぎる場合は、サブ・ビューを使います。
+
+    例えば、
+
+    <?php echo $this->render('viewfile'); // 注意: この render() メソッドは \yii\base\View クラスのもの。コードのこの部分はビュー・ファイルの中にあり、Widget クラス・ファイルの中にはない ?>
 
 <?php HelloWidget::end(); ?>
-```
-
-場合によっては、ウィジェットが大きな固まりのコンテントを表示する必要があるかもしれません。
-コンテントを `run()` メソッドの中に埋め込むことも出来ますが、より良い方法は、コンテントを [ビュー](structure-views.md) の中に置いて、[[yii\base\Widget::render()]] を呼んでレンダリングすることです。
-例えば、
-
-```php
-public function run()
-{
-    return $this->render('hello');
-}
 ```
 
 デフォルトでは、ウィジェット用のビューは `WidgetPath/views` ディレクトリの中のファイルに保存すべきものです。

@@ -133,7 +133,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
      * @see $createStatus
-     * @see http://php.net/manual/en/language.operators.bitwise.php
+     * @see https://secure.php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */
     public function getCreateUrlStatus()

@@ -188,7 +188,7 @@ JS
 );
 ```
 
-上記のサンプル・コードは、可読性を高めるために、PHP の [ヒアドキュメント構文](http://php.net/manual/ja/language.types.string.php#language.types.string.syntax.heredoc) を使っています。
+上記のサンプル・コードは、可読性を高めるために、PHP の [ヒアドキュメント構文](https://secure.php.net/manual/ja/language.types.string.php#language.types.string.syntax.heredoc) を使っています。
 また、ヒアドキュメントは、たいていの IDE で、より良い構文ハイライトが可能になるので、
 インライン JavaScript、特に一行に収まらないものを書くときに推奨される方法です。
 変数 `$message` は PHP で生成され、[[yii\helpers\Json::htmlEncode|Json::htmlEncode]] のおかげで、適切な JS 構文の文字列を含むものになります。

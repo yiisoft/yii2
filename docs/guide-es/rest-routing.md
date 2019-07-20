@@ -40,16 +40,16 @@ Por ejemplo, el código anterior es equivalente a las siguientes reglas:
 Y los siguientes puntos finales del API son mantenidos por esta regla:
 
 * `GET /users`: lista de todos los usuarios página a página;
-* `HEAD /users`: muestra ĺa información resumén del usuario listado;
+* `HEAD /users`: muestra ĺa información resumen del usuario listado;
 * `POST /users`: crea un nuevo usuario;
 * `GET /users/123`: devuelve los detalles del usuario 123;
-* `HEAD /users/123`: muestra la información resúmen del usuario 123;
+* `HEAD /users/123`: muestra la información resumen del usuario 123;
 * `PATCH /users/123` y `PUT /users/123`: actualizan al usuario 123;
 * `DELETE /users/123`: borra el usuario 123;
 * `OPTIONS /users`: muestra los verbos soportados de acuerdo al punto final `/users`;
 * `OPTIONS /users/123`: muestra los verbos soportados de acuerdo al punto final `/users/123`.
 
-Puedes configurar las opciones  `only` y `except` para explícitamente listar cuáles acciones a soportar o cuáles
+Puedes configurar las opciones `only` y `except` para explícitamente listar cuáles acciones soportar o cuáles
 deshabilitar, respectivamente. Por ejemplo,
 
 ```php
@@ -60,8 +60,8 @@ deshabilitar, respectivamente. Por ejemplo,
 ],
 ```
 
-También puedes configurar las propiedades `patterns` o `extraPatterns` para redifinir patrones existentes o añadir nuevos soportados por esta regla.
-Por ejemplo, para soportar una nueva acción `search` por  el punto final `GET /users/search`, configura la opción `extraPatterns` como sigue,
+También puedes configurar las propiedades `patterns` o `extraPatterns` para redefinir patrones existentes o añadir nuevos soportados por esta regla.
+Por ejemplo, para soportar una nueva acción `search` para el punto final `GET /users/search`, configura la opción `extraPatterns` como sigue,
 
 ```php
 [
@@ -81,7 +81,7 @@ Puedes desactivar este comportamiento definiendo la propiedad [[yii\rest\UrlRule
   reglas especiales de pluralización. Por ejemplo, la palabra `box` (caja) será pluralizada como `boxes` en vez de `boxs`.
 
 En caso de que la pluralización automática no encaje en tus requerimientos, puedes además configurar la propiedad 
-[[yii\rest\UrlRule::controller]] para especificar exlpícitamente cómo mapear un nombre utilizado en un punto final URL
+[[yii\rest\UrlRule::controller]] para especificar explícitamente cómo mapear un nombre utilizado en un punto final URL
 a un ID de controlador. Por ejemplo, el siguiente código mapea el nombre `u` al ID del controlador `user`.  
  
 ```php

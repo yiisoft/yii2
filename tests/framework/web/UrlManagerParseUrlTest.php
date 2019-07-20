@@ -434,4 +434,32 @@ class UrlManagerParseUrlTest extends TestCase
             ]);
         }
     }
+
+    /**
+     * Test a scenario where catch-all rule is used at the end for a CMS but module names should use the module actions and controllers.
+     */
+    public function testModuleRoute()
+    {
+        $modules = 'user|my-admin';
+
+        $manager = $this->getUrlManager([
+            'rules' => [
+                "<module:$modules>" => '<module>',
+                "<module:$modules>/<controller>" => '<module>/<controller>',
+                "<module:$modules>/<controller>/<action>" => '<module>/<controller>/<action>',
+                '<url:[a-zA-Z0-9-/]+>' => 'site/index',
+            ],
+        ]);
+
+        $result = $manager->parseRequest($this->getRequest('user'));
+        $this->assertEquals(['user', []], $result);
+        $result = $manager->parseRequest($this->getRequest('user/somecontroller'));
+        $this->assertEquals(['user/somecontroller', []], $result);
+        $result = $manager->parseRequest($this->getRequest('user/somecontroller/someaction'));
+        $this->assertEquals(['user/somecontroller/someaction', []], $result);
+
+        $result = $manager->parseRequest($this->getRequest('users/somecontroller/someaction'));
+        $this->assertEquals(['site/index', ['url' => 'users/somecontroller/someaction']], $result);
+
+    }
 }

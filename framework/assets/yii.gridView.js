@@ -14,7 +14,7 @@
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
-            return methods.init.apply(this, arguments);
+                return methods.init.apply(this, arguments);
         } else {
             $.error('Method ' + method + ' does not exist in jQuery.yiiGridView');
             return false;
@@ -23,7 +23,8 @@
 
     var defaults = {
         filterUrl: undefined,
-        filterSelector: undefined
+        filterSelector: undefined,
+        filterOnFocusOut: true
     };
 
     var gridData = {};
@@ -103,6 +104,9 @@
                             enterPressed = false;
                             return;
                         }
+                    }
+                    if (!settings.filterOnFocusOut && event.type !== 'keydown') {
+                        return false;
                     }
 
                     methods.applyFilter.apply($e);
@@ -188,11 +192,11 @@
             var inputs = options['class'] ? "input." + options['class'] : "input[name='" + options.name + "']";
             var inputsEnabled = "#" + id + " " + inputs + ":enabled";
             initEventHandler($grid, 'checkAllRows', 'click.yiiGridView', checkAll, function () {
-                $grid.find(inputs + ":enabled").prop('checked', this.checked);
+                $grid.find(inputs + ":enabled").prop('checked', this.checked).change();
             });
             initEventHandler($grid, 'checkRow', 'click.yiiGridView', inputsEnabled, function () {
                 var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
-                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
+                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all).change();
             });
         },
 

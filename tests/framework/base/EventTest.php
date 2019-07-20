@@ -92,6 +92,37 @@ class EventTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/17336
+     */
+    public function testHasHandlersWithWildcard()
+    {
+        Event::on('\yiiunit\framework\base\*', 'save.*', function ($event) {
+            // do nothing
+        });
+
+        $this->assertTrue(Event::hasHandlers('yiiunit\framework\base\SomeInterface', 'save.it'), 'save.it');
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17377
+     */
+    public function testNoFalsePositivesWithHasHandlers()
+    {
+        $this->assertFalse(Event::hasHandlers(new \stdClass(), 'foobar'));
+
+        $component = new Component();
+        $this->assertFalse($component->hasEventHandlers('foobar'));
+    }
+
+    public function testOffUnmatchedHandler()
+    {
+        $this->assertFalse(Event::hasHandlers(Post::className(), 'afterSave'));
+        Event::on(Post::className(), 'afterSave', [$this, 'bla-bla']);
+        $this->assertFalse(Event::off(Post::className(), 'afterSave', [$this, 'bla-bla-bla']));
+        $this->assertTrue(Event::off(Post::className(), 'afterSave', [$this, 'bla-bla']));
+    }
+
+    /**
      * @depends testOn
      * @depends testHasHandlers
      */

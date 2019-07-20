@@ -55,6 +55,6 @@ Yii 2.0 は PHP 5.4.0 以上を必要とし、PHP 7 の最新バージョンで�
 
 Yii を使うためには、オブジェクト指向プログラミング (OOP) の基本的な知識が必要です。
 なぜなら、Yii は純粋な OOP ベースのフレームワークだからです。
-また、Yii 2.0 は [名前空間](http://php.net/manual/ja/language.namespaces.php) や [トレイト](http://php.net/manual/ja/language.oop5.traits.php) のような PHP の最新の機能を利用しています。
+また、Yii 2.0 は [名前空間](https://secure.php.net/manual/ja/language.namespaces.php) や [トレイト](https://secure.php.net/manual/ja/language.oop5.traits.php) のような PHP の最新の機能を利用しています。
 これらの概念を理解することは、Yii 2.0 を採用することを一層容易にするでしょう。
 
