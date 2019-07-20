@@ -429,4 +429,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return $columnType;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extractAlias($table)
+    {
+        if (preg_match('/^\[.*\]$/', $table)) {
+            return false;
+        }
+
+        return parent::extractAlias($table);
+    }
 }
