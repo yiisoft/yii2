@@ -8,10 +8,10 @@
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
- * Handles adding field_1, field_2 to table `{{%{table}}}`.
+ * Handles adding columns to table `{{%{table}}}`.
  */
 class {$class} extends Migration
 {
