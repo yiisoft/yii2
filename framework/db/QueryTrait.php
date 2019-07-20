@@ -290,6 +290,7 @@ trait QueryTrait
      *
      * The value is considered "empty", if one of the following conditions is satisfied:
      *
+     * - it is not set,
      * - it is `null`,
      * - an empty string (`''`),
      * - a string containing only whitespace characters,
@@ -300,7 +301,7 @@ trait QueryTrait
      */
     protected function isEmpty($value)
     {
-        return $value === '' || $value === [] || $value === null || is_string($value) && trim($value) === '';
+        return !isset($value) || $value === '' || $value === [] || $value === null || is_string($value) && trim($value) === '';
     }
 
     /**
