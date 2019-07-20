@@ -260,11 +260,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $column optional. The name of the column to be commented. If empty, the command will add the
      * comment to the table instead. The column name will be properly quoted by the method.
      * @return string the SQL statement for adding comment.
+     * @throws InvalidArgumentException if the table does not exist.
      * @since 2.0.24
      */
     protected function buildAddCommentSql($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
+
+        if ($tableSchema === null) {
+            throw new InvalidArgumentException("Table not found: $table");
+        }
 
         $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
         $tableName = "N" . $this->db->quoteValue($tableSchema->name);
@@ -321,11 +326,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $column optional. The name of the column whose comment will be removed. If empty, the command
      * will remove the comment from the table instead. The column name will be properly quoted by the method.
      * @return string the SQL statement for removing the comment.
+     * @throws InvalidArgumentException if the table does not exist.
      * @since 2.0.24
      */
     protected function buildRemoveCommentSql($table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
+
+        if ($tableSchema === null) {
+            throw new InvalidArgumentException("Table not found: $table");
+        }
 
         $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
         $tableName = "N" . $this->db->quoteValue($tableSchema->name);
