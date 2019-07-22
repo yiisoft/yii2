@@ -7,7 +7,7 @@ Yii Framework 2 Change Log
 - Bug #17219: Fixed quoting of table names with spaces in MSSQL (alexkart)
 - Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
 - Bug #17424: Subdomain support for `User::loginRequired` (alex-code)
-- Bug #17449: Fixed order of migration column build syntax for mysql - Comment got to be before check (choken)
+- Bug #17449: Fixed order of SQL column build syntax for MySQL migration (choken)
 
 
 2.0.23 July 16, 2019
