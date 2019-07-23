@@ -53,26 +53,26 @@ addons:
 matrix:
   fast_finish: true
   include:
-    - php: 7.3
+    - php: "7.3"
       env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
-    - php: 7.2
+    - php: "7.2"
       env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
     # run tests coverage on PHP 7.1
-    - php: 7.1
+    - php: "7.1"
       env:
         - TASK_TESTS_COVERAGE=1
         - PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
-    - php: 7.0
+    - php: "7.0"
 
-    - php: 5.6
+    - php: "5.6"
 
-    - php: 5.5
+    - php: "5.5"
       dist: trusty
 
-    - php: 5.4
+    - php: "5.4"
       dist: trusty
 
     # Test against HHVM 3.21 LTS version by using trusty
@@ -105,12 +105,14 @@ matrix:
 
     # have a separate branch for javascript tests
     - language: node_js
-      node_js: 6
+      node_js: "6"
       env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
       # overwrite services used for PHP tests
       services:
 
   allow_failures:
+    - php: "5.4"
+    - php: "5.5"
     - php: nightly
     - php: hhvm-3.21
     - php: hhvm-3.24
