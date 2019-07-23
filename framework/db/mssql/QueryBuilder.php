@@ -318,8 +318,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for removing a comment of a table or column. The command builded will check if a comment
-     * already exists before trying to perform the removing.
+     * Builds a SQL command for removing a comment from a table or a column. The command built will check if a comment
+     * already exists before trying to perform the removal.
      *
      * @param string $table the table that will have the comment removed or whose column will have the comment removed.
      * The table name will be properly quoted by the method.
