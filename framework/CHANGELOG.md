@@ -8,6 +8,8 @@ Yii Framework 2 Change Log
 - Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
 - Bug #17424: Subdomain support for `User::loginRequired` (alex-code)
 - Bug #16796: Fixed addition and removal of table and column comments in MSSQL (sdlins)
+- Bug #17449: Fixed order of SQL column build syntax for MySQL migration (choken)
+- Bug #17437: Fixed generating namespaced migrations (bizley)
 
 
 2.0.23 July 16, 2019
