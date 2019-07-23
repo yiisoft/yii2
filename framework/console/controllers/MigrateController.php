@@ -383,7 +383,7 @@ class MigrateController extends BaseMigrateController
      * @param string $name
      * @return string
      */
-    private function normalizedTableName($name)
+    private function normalizeTableName($name)
     {
         if (substr($name, -1) === '_') {
             $name = substr($name, 0, -1);
