@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.24 under development
 ------------------------
 
+- Bug #17457: Fixed `phpTypecast()` for MSSQL (alexkart)
 - Bug #17219: Fixed quoting of table names with spaces in MSSQL (alexkart)
 - Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
 - Bug #17424: Subdomain support for `User::loginRequired` (alex-code)
