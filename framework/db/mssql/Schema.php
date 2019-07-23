@@ -397,7 +397,7 @@ SQL;
             $info['column_default'] = null;
         }
         if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
-            $column->defaultValue = $column->phpTypecast($info['column_default']);
+            $column->defaultValue = $column->defaultPhpTypecast($info['column_default']);
         }
 
         return $column;
