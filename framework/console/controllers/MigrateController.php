@@ -419,8 +419,8 @@ class MigrateController extends BaseMigrateController
             $matches
         )) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
-            $firstTable = $this->normalizedTableName($matches[1]);
-            $secondTable = $this->normalizedTableName($matches[2]);
+            $firstTable = $this->normalizeTableName($matches[1]);
+            $secondTable = $this->normalizeTableName($matches[2]);
 
             $fields = array_merge(
                 [
@@ -450,18 +450,18 @@ class MigrateController extends BaseMigrateController
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add(.+)columns?_?to(.+)table$/i', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
-            $table = $this->normalizedTableName($matches[2]);
+            $table = $this->normalizeTableName($matches[2]);
         } elseif (preg_match('/^drop(.+)columns?_?from(.+)table$/i', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_column'];
-            $table = $this->normalizedTableName($matches[2]);
+            $table = $this->normalizeTableName($matches[2]);
         } elseif (preg_match('/^create(.+)table$/i', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['create_table'];
-            $table = $this->normalizedTableName($matches[1]);
+            $table = $this->normalizeTableName($matches[1]);
         } elseif (preg_match('/^drop(.+)table$/i', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
-            $table = $this->normalizedTableName($matches[1]);
+            $table = $this->normalizeTableName($matches[1]);
         }
 
         foreach ($foreignKeys as $column => $foreignKey) {
