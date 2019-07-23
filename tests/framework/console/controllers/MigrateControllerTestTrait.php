@@ -172,7 +172,7 @@ CODE;
     {
         $files = FileHelper::findFiles($this->migrationPath);
         $file = file_get_contents($files[0]);
-        if (preg_match('/class (m\d+_\d+_.*) extends Migration/', $file, $match)) {
+        if (preg_match('/class (m\d+_?\d+_?.*) extends Migration/i', $file, $match)) {
             $file = str_replace($match[1], $class, $file);
         }
         $this->tearDownMigrationPath();
