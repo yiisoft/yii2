@@ -11,5 +11,10 @@ else
   else
     echo "skipping memcache on php 7"
   fi
-  echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+  if [ $(phpenv version-name) = '5.6' ]; then
+    echo "skipping memcache on php 5.6 since it is broken for xenial"
+  else
+    echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  fi
 fi
