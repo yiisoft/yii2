@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #17219: Fixed quoting of table names with spaces in MSSQL (alexkart)
 - Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
 - Bug #17424: Subdomain support for `User::loginRequired` (alex-code)
+- Bug #16796: Fixed addition and removal of table and column comments in MSSQL (sdlins)
 
 
 2.0.23 July 16, 2019
@@ -17,7 +18,6 @@ Yii Framework 2 Change Log
 - Bug #17413, #17418, #17426, #17431: Fixed MSSQL tests (alexkart)
 - Bug #17420: Fixed loading of column default values for MSSQL (alexkart)
 - Bug #17435: Fixed `i18n_init` migration for MSSQL (alexkart)
-- Bug #16796: Fixed addition and removal of table|column comments in mssql (sdlins)
 
 
 2.0.22 July 02, 2019
