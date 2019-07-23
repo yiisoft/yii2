@@ -1,9 +1,4 @@
-#
-# Travis Setup
-#
-
-# use ubuntu trusty for newer version of nodejs, used for JS testing
-dist: trusty
+dist: xenial
 
 # faster builds on new travis setup not using sudo
 # temporary disable, see https://github.com/travis-ci/travis-ci/issues/6842
@@ -52,36 +47,33 @@ cache:
 # try running against postgres 9.6
 addons:
   postgresql: "9.6"
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
 matrix:
   fast_finish: true
   include:
-    - php: 7.3
+    - php: "7.3"
       env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
-    - php: 7.2
+    - php: "7.2"
       env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
     # run tests coverage on PHP 7.1
-    - php: 7.1
+    - php: "7.1"
       env:
         - TASK_TESTS_COVERAGE=1
         - PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
-    - php: 7.0
+    - php: "7.0"
 
-    - php: 5.6
+    - php: "5.6"
 
-    - php: 5.5
+    - php: "5.5"
+      dist: trusty
 
-    - php: 5.4
+    - php: "5.4"
+      dist: trusty
 
     # Test against HHVM 3.21 LTS version by using trusty
     - php: hhvm-3.21
@@ -90,11 +82,6 @@ matrix:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
         postgresql: "9.6"
-        apt:
-          sources:
-            - mysql-5.7-trusty
-          packages:
-            - mysql-server
       services:
         - mysql
         - postgresql
@@ -107,11 +94,6 @@ matrix:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
         postgresql: "9.6"
-        apt:
-          sources:
-            - mysql-5.7-trusty
-          packages:
-            - mysql-server
       services:
         - mysql
         - postgresql
@@ -123,12 +105,14 @@ matrix:
 
     # have a separate branch for javascript tests
     - language: node_js
-      node_js: 6
+      node_js: "6"
       env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
       # overwrite services used for PHP tests
       services:
 
   allow_failures:
+    - php: "5.4"
+    - php: "5.5"
     - php: nightly
     - php: hhvm-3.21
     - php: hhvm-3.24
@@ -186,7 +170,7 @@ before_script:
       php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
       psql --version
       mysql --version
-      sudo mysql_upgrade
+      sudo mysql_upgrade || echo "MySQL is already up to date"
     fi
   - |
     if [ $TASK_TESTS_JS == 1 ]; then
