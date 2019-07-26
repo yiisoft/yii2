@@ -125,7 +125,7 @@ Cache-Control: public, max-age=3600
 
 ## 会话缓存限制器 <span id="session-cache-limiter"></span>
 
-当页面使用 session 时，PHP 将会按照 PHP.INI 
+当页面使用 session 时，PHP 将会按照 PHP INI 
 中所设置的 `session.cache_limiter` 值自动发送一些缓存相关的 HTTP 头。
 这些 HTTP 头有可能会干扰你原本设置的 `HttpCache` 或让其失效。
 为了避免此问题，默认情况下 `HttpCache` 禁止自动发送这些头。
