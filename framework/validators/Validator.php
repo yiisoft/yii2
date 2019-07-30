@@ -277,14 +277,15 @@ class Validator extends Component
             return $this->getAttributeNames();
         }
 
-        if (is_string($attributes)) {
+        if (is_scalar($attributes)) {
             $attributes = [$attributes];
         }
 
         $newAttributes = [];
         $attributeNames = $this->getAttributeNames();
         foreach ($attributes as $attribute) {
-            if (in_array($attribute, $attributeNames, true)) {
+            // do not strict compare, otherwise int attributes would fail due to to string conversion in getAttributeNames() using ltrim().
+            if (in_array($attribute, $attributeNames, false)) {
                 $newAttributes[] = $attribute;
             }
         }

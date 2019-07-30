@@ -312,7 +312,8 @@ or an anonymous function like the following one:
 
 ```php
 ArrayHelper::multisort($data, function($item) {
-    return isset($item['age']) ? ['age', 'name'] : 'name';
+    // sort by age if it exists or by name otherwise
+    return isset($item['age']) ? $item['age'] : $item['name'];
 });
 ```
 

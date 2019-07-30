@@ -401,7 +401,21 @@ class Response extends \yii\base\Response
             if ($cookie->expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
-            setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+            if (PHP_VERSION_ID >= 70300) {
+                setcookie($cookie->name, $value, [
+                    'expires' => $cookie->expire,
+                    'path' => $cookie->path,
+                    'domain' => $cookie->domain,
+                    'secure' => $cookie->secure,
+                    'httpOnly' => $cookie->httpOnly,
+                    'sameSite' => !empty($cookie->sameSite) ? $cookie->sameSite : null,
+                ]);
+            } else {
+                if (!is_null($cookie->sameSite)) {
+                    throw new InvalidConfigException(get_class($cookie) . '::sameSite is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
+                }
+                setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+            }
         }
     }
 
@@ -767,8 +781,8 @@ class Response extends \yii\base\Response
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
         $fallbackName = str_replace(
-            ['%', '/', '\\', '"'],
-            ['_', '_', '_', '\\"'],
+            ['%', '/', '\\', '"', "\x7F"],
+            ['_', '_', '_', '\\"', '_'],
             Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
         );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));

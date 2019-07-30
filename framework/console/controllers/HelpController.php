@@ -212,7 +212,7 @@ class HelpController extends Controller
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
             if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strncmp($name, 'action', 6) === 0) {
-                $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
+                $actions[] = $this->camel2id(substr($name, 6));
             }
         }
         sort($actions);
@@ -556,5 +556,17 @@ class HelpController extends Controller
     protected function getDefaultHelpHeader()
     {
         return "\nThis is Yii version " . \Yii::getVersion() . ".\n";
+    }
+
+    /**
+     * Converts a CamelCase action name into an ID in lowercase.
+     * Words in the ID are concatenated using the specified character '-'.
+     * For example, 'CreateUser' will be converted to 'create-user'.
+     * @param string $name the string to be converted
+     * @return string the resulting ID
+     */
+    private function camel2id($name)
+    {
+        return mb_strtolower(trim(preg_replace('/\p{Lu}/u', '-\0', $name), '-'), 'UTF-8');
     }
 }

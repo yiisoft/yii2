@@ -192,11 +192,11 @@
             var inputs = options['class'] ? "input." + options['class'] : "input[name='" + options.name + "']";
             var inputsEnabled = "#" + id + " " + inputs + ":enabled";
             initEventHandler($grid, 'checkAllRows', 'click.yiiGridView', checkAll, function () {
-                $grid.find(inputs + ":enabled").prop('checked', this.checked);
+                $grid.find(inputs + ":enabled").prop('checked', this.checked).change();
             });
             initEventHandler($grid, 'checkRow', 'click.yiiGridView', inputsEnabled, function () {
                 var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
-                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
+                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all).change();
             });
         },
 

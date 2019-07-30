@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use DateTime;
+use Exception;
 use IntlDateFormatter;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -194,6 +195,13 @@ class DateValidator extends Validator
      * @since 2.0.4
      */
     public $minString;
+    /**
+     * @var bool set this parameter to true if you need strict date format validation (e.g. only such dates pass
+     * validation for the following format 'yyyy-MM-dd': '0011-03-25', '2019-04-30' etc. and not '18-05-15',
+     * '2017-Mar-14' etc. which pass validation if this parameter is set to false)
+     * @since 2.0.22
+     */
+    public $strictDateFormat = false;
 
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
@@ -239,10 +247,10 @@ class DateValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
         if ($this->maxString === null) {
-            $this->maxString = (string) $this->max;
+            $this->maxString = (string)$this->max;
         }
         if ($this->minString === null) {
-            $this->minString = (string) $this->min;
+            $this->minString = (string)$this->min;
         }
         if ($this->max !== null && is_string($this->max)) {
             $timestamp = $this->parseDateValue($this->max);
@@ -335,6 +343,7 @@ class DateValidator extends Validator
      * @param string $value string representing date
      * @param string $format expected date format
      * @return int|false a UNIX timestamp or `false` on failure.
+     * @throws InvalidConfigException
      */
     private function parseDateValueFormat($value, $format)
     {
@@ -364,21 +373,7 @@ class DateValidator extends Validator
      */
     private function parseDateValueIntl($value, $format)
     {
-        if (isset($this->_dateFormats[$format])) {
-            if ($this->type === self::TYPE_DATE) {
-                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
-            } elseif ($this->type === self::TYPE_DATETIME) {
-                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $this->timeZone);
-            } elseif ($this->type === self::TYPE_TIME) {
-                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $this->timeZone);
-            } else {
-                throw new InvalidConfigException('Unknown validation type set for DateValidator::$type: ' . $this->type);
-            }
-        } else {
-            // if no time was provided in the format string set time to 0 to get a simple date timestamp
-            $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
-            $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $hasTimeInfo ? $this->timeZone : 'UTC', null, $format);
-        }
+        $formatter = $this->getIntlDateFormatter($format);
         // enable strict parsing to avoid getting invalid date values
         $formatter->setLenient(false);
 
@@ -386,11 +381,50 @@ class DateValidator extends Validator
         // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
         $parsePos = 0;
         $parsedDate = @$formatter->parse($value, $parsePos);
-        if ($parsedDate === false || $parsePos !== mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
+        $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
+        if ($parsedDate === false || $parsePos !== $valueLength || ($this->strictDateFormat && $formatter->format($parsedDate) !== $value)) {
             return false;
         }
 
         return $parsedDate;
+    }
+
+    /**
+     * Creates IntlDateFormatter
+     *
+     * @param $format string date format
+     * @return IntlDateFormatter
+     * @throws InvalidConfigException
+     */
+    private function getIntlDateFormatter($format)
+    {
+        if (!isset($this->_dateFormats[$format])) {
+            // if no time was provided in the format string set time to 0 to get a simple date timestamp
+            $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
+            $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $hasTimeInfo ? $this->timeZone : 'UTC', null, $format);
+
+            return $formatter;
+        }
+
+        if ($this->type === self::TYPE_DATE) {
+            $dateType = $this->_dateFormats[$format];
+            $timeType = IntlDateFormatter::NONE;
+            $timeZone = 'UTC';
+        } elseif ($this->type === self::TYPE_DATETIME) {
+            $dateType = $this->_dateFormats[$format];
+            $timeType = $this->_dateFormats[$format];
+            $timeZone = $this->timeZone;
+        } elseif ($this->type === self::TYPE_TIME) {
+            $dateType = IntlDateFormatter::NONE;
+            $timeType = $this->_dateFormats[$format];
+            $timeZone = $this->timeZone;
+        } else {
+            throw new InvalidConfigException('Unknown validation type set for DateValidator::$type: ' . $this->type);
+        }
+
+        $formatter = new IntlDateFormatter($this->locale, $dateType, $timeType, $timeZone);
+
+        return $formatter;
     }
 
     /**
@@ -406,7 +440,7 @@ class DateValidator extends Validator
 
         $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
         $errors = DateTime::getLastErrors();
-        if ($date === false || $errors['error_count'] || $errors['warning_count']) {
+        if ($date === false || $errors['error_count'] || $errors['warning_count'] || ($this->strictDateFormat && $date->format($format) !== $value)) {
             return false;
         }
 
@@ -422,6 +456,7 @@ class DateValidator extends Validator
      * @param int $timestamp
      * @param string $format
      * @return string
+     * @throws Exception
      */
     private function formatTimestamp($timestamp, $format)
     {
