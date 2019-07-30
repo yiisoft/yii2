@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #16796: Fixed addition and removal of table and column comments in MSSQL (sdlins)
 - Bug #17449: Fixed order of SQL column build syntax for MySQL migration (choken)
 - Bug #17437: Fixed generating namespaced migrations (bizley)
+- Bug #17469: Fixed updating `Yii` logger instance when setting new logger via configuration (samdark)
 
 
 2.0.23 July 16, 2019
