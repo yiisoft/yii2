@@ -33,7 +33,6 @@ env:
 
 services:
   - memcached
-  - mysql
   - postgresql
   - docker
 
@@ -111,8 +110,6 @@ matrix:
       services:
 
   allow_failures:
-    - php: "5.4"
-    - php: "5.5"
     - php: nightly
     - php: hhvm-3.21
     - php: hhvm-3.24
@@ -135,6 +132,7 @@ install:
       tests/data/travis/apc-setup.sh
       tests/data/travis/memcache-setup.sh
       tests/data/travis/imagick-setup.sh
+      source tests/data/travis/mysql-setup.sh
       source tests/data/travis/mssql-setup.sh
     fi
 
@@ -181,10 +179,10 @@ before_script:
   # initialize databases
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
-      mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
-      mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
-      mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
+      travis_retry mysql -h 127.0.0.1 -u root -proot -e 'CREATE DATABASE `yiitest`;';
+      mysql -h 127.0.0.1 -u root -proot -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
+      mysql -h 127.0.0.1 -u root -proot -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
+      mysql -h 127.0.0.1 -u root -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
       psql -U postgres -c 'CREATE DATABASE yiitest;';
     fi
 
