@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.25 under development
 ------------------------
 
-- no changes in this release.
+- Bug #8225: Fixed ajax Validation with checkboxList only on first select (execut)
 
 
 2.0.24 July 30, 2019
