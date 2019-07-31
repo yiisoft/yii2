@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.25 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15779: If directory path is passed to `FileHelper::unlink()` and directory has files it will not delete files in this directory on Windows now (alexkart)
 
 
 2.0.24 July 30, 2019
