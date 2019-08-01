@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17473: Fixed `SimpleConditionBuilder::build()` when column is not a string (alexkart)
+- Bug #17486: Fixed error when using `batch()` without `$db` parameter with MSSQL (alexkart)
 
 
 2.0.24 July 30, 2019

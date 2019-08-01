@@ -108,6 +108,16 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $this->assertCount(0, $customers[2]->orders);
     }
 
+    public function testBatchWithoutDbParameter()
+    {
+        $query = Customer::find()->orderBy('id')->limit(3);
+        $customers = $this->getAllRowsFromBach($query->batch(2));
+        $this->assertCount(3, $customers);
+        $this->assertEquals('user1', $customers[0]->name);
+        $this->assertEquals('user2', $customers[1]->name);
+        $this->assertEquals('user3', $customers[2]->name);
+    }
+
     protected function getAllRowsFromBach(BatchQueryResult $batch)
     {
         $allRows = [];
