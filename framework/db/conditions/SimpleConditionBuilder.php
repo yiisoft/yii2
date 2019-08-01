@@ -10,7 +10,6 @@ namespace yii\db\conditions;
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
-use yii\db\Query;
 
 /**
  * Class NotConditionBuilder builds objects of [[SimpleCondition]]
@@ -37,7 +36,7 @@ class SimpleConditionBuilder implements ExpressionBuilderInterface
         $column = $expression->getColumn();
         $value = $expression->getValue();
 
-        if (strpos($column, '(') === false) {
+        if (is_string($column) && strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
 
