@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.25 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17486: Fixed error when using `batch()` without `$db` parameter with MSSQL (alexkart)
 
 
 2.0.24 July 30, 2019
