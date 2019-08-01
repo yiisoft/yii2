@@ -151,8 +151,8 @@ class BatchQueryResult extends BaseObject implements \Iterator
 
     /**
      * Reads and collects rows for batch
-     * @since 2.0.23
      * @return array
+     * @since 2.0.23
      */
     protected function getRows()
     {
@@ -165,7 +165,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
             }
         } catch (\PDOException $e) {
             $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
-            if ($this->db->driverName !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
+            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
                 throw $e;
             }
         }
@@ -201,5 +201,23 @@ class BatchQueryResult extends BaseObject implements \Iterator
     public function valid()
     {
         return !empty($this->_batch);
+    }
+
+    /**
+     * Gets db driver name from the db connection that is passed to the `batch()`, if it is not passed it uses
+     * connection from the active record model
+     * @return string|null
+     */
+    private function getDbDriverName()
+    {
+        if (isset($this->db->driverName)) {
+            return $this->db->driverName;
+        }
+
+        if (isset($this->_batch[0]->db->driverName)) {
+            return $this->_batch[0]->db->driverName;
+        }
+
+        return null;
     }
 }
