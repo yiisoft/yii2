@@ -251,18 +251,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
      /**
-     * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
-     * already exists. If so, it will be updated, otherwise, it will be added.
-     *
-     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-     * @param string $table the table to be commented or whose column is to be commented. The table name will be
-     * properly quoted by the method.
-     * @param string $column optional. The name of the column to be commented. If empty, the command will add the
-     * comment to the table instead. The column name will be properly quoted by the method.
-     * @return string the SQL statement for adding a comment.
-     * @throws InvalidArgumentException if the table does not exist.
-     * @since 2.0.24
-     */
+      * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
+      * already exists. If so, it will be updated, otherwise, it will be added.
+      *
+      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+      * @param string $table the table to be commented or whose column is to be commented. The table name will be
+      * properly quoted by the method.
+      * @param string $column optional. The name of the column to be commented. If empty, the command will add the
+      * comment to the table instead. The column name will be properly quoted by the method.
+      * @return string the SQL statement for adding a comment.
+      * @throws InvalidArgumentException if the table does not exist.
+      * @since 2.0.24
+      */
     protected function buildAddCommentSql($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
