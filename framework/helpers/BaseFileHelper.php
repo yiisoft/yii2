@@ -424,6 +424,9 @@ class BaseFileHelper
             return unlink($path);
         } catch (ErrorException $e) {
             // last resort measure for Windows
+            if (is_dir($path) && count(static::findFiles($path)) !== 0) {
+                return false;
+            }
             if (function_exists('exec') && file_exists($path)) {
                 exec('DEL /F/Q ' . escapeshellarg($path));
 
@@ -784,8 +787,8 @@ class BaseFileHelper
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
      * @param bool $caseSensitive
-     * @throws InvalidArgumentException
      * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
+     * @throws InvalidArgumentException
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
