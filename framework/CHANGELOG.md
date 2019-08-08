@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #8225: Fixed ajax Validation with checkboxList only on first select (execut)
+- Bug #15779: If directory path is passed to `FileHelper::unlink()` and directory has files it will not delete files in this directory on Windows now (alexkart)
 - Bug #17473: Fixed `SimpleConditionBuilder::build()` when column is not a string (alexkart)
 - Bug #17486: Fixed error when using `batch()` without `$db` parameter with MSSQL (alexkart)
 
