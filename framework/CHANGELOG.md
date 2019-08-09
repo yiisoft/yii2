@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #17449: Fixed order of SQL column build syntax for MySQL migration (choken)
 - Bug #17457: Fixed `phpTypecast()` for MSSQL (alexkart)
 - Bug #17469: Fixed updating `Yii` logger instance when setting new logger via configuration (samdark)
+- Enh #17502: Added `data-name` attribute to `ActionColumn::initDefaultButton()` (rhertogh)
 
 
 2.0.23 July 16, 2019
