@@ -267,8 +267,10 @@ class CacheController extends Controller
 
             if ($component instanceof CacheInterface) {
                 $caches[$name] = get_class($component);
-            } elseif (is_array($component) && isset($component['class']) && $this->isCacheClass($component['class'])) {
-                $caches[$name] = $component['class'];
+            } elseif (is_array($component) && isset($component['class'])) {
+                if($this->isCacheClass($component['class'])){
+                    $caches[$name] = $component['class'];
+                }
             } elseif (is_string($component) && $this->isCacheClass($component)) {
                 $caches[$name] = $component;
             } elseif (Yii::$app->has($name)) {
