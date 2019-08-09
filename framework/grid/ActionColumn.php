@@ -178,6 +178,7 @@ class ActionColumn extends Column
                     'title' => $title,
                     'aria-label' => $title,
                     'data-pjax' => '0',
+                    'data-name' => $name,
                 ], $additionalOptions, $this->buttonOptions);
                 $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
                 return Html::a($icon, $url, $options);
