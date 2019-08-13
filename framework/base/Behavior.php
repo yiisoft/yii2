@@ -30,7 +30,7 @@ class Behavior extends BaseObject
     /**
      * @var Array Attached events handlers
      */
-    public $_attachedEvents = [];
+    private $_attachedEvents = [];
 
     /**
      * Declares event handlers for the [[owner]]'s events.
