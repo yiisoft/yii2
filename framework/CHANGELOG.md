@@ -5,8 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17223: Fixed detaching a behavior event when it is a Closure instance (GHopperMSK)
-- Bug #17457: Fixed `phpTypecast()` for MSSQL (alexkart)
-- Bug #17219: Fixed quoting of table names with spaces in MSSQL (alexkart)
 - Bug #15779: If directory path is passed to `FileHelper::unlink()` and directory has files it will not delete files in this directory on Windows now (alexkart)
 - Bug #17473: Fixed `SimpleConditionBuilder::build()` when column is not a string (alexkart)
 - Bug #17486: Fixed error when using `batch()` without `$db` parameter with MSSQL (alexkart)
