@@ -27,6 +27,10 @@ class Behavior extends BaseObject
      */
     public $owner;
 
+    /**
+     * @var Array Attached events handlers
+     */
+    private $_attachedEvents = [];
 
     /**
      * Declares event handlers for the [[owner]]'s events.
@@ -72,6 +76,7 @@ class Behavior extends BaseObject
     {
         $this->owner = $owner;
         foreach ($this->events() as $event => $handler) {
+            $this->_attachedEvents[$event] = $handler;
             $owner->on($event, is_string($handler) ? [$this, $handler] : $handler);
         }
     }
@@ -85,9 +90,10 @@ class Behavior extends BaseObject
     public function detach()
     {
         if ($this->owner) {
-            foreach ($this->events() as $event => $handler) {
+            foreach ($this->_attachedEvents as $event => $handler) {
                 $this->owner->off($event, is_string($handler) ? [$this, $handler] : $handler);
             }
+            $this->_attachedEvents = [];
             $this->owner = null;
         }
     }
