@@ -93,6 +93,7 @@ class Behavior extends BaseObject
             foreach ($this->_attachedEvents as $event => $handler) {
                 $this->owner->off($event, is_string($handler) ? [$this, $handler] : $handler);
             }
+            $this->_attachedEvents = [];
             $this->owner = null;
         }
     }
