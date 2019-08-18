@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.26 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17511: Fixed IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
 
 
 2.0.25 August 13, 2019
