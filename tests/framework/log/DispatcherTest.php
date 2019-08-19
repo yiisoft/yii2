@@ -88,16 +88,6 @@ namespace yiiunit\framework\log {
             $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
         }
 
-        public function testSetNewLoggerUpdatesGlobalLogger()
-        {
-            $dispatcher = new Dispatcher();
-            $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
-
-            $newLogger = new Logger();
-            $dispatcher->setLogger($newLogger);
-            $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
-        }
-
         /**
          * @covers \yii\log\Dispatcher::setLogger()
          */
