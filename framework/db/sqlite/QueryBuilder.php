@@ -75,7 +75,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return $this->insert($table, $insertColumns, $params);
         }
         if ($updateNames === []) {
-            // there is no columns to update
+            // there are no columns to update
             $updateColumns = false;
         }
 

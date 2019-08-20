@@ -279,7 +279,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return $insertSql;
         }
         if ($updateNames === []) {
-            // there is no columns to update
+            // there are no columns to update
             $updateColumns = false;
         }
 
