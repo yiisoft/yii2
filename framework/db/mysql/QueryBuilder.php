@@ -278,6 +278,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $insertSql;
         }
+        if ($updateNames === []) {
+            // there is no columns to update
+            $updateColumns = false;
+        }
 
         if ($updateColumns === true) {
             $updateColumns = [];

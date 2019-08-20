@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
 DROP TABLE IF EXISTS "T_upsert";
+DROP TABLE IF EXISTS "T_upsert_1";
 
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -415,4 +416,9 @@ CREATE TABLE "T_upsert"
     "orders" INT NOT NULL DEFAULT 0,
     "profile_id" INT NULL,
     UNIQUE ("email", "recovery_email")
+);
+
+CREATE TABLE "T_upsert_1"
+(
+    "a" INT NOT NULL PRIMARY KEY
 );
