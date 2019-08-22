@@ -40,7 +40,7 @@ class Controller extends Component implements ViewContextInterface
     /**
      * Action ID to method name generation regexp
      */
-    const ACTION_ID_METHOD_REGEXP = '!^([a-z0-9_]+-)*[a-z0-9_]+$!';
+    const ACTION_ID_METHOD_REGEXP = '/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/';
 
     /**
      * @var string the ID of this controller.
