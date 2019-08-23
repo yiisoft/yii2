@@ -4,10 +4,10 @@ Yii Framework 2 Change Log
 2.0.26 under development
 ------------------------
 
+- Bug #17434: Fix IE11 Ajax redirect 308 (kamarton)
 - Bug #17504: Fix upsert when `$updateColumns = true` but there are no columns to update in the table (alexkart)
 - Bug #17511: Fixed IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
 - Bug #17507: Fixed regular expression escaping and simpler condition in `Controller::createAction()` (kamarton)
-
 
 2.0.25 August 13, 2019
 ----------------------

@@ -857,18 +857,22 @@ class Response extends \yii\base\Response
             // ensure the route is absolute
             $url[0] = '/' . ltrim($url[0], '/');
         }
+        $request = Yii::$app->getRequest();
         $url = Url::to($url);
         if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
-            $url = Yii::$app->getRequest()->getHostInfo() . $url;
+            $url = $request->getHostInfo() . $url;
         }
 
         if ($checkAjax) {
-            if (Yii::$app->getRequest()->getIsAjax()) {
-                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
+            if ($request->getIsAjax()) {
+                $is302 = $statusCode === 302;
+                if ($is302 && $request->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null) {
                     // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
                     $statusCode = 200;
+                } elseif ($is302 && $request->isAjax && $request->isPost && preg_match('/Trident.*\brv\:11\./' /* IE11 */, $request->userAgent)) {
+                    $statusCode = 308;
                 }
-                if (Yii::$app->getRequest()->getIsPjax()) {
+                if ($request->getIsPjax()) {
                     $this->getHeaders()->set('X-Pjax-Url', $url);
                 } else {
                     $this->getHeaders()->set('X-Redirect', $url);
