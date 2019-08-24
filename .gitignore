@@ -46,3 +46,4 @@ phpunit.phar
 # NPM packages
 /node_modules
 .env
+.package-lock.json
