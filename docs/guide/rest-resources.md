@@ -259,3 +259,65 @@ Since version 2.0.13 Yii provides a facility to filter collections. An example c
 filtering could be done as described in
 [Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
 section of Data Providers guide.
+
+To add filtering, first override the default Index action in the controller
+
+```php
+	public function actions()
+	{
+		$actions = parent::actions();
+		$actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+		return $actions;
+	}
+ ```
+ 
+ Then add a new prepareDataProvider function to implement the ActiveDataFilter
+ 
+ ```php
+ 	public function prepareDataProvider()
+	{
+		$filter = new ActiveDataFilter([
+			'searchModel' => 'app\models\UsersSearch'
+		]);
+
+		$filterCondition = null;
+
+		// You may load filters from any source. For example,
+		// if you prefer JSON in request body,
+		// use Yii::$app->request->getBodyParams() below:
+		if ($filter->load(\Yii::$app->request->get())) { 
+			$filterCondition = $filter->build();
+			if ($filterCondition === false) {
+				// Serializer would get errors out of it
+				return $filter;
+			}
+		}
+
+		$query = Users::find();
+		if ($filterCondition !== null) {
+			$query->andWhere($filterCondition);
+		}
+
+		return new ActiveDataProvider([
+			'query' => $query,
+		]);
+	}
+ ```
+ 
+Finaly implement the UsersSearch Model. Note that the search model only contains the safe fields. The filter functions are performed by the ActiveDataFilter
+
+```php
+use yii\base\Model;
+use app\models\Users;
+
+class UsersSearch extends Users 
+{
+    public function rules()
+    {
+        return [
+            [['id'], 'integer'],
+            [['name', 'email'], 'safe'],
+        ];
+    }
+}
+```
