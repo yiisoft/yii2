@@ -131,7 +131,6 @@ class Dispatcher extends Component
         }
         $this->_logger = $value;
         $this->_logger->dispatcher = $this;
-        Yii::setLogger($this->_logger);
     }
 
     /**

@@ -494,7 +494,7 @@ class ModelTest extends TestCase
             return;
         }
 
-        $model = include 'stub/AnonymousModelClass.php';
+        $model = require __DIR__ . '/stub/AnonymousModelClass.php';
 
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('The "formName()" method should be explicitly defined for anonymous models');
