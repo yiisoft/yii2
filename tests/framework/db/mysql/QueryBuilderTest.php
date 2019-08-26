@@ -256,6 +256,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             'query, values and expressions without update part' => [
                 3 => 'INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]] ON DUPLICATE KEY UPDATE `ts`=:qp1, [[orders]]=T_upsert.orders + 1',
             ],
+            'no columns to update' => [
+                3 => 'INSERT INTO `T_upsert_1` (`a`) VALUES (:qp0) ON DUPLICATE KEY UPDATE `a`=`T_upsert_1`.`a`',
+            ],
         ];
         $newData = parent::upsertProvider();
         foreach ($concreteData as $testName => $data) {

@@ -74,6 +74,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
         $insertSql = 'INSERT OR IGNORE INTO ' . $this->db->quoteTableName($table)

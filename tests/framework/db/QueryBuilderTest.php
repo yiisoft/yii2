@@ -2171,6 +2171,17 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     ':qp1' => 0,
                 ],
             ],
+            'no columns to update' => [
+                'T_upsert_1',
+                [
+                    'a' => 1,
+                ],
+                true,
+                null,
+                [
+                    ':qp0' => 1,
+                ],
+            ],
         ];
     }
 
@@ -2182,6 +2193,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array|null $updateColumns
      * @param string|string[] $expectedSQL
      * @param array $expectedParams
+     * @throws \yii\base\NotSupportedException
+     * @throws \Exception
      */
     public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
     {

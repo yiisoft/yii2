@@ -76,6 +76,35 @@ class ControllerTest extends TestCase
             ['\yiiunit\framework\base\Test1Controller', 'test-test_test_2', 'actionTestTest_test_2'],
         ];
     }
+
+    /**
+     * @param $input
+     * @param $expected
+     *
+     * @dataProvider actionIdMethodProvider
+     */
+    public function testActionIdMethod($input, $expected)
+    {
+        $this->assertSame($expected, preg_match(Controller::ACTION_ID_METHOD_REGEXP, $input));
+    }
+
+    public function actionIdMethodProvider()
+    {
+        return [
+            ['apple-id', 1],
+            ['-apple', 0],
+            ['apple.', 0],
+            ['apple--id', 0],
+            ['a', 1],
+            ['9', 1],
+            ['apple-999', 1],
+            ['app^le-999', 0],
+            ['!', 0],
+            ['apple\33', 0],
+            ['apple333]', 0],
+            ['apple_222', 1],
+        ];
+    }
 }
 
 
