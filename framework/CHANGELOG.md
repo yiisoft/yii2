@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #17504: Fix upsert when `$updateColumns = true` but there are no columns to update in the table (alexkart)
 - Bug #17511: Fixed IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
 - Bug #17507: Fixed regular expression escaping and simpler condition in `Controller::createAction()` (kamarton)
+- Bug #16305: Fix `FileValidator` mime-type validation failure because of case sensitivity (kamarton)
 - Bug #17355: Fixed Pjax after request event bug (kamarton)
 
 
