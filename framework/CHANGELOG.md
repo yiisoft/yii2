@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17507: Fixed regular expression escaping and simpler condition in `Controller::createAction()` (kamarton)
 - Bug #17355: Fixed Pjax after request event bug (kamarton)
 
+
 2.0.25 August 13, 2019
 ----------------------
 
