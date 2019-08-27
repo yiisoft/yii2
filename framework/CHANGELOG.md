@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17507: Fixed regular expression escaping and simpler condition in `Controller::createAction()` (kamarton)
 - Bug #16305: Fix `FileValidator` mime-type validation failure because of case sensitivity (kamarton)
 
+
 2.0.25 August 13, 2019
 ----------------------
 
