@@ -597,8 +597,10 @@ class FileValidatorTest extends TestCase
      * @dataProvider mimeTypeCaseInsensitive
      */
     public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected) {
-        $validator = new FileValidatorForTest(['mimeTypes' => $mask]);
-        $validator->getMimeTypeByFileOverride = $fileMimeType;
+        $validator = $this->getMock('\yii\validators\FileValidator', ['getMimeTypeByFile']);
+        $validator->method('getMimeTypeByFile')->willReturn($fileMimeType);
+        $validator->mimeTypes = [$mask];
+
         $file = $this->getRealTestFile('test.txt');
         $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
     }
@@ -610,17 +612,5 @@ class FileValidatorTest extends TestCase
             ['application/vnd.ms-word.document.macroEnabled.12', 'application/vnd.ms-word.document.macroenabled.12', true],
             ['image/jxra', 'image/jxrA', true],
         ];
-    }
-}
-
-class FileValidatorForTest extends FileValidator {
-    public $getMimeTypeByFileOverride;
-
-    protected function getMimeTypeByFile($filePath)
-    {
-        if($this->getMimeTypeByFileOverride !== null) {
-            return $this->getMimeTypeByFileOverride;
-        }
-        return parent::getMimeTypeByFile($filePath);
     }
 }
