@@ -21,7 +21,7 @@ class ViewTest extends TestCase
     {
         parent::setUp();
     }
-    
+
     public function testRegisterJsVar()
     {
         $this->mockWebApplication([
@@ -37,7 +37,7 @@ class ViewTest extends TestCase
         $view->registerJsVar('username', 'samdark');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<script>var username = "samdark";</script></head>', $html);
-        
+
         $view = new View();
         $view->registerJsVar('objectTest', [
             'number' => 42,
@@ -72,6 +72,12 @@ class ViewTest extends TestCase
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_END]);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
+
+        // alias with depends
+        $view = new View();
+        $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_END, 'depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
 
     public function testRegisterCssFileWithAlias()
@@ -87,6 +93,12 @@ class ViewTest extends TestCase
 
         $view = new View();
         $view->registerCssFile('@web/css/somefile.css');
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
+
+        // with depends
+        $view = new View();
+        $view->registerCssFile('@web/css/somefile.css', ['position' => View::POS_END, 'depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
@@ -160,31 +172,101 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/js\/jquery\.js\?v\=\d+"/';
-
-        $view = new View();
-        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => true]); // <script src="/js/jquery.js?v=1541056962"></script>
-        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertRegExp($pattern, $html);
-
-        $view = new View();
-        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => false]); // <script src="/js/jquery.js"></script>
-        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertNotRegExp($pattern, $html);
+        $pattern = '/assetSources\/js\/jquery\.js\?v\=\d+"/';
 
         \Yii::$app->assetManager->appendTimestamp = true;
 
+        // will be used AssetManager and timestamp
         $view = new View();
-        $view->registerJsFile('/assetSources/js/jquery.js', ['depends' => 'yii\web\AssetBundle']); // <script src="/js/jquery.js?v=1541056962"></script>
+        $view->registerJsFile('/assetSources/js/jquery.js', ['depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
+
+        // won't be used AssetManager but the timestamp will be
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js'); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => true]); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // redefine AssetManager timestamp setting
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => false]); // <script src="/assetSources/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        // with alias
+        $view = new View();
+        $view->registerJsFile('@web/assetSources/js/jquery.js'); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // with alias but wo timestamp
+        // The timestamp setting won't be redefined because global AssetManager is used
+        $view = new View();
+        $view->registerJsFile('@web/assetSources/js/jquery.js', ['appendTimestamp' => false, 'depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // wo depends == wo AssetManager
+        $view = new View();
+        $view->registerJsFile('@web/assetSources/js/jquery.js', ['appendTimestamp' => false]); // <script src="/assetSources/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        // absolute link
+        $view = new View();
+        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
+
+        $view = new View();
+        $view->registerJsFile('//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
 
         \Yii::$app->assetManager->appendTimestamp = false;
 
         $view = new View();
-        $view->registerJsFile('/assetSources/js/jquery.js', ['depends' => 'yii\web\AssetBundle']); // <script src="/js/jquery.js"></script>
+        $view->registerJsFile('/assetSources/js/jquery.js', ['depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertNotRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js'); // <script src="/assetSources/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => true]); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // The timestamp setting won't be redefined because global AssetManager is used
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => true, 'depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => false]); // <script src="/assetSources/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        // absolute link
+        $view = new View();
+        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
+
+        $view = new View();
+        $view->registerJsFile('//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
 
     }
 
@@ -201,30 +283,100 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/stub\.css\?v\=\d+/';
-
-        $view = new View();
-        $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => true]); // <link href="/css/stub.css?v=1541055635" rel="stylesheet"></head>
-        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertRegExp($pattern, $html);
-
-        $view = new View();
-        $view->registerCssFile('/assetSources/css/stub.css'); // <link href="/css/stub.css" rel="stylesheet"></head>
-        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertNotRegExp($pattern, $html);
+        $pattern = '/assetSources\/css\/stub\.css\?v\=\d+/';
 
         \Yii::$app->assetManager->appendTimestamp = true;
 
+        // will be used AssetManager and timestamp
         $view = new View();
-        $view->registerCssFile('/assetSources/css/stub.css', ['depends' => 'yii\web\AssetBundle']); // <link href="/css/stub.css?v=1541055635" rel="stylesheet"></head>
+        $view->registerCssFile('/assetSources/css/stub.css', ['depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
+
+        // won't be used AssetManager but the timestamp will be
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css'); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => true]); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // redefine AssetManager timestamp setting
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => false]); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        // with alias
+        $view = new View();
+        $view->registerCssFile('@web/assetSources/css/stub.css'); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // with alias but wo timestamp
+        // The timestamp setting won't be redefined because global AssetManager is used
+        $view = new View();
+        $view->registerCssFile('@web/assetSources/css/stub.css', ['appendTimestamp' => false, 'depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // wo depends == wo AssetManager
+        $view = new View();
+        $view->registerCssFile('@web/assetSources/css/stub.css', ['appendTimestamp' => false]); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        // absolute link
+        $view = new View();
+        $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css');
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
+
+        $view = new View();
+        $view->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
 
         \Yii::$app->assetManager->appendTimestamp = false;
 
         $view = new View();
-        $view->registerCssFile('/assetSources/css/stub.css', ['depends' => 'yii\web\AssetBundle']); // <link href="/css/stub.css" rel="stylesheet"></head>
+        $view->registerCssFile('/assetSources/css/stub.css', ['depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertNotRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css'); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => true]); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // The timestamp setting won't be redefined because global AssetManager is used
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => true, 'depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        $view = new View();
+        $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => false]); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($pattern, $html);
+
+        // absolute link
+        $view = new View();
+        $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css');
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
+
+        $view = new View();
+        $view->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
     }
 }

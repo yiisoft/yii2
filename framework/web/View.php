@@ -422,31 +422,11 @@ class View extends \yii\base\View
      * @param string $key the key that identifies the CSS script file. If null, it will use
      * $url as the key. If two CSS files are registered with the same key, the latter
      * will overwrite the former.
+     * @throws InvalidConfigException
      */
     public function registerCssFile($url, $options = [], $key = null)
     {
-        $url = Yii::getAlias($url);
-        $key = $key ?: $url;
-
-        $depends = ArrayHelper::remove($options, 'depends', []);
-        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', false);
-
-        if (empty($depends)) {
-            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias("@webroot" . $url, false))) > 0) {
-                $url = "$url?v=$timestamp";
-            }
-            $this->cssFiles[$key] = Html::cssFile($url, $options);
-        } else {
-            $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::className(),
-                'baseUrl' => '',
-                'basePath' => '@webroot',
-                'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
-                'cssOptions' => $options,
-                'depends' => (array) $depends,
-            ]);
-            $this->registerAssetBundle($key);
-        }
+        $this->registerFile('css', $url, $options, $key);
     }
 
     /**
@@ -477,6 +457,60 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers a JS or CSS file.
+     *
+     *
+     * @param string $url the JS file to be registered.
+     * @param string $type type (js or css) of the file.
+     * @param array $options the HTML attributes for the script tag. The following options are specially handled
+     * and are not treated as HTML attributes:
+     * @param string $key the key that identifies the JS script file. If null, it will use
+     * $url as the key. If two JS files are registered with the same key at the same position, the latter
+     * will overwrite the former. Note that position option takes precedence, thus files registered with the same key,
+     * but different position option will not override each other.
+     * @throws InvalidConfigException
+     */
+    private function registerFile($type, $url, $options = [], $key = null)
+    {
+        $url = Yii::getAlias($url);
+        $key = $key ?: $url;
+
+        $depends = ArrayHelper::remove($options, 'depends', []);
+        $position = ArrayHelper::remove($options, 'position', self::POS_END);
+
+        try { // avoid The directory does not exist if basePath is not set properly. Do we really need it?
+            $assetManagerAppendTimestamp = $this->getAssetManager()->appendTimestamp;
+        } catch (InvalidConfigException $e) {
+            $depends = null; // the AssetManager is not available
+            $assetManagerAppendTimestamp = false;
+        }
+        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $assetManagerAppendTimestamp);
+
+        if (empty($depends)) {
+            // register directly without AssetManager
+            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . $url, false))) > 0) {
+                $url = $timestamp ? "$url?v=$timestamp" : $url;
+            }
+            if ($type === 'js') {
+                $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+            } else {
+                $this->cssFiles[$key] = Html::cssFile($url, $options);
+            }
+        } else {
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
+                'baseUrl' => '',
+                'basePath' => '@webroot',
+                "$type" => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
+                "{$type}Options" => $options,
+                'depends' => (array)$depends,
+            ]);
+
+            $this->registerAssetBundle($key);
+        }
+    }
+
+    /**
      * Registers a JS file.
      *
      * This method should be used for simple registration of JS files. If you want to use features of
@@ -500,32 +534,11 @@ class View extends \yii\base\View
      * $url as the key. If two JS files are registered with the same key at the same position, the latter
      * will overwrite the former. Note that position option takes precedence, thus files registered with the same key,
      * but different position option will not override each other.
+     * @throws InvalidConfigException
      */
     public function registerJsFile($url, $options = [], $key = null)
     {
-        $url = Yii::getAlias($url);
-        $key = $key ?: $url;
-
-        $depends = ArrayHelper::remove($options, 'depends', []);
-        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', false);
-
-        if (empty($depends)) {
-            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias("@webroot" . $url, false))) > 0) {
-                $url = "$url?v=$timestamp";
-            }
-            $position = ArrayHelper::remove($options, 'position', self::POS_END);
-            $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
-        } else {
-            $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::className(),
-                'baseUrl' => '',
-                'basePath' => '@webroot',
-                'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
-                'jsOptions' => $options,
-                'depends' => (array) $depends,
-            ]);
-            $this->registerAssetBundle($key);
-        }
+        $this->registerFile('js', $url, $options, $key);
     }
 
     /**
