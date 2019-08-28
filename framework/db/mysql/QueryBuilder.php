@@ -46,6 +46,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'json'
     ];
 
+
     /**
      * {@inheritdoc}
      */
@@ -276,6 +277,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         list($uniqueNames, , $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
         if (empty($uniqueNames)) {
             return $insertSql;
+        }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
         }
 
         if ($updateColumns === true) {

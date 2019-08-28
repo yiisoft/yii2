@@ -8,10 +8,10 @@
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
- * Handles the creation of table `{table}`.
+ * Handles the creation of table `{{%{table}}}`.
  */
 class {$class} extends Migration
 {
@@ -20,7 +20,7 @@ class {$class} extends Migration
      */
     public function safeUp()
     {
-        \$this->createTable('{table}', [
+        \$this->createTable('{{%{table}}}', [
             'id' => \$this->primaryKey(),
             'address' => \$this->string(),
             'address2' => \$this->string(),
@@ -33,7 +33,7 @@ class {$class} extends Migration
      */
     public function safeDown()
     {
-        \$this->dropTable('{table}');
+        \$this->dropTable('{{%{table}}}');
     }
 }
 

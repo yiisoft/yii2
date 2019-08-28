@@ -94,9 +94,9 @@ class EmailValidator extends Validator
                 // http://www.rfc-editor.org/errata_search.php?eid=1690
                 $valid = false;
             } else {
-                $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
+                $valid = preg_match($this->pattern, $value) || ($this->allowName && preg_match($this->fullPattern, $value));
                 if ($valid && $this->checkDNS) {
-                    $valid = checkdnsrr($matches['domain'] . '.', 'MX') || checkdnsrr($matches['domain'] . '.', 'A');
+                    $valid = $this->isDNSValid($matches['domain']);
                 }
             }
         }
@@ -104,6 +104,29 @@ class EmailValidator extends Validator
         return $valid ? null : [$this->message, []];
     }
 
+    /**
+     * @param string $domain
+     * @return bool if DNS records for domain are valid
+     * @see https://github.com/yiisoft/yii2/issues/17083
+     */
+    protected function isDNSValid($domain)
+    {
+        if (checkdnsrr($domain . '.', 'MX')) {
+            $mxRecords = dns_get_record($domain . '.', DNS_MX);
+            if ($mxRecords !== false && count($mxRecords) > 0) {
+                return true;
+            }
+        }
+
+        if (checkdnsrr($domain . '.', 'A')) {
+            $aRecords = dns_get_record($domain . '.', DNS_A);
+            if ($aRecords !== false && count($aRecords) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private function idnToAscii($idn)
     {

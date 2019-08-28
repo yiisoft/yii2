@@ -49,7 +49,7 @@ W tym miejscu masz już utworzoną bazę danych o nazwie `yii2basic`, posiadają
 Konfiguracja połączenia z bazą danych <span id="configuring-db-connection"></span>
 ---------------------------
 
-Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](http://www.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
+Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](https://secure.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
 (np. `pdo_mysql` dla MySQL).
 Jest to podstawowe wymaganie, jeśli Twoja aplikacja używa relacyjnej bazy danych.
 

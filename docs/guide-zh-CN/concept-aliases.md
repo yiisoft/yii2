@@ -123,6 +123,7 @@ Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
 其他的别名都是在[配置应用](concept-configurations.md)的时候，
 于应用的构造方法内定义的。
 
+> Note: `@web` 和 `@webroot` 别名，因为它们的描述表明是在 [[yii\web\Application|Web application]] 中定义的，因此默认情况下不适用于 [[yii\console\Application|Console application]] 应用程序。
 
 扩展的别名（Extension Aliases） <span id="extension-aliases"></span>
 ----------------------------

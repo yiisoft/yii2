@@ -97,7 +97,7 @@ cd basic
 php requirements.php
 ```
 
-Freymvork to'g'ri ishlashi uchun PHPni minimal talablarga javob beradigan tarzda sozlashingiz kerak. Asosiy talablardan biri bu PHP versiyasi 5.4 va undan yuqori bolishi kerak. Agar veb-ilovangiz ma'lumotlar bazasi bilan ishlayotgan bo'lsa , [PHP PDO kengaytmasini](http://www.php.net/manual/ru/pdo.installation.php) va tegishli drayverni (masalan, MySQL uchun pdo_mysql ) o'rnatishingiz kerak.
+Freymvork to'g'ri ishlashi uchun PHPni minimal talablarga javob beradigan tarzda sozlashingiz kerak. Asosiy talablardan biri bu PHP versiyasi 5.4 va undan yuqori bolishi kerak. Agar veb-ilovangiz ma'lumotlar bazasi bilan ishlayotgan bo'lsa , [PHP PDO kengaytmasini](https://secure.php.net/manual/ru/pdo.installation.php) va tegishli drayverni (masalan, MySQL uchun pdo_mysql ) o'rnatishingiz kerak.
 
 
 Web-server sozlamasi<span id="configuring-web-servers"></span>
@@ -139,7 +139,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Tavsiya etilgan Nginx sozlamalari <span id="recommended-nginx-configuration"></span>
 
-PHP Nginx uchun [FPM SAPI](http://php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](http://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
+PHP Nginx uchun [FPM SAPI](https://secure.php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](http://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
 
 ```
 server {

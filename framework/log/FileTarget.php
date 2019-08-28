@@ -64,9 +64,9 @@ class FileTarget extends Target
      * systems which do not play well with rename on open files. Rotation by renaming however is
      * a bit faster.
      *
-     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
+     * The problem with windows systems where the [rename()](https://secure.php.net/manual/en/function.rename.php)
      * function does not work with files that are opened by some process is described in a
-     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
+     * [comment by Martin Pelletier](https://secure.php.net/manual/en/function.rename.php#102274) in
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */

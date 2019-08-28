@@ -1,23 +1,18 @@
-Framework development for versions 3.0 and further moved to [Yii Framework Core repository](https://github.com/yiisoft/yii-core).
+> Roadmap for Yii 3.0 and further was moved to [yiisoft/docs](https://github.com/yiisoft/docs/blob/master/003-roadmap.md).
 
-Please see ROADMAP there:
-https://github.com/yiisoft/yii-core/blob/master/ROADMAP.md
+- Enhancements are not accepted for framework version 2.0.
+- Enhancements are accepted for 2.0 extensions.
+- Bug and security fixes are expected.
+- Pull requests and maintainers are very welcome.
 
-There are no planned changes for Yii 2.0 cause while it is supported it is not developed anymore.
-Bug and security fixes are expected. New features and enhancements are not accepted.
-Pull requests and maintainers are very welcome.
+Above would stand as it is [for two years after Yii 3.0 release](https://www.yiiframework.com/release-cycle).
 
 ## Additional releases
 
-We can tag additional releases in case someone will take the role of release manager. Otherwise we'll focus on 3.0.
+While we focus on 3.0, we tag 2.0 releases and extension releases [about once in a week](https://www.yiiframework.com/release-cycle).
 
-## 2.0.17 (4th quarter of 2018)
 
-- Bugfixes.
-- Announce bugfixes EOL (a year more?).
-- Security fixes only.
-
-## 2.0.16 (3rd quarter of 2018)
+## 2.0.16+ (since 2019 till 3.0 release + 2 years)
 
 - Bugfixes.
 

@@ -51,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 DB 接続を構成する <span id="configuring-db-connection"></span>
 -----------------
 
-先に進む前に、[PDO](http://www.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
+先に進む前に、[PDO](https://secure.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
 (例えば、MySQL のための `pdo_mysql`) の両方をインストール済みであることを確認してください。
 アプリケーションがリレーショナル・データベースを使う場合、これは基本的な必要条件です。
 

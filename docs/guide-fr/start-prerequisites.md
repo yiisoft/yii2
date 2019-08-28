@@ -4,7 +4,7 @@ La courbe d'apprentissage de Yii n’est pas aussi raide que celle des autres fr
 
 ## PHP
 
-Yii un framework (base structurée de développement) en PHP. C’est pourquoi vous devez vous assurer de [maîtriser ce langage en comprenant sa référence](http://php.net/manual/fr/langref.php).
+Yii un framework (base structurée de développement) en PHP. C’est pourquoi vous devez vous assurer de [maîtriser ce langage en comprenant sa référence](https://secure.php.net/manual/fr/langref.php).
 Lors de votre développement avec Yii, vous écrirez du code dans le style « orienté objet ». Vous devez donc être familiarisé avec les [Classes et Objets](https://secure.php.net/manual/fr/language.oop5.basic.php), ainsi qu'avec les [espaces de noms](https://secure.php.net/manual/fr/language.namespaces.php).
 
 ## Programmation orientée Objet

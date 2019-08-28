@@ -92,6 +92,10 @@ class TargetTest extends TestCase
                 'C', 'C.C_a',
                 'D',
             ],
+            'maskVars' => [
+                'C.C_b',
+                'D.D_a'
+            ]
         ]);
         $GLOBALS['A'] = [
             'A_a' => 1,
@@ -105,7 +109,7 @@ class TargetTest extends TestCase
         ];
         $GLOBALS['C'] = [
             'C_a' => 1,
-            'C_b' => 1,
+            'C_b' => 'mySecret',
             'C_c' => 1,
         ];
         $GLOBALS['E'] = [
@@ -129,6 +133,8 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_a', $context);
         $this->assertNotContains('E_b', $context);
         $this->assertNotContains('E_c', $context);
+        $this->assertNotContains('mySecret', $context);
+        $this->assertContains('***', $context);
     }
 
     /**
@@ -191,6 +197,8 @@ class TargetTest extends TestCase
         /** @var Target $target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
+        date_default_timezone_set('UTC');
+
         $text = 'message';
         $level = Logger::LEVEL_INFO;
         $category = 'application';
@@ -202,15 +210,31 @@ class TargetTest extends TestCase
 
         $target->microtime = true;
 
-        $expectedWithMicro = '2017-10-16 13:26:30.6083 [info][application] message';
+        $expectedWithMicro = '2017-10-16 13:26:30.608300 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
 
         $timestamp = 1508160390;
 
-        $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
+        $expectedWithMicro = '2017-10-16 13:26:30.000000 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
-        $this->assertSame($expectedWithoutMicro, $formatted);
+        $this->assertSame($expectedWithMicro, $formatted);
+    }
+
+    public function testCollectMessageStructure()
+    {
+        $target = new TestTarget(['logVars' => ['_SERVER']]);
+        static::$messages = [];
+
+        $messages = [
+            ['test', 1, 'application', 1560428356.212978, [], 1888416]
+        ];
+
+        $target->collect($messages, false);
+
+        $this->assertCount(2, static::$messages);
+        $this->assertCount(6, static::$messages[0]);
+        $this->assertCount(6, static::$messages[1]);
     }
 }
 

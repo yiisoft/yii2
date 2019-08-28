@@ -129,6 +129,23 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertEquals(UPLOAD_ERR_INI_SIZE, $_FILES['thirdFile']['error']);
     }
 
+    public function testUploadFileAsArray(){
+        $parser = new MultipartFormDataParser();
+
+        $boundary = '---------------------------22472926011618';
+        $contentType = 'multipart/form-data; boundary=' . $boundary;
+        $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"someFile[]\"; filename=\"some-file.txt\"\nContent-Type: text/plain\r\n\r\nsome file content";
+        $rawBody .= "--{$boundary}--";
+
+        $parser->parse($rawBody, $contentType);
+
+        $this->assertNotEmpty($_FILES['someFile']);
+        $this->assertEquals(UPLOAD_ERR_OK, $_FILES['someFile']['error'][0]);
+        $this->assertEquals('some-file.txt', $_FILES['someFile']['name'][0]);
+        $this->assertEquals('text/plain', $_FILES['someFile']['type'][0]);
+        $this->assertStringEqualsFile($_FILES['someFile']['tmp_name'][0], 'some file content');
+    }
+
     /**
      * @depends testNotEmptyPost
      * @depends testNotEmptyFiles

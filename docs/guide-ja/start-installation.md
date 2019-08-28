@@ -174,7 +174,7 @@ http://localhost:8080/
 
 Yii の最低必要条件を満たすように PHP のインストールを構成しなければなりません。
 最も重要なことは、PHP 5.4 以上でなければならないということです。最新の PHP 7 なら理想的です。
-また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](http://www.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
+また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](https://secure.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
 ウェブ・サーバを構成する <span id="configuring-web-servers"></span>
@@ -218,14 +218,16 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # 綺麗な URL をサポートするために mod_rewrite を使う
     RewriteEngine on
-    # ディレクトリかファイルが存在する場合は、リクエストをそのまま通す
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    # そうでなければ、リクエストを index.php に送付する
-    RewriteRule . index.php
 
     # UrlManager の $showScriptName が false の場合は、スクリプト名で URL にアクセスすることを許さない
     RewriteRule ^index.php/ - [L,R=404]
+
+    # ディレクトリかファイルが存在する場合は、リクエストをそのまま通す
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # そうでなければ、リクエストを index.php に送付する
+    RewriteRule . index.php
 
     # ... 他の設定 ...
 </Directory>
@@ -234,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推奨される Nginx の構成 <span id="recommended-nginx-configuration"></span>
 
-[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](http://jp1.php.net/install.fpm) としてインストールしなければなりません。
+[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](https://secure.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
 下記の Nginx の設定を使うことができます。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、`mysite.test` を実際のサーバのホスト名に置き換えてください。
 

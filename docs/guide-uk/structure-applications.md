@@ -356,7 +356,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 Дана властивість надає альтернативний спосіб встановлення часової зони за замовчуванням у процесі роботи додатка.
 Таким чином, вказуючи дану властивість, ви, по суті, викликаєте PHP-функцію 
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Наприклад,
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). Наприклад,
 
 ```php
 [

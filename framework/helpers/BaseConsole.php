@@ -684,7 +684,7 @@ class BaseConsole
             return $text;
         }
         $pad = str_repeat(' ', $indent);
-        $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
+        $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n"));
         $first = true;
         foreach ($lines as $i => $line) {
             if ($first) {

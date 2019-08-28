@@ -263,7 +263,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
             return ob_get_clean();
         }
 
-        return Yii::$app->getView()->renderFile($_file_, $_params_, $this);
+        $view = Yii::$app->getView();
+        $view->clear();
+
+        return $view->renderFile($_file_, $_params_, $this);
     }
 
     /**
@@ -397,7 +400,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             'http://lighttpd.net/' => ['lighttpd'],
             'http://gwan.com/' => ['g-wan', 'gwan'],
             'http://iis.net/' => ['iis', 'services'],
-            'http://php.net/manual/en/features.commandline.webserver.php' => ['development'],
+            'https://secure.php.net/manual/en/features.commandline.webserver.php' => ['development'],
         ];
         if (isset($_SERVER['SERVER_SOFTWARE'])) {
             foreach ($serverUrls as $url => $keywords) {

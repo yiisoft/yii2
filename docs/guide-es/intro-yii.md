@@ -55,6 +55,6 @@ Yii 2.0 requiere PHP 5.4.0 o una versión posterior y corre de mejor manera en l
 ejecutando el script de comprobación incluido en cada lanzamiento de Yii.
 
 Para utilizar Yii se requieren conocimientos básicos de programación orientada a objetos (POO), porque el framework Yii se basa íntegramente en esta tecnología.
-Yii 2.0 hace uso también de las últimas características de PHP, como [namespaces](http://www.php.net/manual/es/language.namespaces.php)
-y [traits](http://www.php.net/manual/es/language.oop5.traits.php). Comprender estos conceptos te ayudará a entender mejor Yii 2.0.
+Yii 2.0 hace uso también de las últimas características de PHP, como [namespaces](https://secure.php.net/manual/es/language.namespaces.php)
+y [traits](https://secure.php.net/manual/es/language.oop5.traits.php). Comprender estos conceptos te ayudará a entender mejor Yii 2.0.
 

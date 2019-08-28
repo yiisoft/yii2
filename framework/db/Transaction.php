@@ -36,7 +36,7 @@ use yii\base\NotSupportedException;
  * ```
  *
  * > Note: in the above code we have two catch-blocks for compatibility
- * > with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+ * > with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
  * > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
  *
  * @property bool $isActive Whether this transaction is active. Only an active transaction can [[commit()]] or

@@ -63,14 +63,15 @@ Yii::trace('start calculating average revenue', __METHOD__);
 例如，一个 [[yii\log\DbTarget|database target]] 目标导出已经过滤的日志消息到一个数据的表里面，
 而一个 [[yii\log\EmailTarget|email target]]目标将日志消息导出到指定的邮箱地址里。
 
-在一个应用里，通过配置在应用配置里的 `log` [application component](structure-application-components.md) ，你可以注册多个日志目标。
+在一个应用里，通过配置在应用配置里的 `log` [application component](structure-application-components.md)，你可以注册多个日志目标。
 就像下面这样：
 
 ```php
 return [
-    // the "log" component must be loaded during bootstrapping time
+    // 必须在引导期间加载“log”组件
     'bootstrap' => ['log'],
-    
+    // “log”组件处理带时间戳的消息。 设置 PHP 时区以创建正确的时间戳
+    'timeZone' => 'PRC',
     'components' => [
         'log' => [
             'targets' => [
@@ -183,8 +184,8 @@ Yii配备了以下的内建日志目标。请参考关于这些类的API文档�
 Timestamp [IP address][User ID][Session ID][Severity Level][Category] Message Text
 ```
 
-你可以通过配置 [[yii\log\Target::prefix]] 的属性来自定义格式，这个属性是一个PHP可调用体返回的自定义消息前缀。
-例如，下面的代码配置了一个日志目标的前缀是每个日志消息中当前用户的ID(IP地址和Session ID被删除是由于隐私的原因)。
+你可以通过配置 [[yii\log\Target::prefix]] 的属性来自定义格式，这个属性是一个 PHP 可调用体返回的自定义消息前缀。
+例如，下面的代码配置了一个日志目标的前缀是每个日志消息中当前用户的 ID（IP 地址和 Session ID 被删除是由于隐私的原因）。
 
 
 ```php
@@ -199,7 +200,7 @@ Timestamp [IP address][User ID][Session ID][Severity Level][Category] Message Te
 ```
 
 除了消息前缀以外，日志目标也可以追加一些上下文信息到每组日志消息中。
-默认情况下，这些全局的PHP变量的值被包含在：`$_GET`, `$_POST`, `$_FILES`, `$_COOKIE`,`$_SESSION` 和 `$_SERVER` 中。
+默认情况下，这些全局的PHP变量的值被包含在：`$_GET`，`$_POST`，`$_FILES`，`$_COOKIE`，`$_SESSION` 和 `$_SERVER` 中。
 你可以通过配置 [[yii\log\Target::logVars]] 属性适应这个行为，
 这个属性是你想要通过日志目标包含的全局变量名称。
 举个例子，下面的日志目标配置指明了只有 `$_SERVER` 变量的值将被追加到日志消息中。
@@ -299,7 +300,7 @@ return [
 ];
 ```
 
-> Note: 频繁的消息刷新和导出将降低你到应用性能。
+> Note: 频繁的消息刷新和导出将降低你的应用性能。
 
 
 ### 切换日志目标 <span id="toggling-log-targets"></span>
@@ -312,7 +313,7 @@ Yii::$app->log->targets['file']->enabled = false;
 ```
 
 上面的代码要求您将目标命名为 `file`，像下面展示的那样，
-在 `targets` 数组中使用使用字符串键：
+在 `targets` 数组中使用字符串键：
 
 ```php
 return [
@@ -332,14 +333,20 @@ return [
 ];
 ```
 
+从版本 2.0.13 开始，您可以使用可调用的配置 [[yii\log\Target::enabled|enabled]]，
+以定义是否应启用日志目标的动态条件。
+有关示例，请参阅 [[yii\log\Target::setEnabled()]] 文档。
 
 ### 创建新的目标 <span id="new-targets"></span>
 
 创建一个新的日志目标类非常地简单。你主要需要实现 [[yii\log\Target::export()]] 
 方法来发送 [[yii\log\Target::messages]] 数组的
 内容到一个指定的媒体中。你可以调用 [[yii\log\Target::formatMessage()]] 方法去格式化每个消息。
-更多细节，你可以参考任何一个包含在Yii发布版中的日志目标类。
+更多细节，你可以参考任何一个包含在 Yii 发行版中的日志目标类。
 
+> Tip: 您可以使用 [PSR log target extension](https://github.com/samdark/yii2-psr-log-target) 尝试任何兼容 PSR-3 的日志记录器，
+  例如 [Monolog](https://github.com/Seldaek/monolog)，
+  而不是创建自己的日志记录器。
 
 ## 性能分析 <span id="performance-profiling"></span>
 
@@ -379,6 +386,6 @@ return [
 假如你漏掉 `\Yii::endProfile('block1')` 或者切换了 `\Yii::endProfile('block1')` 和 `\Yii::endProfile('block2')` 的
 顺序，那么性能分析将不会工作。
 
-对于每个被分析的代码块，一个带有严重程度 `profile` 的日志消息被记录。
+对于每个被分析的代码块，一个带有严重程度为 `profile` 的日志消息将被记录。
 你可以配置一个 [log target](#log-targets) 去收集这些
 消息，并且导出他们。[Yii debugger](tool-debugger.md) 有一个内建的性能分析面板能够展示分析结果。

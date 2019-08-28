@@ -99,7 +99,7 @@ exit($exitCode);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 ```
 
-上面的代码等同于:
+上面的代码等同于：
 
 ```php
 if (!defined('YII_DEBUG')) {
@@ -111,4 +111,3 @@ if (!defined('YII_DEBUG')) {
 
 常量定义应该在入口脚本的开头，这样包含其他 PHP 文件时，
 常量就能生效。
-

@@ -10,6 +10,7 @@ namespace yiiunit\framework\console;
 use Yii;
 use yii\base\Module;
 use yii\console\Request;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -23,6 +24,7 @@ class ControllerTest extends TestCase
         $this->mockApplication();
         Yii::$app->controllerMap = [
             'fake' => 'yiiunit\framework\console\FakeController',
+            'fake_witout_output' => 'yiiunit\framework\console\FakeHelpControllerWithoutOutput',
             'help' => 'yiiunit\framework\console\FakeHelpController',
         ];
     }
@@ -94,13 +96,13 @@ class ControllerTest extends TestCase
         $response = $this->runRequest('fake/status');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/status', (string) $status);
+        $response = $this->runRequest('fake/status', (string)$status);
         $this->assertResponseStatus($status, $response);
 
         $response = $this->runRequest('fake/response');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/response', (string) $status);
+        $response = $this->runRequest('fake/response', (string)$status);
         $this->assertResponseStatus($status, $response);
     }
 
@@ -127,6 +129,10 @@ class ControllerTest extends TestCase
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
+
+        $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
+        $helpController->actionIndex('fake/aksi1');
+        $this->assertContains('--test-array, -ta', $helpController->outputString);
     }
 
     /**
@@ -154,5 +160,18 @@ class ControllerTest extends TestCase
 
         $this->assertArrayNotHasKey('typedArgument', $help);
         $this->assertArrayHasKey('simpleArgument', $help);
+    }
+
+    public function testGetActionHelpSummaryOnNull()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $controller->color = false;
+        $helpSummary = $controller->getActionHelpSummary(null);
+        $this->assertEquals('Action not found.', $helpSummary);
+
+        $controller->color = true;
+        $helpSummary = $controller->getActionHelpSummary(null);
+        $this->assertEquals($controller->ansiFormat('Action not found.', Console::FG_RED), $helpSummary);
     }
 }
