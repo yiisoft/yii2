@@ -151,7 +151,7 @@ class ResponseTest extends \yiiunit\TestCase
                      'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko',
                  ] as $userAgent) {
             $request->getUserAgentOverride = $userAgent;
-            $this->assertEquals($this->response->redirect(['view'])->statusCode, 308);
+            $this->assertEquals($this->response->redirect(['view'])->statusCode, 200);
         }
     }
 
