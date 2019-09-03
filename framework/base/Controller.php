@@ -37,10 +37,6 @@ class Controller extends Component implements ViewContextInterface
      * @event ActionEvent an event raised right after executing a controller action.
      */
     const EVENT_AFTER_ACTION = 'afterAction';
-    /**
-     * Action ID to method name generation regexp
-     */
-    const ACTION_ID_METHOD_REGEXP = '/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/';
 
     /**
      * @var string the ID of this controller.
@@ -229,7 +225,9 @@ class Controller extends Component implements ViewContextInterface
         $actionMap = $this->actions();
         if (isset($actionMap[$id])) {
             return Yii::createObject($actionMap[$id], [$id, $this]);
-        } elseif (preg_match(self::ACTION_ID_METHOD_REGEXP, $id)) {
+        }
+
+        if (preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $id)) {
             $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
