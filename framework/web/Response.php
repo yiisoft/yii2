@@ -865,8 +865,7 @@ class Response extends \yii\base\Response
 
         if ($checkAjax) {
             if ($request->getIsAjax()) {
-                $is302 = $statusCode === 302;
-                if ($is302 && preg_match('/Trident.*\brv\:11\./' /* IE11 */, $request->userAgent)) {
+                if (in_array($statusCode, [301, 302]) && preg_match('/Trident.*\brv\:11\./' /* IE11 */, $request->userAgent)) {
                     $statusCode = 200;
                 }
                 if ($request->getIsPjax()) {

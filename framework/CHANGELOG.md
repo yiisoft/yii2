@@ -4,14 +4,13 @@ Yii Framework 2 Change Log
 2.0.26 under development
 ------------------------
 
-- Bug #17434: Fix Internet Explorer 11 AJAX redirect to use code 308 (kamarton)
 - Bug #17504: Fix upsert when `$updateColumns = true` but there are no columns to update in the table (alexkart)
 - Bug #17511: Fixed IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
 - Bug #17507: Fixed regular expression escaping and simpler condition in `Controller::createAction()` (kamarton)
 - Bug #16305: Fix `FileValidator` mime-type validation failure because of case sensitivity (kamarton)
 - Bug #17355: Fixed Pjax after request event bug (kamarton)
 - Bug #17522: `DbManager::isEmptyUserId()` is now protected (samdark)
-- Bug #17434: Fix IE11 Ajax redirect bug (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #17434: Fixed Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
 
 2.0.25 August 13, 2019
 ----------------------
