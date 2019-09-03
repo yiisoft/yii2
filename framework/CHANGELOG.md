@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.27 under development
+------------------------
+
+- no changes in this release.
+
+
 2.0.26 September 03, 2019
 -------------------------
 
