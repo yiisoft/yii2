@@ -10,9 +10,12 @@ namespace yiiunit\framework\web;
 use Error;
 use Exception;
 use RuntimeException;
+use Yii;
 use yii\helpers\StringHelper;
 use yii\web\HttpException;
+use yii\web\Request;
 use yii\web\Response;
+use yiiunit\framework\web\mocks\TestRequestComponent;
 
 /**
  * @group web
@@ -27,7 +30,13 @@ class ResponseTest extends \yiiunit\TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockWebApplication();
+        $this->mockWebApplication([
+            'components' => [
+                'request' => [
+                    'class' => TestRequestComponent::className(),
+                ],
+            ],
+        ]);
         $this->response = new \yii\web\Response();
     }
 
@@ -131,6 +140,43 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals($this->response->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
         $this->assertEquals($this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
         $this->assertEquals($this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+    }
+
+    /**
+     * @dataProvider dataProviderAjaxRedirectInternetExplorer11
+     */
+    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes) {
+        $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
+        $request= Yii::$app->request;
+        /* @var $request TestRequestComponent */
+        $request->getIssAjaxOverride = true;
+        $request->getUserAgentOverride = $userAgent;
+        foreach([true, false] as $pjaxOverride) {
+            $request->getIsPjaxOverride = $pjaxOverride;
+            foreach(['GET', 'POST'] as $methodOverride) {
+                $request->getMethodOverride = $methodOverride;
+                foreach($statusCodes as $statusCode => $expectStatusCode) {
+                    $this->assertEquals($expectStatusCode, $this->response->redirect(['view'], $statusCode)->statusCode);
+                }
+            }
+        }
+    }
+
+    /**
+     * @link https://blogs.msdn.microsoft.com/ieinternals/2013/09/21/internet-explorer-11s-many-user-agent-strings/
+     * @link https://stackoverflow.com/a/31279980/6856708
+     * @link https://developers.whatismybrowser.com/useragents/explore/software_name/chrome/
+     * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
+     * @return array
+     */
+    public function dataProviderAjaxRedirectInternetExplorer11() {
+        return [
+            ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]],                   // Firefox
+            ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]],                        // IE 11
+            ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko', [301 => 200, 302 => 200]],    // IE 11
+            ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36', [301 => 301, 302 => 302]],      // Chrome
+            ['Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136', [301 => 301, 302 => 302]],    // Edge
+        ];
     }
 
     /**
