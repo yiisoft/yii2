@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #17522: `DbManager::isEmptyUserId()` is now protected (samdark)
 - Bug #17434: Fixed Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
 
+
 2.0.25 August 13, 2019
 ----------------------
 
