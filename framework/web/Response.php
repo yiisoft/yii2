@@ -430,7 +430,12 @@ class Response extends \yii\base\Response
             return;
         }
 
-        set_time_limit(0); // Reset time limit for big files
+        if (function_exists('set_time_limit')) {
+            set_time_limit(0); // Reset time limit for big files
+        } else {
+            Yii::warning('set_time_limit() is not available', __METHOD__);
+        }
+
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {

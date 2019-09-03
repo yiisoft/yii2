@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #17355: Fixed Pjax after request event bug (kamarton)
 - Bug #17522: `DbManager::isEmptyUserId()` is now protected (samdark)
 - Bug #17434: Fixed Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #16531:  Fix error in `Response::sendContent()` when `set_time_limit()` is disabled (brandonkelly)
 - Bug #17449: Ensure `CHECK` statement goes after `COMMENT` in MySQL `QueryBuilder::addCommentOnColumn()` (Manu311)
 
 
