@@ -474,17 +474,15 @@ class View extends \yii\base\View
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
-
         $depends = ArrayHelper::remove($options, 'depends', []);
         $position = ArrayHelper::remove($options, 'position', self::POS_END);
-
         try { // avoid The directory does not exist if basePath is not set properly. Do we really need it?
-            $assetManagerAppendTimestamp = $this->getAssetManager()->appendTimestamp;
+            $managerAppendTimestamp = $this->getAssetManager()->appendTimestamp;
         } catch (InvalidConfigException $e) {
             $depends = null; // the AssetManager is not available
-            $assetManagerAppendTimestamp = false;
+            $managerAppendTimestamp = false;
         }
-        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $assetManagerAppendTimestamp);
+        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $managerAppendTimestamp);
 
         if (empty($depends)) {
             // register directly without AssetManager
@@ -505,7 +503,6 @@ class View extends \yii\base\View
                 "{$type}Options" => $options,
                 'depends' => (array)$depends,
             ]);
-
             $this->registerAssetBundle($key);
         }
     }
