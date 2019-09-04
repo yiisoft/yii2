@@ -488,7 +488,7 @@ class View extends \yii\base\View
 
         if (empty($depends)) {
             // register directly without AssetManager
-            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias('@webroot' . DIRECTORY_SEPARATOR . $url, false))) > 0) {
+            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias('@webroot/' . ltrim($url, '/'), false))) > 0) {
                 $url = $timestamp ? "$url?v=$timestamp" : $url;
             }
             if ($type === 'js') {
