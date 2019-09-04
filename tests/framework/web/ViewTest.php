@@ -283,7 +283,7 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/assetSources\/css\/stub\.css\?v\=\d+/';
+        $pattern = '/assetSources\/css\/stub\.css\?v\=\d+"/';
 
         \Yii::$app->assetManager->appendTimestamp = true;
 
