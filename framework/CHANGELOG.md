@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.26 under development
 ------------------------
 
+- Bug #17539: Fixed error when using `batch()` with `indexBy()` with MSSQL (alexkart)
 - Bug #17511: Fixed IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
 
 
