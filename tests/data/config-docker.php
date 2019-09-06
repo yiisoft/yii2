@@ -29,8 +29,8 @@ $config = [
         ],
         'mysql' => [
             'dsn' => 'mysql:host=mysql;dbname=yiitest',
-            'username' => 'travis',
-            'password' => 'travis',
+            'username' => 'root',
+            'password' => 'secret',
             'fixture' => __DIR__ . '/mysql.sql',
         ],
         'sqlite' => [
