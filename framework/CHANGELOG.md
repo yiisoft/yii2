@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.27 under development
 ------------------------
 
-- no changes in this release.
+- Enh #17549: Added `yii\db\ExpressionInterface` support to `yii\db\conditions\SimpleConditionBuilder` (razvanphp)
 
 
 2.0.26 September 03, 2019
