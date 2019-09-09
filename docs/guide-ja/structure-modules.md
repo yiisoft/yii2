@@ -160,6 +160,9 @@ yii <module_id>/<command>/<sub_command>
 ]
 ```
 
+> Info: モジュール内のコマンドを使用するためには、
+> モジュールを [コンソール・アプリケーション設定](tutorial-console.md#configuration) にも含める必要があります。
+
 [[yii\base\Application::modules|modules]] プロパティは、モジュールの構成情報の配列を取ります。
 各配列のキーは、アプリケーションの全てのモジュールの中でそのモジュールを特定するためのユニークな *モジュール ID* を表します。
 そして、対応する配列の値は、そのモジュールを作成するための [構成情報](concept-configurations.md) です。

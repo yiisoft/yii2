@@ -306,7 +306,7 @@ provided by the H5BP project:
 - [IIS](https://github.com/h5bp/server-configs-iis).
 - [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
 
-> Note: When TLS is configured it is recommended that (session) cookies are send over TLS exclusively.
+> Note: When TLS is configured it is recommended that (session) cookies are sent over TLS exclusively.
   This is achieved by setting the `secure` flag for sessions and/or cookies.
   See the [Sessions and Cookies secure flag](runtime-sessions-cookies.md#secure) for more information.
 
