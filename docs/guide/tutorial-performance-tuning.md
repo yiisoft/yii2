@@ -143,7 +143,7 @@ a Web application. Although using [data caching](caching-data.md) techniques may
 it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
 fetching the latest data could be prohibitively expensive without proper database and query design.
 
-A general technique to improve the performance of DB queries is to create indices for table columns that
+A general technique to improve the performance of DB queries is to create indexes for table columns that
 need to be filtered by. For example, if you need to look for a user record by `username`, you should create an index
 on `username`. Note that while indexing can make SELECT queries much faster, it will slow down INSERT, UPDATE and DELETE queries.
 
