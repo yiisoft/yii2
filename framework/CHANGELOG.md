@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.27 under development
 ------------------------
 
+- Bug #17539: Fixed error when using `batch()` with `indexBy()` with MSSQL (alexkart)
 - Bug #17549: Fix `yii\db\ExpressionInterface` not supported in `yii\db\conditions\SimpleConditionBuilder` (razvanphp)
 - Bug #17434: Fix regular expression illegal character; Repeated fix for Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
 - Bug #16855: Ignore console commands that have no actions (alexeevdv)
