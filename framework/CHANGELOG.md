@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.27 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17434: Fix regular expression illegal character; Repeated fix for Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
 
 
 2.0.26 September 03, 2019
