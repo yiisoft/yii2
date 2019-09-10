@@ -253,9 +253,15 @@ class ContactAction extends Action
 
 > Warning: CSRF を無効化すると、あらゆるサイトから POST リクエストをあなたのサイトに送信することが出来るようになります。その場合には、IP アドレスや秘密のトークンをチェックするなど、追加の検証を実装することが重要です。
 
+> Note: バージョン 2.0.21 以降、Yii は `sameSite` クッキー設定 (PHP バージョン 7.3.0 以上が必要) をサポートしています。
+  ただし、`sameSite` クッキー設定を行えば、上記の CSRF 対策が不要になるということではありません。何故なら、今はまだ全てのブラウザがこの設定をサポートしている訳ではないからです。
+ 詳細については [セッションとクッキー - sameSite オプション](runtime-sessions-cookies.md#samesite) を参照して下さい。
+
 このトピックについて更に読むべき文書:
 
 - <https://www.owasp.org/index.php/CSRF>
+- <https://www.owasp.org/index.php/SameSite>
+
 
 ファイルの曝露を回避する
 ------------------------
@@ -299,6 +305,10 @@ H5BP プロジェクトが提供する構成例を参考にすることも出来
 - [Apache](https://github.com/h5bp/server-configs-apache).
 - [IIS](https://github.com/h5bp/server-configs-iis).
 - [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
+
+> Note: TLS が構成されているときは、(セッションの)クッキーを TLS のみで送信することが推奨されます。
+  これは、セッション および/または クッキーのの `secure` フラグを設定することで達成されます。
+  詳細は [セッションとクッキー - secure フラグ](runtime-sessions-cookies.md#secure) を参照して下さい。
 
 
 サーバの構成をセキュアにする
