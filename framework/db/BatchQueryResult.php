@@ -214,7 +214,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
             return $this->db->driverName;
         }
 
-        if (isset($this->_batch) && is_array($this->_batch) && !empty($this->_batch)) {
+        if (!empty($this->_batch)) {
             $key = array_keys($this->_batch)[0];
             if (isset($this->_batch[$key]->db->driverName)) {
                 return $this->_batch[$key]->db->driverName;
