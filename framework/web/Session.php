@@ -54,7 +54,7 @@ use yii\base\InvalidConfigException;
  * variables share the same name space. If you have a normal session variable using the same name, its value will
  * be overwritten by this method. This property is write-only.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
- * started on every session initialization, defaults to 1 meaning 1% chance.
+ * started on every session initialization.
  * @property bool $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
  * @property bool $isActive Whether the session has started. This property is read-only.
@@ -453,7 +453,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+     * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
      */
     public function getGCProbability()
     {
