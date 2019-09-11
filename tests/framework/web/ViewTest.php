@@ -229,6 +229,11 @@ class ViewTest extends TestCase
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
 
+        $view = new View();
+        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
+
         \Yii::$app->assetManager->appendTimestamp = false;
 
         $view = new View();
@@ -267,6 +272,11 @@ class ViewTest extends TestCase
         $view->registerJsFile('//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
+
+        $view = new View();
+        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>', $html);
 
     }
 
@@ -340,6 +350,11 @@ class ViewTest extends TestCase
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
 
+        $view = new View();
+        $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
+
         \Yii::$app->assetManager->appendTimestamp = false;
 
         $view = new View();
@@ -378,5 +393,10 @@ class ViewTest extends TestCase
         $view->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css', ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
+
+        $view = new View();
+        $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css', ['depends' => 'yii\web\AssetBundle']);
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">', $html);
     }
 }

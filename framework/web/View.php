@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -486,7 +487,7 @@ class View extends \yii\base\View
 
         if (empty($depends)) {
             // register directly without AssetManager
-            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias('@webroot/' . ltrim($url, '/'), false))) > 0) {
+            if ($appendTimestamp && Url::isRelative($url) && ($timestamp = @filemtime(Yii::getAlias('@webroot/' . ltrim($url, '/'), false))) > 0) {
                 $url = $timestamp ? "$url?v=$timestamp" : $url;
             }
             if ($type === 'js') {
@@ -499,7 +500,7 @@ class View extends \yii\base\View
                 'class' => AssetBundle::className(),
                 'baseUrl' => '',
                 'basePath' => '@webroot',
-                "$type" => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
+                "$type" => [!Url::isRelative($url) ? $url : ltrim($url, '/')],
                 "{$type}Options" => $options,
                 'depends' => (array)$depends,
             ]);
