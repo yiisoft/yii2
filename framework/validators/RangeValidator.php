@@ -59,7 +59,7 @@ class RangeValidator extends Validator
         if (!is_array($this->range)
             && !($this->range instanceof \Closure)
             && !($this->range instanceof \Traversable)
-            && !(is_array($this->range) && is_callable($this->range))
+            && !is_callable($this->range)
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
