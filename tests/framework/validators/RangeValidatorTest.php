@@ -145,4 +145,35 @@ class RangeValidatorTest extends TestCase
         ]);
         $this->assertTrue($val->validate('a'));
     }
+    
+    public function testValidateValueClosure()
+    {
+        $val = new RangeValidator(['range' => function($model, $attribute) {
+            return range(1, 10, 1);
+        }]);
+        $this->assertTrue($val->validate(1));
+        $this->assertFalse($val->validate(0));
+        $this->assertFalse($val->validate(11));
+        $this->assertFalse($val->validate(5.5));
+        $this->assertTrue($val->validate(10));
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate('5'));
+    }
+    
+    public function testValidateValueCallable()
+    {
+        $val = new RangeValidator(['range' => [__CLASS__, 'callableRange']]);
+        $this->assertTrue($val->validate(1));
+        $this->assertFalse($val->validate(0));
+        $this->assertFalse($val->validate(11));
+        $this->assertFalse($val->validate(5.5));
+        $this->assertTrue($val->validate(10));
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate('5'));
+    }
+    
+    public static function callableRange($model, $attribute) {
+        return range(1, 10, 1);
+    }
+    
 }
