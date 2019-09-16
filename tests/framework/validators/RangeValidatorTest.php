@@ -148,7 +148,7 @@ class RangeValidatorTest extends TestCase
     
     public function testValidateValueClosure()
     {
-        $val = new RangeValidator(['range' => function($model, $attribute) {
+        $val = new RangeValidator(['range' => function() {
             return range(1, 10, 1);
         }]);
         $this->assertTrue($val->validate(1));
@@ -172,7 +172,7 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate('5'));
     }
     
-    public static function callableRange($model, $attribute) {
+    public static function callableRange() {
         return range(1, 10, 1);
     }
     
