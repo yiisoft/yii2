@@ -56,7 +56,7 @@ class UniqueValidator extends Validator
      */
     public $targetAttribute;
     /**
-     * @var string|array|\Closure additional filter to be applied to the DB query used to check the uniqueness of the attribute value.
+     * @var string|array|\Closure|callable additional filter to be applied to the DB query used to check the uniqueness of the attribute value.
      * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
      * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
@@ -238,7 +238,7 @@ class UniqueValidator extends Validator
     {
         $query = $targetClass::find();
         $query->andWhere($conditions);
-        if ($this->filter instanceof \Closure) {
+        if ($this->filter instanceof \Closure || (is_array($this->filter) && is_callable($this->filter))) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {
             $query->andWhere($this->filter);
