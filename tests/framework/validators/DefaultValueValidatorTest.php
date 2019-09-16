@@ -74,7 +74,7 @@ class DefaultValueValidatorTest extends TestCase
     public function testValidateAttributeCallable()
     {
         $val = new DefaultValueValidator();
-        $val->value = [__CLASS__, 'testValue'];
+        $val->value = [__CLASS__, 'callableValue'];
         $obj = new \stdclass();
         $obj->attrA = 'attrA';
         $obj->attrB = null;
@@ -84,7 +84,7 @@ class DefaultValueValidatorTest extends TestCase
         $val->validateAttribute($obj, 'attrB');
         $this->assertEquals('test_value', $obj->attrB);
         $this->assertEquals($objB->attrA, $obj->attrA);
-        $val->value = [__CLASS__, 'newTestValue'];
+        $val->value = [__CLASS__, 'newCallabletValue'];
         $obj = clone $objB; // get clean object
         $val->validateAttribute($obj, 'attrC');
         $this->assertEquals('new_test_value', $obj->attrC);
@@ -93,12 +93,12 @@ class DefaultValueValidatorTest extends TestCase
         $this->assertEquals($objB->attrA, $obj->attrA);
     }
     
-    public static function testValue($model, $attribute)
+    public static function callableValue($model, $attribute)
     {
         return 'test_value';
     }
     
-    public static function newTestValue($model, $attribute)
+    public static function newCallableValue($model, $attribute)
     {
         return 'new_test_value';
     }
