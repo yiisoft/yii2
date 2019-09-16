@@ -73,6 +73,9 @@ class RangeValidator extends Validator
      */
     protected function validateValue($value)
     {
+        if ($this->range instanceof \Closure || (is_array($this->range) && is_callable($this->range))) {
+            $this->range = call_user_func($this->range);
+        }
         $in = false;
 
         if ($this->allowArray
