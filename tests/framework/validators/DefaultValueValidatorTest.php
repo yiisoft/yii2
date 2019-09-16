@@ -84,7 +84,7 @@ class DefaultValueValidatorTest extends TestCase
         $val->validateAttribute($obj, 'attrB');
         $this->assertEquals('test_value', $obj->attrB);
         $this->assertEquals($objB->attrA, $obj->attrA);
-        $val->value = [__CLASS__, 'newCallabletValue'];
+        $val->value = [__CLASS__, 'newCallableValue'];
         $obj = clone $objB; // get clean object
         $val->validateAttribute($obj, 'attrC');
         $this->assertEquals('new_test_value', $obj->attrC);
