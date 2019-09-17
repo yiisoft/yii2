@@ -79,6 +79,7 @@ class BaseObject implements Configurable
     /**
      * Returns the fully qualified name of this class.
      * @return string the fully qualified name of this class.
+     * @deprecated since 2.0.14. On PHP >=5.5, use `::class` instead.
      */
     public static function className()
     {
@@ -172,7 +173,7 @@ class BaseObject implements Configurable
      * Note that if the property is not defined, false will be returned.
      * @param string $name the property name or the event name
      * @return bool whether the named property is set (not null).
-     * @see http://php.net/manual/en/function.isset.php
+     * @see https://secure.php.net/manual/en/function.isset.php
      */
     public function __isset($name)
     {
@@ -194,7 +195,7 @@ class BaseObject implements Configurable
      * If the property is read-only, it will throw an exception.
      * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
-     * @see http://php.net/manual/en/function.unset.php
+     * @see https://secure.php.net/manual/en/function.unset.php
      */
     public function __unset($name)
     {

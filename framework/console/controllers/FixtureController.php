@@ -64,7 +64,7 @@ class FixtureController extends Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -74,7 +74,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
@@ -109,11 +109,7 @@ class FixtureController extends Controller
     public function actionLoad(array $fixturesInput = [])
     {
         if ($fixturesInput === []) {
-            $this->stdout($this->getHelpSummary() . "\n");
-
-            $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
-            $this->stdout("Use $helpCommand to get usage info.\n");
-
+            $this->printHelpMessage();
             return ExitCode::OK;
         }
 
@@ -188,6 +184,11 @@ class FixtureController extends Controller
      */
     public function actionUnload(array $fixturesInput = [])
     {
+        if ($fixturesInput === []) {
+            $this->printHelpMessage();
+            return ExitCode::OK;
+        }
+
         $filtered = $this->filterFixtures($fixturesInput);
         $except = $filtered['except'];
 
@@ -230,6 +231,18 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($this->createFixtures($fixtures));
         $this->notifyUnloaded($fixtures);
+    }
+
+    /**
+     * Show help message.
+     * @param array $fixturesInput
+     */
+    private function printHelpMessage()
+    {
+        $this->stdout($this->getHelpSummary() . "\n");
+
+        $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
+        $this->stdout("Use $helpCommand to get usage info.\n");
     }
 
     /**

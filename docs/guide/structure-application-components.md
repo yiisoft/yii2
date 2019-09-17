@@ -58,7 +58,7 @@ If it is not accessed at all during a request, it will not be instantiated. Some
 to instantiate an application component for every request, even if it is not explicitly accessed.
 To do so, you may list its ID in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
 
-You can also use Closures to bootstrap customized components. Returning a instantiated component is not 
+You can also use Closures to bootstrap customized components. Returning an instantiated component is not 
 required. A Closure can also be used simply for running code after [[yii\base\Application]] instantiation.
 
 For example, the following application configuration makes sure the `log` component is always loaded:
@@ -97,11 +97,11 @@ like you do with normal application components. When you are configuring a core 
 if you do not specify its class, the default one will be used.
 
 * [[yii\web\AssetManager|assetManager]]: manages asset bundles and asset publishing.
-  Please refer to the [Managing Assets](structure-assets.md) section for more details.
+  Please refer to the [Assets](structure-assets.md) section for more details.
 * [[yii\db\Connection|db]]: represents a database connection through which you can perform DB queries.
   Note that when you configure this component, you must specify the component class as well as other required
   component properties, such as [[yii\db\Connection::dsn]].
-  Please refer to the [Data Access Objects](db-dao.md) section for more details.
+  Please refer to the [Database Access Objects](db-dao.md) section for more details.
 * [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
   Please refer to the [Handling Errors](runtime-handling-errors.md) section for more details.
 * [[yii\i18n\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number

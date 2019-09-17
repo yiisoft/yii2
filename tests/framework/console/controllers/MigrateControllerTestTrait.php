@@ -10,6 +10,7 @@ namespace yiiunit\framework\console\controllers;
 use Yii;
 use yii\console\controllers\BaseMigrateController;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 
 /**
@@ -171,7 +172,7 @@ CODE;
     {
         $files = FileHelper::findFiles($this->migrationPath);
         $file = file_get_contents($files[0]);
-        if (preg_match('/class (m\d+_\d+_.*) extends Migration/', $file, $match)) {
+        if (preg_match('/class (m\d+_?\d+_?.*) extends Migration/i', $file, $match)) {
             $file = str_replace($match[1], $class, $file);
         }
         $this->tearDownMigrationPath();
@@ -190,7 +191,7 @@ CODE;
         $appliedMigrations = $migrationHistory;
         foreach ($expectedMigrations as $expectedMigrationName) {
             $appliedMigration = array_shift($appliedMigrations);
-            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
+            if (!StringHelper::matchWildcard(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
                 $success = false;
                 break;
             }

@@ -14,11 +14,13 @@ describe('yii.gridView', function () {
     var $gridView;
     var settings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w0-filters input, #w0-filters select'
+        filterSelector: '#w0-filters input, #w0-filters select',
+        filterOnFocusOut: true
     };
     var commonSettings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w-common-filters input, #w-common-filters select'
+        filterSelector: '#w-common-filters input, #w-common-filters select',
+        filterOnFocusOut: true
     };
     var $textInput;
     var $select;
@@ -143,7 +145,8 @@ describe('yii.gridView', function () {
     describe('init', function () {
         var customSettings = {
             filterUrl: '/posts/filter',
-            filterSelector: '#w-common-filters input'
+            filterSelector: '#w-common-filters input',
+            filterOnFocusOut: true
         };
 
         withData({
@@ -482,6 +485,39 @@ describe('yii.gridView', function () {
                 $gridView = $('#w0').yiiGridView(settings);
             });
 
+            describe('with option filterOnFocusOut', function () {
+                it('set option filterOnFocusOut off and press Enter key', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    pressEnter($textInput);
+                    assert.isTrue(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and change value', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    changeValue($select, 1);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and lose focus', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    loseFocus($textInput);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+            });
+
             describe('with text entered in the text input', function () {
                 it('should not submit form', function () {
                     pressButton($textInput, 'a');
@@ -552,6 +588,16 @@ describe('yii.gridView', function () {
         });
 
         describe('with name, multiple and checkAll options, multiple set to true and', function () {
+            var changedSpy;
+
+            before(function () {
+                changedSpy = sinon.spy();
+            });
+
+            after(function () {
+                changedSpy.reset();
+            });
+
             withData({
                 'nothing else': [{}],
                 // https://github.com/yiisoft/yii2/pull/11729
@@ -566,44 +612,63 @@ describe('yii.gridView', function () {
 
                     assert.equal($gridView.yiiGridView('data').selectionColumn, 'selection[]');
 
+                    $checkRowCheckboxes
+                        .off('change.yiiGridView') // unbind any subscriptions for clean expectations
+                        .on('change.yiiGridView', changedSpy);
+
                     var $checkFirstRowCheckbox = $checkRowCheckboxes.filter('[value="1"]');
 
                     // Check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isTrue($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 1);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
 
                     // Then check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    // "change" should be called 3 times, 1 time per each row, no matter what state it has
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isFalse($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 2);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
                 });
             });
         });

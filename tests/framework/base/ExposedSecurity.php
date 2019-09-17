@@ -15,7 +15,7 @@ use yii\base\Security;
 class ExposedSecurity extends Security
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
@@ -23,7 +23,7 @@ class ExposedSecurity extends Security
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {

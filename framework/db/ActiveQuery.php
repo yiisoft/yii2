@@ -66,8 +66,6 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
- * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -136,7 +134,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function prepare($builder)
     {
@@ -172,13 +170,25 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             } elseif (is_array($this->via)) {
                 // via relation
                 /* @var $viaQuery ActiveQuery */
-                list($viaName, $viaQuery) = $this->via;
+                list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
-                    $viaModels = $viaQuery->all();
-                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                    if ($viaCallableUsed) {
+                        $viaModels = $viaQuery->all();
+                    } elseif ($this->primaryModel->isRelationPopulated($viaName)) {
+                        $viaModels = $this->primaryModel->$viaName;
+                    } else {
+                        $viaModels = $viaQuery->all();
+                        $this->primaryModel->populateRelation($viaName, $viaModels);
+                    }
                 } else {
-                    $model = $viaQuery->one();
-                    $this->primaryModel->populateRelation($viaName, $model);
+                    if ($viaCallableUsed) {
+                        $model = $viaQuery->one();
+                    } elseif ($this->primaryModel->isRelationPopulated($viaName)) {
+                        $model = $this->primaryModel->$viaName;
+                    } else {
+                        $model = $viaQuery->one();
+                        $this->primaryModel->populateRelation($viaName, $model);
+                    }
                     $viaModels = $model === null ? [] : [$model];
                 }
                 $this->filterByModels($viaModels);
@@ -198,7 +208,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function populate($rows)
     {
@@ -224,7 +234,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
 
-        return $models;
+        return parent::populate($models);
     }
 
     /**
@@ -321,11 +331,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $params = $this->params;
         }
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+        $this->setCommandCache($command);
+
+        return $command;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -339,11 +352,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return parent::queryScalar($selectExpression, $db);
         }
 
-        return (new Query())->select([$selectExpression])
+        $command = (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
-            ->createCommand($db)
-            ->queryScalar();
+            ->createCommand($db);
+        $this->setCommandCache($command);
+
+        return $command->queryScalar();
     }
 
     /**
@@ -390,9 +405,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * The alias syntax is available since version 2.0.7.
      *
-     * @param bool|array $eagerLoading whether to eager load the relations specified in `$with`.
-     * When this is a boolean, it applies to all relations specified in `$with`. Use an array
-     * to explicitly list which relations in `$with` need to be eagerly loaded. Defaults to `true`.
+     * @param bool|array $eagerLoading whether to eager load the relations
+     * specified in `$with`.  When this is a boolean, it applies to all
+     * relations specified in `$with`. Use an array to explicitly list which
+     * relations in `$with` need to be eagerly loaded.  Note, that this does
+     * not mean, that the relations are populated from the query result. An
+     * extra query will still be performed to bring in the related data.
+     * Defaults to `true`.
      * @param string|array $joinType the join type of the relations specified in `$with`.
      * When this is a string, it applies to all relations specified in `$with`. Use an array
      * in the format of `relationName => joinType` to specify different join types for different relations.
@@ -479,7 +498,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
      * @param string|array $with the relations to be joined with.
-     * @param bool|array $eagerLoading whether to eager loading the relations.
+     * @param bool|array $eagerLoading whether to eager load the relations.
+     * Note, that this does not mean, that the relations are populated from the
+     * query result. An extra query will still be performed to bring in the
+     * related data.
      * @return $this the query object itself
      * @see joinWith()
      */
@@ -557,14 +579,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * Returns the table name and the table alias for [[modelClass]].
      * @return array the table name and the table alias.
-     * @internal
+     * @since 2.0.16
      */
-    private function getTableNameAndAlias()
+    protected function getTableNameAndAlias()
     {
         if (empty($this->from)) {
             $tableName = $this->getPrimaryTableName();
         } else {
             $tableName = '';
+            // if the first entry in "from" is an alias-tablename-pair return it directly
             foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
@@ -748,11 +771,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the query object itself
+     * @throws InvalidConfigException when query is not initialized properly
      * @see via()
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $relation = new self(get_class($this->primaryModel), [
+        $modelClass = $this->primaryModel ? get_class($this->primaryModel) : $this->modelClass;
+        $relation = new self($modelClass, [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,
@@ -796,13 +821,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.12
      */
     public function getTablesUsedInFrom()
     {
         if (empty($this->from)) {
-            $this->from = [$this->getPrimaryTableName()];
+            return $this->cleanUpTableNames([$this->getPrimaryTableName()]);
         }
 
         return parent::getTablesUsedInFrom();

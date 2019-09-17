@@ -15,7 +15,9 @@ use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\di\stubs\Bar;
+use yiiunit\framework\di\stubs\BarSetter;
 use yiiunit\framework\di\stubs\Foo;
+use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
@@ -95,6 +97,19 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Bar, $foo->bar);
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
+        // predefined property parameters
+        $fooSetter = FooProperty::className();
+        $barSetter = BarSetter::className();
+
+        $container = new Container();
+        $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);
+        $container->set('bar', ['class' => $barSetter, 'qux' => Instance::of('qux')]);
+        $container->set('qux', $Qux);
+        $foo = $container->get('foo');
+        $this->assertInstanceOf($fooSetter, $foo);
+        $this->assertInstanceOf($barSetter, $foo->bar);
+        $this->assertInstanceOf($Qux, $foo->bar->qux);
+
         // wiring by closure
         $container = new Container();
         $container->set('qux', new Qux());
@@ -155,7 +170,7 @@ class ContainerTest extends TestCase
 
 
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
-            return[$a, get_class($b), $c];
+            return[$a, \get_class($b), $c];
         };
         $result = Yii::$container->invoke($myFunc, ['a']);
         $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
@@ -245,6 +260,7 @@ class ContainerTest extends TestCase
             'qux.using.closure' => function () {
                 return new Qux();
             },
+            'rollbar', 'baibaratsky\yii\rollbar\Rollbar'
         ]);
         $container->setDefinitions([]);
 
@@ -256,6 +272,14 @@ class ContainerTest extends TestCase
         $this->assertEquals('item1', $traversable->current());
 
         $this->assertInstanceOf('yiiunit\framework\di\stubs\Qux', $container->get('qux.using.closure'));
+
+        try {
+            $container->get('rollbar');
+            $this->fail('InvalidConfigException was not thrown');
+        } catch(\Exception $e)
+        {
+            $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
+        }
     }
 
     public function testContainerSingletons()
@@ -284,5 +308,30 @@ class ContainerTest extends TestCase
         $foo = $container->get('qux.using.closure');
         $sameFoo = $container->get('qux.using.closure');
         $this->assertSame($foo, $sameFoo);
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicConstructor()
+    {
+        if (\defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        $container = new Container();
+        $container->get('yiiunit\framework\di\stubs\Variadic');
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicCallable()
+    {
+        if (\defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
 }

@@ -12,6 +12,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yiiunit\TestCase;
 
 /**
@@ -155,9 +156,9 @@ class TimestampBehaviorTest extends TestCase
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
-        if ($expression instanceof Expression) {
-            $this->assertInstanceOf(Expression::className(), $model->created_at);
-            $this->assertInstanceOf(Expression::className(), $model->updated_at);
+        if ($expression instanceof ExpressionInterface) {
+            $this->assertInstanceOf('yii\db\ExpressionInterface', $model->created_at);
+            $this->assertInstanceOf('yii\db\ExpressionInterface', $model->updated_at);
             $model->refresh();
         }
         $this->assertEquals($expected, $model->created_at);

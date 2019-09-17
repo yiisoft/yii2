@@ -114,6 +114,27 @@ La configuration n'a pas de clé `class`. Cela tient au fait qu'elle est utilis�
 
 Plus de détails sur la configuration de la propriété `components` d'une application sont donnés dans la section [Applications](structure-applications.md) et dans la section [Localisateur de services](concept-service-locator.md).
 
+Depuis la version 2.0.11, la configuration de l'application prend en charge la configuration du [Conteneur d'injection de dépendances](concept-di-container.md)
+via la propriété `container`. Par exemple :
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Configuration du singleton Dependency Injection Container
+        ]
+    ]
+];
+```
+
+Pour en savoir plus sur les valeurs possibles des tableaux de configuration de   `definitions` et `singletons`  et avoir des exemples de la vie réelle, reportez-vous à la sous-section [Utilisation pratique avancée](concept-di-container.md#advanced-practical-usage) de l'article 
+[Conteneur d'injection de dépendances](concept-di-container.md).
 
 ### Configurations des objets graphiques <span id="widget-configurations"></span>
 
@@ -190,7 +211,7 @@ $config = require 'path/to/web.php';
 
 La méthode [[Yii::createObject()]] est implémentée sur la base du [conteneur d'injection de dépendances](concept-di-container.md). Cela vous permet de spécifier un jeu de configurations dites *configurations par défaut* qui seront appliquées à TOUTES les instances des classes spécifiées lors de leur création en utilisant [[Yii::createObject()]]. Les configurations par défaut peuvent être spécifiées en appelant `Yii::$container->set()` dans le code d'[amorçage](runtime-bootstrapping.md).
 
-Par exemple, si vous voulez personnaliser l'objet graphique [[yii\widgets\LinkPager]] de façon à ce que TOUS les pagineurs affichent au plus 5 boutons de page (la valeur par défaut est 10), vous pouvez utiliser le code suivant pour atteindre ce but : 
+Par exemple, si vous voulez personnaliser l'objet graphique [[yii\widgets\LinkPager]] de façon à ce que TOUS les fonctions de mise en page (pagers) affichent au plus 5 boutons de page (la valeur par défaut est 10), vous pouvez utiliser le code suivant pour atteindre ce but : 
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', [

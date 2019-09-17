@@ -128,7 +128,7 @@ class AttributeBehaviorTest extends TestCase
 class ActiveRecordWithAttributeBehavior extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -146,7 +146,7 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

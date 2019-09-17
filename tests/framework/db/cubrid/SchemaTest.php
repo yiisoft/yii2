@@ -18,6 +18,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'cubrid';
 
+    public function testGetSchemaNames()
+    {
+        $this->markTestSkipped('Schemas are not supported in CUBRID.');
+    }
+
     public function testGetPDOType()
     {
         $values = [
@@ -44,12 +49,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'integer';
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = null;
         $columns['int_col2']['dbType'] = 'integer';
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = null;
+        $columns['tinyint_col']['smallint'] = 'short';
+        $columns['tinyint_col']['dbType'] = 'short';
+        $columns['tinyint_col']['size'] = null;
+        $columns['tinyint_col']['precision'] = null;
         $columns['smallint_col']['dbType'] = 'short';
         $columns['smallint_col']['size'] = null;
         $columns['smallint_col']['precision'] = null;
@@ -114,7 +124,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      */
     private function convertPropertiesToAnycase($object, $isProperty = false)
     {
-        if (!$isProperty && is_array($object)) {
+        if (!$isProperty && \is_array($object)) {
             $result = [];
             foreach ($object as $name => $value) {
                 $result[] = $this->convertPropertiesToAnycase($value);
@@ -123,11 +133,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             return $result;
         }
 
-        if (is_object($object)) {
+        if (\is_object($object)) {
             foreach (array_keys((array) $object) as $name) {
                 $object->$name = $this->convertPropertiesToAnycase($object->$name, true);
             }
-        } elseif (is_array($object) || is_string($object)) {
+        } elseif (\is_array($object) || \is_string($object)) {
             $object = new AnyCaseValue($object);
         }
 

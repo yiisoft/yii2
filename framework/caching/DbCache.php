@@ -10,6 +10,7 @@ namespace yii\caching;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
@@ -170,7 +171,11 @@ class DbCache extends Cache
             $results[$key] = false;
         }
         foreach ($rows as $row) {
-            $results[$row['id']] = $row['data'];
+            if (is_resource($row['data']) && get_resource_type($row['data']) === 'stream') {
+                $results[$row['id']] = stream_get_contents($row['data']);
+            } else {
+                $results[$row['id']] = $row['data'];
+            }
         }
 
         return $results;
@@ -187,22 +192,23 @@ class DbCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
-        $result = $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
-            $command = $db->createCommand()
-                ->update($this->cacheTable, [
+        try {
+            $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
+                $db->createCommand()->upsert($this->cacheTable, [
+                    'id' => $key,
                     'expire' => $duration > 0 ? $duration + time() : 0,
-                    'data' => [$value, \PDO::PARAM_LOB],
-                ], ['id' => $key]);
-            return $command->execute();
-        });
+                    'data' => new PdoValue($value, \PDO::PARAM_LOB),
+                ])->execute();
+            });
 
-        if ($result) {
             $this->gc();
 
             return true;
-        }
+        } catch (\Exception $e) {
+            Yii::warning("Unable to update or insert cache data: {$e->getMessage()}", __METHOD__);
 
-        return $this->addValue($key, $value, $duration);
+            return false;
+        }
     }
 
     /**
@@ -224,12 +230,14 @@ class DbCache extends Cache
                     ->insert($this->cacheTable, [
                         'id' => $key,
                         'expire' => $duration > 0 ? $duration + time() : 0,
-                        'data' => [$value, \PDO::PARAM_LOB],
+                        'data' => new PdoValue($value, \PDO::PARAM_LOB),
                     ])->execute();
             });
 
             return true;
         } catch (\Exception $e) {
+            Yii::warning("Unable to insert cache data: {$e->getMessage()}", __METHOD__);
+
             return false;
         }
     }

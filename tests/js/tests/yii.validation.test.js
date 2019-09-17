@@ -75,7 +75,9 @@ describe('yii.validation', function () {
         yii = sandbox.yii;
     }
 
-    jsdom({src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')});
+    jsdom({
+        src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')
+    });
 
     before(function () {
         $ = window.$;
@@ -863,6 +865,7 @@ describe('yii.validation', function () {
                 'user mailbox': ['user+mailbox/department=shipping@example.com', true],
                 'special symbols in local-part': ['!#$%&\'*+-/=?^_`.{|}~@example.com', true],
                 'domain only': ['rmcreative.ru', false],
+                'double dot': ['ex..ample@example.com', false],
                 'unicode in domain': ['example@äüößìà.de', false],
                 'unicode (russian characters) in domain': ['sam@рмкреатиф.ru', false],
                 'ASCII in domain': ['example@xn--zcack7ayc9a.de', true],
@@ -1213,6 +1216,9 @@ describe('yii.validation', function () {
         var $input = {
             val: function () {
                 return getInputVal();
+            },
+            is: function () {
+                return false;
             }
         };
         var $form = {
@@ -1270,6 +1276,32 @@ describe('yii.validation', function () {
                 assert.strictEqual(inputSpy.getCall(0).args[0], undefined);
                 assert.equal(inputSpy.getCall(1).args[0], expectedValue);
             });
+        });
+    });
+
+    describe('trim filter on checkbox', function () {
+        var attribute = {input: '#input-id'};
+        var getInputVal;
+        var $checkbox = {
+            is: function (selector) {
+                if (selector === ':checked') {
+                    return true;
+                }
+
+                if (selector === ':checkbox, :radio') {
+                    return true;
+                }
+            }
+        };
+        var $form = {
+            find: function () {
+                return $checkbox;
+            }
+        };
+
+
+        it('should be left as is', function () {
+            assert.strictEqual(yii.validation.trim($form, attribute, {}, true), true);
         });
     });
 
@@ -1486,6 +1518,41 @@ describe('yii.validation', function () {
                 {operator: '<', compareValue: '2', type: 'number'},
                 false
             ],
+            'number type, ">=" operator, 2nd is lower': [
+                10,
+                {operator: '>=', compareValue: 2, type: 'number'},
+                true
+            ],
+            'number type, "<=" operator, 2nd is lower': [
+                10,
+                {operator: '<=', compareValue: 2, type: 'number'},
+                false
+            ],
+            'number type, ">" operator, 2nd is lower': [
+                10,
+                {operator: '>', compareValue: 2, type: 'number'},
+                true
+            ],
+            'number type, ">" operator, compare value undefined': [
+                undefined,
+                {operator: '>', compareValue: 2, type: 'number'},
+                false
+            ],
+            'number type, "<" operator, compare value undefined': [
+                undefined,
+                {operator: '<', compareValue: 2, type: 'number'},
+                true
+            ],
+            'number type, ">=" operator, compare value undefined': [
+                undefined,
+                {operator: '>=', compareValue: 2, type: 'number'},
+                false
+            ],
+            'number type, "<=" operator, compare value undefined': [
+                undefined,
+                {operator: '<=', compareValue: 2, type: 'number'},
+                true
+            ],
             // default compare value
             'default compare value, "===" operator, against undefined': [undefined, {operator: '==='}, true]
         }, function (value, options, expectValid) {
@@ -1504,9 +1571,13 @@ describe('yii.validation', function () {
 
         describe('with compareAttribute, "==" operator and 2 identical strings', function () {
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
+                var $form = {
+                    find: function(){
+                        return $input;
+                    }
+                };
                 var messages = [];
-
-                yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'});
+                yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'}, $form);
                 assert.deepEqual(messages, []);
 
                 assert.isTrue(jQueryInitStub.calledOnce);

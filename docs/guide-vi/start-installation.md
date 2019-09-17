@@ -35,7 +35,7 @@ Nếu bạn đã cài Composer rồi, hãy chắc chắn rằng bạn đang sử
 
 Sau khi cài đặt Composer, bạn có thể cài đặt Yii bằng cách chạy lệnh sau ở thư mục Web mà ứng dụng cần chạy:
 
-    composer global require "fxp/composer-asset-plugin:^1.3.1"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -110,7 +110,7 @@ Các yêu cầu Yii. Bạn có thể kiểm tra xem các yêu cầu tối thiể
   ```
 
 Bạn nên cấu hình cài đặt PHP của bạn để nó đáp ứng các yêu cầu tối thiểu của Yii. Diều quan trọng nhất, bạn nên có PHP 5.4 hoặc hơn. Bạn cũng nên cài đặt
-các gói [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
+các gói [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
 (như là `pdo_mysql` cho CSDL MySQL), nếu ứng dụng của bạn cần thao tác với CSLD.
 
 
@@ -161,9 +161,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Các khuyến nghị khi cấu hình Nginx <span id="recommended-nginx-configuration"></span>
 
-Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](http://php.net/install.fpm).
+Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://secure.php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
-`basic/web` và  `mysite.local` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
+`basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 
 ```
 server {
@@ -173,7 +173,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

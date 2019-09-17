@@ -11,7 +11,7 @@
 Хорошо сконфигурированное окружение PHP очень важно. Для получения максимальной производительности,
 
 - Используйте последнюю стабильную версию PHP. Мажорные релизы PHP могут принести значительные улучшения производительности.
-- Включите кеширование байткода в [Opcache](http://php.net/opcache) (PHP 5.5 и старше) или [APC](http://ru2.php.net/apc) 
+- Включите кеширование байткода в [Opcache](https://secure.php.net/manual/ru/book.opcache.php) (PHP 5.5 и старше) или [APC](http://secure.php.net/manual/ru/book.apc.php) 
   (PHP 5.4 и более ранние версии). Кеширование байткода позволяет избежать затрат времени на обработку и подключение PHP 
   скриптов при каждом входящем запросе.
 
@@ -213,4 +213,4 @@ composer dumpautoload -o
 
 - [Отладочный тулбар Yii и отладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Профайлер XDebug](http://xdebug.org/docs/profiler)
-- [XHProf](http://www.php.net/manual/en/book.xhprof.php)
+- [XHProf](https://secure.php.net/manual/en/book.xhprof.php)

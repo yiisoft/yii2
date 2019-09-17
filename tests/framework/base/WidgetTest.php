@@ -56,6 +56,19 @@ class WidgetTest extends TestCase
     }
 
     /**
+     * @depends testBeginEnd
+     */
+    public function testStackTrackingDisorder()
+    {
+        $this->expectException('yii\base\InvalidCallException');
+        TestWidgetA::begin();
+        TestWidgetB::begin();
+        TestWidgetA::end();
+        TestWidgetB::end();
+    }
+
+
+    /**
      * @depends testWidget
      */
     public function testEvents()
@@ -99,4 +112,13 @@ class TestWidget extends Widget
     {
         return '<run-' . $this->id . '>';
     }
+}
+
+class TestWidgetA extends Widget
+{
+    public static $stack = [];
+}
+
+class TestWidgetB extends Widget
+{
 }

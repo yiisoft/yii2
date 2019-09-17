@@ -225,6 +225,8 @@ return [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            // uncomment if you want to cache RBAC items hierarchy
+            // 'cache' => 'cache',
         ],
         // ...
     ],
@@ -264,7 +266,7 @@ Building authorization data is all about the following tasks:
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 If your permissions hierarchy is meant to be changed by developers only, you can use either migrations
 or a console command. Migration pro is that it could be executed along with other migrations. Console
-command pro is that you have a good overview of the hierarchy in the code rathe than it being scattered
+command pro is that you have a good overview of the hierarchy in the code rather than it being scattered
 among multiple migrations.
 
 Either way in the end you'll get the following RBAC hierarchy:
@@ -583,7 +585,7 @@ the access rule:
     'actions' => ['update'],
     'roles' => ['updatePost'],
     'roleParams' => function() {
-        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
     },
 ],
 ```
@@ -597,7 +599,7 @@ If the creation of role parameters is a simple operation, you may just specify a
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 
@@ -615,7 +617,7 @@ assign each user to an RBAC role. Let's use an example to show how this can be d
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
-You can set up the RBAC data as follows,
+You can set up the RBAC data as follows, first create a class:
 
 
 ```php
@@ -644,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+Then create your own command/migration as explained [in the previous section](#generating-rbac-data):
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;

@@ -49,6 +49,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
  * @property array $attributeNames Attribute names. This property is read-only.
+ * @property array $validationAttributes List of attribute names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -133,7 +134,7 @@ class Validator extends Component
     public $skipOnError = true;
     /**
      * @var bool whether this validation rule should be skipped if the attribute value
-     * is null or an empty string.
+     * is null or an empty string. This property is used only when validating [[yii\base\Model]].
      */
     public $skipOnEmpty = true;
     /**
@@ -227,7 +228,7 @@ class Validator extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -240,24 +241,13 @@ class Validator extends Component
     /**
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
-     * @param array|null $attributes the list of attributes to be validated.
+     * @param array|string|null $attributes the list of attributes to be validated.
      * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
      */
     public function validateAttributes($model, $attributes = null)
     {
-        if (is_array($attributes)) {
-            $newAttributes = [];
-            $attributeNames = $this->getAttributeNames();
-            foreach ($attributes as $attribute) {
-                if (in_array($attribute, $attributeNames, true)) {
-                    $newAttributes[] = $attribute;
-                }
-            }
-            $attributes = $newAttributes;
-        } else {
-            $attributes = $this->getAttributeNames();
-        }
+        $attributes = $this->getValidationAttributes($attributes);
 
         foreach ($attributes as $attribute) {
             $skip = $this->skipOnError && $model->hasErrors($attribute)
@@ -268,6 +258,38 @@ class Validator extends Component
                 }
             }
         }
+    }
+
+    /**
+     * Returns a list of attributes this validator applies to.
+     * @param array|string|null $attributes the list of attributes to be validated.
+     *
+     * - If this is `null`, the result will be equal to [[getAttributeNames()]].
+     * - If this is a string or an array, the intersection of [[getAttributeNames()]]
+     *   and the specified attributes will be returned.
+     *
+     * @return array list of attribute names.
+     * @since 2.0.16
+     */
+    public function getValidationAttributes($attributes = null)
+    {
+        if ($attributes === null) {
+            return $this->getAttributeNames();
+        }
+
+        if (is_scalar($attributes)) {
+            $attributes = [$attributes];
+        }
+
+        $newAttributes = [];
+        $attributeNames = $this->getAttributeNames();
+        foreach ($attributes as $attribute) {
+            // do not strict compare, otherwise int attributes would fail due to to string conversion in getAttributeNames() using ltrim().
+            if (in_array($attribute, $attributeNames, false)) {
+                $newAttributes[] = $attribute;
+            }
+        }
+        return $newAttributes;
     }
 
     /**
@@ -316,7 +338,21 @@ class Validator extends Component
      * Validates a value.
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
-     * @return array|null the error message and the parameters to be inserted into the error message.
+     * @return array|null the error message and the array of parameters to be inserted into the error message.
+     * ```php
+     * if (!$valid) {
+     *     return [$this->message, [
+     *         'param1' => $this->param1,
+     *         'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
+     *         'mimeTypes' => implode(', ', $this->mimeTypes),
+     *         'param4' => 'etc...',
+     *     ]];
+     * }
+     *
+     * return null;
+     * ```
+     * for this example `message` template can contain `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
+     *
      * Null should be returned if the data is valid.
      * @throws NotSupportedException if the validator does not supporting data validation without a model
      */

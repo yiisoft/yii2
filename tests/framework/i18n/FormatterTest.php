@@ -8,7 +8,6 @@
 namespace yiiunit\framework\i18n;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
@@ -233,78 +232,97 @@ class FormatterTest extends TestCase
         return [
             [
                 'Empty value gets proper output',
-                [null], '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>'
+                [null], '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>',
             ],
             [
                 'Wrong value is casted properly',
-                ['NaN'], '0 millimeters', '0 mm'
+                ['NaN'], '0 millimeters', '0 mm',
+                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',
-                [-3], '-3 meters', '-3 m'
+                [-3], '-3 meters', '-3 m',
             ],
             [
                 'Zero value works',
-                [0], '0 millimeters', '0 mm'
+                [0], '0 millimeters', '0 mm',
             ],
             [
                 'Decimal value is resolved in base units',
-                [0.001], '1 millimeter', '1 mm'
+                [0.001], '1 millimeter', '1 mm',
             ],
             [
                 'Decimal value smaller than minimum base unit gets rounded (#1)',
-                [0.0004], '0 millimeters', '0 mm'
+                [0.0004], '0 millimeters', '0 mm',
             ],
             [
                 'Decimal value smaller than minimum base unit gets rounded (#2)',
-                [0.00169], '2 millimeters', '2 mm'
+                [0.00169], '2 millimeters', '2 mm',
             ],
             [
                 'Integer value #1 works',
-                [1], '1 meter', '1 m'
+                [1], '1 meter', '1 m',
             ],
             [
                 'Integer value #2 works',
-                [453], '453 meters', '453 m'
+                [453], '453 meters', '453 m',
             ],
             [
                 'Double value works',
-                [19913.13], '19.913 kilometers', '19.913 km'
+                [19913.13], '19.913 kilometers', '19.913 km',
             ],
             [
                 'It is possible to change number of decimals',
-                [19913.13, 1], '19.9 kilometers', '19.9 km'
+                [19913.13, 1], '19.9 kilometers', '19.9 km',
             ],
             [
                 'It is possible to change number formatting options',
                 [100, null, [
                     \NumberFormatter::MIN_FRACTION_DIGITS => 4,
-                ]], '100.0000 meters', '100.0000 m'
+                ]], '100.0000 meters', '100.0000 m',
             ],
             [
                 'It is possible to change text options',
                 [-19913.13, null, null, [
-                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS'
-                ]], 'MINUS19.913 kilometers', 'MINUS19.913 km'
+                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
+                ]], 'MINUS19.913 kilometers', 'MINUS19.913 km',
             ],
         ];
     }
 
     /**
      * @dataProvider lengthDataProvider
+     * @param mixed $message
+     * @param mixed $arguments
+     * @param mixed $expected
+     * @param mixed $_shortLength
+     * @param mixed $expectedException
      */
-    public function testIntlAsLength($message, $arguments, $expected)
+    public function testIntlAsLength($message, $arguments, $expected, $_shortLength, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
      * @dataProvider lengthDataProvider
+     * @param mixed $message
+     * @param mixed $arguments
+     * @param mixed $_length
+     * @param mixed $expected
+     * @param mixed $expectedException
      */
-    public function testIntlAsShortLength($message, $arguments, $_, $expected)
+    public function testIntlAsShortLength($message, $arguments, $_length, $expected, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
@@ -313,78 +331,97 @@ class FormatterTest extends TestCase
         return [
             [
                 'Empty value gets proper output',
-                [null], '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>'
+                [null], '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>',
             ],
             [
                 'Wrong value is casted properly',
-                ['NaN'], '0 grams', '0 g'
+                ['NaN'], '0 grams', '0 g',
+                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',
-                [-3], '-3 kilograms', '-3 kg'
+                [-3], '-3 kilograms', '-3 kg',
             ],
             [
                 'Zero value works',
-                [0], '0 grams', '0 g'
+                [0], '0 grams', '0 g',
             ],
             [
                 'Decimal value is resolved in base units',
-                [0.001], '1 gram', '1 g'
+                [0.001], '1 gram', '1 g',
             ],
             [
                 'Decimal value smaller than minimum base unit gets rounded (#1)',
-                [0.0004], '0 grams', '0 g'
+                [0.0004], '0 grams', '0 g',
             ],
             [
                 'Decimal value smaller than minimum base unit gets rounded (#2)',
-                [0.00169], '2 grams', '2 g'
+                [0.00169], '2 grams', '2 g',
             ],
             [
                 'Integer value #1 works',
-                [1], '1 kilogram', '1 kg'
+                [1], '1 kilogram', '1 kg',
             ],
             [
                 'Integer value #2 works',
-                [453], '453 kilograms', '453 kg'
+                [453], '453 kilograms', '453 kg',
             ],
             [
                 'Double value works',
-                [19913.13], '19.913 tons', '19.913 tn'
+                [19913.13], '19.913 tons', '19.913 tn',
             ],
             [
                 'It is possible to change number of decimals',
-                [19913.13, 1], '19.9 tons', '19.9 tn'
+                [19913.13, 1], '19.9 tons', '19.9 tn',
             ],
             [
                 'It is possible to change number formatting options',
                 [100, null, [
                     \NumberFormatter::MIN_FRACTION_DIGITS => 4,
-                ]], '100.0000 kilograms', '100.0000 kg'
+                ]], '100.0000 kilograms', '100.0000 kg',
             ],
             [
                 'It is possible to change text options',
                 [-19913.13, null, null, [
-                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS'
-                ]], 'MINUS19.913 tons', 'MINUS19.913 tn'
+                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
+                ]], 'MINUS19.913 tons', 'MINUS19.913 tn',
             ],
         ];
     }
 
     /**
      * @dataProvider weightDataProvider
+     * @param mixed $message
+     * @param mixed $arguments
+     * @param mixed $expected
+     * @param mixed $_shortWeight
+     * @param mixed $expectedException
      */
-    public function testIntlAsWeight($message, $arguments, $expected)
+    public function testIntlAsWeight($message, $arguments, $expected, $_shortWeight, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
      * @dataProvider weightDataProvider
+     * @param mixed $message
+     * @param mixed $arguments
+     * @param mixed $_weight
+     * @param mixed $expected
+     * @param mixed $expectedException
      */
-    public function testIntlAsShortWeight($message, $arguments, $_, $expected)
+    public function testIntlAsShortWeight($message, $arguments, $_weight, $expected, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 

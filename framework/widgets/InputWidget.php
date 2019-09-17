@@ -89,7 +89,7 @@ class InputWidget extends Widget
     }
 
     /**
-     * Render a HTML input tag
+     * Render a HTML input tag.
      *
      * This will call [[Html::activeInput()]] if the input widget is [[hasModel()|tied to a model]],
      * or [[Html::input()]] if not.
@@ -104,8 +104,7 @@ class InputWidget extends Widget
     {
         if ($this->hasModel()) {
             return Html::activeInput($type, $this->model, $this->attribute, $this->options);
-        } else {
-            return Html::input($type, $this->name, $this->value, $this->options);
         }
+        return Html::input($type, $this->name, $this->value, $this->options);
     }
 }

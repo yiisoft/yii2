@@ -160,6 +160,9 @@ class Yii extends \yii\BaseYii
     // copy-paste the code from YiiBase (1.x) here
 }
 
+spl_autoload_unregister(array('YiiBase','autoload'));
+spl_autoload_register(array('Yii','autoload'));
+
 Yii::$classMap = include($yii2path . '/classes.php');
 // register Yii 2 autoloader via Yii 1
 Yii::registerAutoloader(['yii\BaseYii', 'autoload']);

@@ -257,8 +257,7 @@ class Sort extends BaseObject
                 $params = $request instanceof Request ? $request->getQueryParams() : [];
             }
             if (isset($params[$this->sortParam])) {
-                $attributes = $this->parseSortParam($params[$this->sortParam]);
-                foreach ($attributes as $attribute) {
+                foreach ($this->parseSortParam($params[$this->sortParam]) as $attribute) {
                     $descending = false;
                     if (strncmp($attribute, '-', 1) === 0) {
                         $descending = true;

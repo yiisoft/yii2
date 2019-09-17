@@ -203,13 +203,33 @@ namespace yiiunit\framework\log {
                 ->withConsecutive(
                     [$this->equalTo('messages'), $this->equalTo(true)],
                     [
-                        [[
-                            'Unable to send log via ' . get_class($target1) . ': Exception: some error',
-                            Logger::LEVEL_WARNING,
-                            'yii\log\Dispatcher::dispatch',
-                            'time data',
-                            [],
-                        ]],
+                        $this->callback(function($arg) use ($target1) {
+                            if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
+                                return false;
+                            }
+
+                            if (strpos($arg[0][0], 'Unable to send log via ' . get_class($target1) . ': Exception (Exception) \'yii\base\UserException\' with message \'some error\'') !== 0) {
+                                return false;
+                            }
+
+                            if ($arg[0][1] !== Logger::LEVEL_WARNING) {
+                                return false;
+                            }
+
+                            if ($arg[0][2] !== 'yii\log\Dispatcher::dispatch') {
+                                return false;
+                            }
+
+                            if ($arg[0][3] !== 'time data') {
+                                return false;
+                            }
+
+                            if ($arg[0][4] !== []) {
+                                return false;
+                            }
+
+                            return true;
+                        }),
                         true,
                     ]
                 );

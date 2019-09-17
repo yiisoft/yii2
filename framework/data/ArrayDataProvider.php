@@ -74,7 +74,7 @@ class ArrayDataProvider extends BaseDataProvider
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -98,7 +98,7 @@ class ArrayDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -119,11 +119,11 @@ class ArrayDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
-        return count($this->allModels);
+        return is_array($this->allModels) ? count($this->allModels) : 0;
     }
 
     /**

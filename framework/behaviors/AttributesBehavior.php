@@ -122,7 +122,7 @@ class AttributesBehavior extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {

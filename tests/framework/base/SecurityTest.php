@@ -1047,7 +1047,7 @@ TEXT;
 
     public function dataProviderPbkdf2()
     {
-        return [
+        return array_filter([
             [
                 'sha1',
                 'password',
@@ -1072,14 +1072,14 @@ TEXT;
                 20,
                 '4b007901b765489abead49d926f721d065a429c1',
             ],
-            [
+            getenv('TRAVIS') == true ? [
                 'sha1',
                 'password',
                 'salt',
                 16777216,
                 20,
                 'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984',
-            ],
+            ] : null,
             [
                 'sha1',
                 'passwordPASSWORDpassword',
@@ -1120,7 +1120,7 @@ TEXT;
                 40,
                 '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9',
             ],
-        ];
+        ]);
     }
 
     /**
@@ -1231,18 +1231,12 @@ TEXT;
     {
         return [
             ['', ''],
-            [false, ''],
-            [null, ''],
-            [0, ''],
-            [0.00, ''],
-            ['', null],
-            ['', false],
-            ['', 0],
+            ['0', ''],
+            ['0.00', ''],
             ['', "\0"],
             ["\0", ''],
             ["\0", "\0"],
             ['0', "\0"],
-            [0, "\0"],
             ['user', 'User'],
             ['password', 'password'],
             ['password', 'passwordpassword'],

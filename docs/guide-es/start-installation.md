@@ -18,7 +18,7 @@ en el entorno de un equipo de desarrollo.
   utilizar el Template de Proyecto Básico por su simplicidad pero funcionalidad suficiente.
 
 
-Installing via Composer <span id="installing-via-composer"></span>
+Instalando via Composer <span id="installing-via-composer"></span>
 -------------------------------
 
 Si aún no tienes Composer instalado, puedes hacerlo siguiendo las instrucciones que se encuentran en
@@ -40,7 +40,7 @@ ejecutando el comando `composer self-update`
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.3.1"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -115,7 +115,7 @@ Puedes utilizar tu navegador para acceder a la aplicación instalada de Yii en l
 
 ```
 http://localhost:8080/.
-
+```
 
 ![Instalación Correcta de Yii](images/start-app-installed.png)
 
@@ -131,7 +131,7 @@ de PHP satisfaga los requerimientos de Yii. Esto puedes hacerlo usando cualquier
   ```
   
 Deberías configurar tu instalación de PHP para que satisfaga los requisitos mínimos de Yii. Lo que es más importante,
-debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](http://www.php.net/manual/es/pdo.installation.php)
+debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](https://secure.php.net/manual/es/pdo.installation.php)
 y el correspondiente driver de base de datos (como `pdo_mysql` para bases de datos MySQL), si tu aplicación lo necesitara.
 
 
@@ -187,9 +187,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuración Recomendada de Nginx <span id="recommended-nginx-configuration"></span>
 
-Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](http://php.net/install.fpm).
+Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://secure.php.net/install.fpm).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
-`basic/web` y `mysite.local` con el hostname real a servir.
+`basic/web` y `mysite.test` con el hostname real a servir.
 
 ```
 server {
@@ -199,7 +199,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

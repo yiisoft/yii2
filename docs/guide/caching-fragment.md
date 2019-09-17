@@ -174,3 +174,6 @@ if ($this->beginCache($id1)) {
 The [[yii\base\View::renderDynamic()|renderDynamic()]] method takes a piece of PHP code as its parameter.
 The return value of the PHP code is treated as the dynamic content. The same PHP code will be executed
 for every request, no matter the enclosing fragment is being served from cached or not.
+
+> Note: since version 2.0.14 a dynamic content API is exposed via the [[yii\base\DynamicContentAwareInterface]] interface and its [[yii\base\DynamicContentAwareTrait]] trait.
+  As an example, you may refer to the [[yii\widgets\FragmentCache]] class.

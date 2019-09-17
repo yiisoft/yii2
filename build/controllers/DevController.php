@@ -24,19 +24,29 @@ use yii\helpers\FileHelper;
  */
 class DevController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public $defaultAction = 'all';
-
     /**
      * @var bool whether to use HTTP when cloning github repositories
      */
     public $useHttp = false;
-
+    /**
+     * @var bool whether to use --no-progress option when running composer
+     */
+    public $composerNoProgress = false;
+    /**
+     * @var array
+     */
     public $apps = [
         'basic' => 'git@github.com:yiisoft/yii2-app-basic.git',
         'advanced' => 'git@github.com:yiisoft/yii2-app-advanced.git',
         'benchmark' => 'git@github.com:yiisoft/yii2-app-benchmark.git',
     ];
-
+    /**
+     * @var array
+     */
     public $extensions = [
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
@@ -98,17 +108,17 @@ class DevController extends Controller
      */
     public function actionRun($command)
     {
-        $command = implode(' ', func_get_args());
+        $command = implode(' ', \func_get_args());
 
         // root of the dev repo
-        $base = dirname(dirname(__DIR__));
+        $base = \dirname(\dirname(__DIR__));
         $dirs = $this->listSubDirs("$base/extensions");
         $dirs = array_merge($dirs, $this->listSubDirs("$base/apps"));
         asort($dirs);
 
         $oldcwd = getcwd();
         foreach ($dirs as $dir) {
-            $displayDir = substr($dir, strlen($base));
+            $displayDir = substr($dir, \strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
             chdir($dir);
             passthru($command);
@@ -137,7 +147,7 @@ class DevController extends Controller
     public function actionApp($app, $repo = null)
     {
         // root of the dev repo
-        $base = dirname(dirname(__DIR__));
+        $base = \dirname(\dirname(__DIR__));
         $appDir = "$base/apps/$app";
 
         if (!file_exists($appDir)) {
@@ -154,7 +164,11 @@ class DevController extends Controller
             }
 
             $this->stdout("cloning application repo '$app' from '$repo'...\n", Console::BOLD);
-            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir);
+            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir, $returnVar);
+            if ($returnVar !== 0) {
+                $this->stdout("Error occurred while cloning repository.\n", Console::BOLD, Console::FG_RED);
+                return 1;
+            }
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
 
@@ -166,7 +180,11 @@ class DevController extends Controller
         // composer update
         $this->stdout("updating composer for app '$app'...\n", Console::BOLD);
         chdir($appDir);
-        passthru('composer update --prefer-dist');
+        $command = 'composer update --prefer-dist';
+        if ($this->composerNoProgress) {
+            $command .= ' --no-progress';
+        }
+        passthru($command);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
@@ -188,7 +206,7 @@ class DevController extends Controller
     public function actionExt($extension, $repo = null)
     {
         // root of the dev repo
-        $base = dirname(dirname(__DIR__));
+        $base = \dirname(\dirname(__DIR__));
         $extensionDir = "$base/extensions/$extension";
 
         if (!file_exists($extensionDir)) {
@@ -217,7 +235,11 @@ class DevController extends Controller
         // composer update
         $this->stdout("updating composer for extension '$extension'...\n", Console::BOLD);
         chdir($extensionDir);
-        passthru('composer update --prefer-dist');
+        $command = 'composer update --prefer-dist';
+        if ($this->composerNoProgress) {
+            $command .= ' --no-progress';
+        }
+        passthru($command);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
@@ -229,13 +251,14 @@ class DevController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
         $options = parent::options($actionID);
-        if (in_array($actionID, ['ext', 'app', 'all'], true)) {
+        if (\in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
+            $options[] = 'composerNoProgress';
         }
 
         return $options;
@@ -250,13 +273,13 @@ class DevController extends Controller
     {
         if (is_link($link = "$dir/vendor/yiisoft/yii2")) {
             $this->stdout("Removing symlink $link.\n");
-            $this->unlink($link);
+            FileHelper::unlink($link);
         }
         $extensions = $this->findDirs("$dir/vendor/yiisoft");
         foreach ($extensions as $ext) {
             if (is_link($link = "$dir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing symlink $link.\n");
-                $this->unlink($link);
+                FileHelper::unlink($link);
             }
         }
     }
@@ -290,20 +313,6 @@ class DevController extends Controller
                 }
                 symlink("$base/extensions/$ext", $link);
             }
-        }
-    }
-
-    /**
-     * Properly removes symlinked directory under Windows, MacOS and Linux.
-     *
-     * @param string $file path to symlink
-     */
-    protected function unlink($file)
-    {
-        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
-            rmdir($file);
-        } else {
-            unlink($file);
         }
     }
 

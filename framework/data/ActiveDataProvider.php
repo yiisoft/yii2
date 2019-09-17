@@ -94,7 +94,7 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -117,7 +117,7 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -158,7 +158,7 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
@@ -170,7 +170,7 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setSort($value)
     {
@@ -195,5 +195,14 @@ class ActiveDataProvider extends BaseDataProvider
                 }
             }
         }
+    }
+
+    public function __clone()
+    {
+        if (is_object($this->query)) {
+            $this->query = clone $this->query;
+        }
+
+        parent::__clone();
     }
 }

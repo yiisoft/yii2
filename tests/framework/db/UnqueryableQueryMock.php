@@ -13,7 +13,7 @@ use yii\db\Query;
 class UnqueryableQueryMock extends Query
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function one($db = null)
     {
@@ -21,7 +21,7 @@ class UnqueryableQueryMock extends Query
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function all($db = null)
     {

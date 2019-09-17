@@ -26,12 +26,11 @@ use yiiunit\framework\log\ArrayTarget;
  * DbManagerTestCase.
  * @group db
  * @group rbac
- * @group mysql
  */
 abstract class DbManagerTestCase extends ManagerTestCase
 {
     protected static $database;
-    protected static $driverName = 'mysql';
+    protected static $driverName;
 
     /**
      * @var Connection
@@ -54,6 +53,11 @@ abstract class DbManagerTestCase extends ManagerTestCase
             ]);
         }
 
+        Yii::$app->setComponents([
+            'db' => static::createConnection(),
+            'authManager' => '\yii\rbac\DbManager',
+        ]);
+        self::assertSame(static::$driverName, Yii::$app->db->getDriverName(), 'Connection represents the same DB driver, as is tested');
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
@@ -80,8 +84,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     public static function tearDownAfterClass()
     {
-        static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
-        Yii::$app = null;
+        static::runConsoleAction('migrate/down', ['all', 'migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
         parent::tearDownAfterClass();
     }
 

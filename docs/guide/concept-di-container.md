@@ -117,7 +117,7 @@ The callable is responsible to resolve the dependencies and inject them appropri
 created objects. For example,
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... other initializations ...
     return $foo;
@@ -131,7 +131,7 @@ To hide the complex logic for building a new object, you may use a static class 
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         $foo = new Foo(new Bar);
         // ... other initializations ...
@@ -247,7 +247,7 @@ and then automatically resolve those dependencies recursively.
 The following code shows a more sophisticated example. The `UserLister` class depends on an object implementing
 the `UserFinderInterface` interface; the `UserFinder` class implements this interface and depends on
 a `Connection` object. All these dependencies are declared through type hinting of the class constructor parameters.
-With property dependency registration, the DI container is able to resolve these dependencies automatically
+With proper dependency registration, the DI container is able to resolve these dependencies automatically
 and creates a new `UserLister` instance with a simple call of `get('userLister')`.
 
 ```php
@@ -421,13 +421,13 @@ $container->setDefinitions([
         'class' => 'app\components\Response',
         'format' => 'json'
     ],
-    'app\storage\DocumentsReader' => function () {
+    'app\storage\DocumentsReader' => function ($container, $params, $config) {
         $fs = new app\storage\FileStorage('/var/tempfiles');
         return new app\storage\DocumentsReader($fs);
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Will create DocumentReader object with its dependencies as described in the config 
 ```
 
