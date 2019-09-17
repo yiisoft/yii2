@@ -34,7 +34,7 @@ use yii\helpers\Url;
 class ActionColumn extends Column
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $headerOptions = ['class' => 'action-column'];
     /**
@@ -129,7 +129,7 @@ class ActionColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -207,7 +207,7 @@ class ActionColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {

@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yii\db\Constraint;
 use yiiunit\framework\db\AnyValue;
 
 /**
@@ -17,11 +18,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     protected $driverName = 'sqlite';
 
+    public function testGetSchemaNames()
+    {
+        $this->markTestSkipped('Schemas are not supported in SQLite.');
+    }
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
         unset($columns['enum_col']);
         unset($columns['bit_col']);
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'integer';
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = null;
@@ -67,6 +74,37 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $result['4: primary key'][2]->name = null;
         $result['4: unique'][2][0]->name = AnyValue::getInstance();
+
+        $result['5: primary key'] = ['T_upsert', 'primaryKey', new Constraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['id'],
+        ])];
+
         return $result;
+    }
+
+    /**
+     * @dataProvider quoteTableNameDataProvider
+     * @param $name
+     * @param $expectedName
+     * @throws \yii\base\NotSupportedException
+     */
+    public function testQuoteTableName($name, $expectedName)
+    {
+        $schema = $this->getConnection()->getSchema();
+        $quotedName = $schema->quoteTableName($name);
+        $this->assertEquals($expectedName, $quotedName);
+    }
+
+    public function quoteTableNameDataProvider()
+    {
+        return [
+            ['test', '`test`'],
+            ['test.test', '`test`.`test`'],
+            ['test.test.test', '`test`.`test`.`test`'],
+            ['`test`', '`test`'],
+            ['`test`.`test`', '`test`.`test`'],
+            ['test.`test`.test', '`test`.`test`.`test`'],
+        ];
     }
 }

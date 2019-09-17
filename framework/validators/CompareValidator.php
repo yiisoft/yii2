@@ -97,7 +97,7 @@ class CompareValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -135,7 +135,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -163,7 +163,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -221,18 +221,18 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ', $form);';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {
@@ -248,6 +248,7 @@ class CompareValidator extends Validator
             $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
             $compareValue = $model->getAttributeLabel($compareAttribute);
             $options['compareAttribute'] = Html::getInputId($model, $compareAttribute);
+            $options['compareAttributeName'] = Html::getInputName($model, $compareAttribute);
             $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
         }
 

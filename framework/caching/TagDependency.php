@@ -58,7 +58,7 @@ class TagDependency extends Dependency
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isChanged($cache)
     {

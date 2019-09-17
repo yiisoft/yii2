@@ -300,6 +300,32 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->allows($action, false, $request);
     }
 
+    public function testMatchRoleSpecial()
+    {
+        $action = $this->mockAction();
+        $request = $this->mockRequest();
+        $authenticated = $this->mockUser('user1');
+        $guest = $this->mockUser('unknown');
+
+        $rule = new AccessRule();
+        $rule->allow = true;
+        $rule->roleParams = function () {
+            $this->assertTrue(false, 'Should not be executed');
+        };
+
+        $rule->roles = ['@'];
+        $this->assertTrue($rule->allows($action, $authenticated, $request));
+        $this->assertNull($rule->allows($action, $guest, $request));
+
+        $rule->roles = ['?'];
+        $this->assertNull($rule->allows($action, $authenticated, $request));
+        $this->assertTrue($rule->allows($action, $guest, $request));
+
+        $rule->roles = ['?', '@'];
+        $this->assertTrue($rule->allows($action, $authenticated, $request));
+        $this->assertTrue($rule->allows($action, $guest, $request));
+    }
+
     public function testMatchRolesAndPermissions()
     {
         $action = $this->mockAction();
@@ -335,6 +361,30 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->roles = ['allowed_role_1', 'allowed_role_2'];
         $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
         $this->assertTrue($rule->allows($action, $user, $request));
+    }
+
+    /**
+     * Test that callable object can be used as roleParams values
+     */
+    public function testMatchRoleWithRoleParamsCallable()
+    {
+        $action = $this->mockAction();
+        $action->id = 'update';
+
+        $auth = $this->mockAuthManager();
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'roles' => ['updatePost'],
+            'actions' => ['update'],
+            'roleParams' => new RoleParamCallableObject(),
+        ]);
+
+        $user = $this->mockUser('user2');
+        $user->accessChecker = $auth;
+
+        $this->assertEquals(true, $rule->allows($action, $user, $request));
     }
 
     public function testMatchVerb()
@@ -497,5 +547,54 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
+    }
+    
+    public function testMatchIPMask()
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule();
+
+        // no match
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $rule->ips = ['127.0.0.32/27'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        // match
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $rule->ips = ['127.0.0.1/27'];
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        // match, IPv6
+        $_SERVER['REMOTE_ADDR'] = '2a01:4f8:120:7202::2';
+        $rule->ips = ['2a01:4f8:120:7202::2/127'];
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        // no match, IPv6
+        $_SERVER['REMOTE_ADDR'] = '2a01:4f8:120:7202::ffff';
+        $rule->ips = ['2a01:4f8:120:7202::2/123'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
+}
+
+class RoleParamCallableObject
+{
+    public function __invoke()
+    {
+        return ['authorID' => 'user2'];
     }
 }

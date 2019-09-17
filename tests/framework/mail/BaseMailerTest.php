@@ -233,7 +233,7 @@ class BaseMailerTest extends TestCase
 
      <a href="http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef">http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef</a>
 
-     </p><script type="text/javascript">alert("hi")</script>
+     </p><script>alert("hi")</script>
 
 <p>Test Lorem ipsum...</p>
 </body>

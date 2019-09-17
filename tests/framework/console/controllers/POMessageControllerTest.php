@@ -34,7 +34,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -56,7 +56,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -73,7 +73,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {

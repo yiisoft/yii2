@@ -259,6 +259,19 @@ _MSG_
                 'offers',
                 [13],
             ],
+            [
+                'Message without {closing} {brace',
+                false, // Message pattern is invalid
+                ['closing brace and with'],
+            ],
+            [
+                '{gender, select, female{Уважаемая} other{Уважаемый}} {firstname},',
+                'Уважаемый Vadim,',
+                [
+                    'gender' => null,
+                    'firstname' => 'Vadim'
+                ],
+            ],
         ];
     }
 
@@ -397,10 +410,5 @@ _MSG_
         $result = $formatter->format('{word,umber}', ['word' => 'test'], 'en-US'); // typo is intentional, message pattern should be invalid
         $this->assertFalse($result);
         $this->assertNotEmpty($formatter->getErrorMessage());
-        if (PHP_MAJOR_VERSION < 7) {
-            $this->assertContains('message formatter creation failed', $formatter->getErrorMessage());
-        } else {
-            $this->assertContains('Constructor failed', $formatter->getErrorMessage());
-        }
     }
 }

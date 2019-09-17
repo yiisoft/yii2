@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * Controller is the base class of console command classes.
@@ -110,6 +111,15 @@ class Controller extends \yii\base\Controller
                 unset($params['_aliases']);
             }
             foreach ($params as $name => $value) {
+                // Allow camelCase options to be entered in kebab-case
+                if (!in_array($name, $options, true) && strpos($name, '-') !== false) {
+                    $kebabName = $name;
+                    $altName = lcfirst(Inflector::id2camel($kebabName));
+                    if (in_array($altName, $options, true)) {
+                        $name = $altName;
+                    }
+                }
+
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
                     if (is_array($default)) {
@@ -122,6 +132,9 @@ class Controller extends \yii\base\Controller
                     }
                     $this->_passedOptions[] = $name;
                     unset($params[$name]);
+                    if (isset($kebabName)) {
+                        unset($params[$kebabName]);
+                    }
                 } elseif (!is_int($name)) {
                     throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
                 }
@@ -158,7 +171,7 @@ class Controller extends \yii\base\Controller
         $missing = [];
         foreach ($method->getParameters() as $i => $param) {
             if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
+                $args[$i] = $args[$i] === '' ? [] : preg_split('/\s*,\s*/', $args[$i]);
             }
             if (!isset($args[$i])) {
                 if ($param->isDefaultValueAvailable()) {
@@ -440,6 +453,10 @@ class Controller extends \yii\base\Controller
      */
     public function getActionHelpSummary($action)
     {
+        if ($action === null) {
+            return $this->ansiFormat(Yii::t('yii', 'Action not found.'), Console::FG_RED);
+        }
+
         return $this->parseDocCommentSummary($this->getActionMethodReflection($action));
     }
 
@@ -544,6 +561,10 @@ class Controller extends \yii\base\Controller
             }
             $defaultValue = $property->getValue($this);
             $tags = $this->parseDocCommentTags($property);
+
+            // Display camelCase options in kebab-case
+            $name = Inflector::camel2id($name, '-', true);
+
             if (isset($tags['var']) || isset($tags['property'])) {
                 $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
                 if (is_array($doc)) {

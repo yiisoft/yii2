@@ -75,7 +75,7 @@ Cada vez que [[yii\di\Container::get()]] for chamado, o callable correspondente 
 O callable é responsável por resolver as dependências e injetá-las de forma adequada para os objetos recém-criados. Por exemplo:
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... Outras inicializações...
     return $foo;
@@ -89,7 +89,7 @@ Para ocultar a lógica complexa da construção de um novo objeto você pode usa
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         return function () {
             $foo = new Foo(new Bar);

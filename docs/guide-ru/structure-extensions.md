@@ -374,25 +374,25 @@ class MyBootstrapClass implements BootstrapInterface
 
 ## Базовые расширения <span id="core-extensions"></span>
 
-Yii предоставляет следующие базовые расширения, которые разрабатывает и поддерживает команда разработчиков Yii. Они все
+Yii предоставляет следующие базовые расширения, (или ["Official Extensions"](https://www.yiiframework.com/extensions/official)) которые разрабатывает и поддерживает команда разработчиков Yii. Они все
 зарегистрированы на [Packagist](https://packagist.org/) и могут быть легко установлены, как описано в подразделе
 [Использование расширений](#using-extensions).
 
-- [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
+- [yiisoft/yii2-apidoc](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc):
   предоставляет расширяемый и высокопроизводительный генератор документации API. Оно также используется для генерации
   документации API фреймворка.
-- [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
+- [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient):
   предоставляет набор наиболее часто используемых клиентов авторизации, таких, как Facebook OAuth2 клиент и GitHub
   OAuth2 клиент.
-- [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
+- [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap):
   предоставляет набор виджетов, которые являются компонентами и плагинами [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
+- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception) (deprecated):
   предоставляет поддержку тестирования, основанного на [Codeception](http://codeception.com/).
-- [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
+- [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug):
   предоставляет поддержку отладки в приложениях Yii. Когда это расширение используется, отладочная панель появится в
   нижней части каждой страницы. Это расширение также предоставляет набор отдельных страниц для отображения более
   подробной отладочной информации.
-- [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
+- [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
   предоставляет поддержку использования [Elasticsearch](http://www.elasticsearch.org/). Оно включает в себя поддержку
   основных поисковых запросов, а также реализует шаблон проектирования [Active Record](db-active-record.md), который
   позволяет хранить записи Active Record в Elasticsearch.

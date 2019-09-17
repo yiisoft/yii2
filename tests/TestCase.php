@@ -29,8 +29,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * Returns a test configuration param from /data/config.php.
-     * @param  string $name params name
-     * @param  mixed $default default value to use when param is not set.
+     * @param string $name params name
+     * @param mixed $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
      */
     public static function getParam($name, $default = null)
@@ -112,13 +112,29 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Asserting two strings equality ignoring line endings.
      * @param string $expected
      * @param string $actual
+     * @param string $message
      */
-    protected function assertEqualsWithoutLE($expected, $actual)
+    protected function assertEqualsWithoutLE($expected, $actual, $message = '')
     {
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $actual, $message);
+    }
+
+    /**
+     * Asserts that a haystack contains a needle ignoring line endings.
+     *
+     * @param mixed $needle
+     * @param mixed $haystack
+     * @param string $message
+     */
+    protected function assertContainsWithoutLE($needle, $haystack, $message = '')
+    {
+        $needle = str_replace("\r\n", "\n", $needle);
+        $haystack = str_replace("\r\n", "\n", $haystack);
+
+        $this->assertContains($needle, $haystack, $message);
     }
 
     /**
@@ -199,5 +215,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     public function assertIsOneOf($actual, array $expected, $message = '')
     {
         self::assertThat($actual, new IsOneOfAssert($expected), $message);
+    }
+
+    /**
+     * Changes db component config
+     * @param $db
+     */
+    protected function switchDbConnection($db)
+    {
+        $databases = $this->getParam('databases');
+        if (isset($databases[$db])) {
+            $database = $databases[$db];
+            Yii::$app->db->close();
+            Yii::$app->db->dsn = isset($database['dsn']) ? $database['dsn'] : null;
+            Yii::$app->db->username = isset($database['username']) ? $database['username'] : null;
+            Yii::$app->db->password = isset($database['password']) ? $database['password'] : null;
+        }
     }
 }

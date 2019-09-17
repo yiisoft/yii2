@@ -45,13 +45,13 @@ class FormatConverterTest extends TestCase
 
     public function testEscapedIcuToPhp()
     {
-        $this->assertEquals('l, F j, Y \\a\\t g:i:s a T', FormatConverter::convertDateIcuToPhp('EEEE, MMMM d, y \'at\' h:mm:ss a zzzz'));
+        $this->assertEquals('l, F j, Y \\a\\t g:i:s A T', FormatConverter::convertDateIcuToPhp('EEEE, MMMM d, y \'at\' h:mm:ss a zzzz'));
         $this->assertEquals('\\o\\\'\\c\\l\\o\\c\\k', FormatConverter::convertDateIcuToPhp('\'o\'\'clock\''));
     }
 
     public function testEscapedIcuToJui()
     {
-        $this->assertEquals('l, F j, Y \\a\\t g:i:s a T', FormatConverter::convertDateIcuToPhp('EEEE, MMMM d, y \'at\' h:mm:ss a zzzz'));
+        $this->assertEquals('l, F j, Y \\a\\t g:i:s A T', FormatConverter::convertDateIcuToPhp('EEEE, MMMM d, y \'at\' h:mm:ss a zzzz'));
         $this->assertEquals('\'o\'\'clock\'', FormatConverter::convertDateIcuToJui('\'o\'\'clock\''));
     }
 
@@ -103,5 +103,21 @@ class FormatConverterTest extends TestCase
         $expected = "'dDjlNSwZWFmMntLoYyaBghHisueIOPTZcru'";
         $actual = FormatConverter::convertDatePhpToIcu('\d\D\j\l\N\S\w\Z\W\F\m\M\n\t\L\o\Y\y\a\B\g\h\H\i\s\u\e\I\O\P\T\Z\c\r\u');
         $this->assertEquals($expected, $actual);
+
+        $expected = "yyyy-MM-dd'T'HH:mm:ssxxx";
+        $actual = FormatConverter::convertDatePhpToIcu('c');
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testPhpFormatC()
+    {
+        $time = time();
+
+        $formatter = new Formatter(['locale' => 'en-US']);
+        $this->assertEquals(date('c', $time), $formatter->asDatetime($time, 'php:c'));
+
+        date_default_timezone_set('Europe/Moscow');
+        $formatter = new Formatter(['locale' => 'ru-RU', 'timeZone' => 'Europe/Moscow']);
+        $this->assertEquals(date('c', $time), $formatter->asDatetime($time, 'php:c'));
     }
 }

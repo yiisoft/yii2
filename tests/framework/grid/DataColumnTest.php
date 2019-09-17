@@ -190,8 +190,8 @@ HTML
         $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
-<option value="0">No</option>
 <option value="1">Yes</option>
+<option value="0">No</option>
 </select>
 HTML
             , $result);

@@ -398,7 +398,7 @@ Mais detalhes sobre essa propriedade podem ser encontrados na seção
 Essa propriedade é disponibilizada como uma maneira alternativa de definir a
 timezone do PHP em tempo de execução. Ao confiugrar essa propriedade, você está
 essencialmente chamando a função
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php)
 do PHP. Por exemplo:
 
 ```php

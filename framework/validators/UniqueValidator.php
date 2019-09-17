@@ -89,10 +89,15 @@ class UniqueValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+    /**
+     * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
+     */
+    public $forceMasterDb =  true;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -113,7 +118,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -121,7 +126,7 @@ class UniqueValidator extends Validator
         $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
@@ -131,7 +136,19 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        if ($this->modelExists($targetClass, $conditions, $model)) {
+        $db = $targetClass::getDb();
+
+        $modelExists = false;
+
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            });
+        } else {
+            $modelExists = $this->modelExists($targetClass, $conditions, $model);
+        }
+
+        if ($modelExists) {
             if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
@@ -161,7 +178,7 @@ class UniqueValidator extends Validator
      */
     private function modelExists($targetClass, $conditions, $model)
     {
-        /** @var ActiveRecordInterface $targetClass $query */
+        /** @var ActiveRecordInterface|\yii\base\BaseObject $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
@@ -174,6 +191,18 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                
+                // any with relation can't be loaded because related fields are not selected
+                $query->with = null;
+    
+                if (is_array($query->joinWith)) {
+                    // any joinWiths need to have eagerLoading turned off to prevent related fields being loaded
+                    foreach ($query->joinWith as &$joinWith) {
+                        // \yii\db\ActiveQuery::joinWith adds eagerLoading at key 1
+                        $joinWith[1] = false;
+                    }
+                    unset($joinWith);
+                }
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -291,10 +320,12 @@ class UniqueValidator extends Validator
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
-                $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . preg_quote($alias) . '\.(.*)$/',
-                    '$1',
-                    $columnName) . ']]';
+                $columnName = preg_replace('/^' . preg_quote($alias) . '\.(.*)$/', '$1', $columnName);
+                if (strpos($columnName, '[[') === 0) {
+                    $prefixedColumn = "{$alias}.{$columnName}";
+                } else {
+                    $prefixedColumn = "{$alias}.[[{$columnName}]]";
+                }
             } else {
                 // there is an expression, can't prefix it reliably
                 $prefixedColumn = $columnName;

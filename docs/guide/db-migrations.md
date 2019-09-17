@@ -35,8 +35,15 @@ All these tools are accessible through the command `yii migrate`. In this sectio
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
-> Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
+> Tip: Migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
   hierarchy or clean up cache.
+
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
 
 
 ## Creating Migrations <span id="creating-migrations"></span>
@@ -204,7 +211,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -214,7 +221,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -238,7 +245,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -250,7 +257,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -275,7 +282,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -287,7 +294,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -296,7 +303,7 @@ class m150811_220037_create_post_table extends Migration
 }
 ```
 
-> Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
+> Note: Primary key is added automatically and is named `id` by default. If you want to use another name you may
 > specify it explicitly like `--fields="name:primaryKey"`.
 
 #### Foreign keys
@@ -320,7 +327,7 @@ generates
 class m160328_040430_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -368,7 +375,7 @@ class m160328_040430_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -533,7 +540,7 @@ generates
 class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -580,7 +587,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -683,6 +690,7 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::insert()|insert()]]: inserting a single row
 * [[yii\db\Migration::batchInsert()|batchInsert()]]: inserting multiple rows
 * [[yii\db\Migration::update()|update()]]: updating rows
+* [[yii\db\Migration::upsert()|upsert()]]: inserting a single row or updating it if it exists (since 2.0.14)
 * [[yii\db\Migration::delete()|delete()]]: deleting rows
 * [[yii\db\Migration::createTable()|createTable()]]: creating a table
 * [[yii\db\Migration::renameTable()|renameTable()]]: renaming a table
@@ -714,15 +722,6 @@ Below is the list of all these database accessing methods:
 >     $this->update('users', ['status' => 1], ['id' => $user['id']]);
 > }
 > ```
-
-
-> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
-> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
-> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
-> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
-> existing migrations. For this reason migration code should be kept independent from other application logic such
-> as Active Record classes.
-
 
 ## Applying Migrations <span id="applying-migrations"></span>
 
@@ -802,7 +801,7 @@ yii migrate/redo 3      # redo the last 3 applied migrations
 Since Yii 2.0.13 you can delete all tables and foreign keys from the database and apply all migrations from the beginning.
 
 ```
-yii migrate/fresh       # Truncate the database and apply all migrations from the beginning.
+yii migrate/fresh       # truncate the database and apply all migrations from the beginning
 ```
 
 ## Listing Migrations <span id="listing-migrations"></span>
@@ -936,7 +935,7 @@ return [
 ];
 ```
 
-> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
+> Note: Migrations applied from different namespaces will create a **single** migration history, e.g. you might be
   unable to apply or revert migrations from particular namespace only.
 
 While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
@@ -944,10 +943,10 @@ migration name. Note that backslash (`\`) symbol is usually considered a special
 to escape it properly to avoid shell errors or incorrect behavior. For example:
 
 ```
-yii migrate/create 'app\\migrations\\createUserTable'
+yii migrate/create app\\migrations\\CreateUserTable
 ```
 
-> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
+> Note: Migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
   contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
   property.
 
@@ -956,6 +955,32 @@ also accepts an array for specifying multiple directories that contain migration
 This is mainly added to be used in existing projects which use migrations from different locations. These migrations mainly come
 from external sources, like Yii extensions developed by other developers,
 which can not be changed to use namespaces easily when starting to use the new approach.
+
+#### Generating namespaced migrations
+
+Namespaced migrations follow "CamelCase" naming pattern `M<YYMMDDHHMMSS><Name>` (for example `M190720100234CreateUserTable`). 
+When generating such migration remember that table name will be converted from "CamelCase" format to "underscored". For 
+example:
+
+```
+yii migrate/create app\\migrations\\DropGreenHotelTable
+```
+
+generates migration within namespace `app\migrations` dropping table `green_hotel` and
+
+```
+yii migrate/create app\\migrations\\CreateBANANATable
+```
+
+generates migration within namespace `app\migrations` creating table `b_a_n_a_n_a`.
+
+If table's name is mixed-cased (like `studentsExam`) you need to precede the name with underscore:
+
+```
+yii migrate/create app\\migrations\\Create_studentsExamTable
+```
+
+This generates migration within namespace `app\migrations` creating table `studentsExam`.
 
 ### Separated Migrations <span id="separated-migrations"></span>
 

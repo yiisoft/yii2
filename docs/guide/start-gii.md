@@ -1,7 +1,7 @@
 Generating Code with Gii
 ========================
 
-This section will describe how to use [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md) to automatically generate code
+This section will describe how to use [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) to automatically generate code
 that implements some common Web site features. Using Gii to auto-generate code is simply a matter of entering the right information per the instructions shown on the Gii Web pages.
 
 Through this tutorial, you will learn how to:
@@ -15,7 +15,7 @@ Through this tutorial, you will learn how to:
 Starting Gii <span id="starting-gii"></span>
 ------------
 
-[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md) is provided in Yii as a [module](structure-modules.md). You can enable Gii
+[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) is provided in Yii as a [module](structure-modules.md). You can enable Gii
 by configuring it in the [[yii\base\Application::modules|modules]] property of the application. Depending upon how you created your application, you may find the following code is already provided in the `config/web.php` configuration file:
 
 ```php
@@ -129,7 +129,7 @@ or to customize them:
 
 > Info: Gii is designed to be a highly customizable and extensible code generation tool. Using it wisely
   can greatly accelerate your application development speed. For more details, please refer to
-  the [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md) section.
+  the [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) section.
 
 
 Summary <span id="summary"></span>

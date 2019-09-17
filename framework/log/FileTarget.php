@@ -64,9 +64,9 @@ class FileTarget extends Target
      * systems which do not play well with rename on open files. Rotation by renaming however is
      * a bit faster.
      *
-     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
+     * The problem with windows systems where the [rename()](https://secure.php.net/manual/en/function.rename.php)
      * function does not work with files that are opened by some process is described in a
-     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
+     * [comment by Martin Pelletier](https://secure.php.net/manual/en/function.rename.php#102274) in
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */
@@ -85,10 +85,6 @@ class FileTarget extends Target
         } else {
             $this->logFile = Yii::getAlias($this->logFile);
         }
-        $logPath = dirname($this->logFile);
-        if (!is_dir($logPath)) {
-            FileHelper::createDirectory($logPath, $this->dirMode, true);
-        }
         if ($this->maxLogFiles < 1) {
             $this->maxLogFiles = 1;
         }
@@ -99,10 +95,15 @@ class FileTarget extends Target
 
     /**
      * Writes log messages to a file.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
      * @throws InvalidConfigException if unable to open the log file for writing
+     * @throws LogRuntimeException if unable to write complete log to file
      */
     public function export()
     {
+        $logPath = dirname($this->logFile);
+        FileHelper::createDirectory($logPath, $this->dirMode, true);
+
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
@@ -114,12 +115,28 @@ class FileTarget extends Target
             clearstatcache();
         }
         if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
-            $this->rotateFiles();
             @flock($fp, LOCK_UN);
             @fclose($fp);
-            @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
+            $this->rotateFiles();
+            $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
+            if ($writeResult === false) {
+                $error = error_get_last();
+                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
+            }
+            $textSize = strlen($text);
+            if ($writeResult < $textSize) {
+                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+            }
         } else {
-            @fwrite($fp, $text);
+            $writeResult = @fwrite($fp, $text);
+            if ($writeResult === false) {
+                $error = error_get_last();
+                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
+            }
+            $textSize = strlen($text);
+            if ($writeResult < $textSize) {
+                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+            }
             @flock($fp, LOCK_UN);
             @fclose($fp);
         }
@@ -141,21 +158,49 @@ class FileTarget extends Target
                 // suppress errors because it's possible multiple processes enter into this section
                 if ($i === $this->maxLogFiles) {
                     @unlink($rotateFile);
-                } else {
-                    if ($this->rotateByCopy) {
-                        @copy($rotateFile, $file . '.' . ($i + 1));
-                        if ($fp = @fopen($rotateFile, 'a')) {
-                            @ftruncate($fp, 0);
-                            @fclose($fp);
-                        }
-                        if ($this->fileMode !== null) {
-                            @chmod($file . '.' . ($i + 1), $this->fileMode);
-                        }
-                    } else {
-                        @rename($rotateFile, $file . '.' . ($i + 1));
-                    }
+                    continue;
+                }
+                $newFile = $this->logFile . '.' . ($i + 1);
+                $this->rotateByCopy ? $this->rotateByCopy($rotateFile, $newFile) : $this->rotateByRename($rotateFile, $newFile);
+                if ($i === 0) {
+                    $this->clearLogFile($rotateFile);
                 }
             }
         }
+    }
+
+    /***
+     * Clear log file without closing any other process open handles
+     * @param string $rotateFile
+     */
+    private function clearLogFile($rotateFile)
+    {
+        if ($filePointer = @fopen($rotateFile, 'a')) {
+            @ftruncate($filePointer, 0);
+            @fclose($filePointer);
+        }
+    }
+
+    /***
+     * Copy rotated file into new file
+     * @param string $rotateFile
+     * @param string $newFile
+     */
+    private function rotateByCopy($rotateFile, $newFile)
+    {
+        @copy($rotateFile, $newFile);
+        if ($this->fileMode !== null) {
+            @chmod($newFile, $this->fileMode);
+        }
+    }
+
+    /**
+     * Renames rotated file into new file
+     * @param string $rotateFile
+     * @param string $newFile
+     */
+    private function rotateByRename($rotateFile, $newFile)
+    {
+        @rename($rotateFile, $newFile);
     }
 }

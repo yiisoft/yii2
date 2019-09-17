@@ -14,6 +14,7 @@ use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
+use yii\widgets\MaskedInput;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
@@ -247,6 +248,17 @@ EOT;
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
     }
 
+    public function testTabularInputErrors()
+    {
+        $this->activeField->attribute = '[0]'.$this->attributeName;
+        $this->helperModel->addError($this->attributeName, 'Error Message');
+
+        $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
+        $actualValue = $this->activeField->begin();
+
+        $this->assertEquals($expectedValue, $actualValue);
+    }
+
     public function hintDataProvider()
     {
         return [
@@ -340,6 +352,20 @@ EOD;
             'value2' => ['label' => 'value 2'],
         ]]);
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+    }
+
+    public function testRadioList()
+    {
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-attributename">
+<label class="control-label">Attribute Name</label>
+<input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+        $this->activeField->radioList(['1' => 'Item One']);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->render());
     }
 
     public function testGetClientOptionsReturnEmpty()
@@ -527,6 +553,31 @@ EOD;
         $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
     }
 
+    public function testWidgetOptions()
+    {
+        $this->activeField->form->validationStateOn = ActiveForm::VALIDATION_STATE_ON_INPUT;
+        $this->activeField->model->addError('attributeName', 'error');
+
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'form-control has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+
+        $this->activeField->inputOptions = [];
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+    }
+
     /**
      * @depends testHiddenInput
      *
@@ -557,6 +608,30 @@ HTML;
 HTML;
         $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    public function testInputOptionsTransferToWidget()
+    {
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_direct'],
+        ]);
+        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+
+        // transfer options from ActiveField to widget
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+        ]);
+        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+
+        // set both AF and widget options (second one takes precedence)
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_both_direct']
+        ]);
+        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
     }
 
     /**
@@ -642,3 +717,31 @@ class TestInputWidget extends InputWidget
         return 'Render: ' . get_class($this);
     }
 }
+
+class TestMaskedInput extends MaskedInput
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init()
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function getOptions() {
+        return $this->options;
+    }
+
+    public function run()
+    {
+        return 'Options: ' . implode(', ', array_map(
+            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            $this->options,
+            array_keys($this->options)
+        ));
+    }
+}
+

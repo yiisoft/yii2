@@ -43,7 +43,7 @@ class AjaxFilter extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -53,7 +53,7 @@ class AjaxFilter extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {

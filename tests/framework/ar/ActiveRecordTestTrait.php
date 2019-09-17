@@ -1105,7 +1105,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1160,7 +1160,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1274,5 +1274,27 @@ trait ActiveRecordTestTrait
 
         $this->assertFalse($customer->canGetProperty('non_existing_property'));
         $this->assertFalse($customer->canSetProperty('non_existing_property'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17089
+     */
+    public function testViaWithCallable()
+    {
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        /* @var Order $order */
+        $order = $orderClass::findOne(2);
+
+        $expensiveItems = $order->expensiveItemsUsingViaWithCallable;
+        $cheapItems = $order->cheapItemsUsingViaWithCallable;
+
+        $this->assertCount(2, $expensiveItems);
+        $this->assertEquals(4, $expensiveItems[0]->id);
+        $this->assertEquals(5, $expensiveItems[1]->id);
+
+        $this->assertCount(1, $cheapItems);
+        $this->assertEquals(3, $cheapItems[0]->id);
     }
 }

@@ -165,6 +165,9 @@ class User extends Component
         if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
+        if (!empty($this->accessChecker) && is_string($this->accessChecker)) {
+            $this->accessChecker = Yii::createObject($this->accessChecker);
+        }
     }
 
     private $_identity = false;
@@ -184,8 +187,16 @@ class User extends Component
     {
         if ($this->_identity === false) {
             if ($this->enableSession && $autoRenew) {
-                $this->_identity = null;
-                $this->renewAuthStatus();
+                try {
+                    $this->_identity = null;
+                    $this->renewAuthStatus();
+                } catch (\Exception $e) {
+                    $this->_identity = false;
+                    throw $e;
+                } catch (\Throwable $e) {
+                    $this->_identity = false;
+                    throw $e;
+                }
             } else {
                 return null;
             }
@@ -208,12 +219,12 @@ class User extends Component
     {
         if ($identity instanceof IdentityInterface) {
             $this->_identity = $identity;
-            $this->_access = [];
         } elseif ($identity === null) {
             $this->_identity = null;
         } else {
             throw new InvalidValueException('The identity object must implement IdentityInterface.');
         }
+        $this->_access = [];
     }
 
     /**
@@ -246,11 +257,27 @@ class User extends Component
             } else {
                 $log = "User '$id' logged in from $ip. Session not enabled.";
             }
+
+            $this->regenerateCsrfToken();
+
             Yii::info($log, __METHOD__);
             $this->afterLogin($identity, false, $duration);
         }
 
         return !$this->getIsGuest();
+    }
+
+    /**
+     * Regenerates CSRF token
+     *
+     * @since 2.0.14.2
+     */
+    protected function regenerateCsrfToken()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->enableCsrfCookie || $this->enableSession) {
+            $request->getCsrfToken(true);
+        }
     }
 
     /**
@@ -416,7 +443,7 @@ class User extends Component
             && (!$checkAjax || !$request->getIsAjax())
             && $canRedirect
         ) {
-            $this->setReturnUrl($request->getUrl());
+            $this->setReturnUrl($request->getAbsoluteUrl());
         }
         if ($this->loginUrl !== null && $canRedirect) {
             $loginUrl = (array) $this->loginUrl;

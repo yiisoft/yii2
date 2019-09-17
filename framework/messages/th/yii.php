@@ -86,7 +86,7 @@ return [
     '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => '{attribute}ต้องน้อยกว่าหรือเท่ากับ "{compareValueOrAttribute}"',
     '{attribute} must be no greater than {max}.' => '{attribute}ต้องไม่มากกว่า {max}.',
     '{attribute} must be no less than {min}.' => '{attribute}ต้องไม่น้อยกว่า {min}',
-    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute}ต้องมีค่าเหมือนกัน "{compareValueOrAttribute}"',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute}ต้องมีค่าไม่เหมือนกับ "{compareValueOrAttribute}"',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute}ควรประกอบด้วยอักขระอย่างน้อย {min, number} อักขระ',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute}ควรประกอบด้วยอักขระอย่างมาก {max, number} อักขระ',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}ควรประกอบด้วย {length, number} อักขระ',

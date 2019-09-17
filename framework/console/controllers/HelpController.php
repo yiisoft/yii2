@@ -75,21 +75,17 @@ class HelpController extends Controller
      */
     public function actionList()
     {
-        $commands = $this->getCommandDescriptions();
-        foreach ($commands as $command => $description) {
+        foreach ($this->getCommandDescriptions() as $command => $description) {
             $result = Yii::$app->createController($command);
-            if ($result === false || !($result[0] instanceof Controller)) {
-                continue;
-            }
             /** @var $controller Controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
-            if (!empty($actions)) {
-                $prefix = $controller->getUniqueId();
+            $prefix = $controller->getUniqueId();
+            if ($controller->createAction($controller->defaultAction) !== null) {
                 $this->stdout("$prefix\n");
-                foreach ($actions as $action) {
-                    $this->stdout("$prefix/$action\n");
-                }
+            }
+            foreach ($actions as $action) {
+                $this->stdout("$prefix/$action\n");
             }
         }
     }
@@ -116,17 +112,15 @@ class HelpController extends Controller
             return;
         }
 
-        $arguments = $controller->getActionArgsHelp($action);
-        foreach ($arguments as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
+        foreach ($controller->getActionArgsHelp($action) as $argument => $help) {
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':')) ?: $argument;
             $this->stdout($argument . ':' . $description . "\n");
         }
 
         $this->stdout("\n");
-        $options = $controller->getActionOptionsHelp($action);
-        foreach ($options as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
-            $this->stdout('--' . $argument . ':' . $description . "\n");
+        foreach ($controller->getActionOptionsHelp($action) as $argument => $help) {
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':'));
+            $this->stdout('--' . $argument . ($description ? ':' . $description : '') . "\n");
         }
     }
 
@@ -158,8 +152,7 @@ class HelpController extends Controller
             $this->stdout($scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW));
         }
 
-        $args = $controller->getActionArgsHelp($action);
-        foreach ($args as $name => $arg) {
+        foreach ($controller->getActionArgsHelp($action) as $name => $arg) {
             if ($arg['required']) {
                 $this->stdout(' <' . $name . '>', Console::FG_CYAN);
             } else {
@@ -178,7 +171,15 @@ class HelpController extends Controller
     {
         $commands = $this->getModuleCommands(Yii::$app);
         sort($commands);
-        return array_unique($commands);
+        return array_filter(array_unique($commands), function ($command) {
+            $result = Yii::$app->createController($command);
+            if ($result === false || !$result[0] instanceof Controller) {
+                return false;
+            }
+            list($controller, $actionID) = $result;
+            $actions = $this->getActions($controller);
+            return $actions !== [];
+        });
     }
 
     /**
@@ -189,16 +190,10 @@ class HelpController extends Controller
     {
         $descriptions = [];
         foreach ($this->getCommands() as $command) {
-            $description = '';
-
             $result = Yii::$app->createController($command);
-            if ($result !== false && $result[0] instanceof Controller) {
-                list($controller, $actionID) = $result;
-                /** @var Controller $controller */
-                $description = $controller->getHelpSummary();
-            }
-
-            $descriptions[$command] = $description;
+            /** @var Controller $controller */
+            list($controller, $actionID) = $result;
+            $descriptions[$command] = $controller->getHelpSummary();
         }
 
         return $descriptions;
@@ -215,8 +210,8 @@ class HelpController extends Controller
         $class = new \ReflectionClass($controller);
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
-            if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0) {
-                $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
+            if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strncmp($name, 'action', 6) === 0) {
+                $actions[] = $this->camel2id(substr($name, 6));
             }
         }
         sort($actions);
@@ -249,13 +244,24 @@ class HelpController extends Controller
 
         $controllerPath = $module->getControllerPath();
         if (is_dir($controllerPath)) {
-            $files = scandir($controllerPath);
-            foreach ($files as $file) {
-                if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
-                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
-                    if ($this->validateControllerClass($controllerClass)) {
-                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($controllerPath, \RecursiveDirectoryIterator::KEY_AS_PATHNAME));
+            $iterator = new \RegexIterator($iterator, '/.*Controller\.php$/', \RecursiveRegexIterator::GET_MATCH);
+            foreach ($iterator as $matches) {
+                $file = $matches[0];
+                $relativePath = str_replace($controllerPath, '', $file);
+                $class = strtr($relativePath, [
+                    '/' => '\\',
+                    '.php' => '',
+                ]);
+                $controllerClass = $module->controllerNamespace . $class;
+                if ($this->validateControllerClass($controllerClass)) {
+                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
+
+                    $command = Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
+                    if (!empty($dir)) {
+                        $command = $dir . '/' . $command;
                     }
+                    $commands[] = $prefix . $command;
                 }
             }
         }
@@ -285,68 +291,56 @@ class HelpController extends Controller
     {
         $commands = $this->getCommandDescriptions();
         $this->stdout($this->getDefaultHelpHeader());
-        if (!empty($commands)) {
-            $this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
-            $len = 0;
-            foreach ($commands as $command => $description) {
-                $result = Yii::$app->createController($command);
-                if ($result !== false && $result[0] instanceof Controller) {
-                    /** @var $controller Controller */
-                    list($controller, $actionID) = $result;
-                    $actions = $this->getActions($controller);
-                    if (!empty($actions)) {
-                        $prefix = $controller->getUniqueId();
-                        foreach ($actions as $action) {
-                            $string = $prefix . '/' . $action;
-                            if ($action === $controller->defaultAction) {
-                                $string .= ' (default)';
-                            }
-                            if (($l = strlen($string)) > $len) {
-                                $len = $l;
-                            }
-                        }
-                    }
-                } elseif (($l = strlen($command)) > $len) {
-                    $len = $l;
-                }
-            }
-            foreach ($commands as $command => $description) {
-                $this->stdout('- ' . $this->ansiFormat($command, Console::FG_YELLOW));
-                $this->stdout(str_repeat(' ', $len + 4 - strlen($command)));
-                $this->stdout(Console::wrapText($description, $len + 4 + 2), Console::BOLD);
-                $this->stdout("\n");
-
-                $result = Yii::$app->createController($command);
-                if ($result !== false && $result[0] instanceof Controller) {
-                    list($controller, $actionID) = $result;
-                    $actions = $this->getActions($controller);
-                    if (!empty($actions)) {
-                        $prefix = $controller->getUniqueId();
-                        foreach ($actions as $action) {
-                            $string = '  ' . $prefix . '/' . $action;
-                            $this->stdout('  ' . $this->ansiFormat($string, Console::FG_GREEN));
-                            if ($action === $controller->defaultAction) {
-                                $string .= ' (default)';
-                                $this->stdout(' (default)', Console::FG_YELLOW);
-                            }
-                            $summary = $controller->getActionHelpSummary($controller->createAction($action));
-                            if ($summary !== '') {
-                                $this->stdout(str_repeat(' ', $len + 4 - strlen($string)));
-                                $this->stdout(Console::wrapText($summary, $len + 4 + 2));
-                            }
-                            $this->stdout("\n");
-                        }
-                    }
-                    $this->stdout("\n");
-                }
-            }
-            $scriptName = $this->getScriptName();
-            $this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
-            $this->stdout("\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
-                            . $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n");
-        } else {
+        if (empty($commands)) {
             $this->stdout("\nNo commands are found.\n\n", Console::BOLD);
+            return;
         }
+
+        $this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
+        $maxLength = 0;
+        foreach ($commands as $command => $description) {
+            $result = Yii::$app->createController($command);
+            /** @var $controller Controller */
+            list($controller, $actionID) = $result;
+            $actions = $this->getActions($controller);
+            $prefix = $controller->getUniqueId();
+            foreach ($actions as $action) {
+                $string = $prefix . '/' . $action;
+                if ($action === $controller->defaultAction) {
+                    $string .= ' (default)';
+                }
+                $maxLength = max($maxLength, strlen($string));
+            }
+        }
+        foreach ($commands as $command => $description) {
+            $result = Yii::$app->createController($command);
+            list($controller, $actionID) = $result;
+            $actions = $this->getActions($controller);
+            $this->stdout('- ' . $this->ansiFormat($command, Console::FG_YELLOW));
+            $this->stdout(str_repeat(' ', $maxLength + 4 - strlen($command)));
+            $this->stdout(Console::wrapText($description, $maxLength + 4 + 2), Console::BOLD);
+            $this->stdout("\n");
+            $prefix = $controller->getUniqueId();
+            foreach ($actions as $action) {
+                $string = '  ' . $prefix . '/' . $action;
+                $this->stdout('  ' . $this->ansiFormat($string, Console::FG_GREEN));
+                if ($action === $controller->defaultAction) {
+                    $string .= ' (default)';
+                    $this->stdout(' (default)', Console::FG_YELLOW);
+                }
+                $summary = $controller->getActionHelpSummary($controller->createAction($action));
+                if ($summary !== '') {
+                    $this->stdout(str_repeat(' ', $maxLength + 4 - strlen($string)));
+                    $this->stdout(Console::wrapText($summary, $maxLength + 4 + 2));
+                }
+                $this->stdout("\n");
+            }
+            $this->stdout("\n");
+        }
+        $scriptName = $this->getScriptName();
+        $this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
+        $this->stdout("\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+            . $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n");
     }
 
     /**
@@ -371,9 +365,7 @@ class HelpController extends Controller
             $maxlen = 5;
             foreach ($actions as $action) {
                 $len = strlen($prefix . '/' . $action) + 2 + ($action === $controller->defaultAction ? 10 : 0);
-                if ($maxlen < $len) {
-                    $maxlen = $len;
-                }
+                $maxlen = max($maxlen, $len);
             }
             foreach ($actions as $action) {
                 $this->stdout('- ' . $this->ansiFormat($prefix . '/' . $action, Console::FG_YELLOW));
@@ -391,7 +383,7 @@ class HelpController extends Controller
             $scriptName = $this->getScriptName();
             $this->stdout("\nTo see the detailed information about individual sub-commands, enter:\n");
             $this->stdout("\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
-                            . $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n");
+                . $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n");
         }
     }
 
@@ -460,7 +452,8 @@ class HelpController extends Controller
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
                 $this->stdout($this->formatOptionHelp(
-                        $this->ansiFormat('--' . $name . $this->formatOptionAliases($controller, $name), Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        $this->ansiFormat('--' . $name . $this->formatOptionAliases($controller, $name),
+                            Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
                         !empty($option['required']),
                         $option['type'],
                         $option['default'],
@@ -492,7 +485,7 @@ class HelpController extends Controller
             }
             if (is_bool($defaultValue)) {
                 // show as integer to avoid confusion
-                $defaultValue = (int) $defaultValue;
+                $defaultValue = (int)$defaultValue;
             }
             if (is_string($defaultValue)) {
                 $defaultValue = "'" . $defaultValue . "'";
@@ -523,9 +516,8 @@ class HelpController extends Controller
      */
     protected function formatOptionAliases($controller, $option)
     {
-        $aliases = $controller->optionAliases();
-        foreach ($aliases as $name => $value) {
-            if ($value === $option) {
+        foreach ($controller->optionAliases() as $name => $value) {
+            if (Inflector::camel2id($value, '-', true) === $option) {
                 return ', -' . $name;
             }
         }
@@ -549,5 +541,17 @@ class HelpController extends Controller
     protected function getDefaultHelpHeader()
     {
         return "\nThis is Yii version " . \Yii::getVersion() . ".\n";
+    }
+
+    /**
+     * Converts a CamelCase action name into an ID in lowercase.
+     * Words in the ID are concatenated using the specified character '-'.
+     * For example, 'CreateUser' will be converted to 'create-user'.
+     * @param string $name the string to be converted
+     * @return string the resulting ID
+     */
+    private function camel2id($name)
+    {
+        return mb_strtolower(trim(preg_replace('/\p{Lu}/u', '-\0', $name), '-'), 'UTF-8');
     }
 }

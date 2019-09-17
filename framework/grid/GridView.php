@@ -128,6 +128,11 @@ class GridView extends BaseListView
      */
     public $showFooter = false;
     /**
+     * @var bool whether to place footer after body in DOM if $showFooter is true
+     * @since 2.0.14
+     */
+    public $placeFooterAfterBody = false;
+    /**
      * @var bool whether to show the grid view if [[dataProvider]] returns no data.
      */
     public $showOnEmpty = true;
@@ -244,6 +249,11 @@ class GridView extends BaseListView
      */
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
+     * @var bool whatever to apply filters on losing focus. Leaves an ability to manage filters via yiiGridView JS
+     * @since 2.0.16
+     */
+    public $filterOnFocusOut = true;
+    /**
      * @var string the layout that determines how different sections of the grid view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
      *
@@ -283,10 +293,10 @@ class GridView extends BaseListView
      */
     public function run()
     {
-        $id = $this->options['id'];
-        $options = Json::htmlEncode($this->getClientOptions());
         $view = $this->getView();
         GridViewAsset::register($view);
+        $id = $this->options['id'];
+        $options = Json::htmlEncode(array_merge($this->getClientOptions(), ['filterOnFocusOut' => $this->filterOnFocusOut]));
         $view->registerJs("jQuery('#$id').yiiGridView($options);");
         parent::run();
     }
@@ -305,7 +315,7 @@ class GridView extends BaseListView
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderSection($name)
     {
@@ -338,6 +348,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the data models for the grid view.
+     * @return string the HTML code of table
      */
     public function renderItems()
     {
@@ -345,13 +356,25 @@ class GridView extends BaseListView
         $columnGroup = $this->renderColumnGroup();
         $tableHeader = $this->showHeader ? $this->renderTableHeader() : false;
         $tableBody = $this->renderTableBody();
-        $tableFooter = $this->showFooter ? $this->renderTableFooter() : false;
+
+        $tableFooter = false;
+        $tableFooterAfterBody = false;
+        
+        if ($this->showFooter) {
+            if ($this->placeFooterAfterBody) {
+                $tableFooterAfterBody = $this->renderTableFooter();
+            } else {
+                $tableFooter = $this->renderTableFooter();
+            }
+        }
+
         $content = array_filter([
             $caption,
             $columnGroup,
             $tableHeader,
             $tableFooter,
             $tableBody,
+            $tableFooterAfterBody,
         ]);
 
         return Html::tag('table', implode("\n", $content), $this->tableOptions);

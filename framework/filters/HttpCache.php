@@ -17,7 +17,7 @@ use yii\base\ActionFilter;
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
  * To use HttpCache, declare it in the `behaviors()` method of your controller class.
- * In the following example the filter will be applied to the `list`-action and
+ * In the following example the filter will be applied to the `index` action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
  * ```php
@@ -91,10 +91,10 @@ class HttpCache extends ActionFilter
      */
     public $cacheControlHeader = 'public, max-age=3600';
     /**
-     * @var string the name of the cache limiter to be set when [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * @var string the name of the cache limiter to be set when [session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php)
      * is called. The default value is an empty string, meaning turning off automatic sending of cache headers entirely.
      * You may set this property to be `public`, `private`, `private_no_expire`, and `nocache`.
-     * Please refer to [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * Please refer to [session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php)
      * for detailed explanation of these values.
      *
      * If this property is `null`, then `session_cache_limiter()` will not be called. As a result,
@@ -189,7 +189,8 @@ class HttpCache extends ActionFilter
                 header_remove('Last-Modified');
                 header_remove('Pragma');
             }
-            session_cache_limiter($this->sessionCacheLimiter);
+
+            Yii::$app->getSession()->setCacheLimiter($this->sessionCacheLimiter);
         }
 
         $headers = Yii::$app->getResponse()->getHeaders();

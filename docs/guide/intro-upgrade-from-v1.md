@@ -29,15 +29,15 @@ Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP version 
 As a result, there are many differences on the language level that you should pay attention to.
 Below is a summary of the major changes regarding PHP:
 
-- [Namespaces](http://php.net/manual/en/language.namespaces.php).
-- [Anonymous functions](http://php.net/manual/en/functions.anonymous.php).
+- [Namespaces](https://secure.php.net/manual/en/language.namespaces.php).
+- [Anonymous functions](https://secure.php.net/manual/en/functions.anonymous.php).
 - Short array syntax `[...elements...]` is used instead of `array(...elements...)`.
 - Short echo tags `<?=` are used in view files. This is safe to use starting from PHP 5.4.
-- [SPL classes and interfaces](http://php.net/manual/en/book.spl.php).
-- [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Date and Time](http://php.net/manual/en/book.datetime.php).
-- [Traits](http://php.net/manual/en/language.oop5.traits.php).
-- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 makes use of the `intl` PHP extension
+- [SPL classes and interfaces](https://secure.php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://secure.php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Date and Time](https://secure.php.net/manual/en/book.datetime.php).
+- [Traits](https://secure.php.net/manual/en/language.oop5.traits.php).
+- [intl](https://secure.php.net/manual/en/book.intl.php). Yii 2.0 makes use of the `intl` PHP extension
   to support internationalization features.
 
 
@@ -292,7 +292,7 @@ Please refer to the [Console Commands](tutorial-console.md) section for more det
 I18N
 ----
 
-Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](http://pecl.php.net/package/intl).
+Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](https://pecl.php.net/package/intl).
 
 Message translation is now performed via the `i18n` application component.
 This component manages a set of message sources, which allows you to use different message
@@ -505,7 +505,7 @@ The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 is much more straightforward to use. The advanced project template provides such an example.
 
-Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) sections for more details.
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) sections for more details.
 
 
 URL Management

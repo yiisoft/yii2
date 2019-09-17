@@ -100,7 +100,7 @@ class Request extends \yii\base\Request
     const CSRF_HEADER = 'X-CSRF-Token';
     /**
      * The length of the CSRF token mask.
-     * @deprecated 2.0.12 The mask length is now equal to the token length.
+     * @deprecated since 2.0.12. The mask length is now equal to the token length.
      */
     const CSRF_MASK_LENGTH = 8;
 
@@ -218,9 +218,12 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $secureHeaders = [
+        // Common:
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+
+        // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
     ];
@@ -233,7 +236,7 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $ipHeaders = [
-        'X-Forwarded-For',
+        'X-Forwarded-For', // Common
     ];
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
@@ -245,8 +248,8 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $secureProtocolHeaders = [
-        'X-Forwarded-Proto' => ['https'],
-        'Front-End-Https' => ['on'],
+        'X-Forwarded-Proto' => ['https'], // Common
+        'Front-End-Https' => ['on'], // Microsoft
     ];
 
     /**
@@ -368,7 +371,12 @@ class Request extends \yii\base\Request
      */
     public function getMethod()
     {
-        if (isset($_POST[$this->methodParam])) {
+        if (
+            isset($_POST[$this->methodParam])
+            // Never allow to downgrade request from WRITE methods (POST, PATCH, DELETE, etc)
+            // to read methods (GET, HEAD, OPTIONS) for security reasons.
+            && !in_array(strtoupper($_POST[$this->methodParam]), ['GET', 'HEAD', 'OPTIONS'], true)
+        ) {
             return strtoupper($_POST[$this->methodParam]);
         }
 
@@ -582,6 +590,15 @@ class Request extends \yii\base\Request
     {
         $params = $this->getBodyParams();
 
+        if (is_object($params)) {
+            // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
+            try {
+                return $params->{$name};
+            } catch (\Exception $e) {
+                return $defaultValue;
+            }
+        }
+
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
 
@@ -671,7 +688,7 @@ class Request extends \yii\base\Request
      *
      * By default this value is based on the user request information. This method will
      * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
-     * You may want to check out the [PHP documentation](http://php.net/manual/en/reserved.variables.server.php)
+     * You may want to check out the [PHP documentation](https://secure.php.net/manual/en/reserved.variables.server.php)
      * for more information on these variables.
      *
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
@@ -696,7 +713,10 @@ class Request extends \yii\base\Request
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if ($this->headers->has('Host')) {
+
+            if ($this->headers->has('X-Forwarded-Host')) {
+                $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
+            } elseif ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
@@ -794,7 +814,7 @@ class Request extends \yii\base\Request
             } elseif (isset($_SERVER['PHP_SELF']) && ($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
                 $this->_scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
             } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $scriptFile));
+                $this->_scriptUrl = str_replace([$_SERVER['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
             } else {
                 throw new InvalidConfigException('Unable to determine the entry script URL.');
             }
@@ -907,7 +927,7 @@ class Request extends \yii\base\Request
             | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
             )*$%xs', $pathInfo)
         ) {
-            $pathInfo = utf8_encode($pathInfo);
+            $pathInfo = $this->utf8Encode($pathInfo);
         }
 
         $scriptUrl = $this->getScriptUrl();
@@ -922,11 +942,31 @@ class Request extends \yii\base\Request
             throw new InvalidConfigException('Unable to determine the path info of the current request.');
         }
 
-        if (substr($pathInfo, 0, 1) === '/') {
+        if (strncmp($pathInfo, '/', 1) === 0) {
             $pathInfo = substr($pathInfo, 1);
         }
 
         return (string) $pathInfo;
+    }
+
+    /**
+     * Encodes an ISO-8859-1 string to UTF-8
+     * @param string $s
+     * @return string the UTF-8 translation of `s`.
+     * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
+     */
+    private function utf8Encode($s)
+    {
+        $s .= $s;
+        $len = \strlen($s);
+        for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
+            switch (true) {
+                case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
+                case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
+                default: $s[$j] = "\xC3"; $s[++$j] = \chr(\ord($s[$i]) - 64); break;
+            }
+        }
+        return substr($s, 0, $j);
     }
 
     /**
@@ -1181,7 +1221,7 @@ class Request extends \yii\base\Request
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
         $auth_token = $this->getHeaders()->get('HTTP_AUTHORIZATION') ?: $this->getHeaders()->get('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token !== null && strpos(strtolower($auth_token), 'basic') === 0) {
+        if ($auth_token !== null && strncasecmp($auth_token, 'basic', 5) === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
             }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
@@ -1208,7 +1248,8 @@ class Request extends \yii\base\Request
     public function getPort()
     {
         if ($this->_port === null) {
-            $this->_port = !$this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 80;
+            $serverPort = $this->getServerPort();
+            $this->_port = !$this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 80;
         }
 
         return $this->_port;
@@ -1240,7 +1281,8 @@ class Request extends \yii\base\Request
     public function getSecurePort()
     {
         if ($this->_securePort === null) {
-            $this->_securePort = $this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 443;
+            $serverPort = $this->getServerPort();
+            $this->_securePort = $this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 443;
         }
 
         return $this->_securePort;
@@ -1544,7 +1586,11 @@ class Request extends \yii\base\Request
                 if ($data === false) {
                     continue;
                 }
-                $data = @unserialize($data);
+                if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 70000) {
+                    $data = @unserialize($data, ['allowed_classes' => false]);
+                } else {
+                    $data = @unserialize($data);
+                }
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
                         'class' => 'yii\web\Cookie',
@@ -1582,7 +1628,8 @@ class Request extends \yii\base\Request
     public function getCsrfToken($regenerate = false)
     {
         if ($this->_csrfToken === null || $regenerate) {
-            if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
+            $token = $this->loadCsrfToken();
+            if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);
@@ -1694,6 +1741,6 @@ class Request extends \yii\base\Request
 
         $security = Yii::$app->security;
 
-        return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
+        return $security->compareString($security->unmaskToken($clientSuppliedToken), $security->unmaskToken($trueToken));
     }
 }

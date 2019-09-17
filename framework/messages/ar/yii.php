@@ -92,7 +92,7 @@ return [
     '{nFormatted} B' => '{nFormatted} بايت',
     '{nFormatted} GB' => '{nFormatted} جيجابايت',
     '{nFormatted} GiB' => '{nFormatted} جيبيبايت',
-    '{nFormatted} KB' => '{nFormatted} كيلوبايت',
+    '{nFormatted} kB' => '{nFormatted} كيلوبايت',
     '{nFormatted} KiB' => '{nFormatted} كيبيبايت',
     '{nFormatted} MB' => '{nFormatted} ميجابايت',
     '{nFormatted} MiB' => '{nFormatted} ميبيبايت',

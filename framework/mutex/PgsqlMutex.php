@@ -7,8 +7,8 @@
 
 namespace yii\mutex;
 
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * PgsqlMutex implements mutex "lock" mechanism via PgSQL locks.
@@ -36,6 +36,9 @@ use yii\base\InvalidParamException;
  */
 class PgsqlMutex extends DbMutex
 {
+    use RetryAcquireTrait;
+
+
     /**
      * Initializes PgSQL specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not PgSQL connection.
@@ -67,16 +70,16 @@ class PgsqlMutex extends DbMutex
      */
     protected function acquireLock($name, $timeout = 0)
     {
-        if ($timeout !== 0) {
-            throw new InvalidParamException('PgsqlMutex does not support timeout.');
-        }
         list($key1, $key2) = $this->getKeysFromName($name);
-        return $this->db->useMaster(function ($db) use ($key1, $key2) {
-            /** @var \yii\db\Connection $db */
-            return (bool) $db->createCommand(
-                'SELECT pg_try_advisory_lock(:key1, :key2)',
-                [':key1' => $key1, ':key2' => $key2]
-            )->queryScalar();
+
+        return $this->retryAcquire($timeout, function () use ($key1, $key2) {
+            return $this->db->useMaster(function ($db) use ($key1, $key2) {
+                /** @var \yii\db\Connection $db */
+                return (bool) $db->createCommand(
+                    'SELECT pg_try_advisory_lock(:key1, :key2)',
+                    [':key1' => $key1, ':key2' => $key2]
+                )->queryScalar();
+            });
         });
     }
 

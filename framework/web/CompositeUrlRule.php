@@ -40,7 +40,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     abstract protected function createRules();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,7 +49,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -57,7 +57,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
             /* @var $rule UrlRule */
             $result = $rule->parseRequest($manager, $request);
             if (YII_DEBUG) {
-                Yii::trace([
+                Yii::debug([
                     'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                     'match' => $result !== false,
                     'parent' => self::className(),
@@ -72,7 +72,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {
@@ -133,7 +133,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
      * @see $createStatus
-     * @see http://php.net/manual/en/language.operators.bitwise.php
+     * @see https://secure.php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */
     public function getCreateUrlStatus()

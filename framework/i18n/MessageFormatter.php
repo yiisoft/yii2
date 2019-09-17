@@ -23,7 +23,7 @@ use yii\base\NotSupportedException;
  *   substituted.
  * - Fixes PHP 5.5 weird placeholder replacement in case no arguments are provided at all (https://bugs.php.net/bug.php?id=65920).
  * - Offers limited support for message formatting in case PHP intl extension is not installed.
- *   However it is highly recommended that you install [PHP intl extension](http://php.net/manual/en/book.intl.php) if you want
+ *   However it is highly recommended that you install [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) if you want
  *   to use MessageFormatter features.
  *
  *   The fallback implementation only supports the following message formats:
@@ -32,7 +32,7 @@ use yii\base\NotSupportedException;
  *   - simple parameters
  *   - integer number parameters
  *
- *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](http://www.php.net/manual/en/messageformatter.formatmessage.php).
+ *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](https://secure.php.net/manual/en/messageformatter.formatmessage.php).
  *   Also messages that are working with the fallback implementation are not necessarily compatible with the
  *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
  *
@@ -51,7 +51,7 @@ class MessageFormatter extends Component
 
     /**
      * Get the error code from the last operation.
-     * @link http://php.net/manual/en/messageformatter.geterrorcode.php
+     * @link https://secure.php.net/manual/en/messageformatter.geterrorcode.php
      * @return string Code of the last error.
      */
     public function getErrorCode()
@@ -61,7 +61,7 @@ class MessageFormatter extends Component
 
     /**
      * Get the error text from the last operation.
-     * @link http://php.net/manual/en/messageformatter.geterrormessage.php
+     * @link https://secure.php.net/manual/en/messageformatter.geterrormessage.php
      * @return string Description of the last error.
      */
     public function getErrorMessage()
@@ -72,7 +72,7 @@ class MessageFormatter extends Component
     /**
      * Formats a message via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
      *
-     * It uses the PHP intl extension's [MessageFormatter](http://www.php.net/manual/en/class.messageformatter.php)
+     * It uses the PHP intl extension's [MessageFormatter](https://secure.php.net/manual/en/class.messageformatter.php)
      * and works around some issues.
      * If PHP intl is not installed a fallback will be used that supports a subset of the ICU message format.
      *
@@ -134,7 +134,7 @@ class MessageFormatter extends Component
     /**
      * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
      *
-     * It uses the PHP intl extension's [MessageFormatter::parse()](http://www.php.net/manual/en/messageformatter.parsemessage.php)
+     * It uses the PHP intl extension's [MessageFormatter::parse()](https://secure.php.net/manual/en/messageformatter.parsemessage.php)
      * and adds support for named arguments.
      * Usage of this method requires PHP intl extension to be installed.
      *
@@ -216,7 +216,7 @@ class MessageFormatter extends Component
                 continue;
             }
             $param = trim($token[0]);
-            if (isset($givenParams[$param])) {
+            if (array_key_exists($param, $givenParams)) {
                 // if param is given, replace it with a number
                 if (!isset($map[$param])) {
                     $map[$param] = count($map);
@@ -317,6 +317,10 @@ class MessageFormatter extends Component
                 $start = $pos + 1;
                 $tokens[] = mb_substr($pattern, $start, $open - $start, $charset);
                 $start = $open;
+            }
+
+            if ($depth !== 0 && ($open === false || $close === false)) {
+                break;
             }
         }
         if ($depth !== 0) {

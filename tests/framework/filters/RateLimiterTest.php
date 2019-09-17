@@ -127,16 +127,16 @@ class RateLimiterTest extends TestCase
         /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
         $rateLimit = new RateLimit();
         $rateLimit
-            ->setRateLimit([1, 1])
-            ->setAllowance([1, time()]);
-        $rateLimiter = $this->getMockBuilder(RateLimiter::className())
-            ->setMethods(['addRateLimitHeaders'])
-            ->getMock();
-        $rateLimiter->expects(self::at(0))
-            ->method('addRateLimitHeaders')
-            ->willReturn(null);
+            ->setRateLimit([2, 10])
+            ->setAllowance([2, time()]);
 
-        $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
+        $rateLimiter = new RateLimiter();
+        $response = Yii::$app->response;
+        $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, $response, 'testAction');
+        $headers = $response->getHeaders();
+        $this->assertEquals(2, $headers->get('X-Rate-Limit-Limit'));
+        $this->assertEquals(1, $headers->get('X-Rate-Limit-Remaining'));
+        $this->assertEquals(5, $headers->get('X-Rate-Limit-Reset'));
     }
 
     public function testAddRateLimitHeadersDisabledRateLimitHeaders()

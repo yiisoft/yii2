@@ -134,7 +134,9 @@
         // whether to scroll to first visible error after validation.
         scrollToError: true,
         // offset in pixels that should be added when scrolling to the first error.
-        scrollToErrorOffset: 0
+        scrollToErrorOffset: 0,
+        // where to add validation class: container or input
+        validationStateOn: 'container'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -323,27 +325,39 @@
             // client-side validation
             $.each(data.attributes, function () {
                 this.$form = $form;
-                if (!$(this.input).is(":disabled")) {
-                    this.cancelled = false;
-                    // perform validation only if the form is being submitted or if an attribute is pending validation
-                    if (data.submitting || this.status === 2 || this.status === 3) {
-                        var msg = messages[this.id];
-                        if (msg === undefined) {
-                            msg = [];
-                            messages[this.id] = msg;
+                var $input = findInput($form, this);
+
+                if ($input.is(":disabled")) {
+                    return true;
+                }
+                // pass SELECT without options
+                if ($input.length && $input[0].tagName.toLowerCase() === 'select') {
+                    if (!$input[0].options.length) {
+                        return true;
+                    } else if (($input[0].options.length === 1) && ($input[0].options[0].value === '')) {
+                        return true;
+                    }
+                }
+                this.cancelled = false;
+                // perform validation only if the form is being submitted or if an attribute is pending validation
+                if (data.submitting || this.status === 2 || this.status === 3) {
+                    var msg = messages[this.id];
+                    if (msg === undefined) {
+                        msg = [];
+                        messages[this.id] = msg;
+                    }
+
+                    var event = $.Event(events.beforeValidateAttribute);
+                    $form.trigger(event, [this, msg, deferreds]);
+                    if (event.result !== false) {
+                        if (this.validate) {
+                            this.validate(this, getValue($form, this), msg, deferreds, $form);
                         }
-                        var event = $.Event(events.beforeValidateAttribute);
-                        $form.trigger(event, [this, msg, deferreds]);
-                        if (event.result !== false) {
-                            if (this.validate) {
-                                this.validate(this, getValue($form, this), msg, deferreds, $form);
-                            }
-                            if (this.enableAjaxValidation) {
-                                needAjaxValidation = true;
-                            }
-                        } else {
-                            this.cancelled = true;
+                        if (this.enableAjaxValidation) {
+                            needAjaxValidation = true;
                         }
+                    } else {
+                        this.cancelled = true;
                     }
                 }
             });
@@ -404,7 +418,6 @@
         submitForm: function () {
             var $form = $(this),
                 data = $form.data('yiiActiveForm');
-
             if (data.validated) {
                 // Second submit's call (from validate/updateInputs)
                 data.submitting = false;
@@ -441,11 +454,14 @@
                     // Without setTimeout() we would get the input values that are not reset yet.
                     this.value = getValue($form, this);
                     this.status = 0;
-                    var $container = $form.find(this.container);
-                    $container.removeClass(
-                        data.settings.validatingCssClass + ' ' +
-                            data.settings.errorCssClass + ' ' +
-                            data.settings.successCssClass
+                    var $container = $form.find(this.container),
+                        $input = findInput($form, this),
+                        $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
+
+                    $errorElement.removeClass(
+                      data.settings.validatingCssClass + ' ' +
+                      data.settings.errorCssClass + ' ' +
+                      data.settings.successCssClass
                     );
                     $container.find(this.error).html('');
                 });
@@ -484,7 +500,6 @@
                 updateInput($(this), attribute, msg);
             }
         }
-
     };
 
     var watchAttribute = function ($form, attribute) {
@@ -524,7 +539,7 @@
             attribute.status = 2;
         }
         $.each(data.attributes, function () {
-            if (this.value !== getValue($form, this)) {
+            if (!isEqual(this.value, getValue($form, this))) {
                 this.status = 2;
                 forceValidate = true;
             }
@@ -548,6 +563,78 @@
             });
             methods.validate.call($form);
         }, validationDelay ? validationDelay : 200);
+    };
+
+    /**
+     * Compares two value whatever it objects, arrays or simple types
+     * @param val1
+     * @param val2
+     * @returns boolean
+     */
+    var isEqual = function(val1, val2) {
+        // objects
+        if (val1 instanceof Object) {
+            return isObjectsEqual(val1, val2)
+        }
+
+        // arrays
+        if (Array.isArray(val1)) {
+            return isArraysEqual(val1, val2);
+        }
+
+        // simple types
+        return val1 === val2;
+    };
+
+    /**
+     * Compares two objects
+     * @param obj1
+     * @param obj2
+     * @returns boolean
+     */
+    var isObjectsEqual = function(obj1, obj2) {
+        if (!(obj1 instanceof Object) || !(obj2 instanceof Object)) {
+            return false;
+        }
+
+        var keys1 = Object.keys(obj1);
+        var keys2 = Object.keys(obj2);
+        if (keys1.length !== keys2.length) {
+            return false;
+        }
+
+        for (var i = 0; i < keys1.length; i += 1) {
+            if (!obj2.hasOwnProperty(keys1[i])) {
+                return false;
+            }
+            if (obj1[keys1[i]] !== obj2[keys1[i]]) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    /**
+     * Compares two arrays
+     * @param arr1
+     * @param arr2
+     * @returns boolean
+     */
+    var isArraysEqual = function(arr1, arr2) {
+        if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
+            return false;
+        }
+
+        if (arr1.length !== arr2.length) {
+            return false;
+        }
+        for (var i = 0; i < arr1.length; i += 1) {
+            if (arr1[i] !== arr2[i]) {
+                return false;
+            }
+        }
+        return true;
     };
 
     /**
@@ -618,18 +705,20 @@
             return false;
         }
 
+        var errorAttributes = [], $input;
+        $.each(data.attributes, function () {
+            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form, this, messages));
+            $input = findInput($form, this);
+
+            if (!$input.is(":disabled") && !this.cancelled && hasError) {
+                errorAttributes.push(this);
+            }
+        });
+
+        $form.trigger(events.afterValidate, [messages, errorAttributes]);
+
         if (submitting) {
-            var errorAttributes = [];
-            $.each(data.attributes, function () {
-                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
-                }
-            });
-
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
-
             updateSummary($form, messages);
-
             if (errorAttributes.length) {
                 if (data.settings.scrollToError) {
                     var top = $form.find($.map(errorAttributes, function(attribute) {
@@ -699,7 +788,7 @@
     var updateInput = function ($form, attribute, messages) {
         var data = $form.data('yiiActiveForm'),
             $input = findInput($form, attribute),
-            hasError = false;
+            hasError = attrHasError($form, attribute, messages);
 
         if (!$.isArray(messages[attribute.id])) {
             messages[attribute.id] = [];
@@ -707,27 +796,51 @@
 
         attribute.status = 1;
         if ($input.length) {
-            hasError = messages[attribute.id].length > 0;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
             updateAriaInvalid($form, attribute, hasError);
+
+            var $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
+
             if (hasError) {
                 if (attribute.encodeError) {
                     $error.text(messages[attribute.id][0]);
                 } else {
                     $error.html(messages[attribute.id][0]);
                 }
-                $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
-                    .addClass(data.settings.errorCssClass);
+                $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
+                  .addClass(data.settings.errorCssClass);
             } else {
                 $error.empty();
-                $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
-                    .addClass(data.settings.successCssClass);
+                $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
+                  .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);
         }
 
         $form.trigger(events.afterValidateAttribute, [attribute, messages[attribute.id]]);
+
+        return hasError;
+    };
+
+    /**
+     * Checks if a particular attribute has an error
+     * @param $form the form jQuery object
+     * @param attribute object the configuration for a particular attribute.
+     * @param messages array the validation error messages
+     * @return boolean whether there is a validation error for the specified attribute
+     */
+    var attrHasError = function ($form, attribute, messages) {
+        var $input = findInput($form, attribute),
+            hasError = false;
+
+        if (!$.isArray(messages[attribute.id])) {
+            messages[attribute.id] = [];
+        }
+
+        if ($input.length) {
+            hasError = messages[attribute.id].length > 0;
+        }
 
         return hasError;
     };

@@ -243,6 +243,13 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // shortcut format
+        [
+            'label' => 'Education',
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
 ]);
 ```
@@ -256,6 +263,12 @@ For a list of available formatters see the [section about Data Formatting](outpu
 For configuring data columns there is also a shortcut format which is described in the
 API documentation for [[yii\grid\GridView::columns|columns]].
 
+Use [[yii\grid\DataColumn::filter|filter]] and [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] to
+control HTML for the filter input.
+
+By default, column headers are rendered by [[yii\data\Sort::link]]. It could be adjusted using [[yii\grid\Column::header]].
+To change header text you should set [[yii\grid\DataColumn::$label]] like in the example above. 
+By default the label will be populated from data model. For more details see [[yii\grid\DataColumn::getHeaderCellLabel]].
 
 #### Action column <span id="action-column"></span>
 
@@ -643,7 +656,7 @@ class UserView extends ActiveRecord
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -656,7 +669,7 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -666,7 +679,7 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {

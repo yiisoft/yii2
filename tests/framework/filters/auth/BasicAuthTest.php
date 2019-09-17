@@ -77,6 +77,45 @@ class BasicAuthTest extends AuthTest
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
+    /**
+     * This tests checks, that:
+     *  - HttpBasicAuth does not call `auth` closure, when user is already authenticated
+     *  - HttpBasicAuth does not switch identity, when the user identity to be set is the same as current user's one
+     *
+     * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
+     */
+    public function testHttpBasicAuthIssue15658($token, $login)
+    {
+        $_SERVER['PHP_AUTH_USER'] = $login;
+        $_SERVER['PHP_AUTH_PW'] = 'y0u7h1nk175r34l?';
+
+        // Login user and set fake identity ID to session
+        if ($login !== null) {
+            Yii::$app->user->login(UserIdentity::findIdentity($login));
+        }
+
+        $session = Yii::$app->session;
+        $idParam = Yii::$app->user->idParam;
+        $idValue = 'should not be changed';
+        $session->set($idParam, $idValue);
+
+        $filter = [
+            'class' => HttpBasicAuth::className(),
+            'auth' => function ($username, $password) {
+                if ($username !== null) {
+                    $this->fail('Authentication closure should not be called when user is already authenticated');
+                }
+                return null;
+            },
+        ];
+        $this->ensureFilterApplies($token, $login, $filter);
+
+        $this->assertSame($idValue, $session->get($idParam));
+        $session->destroy();
+    }
+
     public function authMethodProvider()
     {
         return [

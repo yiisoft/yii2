@@ -10,6 +10,7 @@ namespace yiiunit\framework\web\session;
 use Yii;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\db\Migration;
 use yii\web\DbSession;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
@@ -43,18 +44,18 @@ abstract class AbstractDbSessionTest extends TestCase
     protected function getDbConfig()
     {
         $driverNames = $this->getDriverNames();
+        $databases = self::getParam('databases');
         foreach ($driverNames as $driverName) {
-            if (in_array($driverName, \PDO::getAvailableDrivers())) {
+            if (in_array($driverName, \PDO::getAvailableDrivers()) && array_key_exists($driverName, $databases)) {
+                $driverAvailable = $driverName;
                 break;
             }
         }
-        if (!isset($driverName)) {
-            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver!');
+        if (!isset($driverAvailable)) {
+            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
             return [];
         }
-
-        $databases = self::getParam('databases');
-        $config = $databases[$driverName];
+        $config = $databases[$driverAvailable];
 
         $result = [
             'class' => Connection::className(),
@@ -98,6 +99,19 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->assertEquals('', $session->readSession('test'));
     }
 
+    public function testInitializeWithConfig()
+    {
+        // should produce no exceptions
+        $session = new DbSession([
+            'useCookies' => true,
+        ]);
+
+        $session->writeSession('test', 'session data');
+        $this->assertEquals('session data', $session->readSession('test'));
+        $session->destroySession('test');
+        $this->assertEquals('', $session->readSession('test'));
+    }
+
     /**
      * @depends testReadWrite
      */
@@ -134,6 +148,33 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->assertSame('changed by callback data', $session->readSession('test'));
     }
 
+    /**
+     * @depends testReadWrite
+     */
+    public function testWriteCustomFieldWithUserId()
+    {
+        $session = new DbSession();
+        $session->open();
+        $session->set('user_id', 12345);
+
+        // add mapped custom column
+        $migration = new Migration;
+        $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
+
+        $session->writeCallback = function ($session) {
+            return ['user_id' => $session['user_id']];
+        };
+
+        // here used to be error, fixed issue #9438
+        $session->close();
+
+        // reopen & read session from DB
+        $session->open();
+        $loadedUserId = empty($session['user_id']) ? null : $session['user_id'];
+        $this->assertSame($loadedUserId, 12345);
+        $session->close();
+    }
+
     protected function buildObjectForSerialization()
     {
         $object = new \stdClass();
@@ -156,7 +197,13 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         $session = new DbSession();
 
-        $serializedObject = serialize($this->buildObjectForSerialization());
+        $object = $this->buildObjectForSerialization();
+        $serializedObject = serialize($object);
+        $session->writeSession('test', $serializedObject);
+        $this->assertSame($serializedObject, $session->readSession('test'));
+
+        $object->foo = 'modification checked';
+        $serializedObject = serialize($object);
         $session->writeSession('test', $serializedObject);
         $this->assertSame($serializedObject, $session->readSession('test'));
     }
@@ -196,5 +243,26 @@ abstract class AbstractDbSessionTest extends TestCase
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
         $this->createTableSession();
+    }
+
+    public function testInstantiate()
+    {
+        $oldTimeout = ini_get('session.gc_maxlifetime');
+        // unset Yii::$app->db to make sure that all queries are made against sessionDb
+        Yii::$app->set('sessionDb', Yii::$app->db);
+        Yii::$app->set('db', null);
+
+        $session = new DbSession([
+            'timeout' => 300,
+            'db' => 'sessionDb',
+        ]);
+
+        $this->assertSame(Yii::$app->sessionDb, $session->db);
+        $this->assertSame(300, $session->timeout);
+        $session->close();
+
+        Yii::$app->set('db', Yii::$app->sessionDb);
+        Yii::$app->set('sessionDb', null);
+        ini_set('session.gc_maxlifetime', $oldTimeout);
     }
 }

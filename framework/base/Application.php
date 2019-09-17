@@ -265,7 +265,7 @@ abstract class Application extends Module
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -293,10 +293,10 @@ abstract class Application extends Module
             if (isset($extension['bootstrap'])) {
                 $component = Yii::createObject($extension['bootstrap']);
                 if ($component instanceof BootstrapInterface) {
-                    Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                     $component->bootstrap($this);
                 } else {
-                    Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
                 }
             }
         }
@@ -304,7 +304,7 @@ abstract class Application extends Module
         foreach ($this->bootstrap as $mixed) {
             $component = null;
             if ($mixed instanceof \Closure) {
-                Yii::trace('Bootstrap with Closure', __METHOD__);
+                Yii::debug('Bootstrap with Closure', __METHOD__);
                 if (!$component = call_user_func($mixed, $this)) {
                     continue;
                 }
@@ -323,10 +323,10 @@ abstract class Application extends Module
             }
 
             if ($component instanceof BootstrapInterface) {
-                Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                 $component->bootstrap($this);
             } else {
-                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
             }
         }
     }
@@ -363,7 +363,7 @@ abstract class Application extends Module
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -471,7 +471,7 @@ abstract class Application extends Module
      * If time zone is not configured in php.ini or application config,
      * it will be set to UTC by default.
      * @return string the time zone used by this application.
-     * @see http://php.net/manual/en/function.date-default-timezone-get.php
+     * @see https://secure.php.net/manual/en/function.date-default-timezone-get.php
      */
     public function getTimeZone()
     {
@@ -481,9 +481,9 @@ abstract class Application extends Module
     /**
      * Sets the time zone used by this application.
      * This is a simple wrapper of PHP function date_default_timezone_set().
-     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+     * Refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available timezones.
      * @param string $value the time zone used by this application.
-     * @see http://php.net/manual/en/function.date-default-timezone-set.php
+     * @see https://secure.php.net/manual/en/function.date-default-timezone-set.php
      */
     public function setTimeZone($value)
     {

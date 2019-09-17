@@ -26,7 +26,7 @@ class Animal extends ActiveRecord
     public function init()
     {
         parent::init();
-        $this->type = get_called_class();
+        $this->type = \get_called_class();
     }
 
     public function getDoes()

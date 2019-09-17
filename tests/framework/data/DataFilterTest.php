@@ -198,6 +198,33 @@ class DataFilterTest extends TestCase
                     'Operator "gt" must be used with a search attribute.',
                 ],
             ],
+            [
+                [
+                    'date' => [
+                        'gt' => '2015-05-05',
+                    ],
+                ],
+                true,
+                [],
+            ],
+            [
+                [
+                    'time' => [
+                        'gt' => '15:07:22',
+                    ],
+                ],
+                true,
+                [],
+            ],
+            [
+                [
+                    'datetime' => [
+                        'gt' => '2015-05-05 15:07:22',
+                    ],
+                ],
+                true,
+                [],
+            ],
         ];
     }
 
@@ -213,11 +240,22 @@ class DataFilterTest extends TestCase
     public function testValidate($filter, $expectedResult, $expectedErrors)
     {
         $builder = new DataFilter();
-        $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
+        $searchModel = (new DynamicModel([
+                'name' => null,
+                'number' => null,
+                'price' => null,
+                'tags' => null,
+                'datetime' => null,
+                'date' => null,
+                'time' => null,
+            ]))
             ->addRule('name', 'string')
             ->addRule('number', 'integer', ['min' => 0, 'max' => 100])
             ->addRule('price', 'number')
-            ->addRule('tags', 'each', ['rule' => ['string']]);
+            ->addRule('tags', 'each', ['rule' => ['string']])
+            ->addRule('datetime', 'datetime', ['format' => 'YYYY-MM-dd HH:mm:ss'])
+            ->addRule('date', 'datetime', ['format' => 'YYYY-MM-dd'])
+            ->addRule('time', 'datetime', ['format' => 'HH:mm:ss']);
 
         $builder->setSearchModel($searchModel);
 
@@ -301,6 +339,30 @@ class DataFilterTest extends TestCase
                     'number' => '10',
                 ],
             ],
+            [
+                [
+                    'date' => '2015-06-06',
+                ],
+                [
+                    'date' => '2015-06-06',
+                ],
+            ],
+            [
+                [
+                    'time' => '17:46:12',
+                ],
+                [
+                    'time' => '17:46:12',
+                ],
+            ],
+            [
+                [
+                    'datetime' => '2015-06-06 17:46:12',
+                ],
+                [
+                    'datetime' => '2015-06-06 17:46:12',
+                ],
+            ],
         ];
     }
 
@@ -315,11 +377,22 @@ class DataFilterTest extends TestCase
     public function testNormalize($filter, $expectedResult)
     {
         $builder = new DataFilter();
-        $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
+        $searchModel = (new DynamicModel([
+                'name' => null,
+                'number' => null,
+                'price' => null,
+                'tags' => null,
+                'datetime' => null,
+                'date' => null,
+                'time' => null,
+            ]))
             ->addRule('name', 'string')
             ->addRule('number', 'integer', ['min' => 0, 'max' => 100])
             ->addRule('price', 'number')
-            ->addRule('tags', 'each', ['rule' => ['string']]);
+            ->addRule('tags', 'each', ['rule' => ['string']])
+            ->addRule('datetime', 'datetime', ['format' => 'YYYY-MM-dd HH:mm:ss'])
+            ->addRule('date', 'datetime', ['format' => 'YYYY-MM-dd'])
+            ->addRule('time', 'datetime', ['format' => 'HH:mm:ss']);
 
         $builder->setSearchModel($searchModel);
         $builder->attributeMap = [
