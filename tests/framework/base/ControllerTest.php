@@ -85,7 +85,7 @@ class ControllerTest extends TestCase
      */
     public function testActionIdMethod($input, $expected)
     {
-        $this->assertSame($expected, preg_match(Controller::ACTION_ID_METHOD_REGEXP, $input));
+        $this->assertSame($expected, preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $input));
     }
 
     public function actionIdMethodProvider()

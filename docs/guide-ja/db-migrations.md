@@ -690,6 +690,7 @@ class m150101_185401_create_news_table extends Migration
 * [[yii\db\Migration::insert()|insert()]]: 一行を挿入
 * [[yii\db\Migration::batchInsert()|batchInsert()]]: 複数行を挿入
 * [[yii\db\Migration::update()|update()]]: 行を更新
+* [[yii\db\Migration::upsert()|upsert()]]: 一行を挿入または既に存在していれば更新 (2.0.14 以降)
 * [[yii\db\Migration::delete()|delete()]]: 行を削除
 * [[yii\db\Migration::createTable()|createTable()]]: テーブルを作成
 * [[yii\db\Migration::renameTable()|renameTable()]]: テーブルの名前を変更
@@ -721,7 +722,6 @@ class m150101_185401_create_news_table extends Migration
 >     $this->update('users', ['status' => 1], ['id' => $user['id']]);
 > }
 > ```
-
 
 ## マイグレーションを適用する <span id="applying-migrations"></span>
 
@@ -943,7 +943,7 @@ return [
 適切にエスケープしなければならないことに注意して下さい。例えば、
 
 ```
-yii migrate/create 'app\\migrations\\createUserTable'
+yii migrate/create app\\migrations\\createUserTable
 ```
 
 > Note: [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] によって指定されたマイグレーションは、
@@ -955,6 +955,32 @@ yii migrate/create 'app\\migrations\\createUserTable'
 この機能追加は、主として、いろんな場所にあるマイグレーションを使っている既存のプロジェクトによって使われることを意図しています。
 これらのマイグレーションは、主として、他の開発者による Yii エクステンションなど、外部ソースに由来するものであり、
 新しい手法を使い始めようとしても、名前空間を使うように変更することが簡単には出来ないものだからです。
+
+#### 名前空間を持つマイグレーションを生成する
+
+名前空間を持つマイグレーションは "CamelCase" の命名規則 `M<YYMMDDHHMMSS><Name>` (例えば `M190720100234CreateUserTable`) を持ちます。
+このようなマイグレーションを生成するときは、テーブル名が "CamenCase" 形式から "アンダースコア" 形式に変換されることを
+覚えておいて下さい。例えば、
+
+```
+yii migrate/create app\\migrations\\DropGreenHotelTable
+```
+
+上記のコマンドは、名前空間 `app\migrations` の中で、`green_hotel` というテーブルを削除するマイグレーションを生成します。そして、
+
+```
+yii migrate/create app\\migrations\\CreateBANANATable
+```
+
+というコマンドは、名前空間 `app\migrations` の中で `b_a_n_a_n_a` というテーブルを作成するマイグレーションを生成します。
+
+テーブル名が大文字と小文字を含む（例えば `studentsExam`) ときは、名前の先頭にアンダースコアを付ける必要があります。
+
+```
+yii migrate/create app\\migrations\\Create_studentsExamTable
+```
+
+このコマンドは、名前空間 `app\migrations` の中で `studentsExam` というテーブルを作成するマイグレーションを生成します。
 
 ### 分離されたマイグレーション <span id="separated-migrations"></span>
 

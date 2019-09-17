@@ -430,7 +430,12 @@ class Response extends \yii\base\Response
             return;
         }
 
-        set_time_limit(0); // Reset time limit for big files
+        if (function_exists('set_time_limit')) {
+            set_time_limit(0); // Reset time limit for big files
+        } else {
+            Yii::warning('set_time_limit() is not available', __METHOD__);
+        }
+
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
@@ -857,18 +862,18 @@ class Response extends \yii\base\Response
             // ensure the route is absolute
             $url[0] = '/' . ltrim($url[0], '/');
         }
+        $request = Yii::$app->getRequest();
         $url = Url::to($url);
         if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
-            $url = Yii::$app->getRequest()->getHostInfo() . $url;
+            $url = $request->getHostInfo() . $url;
         }
 
         if ($checkAjax) {
-            if (Yii::$app->getRequest()->getIsAjax()) {
-                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
-                    // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
+            if ($request->getIsAjax()) {
+                if (in_array($statusCode, [301, 302]) && preg_match('/Trident.*\brv:11\./' /* IE11 */, $request->userAgent)) {
                     $statusCode = 200;
                 }
-                if (Yii::$app->getRequest()->getIsPjax()) {
+                if ($request->getIsPjax()) {
                     $this->getHeaders()->set('X-Pjax-Url', $url);
                 } else {
                     $this->getHeaders()->set('X-Redirect', $url);
