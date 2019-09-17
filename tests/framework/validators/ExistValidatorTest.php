@@ -236,6 +236,19 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $this->assertTrue($m->hasErrors('id'));
     }
     
+    public function testTargetRelationWithFilterCallable()
+    {
+        $val = new ExistValidator(['targetRelation' => 'references', 'filter' => [__CLASS__, 'filterCallableFalse']]);
+        $m = ValidatorTestMainModel::findOne(2);
+        $val->validateAttribute($m, 'id');
+        $this->assertFalse($m->hasErrors('id'));
+
+        $val = new ExistValidator(['targetRelation' => 'references', 'filter' => [__CLASS__, 'filterCallableTrue']]);
+        $m = ValidatorTestMainModel::findOne(2);
+        $val->validateAttribute($m, 'id');
+        $this->assertTrue($m->hasErrors('id'));
+    }
+    
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();
@@ -261,4 +274,15 @@ abstract class ExistValidatorTest extends DatabaseTestCase
 
         ActiveRecord::$db = $this->getConnection();
     }
+    
+    public static function filterCallableFalse($query)
+    {
+        $query->andWhere(['a_field' => 'ref_to_2']);
+    }
+
+    public static function filterCallableTrue($query)
+    {
+        $query->andWhere(['a_field' => 'ref_to_3']);
+    }
+    
 }

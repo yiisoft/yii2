@@ -44,7 +44,7 @@ class DefaultValueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if ($this->isEmpty($model->$attribute)) {
-            if ($this->value instanceof \Closure) {
+            if ($this->value instanceof \Closure || (is_array($this->value) && is_callable($this->value))) {
                 $model->$attribute = call_user_func($this->value, $model, $attribute);
             } else {
                 $model->$attribute = $this->value;

@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17549: Fix `yii\db\ExpressionInterface` not supported in `yii\db\conditions\SimpleConditionBuilder` (razvanphp)
 - Bug #17434: Fix regular expression illegal character; Repeated fix for Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
 - Bug #16855: Ignore console commands that have no actions (alexeevdv)
+- Bug #17560: Array callables were not working correctly with `\yii\validators\ExistValidator::$filter`, `\yii\validators\DefaultValueValidator::$value`, `\yii\validators\RangeValidator::$range`, `\yii\validators\UniqueValidator::$filter` (DrDeath72)
 
 2.0.26 September 03, 2019
 -------------------------

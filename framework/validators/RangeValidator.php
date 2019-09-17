@@ -24,7 +24,7 @@ use yii\helpers\ArrayHelper;
 class RangeValidator extends Validator
 {
     /**
-     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
+     * @var array|\Traversable|callable a list of valid values that the attribute value should be among or a callable that returns
      * such a list. The signature of the anonymous function should be as follows,
      *
      * ```php
@@ -59,6 +59,7 @@ class RangeValidator extends Validator
         if (!is_array($this->range)
             && !($this->range instanceof \Closure)
             && !($this->range instanceof \Traversable)
+            && !is_callable($this->range)
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
@@ -72,6 +73,9 @@ class RangeValidator extends Validator
      */
     protected function validateValue($value)
     {
+        if ($this->range instanceof \Closure || (is_array($this->range) && is_callable($this->range))) {
+            $this->range = call_user_func($this->range);
+        }
         $in = false;
 
         if ($this->allowArray
@@ -93,7 +97,7 @@ class RangeValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->range instanceof \Closure) {
+        if ($this->range instanceof \Closure || (is_array($this->range) && is_callable($this->range))) {
             $this->range = call_user_func($this->range, $model, $attribute);
         }
         parent::validateAttribute($model, $attribute);
@@ -104,7 +108,7 @@ class RangeValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        if ($this->range instanceof \Closure) {
+        if ($this->range instanceof \Closure || (is_array($this->range) && is_callable($this->range))) {
             $this->range = call_user_func($this->range, $model, $attribute);
         }
 
