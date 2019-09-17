@@ -78,6 +78,32 @@ describe('yii.activeForm', function () {
                 assert.isTrue(afterValidateSpy.calledOnce);
             });
         });
+
+        describe('with disabled fields', function () {
+            var inputTypes = {
+                test_radio: 'radioList',
+                test_checkbox: 'checkboxList',
+                test_text: 'text input'
+            };
+
+            for (var key in inputTypes) {
+                if (inputTypes.hasOwnProperty(key)) {
+                    (function () {
+                        var inputId = key;
+                        it(inputTypes[key] + ' disabled field', function () {
+                            $activeForm = $('#w1');
+                            $activeForm.yiiActiveForm({
+                                id: inputId,
+                                input: '#' + inputId
+                            });
+                            $activeForm.yiiActiveForm('validate');
+
+                            assert.isFalse($activeForm.data('yiiActiveForm').validated);
+                        });
+                    })();
+                }
+            }
+        });
     });
 
     describe('resetForm method', function () {
@@ -156,6 +182,39 @@ describe('yii.activeForm', function () {
                 $input.val('New value');
                 $activeForm.yiiActiveForm('updateAttribute', inputId);
                 assert.equal('New value', eventData.value);
+            });
+        });
+
+        describe('afterValidate', function () {
+            var afterValidateSpy;
+            var eventData = null;
+
+            before(function () {
+                afterValidateSpy = sinon.spy(function (event, data) {
+                    eventData = data;
+                });
+            });
+
+            after(function () {
+                afterValidateSpy.reset();
+            });
+
+            // https://github.com/yiisoft/yii2/issues/12080
+
+            it('afterValidate should trigger when not submitting', function () {
+                var inputId = 'name',
+                    $input = $('#' + inputId);
+
+                $activeForm = $('#w0');
+              $activeForm.yiiActiveForm(
+                [{
+                  "id": inputId,
+                  "name": "name",
+                  input: '#' + inputId
+                }], []).on('afterValidate', afterValidateSpy);
+
+                $activeForm.yiiActiveForm('validate');
+                assert.notEqual(null, eventData);
             });
         });
     });

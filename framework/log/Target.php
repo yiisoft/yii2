@@ -29,8 +29,8 @@ use yii\web\Request;
  * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
  * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
  * @property int $levels The message levels that this target is interested in. This is a bitmap of level
- * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
- * and setter. See [[getLevels()]] and [[setLevels()]] for details.
+ * values. Defaults to 0, meaning all available levels. Note that the type of this property differs in getter and
+ * setter. See [[getLevels()]] and [[setLevels()]] for details.
  *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
@@ -73,7 +73,32 @@ abstract class Target extends Component
      *
      * @see \yii\helpers\ArrayHelper::filter()
      */
-    public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
+    public $logVars = [
+        '_GET',
+        '_POST',
+        '_FILES',
+        '_COOKIE',
+        '_SESSION',
+        '_SERVER',
+    ];
+    /**
+     * @var array list of the PHP predefined variables that should NOT be logged "as is" and should always be replaced
+     * with a mask `***` before logging, when exist.
+     *
+     * Defaults to `[ '_SERVER.HTTP_AUTHORIZATION', '_SERVER.PHP_AUTH_USER', '_SERVER.PHP_AUTH_PW']`
+     *
+     * Each element could be specified as one of the following:
+     *
+     * - `var` - `var` will be logged as `***`
+     * - `var.key` - only `var[key]` will be logged as `***`
+     *
+     * @since 2.0.16
+     */
+    public $maskVars = [
+        '_SERVER.HTTP_AUTHORIZATION',
+        '_SERVER.PHP_AUTH_USER',
+        '_SERVER.PHP_AUTH_PW',
+    ];
     /**
      * @var callable a PHP callable that returns a string to be prefixed to every exported message.
      *
@@ -125,7 +150,7 @@ abstract class Target extends Component
         $count = count($this->messages);
         if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
             if (($context = $this->getContextMessage()) !== '') {
-                $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
+                $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME, [], 0];
             }
             // set exportInterval to 0 to avoid triggering export again while exporting
             $oldExportInterval = $this->exportInterval;
@@ -145,6 +170,11 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        foreach ($this->maskVars as $var) {
+            if (ArrayHelper::getValue($context, $var) !== null) {
+                ArrayHelper::setValue($context, $var, '***');
+            }
+        }
         $result = [];
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
@@ -155,7 +185,7 @@ abstract class Target extends Component
 
     /**
      * @return int the message levels that this target is interested in. This is a bitmap of
-     * level values. Defaults to 0, meaning  all available levels.
+     * level values. Defaults to 0, meaning all available levels.
      */
     public function getLevels()
     {
@@ -364,8 +394,8 @@ abstract class Target extends Component
      */
     protected function getTime($timestamp)
     {
-        $parts = explode('.', StringHelper::floatToString($timestamp));
+        $parts = explode('.', sprintf('%F', $timestamp));
 
-        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime && isset($parts[1]) ? ('.' . $parts[1]) : '');
+        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime ? ('.' . $parts[1]) : '');
     }
 }

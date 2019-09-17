@@ -91,15 +91,15 @@ Comme tous les composants de mise en cache prennent en charge le même jeux d'AP
 
 Yii prend en charge un large panel de supports de stockage pour cache. Ce qui suit est un résumé :
 
-* [[yii\caching\ApcCache]]: utilise l'extension PHP [APC](http://php.net/manual/en/book.apc.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache pour une grosse application centralisée (p. ex. un serveur, pas d'équilibrage de charge dédié, etc.).
+* [[yii\caching\ApcCache]]: utilise l'extension PHP [APC](https://secure.php.net/manual/en/book.apc.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache pour une grosse application centralisée (p. ex. un serveur, pas d'équilibrage de charge dédié, etc.).
 * [[yii\caching\DbCache]]: utilise une table de base de données pour stocker les données en cache. Pour utiliser ce cache, vous devez créer une table comme spécifié dans [[yii\caching\DbCache::cacheTable]].
 * [[yii\caching\DummyCache]]: tient lieu de cache à remplacer qui n'assure pas de mise en cache réelle. Le but de ce composant est de simplifier le code qui a besoin de vérifier la disponibilité du cache. Par exemple, lors du développement ou si le serveur ne dispose pas de la prise en charge d'un cache, vous pouvez configurer un composant de mise en cache pour qu'il utilise ce cache. Lorsque la prise en charge réelle de la mise en cache est activée, vous pouvez basculer sur le composant de mise en cache correspondant. Dans les deux cas, vous pouvez utiliser le même code `Yii::$app->cache->get($key)` pour essayer de retrouver les données du cache sans vous préoccuper du fait que `Yii::$app->cache` puisse être `null`.
 * [[yii\caching\FileCache]]: utilise des fichiers standards pour stocker les données en cache. Cela est particulièrement adapté à la mise en cache de gros blocs de données, comme le contenu d'une page.
-* [[yii\caching\MemCache]]: utilise le [memcache](http://php.net/manual/en/book.memcache.php) PHP et l'extension [memcached](http://php.net/manual/en/book.memcached.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache dans des applications distribuées (p. ex. avec plusieurs serveurs, l'équilibrage de charge, etc.).
+* [[yii\caching\MemCache]]: utilise le [memcache](https://secure.php.net/manual/en/book.memcache.php) PHP et l'extension [memcached](https://secure.php.net/manual/en/book.memcached.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache dans des applications distribuées (p. ex. avec plusieurs serveurs, l'équilibrage de charge, etc.).
 * [[yii\redis\Cache]]: met en œuvre un composant de mise en cache basé sur un stockage clé-valeur [Redis](http://redis.io/) 
   (une version de redis égale ou supérieure à 2.6.12 est nécessaire).
 * [[yii\caching\WinCache]]: utilise le [WinCache](http://iis.net/downloads/microsoft/wincache-extension) PHP
-  ([voir aussi l'extension](http://php.net/manual/en/book.wincache.php)).
+  ([voir aussi l'extension](https://secure.php.net/manual/en/book.wincache.php)).
 * [[yii\caching\XCache]] _(deprecated)_: utilise l'extension PHP [XCache](http://xcache.lighttpd.net/).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: utilise le 
   [cache de données Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)

@@ -49,7 +49,7 @@ Hingga saat ini, anda memiliki database bernama `yii2basic`, dan didalamnya terd
 Konfigurasi Koneksi Database <span id="configuring-db-connection"></span>
 ---------------------------
 
-Sebelum melanjutkan, pastikan anda memasang ekstensi PHP [PDO](http://www.php.net/manual/en/book.pdo.php) dan
+Sebelum melanjutkan, pastikan anda memasang ekstensi PHP [PDO](https://secure.php.net/manual/en/book.pdo.php) dan
 driver PDO untuk database yang anda gunakan (misal, `pdo_mysql` untuk MySQL). Ini adalah kebutuhan mendasar
 jika aplikasi anda menggunakan _relational database_.
 

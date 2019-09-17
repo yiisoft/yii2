@@ -110,7 +110,7 @@ Các yêu cầu Yii. Bạn có thể kiểm tra xem các yêu cầu tối thiể
   ```
 
 Bạn nên cấu hình cài đặt PHP của bạn để nó đáp ứng các yêu cầu tối thiểu của Yii. Diều quan trọng nhất, bạn nên có PHP 5.4 hoặc hơn. Bạn cũng nên cài đặt
-các gói [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
+các gói [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
 (như là `pdo_mysql` cho CSDL MySQL), nếu ứng dụng của bạn cần thao tác với CSLD.
 
 
@@ -161,7 +161,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Các khuyến nghị khi cấu hình Nginx <span id="recommended-nginx-configuration"></span>
 
-Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](http://php.net/install.fpm).
+Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://secure.php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
 `basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 

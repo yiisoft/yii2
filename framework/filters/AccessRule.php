@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\User;
@@ -239,7 +240,7 @@ class AccessRule extends Component
                 }
             } else {
                 if (!isset($roleParams)) {
-                    $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+                    $roleParams = !is_array($this->roleParams) && is_callable($this->roleParams) ? call_user_func($this->roleParams, $this) : $this->roleParams;
                 }
                 if ($user->can($item, $roleParams)) {
                     return true;
@@ -266,6 +267,10 @@ class AccessRule extends Component
                     $ip !== null &&
                     ($pos = strpos($rule, '*')) !== false &&
                     strncmp($ip, $rule, $pos) === 0
+                ) ||
+                (
+                    ($pos = strpos($rule, '/')) !== false &&
+                    IpHelper::inRange($ip, $rule) === true
                 )
             ) {
                 return true;

@@ -20,64 +20,68 @@ abstract class QueryTest extends DatabaseTestCase
         // default
         $query = new Query();
         $query->select('*');
-        $this->assertEquals(['*'], $query->select);
+        $this->assertEquals(['*' => '*'], $query->select);
         $this->assertNull($query->distinct);
         $this->assertNull($query->selectOption);
 
         $query = new Query();
         $query->select('id, name', 'something')->distinct(true);
-        $this->assertEquals(['id', 'name'], $query->select);
+        $this->assertEquals(['id' => 'id', 'name' => 'name'], $query->select);
         $this->assertTrue($query->distinct);
         $this->assertEquals('something', $query->selectOption);
 
         $query = new Query();
         $query->addSelect('email');
-        $this->assertEquals(['email'], $query->select);
+        $this->assertEquals(['email' => 'email'], $query->select);
 
         $query = new Query();
         $query->select('id, name');
         $query->addSelect('email');
-        $this->assertEquals(['id', 'name', 'email'], $query->select);
+        $this->assertEquals(['id' => 'id', 'name' => 'name', 'email' => 'email'], $query->select);
 
         $query = new Query();
         $query->select('name, lastname');
         $query->addSelect('name');
-        $this->assertEquals(['name', 'lastname'], $query->select);
+        $this->assertEquals(['name' => 'name', 'lastname' => 'lastname'], $query->select);
 
         $query = new Query();
         $query->addSelect(['*', 'abc']);
         $query->addSelect(['*', 'bca']);
-        $this->assertEquals(['*', 'abc', 'bca'], $query->select);
+        $this->assertEquals(['*' => '*', 'abc' => 'abc', 'bca' => 'bca'], $query->select);
 
         $query = new Query();
         $query->addSelect(['field1 as a', 'field 1 as b']);
-        $this->assertEquals(['field1 as a', 'field 1 as b'], $query->select);
+        $this->assertEquals(['a' => 'field1', 'b' => 'field 1'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['field1 a', 'field 1 b']);
+        $this->assertEquals(['a' => 'field1', 'b' => 'field 1'], $query->select);
 
         $query = new Query();
         $query->select(['name' => 'firstname', 'lastname']);
         $query->addSelect(['firstname', 'surname' => 'lastname']);
         $query->addSelect(['firstname', 'lastname']);
-        $this->assertEquals(['name' => 'firstname', 'lastname', 'firstname', 'surname' => 'lastname'], $query->select);
+        $this->assertEquals(['name' => 'firstname', 'lastname' => 'lastname', 'firstname' => 'firstname', 'surname' => 'lastname'], $query->select);
 
         $query = new Query();
         $query->select('name, name, name as X, name as X');
-        $this->assertEquals(['name', 'name as X'], array_values($query->select));
+        $this->assertEquals(['name' => 'name', 'X' => 'name'], $query->select);
 
         /** @see https://github.com/yiisoft/yii2/issues/15676 */
         $query = (new Query())->select('id');
-        $this->assertSame(['id'], $query->select);
+        $this->assertSame(['id' => 'id'], $query->select);
         $query->select(['id', 'brand_id']);
-        $this->assertSame(['id', 'brand_id'], $query->select);
+        $this->assertSame(['id' => 'id', 'brand_id' => 'brand_id'], $query->select);
 
         /** @see https://github.com/yiisoft/yii2/issues/15676 */
         $query = (new Query())->select(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)']);
         $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)'], $query->select);
         $query->addSelect(['LEFT(name,7) as test']);
-        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
         $query->addSelect(['LEFT(name,7) as test']);
-        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
         $query->addSelect(['test' => 'LEFT(name,7)']);
-        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test', 'test' => 'LEFT(name,7)'], $query->select);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
 
         /** @see https://github.com/yiisoft/yii2/issues/15731 */
         $selectedCols = [
@@ -93,6 +97,11 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertSame($selectedCols, $query->select);
         $query->select($selectedCols);
         $this->assertSame($selectedCols, $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/17384 */
+        $query = new Query();
+        $query->select('DISTINCT ON(tour_dates.date_from) tour_dates.date_from, tour_dates.id');
+        $this->assertEquals(['DISTINCT ON(tour_dates.date_from) tour_dates.date_from', 'tour_dates.id' => 'tour_dates.id'], $query->select);
     }
 
     public function testFrom()
@@ -111,6 +120,7 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     use GetTablesAliasTestTrait;
+
     protected function createQuery()
     {
         return new Query();
@@ -330,8 +340,8 @@ abstract class QueryTest extends DatabaseTestCase
     public function testUnion()
     {
         $connection = $this->getConnection();
-        $query = new Query();
-        $query->select(['id', 'name'])
+        $query = (new Query())
+            ->select(['id', 'name'])
             ->from('item')
             ->limit(2)
             ->union(
@@ -440,7 +450,7 @@ abstract class QueryTest extends DatabaseTestCase
         $count = (new Query())->from('customer')->where(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
 
-        $count = (new Query())->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
+        $count = (new Query())->select('[[status]], COUNT([[id]]) cnt')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
 
         // testing that orderBy() should be ignored here as it does not affect the count anyway.
@@ -588,7 +598,7 @@ abstract class QueryTest extends DatabaseTestCase
             ->where($whereCondition)
             ->count('*', $db);
         if (is_numeric($result)) {
-            $result = (int) $result;
+            $result = (int)$result;
         }
 
         return $result;

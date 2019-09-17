@@ -92,7 +92,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Info: la méthode [[yii\di\Container::get()]] accepte un tableau de configuration qui peut être appliqué à l'objet en création comme troisième paramètre. Si la classe implémente l'interface [[yii\base\Configurable]] (p. ex. [[yii\base\BaseObject]]), le tableau de configuration est passé en tant que dernier paramètre du constructeur de la classe ; autrement le tableau de configuration serait appliqué *après* la création de l'objet. 
+> Info: la méthode [[yii\di\Container::get()]] accepte un tableau de configurations qui peut être appliqué à l'objet en création comme troisième paramètre. Si la classe implémente l'interface [[yii\base\Configurable]] (p. ex. [[yii\base\BaseObject]]), le tableau de configuration est passé en tant que dernier paramètre du constructeur de la classe ; autrement le tableau de configuration serait appliqué *après* la création de l'objet. 
 
 ### Injection par une méthode de rappel PHP <span id="php-callable-injection"></span>
 
@@ -198,7 +198,8 @@ Résolution des dépendances <span id="resolving-dependencies"></span>
 
 Une fois que vous avez enregistré des dépendances, vous pouvez utiliser le conteneur d'injection de dépendances pour créer de nouveau objets, et le conteneur résout automatiquement les dépendances en les instanciant et en les injectant dans les nouveaux objets. Le résolution des dépendances est récursive, ce qui signifie que si une dépendance a d'autres dépendances, ces dépendances sont aussi résolue automatiquement. 
 
-Vous pouvez utiliser [[yii\di\Container::get()]] pour créer de nouveaux objets. La méthode accepte un nom de dépendance qui peut être un nom de classe, un nom d'interface ou un nom d'alias. Le nom de dépendance, peut être, ou ne pas être, enregistré via `set()` ou `setSingleton()`. En option, vous pouvez fournir une liste de paramètre du constructeur de la classe et une [configuration](concept-configurations.md) pour configurer l'objet nouvellement créé. Par exemple :
+Vous pouvez utiliser [[yii\di\Container::get()]] soit pour créer, soit pour obtenir une instance d'un objet. La méthode accepte un nom de dépendance qui peut être un nom de classe, un nom d'interface ou un nom d'alias. Le nom de dépendance, peut être enregistré [[yii\di\Container::set()|set()]] 
+ou [[yii\di\Container::setSingleton()|setSingleton()]]. En option, vous pouvez fournir une liste de paramètres du constructeur de la classe et une [configuration](concept-configurations.md) pour configurer l'objet nouvellement créé. Par exemple :
 
 ```php
 // "db" est un nom d'alias enregistré préalablement
@@ -272,9 +273,9 @@ $lister = new UserLister($finder);
 Utilisation pratique <span id="practical-usage"></span>
 --------------------
 
-Yii crée un conteneur d'injection de dépendances lorsque vous incluez le fichier `Yii.php` dans le [script d'entrée](structure-entry-scripts.md) de votre application. Le conteneur d'injection de dépendances est accessible via [[Yii::$container]]. Lorsque vous appelez [[Yii::createObject()]], la méthode appelle en réalité la méthode [[yii\di\Container::get()|get()]] du conteneur pour créer le nouvel objet. Comme c'est dit plus haut, le conteneur d'injection de dépendances résout automatiquement les dépendances (s'il en existe) et les injecte dans l'objet créé. Parce que Yii utilise [[Yii::createObject()]] dans la plus grande partie du code de son noyau pour créer de nouveaux objets, cela signifie que vous pouvez personnaliser ces objets globalement en utilisant [[Yii::$container]].
+Yii crée un conteneur d'injection de dépendances lorsque vous incluez le fichier `Yii.php` dans le [script d'entrée](structure-entry-scripts.md) de votre application. Le conteneur d'injection de dépendances est accessible via [[Yii::$container]]. Lorsque vous appelez [[Yii::createObject()]], la méthode appelle en réalité la méthode [[yii\di\Container::get()|get()]] du conteneur pour créer le nouvel objet. Comme c'est dit plus haut, le conteneur d'injection de dépendances résout automatiquement les dépendances (s'il en existe) et les injecte dans l'objet obtenu. Parce que Yii utilise [[Yii::createObject()]] dans la plus grande partie du code de son noyau pour créer de nouveaux objets, cela signifie que vous pouvez personnaliser ces objets globalement en utilisant [[Yii::$container]].
 
-Par exemple, vous pouvez personnaliser globalement le nombre de boutons de pagination par défaut de l'objet graphique [[yii\widgets\LinkPager]] :
+Par exemple, personnalisons globalement le nombre de boutons de pagination par défaut de l'objet graphique [[yii\widgets\LinkPager]] :
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
@@ -320,6 +321,132 @@ Si vous accédez au contrôleur à partir du navigateur, vous verrez un message 
 ```
 
 Maintenant, si vous accédez à nouveau au contrôleur, une instance de `app\components\BookingService` est créée et injectée en tant que troisième paramètre du constructeur. 
+
+Utilisation pratique avancée <span id="advanced-practical-usage"></span>
+---------------
+
+Supposons que nous travaillions sur l'API de l'application et ayons :S
+
+- la classe `app\components\Request` qui étende `yii\web\Request` et fournisse une fonctionnalité additionnelle, 
+- la classe `app\components\Response` qui étende `yii\web\Response` et devrait avoir une propriété `format` définie à `json` à la création,
+- des classes `app\storage\FileStorage` et `app\storage\DocumentsReader` qui mettent en œuvre une certaine logique pour travailler sur des documents qui seraient situés dans un dossier :
+  
+  
+  ```php
+  class FileStorage
+  {
+      public function __construct($root) {
+          // whatever
+      }
+  }
+  
+  class DocumentsReader
+  {
+      public function __construct(FileStorage $fs) {
+          // whatever
+      }
+  }
+  ```
+
+Il est possible de configurer de multiples définitions à la fois, en passant un tableau de configurations à la méthode  
+[[yii\di\Container::setDefinitions()|setDefinitions()]] ou à la méthode [[yii\di\Container::setSingletons()|setSingletons()]].
+En itérant sur le tableau de configuration, les méthodes appellent [[yii\di\Container::set()|set()]]
+ou [[yii\di\Container::setSingleton()|setSingleton()]] respectivement pour chacun des items.
+
+Le format du tableau de  configurations est :
+
+ - `key`: nom de classe, nom d'interface ou alias. La clé est passée à la méthode
+ [[yii\di\Container::set()|set()]] comme premier argument `$class`.
+ - `value`: la définition associée à `$class`. Les valeurs possibles sont décrites dans la documentation [[yii\di\Container::set()|set()]]
+ du paramètre `$definition`. Est passé à la méthode [[set()]] comme deuxième argument `$definition`.
+
+Par exemple, configurons notre conteneur pour répondre aux exigences mentionnées précédemment :
+
+```php
+$container->setDefinitions([
+    'yii\web\Request' => 'app\components\Request',
+    'yii\web\Response' => [
+        'class' => 'app\components\Response',
+        'format' => 'json'
+    ],
+    'app\storage\DocumentsReader' => function ($container, $params, $config) {
+        $fs = new app\storage\FileStorage('/var/tempfiles');
+        return new app\storage\DocumentsReader($fs);
+    }
+]);
+
+$reader = $container->get('app\storage\DocumentsReader'); 
+// Crée un objet DocumentReader avec ses dépendances tel que décrit dans la configuration.
+```
+
+> Tip: le conteneur peut être configuré dans le style déclaratif en utilisant la configuration de l'application depuis la version 2.0.11. 
+Consultez la sous-section [Configurations des applications](concept-configurations.md#application-configurations) de l'article du guide  [Configurations](concept-configurations.md).
+
+Tout fonctionne, mais au cas où, nous devons créer une classe  `DocumentWriter`, nous devons copier-coller la ligne qui crée un objet  `FileStorage`, ce qui n'est pas la manière la plus élégante, c'est évident. 
+
+
+Comme cela est décrit à la sous-section [Résolution des dépendances](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
+et [[yii\di\Container::setSingleton()|setSingleton()]] peuvent facultativement des paramètres du constructeur de dépendances en tant que troisième argument. Pour définir les paramètres du constructeur, vous pouvez utiliser le format de tableau de configuration suivant :
+
+ - `key`: nom de classe, nom d'interface ou alias. La clé est passée à la méthode 
+ [[yii\di\Container::set()|set()]] comme premier argument `$class`.
+ - `value`: un tableau de deux éléments. Le premier élément est passé à la méthode [[yii\di\Container::set()|set()]] comme deuxième argument `$definition`, le second — comme `$params`.
+
+Modifions notre exemple :
+
+```php
+$container->setDefinitions([
+    'tempFileStorage' => [ // we've created an alias for convenience
+        ['class' => 'app\storage\FileStorage'],
+        ['/var/tempfiles'] // pourrait être extrait de certains fichiers de configuration
+    ],
+    'app\storage\DocumentsReader' => [
+        ['class' => 'app\storage\DocumentsReader'],
+        [Instance::of('tempFileStorage')]
+    ],
+    'app\storage\DocumentsWriter' => [
+        ['class' => 'app\storage\DocumentsWriter'],
+        [Instance::of('tempFileStorage')]
+    ]
+]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+// Se comporte exactement comme l'exemple précédent
+```
+
+Vous noterez la notation `Instance::of('tempFileStorage')`. cela siginifie que  le [[yii\di\Container|Container]] fournit implicitement une dépendance enregistrée avec le nom de  `tempFileStorage` et la passe en tant que premier argument du constructeur
+of `app\storage\DocumentsWriter`.
+
+> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
+  methods are available since version 2.0.11.
+  
+Une autre étape de l'optimisation de la configuration est d'enregistrer certaines dépendances  sous forme de singletons. 
+Une dépendance enregistrée via [[yii\di\Container::set()|set()]] est instanciée à chaque fois qu'on en a besoin.
+Certaines classes ne changent pas l'état au moment de l'exécution, par conséquent elles peuvent être enregistrées sous forme de singletons afin d'augmenter la performance de l'application.
+
+Un bon exemple serait la classe `app\storage\FileStorage`, qui effectue certaines opérations sur le système de fichiers avec une API simple (p. ex. `$fs->read()`, `$fs->write()`). Ces opération ne changent pas l'état interne de la classe, c'est pourquoi nous pouvons créer son instance une seule fois et l'utiliser de multiples fois.
+
+```php
+$container->setSingletons([
+    'tempFileStorage' => [
+        ['class' => 'app\storage\FileStorage'],
+        ['/var/tempfiles']
+    ],
+]);
+
+$container->setDefinitions([
+    'app\storage\DocumentsReader' => [
+        ['class' => 'app\storage\DocumentsReader'],
+        [Instance::of('tempFileStorage')]
+    ],
+    'app\storage\DocumentsWriter' => [
+        ['class' => 'app\storage\DocumentsWriter'],
+        [Instance::of('tempFileStorage')]
+    ]
+]);
+
+$reader = $container->get('app\storage\DocumentsReader');
+```
 
 
 À quel moment enregistrer les dépendances <span id="when-to-register-dependencies"></span>

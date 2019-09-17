@@ -281,6 +281,7 @@ the operator can be one of the following:
   The method will properly quote the column name and escape values in the range.
   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+  For example, `['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` will generate `(id, name) IN ((1, 'oy'))`.
 
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 
@@ -327,7 +328,7 @@ guide article. For example the following code is vulnerable:
 ```php
 // Vulnerable code:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value is safe, but $column name won't be encoded!
 ```
@@ -772,7 +773,7 @@ foreach ($query->each() as $username => $user) {
 #### Limitations of batch query in MySQL <span id="batch-query-mysql"></span>
 
 MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are 
-[`buffered`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
+[`buffered`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
 of using the cursor to get the data, because it doesn't prevent the whole result set from being 
 loaded into the client's memory by the driver.
 
@@ -912,22 +913,23 @@ namespace app\db\conditions;
 
 class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 {
-    use \yii\db\Condition\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
+    use \yii\db\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
 
     /**
-     * @param AllGreaterCondition $condition the condition to be built
+     * @param ExpressionInterface $condition the condition to be built
      * @param array $params the binding parameters.
+     * @return AllGreaterCondition
      */ 
-    public function build(ConditionInterface $condition, &$params)
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $condition->getValue();
         
         $conditions = [];
-        foreach ($condition->getColumns() as $column) {
+        foreach ($expression->getColumns() as $column) {
             $conditions[] = new SimpleCondition($column, '>', $value);
         }
 
-        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+        return $this->queryBuilder->buildCondition(new AndCondition($conditions), $params);
     }
 }
 ```

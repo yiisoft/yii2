@@ -3,7 +3,7 @@ Upgrading Instructions for Yii Framework 2.0
 
 This file contains the upgrade notes for Yii 2.0. These notes highlight changes that
 could break your application when you upgrade Yii from one version to another.
-Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
+Even though we try to ensure backwards compatibility (BC) as much as possible, sometimes
 it is not possible or very complicated to avoid it and still create a good solution to
 a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md)
 for further details.
@@ -51,6 +51,45 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.20
+-----------------------
+
+* `yii\db\Query::select()` and `addSelect()` now normalize the format that columns are stored in when saving them 
+  to `$this->select`, so code that works directly with that property may need to be modified.
+  
+  For the following code:
+  
+  ```php
+  $a = $query->select('*');
+  $b = $query->select('id, name');
+  ```
+  
+  The value was stored as is i.e.
+  
+  ```php
+  // a
+  ['*']
+  
+  // b
+  ['id', 'name']
+  ``` 
+  
+  Now it is stored as
+  
+  ```php
+  // a
+  ['*' => '*']
+  
+  // b
+  ['id' => 'id', 'name' => 'name']
+  ```
+
+Upgrade from Yii 2.0.16
+-----------------------
+
+* In case you have extended the `yii\web\DbSession` class you should check if your 
+  custom implementation is compatible with the new `yii\web\DbSession::$fields` attribute.
+  Especially when overriding the `yii\web\DbSession::writeSession($id, $data)` function.
 
 Upgrade from Yii 2.0.15
 -----------------------
@@ -62,6 +101,24 @@ Upgrade from Yii 2.0.15
   ```json
   "cebe/markdown": "~1.1.0",
   ```
+  
+* `yii\mutex\Mutex::acquire()` no longer returns `true` if lock is already acquired by the same component in the same process.
+  Make sure that you're not trying to acquire the same lock multiple times in a way that may create infinite loops, for example:
+    
+  ```php
+  if (Yii::$app->mutex->acquire('test')) {
+       while (!Yii::$app->mutex->acquire('test')) {
+           // `Yii::$app->mutex->acquire('test')` will always return `false` here, since lock is already acquired
+      }
+  }
+  ```
+  
+* Formatter methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` are using now inner fallback methods to handle 
+  very big number values to counter inner PHP casting and floating point number presentation issues. Make sure to provide 
+  such values as string numbers.
+  
+* Active Record relations are now being reset when corresponding key fields are changed. If you have relied on the fact
+  that relations are never reloaded you have to adjust your code.
 
 
 Upgrade from Yii 2.0.14
@@ -533,7 +590,7 @@ Upgrade from Yii 2.0 Beta
   You can add it with `ALTER TABLE log ADD COLUMN prefix TEXT AFTER log_time;`.
 
 * The `fileinfo` PHP extension is now required by Yii. If you use  `yii\helpers\FileHelper::getMimeType()`, make sure
-  you have enabled this extension. This extension is [builtin](http://www.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
+  you have enabled this extension. This extension is [builtin](https://secure.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
 
 * Please update your main layout file by adding this line in the `<head>` section: `<?= Html::csrfMetaTags() ?>`.
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.

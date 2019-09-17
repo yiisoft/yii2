@@ -8,14 +8,14 @@
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
- * Handles the creation of table `post_tag`.
+ * Handles the creation of table `{{%{junctionTable}}}`.
  * Has foreign keys to the tables:
  *
- * - `post`
- * - `tag`
+ * - `{{%{firstTable}}}`
+ * - `{{%{secondTable}}}`
  */
 class {$class} extends Migration
 {
@@ -24,42 +24,42 @@ class {$class} extends Migration
      */
     public function safeUp()
     {
-        \$this->createTable('post_tag', [
-            'post_id' => \$this->integer(),
-            'tag_id' => \$this->integer(),
-            'PRIMARY KEY(post_id, tag_id)',
+        \$this->createTable('{{%{junctionTable}}}', [
+            '{firstTable}_id' => \$this->integer(),
+            '{secondTable}_id' => \$this->integer(),
+            'PRIMARY KEY({firstTable}_id, {secondTable}_id)',
         ]);
 
-        // creates index for column `post_id`
+        // creates index for column `{firstTable}_id`
         \$this->createIndex(
-            'idx-post_tag-post_id',
-            'post_tag',
-            'post_id'
+            '{{%idx-{junctionTable}-{firstTable}_id}}',
+            '{{%{junctionTable}}}',
+            '{firstTable}_id'
         );
 
-        // add foreign key for table `post`
+        // add foreign key for table `{{%{firstTable}}}`
         \$this->addForeignKey(
-            'fk-post_tag-post_id',
-            'post_tag',
-            'post_id',
-            'post',
+            '{{%fk-{junctionTable}-{firstTable}_id}}',
+            '{{%{junctionTable}}}',
+            '{firstTable}_id',
+            '{{%{firstTable}}}',
             'id',
             'CASCADE'
         );
 
-        // creates index for column `tag_id`
+        // creates index for column `{secondTable}_id`
         \$this->createIndex(
-            'idx-post_tag-tag_id',
-            'post_tag',
-            'tag_id'
+            '{{%idx-{junctionTable}-{secondTable}_id}}',
+            '{{%{junctionTable}}}',
+            '{secondTable}_id'
         );
 
-        // add foreign key for table `tag`
+        // add foreign key for table `{{%{secondTable}}}`
         \$this->addForeignKey(
-            'fk-post_tag-tag_id',
-            'post_tag',
-            'tag_id',
-            'tag',
+            '{{%fk-{junctionTable}-{secondTable}_id}}',
+            '{{%{junctionTable}}}',
+            '{secondTable}_id',
+            '{{%{secondTable}}}',
             'id',
             'CASCADE'
         );
@@ -70,31 +70,31 @@ class {$class} extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `post`
+        // drops foreign key for table `{{%{firstTable}}}`
         \$this->dropForeignKey(
-            'fk-post_tag-post_id',
-            'post_tag'
+            '{{%fk-{junctionTable}-{firstTable}_id}}',
+            '{{%{junctionTable}}}'
         );
 
-        // drops index for column `post_id`
+        // drops index for column `{firstTable}_id`
         \$this->dropIndex(
-            'idx-post_tag-post_id',
-            'post_tag'
+            '{{%idx-{junctionTable}-{firstTable}_id}}',
+            '{{%{junctionTable}}}'
         );
 
-        // drops foreign key for table `tag`
+        // drops foreign key for table `{{%{secondTable}}}`
         \$this->dropForeignKey(
-            'fk-post_tag-tag_id',
-            'post_tag'
+            '{{%fk-{junctionTable}-{secondTable}_id}}',
+            '{{%{junctionTable}}}'
         );
 
-        // drops index for column `tag_id`
+        // drops index for column `{secondTable}_id`
         \$this->dropIndex(
-            'idx-post_tag-tag_id',
-            'post_tag'
+            '{{%idx-{junctionTable}-{secondTable}_id}}',
+            '{{%{junctionTable}}}'
         );
 
-        \$this->dropTable('post_tag');
+        \$this->dropTable('{{%{junctionTable}}}');
     }
 }
 

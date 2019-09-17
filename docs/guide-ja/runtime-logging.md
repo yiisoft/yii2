@@ -216,6 +216,17 @@ Yii は下記のログ・ターゲットをあらかじめ内蔵しています�
 あるいは、また、コンテキスト情報の提供方法を自分で実装したい場合は、
 [[yii\log\Target::getContextMessage()]] メソッドをオーバーライドすることも出来ます。
 
+ログに出力したくない機密情報 (例えば、パスワードやアクセス・トークン) を含んでいるリクエストのフィールドについては、`maskVars` プロパティを追加で構成することが出来ます。
+デフォルトでは、`$_SERVER[HTTP_AUTHORIZATION]`、`$_SERVER[PHP_AUTH_USER]`、`$_SERVER[PHP_AUTH_PW]` のリクエスト・パラメータが `***` でマスクされまが、
+自分自身で設定することも出来ます。例えば、
+
+```php
+[
+    'class' => 'yii\log\FileTarget',
+    'logVars' => ['_SERVER'],
+    'maskVars' => ['_SERVER.HTTP_X_PASSWORD']
+]
+```
 
 ### メッセージのトレース・レベル <span id="trace-level"></span>
 

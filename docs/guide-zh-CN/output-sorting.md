@@ -5,14 +5,16 @@
 Yii 使用 [[yii\data\Sort]] 对象来代表排序方案的有关信息。
 特别地，
 
-* [[yii\data\Sort::$attributes|attributes]] 指定 *属性*，数据按照其排序。一个属性可以就是简单的一个 [model attribute](structure-models.md#attributes)，也可以是结合了多个 model 属性或者 DB 列的复合属性。下面将给出更多细节。
-* [[yii\data\Sort::$attributeOrders|attributeOrders]] 给出每个属性当前设置的排序方向。
+* [[yii\data\Sort::$attributes|attributes]] 指定 *属性*，数据按照其排序。
+  一个属性可以就是简单的一个 [model attribute](structure-models.md#attributes)，
+  也可以是结合了多个 model 属性或者 DB 列的复合属性。下面将给出更多细节。
+* [[yii\data\Sort::$attributeOrders|attributeOrders]] 给出每个属性当前设置的
+  排序方向。
 * [[yii\data\Sort::$orders|orders]] 按照低级列的方式给出排序方向。
 
 使用 [[yii\data\Sort]]，首先要声明什么属性能进行排序。
 接着从 [[yii\data\Sort::$attributeOrders|attributeOrders]] 或者 [[yii\data\Sort::$orders|orders]] 取得当前设置的排序信息，
-然后使用它们来自定义数据查询。
-例如，
+然后使用它们来自定义数据查询。例如，
 
 ```php
 use yii\data\Sort;
@@ -52,14 +54,19 @@ $articles = Article::find()
 `name` 属性是由 `Article` 的 `firsr_name` 和 `last_name` 定义的一个复合属性。
 使用下面的数组结构来对它进行声明：
 
-- `asc` 和 `desc` 元素指定了如何按照该属性进行升序和降序的排序。它们的值代表数据真正地应该按照什么列和方向进行排序。
+- `asc` 和 `desc` 元素指定了如何按照该属性进行升序和降序的排序。
+  它们的值代表数据真正地应该按照什么列和方向进行排序。
   你可以指定一列或多列来指出到底是简单排序还是多重排序。
-- `default` 元素指定了当一次请求时，属性应该按照什么方向来进行排序。它默认为升序方向，意味着如果之前没有进行排序，并且
+- `default` 元素指定了当一次请求时，属性应该按照什么方向来进行排序。
+  它默认为升序方向，意味着如果之前没有进行排序，并且
   你请求按照该属性进行排序，那么数据将按照该属性来进行升序排序。
-- `label` 元素指定了调用 [[yii\data\Sort::link()]] 来创建一个排序链接时应该使用什么标签，如果不设置，将调用 
-  [[yii\helpers\Inflector::camel2words()]] 来通过属性名生成一个标签。注意，它并不是 HTML编码的。
+- `label` 元素指定了调用 [[yii\data\Sort::link()]] 来创建一个排序链接时应该使用什么标签。
+  如果不设置，将调用 [[yii\helpers\Inflector::camel2words()]] 来通过属性名生成一个标签。
+  注意，它并不是 HTML编码的。
   
-> Info: 你可以将 [[yii\data\Sort::$orders|orders]] 的值直接提供给数据库查询来构建其 `ORDER BY` 子句。不要使用 [[yii\data\Sort::$attributeOrders|attributeOrders]] ，因为一些属性可能是复合的，是不能被数据库查询识别的。
+> Info: 你可以将 [[yii\data\Sort::$orders|orders]] 的值直接提供给数据库查询来构建其 `ORDER BY` 子句。
+  不要使用 [[yii\data\Sort::$attributeOrders|attributeOrders]]，
+  因为一些属性可能是复合的，是不能被数据库查询识别的。
 
 你可以调用 [[yii\data\Sort::link()]] 来生成一个超链接，用户可以通过点击它来请求按照指定的属性对数据进行排序。
 你也可以调用 [[yii\data\Sort::createUrl()]] 来生成一个可排序的 URL。

@@ -81,7 +81,7 @@ All Rights Reserved.
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ru/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ru/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ru/README.md)
 
 
 Получение данных от пользователя
@@ -92,6 +92,7 @@ All Rights Reserved.
 * [Загрузка файлов](input-file-upload.md)
 * [Табличный ввод](input-tabular-input.md)
 * [Работа с несколькими моделями](input-multiple-models.md)
+* [Расширение ActiveForm на стороне клиента](input-form-javascript.md)
 
 
 Отображение данных
@@ -102,7 +103,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* Работа с клиентскими скриптами
+* [Работа с клиентскими скриптами](output-client-scripts.md)
 * [Темизация](output-theming.md)
 
 
@@ -164,7 +165,6 @@ All Rights Reserved.
 Специальные темы
 ----------------
 
-
 * [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Создание приложения с нуля](tutorial-start-from-scratch.md)
 * [Консольные команды](tutorial-console.md)
@@ -190,7 +190,7 @@ All Rights Reserved.
 * [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
 * [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ru/README.md)
-* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ru/README.md)
 
 
 Хелперы
