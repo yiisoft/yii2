@@ -10,6 +10,8 @@ Yii Framework 2 Change Log
 - Bug #16855: Ignore console commands that have no actions (alexeevdv)
 - Enh #16826: `appendTimestamp` support was added to `View` methods `registerCssFile()` and `registerJsFile()` (onmotion)
 - Enh #15526: Show valid aliases and options on invalid input in console application (samdark)
+- Bug #16671: Logging in `Connection::open()` was not respecting `Connection::$enableLogging` (samdark)
+
 
 2.0.26 September 03, 2019
 -------------------------
