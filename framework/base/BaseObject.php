@@ -133,7 +133,10 @@ class BaseObject implements Configurable
     {
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
-            return $this->$getter();
+            $reflection = new \ReflectionMethod($this, $getter);
+            if ($reflection->isPublic()) {
+                return $this->$getter();
+            }
         } elseif (method_exists($this, 'set' . $name)) {
             throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
         }
@@ -156,7 +159,10 @@ class BaseObject implements Configurable
     {
         $setter = 'set' . $name;
         if (method_exists($this, $setter)) {
-            $this->$setter($value);
+            $reflection = new \ReflectionMethod($this, $setter);
+            if ($reflection->isPublic()) {
+                $this->$setter($value);
+            }
         } elseif (method_exists($this, 'get' . $name)) {
             throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
