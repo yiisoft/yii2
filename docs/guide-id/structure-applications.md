@@ -19,11 +19,11 @@ Ketika [skrip masuk](structure-entry-scripts.md) membuat objek aplikasi, objek i
 sebuah [array konfigurasi](concept-configurations.md) dan menerapkannya pada objek aplikasi seperti berikut ini:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // memuat konfigurasi aplikasi
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // membuat objek aplikasi & menerapkan konfigurasi
 (new yii\web\Application($config))->run();
@@ -356,7 +356,7 @@ Untuk informasi lebih lanjut mengenai _property_ ini bisa anda pelajari pada bag
 
 _Property_ ini disediakan sebagai cara alternatif untuk menentukan zona waktu default dari _PHP runtime_.
 Dengan menentukan _property_ ini, pada dasarnya anda memanggil _function_ PHP
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Sebagi contoh:
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). Sebagi contoh:
 
 ```php
 [

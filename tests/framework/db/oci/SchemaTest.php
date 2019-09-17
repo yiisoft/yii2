@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\oci;
 
-use yii\db\Expression;
-use yii\db\oci\Schema;
+use yii\db\CheckConstraint;
+use yiiunit\framework\db\AnyValue;
 
 /**
  * @group db
@@ -13,10 +18,13 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'oci';
 
+    protected $expectedSchemas = [];
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
         unset($columns['enum_col']);
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'NUMBER';
         $columns['int_col']['size'] = 22;
         $columns['int_col']['precision'] = null;
@@ -25,6 +33,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['int_col2']['size'] = 22;
         $columns['int_col2']['precision'] = null;
         $columns['int_col2']['scale'] = 0;
+        $columns['tinyint_col']['dbType'] = 'NUMBER';
+        $columns['tinyint_col']['type'] = 'integer';
+        $columns['tinyint_col']['size'] = 22;
+        $columns['tinyint_col']['precision'] = 3;
+        $columns['tinyint_col']['scale'] = 0;
         $columns['smallint_col']['dbType'] = 'NUMBER';
         $columns['smallint_col']['type'] = 'integer';
         $columns['smallint_col']['size'] = 22;
@@ -92,5 +105,73 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     {
         $table = $this->getConnection(false)->schema->getTableSchema('order', true);
         $this->assertFalse($table->columns['id']->autoIncrement);
+    }
+
+    public function constraintsProvider()
+    {
+        $result = parent::constraintsProvider();
+        $result['1: check'][2][0]->expression = '"C_check" <> \'\'';
+        $result['1: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_id'],
+            'expression' => '"C_id" IS NOT NULL',
+        ]);
+        $result['1: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_not_null'],
+            'expression' => '"C_not_null" IS NOT NULL',
+        ]);
+        $result['1: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_unique'],
+            'expression' => '"C_unique" IS NOT NULL',
+        ]);
+        $result['1: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_default'],
+            'expression' => '"C_default" IS NOT NULL',
+        ]);
+
+        $result['2: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_id_1'],
+            'expression' => '"C_id_1" IS NOT NULL',
+        ]);
+        $result['2: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_id_2'],
+            'expression' => '"C_id_2" IS NOT NULL',
+        ]);
+
+        $result['3: foreign key'][2][0]->foreignSchemaName = AnyValue::getInstance();
+        $result['3: foreign key'][2][0]->onUpdate = null;
+        $result['3: index'][2] = [];
+        $result['3: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_fk_id_1'],
+            'expression' => '"C_fk_id_1" IS NOT NULL',
+        ]);
+        $result['3: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_fk_id_2'],
+            'expression' => '"C_fk_id_2" IS NOT NULL',
+        ]);
+        $result['3: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_id'],
+            'expression' => '"C_id" IS NOT NULL',
+        ]);
+
+        $result['4: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_id'],
+            'expression' => '"C_id" IS NOT NULL',
+        ]);
+        $result['4: check'][2][] = new CheckConstraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['C_col_2'],
+            'expression' => '"C_col_2" IS NOT NULL',
+        ]);
+        return $result;
     }
 }

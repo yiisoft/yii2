@@ -1,10 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\rbac;
 
 /**
- * SqliteManagerTest
+ * SqliteManagerTest.
  * @group db
  * @group rbac
+ * @group sqlite
  */
 class SqliteManagerTest extends DbManagerTestCase
 {
@@ -18,6 +25,7 @@ class SqliteManagerTest extends DbManagerTestCase
         if (static::$sqliteDb === null) {
             static::$sqliteDb = parent::createConnection();
         }
+
         return static::$sqliteDb;
     }
 }

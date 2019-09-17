@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -30,14 +30,14 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UrlRule extends Object implements UrlRuleInterface
+class UrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL parsing only
+     * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
     const PARSING_ONLY = 1;
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL creation only
+     * Set [[mode]] with this value to mark that this rule is for URL creation only.
      */
     const CREATION_ONLY = 2;
     /**
@@ -179,6 +179,7 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($str === '') {
             return '/';
         }
+
         return $str;
     }
 
@@ -238,7 +239,7 @@ class UrlRule extends Object implements UrlRuleInterface
             } else {
                 $this->host = $this->pattern;
             }
-        } elseif (strpos($this->pattern, '//') === 0) {
+        } elseif (strncmp($this->pattern, '//', 2) === 0) {
             if (($pos2 = strpos($this->pattern, '/', 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
@@ -335,7 +336,7 @@ class UrlRule extends Object implements UrlRuleInterface
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         // if host starts with relative scheme, then insert pattern to match any
-        if (strpos($this->host, '//') === 0) {
+        if (strncmp($this->host, '//', 2) === 0) {
             $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
         }
 
@@ -353,9 +354,9 @@ class UrlRule extends Object implements UrlRuleInterface
     {
         if ($this->normalizer === null) {
             return $manager->normalizer;
-        } else {
-            return $this->normalizer;
         }
+
+        return $this->normalizer;
     }
 
     /**
@@ -385,7 +386,7 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
@@ -434,14 +435,14 @@ class UrlRule extends Object implements UrlRuleInterface
             $route = $this->route;
         }
 
-        Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
+        Yii::debug("Request parsed with URL rule: {$this->name}", __METHOD__);
 
         if ($normalized) {
             // pathInfo was changed by normalizer - we need also normalize route
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
-        } else {
-            return [$route, $params];
         }
+
+        return [$route, $params];
     }
 
     /**
@@ -545,7 +546,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @see $createStatus
      * @since 2.0.12
      */
-    public function getCreateUrlStatus() {
+    public function getCreateUrlStatus()
+    {
         return $this->createStatus;
     }
 
@@ -578,6 +580,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 unset($matches[$placeholder]);
             }
         }
+
         return $matches;
     }
 
@@ -590,9 +593,10 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     private function trimSlashes($string)
     {
-        if (strpos($string, '//') === 0) {
+        if (strncmp($string, '//', 2) === 0) {
             return '//' . trim($string, '/');
         }
+
         return trim($string, '/');
     }
 }

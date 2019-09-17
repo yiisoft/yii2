@@ -11,8 +11,8 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\di\Instance;
-use yii\web\User;
 use yii\web\ForbiddenHttpException;
+use yii\web\User;
 
 /**
  * AccessControl provides simple access control based on a set of rules.
@@ -64,7 +64,9 @@ class AccessControl extends ActionFilter
     public $user = 'user';
     /**
      * @var callable a callback that will be called if the access should be denied
-     * to the current user. If not set, [[denyAccess()]] will be called.
+     * to the current user. This is the case when either no rule matches, or a rule with
+     * [[AccessRule::$allow|$allow]] set to `false` matches.
+     * If not set, [[denyAccess()]] will be called.
      *
      * The signature of the callback should be as follows:
      *
@@ -128,6 +130,7 @@ class AccessControl extends ActionFilter
                 } else {
                     $this->denyAccess($user);
                 }
+
                 return false;
             }
         }
@@ -136,6 +139,7 @@ class AccessControl extends ActionFilter
         } else {
             $this->denyAccess($user);
         }
+
         return false;
     }
 

@@ -132,13 +132,14 @@ class CaptchaAction extends Action
                 'hash2' => $this->generateValidationHash(strtolower($code)),
                 // we add a random 'v' parameter so that FireFox can refresh the image
                 // when src attribute of image tag is changed
-                'url' => Url::to([$this->id, 'v' => uniqid()]),
+                'url' => Url::to([$this->id, 'v' => uniqid('', true)]),
             ];
-        } else {
-            $this->setHttpHeaders();
-            Yii::$app->response->format = Response::FORMAT_RAW;
-            return $this->renderImage($this->getVerifyCode());
         }
+
+        $this->setHttpHeaders();
+        Yii::$app->response->format = Response::FORMAT_RAW;
+
+        return $this->renderImage($this->getVerifyCode());
     }
 
     /**
@@ -190,7 +191,7 @@ class CaptchaAction extends Action
         $session = Yii::$app->getSession();
         $session->open();
         $name = $this->getSessionKey() . 'count';
-        $session[$name] = $session[$name] + 1;
+        $session[$name] += 1;
         if ($valid || $session[$name] > $this->testLimit && $this->testLimit > 0) {
             $this->getVerifyCode(true);
         }
@@ -255,9 +256,9 @@ class CaptchaAction extends Action
             return $this->renderImageByGD($code);
         } elseif ($imageLibrary === 'imagick') {
             return $this->renderImageByImagick($code);
-        } else {
-            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
         }
+
+        throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
     }
 
     /**

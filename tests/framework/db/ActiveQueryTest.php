@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
@@ -7,11 +12,13 @@ use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\QueryBuilder;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Profile;
 
 /**
- * Class ActiveQueryTest the base class for testing ActiveQuery
+ * Class ActiveQueryTest the base class for testing ActiveQuery.
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
@@ -113,7 +120,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::className());
         $result = $query->joinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'LEFT JOIN']
+            [['profile'], true, 'LEFT JOIN'],
         ], $result->joinWith);
     }
 
@@ -125,7 +132,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::className());
         $result = $query->innerJoinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'INNER JOIN']
+            [['profile'], true, 'INNER JOIN'],
         ], $result->joinWith);
     }
 
@@ -135,16 +142,16 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     public function testGetQueryTableName_from_not_set()
     {
         $query = new ActiveQuery(Customer::className());
-        $result = $this->invokeMethod($query,'getTableNameAndAlias');
-        $this->assertEquals(['customer','customer'], $result);
+        $result = $this->invokeMethod($query, 'getTableNameAndAlias');
+        $this->assertEquals(['customer', 'customer'], $result);
     }
 
     public function testGetQueryTableName_from_set()
     {
-        $options = ['from' => ['alias'=>'customer']];
+        $options = ['from' => ['alias' => 'customer']];
         $query = new ActiveQuery(Customer::className(), $options);
-        $result = $this->invokeMethod($query,'getTableNameAndAlias');
-        $this->assertEquals(['customer','alias'], $result);
+        $result = $this->invokeMethod($query, 'getTableNameAndAlias');
+        $this->assertEquals(['customer', 'alias'], $result);
     }
 
     public function testOnCondition()
@@ -208,7 +215,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
      */
     public function testViaTable()
     {
-        $query = new ActiveQuery(Customer::className());
+        $query = new ActiveQuery(Customer::className(), ['primaryModel' => new Order()]);
         $result = $query->viaTable(Profile::className(), ['id' => 'item_id']);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result->via);
@@ -232,6 +239,12 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
 
+    use GetTablesAliasTestTrait;
+    protected function createQuery()
+    {
+        return new ActiveQuery(null);
+    }
+
     public function testGetTableNames_notFilledFrom()
     {
         $query = new ActiveQuery(Profile::className());
@@ -243,133 +256,40 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $tables);
     }
 
-    public function testGetTableNames_isFromArray()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = [
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ];
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ], $tables);
-    }
-
-    public function testGetTableNames_isFromString()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", `order`, "customer", "a b" as "c d"';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{order}}' => '{{order}}',
-            '{{customer}}' => '{{customer}}',
-            '{{c d}}' => '{{a b}}',
-        ], $tables);
-    }
-
-    public function testGetTableNames_isFromObject_generateException()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = new \stdClass;
-
-        $this->setExpectedException('\yii\base\InvalidConfigException');
-
-        $query->getTablesUsedInFrom();
-    }
-
-    public function testGetTablesAlias_notFilledFrom()
+    public function testGetTableNames_wontFillFrom()
     {
         $query = new ActiveQuery(Profile::className());
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
-        ], $tables);
-    }
-
-    public function testGetTablesAlias_isFromArray()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = [
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ];
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ], $tables);
-    }
-
-    public function testGetTablesAlias_isFromString()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", service srv, order, [a b] [c d], {{something}} AS myalias';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{srv}}' => '{{service}}',
-            '{{order}}' => '{{order}}',
-            '{{c d}}' => '{{a b}}',
-            '{{myalias}}' => '{{something}}'
-        ], $tables);
-    }
-
-    public function testGetTablesAlias_isFromObject_generateException()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = new \stdClass;
-
-        $this->setExpectedException('\yii\base\InvalidConfigException');
-
+        $this->assertEquals($query->from, null);
         $query->getTablesUsedInFrom();
+        $this->assertEquals($query->from, null);
     }
 
     /**
-     * @see https://github.com/yiisoft/yii2/issues/14150
+     * https://github.com/yiisoft/yii2/issues/5341
+     *
+     * Issue:     Plan     1 -- * Account * -- * User
+     * Our Tests: Category 1 -- * Item    * -- * Order
      */
-    public function testGetTableAliasFromPrefixedTableName()
+    public function testDeeplyNestedTableRelationWith()
     {
-        $query = new ActiveQuery(null);
-        $query->from = '{{%order_item}}';
+        /* @var $category Category */
+        $categories = Category::find()->with('orders')->indexBy('id')->all();
 
-        $tables = $query->getTablesUsedInFrom();
+        $category = $categories[1];
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(2, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertInstanceOf(Order::className(), $orders[1]);
+        $ids = [$orders[0]->id, $orders[1]->id];
+        sort($ids);
+        $this->assertEquals([1, 3], $ids);
 
-        $this->assertEquals([
-            '{{%order_item}}' => '{{%order_item}}',
-        ], $tables);
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/14211
-     */
-    public function testGetTableAliasFromTableNameWithDatabase()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = 'tickets.workflows';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{tickets.workflows}}' => '{{tickets.workflows}}',
-        ], $tables);
+        $category = $categories[2];
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(1, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertEquals(2, $orders[0]->id);
     }
 }

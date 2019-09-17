@@ -9,7 +9,7 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * BaseArrayHelper provides concrete implementation for [[ArrayHelper]].
@@ -94,9 +94,9 @@ class BaseArrayHelper
             }
 
             return $recursive ? static::toArray($result, $properties) : $result;
-        } else {
-            return [$object];
         }
+
+        return [$object];
     }
 
     /**
@@ -119,20 +119,19 @@ class BaseArrayHelper
         $args = func_get_args();
         $res = array_shift($args);
         while (!empty($args)) {
-            $next = array_shift($args);
-            foreach ($next as $k => $v) {
+            foreach (array_shift($args) as $k => $v) {
                 if ($v instanceof UnsetArrayValue) {
                     unset($res[$k]);
                 } elseif ($v instanceof ReplaceArrayValue) {
                     $res[$k] = $v->value;
                 } elseif (is_int($k)) {
-                    if (isset($res[$k])) {
+                    if (array_key_exists($k, $res)) {
                         $res[] = $v;
                     } else {
                         $res[$k] = $v;
                     }
                 } elseif (is_array($v) && isset($res[$k]) && is_array($res[$k])) {
-                    $res[$k] = self::merge($res[$k], $v);
+                    $res[$k] = static::merge($res[$k], $v);
                 } else {
                     $res[$k] = $v;
                 }
@@ -144,7 +143,8 @@ class BaseArrayHelper
 
     /**
      * Retrieves the value of an array element or object property with the given key or property name.
-     * If the key does not exist in the array or object, the default value will be returned instead.
+     * If the key does not exist in the array, the default value will be returned instead.
+     * Not used when getting value from an object.
      *
      * The key may be specified in a dot format to retrieve the value of a sub-array or the property
      * of an embedded object. In particular, if the key is `x.y.z`, then the returned value would
@@ -194,7 +194,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array)) ) {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
             return $array[$key];
         }
 
@@ -209,9 +209,85 @@ class BaseArrayHelper
             return $array->$key;
         } elseif (is_array($array)) {
             return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
-        } else {
-            return $default;
         }
+
+        return $default;
+    }
+
+    /**
+     * Writes a value into an associative array at the key path specified.
+     * If there is no such key path yet, it will be created recursively.
+     * If the key exists, it will be overwritten.
+     *
+     * ```php
+     *  $array = [
+     *      'key' => [
+     *          'in' => [
+     *              'val1',
+     *              'key' => 'val'
+     *          ]
+     *      ]
+     *  ];
+     * ```
+     *
+     * The result of `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` will be the following:
+     *
+     * ```php
+     *  [
+     *      'key' => [
+     *          'in' => [
+     *              ['arr' => 'val'],
+     *              'key' => 'val'
+     *          ]
+     *      ]
+     *  ]
+     *
+     * ```
+     *
+     * The result of
+     * `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` or
+     * `ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);`
+     * will be the following:
+     *
+     * ```php
+     *  [
+     *      'key' => [
+     *          'in' => [
+     *              'arr' => 'val'
+     *          ]
+     *      ]
+     *  ]
+     * ```
+     *
+     * @param array $array the array to write the value to
+     * @param string|array|null $path the path of where do you want to write a value to `$array`
+     * the path can be described by a string when each key should be separated by a dot
+     * you can also describe the path as an array of keys
+     * if the path is null then `$array` will be assigned the `$value`
+     * @param mixed $value the value to be written
+     * @since 2.0.13
+     */
+    public static function setValue(&$array, $path, $value)
+    {
+        if ($path === null) {
+            $array = $value;
+            return;
+        }
+
+        $keys = is_array($path) ? $path : explode('.', $path);
+
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key])) {
+                $array[$key] = [];
+            }
+            if (!is_array($array[$key])) {
+                $array[$key] = [$array[$key]];
+            }
+            $array = &$array[$key];
+        }
+
+        $array[array_shift($keys)] = $value;
     }
 
     /**
@@ -274,6 +350,7 @@ class BaseArrayHelper
                 }
             }
         }
+
         return $result;
     }
 
@@ -380,7 +457,7 @@ class BaseArrayHelper
     public static function index($array, $key, $groups = [])
     {
         $result = [];
-        $groups = (array)$groups;
+        $groups = (array) $groups;
 
         foreach ($array as $element) {
             $lastArray = &$result;
@@ -401,7 +478,7 @@ class BaseArrayHelper
                 $value = static::getValue($element, $key);
                 if ($value !== null) {
                     if (is_float($value)) {
-                        $value = (string) $value;
+                        $value = StringHelper::floatToString($value);
                     }
                     $lastArray[$value] = $element;
                 }
@@ -433,7 +510,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array
-     * @param string|\Closure $name
+     * @param int|string|\Closure $name
      * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values
@@ -524,17 +601,17 @@ class BaseArrayHelper
     {
         if ($caseSensitive) {
             // Function `isset` checks key faster but skips `null`, `array_key_exists` handles this case
-            // http://php.net/manual/en/function.array-key-exists.php#107786
+            // https://secure.php.net/manual/en/function.array-key-exists.php#107786
             return isset($array[$key]) || array_key_exists($key, $array);
-        } else {
-            foreach (array_keys($array) as $k) {
-                if (strcasecmp($key, $k) === 0) {
-                    return true;
-                }
-            }
-
-            return false;
         }
+
+        foreach (array_keys($array) as $k) {
+            if (strcasecmp($key, $k) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -548,9 +625,9 @@ class BaseArrayHelper
      * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
      * @param int|array $sortFlag the PHP sort flag. Valid values include
      * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
-     * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
+     * Please refer to [PHP manual](https://secure.php.net/manual/en/function.sort.php)
      * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
-     * @throws InvalidParamException if the $direction or $sortFlag parameters do not have
+     * @throws InvalidArgumentException if the $direction or $sortFlag parameters do not have
      * correct number of elements as that of $key.
      */
     public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
@@ -563,17 +640,17 @@ class BaseArrayHelper
         if (is_scalar($direction)) {
             $direction = array_fill(0, $n, $direction);
         } elseif (count($direction) !== $n) {
-            throw new InvalidParamException('The length of $direction parameter must be the same as that of $keys.');
+            throw new InvalidArgumentException('The length of $direction parameter must be the same as that of $keys.');
         }
         if (is_scalar($sortFlag)) {
             $sortFlag = array_fill(0, $n, $sortFlag);
         } elseif (count($sortFlag) !== $n) {
-            throw new InvalidParamException('The length of $sortFlag parameter must be the same as that of $keys.');
+            throw new InvalidArgumentException('The length of $sortFlag parameter must be the same as that of $keys.');
         }
         $args = [];
-        foreach ($keys as $i => $key) {
+        foreach ($keys as $i => $k) {
             $flag = $sortFlag[$i];
-            $args[] = static::getColumn($array, $key);
+            $args[] = static::getColumn($array, $k);
             $args[] = $direction[$i];
             $args[] = $flag;
         }
@@ -599,7 +676,7 @@ class BaseArrayHelper
      * @param string $charset the charset that the data is using. If not set,
      * [[\yii\base\Application::charset]] will be used.
      * @return array the encoded data
-     * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+     * @see https://secure.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
     {
@@ -632,7 +709,7 @@ class BaseArrayHelper
      * @param bool $valuesOnly whether to decode array values only. If false,
      * both the array keys and array values will be decoded.
      * @return array the decoded data
-     * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see https://secure.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function htmlDecode($data, $valuesOnly = true)
     {
@@ -678,15 +755,17 @@ class BaseArrayHelper
                     return false;
                 }
             }
+
             return true;
-        } else {
-            foreach ($array as $key => $value) {
-                if (is_string($key)) {
-                    return true;
-                }
-            }
-            return false;
         }
+
+        foreach ($array as $key => $value) {
+            if (is_string($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -700,7 +779,7 @@ class BaseArrayHelper
      * @param array $array the array being checked
      * @param bool $consecutive whether the array keys must be a consecutive sequence
      * in order for the array to be treated as indexed.
-     * @return bool whether the array is associative
+     * @return bool whether the array is indexed
      */
     public static function isIndexed($array, $consecutive = false)
     {
@@ -714,27 +793,28 @@ class BaseArrayHelper
 
         if ($consecutive) {
             return array_keys($array) === range(0, count($array) - 1);
-        } else {
-            foreach ($array as $key => $value) {
-                if (!is_int($key)) {
-                    return false;
-                }
-            }
-            return true;
         }
+
+        foreach ($array as $key => $value) {
+            if (!is_int($key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
      * Check whether an array or [[\Traversable]] contains an element.
      *
-     * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
+     * This method does the same as the PHP function [in_array()](https://secure.php.net/manual/en/function.in-array.php)
      * but additionally works for objects that implement the [[\Traversable]] interface.
      * @param mixed $needle The value to look for.
      * @param array|\Traversable $haystack The set of values to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
      * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
-     * @throws InvalidParamException if `$haystack` is neither traversable nor an array.
-     * @see http://php.net/manual/en/function.in-array.php
+     * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @see https://secure.php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
     public static function isIn($needle, $haystack, $strict = false)
@@ -748,7 +828,7 @@ class BaseArrayHelper
         } elseif (is_array($haystack)) {
             return in_array($needle, $haystack, $strict);
         } else {
-            throw new InvalidParamException('Argument $haystack must be an array or implement Traversable');
+            throw new InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
         }
 
         return false;
@@ -757,11 +837,11 @@ class BaseArrayHelper
     /**
      * Checks whether a variable is an array or [[\Traversable]].
      *
-     * This method does the same as the PHP function [is_array()](http://php.net/manual/en/function.is-array.php)
+     * This method does the same as the PHP function [is_array()](https://secure.php.net/manual/en/function.is-array.php)
      * but additionally works on objects that implement the [[\Traversable]] interface.
      * @param mixed $var The variable being evaluated.
      * @return bool whether $var is array-like
-     * @see http://php.net/manual/en/function.is-array.php
+     * @see https://secure.php.net/manual/en/function.is-array.php
      * @since 2.0.8
      */
     public static function isTraversable($var)
@@ -777,7 +857,7 @@ class BaseArrayHelper
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
-     * @throws InvalidParamException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
      */
@@ -789,10 +869,11 @@ class BaseArrayHelper
                     return false;
                 }
             }
+
             return true;
-        } else {
-            throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
+
+        throw new InvalidArgumentException('Argument $needles must be an array or implement Traversable');
     }
 
     /**
@@ -857,7 +938,7 @@ class BaseArrayHelper
                 continue;
             }
 
-            if (empty($array[$globalKey])) {
+            if (!array_key_exists($globalKey, $array)) {
                 continue;
             }
             if ($localKey === null) {

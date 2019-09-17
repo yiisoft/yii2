@@ -9,7 +9,7 @@ use yii\base\InvalidConfigException;
 use yii\rbac\DbManager;
 
 /**
- * Initializes RBAC tables
+ * Initializes RBAC tables.
  *
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -26,6 +26,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         if (!$authManager instanceof DbManager) {
             throw new InvalidConfigException('You should configure "authManager" component to use database before executing this migration.');
         }
+
         return $authManager;
     }
 
@@ -43,12 +44,13 @@ class m140506_102106_rbac_init extends \yii\db\Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
         $authManager = $this->getAuthManager();
         $this->db = $authManager->db;
+        $schema = $this->db->getSchema()->defaultSchema;
 
         $tableOptions = null;
         if ($this->db->driverName === 'mysql') {
@@ -73,8 +75,8 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'PRIMARY KEY ([[name]])',
-            'FOREIGN KEY ([[rule_name]]) REFERENCES ' . $authManager->ruleTable . ' ([[name]])'.
-                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE')
+            'FOREIGN KEY ([[rule_name]]) REFERENCES ' . $authManager->ruleTable . ' ([[name]])' .
+                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE'),
         ], $tableOptions);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
 
@@ -82,9 +84,9 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'parent' => $this->string(64)->notNull(),
             'child' => $this->string(64)->notNull(),
             'PRIMARY KEY ([[parent]], [[child]])',
-            'FOREIGN KEY ([[parent]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])'.
+            'FOREIGN KEY ([[parent]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])' .
                 $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
-            'FOREIGN KEY ([[child]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])'.
+            'FOREIGN KEY ([[child]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])' .
                 $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
         ], $tableOptions);
 
@@ -98,8 +100,8 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         ], $tableOptions);
 
         if ($this->isMSSQL()) {
-            $this->execute("CREATE TRIGGER dbo.trigger_auth_item_child
-            ON dbo.{$authManager->itemTable}
+            $this->execute("CREATE TRIGGER {$schema}.trigger_auth_item_child
+            ON {$schema}.{$authManager->itemTable}
             INSTEAD OF DELETE, UPDATE
             AS
             DECLARE @old_name VARCHAR (64) = (SELECT name FROM deleted)
@@ -128,15 +130,15 @@ class m140506_102106_rbac_init extends \yii\db\Migration
                 END
                 ELSE
                     BEGIN
-                        DELETE FROM dbo.{$authManager->itemChildTable} WHERE parent IN (SELECT name FROM deleted) OR child IN (SELECT name FROM deleted);
-                        DELETE FROM dbo.{$authManager->itemTable} WHERE name IN (SELECT name FROM deleted);
+                        DELETE FROM {$schema}.{$authManager->itemChildTable} WHERE parent IN (SELECT name FROM deleted) OR child IN (SELECT name FROM deleted);
+                        DELETE FROM {$schema}.{$authManager->itemTable} WHERE name IN (SELECT name FROM deleted);
                     END
             END;");
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -144,7 +146,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         $this->db = $authManager->db;
 
         if ($this->isMSSQL()) {
-            $this->execute('DROP TRIGGER dbo.trigger_auth_item_child;');
+            $this->execute('DROP TRIGGER {$schema}.trigger_auth_item_child;');
         }
 
         $this->dropTable($authManager->assignmentTable);

@@ -87,7 +87,7 @@ class ActionTimeFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         $time = microtime(true) - $this->_startTime;
-        Yii::trace("Action '{$action->uniqueId}' spent $time second.");
+        Yii::debug("Action '{$action->uniqueId}' spent $time second.");
         return parent::afterAction($action, $result);
     }
 }
@@ -293,7 +293,7 @@ public function behaviors()
 
 Фильтр по типу запроса *(VerbFilter)* проверяет, разрешено ли запросам HTTP выполнять затребованные ими действия.
 Если нет, то будет выброшено исключение HTTP с кодом 405. В следующем примере в фильтре по типу запроса указан обычный
-набор разрешённых методов запроса при выполнения CRUD операций.
+набор разрешённых методов запроса при выполнении CRUD операций.
 
 ```php
 use yii\filters\VerbFilter;

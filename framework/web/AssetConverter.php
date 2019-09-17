@@ -63,7 +63,7 @@ class AssetConverter extends Component implements AssetConverterInterface
         if ($pos !== false) {
             $ext = substr($asset, $pos + 1);
             if (isset($this->commands[$ext])) {
-                list ($ext, $command) = $this->commands[$ext];
+                list($ext, $command) = $this->commands[$ext];
                 $result = substr($asset, 0, $pos + 1) . $ext;
                 if ($this->forceConvert || @filemtime("$basePath/$result") < @filemtime("$basePath/$asset")) {
                     $this->runCommand($command, $basePath, $asset, $result);
@@ -108,7 +108,7 @@ class AssetConverter extends Component implements AssetConverterInterface
         $status = proc_close($proc);
 
         if ($status === 0) {
-            Yii::trace("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
+            Yii::debug("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
         } elseif (YII_DEBUG) {
             throw new Exception("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr");
         } else {

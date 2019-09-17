@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -21,7 +26,7 @@ class ErrorActionTest extends TestCase
     }
 
     /**
-     * Creates a controller instance
+     * Creates a controller instance.
      *
      * @param array $actionConfig
      * @return TestController
@@ -74,7 +79,7 @@ Exception: InvalidArgumentException', $this->getController()->runAction('error')
 
         $controller = $this->getController([
             'defaultName' => 'Oops...',
-            'defaultMessage' => 'The system is drunk'
+            'defaultMessage' => 'The system is drunk',
         ]);
 
         $this->assertEquals('Name: Oops...
@@ -104,7 +109,17 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
         $this->invokeMethod($action, 'renderHtmlResponse');
     }
 
+    public function testLayout()
+    {
+        $this->expectException('yii\base\ViewNotFoundException');
 
+        $this->getController([
+            'layout' => 'non-existing',
+        ])->runAction('error');
+
+        $ds = preg_quote(DIRECTORY_SEPARATOR, '\\');
+        $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'layouts' . $ds . 'non-existing.php#');
+    }
 }
 
 class TestController extends Controller

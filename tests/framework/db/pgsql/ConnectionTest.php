@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
@@ -14,7 +19,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testConnection()
     {
-        $this->assertTrue(is_object($this->getConnection(true)));
+        $this->assertInternalType('object', $this->getConnection(true));
     }
 
     public function testQuoteValue()
@@ -95,5 +100,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $transaction = $connection->beginTransaction();
         $transaction->setIsolationLevel(Transaction::SERIALIZABLE . ' READ ONLY DEFERRABLE');
         $transaction->commit();
+
+        $this->assertTrue(true); // No error occurred – assert passed.
     }
 }

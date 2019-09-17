@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\IpHelper;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 
@@ -40,16 +41,9 @@ use yii\web\JsExpression;
 class IpValidator extends Validator
 {
     /**
-     * The length of IPv6 address in bits
-     */
-    const IPV6_ADDRESS_LENGTH = 128;
-    /**
-     * The length of IPv4 address in bits
-     */
-    const IPV4_ADDRESS_LENGTH = 32;
-    /**
-     * Negation char. Used to negate [[ranges]] or [[networks]]
-     * or to negate validating value when [[negation]] is set to `true`
+     * Negation char.
+     *
+     * Used to negate [[ranges]] or [[networks]] or to negate validating value when [[negation]] is set to `true`.
      * @see negation
      * @see networks
      * @see ranges
@@ -71,7 +65,6 @@ class IpValidator extends Validator
      *  - `localhost`: `127.0.0.0/8', ::1`
      *  - `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
      *  - `system`: `multicast, linklocal, localhost, documentation`
-     *
      */
     public $networks = [
         '*' => ['any'],
@@ -212,7 +205,7 @@ class IpValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -290,7 +283,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -298,13 +291,13 @@ class IpValidator extends Validator
         if (is_array($result)) {
             $result[1] = array_merge(['ip' => is_array($value) ? 'array()' : $value], $result[1]);
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -320,7 +313,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Validates an IPv4/IPv6 address or subnet
+     * Validates an IPv4/IPv6 address or subnet.
      *
      * @param $ip string
      * @return string|array
@@ -354,14 +347,14 @@ class IpValidator extends Validator
             return [$this->message, []];
         }
 
-        if ($this->getIpVersion($ip) == 6) {
+        if ($this->getIpVersion($ip) === IpHelper::IPV6) {
             if ($cidr !== null) {
-                if ($cidr > static::IPV6_ADDRESS_LENGTH || $cidr < 0) {
+                if ($cidr > IpHelper::IPV6_ADDRESS_LENGTH || $cidr < 0) {
                     return [$this->wrongCidr, []];
                 }
             } else {
                 $isCidrDefault = true;
-                $cidr = static::IPV6_ADDRESS_LENGTH;
+                $cidr = IpHelper::IPV6_ADDRESS_LENGTH;
             }
 
             if (!$this->validateIPv6($ip)) {
@@ -376,12 +369,12 @@ class IpValidator extends Validator
             }
         } else {
             if ($cidr !== null) {
-                if ($cidr > static::IPV4_ADDRESS_LENGTH || $cidr < 0) {
+                if ($cidr > IpHelper::IPV4_ADDRESS_LENGTH || $cidr < 0) {
                     return [$this->wrongCidr, []];
                 }
             } else {
                 $isCidrDefault = true;
-                $cidr = static::IPV4_ADDRESS_LENGTH;
+                $cidr = IpHelper::IPV4_ADDRESS_LENGTH;
             }
             if (!$this->validateIPv4($ip)) {
                 return [$this->message, []];
@@ -405,16 +398,16 @@ class IpValidator extends Validator
     }
 
     /**
-     * Expands an IPv6 address to it's full notation. For example `2001:db8::1` will be
-     * expanded to `2001:0db8:0000:0000:0000:0000:0000:0001`
+     * Expands an IPv6 address to it's full notation.
+     *
+     * For example `2001:db8::1` will be expanded to `2001:0db8:0000:0000:0000:0000:0000:0001`.
      *
      * @param string $ip the original IPv6
      * @return string the expanded IPv6
      */
     private function expandIPv6($ip)
     {
-        $hex = unpack('H*hex', inet_pton($ip));
-        return substr(preg_replace('/([a-f0-9]{4})/i', '$1:', $hex['hex']), 0, -1);
+        return IpHelper::expandIPv6($ip);
     }
 
     /**
@@ -456,10 +449,10 @@ class IpValidator extends Validator
     }
 
     /**
-     * Prepares array to fill in [[ranges]]:
-     *  - Recursively substitutes aliases, described in [[networks]] with their values
-     *  - Removes duplicates
+     * Prepares array to fill in [[ranges]].
      *
+     *  - Recursively substitutes aliases, described in [[networks]] with their values,
+     *  - Removes duplicates.
      *
      * @param $ranges
      * @return array
@@ -480,11 +473,12 @@ class IpValidator extends Validator
                 $result[] = $string;
             }
         }
+
         return array_unique($result);
     }
 
     /**
-     * Validates IPv4 address
+     * Validates IPv4 address.
      *
      * @param string $value
      * @return bool
@@ -495,7 +489,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Validates IPv6 address
+     * Validates IPv6 address.
      *
      * @param string $value
      * @return bool
@@ -506,18 +500,18 @@ class IpValidator extends Validator
     }
 
     /**
-     * Gets the IP version
+     * Gets the IP version.
      *
      * @param string $ip
      * @return int
      */
     private function getIpVersion($ip)
     {
-        return strpos($ip, ':') === false ? 4 : 6;
+        return IpHelper::getIpVersion($ip);
     }
 
     /**
-     * Used to get the Regexp pattern for initial IP address parsing
+     * Used to get the Regexp pattern for initial IP address parsing.
      * @return string
      */
     private function getIpParsePattern()
@@ -526,7 +520,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Checks whether the IP is in subnet range
+     * Checks whether the IP is in subnet range.
      *
      * @param string $ip an IPv4 or IPv6 address
      * @param int $cidr
@@ -535,50 +529,11 @@ class IpValidator extends Validator
      */
     private function inRange($ip, $cidr, $range)
     {
-        $ipVersion = $this->getIpVersion($ip);
-        $binIp = $this->ip2bin($ip);
-
-        $parts = explode('/', $range);
-        $net = array_shift($parts);
-        $range_cidr = array_shift($parts);
-
-
-        $netVersion = $this->getIpVersion($net);
-        if ($ipVersion !== $netVersion) {
-            return false;
-        }
-        if ($range_cidr === null) {
-            $range_cidr = $netVersion === 4 ? static::IPV4_ADDRESS_LENGTH : static::IPV6_ADDRESS_LENGTH;
-        }
-
-        $binNet = $this->ip2bin($net);
-        return substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr;
+        return IpHelper::inRange($ip . '/' . $cidr, $range);
     }
 
     /**
-     * Converts IP address to bits representation
-     *
-     * @param string $ip
-     * @return string bits as a string
-     */
-    private function ip2bin($ip)
-    {
-        if ($this->getIpVersion($ip) === 4) {
-            return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
-        } else {
-            $unpack = unpack('A16', inet_pton($ip));
-            $binStr = array_shift($unpack);
-            $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
-            $result = '';
-            while ($bytes-- > 0) {
-                $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
-            }
-            return $result;
-        }
-    }
-
-    /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -589,7 +544,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

@@ -1,6 +1,11 @@
 <?php
-namespace yiiunit\framework\console\controllers;
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
+namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\helpers\FileHelper;
@@ -29,7 +34,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -51,7 +56,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -68,7 +73,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {

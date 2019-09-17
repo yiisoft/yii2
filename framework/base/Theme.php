@@ -99,7 +99,7 @@ class Theme extends Component
      */
     public function setBaseUrl($url)
     {
-        $this->_baseUrl = rtrim(Yii::getAlias($url), '/');
+        $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
     }
 
     private $_basePath;
@@ -139,9 +139,7 @@ class Theme extends Component
             }
             $pathMap = [Yii::$app->getBasePath() => [$basePath]];
         }
-
         $path = FileHelper::normalizePath($path);
-
         foreach ($pathMap as $from => $tos) {
             $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
@@ -169,23 +167,23 @@ class Theme extends Component
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
             return $baseUrl . '/' . ltrim($url, '/');
-        } else {
-            throw new InvalidConfigException('The "baseUrl" property must be set.');
         }
+
+        throw new InvalidConfigException('The "baseUrl" property must be set.');
     }
 
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
      * @param string $path the relative file path to be converted.
      * @return string the absolute file path
-     * @throws InvalidConfigException if [[baseUrl]] is not set
+     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function getPath($path)
     {
         if (($basePath = $this->getBasePath()) !== null) {
             return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
-        } else {
-            throw new InvalidConfigException('The "basePath" property must be set.');
         }
+
+        throw new InvalidConfigException('The "basePath" property must be set.');
     }
 }

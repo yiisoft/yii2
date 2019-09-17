@@ -7,13 +7,13 @@
 
 namespace yiiunit\framework\di\stubs;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Bar extends Object
+class Bar extends BaseObject
 {
     public $qux;
 

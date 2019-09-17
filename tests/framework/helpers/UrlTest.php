@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use Yii;
@@ -6,13 +12,12 @@ use yii\base\Action;
 use yii\base\Module;
 use yii\helpers\Url;
 use yii\web\Controller;
-use yii\web\UrlManager;
 use yii\widgets\Menu;
-use yiiunit\TestCase;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\TestCase;
 
 /**
- * UrlTest
+ * UrlTest.
  * @group helpers
  */
 class UrlTest extends TestCase
@@ -24,9 +29,10 @@ class UrlTest extends TestCase
             'components' => [
                 'request' => [
                     'class' => 'yii\web\Request',
+                    'cookieValidationKey' => '123',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
-                    'url' => '/base/index.php&r=site%2Fcurrent&id=42'
+                    'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
                     'class' => 'yii\web\UrlManager',
@@ -48,7 +54,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * Mocks controller action with parameters
+     * Mocks controller action with parameters.
      *
      * @param string $controllerId
      * @param string $actionID
@@ -115,13 +121,24 @@ class UrlTest extends TestCase
     public function testCurrent()
     {
         $this->mockAction('page', 'view', null, []);
-        \Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test']);
+        Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test', 10 => 0]);
+        $uri = '/base/index.php?r=page%2Fview';
 
-        $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test', Url::current());
+        $this->assertEquals($uri . '&id=10&name=test&10=0', Url::current());
+        $this->assertEquals($uri . '&id=20&name=test&10=0', Url::current(['id' => 20]));
+        $this->assertEquals($uri . '&name=test&10=0', Url::current(['id' => null]));
+        $this->assertEquals($uri . '&name=test&10=0&1=yes', Url::current(['id' => [], 1 => 'yes']));
+        $this->assertEquals($uri . '&name=test&10=0', Url::current(['id' => []]));
+        $this->assertEquals($uri . '&name=test', Url::current(['id' => null, 10 => null]));
+        $this->assertEquals($uri . '&name=test&1=yes', Url::current(['id' => null, 10 => null, 1 => 'yes']));
 
-        $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test', Url::current(['id' => 20]));
+        $params = ['arr' => ['attr_one' => 1, 'attr_two' => 2]];
+        Yii::$app->request->setQueryParams($params);
 
-        $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null]));
+        $this->assertEquals($uri . '&arr%5Battr_one%5D=1&arr%5Battr_two%5D=2', Url::current());
+        $this->assertEquals($uri, Url::current(['arr' => null]));
+        $this->assertEquals($uri . '&arr%5Battr_two%5D=2', Url::current(['arr' => ['attr_one' => null]]));
+        $this->assertEquals($uri . '&arr%5Battr_one%5D=1&arr%5Battr_two%5D=two', Url::current(['arr' => ['attr_two' => 'two']]));
     }
 
     public function testPrevious()
@@ -222,7 +239,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/11925
+     * @see https://github.com/yiisoft/yii2/issues/11925
      */
     public function testToWithSuffix()
     {

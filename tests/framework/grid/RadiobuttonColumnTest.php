@@ -11,12 +11,12 @@ use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
 use yii\grid\RadioButtonColumn;
+use yii\helpers\Html;
 use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
- * Class RadiobuttonColumnTest
- * @package yiiunit\framework\grid
+ * Class RadiobuttonColumnTest.
  * @group grid
  * @since 2.0.11
  */
@@ -29,7 +29,7 @@ class RadiobuttonColumnTest extends TestCase
     public function testException()
     {
         new RadioButtonColumn([
-            'name' => null
+            'name' => null,
         ]);
     }
 
@@ -37,8 +37,8 @@ class RadiobuttonColumnTest extends TestCase
     {
         $column = new RadioButtonColumn([
             'radioOptions' => [
-                'value' => 42
-            ]
+                'value' => 42,
+            ],
         ]);
         $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="42"></td>', $column->renderDataCell([], 1, 0));
     }
@@ -47,17 +47,34 @@ class RadiobuttonColumnTest extends TestCase
     {
         $model = [
             'label' => 'label',
-            'value' => 123
+            'value' => 123,
         ];
         $column = new RadioButtonColumn([
             'radioOptions' => function ($model) {
                 return [
-                    'value' => $model['value']
+                    'value' => $model['value'],
                 ];
-            }
+            },
         ]);
         $actual = $column->renderDataCell($model, 1, 0);
         $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="' . $model['value'] . '"></td>', $actual);
+    }
+
+    public function testContent()
+    {
+        $column = new RadioButtonColumn([
+            'content' => function ($model, $key, $index, $column) {
+                return null;
+            }
+        ]);
+        $this->assertContains('<td></td>', $column->renderDataCell([], 1, 0));
+
+        $column = new RadioButtonColumn([
+            'content' => function ($model, $key, $index, $column) {
+                return Html::radio('radioButtonInput', false);
+            }
+        ]);
+        $this->assertContains(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 
     public function testMultipleInGrid()
@@ -70,7 +87,7 @@ class RadiobuttonColumnTest extends TestCase
 
         $models = [
             ['label' => 'label1', 'value' => 1],
-            ['label' => 'label2', 'value' => 2, 'checked' => true]
+            ['label' => 'label2', 'value' => 2, 'checked' => true],
         ];
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(['allModels' => $models]),
@@ -81,16 +98,16 @@ class RadiobuttonColumnTest extends TestCase
                     'radioOptions' => function ($model) {
                         return [
                             'value' => $model['value'],
-                            'checked' => $model['value'] == 2
+                            'checked' => $model['value'] == 2,
                         ];
-                    }
-                ]
-            ]
+                    },
+                ],
+            ],
         ]);
         ob_start();
         $grid->run();
         $actual = ob_get_clean();
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="radio-gridview"><div class="summary">Showing <b>1-2</b> of <b>2</b> items.</div>
 <table class="table table-striped table-bordered"><thead>
 <tr><th>&nbsp;</th></tr>

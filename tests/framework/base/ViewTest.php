@@ -1,9 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
 use Yii;
+use yii\base\Theme;
 use yii\base\View;
+use yii\base\ViewEvent;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
@@ -40,13 +47,13 @@ class ViewTest extends TestCase
         $view = new View();
 
         $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
-        file_put_contents($exceptionViewFile, <<<PHP
+        file_put_contents($exceptionViewFile, <<<'PHP'
 <h1>Exception</h1>
 <?php throw new Exception('Test Exception'); ?>
 PHP
 );
         $normalViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'no-exception.php';
-        file_put_contents($normalViewFile, <<<PHP
+        file_put_contents($normalViewFile, <<<'PHP'
 <h1>No Exception</h1>
 PHP
         );
@@ -61,5 +68,33 @@ PHP
         $view->renderFile($normalViewFile);
 
         $this->assertEquals($obInitialLevel, ob_get_level());
+    }
+
+    public function testRelativePathInView()
+    {
+        $view = new View();
+        FileHelper::createDirectory($this->testViewPath . '/theme1');
+        \Yii::setAlias('@testviews', $this->testViewPath);
+        \Yii::setAlias('@theme', $this->testViewPath . '/theme1');
+
+        $baseView = "{$this->testViewPath}/theme1/base.php";
+        file_put_contents($baseView, <<<'PHP'
+<?php 
+    echo $this->render("sub"); 
+?>
+PHP
+        );
+
+        $subView = "{$this->testViewPath}/sub.php";
+        $subViewContent = "subviewcontent";
+        file_put_contents($subView, $subViewContent);
+
+        $view->theme = new Theme([
+            'pathMap' => [
+                '@testviews' => '@theme'
+            ]
+        ]);
+
+        $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
 }

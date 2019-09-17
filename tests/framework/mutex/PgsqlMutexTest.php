@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mutex;
 
@@ -6,13 +11,11 @@ use yii\mutex\PgsqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
- * Class PgsqlMutexTest
+ * Class PgsqlMutexTest.
  *
  * @group mutex
  * @group db
  * @group pgsql
- *
- * @package yiiunit\framework\mutex
  */
 class PgsqlMutexTest extends DatabaseTestCase
 {
@@ -31,5 +34,4 @@ class PgsqlMutexTest extends DatabaseTestCase
             'db' => $this->getConnection(),
         ]);
     }
-
 }

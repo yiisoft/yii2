@@ -1,13 +1,23 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
+use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;
+use yii\validators\RequiredValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\data\validators\models\ValidatorTestFunctionModel;
 use yiiunit\data\validators\TestValidator;
 use yiiunit\TestCase;
+use yii\validators\SafeValidator;
 
 /**
  * @group validators
@@ -65,7 +75,19 @@ class ValidatorTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $val->params);
     }
 
-    public function testValidate()
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14370
+     */
+    public function testCreateBuiltInValidatorWithSameNameFunction()
+    {
+        $model = new ValidatorTestFunctionModel();
+
+        $validator = TestValidator::createValidator('required', $model, ['firstAttribute']);
+
+        $this->assertInstanceOf(RequiredValidator::className(), $validator);
+    }
+
+    public function testValidateAttributes()
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);
         $model = $this->getTestModel();
@@ -181,7 +203,7 @@ class ValidatorTest extends TestCase
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
 
         $model = new FakedValidationModel();
-        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $val->validateAttribute($model, 'val_attr_a');
         $args = $model->getInlineValArgs();
 
@@ -201,7 +223,7 @@ class ValidatorTest extends TestCase
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
 
         $model = new FakedValidationModel();
-        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $val->clientValidate = 'clientInlineVal';
         $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
 
@@ -264,5 +286,42 @@ class ValidatorTest extends TestCase
             }
         }
         $this->assertTrue($isFound);
+    }
+
+    /**
+     * Make sure attribute names are calculated dynamically.
+     * @see https://github.com/yiisoft/yii2/issues/13979
+     * @see https://github.com/yiisoft/yii2/pull/14413
+     */
+    public function testAttributeNamesDynamic()
+    {
+        $model = new DynamicModel(['email1' => 'invalid', 'email2' => 'invalid']);
+        $validator = new TestValidator();
+        $validator->enableErrorOnValidateAttribute();
+
+        $validator->attributes = ['email1'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
+
+        $validator->attributes = ['email2'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17233
+     * @see https://github.com/yiisoft/yii2/pull/17234
+     */
+    public function testScalarAttributeNames()
+    {
+        $model = new DynamicModel();
+        $model->defineAttribute(1);
+        $model->addRule([1], SafeValidator::className());
+    
+        $this->assertNull($model->{1});
+        $this->assertTrue($model->validate([1]));
+
+        $validator = SafeValidator::createValidator('safe', $model, [1]);
+        $this->assertSame([1], $validator->getValidationAttributes(1));
     }
 }

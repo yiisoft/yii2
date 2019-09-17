@@ -1,4 +1,5 @@
-FROM dmstr/php-yii2:7.0-fpm-1.9-beta2-alpine-nginx
+ARG DOCKER_YII2_PHP_IMAGE
+FROM ${DOCKER_YII2_PHP_IMAGE}
 
 # Project source-code
 WORKDIR /project

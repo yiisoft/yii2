@@ -8,20 +8,19 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Object;
-use ArrayIterator;
+use yii\base\BaseObject;
 
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
  *
  * @property int $count The number of headers in the collection. This property is read-only.
- * @property ArrayIterator $iterator An iterator for traversing the headers in the collection. This property
+ * @property \ArrayIterator $iterator An iterator for traversing the headers in the collection. This property
  * is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
+class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
      * @var array the headers in this collection (indexed by the header names)
@@ -33,11 +32,11 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Returns an iterator for traversing the headers in the collection.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return ArrayIterator an iterator for traversing the headers in the collection.
+     * @return \ArrayIterator an iterator for traversing the headers in the collection.
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->_headers);
+        return new \ArrayIterator($this->_headers);
     }
 
     /**
@@ -74,9 +73,9 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
         $name = strtolower($name);
         if (isset($this->_headers[$name])) {
             return $first ? reset($this->_headers[$name]) : $this->_headers[$name];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     /**
@@ -151,9 +150,9 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
             $value = $this->_headers[$name];
             unset($this->_headers[$name]);
             return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

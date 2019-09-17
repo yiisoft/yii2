@@ -141,6 +141,12 @@ class FileCache extends Cache
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
         }
+        // If ownership differs the touch call will fail, so we try to
+        // rebuild the file from scratch by deleting it first
+        // https://github.com/yiisoft/yii2/pull/16120
+        if (is_file($cacheFile) && function_exists('posix_geteuid') && fileowner($cacheFile) !== posix_geteuid()) {
+            @unlink($cacheFile);
+        }
         if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
             if ($this->fileMode !== null) {
                 @chmod($cacheFile, $this->fileMode);
@@ -150,11 +156,11 @@ class FileCache extends Cache
             }
 
             return @touch($cacheFile, $duration + time());
-        } else {
-            $error = error_get_last();
-            Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
-            return false;
         }
+
+        $error = error_get_last();
+        Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
+        return false;
     }
 
     /**
@@ -206,9 +212,9 @@ class FileCache extends Cache
             }
 
             return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
-        } else {
-            return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
         }
+
+        return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
     }
 
     /**

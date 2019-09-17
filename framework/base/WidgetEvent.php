@@ -22,7 +22,7 @@ class WidgetEvent extends Event
      */
     public $result;
     /**
-     * @var boolean whether to continue running the widget. Event handlers of
+     * @var bool whether to continue running the widget. Event handlers of
      * [[Widget::EVENT_BEFORE_RUN]] may set this property to decide whether
      * to continue running the current widget.
      */

@@ -8,8 +8,9 @@
 namespace yii\rbac;
 
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidValueException;
 
 /**
  * BaseManager is a base class implementing [[ManagerInterface]] for RBAC management.
@@ -18,6 +19,8 @@ use yii\base\InvalidParamException;
  *
  * @property Role[] $defaultRoleInstances Default roles. The array is indexed by the role names. This property
  * is read-only.
+ * @property string[] $defaultRoles Default roles. Note that the type of this property differs in getter and
+ * setter. See [[getDefaultRoles()]] and [[setDefaultRoles()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,8 +29,9 @@ abstract class BaseManager extends Component implements ManagerInterface
 {
     /**
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
+     * Note that these roles are applied to users, regardless of their state of authentication.
      */
-    public $defaultRoles = [];
+    protected $defaultRoles = [];
 
 
     /**
@@ -95,7 +99,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     abstract protected function updateRule($name, $rule);
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createRole($name)
     {
@@ -105,7 +109,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createPermission($name)
     {
@@ -115,7 +119,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function add($object)
     {
@@ -125,16 +129,17 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
-        } else {
-            throw new InvalidParamException('Adding unsupported object type.');
         }
+
+        throw new InvalidArgumentException('Adding unsupported object type.');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($object)
     {
@@ -142,13 +147,13 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->removeItem($object);
         } elseif ($object instanceof Rule) {
             return $this->removeRule($object);
-        } else {
-            throw new InvalidParamException('Removing unsupported object type.');
         }
+
+        throw new InvalidArgumentException('Removing unsupported object type.');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($name, $object)
     {
@@ -158,16 +163,17 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
-        } else {
-            throw new InvalidParamException('Updating unsupported object type.');
         }
+
+        throw new InvalidArgumentException('Updating unsupported object type.');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRole($name)
     {
@@ -176,7 +182,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermission($name)
     {
@@ -185,7 +191,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRoles()
     {
@@ -193,7 +199,39 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Returns defaultRoles as array of Role objects
+     * Set default roles
+     * @param string[]|\Closure $roles either array of roles or a callable returning it
+     * @throws InvalidArgumentException when $roles is neither array nor Closure
+     * @throws InvalidValueException when Closure return is not an array
+     * @since 2.0.14
+     */
+    public function setDefaultRoles($roles)
+    {
+        if (is_array($roles)) {
+            $this->defaultRoles = $roles;
+        } elseif ($roles instanceof \Closure) {
+            $roles = call_user_func($roles);
+            if (!is_array($roles)) {
+                throw new InvalidValueException('Default roles closure must return an array');
+            }
+            $this->defaultRoles = $roles;
+        } else {
+            throw new InvalidArgumentException('Default roles must be either an array or a callable');
+        }
+    }
+
+    /**
+     * Get default roles
+     * @return string[] default roles
+     * @since 2.0.14
+     */
+    public function getDefaultRoles()
+    {
+        return $this->defaultRoles;
+    }
+
+    /**
+     * Returns defaultRoles as array of Role objects.
      * @since 2.0.12
      * @return Role[] default roles. The array is indexed by the role names
      */
@@ -203,11 +241,12 @@ abstract class BaseManager extends Component implements ManagerInterface
         foreach ($this->defaultRoles as $roleName) {
             $result[$roleName] = $this->createRole($roleName);
         }
+
         return $result;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissions()
     {
@@ -235,13 +274,13 @@ abstract class BaseManager extends Component implements ManagerInterface
         $rule = $this->getRule($item->ruleName);
         if ($rule instanceof Rule) {
             return $rule->execute($user, $item, $params);
-        } else {
-            throw new InvalidConfigException("Rule not found: {$item->ruleName}");
         }
+
+        throw new InvalidConfigException("Rule not found: {$item->ruleName}");
     }
 
     /**
-     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well.
      *
      * @param Assignment[] $assignments array of user's assignments
      * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well

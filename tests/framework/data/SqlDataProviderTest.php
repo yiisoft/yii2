@@ -1,12 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
-use yii\data\ArrayDataProvider;
 use yii\data\SqlDataProvider;
 use yiiunit\framework\db\DatabaseTestCase;
-use yiiunit\framework\db\sqlite\ConnectionTest;
-use yiiunit\TestCase;
 
 /**
  * @group data
@@ -38,7 +40,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer` where id > :minimum',
             'params' => [
-                ':minimum' => -1
+                ':minimum' => -1,
             ],
             'db' => $this->getConnection(),
         ]);

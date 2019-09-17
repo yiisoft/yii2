@@ -51,7 +51,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements \ArrayAccess
+abstract class Cache extends Component implements CacheInterface
 {
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
@@ -64,7 +64,7 @@ abstract class Cache extends Component implements \ArrayAccess
     /**
      * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
      * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
-     * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
+     * serializer (e.g. [igbinary](https://pecl.php.net/package/igbinary)), you may configure this property with
      * a two-element array. The first element specifies the serialization function, and the second the deserialization
      * function. If this property is set false, data will be directly sent to and retrieved from the underlying
      * cache component without any serialization or deserialization. You should not turn off serialization if
@@ -73,12 +73,26 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
     /**
-     * @var integer default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
      */
     public $defaultDuration = 0;
 
+    /**
+     * @var bool whether [igbinary serialization](https://pecl.php.net/package/igbinary) is available or not.
+     */
+    private $_igbinaryAvailable = false;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        $this->_igbinaryAvailable = \extension_loaded('igbinary');
+    }
 
     /**
      * Builds a normalized cache key from a given key.
@@ -95,7 +109,13 @@ abstract class Cache extends Component implements \ArrayAccess
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
-            $key = md5(json_encode($key));
+            if ($this->_igbinaryAvailable) {
+                $serializedKey = igbinary_serialize($key);
+            } else {
+                $serializedKey = serialize($key);
+            }
+
+            $key = md5($serializedKey);
         }
 
         return $this->keyPrefix . $key;
@@ -121,9 +141,9 @@ abstract class Cache extends Component implements \ArrayAccess
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -365,7 +385,7 @@ abstract class Cache extends Component implements \ArrayAccess
     }
 
     /**
-     * Deletes a value with the specified key from cache
+     * Deletes a value with the specified key from cache.
      * @param mixed $key a key identifying the value to be deleted from cache. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @return bool if no error happens during deletion
@@ -548,8 +568,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * ```php
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
-     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
-     *         return Products::find()->mostPopular()->limit(10)->all();
+     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function () use ($count) {
+     *         return Products::find()->mostPopular()->limit($count)->all();
      *     }, 1000);
      * }
      * ```
@@ -557,7 +577,9 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
-     * In case $callable returns `false`, the value will not be cached.
+     * If you use $callable that can return `false`, then keep in mind that [[getOrSet()]] may work inefficiently
+     * because the [[yii\caching\Cache::get()]] method uses `false` return value to indicate the data item is not found
+     * in the cache. Thus, caching of `false` value will lead to unnecessary internal calls.
      * @param int $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,

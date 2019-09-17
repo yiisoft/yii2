@@ -8,7 +8,8 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
+use yii\helpers\StringHelper;
 
 /**
  * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
@@ -18,7 +19,7 @@ use yii\base\Object;
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
-class ColumnSchemaBuilder extends Object
+class ColumnSchemaBuilder extends BaseObject
 {
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
@@ -90,6 +91,7 @@ class ColumnSchemaBuilder extends Object
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_TINYINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
         Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
@@ -143,7 +145,7 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Adds a `NULL` constraint to the column
+     * Adds a `NULL` constraint to the column.
      * @return $this
      * @since 2.0.9
      */
@@ -271,7 +273,7 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Builds the full string for the column's schema
+     * Builds the full string for the column's schema.
      * @return string
      */
     public function __toString()
@@ -283,6 +285,7 @@ class ColumnSchemaBuilder extends Object
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
+
         return $this->buildCompleteString($format);
     }
 
@@ -298,6 +301,7 @@ class ColumnSchemaBuilder extends Object
         if (is_array($this->length)) {
             $this->length = implode(',', $this->length);
         }
+
         return "({$this->length})";
     }
 
@@ -312,9 +316,9 @@ class ColumnSchemaBuilder extends Object
             return ' NOT NULL';
         } elseif ($this->isNotNull === false) {
             return ' NULL';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -343,7 +347,7 @@ class ColumnSchemaBuilder extends Object
                 break;
             case 'double':
                 // ensure type cast always has . as decimal separator in all locales
-                $string .= str_replace(',', '.', (string) $this->default);
+                $string .= StringHelper::floatToString($this->default);
                 break;
             case 'boolean':
                 $string .= $this->default ? 'TRUE' : 'FALSE';
@@ -428,7 +432,7 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Returns the complete column definition from input format
+     * Returns the complete column definition from input format.
      * @param string $format the format of the definition.
      * @return string a string containing the complete column definition.
      * @since 2.0.8

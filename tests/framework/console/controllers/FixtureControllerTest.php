@@ -1,29 +1,42 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
-use yiiunit\TestCase;
-use yiiunit\data\console\controllers\fixtures\FixtureStorage;
 use yii\console\controllers\FixtureController;
+use yiiunit\data\console\controllers\fixtures\DependentActiveFixture;
+use yiiunit\data\console\controllers\fixtures\FirstIndependentActiveFixture;
+use yiiunit\data\console\controllers\fixtures\FixtureStorage;
+use yiiunit\data\console\controllers\fixtures\SecondIndependentActiveFixture;
+use yiiunit\framework\db\DatabaseTestCase;
 
 /**
  * Unit test for [[\yii\console\controllers\FixtureController]].
  * @see FixtureController
  *
  * @group console
+ * @group db
  */
-class FixtureControllerTest extends TestCase
+class FixtureControllerTest extends DatabaseTestCase
 {
-
     /**
      * @var \yiiunit\framework\console\controllers\FixtureConsoledController
      */
     private $_fixtureController;
 
+    protected $driverName = 'mysql';
+
     protected function setUp()
     {
         parent::setUp();
+
+        $db = $this->getConnection();
+        \Yii::$app->set('db', $db);
 
         $this->_fixtureController = Yii::createObject([
             'class' => 'yiiunit\framework\console\controllers\FixtureConsoledController',
@@ -44,7 +57,19 @@ class FixtureControllerTest extends TestCase
     public function testLoadGlobalFixture()
     {
         $this->_fixtureController->globalFixtures = [
-            '\yiiunit\data\console\controllers\fixtures\Global'
+            '\yiiunit\data\console\controllers\fixtures\Global',
+        ];
+
+        $this->_fixtureController->actionLoad(['First']);
+
+        $this->assertCount(1, FixtureStorage::$globalFixturesData, 'global fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
+    }
+
+    public function testLoadGlobalFixtureWithFixture()
+    {
+        $this->_fixtureController->globalFixtures = [
+            '\yiiunit\data\console\controllers\fixtures\GlobalFixture',
         ];
 
         $this->_fixtureController->actionLoad(['First']);
@@ -56,7 +81,7 @@ class FixtureControllerTest extends TestCase
     public function testUnloadGlobalFixture()
     {
         $this->_fixtureController->globalFixtures = [
-            '\yiiunit\data\console\controllers\fixtures\Global'
+            '\yiiunit\data\console\controllers\fixtures\Global',
         ];
 
         FixtureStorage::$globalFixturesData[] = 'some seeded global fixture data';
@@ -205,11 +230,23 @@ class FixtureControllerTest extends TestCase
     {
         $this->_fixtureController->actionUnload(['NotExistingFixture']);
     }
+
+    public function testLoadActiveFixtureSequence()
+    {
+        $this->assertEmpty(FixtureStorage::$activeFixtureSequence, 'Active fixture sequence should be empty.');
+
+        $this->_fixtureController->actionLoad(['*']);
+
+        $this->assertEquals([
+            SecondIndependentActiveFixture::className(),
+            FirstIndependentActiveFixture::className(),
+            DependentActiveFixture::className(),
+        ], FixtureStorage::$activeFixtureSequence);
+    }
 }
 
 class FixtureConsoledController extends FixtureController
 {
-
     public function stdout($string)
     {
     }

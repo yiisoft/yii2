@@ -1,16 +1,22 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters;
 
-use Yii;
-use yiiunit\TestCase;
 use Prophecy\Argument;
-use yiiunit\framework\filters\stubs\RateLimit;
-use yii\web\User;
+use Yii;
+use yii\filters\RateLimiter;
+use yii\log\Logger;
 use yii\web\Request;
 use yii\web\Response;
-use yii\log\Logger;
-use yii\filters\RateLimiter;
+use yii\web\User;
+use yiiunit\framework\filters\stubs\RateLimit;
+use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\TestCase;
 
 /**
  *  @group filters
@@ -38,7 +44,7 @@ class RateLimiterTest extends TestCase
         parent::tearDown();
         Yii::setLogger(null);
     }
-    
+
     public function testInitFilledRequest()
     {
         $rateLimiter = new RateLimiter(['request' => 'Request']);
@@ -106,31 +112,31 @@ class RateLimiterTest extends TestCase
     public function testCheckRateLimitTooManyRequests()
     {
         /* @var $rateLimit UserIdentity|\Prophecy\ObjectProphecy */
-        $rateLimit = new RateLimit;
+        $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([1, 1])
             ->setAllowance([1, time() + 2]);
         $rateLimiter = new RateLimiter();
 
-        $this->setExpectedException('yii\web\TooManyRequestsHttpException');
+        $this->expectException('yii\web\TooManyRequestsHttpException');
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 
     public function testCheckRateaddRateLimitHeaders()
     {
         /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
-        $rateLimit = new RateLimit;
+        $rateLimit = new RateLimit();
         $rateLimit
-            ->setRateLimit([1, 1])
-            ->setAllowance([1, time()]);
-        $rateLimiter = $this->getMockBuilder(RateLimiter::className())
-            ->setMethods(['addRateLimitHeaders'])
-            ->getMock();
-        $rateLimiter->expects(self::at(0))
-            ->method('addRateLimitHeaders')
-            ->willReturn(null);
+            ->setRateLimit([2, 10])
+            ->setAllowance([2, time()]);
 
-        $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
+        $rateLimiter = new RateLimiter();
+        $response = Yii::$app->response;
+        $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, $response, 'testAction');
+        $headers = $response->getHeaders();
+        $this->assertEquals(2, $headers->get('X-Rate-Limit-Limit'));
+        $this->assertEquals(1, $headers->get('X-Rate-Limit-Remaining'));
+        $this->assertEquals(5, $headers->get('X-Rate-Limit-Reset'));
     }
 
     public function testAddRateLimitHeadersDisabledRateLimitHeaders()

@@ -157,7 +157,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -165,6 +165,7 @@ class Controller extends \yii\base\Controller
             if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
+
             return true;
         }
 
@@ -193,12 +194,13 @@ class Controller extends \yii\base\Controller
      * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @return Response the current response object
      */
     public function redirect($url, $statusCode = 302)
     {
+        // calling Url::to() here because Response::redirect() modifies route before calling Url::to()
         return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
     }
 

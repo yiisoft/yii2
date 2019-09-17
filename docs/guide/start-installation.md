@@ -10,7 +10,7 @@ Its code is organized in a recommended way. Therefore, it can serve as a good st
     
 In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
+the [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) which is better used in a team development environment
 to develop applications with multiple tiers.
 
 > Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
@@ -28,7 +28,7 @@ If you do not already have Composer installed, you may do so by following the in
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 ```
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -55,21 +55,18 @@ by running `composer self-update`.
 
 ### Installing Yii <span id="installing-from-composer"></span>
 
-With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+With Composer installed, you can install Yii application template by running the following command
+under a Web-accessible folder:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.3.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs the latest stable version of Yii in a directory named `basic`.
+This will install the latest stable version of Yii application template in a directory named `basic`.
 You can choose a different directory name if you want.
 
-> Info: If the `composer create-project` command fails make sure you have the composer asset plugin installed correctly.
-> You can do that by running `composer global show`, which should contain an entry `fxp/composer-asset-plugin`.
-> You may also refer to the [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+> Info: If the `composer create-project` command fails you may also refer to the 
+> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
 > for common errors. When you have fixed the error, you can resume the aborted installation
 > by running `composer update` inside of the `basic` directory.
 
@@ -114,6 +111,30 @@ But there are other installation options available:
   you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
+Installing Assets <span id="installing-assets"></span>
+-----------------
+
+Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) packages for the asset (CSS and JavaScript) libraries installation.
+It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Please refer to [Assets documentation](structure-assets.md) for more details.
+
+You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
+In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
+},
+```
+
+> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
+> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
+
+
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
@@ -152,7 +173,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -182,6 +203,8 @@ of `basic/web`. Denying access to those other folders is a security improvement.
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
+> Info: If you are running your Yii application behind a reverse proxy, you might need to configure
+> [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
 
 ### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 
@@ -195,9 +218,14 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # use mod_rewrite for pretty URL support
     RewriteEngine on
+    
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+    
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    
     # Otherwise forward the request to index.php
     RewriteRule . index.php
 
@@ -208,9 +236,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
+To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://secure.php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.local` with the actual hostname to serve.
+`basic/web` and `mysite.test` with the actual hostname to serve.
 
 ```nginx
 server {
@@ -220,7 +248,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 
@@ -262,3 +290,30 @@ in order to avoid many unnecessary system `stat()` calls.
 
 Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
 can properly detect if a connection is secure.
+
+### IIS Configuration <span id="iis-configuration"></span>
+
+It's recommended to host the application in a virtual host where document root points to `path/to/app/web` folder. In that `web` folder you have to place a file named `web.config` i.e. `path/to/app/web/web.config`. Content of the file should be the following:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<system.webServer>
+<directoryBrowse enabled="false" />
+  <rewrite>
+    <rules>
+      <rule name="Hide Yii Index" stopProcessing="true">
+        <match url="." ignoreCase="false" />
+        <conditions>
+        <add input="{REQUEST_FILENAME}" matchType="IsFile" 
+              ignoreCase="false" negate="true" />
+        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" 
+              ignoreCase="false" negate="true" />
+        </conditions>
+        <action type="Rewrite" url="index.php" appendQueryString="true" />
+      </rule> 
+    </rules>
+  </rewrite>
+</system.webServer>
+</configuration>
+```
