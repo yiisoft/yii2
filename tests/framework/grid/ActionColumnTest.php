@@ -1,10 +1,12 @@
 <?php
-
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\grid;
 
-
-use yii\base\Model;
 use yii\grid\ActionColumn;
 
 /**
@@ -35,7 +37,7 @@ class ActionColumnTest extends \yiiunit\TestCase
     public function testRenderDataCell()
     {
         $column = new ActionColumn();
-        $column->urlCreator = function($model, $key, $index) {
+        $column->urlCreator = function ($model, $key, $index) {
             return 'http://test.com';
         };
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
@@ -46,14 +48,14 @@ class ActionColumnTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $columnContents);
 
         $column = new ActionColumn();
-        $column->urlCreator = function($model, $key, $index) {
+        $column->urlCreator = function ($model, $key, $index) {
             return 'http://test.com';
         };
         $column->template = '{update}';
         $column->buttons = [
-            'update' => function($url, $model, $key) {
+            'update' => function ($url, $model, $key) {
                 return 'update_button';
-            }
+            },
         ];
 
         //test default visible button
@@ -62,31 +64,30 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test visible button
         $column->visibleButtons = [
-            'update' => true
+            'update' => true,
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertContains('update_button', $columnContents);
 
         //test visible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function($model, $key, $index){return $model['id'] == 1;}
+            'update' => function ($model, $key, $index) {return $model['id'] == 1;},
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertContains('update_button', $columnContents);
 
         //test invisible button
         $column->visibleButtons = [
-            'update' => false
+            'update' => false,
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertNotContains('update_button', $columnContents);
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function($model, $key, $index){return $model['id'] != 1;}
+            'update' => function ($model, $key, $index) {return $model['id'] != 1;},
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertNotContains('update_button', $columnContents);
-
     }
 }

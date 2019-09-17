@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\di\Instance;
 
 /**
@@ -102,7 +103,7 @@ class SqlDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -137,7 +138,7 @@ class SqlDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -152,16 +153,19 @@ class SqlDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
-        return 0;
+        return (new Query([
+            'from' => ['sub' => "({$this->sql})"],
+            'params' => $this->params,
+        ]))->count('*', $this->db);
     }
 }

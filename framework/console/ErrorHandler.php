@@ -34,7 +34,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $message = $this->formatMessage($exception->getName() . ': ') . $exception->command;
             $alternatives = $exception->getSuggestedAlternatives();
             if (count($alternatives) === 1) {
-                $message .= "\n\nDid you mean \"" . reset($alternatives) . "\"?";
+                $message .= "\n\nDid you mean \"" . reset($alternatives) . '"?';
             } elseif (count($alternatives) > 1) {
                 $message .= "\n\nDid you mean one of these?\n    - " . implode("\n    - ", $alternatives);
             }
@@ -82,6 +82,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)) {
             $message = Console::ansiFormat($message, $format);
         }
+
         return $message;
     }
 }

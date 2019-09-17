@@ -37,7 +37,7 @@ class MyBehavior extends Behavior
 }
 ```
 
-Le code ci-dessus définit la classe de comportement `app\components\MyBehavior` avec deux propriété — `prop1` et `prop2` — et une méthode `foo()`. Notez que la propriété `prop2` est définie via la méthode d'obtention `getProp2` et la méthode d'assignation `setProp2`. Cela est le cas parce que la classe  [[yii\base\Behavior]] étend la classe [[yii\base\Object]] et, par conséquent, prend en charge la définition des [propriétés](concept-properties.md) via les méthodes d'obtention et d'assignation. 
+Le code ci-dessus définit la classe de comportement `app\components\MyBehavior` avec deux propriété — `prop1` et `prop2` — et une méthode `foo()`. Notez que la propriété `prop2` est définie via la méthode d'obtention `getProp2` et la méthode d'assignation `setProp2`. Cela est le cas parce que la classe  [[yii\base\Behavior]] étend la classe [[yii\base\BaseObject]] et, par conséquent, prend en charge la définition des [propriétés](concept-properties.md) via les méthodes d'obtention et d'assignation. 
 
 Comme cette classe est un comportement, lorsqu'elle est attachée à un composant, ce composant acquiert alors les propriétés  `prop1` et `prop2`, ainsi que la méthode `foo()`.
 
@@ -299,7 +299,7 @@ Il existe plusieurs comportements pré-inclus et extérieurs disponibles :
 Comparaison des comportement et des traits <span id="comparison-with-traits"></span>
 ------------------------------------------
 
-Bien que les comportements  soient similaires aux [traits](http://www.php.net/traits) par le fait qu'ils *injectent* tous deux leurs propriétés et leurs méthodes dans la classe primaire, ils diffèrent par de nombreux aspects. Comme nous l'expliquons ci-dessous, ils ont chacun leurs avantages et leurs inconvénients. Ils sont plus des compléments l'un envers l'autre, que des alternatives. 
+Bien que les comportements  soient similaires aux [traits](https://secure.php.net/traits) par le fait qu'ils *injectent* tous deux leurs propriétés et leurs méthodes dans la classe primaire, ils diffèrent par de nombreux aspects. Comme nous l'expliquons ci-dessous, ils ont chacun leurs avantages et leurs inconvénients. Ils sont plus des compléments l'un envers l'autre, que des alternatives. 
 
 
 ### Raisons d'utiliser des comportements <span id="pros-for-behaviors"></span>

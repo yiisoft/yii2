@@ -20,7 +20,7 @@ En esta sección, se describirán principalmente los dos primeros pasos.
 
 Registrar mensajes de anotación es tan simple como llamar a uno de los siguientes métodos de registro de anotaciones.
 
-* [[Yii::trace()]]: registra un mensaje para trazar el funcionamiento de una sección de código. Se usa principalmente
+* [[Yii::debug()]]: registra un mensaje para trazar el funcionamiento de una sección de código. Se usa principalmente
   para tareas de desarrollo.
 * [[Yii::info()]]: registra un mensaje que transmite información útil.
 * [[Yii::warning()]]: registra un mensaje de advertencia que indica que ha sucedido algo inesperado.
@@ -32,7 +32,7 @@ tiene que ser registrado, mientras que `$category` es la categoría del registro
 ejemplo registra la huella del mensaje para la categoría `application`:
 
 ```php
-Yii::trace('start calculating average revenue');
+Yii::debug('start calculating average revenue');
 ```
 
 > Info: Los mensajes de registro pueden ser tanto cadenas de texto como datos complejos, como arrays u objetos.
@@ -47,7 +47,7 @@ efectiva de organizarlos es usar la constante predefinida (magic constant) de PH
 categoría. Además este es el enfoque que se usa en el código del núcleo (core) del framework Yii. Por ejemplo,
 
 ```php
-Yii::trace('start calculating average revenue', __METHOD__);
+Yii::debug('start calculating average revenue', __METHOD__);
 ```
 
 La constante `__METHOD__` equivale al nombre del método (con el prefijo del nombre completo del nombre de clase) donde
@@ -131,7 +131,7 @@ La propiedad [[yii\log\Target::levels|levels]] es un array que consta de uno o v
 * `error`: correspondiente a los mensajes registrados por [[Yii::error()]].
 * `warning`: correspondiente a los mensajes registrados por [[Yii::warning()]].
 * `info`: correspondiente a los mensajes registrados por [[Yii::info()]].
-* `trace`: correspondiente a los mensajes registrados por [[Yii::trace()]].
+* `trace`: correspondiente a los mensajes registrados por [[Yii::debug()]].
 * `profile`: correspondiente a los mensajes registrados por [[Yii::beginProfile()]] y [[Yii::endProfile()]], que se
   explicará más detalladamente en la subsección [Perfiles](#performance-profiling).
 
@@ -290,7 +290,7 @@ número configurando la propiedad [[yii\log\Target::exportInterval|exportInterva
 ```
 
 Debido al nivel de configuración de la liberación y exportación de mensajes, de forma predeterminada cuando se llama a
-`Yii::trace()` o cualquier otro método de registro de mensajes, NO veremos el registro de mensaje inmediatamente en
+`Yii::debug()` o cualquier otro método de registro de mensajes, NO veremos el registro de mensaje inmediatamente en
 los destinos de registros. Esto podría ser un problema para algunas aplicaciones de consola de ejecución
 prolongada (long-running). Para hacer que los mensajes de registro aparezcan inmediatamente en los destinos de
 registro se deben establecer [[yii\log\Dispatcher::flushInterval|flushInterval]] y

@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\Html;
 
 /**
@@ -28,7 +28,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UploadedFile extends Object
+class UploadedFile extends BaseObject
 {
     /**
      * @var string the original name of the file being uploaded
@@ -52,7 +52,7 @@ class UploadedFile extends Object
     public $size;
     /**
      * @var int an error code describing the status of this file uploading.
-     * @see http://www.php.net/manual/en/features.file-upload.errors.php
+     * @see https://secure.php.net/manual/en/features.file-upload.errors.php
      */
     public $error;
 
@@ -76,7 +76,7 @@ class UploadedFile extends Object
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return UploadedFile the instance of the uploaded file.
+     * @return null|UploadedFile the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified model attribute.
      * @see getInstanceByName()
      */
@@ -134,6 +134,7 @@ class UploadedFile extends Object
                 $results[] = new static($file);
             }
         }
+
         return $results;
     }
 
@@ -165,6 +166,7 @@ class UploadedFile extends Object
                 return copy($this->tempName, $file);
             }
         }
+
         return false;
     }
 
@@ -209,6 +211,7 @@ class UploadedFile extends Object
                 }
             }
         }
+
         return self::$_files;
     }
 
@@ -227,7 +230,7 @@ class UploadedFile extends Object
             foreach ($names as $i => $name) {
                 self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
             }
-        } elseif ((int)$errors !== UPLOAD_ERR_NO_FILE) {
+        } elseif ((int) $errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = [
                 'name' => $names,
                 'tempName' => $tempNames,

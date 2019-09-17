@@ -66,7 +66,7 @@ interface DataProviderInterface
     public function getSort();
 
     /**
-     * @return Pagination the pagination object. If this is false, it means the pagination is disabled.
+     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination();
 }

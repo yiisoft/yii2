@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\helpers;
 
 /**
  * CustomDebugInfo serves for the testing of `__debugInfo()` PHP magic method.
  *
- * @see yiiunit\framework\helpers\VarDumperTest
+ * @see \yiiunit\framework\helpers\VarDumperTest
  */
 class CustomDebugInfo
 {
@@ -13,7 +18,7 @@ class CustomDebugInfo
     public $unitPrice;
 
     /**
-     * @see http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @see https://secure.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
      *
      * @return array
      */

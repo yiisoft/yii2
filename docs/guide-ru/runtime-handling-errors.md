@@ -114,13 +114,12 @@ class SiteController extends Controller
         ];
     }
 }
- ```
- 
+```
+
 Приведённый выше код задаёт действие `error` используя класс [[yii\web\ErrorAction]], который рендерит ошибку используя
 отображение `error`.
 
 Вместо использования [[yii\web\ErrorAction]] вы можете создать действие `error` как обычный метод:
- 
 
 ```php
 public function actionError()

@@ -74,7 +74,7 @@ class ArrayDataProvider extends BaseDataProvider
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -98,7 +98,7 @@ class ArrayDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -113,21 +113,21 @@ class ArrayDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
-        return count($this->allModels);
+        return is_array($this->allModels) ? count($this->allModels) : 0;
     }
 
     /**
-     * Sorts the data models according to the given sort definition
+     * Sorts the data models according to the given sort definition.
      * @param array $models the models to be sorted
      * @param Sort $sort the sort definition
      * @return array the sorted data models

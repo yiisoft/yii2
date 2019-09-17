@@ -317,8 +317,10 @@ Wbudowany walidator jest zdefiniowaną w modelu metodą lub funkcją anonimową.
 /**
  * @param string $attribute atrybut podlegający walidacji
  * @param mixed $params wartość parametru podanego w zasadzie walidacji
+ * @param \yii\validators\InlineValidator $validator powiązana instancja InlineValidator
+ * Ten parametr jest dostępny od wersji 2.0.11.
  */
-function ($attribute, $params)
+function ($attribute, $params, $validator)
 ```
 
 Jeśli atrybut nie przejdzie walidacji, metoda/funkcja powinna wywołać metodę [[yii\base\Model::addError()|addError()]] do zapisania wiadomości o błędzie w modelu,
@@ -341,7 +343,7 @@ class MyForm extends Model
             ['country', 'validateCountry'],
 
             // Wbudowany walidator zdefiniowany jako funkcja anonimowa
-            ['token', function ($attribute, $params) {
+            ['token', function ($attribute, $params, $validator) {
                 if (!ctype_alnum($this->$attribute)) {
                     $this->addError($attribute, 'Token musi zawierać litery lub cyfry.');
                 }
@@ -349,7 +351,7 @@ class MyForm extends Model
         ];
     }
 
-    public function validateCountry($attribute, $params)
+    public function validateCountry($attribute, $params, $validator)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
             $this->addError($attribute, 'Wybrany kraj musi być jednym z: "USA", "Web".');
@@ -357,6 +359,14 @@ class MyForm extends Model
     }
 }
 ```
+
+> Note: Począwszy od wersji 2.0.11 możesz użyć [[yii\validators\InlineValidator::addError()]], aby dodać błędy bezpośrednio. W tym sposobie treść błędu 
+> może być sformatowana bezpośrednio za pomocą [[yii\i18n\I18N::format()]]. Użyj `{attribute}` i `{value}` w treści błędu, aby odwołać się odpowiednio 
+> do etykiety atrybutu (bez konieczności pobierania jej ręcznie) i wartości atrybutu:
+>
+> ```php
+> $validator->addError($this, $attribute, 'Wartość "{value}" nie jest poprawna dla {attribute}.');
+> ```
 
 > Note: Domyślnie wbudowane walidatory nie zostaną zastosowane, jeśli ich powiązane atrybuty otrzymają puste wartości lub wcześniej nie przeszły którejś z zasad walidacji.
 > Jeśli chcesz się upewnić, że zasada zawsze zostanie zastosowana, możesz skonfigurować właściwość [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] i/lub
@@ -424,6 +434,118 @@ class EntryForm extends Model
     }
 }
 ```
+
+## Walidacja wielu atrybutów na raz <span id="multiple-attributes-validation"></span>
+
+Zdarza się, że walidatory sprawdzają wiele atrybutów jednocześnie. Rozważmy następujący formularz:
+
+```php
+class MigrationForm extends \yii\base\Model
+{
+    /**
+     * Kwota minimalnych funduszy dla jednej dorosłej osoby
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /**
+     * Kwota minimalnych funduszy dla jednego dziecka
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;
+    public $spouseSalary;
+    public $childrenCount;
+    public $description;
+
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+### Tworzenie walidatora <span id="multiple-attributes-validator"></span>
+
+Powiedzmy, że chcemy sprawdzić, czy dochód rodziny jest wystarczający do utrzymania dzieci. W tym celu możemy utworzyć wbudowany walidator
+`validateChildrenFunds`, który będzie uruchamiany tylko jeśli `childrenCount` będzie większe niż 0.
+
+Zwróć uwagę na to, że nie możemy użyć wszystkich walidowanych atrybutów (`['personalSalary', 'spouseSalary', 'childrenCount']`) przy dołączaniu walidatora.
+Wynika to z tego, że ten sam walidator będzie uruchomiony dla każdego z atrybutów oddzielnie (łącznie 3 razy), a musimy użyć go tylko raz dla całego zestawu atrybutów.
+
+Możesz użyć dowolnego z tych atrybutów zamiast podanego poniżej (lub też tego, który uważasz za najbardziej tu odpowiedni):
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount > 0;
+}],
+```
+
+Implementacja `validateChildrenFunds` może wyglądać następująco:
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // Podwój minimalny fundusz dorosłych, jeśli ustalono zarobki współmałżonka
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', 'Twoje zarobki nie są wystarczające, aby utrzymać dzieci.');
+    }
+}
+```
+
+Możesz zignorować parametr `$attribute`, ponieważ walidacja nie jest powiązana bezpośrednio tylko z jednym atrybutem.
+
+
+### Dodawanie informacji o błędach <span id="multiple-attributes-errors"></span>
+
+Dodawanie błędów walidacji w przypadku wielu atrybutów może różnić się w zależności od ustalonej metodyki pracy z formularzami:
+
+- Można wybrać najbardziej w naszej opinii pole i dodać błąd do jego atrybutu:
+
+```php
+$this->addError('childrenCount', 'Twoje zarobki nie są wystarczające dla potrzeb dzieci.');
+```
+
+- Można wybrać wiele ważnych odpowiednich atrybutów lub też wszystkie i dodać ten sam błąd do każdego z nich. Możemy przechować 
+treść w oddzielnej zmiennej przed przekazaniem jej do `addError`, aby nie powtarzać się w kodzie (zasada DRY - Don't Repeat Yourself).
+
+```php
+$message = 'Twoje zarobki nie są wystarczające dla potrzeb dzieci.';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+Lub też użyć pętli:
+
+```php
+$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, 'Twoje zarobki nie są wystarczające dla potrzeb dzieci.');
+}
+```
+
+- Można też dodać ogólny błąd (niepowiązany z żadnym szczególnym atrybutem). Do tego celu możemy wykorzystać nazwę nieistniejącego atrybutu, 
+na przykład `*`, ponieważ to, czy atrybut istnieje, nie jest sprawdzane w tym kroku.
+
+```php
+$this->addError('*', 'Twoje zarobki nie są wystarczające dla potrzeb dzieci.');
+```
+
+W rezultacie takiej operacji nie zobaczymy błędu zaraz obok pól formularza. Aby go wyświetlić, możemy dodać do widoku podsumowanie błędów formularza:
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+> Note: Tworzenie walidatora operującego na wielu atrybutach jednocześnie jest dobrze opisane w [książce kucharskiej społeczności Yii](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
 
 
 ## Walidacja po stronie klienta <span id="client-side-validation"></span>
@@ -495,6 +617,22 @@ Jeśli chcesz wyłączyć całkowicie walidację po stronie klienta, możesz ust
 Możesz również wyłączyć ten rodzaj walidacji dla konkretnego pola, przez ustawienie jego właściwości
 [[yii\widgets\ActiveField::enableClientValidation|enableClientValidation]] na `false`. Jeśli właściwość `enableClientValidation` zostanie skonfigurowana na poziomie pola
 formularza i w samym formularzu jednocześnie, pierwszeństwo będzie miała opcja określona w formularzu.
+
+> Info: Od wersji 2.0.11 wszystkie walidatory rozszerzające klasę [[yii\validators\Validator]] używają opcji klienta przekazywanych 
+> z oddzielnej metody - [[yii\validators\Validator::getClientOptions()]]. Możesz jej użyć:
+>
+> - jeśli chcesz zaimplementować swoją własną walidację po stronie klienta, ale pozostawić synchronizację z opcjami walidatora po stronie serwera;
+> - do rozszerzenia lub zmodyfikowania dla uzyskania specjalnych korzyści:
+>
+> ```php
+> public function getClientOptions($model, $attribute)
+> {
+>     $options = parent::getClientOptions($model, $attribute);
+>     // Zmodyfikuj $options w tym miejscu
+>
+>     return $options;
+> }
+> ```
 
 
 ### Implementacja walidacji po stronie klienta <span id="implementing-client-side-validation"></span>

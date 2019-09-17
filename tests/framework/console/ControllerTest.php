@@ -9,8 +9,8 @@ namespace yiiunit\framework\console;
 
 use Yii;
 use yii\base\Module;
-use yii\console\controllers\HelpController;
 use yii\console\Request;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -24,6 +24,7 @@ class ControllerTest extends TestCase
         $this->mockApplication();
         Yii::$app->controllerMap = [
             'fake' => 'yiiunit\framework\console\FakeController',
+            'fake_witout_output' => 'yiiunit\framework\console\FakeHelpControllerWithoutOutput',
             'help' => 'yiiunit\framework\console\FakeHelpController',
         ];
     }
@@ -46,6 +47,10 @@ class ControllerTest extends TestCase
         $result = $controller->runAction('aksi2', $params);
         $this->assertEquals([['d426', 'mdmunir'], 'single'], $result);
 
+        $params = ['', 'single'];
+        $result = $controller->runAction('aksi2', $params);
+        $this->assertEquals([[], 'single'], $result);
+
         $params = ['_aliases' => ['t' => 'test']];
         $result = $controller->runAction('aksi4', $params);
         $this->assertEquals('test', $result);
@@ -59,9 +64,15 @@ class ControllerTest extends TestCase
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
+        $params = ['test-array' => 'from params,notdefault'];
+        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        $this->assertEquals('from params', $fromParam);
+        $this->assertEquals('notdefault', $other);
+
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
-        $this->setExpectedException('yii\console\Exception', $message);
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
     }
 
@@ -118,6 +129,10 @@ class ControllerTest extends TestCase
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
+
+        $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
+        $helpController->actionIndex('fake/aksi1');
+        $this->assertContains('--test-array, -ta', $helpController->outputString);
     }
 
     /**
@@ -131,5 +146,32 @@ class ControllerTest extends TestCase
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
+    }
+
+
+    /**
+     * Tests if action help does not include (class) type hinted arguments.
+     * @see #10372
+     */
+    public function testHelpSkipsTypeHintedArguments()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+        $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+
+        $this->assertArrayNotHasKey('typedArgument', $help);
+        $this->assertArrayHasKey('simpleArgument', $help);
+    }
+
+    public function testGetActionHelpSummaryOnNull()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $controller->color = false;
+        $helpSummary = $controller->getActionHelpSummary(null);
+        $this->assertEquals('Action not found.', $helpSummary);
+
+        $controller->color = true;
+        $helpSummary = $controller->getActionHelpSummary(null);
+        $this->assertEquals($controller->ansiFormat('Action not found.', Console::FG_RED), $helpSummary);
     }
 }

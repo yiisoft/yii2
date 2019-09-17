@@ -20,7 +20,7 @@ For example, the ID `en-US` stands for the locale of "English and the United Sta
 For consistency reasons, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
+[ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
 More details about locale can be found in the
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: Parameter formatting requires the installation of the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
+> Note: Parameter formatting requires the installation of the [intl PHP extension](https://secure.php.net/manual/en/intro.intl.php).
 
 You can use either the short form or the full form to specify a placeholder with formatting:
 
@@ -302,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
@@ -325,7 +325,7 @@ You can also specify a custom pattern to format the time value:
 echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Spellout <span id="spellout"></span>
@@ -416,7 +416,7 @@ while `one` matches `21` or `101`:
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
 specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
@@ -679,7 +679,7 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 > and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
-### Using the `message` command <a name="message-command"></a>
+### Using the `message` command <span id="message-command"></span>
 
 Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
@@ -738,12 +738,12 @@ See the [Data Formatting](output-formatting.md) section for details.
 
 ## Setting Up PHP Environment <span id="setup-environment"></span>
 
-Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its I18N features,
+Yii uses the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to provide most of its I18N features,
 such as the date and number formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
 Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
 only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
-The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
+The [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
 provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
 formatting result of date and number values. To ensure your website produces the same results across all environments,
 it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)
@@ -766,4 +766,4 @@ numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
 to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
 on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
-used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb).
+used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb).

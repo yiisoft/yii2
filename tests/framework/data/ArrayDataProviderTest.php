@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
@@ -20,7 +25,7 @@ class ArrayDataProviderTest extends TestCase
     {
         $simpleArray = [
             ['name' => 'zero'],
-            ['name' => 'one']
+            ['name' => 'one'],
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $simpleArray]);
         $this->assertEquals($simpleArray, $dataProvider->getModels());
@@ -43,7 +48,7 @@ class ArrayDataProviderTest extends TestCase
                     ],
                     'defaultOrder' => [
                         'sort' => SORT_ASC,
-                    ]
+                    ],
                 ],
             ]
         );
@@ -55,7 +60,7 @@ class ArrayDataProviderTest extends TestCase
     {
         $simpleArray = [
             ['innerArray' => ['sortField' => 1]],
-            ['innerArray' => ['sortField' => 0]]
+            ['innerArray' => ['sortField' => 0]],
         ];
         $dataProvider = new ArrayDataProvider(
             [
@@ -71,13 +76,13 @@ class ArrayDataProviderTest extends TestCase
                     ],
                     'defaultOrder' => [
                         'sort' => SORT_ASC,
-                    ]
+                    ],
                 ],
             ]
         );
         $sortedArray = [
             ['innerArray' => ['sortField' => 0]],
-            ['innerArray' => ['sortField' => 1]]
+            ['innerArray' => ['sortField' => 1]],
         ];
         $this->assertEquals($sortedArray, $dataProvider->getModels());
     }
@@ -86,44 +91,44 @@ class ArrayDataProviderTest extends TestCase
     {
         // source data
         $unsortedProjects = [
-            ['title'=>'Zabbix', 'license'=>'GPL'],
-            ['title'=>'munin', 'license'=>'GPL'],
-            ['title'=>'Arch Linux', 'license'=>'GPL'],
-            ['title'=>'Nagios', 'license'=>'GPL'],
-            ['title'=>'zend framework', 'license'=>'BSD'],
-            ['title'=>'Zope', 'license'=>'ZPL'],
-            ['title'=>'active-record', 'license'=>false],
-            ['title'=>'ActiveState', 'license'=>false],
-            ['title'=>'mach', 'license'=>false],
-            ['title'=>'MySQL', 'license'=>'GPL'],
-            ['title'=>'mssql', 'license'=>'EULA'],
-            ['title'=>'Master-Master', 'license'=>false],
-            ['title'=>'Zend Engine', 'license'=>false],
-            ['title'=>'Mageia Linux', 'license'=>'GNU GPL'],
-            ['title'=>'nginx', 'license'=>'BSD'],
-            ['title'=>'Mozilla Firefox', 'license'=>'MPL'],
+            ['title' => 'Zabbix', 'license' => 'GPL'],
+            ['title' => 'munin', 'license' => 'GPL'],
+            ['title' => 'Arch Linux', 'license' => 'GPL'],
+            ['title' => 'Nagios', 'license' => 'GPL'],
+            ['title' => 'zend framework', 'license' => 'BSD'],
+            ['title' => 'Zope', 'license' => 'ZPL'],
+            ['title' => 'active-record', 'license' => false],
+            ['title' => 'ActiveState', 'license' => false],
+            ['title' => 'mach', 'license' => false],
+            ['title' => 'MySQL', 'license' => 'GPL'],
+            ['title' => 'mssql', 'license' => 'EULA'],
+            ['title' => 'Master-Master', 'license' => false],
+            ['title' => 'Zend Engine', 'license' => false],
+            ['title' => 'Mageia Linux', 'license' => 'GNU GPL'],
+            ['title' => 'nginx', 'license' => 'BSD'],
+            ['title' => 'Mozilla Firefox', 'license' => 'MPL'],
         ];
 
         // expected data
         $sortedProjects = [
             // upper cased titles
-            ['title'=>'ActiveState', 'license'=>false],
-            ['title'=>'Arch Linux', 'license'=>'GPL'],
-            ['title'=>'Mageia Linux', 'license'=>'GNU GPL'],
-            ['title'=>'Master-Master', 'license'=>false],
-            ['title'=>'Mozilla Firefox', 'license'=>'MPL'],
-            ['title'=>'MySQL', 'license'=>'GPL'],
-            ['title'=>'Nagios', 'license'=>'GPL'],
-            ['title'=>'Zabbix', 'license'=>'GPL'],
-            ['title'=>'Zend Engine', 'license'=>false],
-            ['title'=>'Zope', 'license'=>'ZPL'],
+            ['title' => 'ActiveState', 'license' => false],
+            ['title' => 'Arch Linux', 'license' => 'GPL'],
+            ['title' => 'Mageia Linux', 'license' => 'GNU GPL'],
+            ['title' => 'Master-Master', 'license' => false],
+            ['title' => 'Mozilla Firefox', 'license' => 'MPL'],
+            ['title' => 'MySQL', 'license' => 'GPL'],
+            ['title' => 'Nagios', 'license' => 'GPL'],
+            ['title' => 'Zabbix', 'license' => 'GPL'],
+            ['title' => 'Zend Engine', 'license' => false],
+            ['title' => 'Zope', 'license' => 'ZPL'],
             // lower cased titles
-            ['title'=>'active-record', 'license'=>false],
-            ['title'=>'mach', 'license'=>false],
-            ['title'=>'mssql', 'license'=>'EULA'],
-            ['title'=>'munin', 'license'=>'GPL'],
-            ['title'=>'nginx', 'license'=>'BSD'],
-            ['title'=>'zend framework', 'license'=>'BSD'],
+            ['title' => 'active-record', 'license' => false],
+            ['title' => 'mach', 'license' => false],
+            ['title' => 'mssql', 'license' => 'EULA'],
+            ['title' => 'munin', 'license' => 'GPL'],
+            ['title' => 'nginx', 'license' => 'BSD'],
+            ['title' => 'zend framework', 'license' => 'BSD'],
         ];
 
         $dataProvider = new ArrayDataProvider(
@@ -140,7 +145,7 @@ class ArrayDataProviderTest extends TestCase
                     ],
                     'defaultOrder' => [
                         'sort' => SORT_ASC,
-                    ]
+                    ],
                 ],
                 'pagination' => [
                     'pageSize' => 100500,

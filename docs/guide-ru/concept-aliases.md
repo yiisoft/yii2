@@ -18,6 +18,9 @@ Yii::setAlias('@foo', '/path/to/foo');
 
 // псевдоним URL
 Yii::setAlias('@bar', 'http://www.example.com');
+
+// псевдоним конкретного файла, содержащего класс \foo\Bar
+Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
 ```
 
 > Note: псевдоним пути к файлу или URL *не* обязательно указывает на существующий файл или ресурс.

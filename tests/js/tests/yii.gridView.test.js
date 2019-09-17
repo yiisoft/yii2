@@ -9,16 +9,18 @@ var vm = require('vm');
 describe('yii.gridView', function () {
     var yiiGridViewPath = 'framework/assets/yii.gridView.js';
     var yiiPath = 'framework/assets/yii.js';
-    var jQueryPath = 'vendor/bower/jquery/dist/jquery.js';
+    var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
     var $;
     var $gridView;
     var settings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w0-filters input, #w0-filters select'
+        filterSelector: '#w0-filters input, #w0-filters select',
+        filterOnFocusOut: true
     };
     var commonSettings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w-common-filters input, #w-common-filters select'
+        filterSelector: '#w-common-filters input, #w-common-filters select',
+        filterOnFocusOut: true
     };
     var $textInput;
     var $select;
@@ -143,7 +145,8 @@ describe('yii.gridView', function () {
     describe('init', function () {
         var customSettings = {
             filterUrl: '/posts/filter',
-            filterSelector: '#w-common-filters input'
+            filterSelector: '#w-common-filters input',
+            filterOnFocusOut: true
         };
 
         withData({
@@ -303,6 +306,12 @@ describe('yii.gridView', function () {
         describe('with different urls', function () {
             describe('with no filter data sent', function () {
                 withData({
+                    // https://github.com/yiisoft/yii2/issues/13738
+                    'question mark, no query parameters': [
+                        '/posts/index?',
+                        '/posts/index',
+                        'PostSearch[name]=&PostSearch[category_id]='
+                    ],
                     'query parameters': [
                         '/posts/index?foo=1&bar=2',
                         '/posts/index',
@@ -389,18 +398,12 @@ describe('yii.gridView', function () {
             });
         });
 
-        // https://github.com/yiisoft/yii2/pull/10284
-
         describe('with list box', function () {
-            var queryString = 'PostSearch[name]=&PostSearch[tags]=-1&PostSearch[tags][]=1&PostSearch[tags][]=2';
-
-            beforeEach(function () {
-                $listBox.find('option[value="1"]').prop('selected', true);
-                $listBox.find('option[value="2"]').prop('selected', true);
-            });
-
             describe('with values selected', function () {
                 it('should send the request to correct url with correct parameters', function () {
+                    $listBox.find('option[value="1"]').prop('selected', true);
+                    $listBox.find('option[value="2"]').prop('selected', true);
+
                     $gridView = $('#w2').yiiGridView({
                         filterUrl: '/posts/index',
                         filterSelector: '#w2-filters input, #w2-filters select'
@@ -408,15 +411,25 @@ describe('yii.gridView', function () {
                     $gridView.yiiGridView('applyFilter');
 
                     var $form = $gridView.find('.gridview-filter-form');
+                    var expectedQueryString = 'PostSearch[name]=&PostSearch[tags]=-1&PostSearch[tags][]=1' +
+                        '&PostSearch[tags][]=2';
+
                     assert.equal($form.attr('action'), '/posts/index');
-                    assert.equal(decodeURIComponent($form.serialize()), queryString);
+                    assert.equal(decodeURIComponent($form.serialize()), expectedQueryString);
                 });
             });
 
+            // https://github.com/yiisoft/yii2/pull/10284
+
             describe('with unselected values after applied filter', function () {
                 it('should send the request to correct url with correct parameters', function () {
+                    $listBox.find('option[value="1"]').prop('selected', true);
+                    $listBox.find('option[value="2"]').prop('selected', true);
+
+                    var filterUrl = '/posts/index/?PostSearch[name]=&PostSearch[tags]=-1&PostSearch[tags][]=1' +
+                        '&PostSearch[tags][]=2';
                     $gridView = $('#w2').yiiGridView({
-                        filterUrl: '/posts/index/?' + queryString,
+                        filterUrl: filterUrl,
                         filterSelector: '#w2-filters input, #w2-filters select'
                     });
                     $listBox.find('option:selected').prop('selected', false);
@@ -425,6 +438,33 @@ describe('yii.gridView', function () {
                     var $form = $gridView.find('.gridview-filter-form');
                     assert.equal($form.attr('action'), '/posts/index/');
                     assert.equal(decodeURIComponent($form.serialize()), 'PostSearch[name]=&PostSearch[tags]=-1');
+                });
+            });
+
+            // https://github.com/yiisoft/yii2/issues/13379
+
+            describe('with applied pagination', function () {
+                it("should correctly change multiple select's data", function () {
+                    $listBox.find('option[value="2"]').prop('selected', true);
+                    $listBox.find('option[value="3"]').prop('selected', true);
+
+                    var filterUrl = '/posts/index?PostSearch[tags]=-1PostSearch[tags][0]=2&PostSearch[tags][1]=3' +
+                        '&page=2&per-page=2';
+                    $gridView = $('#w2').yiiGridView({
+                        filterUrl: filterUrl,
+                        filterSelector: '#w2-filters input, #w2-filters select'
+                    });
+
+                    $listBox.find('option[value="4"]').prop('selected', true);
+
+                    $gridView.yiiGridView('applyFilter');
+
+                    var $form = $gridView.find('.gridview-filter-form');
+                    var expectedQueryString = 'PostSearch[name]=' +
+                        '&PostSearch[tags]=-1&PostSearch[tags][]=2&PostSearch[tags][]=3&PostSearch[tags][]=4' +
+                        '&page=2&per-page=2';
+
+                    assert.equal(decodeURIComponent($form.serialize()), expectedQueryString);
                 });
             });
         });
@@ -443,6 +483,39 @@ describe('yii.gridView', function () {
         describe('with filter event handlers', function () {
             beforeEach(function () {
                 $gridView = $('#w0').yiiGridView(settings);
+            });
+
+            describe('with option filterOnFocusOut', function () {
+                it('set option filterOnFocusOut off and press Enter key', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    pressEnter($textInput);
+                    assert.isTrue(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and change value', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    changeValue($select, 1);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and lose focus', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    loseFocus($textInput);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
             });
 
             describe('with text entered in the text input', function () {
@@ -515,6 +588,16 @@ describe('yii.gridView', function () {
         });
 
         describe('with name, multiple and checkAll options, multiple set to true and', function () {
+            var changedSpy;
+
+            before(function () {
+                changedSpy = sinon.spy();
+            });
+
+            after(function () {
+                changedSpy.reset();
+            });
+
             withData({
                 'nothing else': [{}],
                 // https://github.com/yiisoft/yii2/pull/11729
@@ -529,44 +612,63 @@ describe('yii.gridView', function () {
 
                     assert.equal($gridView.yiiGridView('data').selectionColumn, 'selection[]');
 
+                    $checkRowCheckboxes
+                        .off('change.yiiGridView') // unbind any subscriptions for clean expectations
+                        .on('change.yiiGridView', changedSpy);
+
                     var $checkFirstRowCheckbox = $checkRowCheckboxes.filter('[value="1"]');
 
                     // Check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isTrue($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 1);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
 
                     // Then check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    // "change" should be called 3 times, 1 time per each row, no matter what state it has
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isFalse($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 2);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
                 });
             });
         });

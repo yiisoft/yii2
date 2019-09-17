@@ -598,9 +598,9 @@ Podemos crear la siguiente clase de reglas de URL para solucionar el problema.
 namespace app\components;
 
 use yii\web\UrlRuleInterface;
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class CarUrlRule extends Object implements UrlRuleInterface
+class CarUrlRule extends BaseObject implements UrlRuleInterface
 {
 
     public function createUrl($manager, $route, $params)

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\caching;
 
@@ -8,7 +13,7 @@ use yiiunit\data\cache\MockDependency;
 use yiiunit\TestCase;
 
 /**
- * Dependency (abstract) tests
+ * Dependency (abstract) tests.
  * @group caching
  * @author Boudewijn Vahrmeijer <vahrmeijer@gmail.com>
  * @since 2.0.11

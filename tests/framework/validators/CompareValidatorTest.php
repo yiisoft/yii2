@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\validators;
 
 use yii\base\InvalidConfigException;
@@ -14,13 +20,15 @@ class CompareValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValueException()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException');
-        $val = new CompareValidator;
+        $this->expectException('yii\base\InvalidConfigException');
+        $val = new CompareValidator();
         $val->validate('val');
     }
 
@@ -94,40 +102,40 @@ class CompareValidatorTest extends TestCase
     public function testValidateAttribute()
     {
         // invalid-array
-        $val = new CompareValidator;
-        $model = new FakedValidationModel;
+        $val = new CompareValidator();
+        $model = new FakedValidationModel();
         $model->attr = ['test_val'];
         $val->validateAttribute($model, 'attr');
         $this->assertTrue($model->hasErrors('attr'));
         $val = new CompareValidator(['compareValue' => 'test-string']);
-        $model = new FakedValidationModel;
+        $model = new FakedValidationModel();
         $model->attr_test = 'test-string';
         $val->validateAttribute($model, 'attr_test');
         $this->assertFalse($model->hasErrors('attr_test'));
         $val = new CompareValidator(['compareAttribute' => 'attr_test_val']);
-        $model = new FakedValidationModel;
+        $model = new FakedValidationModel();
         $model->attr_test = 'test-string';
         $model->attr_test_val = 'test-string';
         $val->validateAttribute($model, 'attr_test');
         $this->assertFalse($model->hasErrors('attr_test'));
         $this->assertFalse($model->hasErrors('attr_test_val'));
         $val = new CompareValidator(['compareAttribute' => 'attr_test_val']);
-        $model = new FakedValidationModel;
+        $model = new FakedValidationModel();
         $model->attr_test = 'test-string';
         $model->attr_test_val = 'test-string-false';
         $val->validateAttribute($model, 'attr_test');
         $this->assertTrue($model->hasErrors('attr_test'));
         $this->assertFalse($model->hasErrors('attr_test_val'));
         // assume: _repeat
-        $val = new CompareValidator;
-        $model = new FakedValidationModel;
+        $val = new CompareValidator();
+        $model = new FakedValidationModel();
         $model->attr_test = 'test-string';
         $model->attr_test_repeat = 'test-string';
         $val->validateAttribute($model, 'attr_test');
         $this->assertFalse($model->hasErrors('attr_test'));
         $this->assertFalse($model->hasErrors('attr_test_repeat'));
-        $val = new CompareValidator;
-        $model = new FakedValidationModel;
+        $val = new CompareValidator();
+        $model = new FakedValidationModel();
         $model->attr_test = 'test-string';
         $model->attr_test_repeat = 'test-string2';
         $val->validateAttribute($model, 'attr_test');
@@ -191,12 +199,11 @@ class CompareValidatorTest extends TestCase
         foreach ($this->getOperationTestData($value) as $operator => $tests) {
             $val = new CompareValidator(['operator' => $operator, 'compareValue' => $value]);
             foreach ($tests as $test) {
-                $model = new FakedValidationModel;
+                $model = new FakedValidationModel();
                 $model->attr_test = $test[0];
                 $val->validateAttribute($model, 'attr_test');
                 $this->assertEquals($test[1], !$model->hasErrors('attr_test'));
             }
-
         }
     }
 

@@ -1,6 +1,8 @@
 Tworzenie formularzy
-==============
+====================
 
+Formularze oparte na ActiveRecord: ActiveForm
+---------------------------------------------
 Podstawowym sposobem korzystania z formularzy w Yii jest użycie [[yii\widgets\ActiveForm|ActiveForm]]. Ten sposób powinien być używany, jeśli formularz jest bazowany na modelu.
 Dodatkowo, klasa [[yii\helpers\Html|Html]] zawiera sporo użytecznych metod, które zazwyczaj używane są do dodawania przycisków i tekstów pomocniczych do każdego formularza.
 
@@ -9,7 +11,11 @@ stronie serwera (sprawdź sekcję [Walidacja danych wejściowych](input-validati
 Podczas tworzenia formularza na podstawie modelu, pierwszym krokiem jest zdefiniowanie samego modelu. 
 Model może być bazowany na klasie [Active Record](db-active-record.md), reprezentując dane z bazy danych, lub może być też bazowany na klasie generycznej [[yii\base\Model|Model]], 
 aby przechwytywać dowolne dane wejściowe, np. formularz logowania.
-W poniższym przykładzie pokażemy, jak model generyczny może być użyty do formularza logowania:
+
+> Tip: Jeśli pola formularza są różne od kolumn tabeli w bazie danych lub też występuje tu formatowanie i logika specyficzna tylko dla tego formularza, 
+> zaleca się stworzenie oddzielnego modelu rozszerzającego [[yii\base\Model]].
+
+W poniższym przykładzie pokażemy, jak model generyczny może być użyty do stworzenia formularza logowania:
 
 ```php
 <?php
@@ -50,6 +56,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
+### Otaczanie kodu przez `begin()` i `end()` <span id="wrapping-with-begin-and-end"></span>
 W powyższym kodzie, [[yii\widgets\ActiveForm::begin()|begin()]] nie tylko tworzy instancję formularza, ale zaznacza też jego początek.
 Cała zawartość położona pomiędzy [[yii\widgets\ActiveForm::begin()|begin()]] i [[yii\widgets\ActiveForm::end()|end()]] zostanie otoczona tagiem HTML'owym `<form>`.
 Jak w przypadku każdego widżetu, możesz określić kilka opcji z jakimi widżet powinien być skonfigurowany przez przekazanie tablicy do metody `begin`.
@@ -110,25 +117,75 @@ tak jak było to zrobione w przykładzie wyżej z [[yii\helpers\Html::submitButt
 > }
 > ```
 
-Tworzenie listy rozwijanej <span id="creating-activeform-dropdownlist"></span>
----------------------
+Tworzenie list <span id="creating-activeform-lists"></span>
+--------------
+
+Wyróżniamy trzy typy list:
+* Listy rozwijane 
+* Listy opcji typu radio
+* Listy opcji typu checkbox
+
+Aby stworzyć listę, musisz najpierw przygotować jej elementy. Można to zrobić ręcznie:
+
+```php
+$items = [
+    1 => 'item 1', 
+    2 => 'item 2'
+]
+```
+
+lub też pobierając elementy z bazy danych:
+
+```php
+$items = Category::find()
+        ->select(['label'])
+        ->indexBy('id')
+        ->column();
+```
+
+Elementy `$items` muszą być następnie przetworzone przez odpowiednie widżety list.
+Wartość pola formularza (i aktualnie aktywny element) będzie automatycznie ustawiony przez aktualną wartość atrybutu `$model`. 
+
+#### Tworzenie listy rozwijanej <span id="creating-activeform-dropdownlist"></span>
 
 Możemy użyć metody klasy ActiveForm [[yii\widgets\ActiveForm::dropDownList()|dropDownList()]] do utworzenia rozwijanej listy:
 
 ```php
-use app\models\ProductCategory;
-
-/* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\Product */
 
-echo $form->field($model, 'product_category')->dropdownList(
-    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
-    ['prompt'=>'Select Category']
+echo $form->field($model, 'category')->dropdownList([
+        1 => 'item 1', 
+        2 => 'item 2'
+    ],
+    ['prompt'=>'Wybierz kategorię']
 );
 ```
 
-Wartość z Twojego modelu będzie automatycznie wybrana po wyświetleniu formularza.
+#### Tworzenie radio listy <span id="creating-activeform-radioList"></span>
+
+Do stworzenia takiej listy możemy użyć metody ActiveField [[\yii\widgets\ActiveField::radioList()]]:
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->radioList([
+    1 => 'radio 1', 
+    2 => 'radio 2'
+]);
+```
+
+#### Tworzenie checkbox listy <span id="creating-activeform-checkboxList"></span>
+
+Do stworzenia takiej listy możemy użyć metody ActiveField [[\yii\widgets\ActiveField::checkboxList()]]:
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->checkboxList([
+    1 => 'checkbox 1', 
+    2 => 'checkbox 2'
+]);
+```
 
 Praca z Pjaxem <span id="working-with-pjax"></span>
 -----------------------

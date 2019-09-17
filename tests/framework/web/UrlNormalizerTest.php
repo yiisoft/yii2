@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -118,9 +117,9 @@ class UrlNormalizerTest extends TestCase
     }
 
     /**
-     * Test usage of UrlNormalizer in UrlManager
+     * Test usage of UrlNormalizer in UrlManager.
      *
-     * trailing slash is insignificant if normalizer is enabled
+     * Trailing slash is insignificant if normalizer is enabled.
      */
     public function testUrlManager()
     {

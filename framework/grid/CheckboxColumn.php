@@ -77,7 +77,7 @@ class CheckboxColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.
      */
     public function init()
@@ -103,16 +103,20 @@ class CheckboxColumn extends Column
     {
         if ($this->header !== null || !$this->multiple) {
             return parent::renderHeaderCellContent();
-        } else {
-            return Html::checkbox($this->getHeaderCheckBoxName(), false, ['class' => 'select-on-check-all']);
         }
+
+        return Html::checkbox($this->getHeaderCheckBoxName(), false, ['class' => 'select-on-check-all']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {
+        if ($this->content !== null) {
+            return parent::renderDataCellContent($model, $key, $index);
+        }
+
         if ($this->checkboxOptions instanceof Closure) {
             $options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
         } else {
@@ -131,7 +135,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Returns header checkbox name
+     * Returns header checkbox name.
      * @return string header checkbox name
      * @since 2.0.8
      */
@@ -151,7 +155,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Registers the needed JavaScript
+     * Registers the needed JavaScript.
      * @since 2.0.8
      */
     public function registerClientScript()

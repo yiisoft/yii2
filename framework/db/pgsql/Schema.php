@@ -7,28 +7,40 @@
 
 namespace yii\db\pgsql;
 
+use yii\base\NotSupportedException;
+use yii\db\CheckConstraint;
+use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
+use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
+use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\ViewFinderTrait;
+use yii\helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
- * @property string[] $viewNames All view names in the database. This property is read-only.
- *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
+    use ConstraintFinderTrait;
+
+    const TYPE_JSONB = 'jsonb';
 
     /**
      * @var string the default schema used for the current session.
      */
     public $defaultSchema = 'public';
+    /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\pgsql\ColumnSchema';
     /**
      * @var array mapping from physical column types (keys) to abstract
      * column types (values)
@@ -108,11 +120,167 @@ class Schema extends \yii\db\Schema
         'unknown' => self::TYPE_STRING,
 
         'uuid' => self::TYPE_STRING,
-        'json' => self::TYPE_STRING,
-        'jsonb' => self::TYPE_STRING,
+        'json' => self::TYPE_JSON,
+        'jsonb' => self::TYPE_JSON,
         'xml' => self::TYPE_STRING,
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = '"';
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function resolveTableName($name)
+    {
+        $resolvedName = new TableSchema();
+        $parts = explode('.', str_replace('"', '', $name));
+        if (isset($parts[1])) {
+            $resolvedName->schemaName = $parts[0];
+            $resolvedName->name = $parts[1];
+        } else {
+            $resolvedName->schemaName = $this->defaultSchema;
+            $resolvedName->name = $name;
+        }
+        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+        return $resolvedName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findSchemaNames()
+    {
+        static $sql = <<<'SQL'
+SELECT "ns"."nspname"
+FROM "pg_namespace" AS "ns"
+WHERE "ns"."nspname" != 'information_schema' AND "ns"."nspname" NOT LIKE 'pg_%'
+ORDER BY "ns"."nspname" ASC
+SQL;
+
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findTableNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+        $sql = <<<'SQL'
+SELECT c.relname AS table_name
+FROM pg_class c
+INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
+WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
+ORDER BY c.relname
+SQL;
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableSchema($name)
+    {
+        $table = new TableSchema();
+        $this->resolveTableNames($table, $name);
+        if ($this->findColumns($table)) {
+            $this->findConstraints($table);
+            return $table;
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTablePrimaryKey($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'primaryKey');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableForeignKeys($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'foreignKeys');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableIndexes($tableName)
+    {
+        static $sql = <<<'SQL'
+SELECT
+    "ic"."relname" AS "name",
+    "ia"."attname" AS "column_name",
+    "i"."indisunique" AS "index_is_unique",
+    "i"."indisprimary" AS "index_is_primary"
+FROM "pg_class" AS "tc"
+INNER JOIN "pg_namespace" AS "tcns"
+    ON "tcns"."oid" = "tc"."relnamespace"
+INNER JOIN "pg_index" AS "i"
+    ON "i"."indrelid" = "tc"."oid"
+INNER JOIN "pg_class" AS "ic"
+    ON "ic"."oid" = "i"."indexrelid"
+INNER JOIN "pg_attribute" AS "ia"
+    ON "ia"."attrelid" = "i"."indrelid" AND "ia"."attnum" = ANY ("i"."indkey")
+WHERE "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
+ORDER BY "ia"."attnum" ASC
+SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $indexes = $this->db->createCommand($sql, [
+            ':schemaName' => $resolvedName->schemaName,
+            ':tableName' => $resolvedName->name,
+        ])->queryAll();
+        $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+        $indexes = ArrayHelper::index($indexes, null, 'name');
+        $result = [];
+        foreach ($indexes as $name => $index) {
+            $result[] = new IndexConstraint([
+                'isPrimary' => (bool) $index[0]['index_is_primary'],
+                'isUnique' => (bool) $index[0]['index_is_unique'],
+                'name' => $name,
+                'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
+            ]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableUniques($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'uniques');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableChecks($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'checks');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableDefaultValues($tableName)
+    {
+        throw new NotSupportedException('PostgreSQL does not support default value constraints.');
+    }
 
     /**
      * Creates a query builder for the PostgreSQL database.
@@ -137,91 +305,25 @@ class Schema extends \yii\db\Schema
             $table->name = $parts[1];
         } else {
             $table->schemaName = $this->defaultSchema;
-            $table->name = $name;
+            $table->name = $parts[0];
         }
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
     }
 
     /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name
-     * @return string the properly quoted table name
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
-    }
-
-    /**
-     * Loads the metadata for the specified table.
-     * @param string $name table name
-     * @return TableSchema|null driver dependent table metadata. Null if the table does not exist.
-     */
-    public function loadTableSchema($name)
-    {
-        $table = new TableSchema();
-        $this->resolveTableNames($table, $name);
-        if ($this->findColumns($table)) {
-            $this->findConstraints($table);
-            return $table;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns all schema names in the database, including the default one but not system schemas.
-     * This method should be overridden by child classes in order to support this feature
-     * because the default implementation simply throws an exception.
-     * @return array all schema names in the database, except system schemas
-     * @since 2.0.4
-     */
-    protected function findSchemaNames()
-    {
-        $sql = <<<SQL
-SELECT ns.nspname AS schema_name
-FROM pg_namespace ns
-WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
-ORDER BY ns.nspname
-SQL;
-        return $this->db->createCommand($sql)->queryColumn();
-    }
-
-    /**
-     * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array all table names in the database. The names have NO schema name prefix.
-     */
-    protected function findTableNames($schema = '')
-    {
-        if ($schema === '') {
-            $schema = $this->defaultSchema;
-        }
-        $sql = <<<SQL
-SELECT c.relname AS table_name
-FROM pg_class c
-INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
-ORDER BY c.relname
-SQL;
-        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
-    }
-
-    /**
-     * @inheritdoc
+     * {@inheritdoc]
      */
     protected function findViewNames($schema = '')
     {
         if ($schema === '') {
             $schema = $this->defaultSchema;
         }
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schemaName AND c.relkind = 'v'
+WHERE ns.nspname = :schemaName AND (c.relkind = 'v' OR c.relkind = 'm')
 ORDER BY c.relname
 SQL;
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
@@ -295,7 +397,7 @@ SQL;
      */
     protected function getUniqueIndexInformation($table)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     i.relname as indexname,
     pg_get_indexdef(idx.indexrelid, k + 1, TRUE) AS columnname
@@ -319,6 +421,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -335,8 +438,7 @@ SQL;
     {
         $uniqueIndexes = [];
 
-        $rows = $this->getUniqueIndexInformation($table);
-        foreach ($rows as $row) {
+        foreach ($this->getUniqueIndexInformation($table) as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $row = array_change_key_case($row, CASE_LOWER);
             }
@@ -366,14 +468,18 @@ SELECT
     d.nspname AS table_schema,
     c.relname AS table_name,
     a.attname AS column_name,
-    t.typname AS data_type,
+    COALESCE(td.typname, tb.typname, t.typname) AS data_type,
+    COALESCE(td.typtype, tb.typtype, t.typtype) AS type_type,
     a.attlen AS character_maximum_length,
     pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
     a.atttypmod AS modifier,
     a.attnotnull = false AS is_nullable,
     CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
     coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
-    array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
+    CASE WHEN COALESCE(td.typtype, tb.typtype, t.typtype) = 'e'::char
+        THEN array_to_string((SELECT array_agg(enumlabel) FROM pg_enum WHERE enumtypid = COALESCE(td.oid, tb.oid, a.atttypid))::varchar[], ',')
+        ELSE NULL
+    END AS enum_values,
     CASE atttypid
          WHEN 21 /*int2*/ THEN 16
          WHEN 23 /*int4*/ THEN 32
@@ -400,22 +506,24 @@ SELECT
              information_schema._pg_char_max_length(information_schema._pg_truetypid(a, t), information_schema._pg_truetypmod(a, t))
              AS numeric
     ) AS size,
-    a.attnum = any (ct.conkey) as is_pkey
+    a.attnum = any (ct.conkey) as is_pkey,
+    COALESCE(NULLIF(a.attndims, 0), NULLIF(t.typndims, 0), (t.typcategory='A')::int) AS dimension
 FROM
     pg_class c
     LEFT JOIN pg_attribute a ON a.attrelid = c.oid
     LEFT JOIN pg_attrdef ad ON a.attrelid = ad.adrelid AND a.attnum = ad.adnum
     LEFT JOIN pg_type t ON a.atttypid = t.oid
+    LEFT JOIN pg_type tb ON (a.attndims > 0 OR t.typcategory='A') AND t.typelem > 0 AND t.typelem = tb.oid OR t.typbasetype > 0 AND t.typbasetype = tb.oid
+    LEFT JOIN pg_type td ON t.typndims > 0 AND t.typbasetype > 0 AND tb.typelem = td.oid
     LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
-    LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
+    LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND ct.contype = 'p'
 WHERE
-    a.attnum > 0 and t.typname != ''
-    and c.relname = {$tableName}
-    and d.nspname = {$schemaName}
+    a.attnum > 0 AND t.typname != ''
+    AND c.relname = {$tableName}
+    AND d.nspname = {$schemaName}
 ORDER BY
     a.attnum;
 SQL;
-
         $columns = $this->db->createCommand($sql)->queryAll();
         if (empty($columns)) {
             return false;
@@ -436,16 +544,16 @@ SQL;
                 if ($column->type === 'timestamp' && $column->defaultValue === 'now()') {
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
-                        $column->defaultValue = ($column->defaultValue === 'true');
-                } elseif (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
+                    $column->defaultValue = ($column->defaultValue === 'true');
+                } elseif (strncasecmp($column->dbType, 'bit', 3) === 0 || strncasecmp($column->dbType, 'varbit', 6) === 0) {
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $matches[1];
-                } elseif (preg_match('/^(?:\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
-                    if ($matches[1] === 'NULL') {
+                    $column->defaultValue = $column->phpTypecast($matches[1]);
+                } elseif (preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
+                    if ($matches[2] === 'NULL') {
                         $column->defaultValue = null;
                     } else {
-                        $column->defaultValue = $column->phpTypecast($matches[1]);
+                        $column->defaultValue = $column->phpTypecast($matches[2]);
                     }
                 } else {
                     $column->defaultValue = $column->phpTypecast($column->defaultValue);
@@ -463,6 +571,7 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
+        /** @var ColumnSchema $column */
         $column = $this->createColumnSchema();
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
@@ -476,6 +585,7 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
+        $column->dimension = (int)$info['dimension'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {
@@ -487,7 +597,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {
@@ -507,5 +617,108 @@ SQL;
         $result = $command->queryOne();
 
         return !$command->pdoStatement->rowCount() ? false : $result;
+    }
+
+    /**
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - primaryKey
+     * - foreignKeys
+     * - uniques
+     * - checks
+     * @return mixed constraints.
+     */
+    private function loadTableConstraints($tableName, $returnType)
+    {
+        static $sql = <<<'SQL'
+SELECT
+    "c"."conname" AS "name",
+    "a"."attname" AS "column_name",
+    "c"."contype" AS "type",
+    "ftcns"."nspname" AS "foreign_table_schema",
+    "ftc"."relname" AS "foreign_table_name",
+    "fa"."attname" AS "foreign_column_name",
+    "c"."confupdtype" AS "on_update",
+    "c"."confdeltype" AS "on_delete",
+    "c"."consrc" AS "check_expr"
+FROM "pg_class" AS "tc"
+INNER JOIN "pg_namespace" AS "tcns"
+    ON "tcns"."oid" = "tc"."relnamespace"
+INNER JOIN "pg_constraint" AS "c"
+    ON "c"."conrelid" = "tc"."oid"
+INNER JOIN "pg_attribute" AS "a"
+    ON "a"."attrelid" = "c"."conrelid" AND "a"."attnum" = ANY ("c"."conkey")
+LEFT JOIN "pg_class" AS "ftc"
+    ON "ftc"."oid" = "c"."confrelid"
+LEFT JOIN "pg_namespace" AS "ftcns"
+    ON "ftcns"."oid" = "ftc"."relnamespace"
+LEFT JOIN "pg_attribute" "fa"
+    ON "fa"."attrelid" = "c"."confrelid" AND "fa"."attnum" = ANY ("c"."confkey")
+WHERE "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
+ORDER BY "a"."attnum" ASC, "fa"."attnum" ASC
+SQL;
+        static $actionTypes = [
+            'a' => 'NO ACTION',
+            'r' => 'RESTRICT',
+            'c' => 'CASCADE',
+            'n' => 'SET NULL',
+            'd' => 'SET DEFAULT',
+        ];
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $constraints = $this->db->createCommand($sql, [
+            ':schemaName' => $resolvedName->schemaName,
+            ':tableName' => $resolvedName->name,
+        ])->queryAll();
+        $constraints = $this->normalizePdoRowKeyCase($constraints, true);
+        $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
+        $result = [
+            'primaryKey' => null,
+            'foreignKeys' => [],
+            'uniques' => [],
+            'checks' => [],
+        ];
+        foreach ($constraints as $type => $names) {
+            foreach ($names as $name => $constraint) {
+                switch ($type) {
+                    case 'p':
+                        $result['primaryKey'] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'f':
+                        $result['foreignKeys'][] = new ForeignKeyConstraint([
+                            'name' => $name,
+                            'columnNames' => array_keys(array_count_values(ArrayHelper::getColumn($constraint, 'column_name'))),
+                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                            'foreignTableName' => $constraint[0]['foreign_table_name'],
+                            'foreignColumnNames' => array_keys(array_count_values(ArrayHelper::getColumn($constraint, 'foreign_column_name'))),
+                            'onDelete' => isset($actionTypes[$constraint[0]['on_delete']]) ? $actionTypes[$constraint[0]['on_delete']] : null,
+                            'onUpdate' => isset($actionTypes[$constraint[0]['on_update']]) ? $actionTypes[$constraint[0]['on_update']] : null,
+                        ]);
+                        break;
+                    case 'u':
+                        $result['uniques'][] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'c':
+                        $result['checks'][] = new CheckConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'expression' => $constraint[0]['check_expr'],
+                        ]);
+                        break;
+                }
+            }
+        }
+        foreach ($result as $type => $data) {
+            $this->setTableMetadata($tableName, $type, $data);
+        }
+
+        return $result[$returnType];
     }
 }

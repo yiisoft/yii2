@@ -8,9 +8,10 @@
 namespace yii\behaviors;
 
 use yii\base\Behavior;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\db\BaseActiveRecord;
+use yii\helpers\StringHelper;
 use yii\validators\BooleanValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
@@ -161,6 +162,15 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $typecastBeforeSave = false;
     /**
+     * @var bool whether to perform typecasting after saving owner model (insert or update).
+     * This option may be disabled in order to achieve better performance.
+     * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after save
+     * will grant no benefit an thus can be disabled.
+     * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @since 2.0.14
+     */
+    public $typecastAfterSave = false;
+    /**
      * @var bool whether to perform typecasting after retrieving owner model data from
      * the database (after find or refresh).
      * This option may be disabled in order to achieve better performance.
@@ -187,7 +197,7 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attach($owner)
     {
@@ -217,7 +227,7 @@ class AttributeTypecastBehavior extends Behavior
         } else {
             foreach ($attributeNames as $attribute) {
                 if (!isset($this->attributeTypes[$attribute])) {
-                    throw new InvalidParamException("There is no type mapping for '{$attribute}'.");
+                    throw new InvalidArgumentException("There is no type mapping for '{$attribute}'.");
                 }
                 $attributeTypes[$attribute] = $this->attributeTypes[$attribute];
             }
@@ -253,9 +263,12 @@ class AttributeTypecastBehavior extends Behavior
                 case self::TYPE_BOOLEAN:
                     return (bool) $value;
                 case self::TYPE_STRING:
+                    if (is_float($value)) {
+                        return StringHelper::floatToString($value);
+                    }
                     return (string) $value;
                 default:
-                    throw new InvalidParamException("Unsupported type '{$type}'");
+                    throw new InvalidArgumentException("Unsupported type '{$type}'");
             }
         }
 
@@ -280,16 +293,17 @@ class AttributeTypecastBehavior extends Behavior
             }
 
             if ($type !== null) {
-                foreach ((array)$validator->attributes as $attribute) {
-                    $attributeTypes[$attribute] = $type;
+                foreach ((array) $validator->attributes as $attribute) {
+                    $attributeTypes[ltrim($attribute, '!')] = $type;
                 }
             }
         }
+
         return $attributeTypes;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {
@@ -301,6 +315,10 @@ class AttributeTypecastBehavior extends Behavior
         if ($this->typecastBeforeSave) {
             $events[BaseActiveRecord::EVENT_BEFORE_INSERT] = 'beforeSave';
             $events[BaseActiveRecord::EVENT_BEFORE_UPDATE] = 'beforeSave';
+        }
+        if ($this->typecastAfterSave) {
+            $events[BaseActiveRecord::EVENT_AFTER_INSERT] = 'afterSave';
+            $events[BaseActiveRecord::EVENT_AFTER_UPDATE] = 'afterSave';
         }
         if ($this->typecastAfterFind) {
             $events[BaseActiveRecord::EVENT_AFTER_FIND] = 'afterFind';
@@ -321,10 +339,20 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
+     * Handles owner 'beforeInsert' and 'beforeUpdate' events, ensuring attribute typecasting.
      * @param \yii\base\Event $event event instance.
      */
     public function beforeSave($event)
+    {
+        $this->typecastAttributes();
+    }
+    
+    /**
+     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
+     * @param \yii\base\Event $event event instance.
+     * @since 2.0.14
+     */
+    public function afterSave($event)
     {
         $this->typecastAttributes();
     }

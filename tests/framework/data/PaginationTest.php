@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
@@ -16,14 +21,14 @@ class PaginationTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'urlManager' => [
-                    'scriptUrl' => '/index.php'
+                    'scriptUrl' => '/index.php',
                 ],
             ],
         ]);
     }
 
     /**
-     * Data provider for [[testCreateUrl()]]
+     * Data provider for [[testCreateUrl()]].
      * @return array test data
      */
     public function dataProviderCreateUrl()
@@ -62,6 +67,7 @@ class PaginationTest extends TestCase
      * @param int $page
      * @param int $pageSize
      * @param string $expectedUrl
+     * @param array $params
      */
     public function testCreateUrl($page, $pageSize, $expectedUrl, $params)
     {

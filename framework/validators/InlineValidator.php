@@ -61,7 +61,7 @@ class InlineValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -73,7 +73,7 @@ class InlineValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -84,8 +84,8 @@ class InlineValidator extends Validator
             }
 
             return call_user_func($method, $attribute, $this->params, $this);
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

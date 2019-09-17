@@ -1,14 +1,11 @@
 Wersjonowanie Yii
 =================
 
-Ten dokument podsumowuje politykę wersjonowania Yii. Naszą aktualną strategię wersjonowania można opisać jako 
-[ferver](https://github.com/jonathanong/ferver), którą uważamy za bardziej rozsądną i praktyczną niż 
-[wersjonowanie semantyczne](http://semver.org/) (przejdź do [#7408](https://github.com/yiisoft/yii2/issues/7408), aby zapoznać się 
-z dyskusją).
+Ten dokument podsumowuje politykę wersjonowania Yii. Naszą aktualną strategię wersjonowania jest wariant [wersjonowania semantycznego](http://semver.org/).
 
-Główni programiści Yii wiele razy już zgadzali się i podkreślali, że ważnym jest utrzymanie wydań 2.0.x w 100% kompatybilnych 
-wstecznie. To jednak idealna teoria, a praktyka, opisana choćby w artykule o ferver na prawdziwym przykładzie, pokazuje, że ciężko 
-jest to osiągnąć, niezależnie od tego czy używa się semver czy też nie.
+Główni programiści Yii wiele razy już zgadzali się i podkreślali, że ważnym jest utrzymanie wydań 2.0.x kompatybilnych 
+wstecznie. To jednak idealna teoria, którą w praktyce nie zawsze udaje się osiągnąć. Zapoznaj się z sekcją [Wsteczna kompatybilność](bc.md), 
+opisującą w szczegółach, czym jest wsteczna kompatybilność.
 
 Podsumowując, nasza polityka wersjonowania Yii 2 przedstawia się następująco:
 

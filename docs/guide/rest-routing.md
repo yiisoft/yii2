@@ -90,3 +90,21 @@ a controller ID. For example, the following code maps the name `u` to the contro
     'controller' => ['u' => 'user'],
 ]
 ```
+
+## Extra configuration for contained rules
+
+It could be useful to specify extra configuration that is applied to each rule contained within [[yii\rest\UrlRule]].
+A good example would be specifying defaults for `expand` parameter:
+
+```php
+[
+    'class' => 'yii\rest\UrlRule',
+    'controller' => ['user'],
+    'ruleConfig' => [
+        'class' => 'yii\web\UrlRule',
+        'defaults' => [
+            'expand' => 'profile',
+        ]
+    ],
+],
+```

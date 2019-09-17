@@ -20,8 +20,8 @@ var StringUtils = {
 
 describe('yii', function () {
     var yiiPath = 'framework/assets/yii.js';
-    var jQueryPath = 'vendor/bower/jquery/dist/jquery.js';
-    var pjaxPath = 'vendor/bower/yii2-pjax/jquery.pjax.js';
+    var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
+    var pjaxPath = 'vendor/bower-asset/yii2-pjax/jquery.pjax.js';
     var sandbox;
     var $;
     var yii;
@@ -326,13 +326,7 @@ describe('yii', function () {
             var pjaxOptions = pjaxClickStub.getCall(0).args[1];
 
             // container needs to be checked separately
-
-            if (typeof pjaxOptions.container === 'string') {
-                assert.equal(pjaxOptions.container, '#' + pjaxContainerId || 'body');
-            } else {
-                assert.instanceOf(pjaxOptions.container, $);
-                assert.equal(pjaxOptions.container.attr('id'), pjaxContainerId || 'body');
-            }
+            assert.equal(pjaxOptions.container, pjaxContainerId || 'body');
             delete pjaxOptions.container;
 
             assert.deepEqual(pjaxOptions, {
@@ -380,9 +374,13 @@ describe('yii', function () {
             var pjaxOptions = pjaxSubmitStub.getCall(0).args[1];
 
             // container needs to be checked separately
+            if (typeof pjaxOptions.container === 'string') {
+                assert.equal(pjaxOptions.container, 'body');
+            } else {
+                assert.instanceOf(pjaxOptions.container, $);
+                assert.equal(pjaxOptions.container.attr('id'), 'body');
+            }
 
-            assert.instanceOf(pjaxOptions.container, $);
-            assert.equal(pjaxOptions.container.attr('id'), 'body');
             delete pjaxOptions.container;
 
             assert.deepEqual(pjaxOptions, {
@@ -494,9 +492,9 @@ describe('yii', function () {
                         'link, data-pjax="1"': ['.link-pjax-1', 'body'],
                         'link, data-pjax="true"': ['.link-pjax-true', 'body'],
                         'link, data-pjax, outside a container': [
-                            '.link-pjax-outside-container', 'pjax-separate-container'
+                            '.link-pjax-outside-container', '#pjax-separate-container'
                         ],
-                        'link href, data-pjax, inside a container': ['.link-pjax-inside-container', 'pjax-container-2']
+                        'link href, data-pjax, inside a container': ['.link-pjax-inside-container', '#pjax-container-2']
                     }, function (elementSelector, expectedPjaxContainerId) {
                         it(pageLoadWithPjaxMessage, function () {
                             var event = $.Event('click');
@@ -739,6 +737,8 @@ describe('yii', function () {
     describe('getQueryParams method', function () {
         withData({
             'no query parameters': ['/posts/index', {}],
+            // https://github.com/yiisoft/yii2/issues/13738
+            'question mark, no query parameters': ['/posts/index?', {}],
             'query parameters': ['/posts/index?foo=1&bar=2', {foo: '1', bar: '2'}],
             'query parameter with multiple values (not array)': ['/posts/index?foo=1&foo=2', {'foo': ['1', '2']}],
             'query parameter with multiple values (array)': ['/posts/index?foo[]=1&foo[]=2', {'foo[]': ['1', '2']}],
@@ -943,7 +943,6 @@ describe('yii', function () {
 
         describe('with xhr defined', function () {
             var server;
-            var response = {result: 'OK'};
 
             beforeEach(function () {
                 server = sinon.fakeServer.create();
@@ -1357,6 +1356,33 @@ describe('yii', function () {
                 assert.isFalse(yiiConfirmSpy.called);
                 assert.isFalse(yiiHandleActionStub.called);
                 assert.isTrue(extraEventHandlerSpy.calledOnce);
+            });
+        });
+
+        describe('disabled confirm dialog', function () {
+            it('confirm data param = false', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', false);
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+            it('confirm data param = empty', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', '');
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+            it('confirm data param = undefined', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', undefined);
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
             });
         });
 

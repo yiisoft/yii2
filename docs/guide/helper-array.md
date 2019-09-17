@@ -1,7 +1,7 @@
 ArrayHelper
 ===========
 
-Additionally to the [rich set of PHP array functions](http://php.net/manual/en/book.array.php), the Yii array helper provides
+Additionally to the [rich set of PHP array functions](https://secure.php.net/manual/en/book.array.php), the Yii array helper provides
 extra static methods allowing you to deal with arrays more efficiently.
 
 
@@ -53,7 +53,58 @@ Third optional argument is default value which is `null` if not specified. Could
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
-In case you want to get the value and then immediately remove it from array you can use `remove` method:
+
+## Setting values <span id="setting-values"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// the path to write the value in `$array` can be specified as an array
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+As a result, initial value of `$array['key']['in']` will be overwritten by new value
+
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+If the path contains a nonexistent key, it will be created
+
+```php
+// if `$array['key']['in']['arr0']` is not empty, the value will be added to the array
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// if you want to completely override the value `$array['key']['in']['arr0']`
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+The result will be
+
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## Take a value from an array <span id="removing-values"></span>
+
+In case you want to get a value and then immediately remove it from an array you can use `remove` method:
 
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
@@ -66,7 +117,7 @@ After executing the code `$array` will contain `['options' => [1, 2]]` and `$typ
 
 ## Checking Existence of Keys <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` works the same way as [array_key_exists](http://php.net/manual/en/function.array-key-exists.php)
+`ArrayHelper::keyExists` works the same way as [array_key_exists](https://secure.php.net/manual/en/function.array-key-exists.php)
 except that it also supports case-insensitive key comparison. For example,
 
 ```php
@@ -261,7 +312,8 @@ or an anonymous function like the following one:
 
 ```php
 ArrayHelper::multisort($data, function($item) {
-    return isset($item['age']) ? ['age', 'name'] : 'name';
+    // sort by age if it exists or by name otherwise
+    return isset($item['age']) ? $item['age'] : $item['name'];
 });
 ```
 
@@ -270,7 +322,7 @@ Third argument is direction. In case of sorting by a single key it could be eith
 sort direction.
 
 Last argument is PHP sort flag that could take the same values as the ones passed to
-PHP [sort()](http://php.net/manual/en/function.sort.php).
+PHP [sort()](https://secure.php.net/manual/en/function.sort.php).
 
 
 ## Detecting Array Types <span id="detecting-array-types"></span>
@@ -305,7 +357,7 @@ Encoding will use application charset and could be changed via third argument.
 
 You can use [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] to merge two or more arrays into one recursively.
 If each array has an element with the same string key value, the latter will overwrite the former
-(different from [array_merge_recursive()](http://php.net/manual/en/function.array-merge-recursive.php)).
+(different from [array_merge_recursive()](https://secure.php.net/manual/en/function.array-merge-recursive.php)).
 Recursive merging will be conducted if both arrays have an element of array type and are having the same key.
 For integer-keyed elements, the elements from the latter array will be appended to the former array.
 You can use [[yii\helpers\UnsetArrayValue]] object to unset value from previous array or
@@ -420,7 +472,7 @@ While PHP offers `in_array()`, this does not support subsets or `\Traversable` o
 
 To aid these kinds of tests, [[yii\helpers\ArrayHelper]] provides [[yii\helpers\ArrayHelper::isIn()|isIn()]]
 and [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] with the same signature as
-[in_array()](http://php.net/manual/en/function.in-array.php).
+[in_array()](https://secure.php.net/manual/en/function.in-array.php).
 
 ```php
 // true

@@ -220,7 +220,7 @@ class CsvDataProvider extends BaseDataProvider
     
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -231,7 +231,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -260,7 +260,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -282,7 +282,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {

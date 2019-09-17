@@ -53,13 +53,13 @@ You may run it with `--update` to fetch tags for all repos to get the newest inf
 
 Making a framework release includes the following commands (apps are always released together with the framework):
 
-    ./build release framework
-    ./build release app-basic
-    ./build release app-advanced
+    ./build/build release framework
+    ./build/build release app-basic
+    ./build/build release app-advanced
 
 Making an extension release includes only one command (e.g. for redis):
 
-    ./build release redis
+    ./build/build release redis
 
 The default release command will release a new minor version from the currently checked out branch.
 To release another version than the default, you have to specify it using the `--version` option, e.g.

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Creates a call for the method `yii\db\Migration::createTable()`
+ * Creates a call for the method `yii\db\Migration::createTable()`.
  */
 /* @var $table string the name table */
 /* @var $fields array the fields */

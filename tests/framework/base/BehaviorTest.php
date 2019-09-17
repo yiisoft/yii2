@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
@@ -74,6 +79,13 @@ class BehaviorTest extends TestCase
         $this->mockApplication();
     }
 
+    protected function tearDown()
+    {
+        parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
+    }
+
     public function testAttachAndAccessingWithName()
     {
         BarBehavior::$attachCount = 0;
@@ -141,7 +153,7 @@ class BehaviorTest extends TestCase
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
 
         $this->assertFalse($bar->hasMethod('nomagicBehaviorMethod'));
         $bar->attachBehavior('bar', $behavior);
