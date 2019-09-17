@@ -161,7 +161,7 @@ class UploadForm extends Model
 ```
 
 In the view file, you should add the `multiple` option to the `fileInput()` call so that the file upload field
-can receive multiple files:
+can receive multiple files. You also need to change `imageFiles` to `imageFiles[]` so that the attribute values are submitted as an array:
  
 ```php
 <?php

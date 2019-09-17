@@ -589,4 +589,28 @@ class FileValidatorTest extends TestCase
         $this->assertTrue($m->hasErrors('attr_err_tmp'));
         $this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_tmp')));
     }
+
+    /**
+     * @param string $mask
+     * @param string $fileMimeType
+     * @param bool   $expected
+     * @dataProvider mimeTypeCaseInsensitive
+     */
+    public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected) {
+        $validator = $this->getMock('\yii\validators\FileValidator', ['getMimeTypeByFile']);
+        $validator->method('getMimeTypeByFile')->willReturn($fileMimeType);
+        $validator->mimeTypes = [$mask];
+
+        $file = $this->getRealTestFile('test.txt');
+        $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
+    }
+
+    public function mimeTypeCaseInsensitive() {
+        return [
+            ['Image/*', 'image/jp2', true],
+            ['image/*', 'Image/jp2', true],
+            ['application/vnd.ms-word.document.macroEnabled.12', 'application/vnd.ms-word.document.macroenabled.12', true],
+            ['image/jxra', 'image/jxrA', true],
+        ];
+    }
 }

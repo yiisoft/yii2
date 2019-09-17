@@ -68,10 +68,8 @@ help/index
 help/list
 help/list-action-options
 help/usage
-magic/e-tag
 magic/e-tag/delete
 magic/e-tag/list-e-tags
-magic/subFolder/sub
 magic/subFolder/sub/test
 
 STRING
@@ -186,6 +184,31 @@ STRING
         $this->assertContains('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
+    }
+
+    public function testActionListContainsNoEmptyCommands()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerNamespace' => 'yiiunit\data\console\controllers',
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertNotContains("fake-empty\n", $result);
+        $this->assertNotContains("fake-no-default\n", $result);
+        $this->assertContains("fake-no-default/index\n", $result);
+    }
+
+    public function testActionIndexContainsNoEmptyCommands()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerNamespace' => 'yiiunit\data\console\controllers',
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('index'));
+        $this->assertNotContains("- fake-empty", $result);
+        $this->assertContains("- fake-no-default", $result);
+        $this->assertContains("    fake-no-default/index", $result);
+        $this->assertNotContains("    fake-no-default/index (default)", $result);
     }
 }
 

@@ -698,7 +698,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             'items i' => function ($q) use ($aliasMethod) {
                 /* @var $q ActiveQuery */
                 if ($aliasMethod === 'explicit') {
-                    $q->orderBy('{{i}}.[[id]]');
+                    $q->orderBy('{{i}}.id');
                 } elseif ($aliasMethod === 'querysyntax') {
                     $q->orderBy('{{@item}}.id');
                 } elseif ($aliasMethod === 'applyAlias') {

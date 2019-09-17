@@ -613,7 +613,10 @@ class Connection extends Component
         $token = 'Opening DB connection: ' . $this->dsn;
         $enableProfiling = $this->enableProfiling;
         try {
-            Yii::info($token, __METHOD__);
+            if ($this->enableLogging) {
+                Yii::info($token, __METHOD__);
+            }
+
             if ($enableProfiling) {
                 Yii::beginProfile($token, __METHOD__);
             }
@@ -706,7 +709,9 @@ class Connection extends Component
     {
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
-            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
+            if ($this->driverName !== 'sqlsrv') {
+                $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
+            }
         }
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));

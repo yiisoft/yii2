@@ -377,11 +377,13 @@ the protected cookie (if the browser supports it).
 You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
 ### secure
-The purpose of the secure flag is to prevent cookies from being send in clear text. If the browser supports the
+
+The purpose of the secure flag is to prevent cookies from being sent in clear text. If the browser supports the
 secure flag it will only include the cookie when the request is sent over a secure (TLS) connection.
 You may read the [SecureFlag wiki article](https://www.owasp.org/index.php/SecureFlag) for more details.
 
 ### sameSite
+
 Starting with Yii 2.0.21 the [[yii\web\Cookie::sameSite]] setting is supported. It requires PHP version 7.3.0 or higher.
 The purpose of the `sameSite` setting is to prevent CSRF (Cross-Site Request Forgery) attacks.
 If the browser supports the `sameSite` setting it will only include the cookie according to the specified policy ('Lax' or 'Strict').

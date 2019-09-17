@@ -227,7 +227,7 @@ class FileValidator extends Validator
             if ($this->maxFiles && $filesCount > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             }
-            
+
             if ($this->minFiles && $this->minFiles > $filesCount) {
                 $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
             }
@@ -509,7 +509,7 @@ class FileValidator extends Validator
      */
     private function buildMimeTypeRegexp($mask)
     {
-        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/';
+        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/i';
     }
 
     /**
@@ -523,10 +523,10 @@ class FileValidator extends Validator
      */
     protected function validateMimeType($file)
     {
-        $fileMimeType = FileHelper::getMimeType($file->tempName);
+        $fileMimeType = $this->getMimeTypeByFile($file->tempName);
 
         foreach ($this->mimeTypes as $mimeType) {
-            if ($mimeType === $fileMimeType) {
+            if (strcasecmp($mimeType, $fileMimeType) === 0) {
                 return true;
             }
 
@@ -536,5 +536,17 @@ class FileValidator extends Validator
         }
 
         return false;
+    }
+
+    /**
+     * Get MIME type by file path
+     *
+     * @param string $filePath
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.26
+     */
+    protected function getMimeTypeByFile($filePath) {
+        return FileHelper::getMimeType($filePath);
     }
 }

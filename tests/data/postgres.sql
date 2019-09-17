@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
 DROP TABLE IF EXISTS "T_upsert";
+DROP TABLE IF EXISTS "T_upsert_1";
 
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -309,11 +310,11 @@ DROP TABLE IF EXISTS "validatorMain" CASCADE;
 DROP TABLE IF EXISTS "validatorRef" CASCADE;
 
 CREATE TABLE "validator_main" (
-  id integer not null primary key,
+  id serial primary key,
   field1 VARCHAR(255)
 );
 CREATE TABLE "validator_ref" (
-  id integer not null primary key,
+  id serial primary key,
   a_field VARCHAR(255),
   ref     integer
 );
@@ -328,16 +329,16 @@ CREATE TABLE "validatorRef" (
   CONSTRAINT "validatorRef_id" FOREIGN KEY ("ref") REFERENCES "validatorMain" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO "validator_main" (id, field1) VALUES (1, 'just a string1');
-INSERT INTO "validator_main" (id, field1) VALUES (2, 'just a string2');
-INSERT INTO "validator_main" (id, field1) VALUES (3, 'just a string3');
-INSERT INTO "validator_main" (id, field1) VALUES (4, 'just a string4');
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
+INSERT INTO "validator_main" (field1) VALUES ('just a string1');
+INSERT INTO "validator_main" (field1) VALUES ('just a string2');
+INSERT INTO "validator_main" (field1) VALUES ('just a string3');
+INSERT INTO "validator_main" (field1) VALUES ('just a string4');
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_3', 3);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_5', 5);
 INSERT INTO "validatorMain" (id, field1) VALUES (2, 'just a string2');
 INSERT INTO "validatorMain" (id, field1) VALUES (3, 'just a string3');
 INSERT INTO "validatorRef" (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
@@ -415,4 +416,9 @@ CREATE TABLE "T_upsert"
     "orders" INT NOT NULL DEFAULT 0,
     "profile_id" INT NULL,
     UNIQUE ("email", "recovery_email")
+);
+
+CREATE TABLE "T_upsert_1"
+(
+    "a" INT NOT NULL PRIMARY KEY
 );

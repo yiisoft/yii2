@@ -1,10 +1,85 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.21 under development
+2.0.27 under development
 ------------------------
 
+- Bug #17539: Fixed error when using `batch()` with `indexBy()` with MSSQL (alexkart)
+- Bug #17549: Fix `yii\db\ExpressionInterface` not supported in `yii\db\conditions\SimpleConditionBuilder` (razvanphp)
+- Bug #17434: Fix regular expression illegal character; Repeated fix for Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #16855: Ignore console commands that have no actions (alexeevdv)
+- Enh #16826: `appendTimestamp` support was added to `View` methods `registerCssFile()` and `registerJsFile()` (onmotion)
+- Bug #16671: Logging in `Connection::open()` was not respecting `Connection::$enableLogging` (samdark)
+
+2.0.26 September 03, 2019
+-------------------------
+
+- Bug #16305: Fix `FileValidator` mime-type validation failure because of case sensitivity (kamarton)
+- Bug #16531: Fix error in `Response::sendContent()` when `set_time_limit()` is disabled (brandonkelly)
+- Bug #17355: Fix incorrect sequence of `EVENT_AFTER_REQUEST` when using Pjax (kamarton)
+- Bug #17434: Fix Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #17449: Ensure `CHECK` statement goes after `COMMENT` in MySQL `QueryBuilder::addCommentOnColumn()` (Manu311)
+- Bug #17504: Fix upsert when `$updateColumns` is `true` but there are no columns to update in the table (alexkart)
+- Bug #17507: Fix regular expression escaping and simplify condition in `Controller::createAction()` (kamarton)
+- Bug #17511: Fix IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
+- Bug #17522: `DbManager::isEmptyUserId()` is now protected (samdark)
+
+
+2.0.25 August 13, 2019
+----------------------
+
+- Bug #15779: If directory path is passed to `FileHelper::unlink()` and directory has files it will not delete files in this directory on Windows now (alexkart)
+- Bug #17223: Fixed detaching a behavior event when it is a Closure instance (GHopperMSK, rob006)
+- Bug #17473: Fixed `SimpleConditionBuilder::build()` when column is not a string (alexkart)
+- Bug #17485: Reverted #17477 (samdark)
+- Bug #17486: Fixed error when using `batch()` without `$db` parameter with MSSQL (alexkart)
+
+
+2.0.24 July 30, 2019
+--------------------
+
+- Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
+- Bug #16796: Fixed addition and removal of table and column comments in MSSQL (sdlins)
+- Bug #17219: Fixed quoting of table names with spaces in MSSQL (alexkart)
+- Bug #17424: Subdomain support for `User::loginRequired` (alex-code)
+- Bug #17437: Fixed generating namespaced migrations (bizley)
+- Bug #17449: Fixed order of SQL column build syntax for MySQL migration (choken)
+- Bug #17457: Fixed `phpTypecast()` for MSSQL (alexkart)
+- Bug #17469: Fixed updating `Yii` logger instance when setting new logger via configuration (samdark)
+
+
+2.0.23 July 16, 2019
+--------------------
+
+- Bug #10023: Fixed MSSQL "There are no more rows in the active result set" exception when using `each()` and `batch()` (alexkart)
+- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
+- Bug #17413, #17418, #17426, #17431: Fixed MSSQL tests (alexkart)
+- Bug #17420: Fixed loading of column default values for MSSQL (alexkart)
+- Bug #17435: Fixed `i18n_init` migration for MSSQL (alexkart)
+
+
+2.0.22 July 02, 2019
+--------------------
+
+- Bug #16394: Fixed issues in `migrate/create` when specifying default values with colons and adding multiple columns (alexkart)
+- Bug #17057: Fixed issues with table names that contain special characters or keywords in MSSQL (alexkart)
+- Bug #17325: Fixed "Cannot drop view" for MySQL while `migrate/fresh` (alexkart)
+- Bug #17341: Re-added fix for error from yii.activeForm.js in strict mode (mikehaertl)
+- Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
+- Bug #17389: Fixed `UniqueValidator` to work with Active Record having `joinWith()` in its `find()` (garthpmurray)
+- Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
+- Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
+
+
+2.0.21 June 18, 2019
+--------------------
+
+- Bug #16565: Added missing parts of the context message in `\yii\log\Target::collect` (alexkart)
+- Bug #17070: Striped invalid character from fallback file name in `Content-Disposition` header when using `\yii\web\Response::sendFile` (alexkart)
+- Bug #17332: Trigger 'change' for checkboxes in GridView (andrii-borysov-me)
 - Bug #17341: Fixed error from yii.activeForm.js in strict mode (mikehaertl)
+- Bug #17341: Allowed callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
+- Bug #17356: MSSQL Schema was not detecting string field size (ricarnevale, sdlins)
 - Enh #17344: Improved performance of `yii\db\Connection::addSelect()` (brandonkelly)
 - Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
 - Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
@@ -18,6 +93,7 @@ Yii Framework 2 Change Log
 - Bug #17299: Fixed adding of input error class in `\yii\widgets\ActiveField::widget` (alexkart)
 - Bug #17328: Added mime aliases for BMP and SVG files (cmoeke)
 - Bug #17336: Fixed wildcard matching in Event::hasHandlers() (samdark)
+- Bug #12080: Fixed afterValidate triggering when any validation occurs (czzplnm)
 
 
 2.0.19 May 21, 2019
