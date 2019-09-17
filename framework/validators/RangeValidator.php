@@ -24,7 +24,7 @@ use yii\helpers\ArrayHelper;
 class RangeValidator extends Validator
 {
     /**
-     * @var array|\Traversable|\Closure|callable a list of valid values that the attribute value should be among or an anonymous function that returns
+     * @var array|\Traversable|callable a list of valid values that the attribute value should be among or a callable that returns
      * such a list. The signature of the anonymous function should be as follows,
      *
      * ```php
