@@ -309,7 +309,7 @@ $user->touch('login_time');
 Comparación con Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-Mientras que los comportamientos son similares a [traits](http://www.php.net/traits) en cuanto que ambos "inyectan" sus
+Mientras que los comportamientos son similares a [traits](https://secure.php.net/traits) en cuanto que ambos "inyectan" sus
 métodos  y propiedades a la clase primaria, son diferentes en muchos aspectos. Tal y como se describe abajo, los dos
 tienen sus ventajas y desventajas. Son más como complementos el uno al otro en lugar de alternativas.
 

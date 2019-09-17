@@ -13,6 +13,7 @@ use yii\di\Container;
 use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
+use yiiunit\data\base\CallableClass;
 
 /**
  * BaseYiiTest.
@@ -91,6 +92,8 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
         }));
+
+        $this->assertTrue(Yii::createObject(new CallableClass()));
     }
 
     public function testCreateObjectEmptyArrayException()

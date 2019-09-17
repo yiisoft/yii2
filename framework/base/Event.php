@@ -164,19 +164,21 @@ class Event extends BaseObject
 
         // wildcard event names
         $removed = false;
-        foreach (self::$_eventWildcards[$name][$class] as $i => $event) {
-            if ($event[0] === $handler) {
-                unset(self::$_eventWildcards[$name][$class][$i]);
-                $removed = true;
+        if (isset(self::$_eventWildcards[$name][$class])) {
+            foreach (self::$_eventWildcards[$name][$class] as $i => $event) {
+                if ($event[0] === $handler) {
+                    unset(self::$_eventWildcards[$name][$class][$i]);
+                    $removed = true;
+                }
             }
-        }
-        if ($removed) {
-            self::$_eventWildcards[$name][$class] = array_values(self::$_eventWildcards[$name][$class]);
-            // remove empty wildcards to save future redundant regex checks :
-            if (empty(self::$_eventWildcards[$name][$class])) {
-                unset(self::$_eventWildcards[$name][$class]);
-                if (empty(self::$_eventWildcards[$name])) {
-                    unset(self::$_eventWildcards[$name]);
+            if ($removed) {
+                self::$_eventWildcards[$name][$class] = array_values(self::$_eventWildcards[$name][$class]);
+                // remove empty wildcards to save future redundant regex checks :
+                if (empty(self::$_eventWildcards[$name][$class])) {
+                    unset(self::$_eventWildcards[$name][$class]);
+                    if (empty(self::$_eventWildcards[$name])) {
+                        unset(self::$_eventWildcards[$name]);
+                    }
                 }
             }
         }
@@ -223,23 +225,23 @@ class Event extends BaseObject
         );
 
         // regular events
-        foreach ($classes as $class) {
-            if (!empty(self::$_events[$name][$class])) {
+        foreach ($classes as $className) {
+            if (!empty(self::$_events[$name][$className])) {
                 return true;
             }
         }
 
         // wildcard events
         foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
-            if (!StringHelper::matchWildcard($nameWildcard, $name)) {
+            if (!StringHelper::matchWildcard($nameWildcard, $name, ['escape' => false])) {
                 continue;
             }
             foreach ($classHandlers as $classWildcard => $handlers) {
                 if (empty($handlers)) {
                     continue;
                 }
-                foreach ($classes as $class) {
-                    if (!StringHelper::matchWildcard($classWildcard, $class)) {
+                foreach ($classes as $className) {
+                    if (StringHelper::matchWildcard($classWildcard, $className, ['escape' => false])) {
                         return true;
                     }
                 }

@@ -39,9 +39,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_FLOAT => 'float',
         Schema::TYPE_DOUBLE => 'double',
         Schema::TYPE_DECIMAL => 'decimal(10,0)',
-        Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
-        Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
         Schema::TYPE_BINARY => 'blob',
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
@@ -49,6 +46,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'json'
     ];
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->typeMap = array_merge($this->typeMap, $this->defaultTimeTypeMap());
+    }
 
     /**
      * {@inheritdoc}
@@ -271,6 +278,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $insertSql;
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         if ($updateColumns === true) {
             $updateColumns = [];
@@ -295,11 +306,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
             $this->getColumnDefinition($table, $column)));
 
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+        $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
+        $check = preg_match($checkRegex, $definition, $checkMatches);
+        if ($check === 1) {
+            $definition = preg_replace($checkRegex, '', $definition);
+        }
+        $alterSql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' CHANGE ' . $this->db->quoteColumnName($column)
             . ' ' . $this->db->quoteColumnName($column)
             . (empty($definition) ? '' : ' ' . $definition)
             . ' COMMENT ' . $this->db->quoteValue($comment);
+        if ($check === 1) {
+            $alterSql .= ' ' . $checkMatches[0];
+        }
+        return $alterSql;
     }
 
     /**
@@ -362,4 +382,41 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return null;
     }
 
+    /**
+     * Checks the ability to use fractional seconds.
+     *
+     * @return bool
+     * @see https://dev.mysql.com/doc/refman/5.6/en/fractional-seconds.html
+     */
+    private function supportsFractionalSeconds()
+    {
+        $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        return version_compare($version, '5.6.4', '>=');
+    }
+
+    /**
+     * Returns the map for default time type.
+     * If the version of MySQL is lower than 5.6.4, then the types will be without fractional seconds,
+     * otherwise with fractional seconds.
+     *
+     * @return array
+     */
+    private function defaultTimeTypeMap()
+    {
+        $map = [
+            Schema::TYPE_DATETIME => 'datetime',
+            Schema::TYPE_TIMESTAMP => 'timestamp',
+            Schema::TYPE_TIME => 'time',
+        ];
+
+        if ($this->supportsFractionalSeconds()) {
+            $map = [
+                Schema::TYPE_DATETIME => 'datetime(0)',
+                Schema::TYPE_TIMESTAMP => 'timestamp(0)',
+                Schema::TYPE_TIME => 'time(0)',
+            ];
+        }
+
+        return $map;
+    }
 }

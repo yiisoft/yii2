@@ -13,7 +13,7 @@ Yii 引入了名为 [[yii\base\Component]] 的基类以支持事件。
 事件处理器（Event Handlers） <span id="event-handlers"></span>
 -------------------------
 
-事件处理器是一个[PHP 回调函数](http://www.php.net/manual/en/language.types.callable.php)，
+事件处理器是一个[PHP 回调函数](https://secure.php.net/manual/en/language.types.callable.php)，
 当它所附加到的事件被触发时它就会执行。可以使用以下回调函数之一：
 
 - 字符串形式指定的 PHP 全局函数，如 `'trim'` ；

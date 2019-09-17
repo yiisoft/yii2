@@ -473,8 +473,8 @@ $post->updateCounters(['view_count' => 1]);
 > HTML フォームでは全ての値が文字列として表現されるからです。
 > 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように
 > [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
-> このフィルタは、[intval()](http://php.net/manual/ja/function.intval.php), [floatval()](http://php.net/manual/ja/function.floatval.php),
-> [boolval](http://php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
+> このフィルタは、[intval()](https://secure.php.net/manual/ja/function.intval.php), [floatval()](https://secure.php.net/manual/ja/function.floatval.php),
+> [boolval](https://secure.php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
 
 ### デフォルト属性値 <span id="default-attribute-values"></span>
 
@@ -689,7 +689,7 @@ try {
 ```
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの catch ブロックを持っています。
-> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://secure.php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 第二の方法は、トランザクションのサポートが必要な DB 操作を [[yii\db\ActiveRecord::transactions()]]
@@ -743,9 +743,9 @@ class Post extends \yii\db\ActiveRecord
 1. アクティブ・レコード・クラスと関連付けられている DB テーブルに、各行のバージョン番号を保存するカラムを作成します。
    カラムは長倍精度整数 (big integer) タイプでなければなりません (MySQL では `BIGINT DEFAULT 0` です)。
 2. [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
-3. あなたのモデル・クラスの中で [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] を実装し、受診したリクエストからその値を自動的に解析できるようにします。
-4. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
+3. あなたのモデル・クラスの中で [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] を実装し、受信したリクエストからその値を自動的に解析できるようにします。
    [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] が検証を処理すべきですので、バージョンの属性は検証規則から削除します。
+4. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
 5. アクティブ・レコードを使って行の更新を行うコントローラ・アクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、
    衝突を解決するために必要なビジネス・ロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
 
@@ -793,6 +793,11 @@ public function behaviors()
     ];
 }
 ```
+> Note: [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] は、ユーザが正しいバージョン番号を送信したときにだけ
+> レコードが保存されるという事を保証します。そして、そのために、[[\yii\web\Request::getBodyParam()|getBodyParam()]] の結果を直接に解析します。
+> そこで、あなたのモデル・クラスを拡張して、親モデルで第2段階を行い、ビヘイビアのアタッチ(第3段階)を子モデルで行うようにすると便利でしょう。
+> そうすれば、一方を内部使用のためだけのインスタンスとして使うことが出来、他方をエンド・ユーザの入力の受信に責任を持つモデルとしてコントローラと結びつける事が出来ます。
+> もう一つのやり方としては、[[\yii\behaviors\OptimisticLockBehavior::$value|value]] プロパティを構成して独自のロジックを実装することも可能です。
 
 
 ## リレーショナル・データを扱う <span id="relational-data"></span>
@@ -1149,7 +1154,7 @@ $customers = Customer::find()->with([
 > ```
 
 
-### リレーションを使ってテーブルを結合する <a name="joining-with-relations">
+### リレーションを使ってテーブルを結合する <span id="joining-with-relations"></span>
 
 > Note: この項で説明されていることは、MySQL、PostgreSQL など、
   リレーショナル・データベースに対してのみ適用されます。

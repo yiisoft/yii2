@@ -106,7 +106,7 @@ di Yii. Puoi verificare le richieste in due modi:
   ```
 
 Devi configurare la tua installazione di PHP in modo che soddisfi le richieste minime di Yii. E' molto importante che tu stia usando 
-PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](http://www.php.net/manual/en/pdo.installation.php) e un driver
+PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](https://secure.php.net/manual/en/pdo.installation.php) e un driver
 di database di PDO (come ad esempio `pdo_mysql` per i database MySQL), se la tua applicazione richiede un database.
 
 
@@ -160,7 +160,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configurazione consigliata di Nginx <span id="recommended-nginx-configuration"></span>
 
-Devi aver installato PHP con il demone [FPM](http://php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
+Devi aver installato PHP con il demone [FPM](https://secure.php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
 Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.test` con
 il nome reale del server web.
 

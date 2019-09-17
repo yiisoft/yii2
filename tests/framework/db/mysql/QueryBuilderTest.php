@@ -85,6 +85,64 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ];
         }
 
+        return array_merge(parent::columnTypes(), $this->columnTimeTypes(), $columns);
+    }
+
+    public function columnTimeTypes()
+    {
+        $columns = [
+            [
+                Schema::TYPE_DATETIME . ' NOT NULL',
+                $this->dateTime()->notNull(),
+                'datetime NOT NULL',
+            ],
+            [
+                Schema::TYPE_DATETIME,
+                $this->dateTime(),
+                'datetime',
+            ],
+            [
+                Schema::TYPE_TIME . ' NOT NULL',
+                $this->time()->notNull(),
+                'time NOT NULL',
+            ],
+            [
+                Schema::TYPE_TIME,
+                $this->time(),
+                'time',
+            ],
+            [
+                Schema::TYPE_TIMESTAMP . ' NOT NULL',
+                $this->timestamp()->notNull(),
+                'timestamp NOT NULL',
+            ],
+            [
+                Schema::TYPE_TIMESTAMP . ' NULL DEFAULT NULL',
+                $this->timestamp()->defaultValue(null),
+                'timestamp NULL DEFAULT NULL',
+            ],
+        ];
+
+        /**
+         * @link https://github.com/yiisoft/yii2/issues/14367
+         */
+        $mysqlVersion = $this->getDb()->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $supportsFractionalSeconds = version_compare($mysqlVersion,'5.6.4', '>=');
+        if ($supportsFractionalSeconds) {
+            $expectedValues = [
+                'datetime(0) NOT NULL',
+                'datetime(0)',
+                'time(0) NOT NULL',
+                'time(0)',
+                'timestamp(0) NOT NULL',
+                'timestamp(0) NULL DEFAULT NULL',
+            ];
+
+            foreach ($expectedValues as $index => $expected) {
+                $columns[$index][2] = $expected;
+            }
+        }
+
         /**
          * @link https://github.com/yiisoft/yii2/issues/14834
          */
@@ -99,11 +157,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             $columns[] = [
                 Schema::TYPE_TIMESTAMP,
                 $this->timestamp(),
-                'timestamp',
+                $supportsFractionalSeconds ? 'timestamp(0)' : 'timestamp',
             ];
         }
 
-        return array_merge(parent::columnTypes(), $columns);
+        return $columns;
     }
 
     public function primaryKeysProvider()
@@ -198,6 +256,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             'query, values and expressions without update part' => [
                 3 => 'INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]] ON DUPLICATE KEY UPDATE `ts`=:qp1, [[orders]]=T_upsert.orders + 1',
             ],
+            'no columns to update' => [
+                3 => 'INSERT INTO `T_upsert_1` (`a`) VALUES (:qp0) ON DUPLICATE KEY UPDATE `a`=`T_upsert_1`.`a`',
+            ],
         ];
         $newData = parent::upsertProvider();
         foreach ($concreteData as $testName => $data) {
@@ -281,5 +342,29 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ];
 
         return $items;
+    }
+
+    public function testIssue17449()
+    {
+        $db = $this->getConnection();
+        $pdo = $db->pdo;
+        $pdo->exec('DROP TABLE IF EXISTS `issue_17449`');
+
+        $tableQuery = <<<MySqlStatement
+CREATE TABLE `issue_17449` (
+  `test_column` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'some comment' CHECK (json_valid(`test_column`))
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+MySqlStatement;
+        $db->createCommand($tableQuery)->execute();
+
+        $actual = $db->createCommand()->addCommentOnColumn('issue_17449', 'test_column', 'Some comment')->rawSql;
+
+        $checkPos = stripos($actual, 'check');
+        if ($checkPos === false) {
+            $this->markTestSkipped("The used MySql-Server removed or moved the CHECK from the column line, so the original bug doesn't affect it");
+        }
+        $commentPos = stripos($actual, 'comment');
+        $this->assertNotFalse($commentPos);
+        $this->assertLessThan($checkPos, $commentPos);
     }
 }

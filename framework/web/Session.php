@@ -54,7 +54,7 @@ use yii\base\InvalidConfigException;
  * variables share the same name space. If you have a normal session variable using the same name, its value will
  * be overwritten by this method. This property is write-only.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
- * started on every session initialization, defaults to 1 meaning 1% chance.
+ * started on every session initialization.
  * @property bool $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
  * @property bool $isActive Whether the session has started. This property is read-only.
@@ -86,7 +86,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
      * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
-     * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
+     * @see https://secure.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
     /**
@@ -261,7 +261,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Gets the session ID.
-     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
+     * This is a wrapper for [PHP session_id()](https://secure.php.net/manual/en/function.session-id.php).
      * @return string the current session ID
      */
     public function getId()
@@ -271,7 +271,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the session ID.
-     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
+     * This is a wrapper for [PHP session_id()](https://secure.php.net/manual/en/function.session-id.php).
      * @param string $value the session ID for the current session
      */
     public function setId($value)
@@ -282,7 +282,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Updates the current session ID with a newly generated one.
      *
-     * Please refer to <http://php.net/session_regenerate_id> for more details.
+     * Please refer to <https://secure.php.net/session_regenerate_id> for more details.
      *
      * This method has no effect when session is not [[getIsActive()|active]].
      * Make sure to call [[open()]] before calling it.
@@ -306,7 +306,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Gets the name of the current session.
-     * This is a wrapper for [PHP session_name()](http://php.net/manual/en/function.session-name.php).
+     * This is a wrapper for [PHP session_name()](https://secure.php.net/manual/en/function.session-name.php).
      * @return string the current session name
      */
     public function getName()
@@ -316,7 +316,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the name for the current session.
-     * This is a wrapper for [PHP session_name()](http://php.net/manual/en/function.session-name.php).
+     * This is a wrapper for [PHP session_name()](https://secure.php.net/manual/en/function.session-name.php).
      * @param string $value the session name for the current session, must be an alphanumeric string.
      * It defaults to "PHPSESSID".
      */
@@ -329,7 +329,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Gets the current session save path.
-     * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
+     * This is a wrapper for [PHP session_save_path()](https://secure.php.net/manual/en/function.session-save-path.php).
      * @return string the current session save path, defaults to '/tmp'.
      */
     public function getSavePath()
@@ -339,7 +339,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the current session save path.
-     * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
+     * This is a wrapper for [PHP session_save_path()](https://secure.php.net/manual/en/function.session-save-path.php).
      * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidArgumentException if the path is not a valid directory
      */
@@ -355,7 +355,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @return array the session cookie parameters.
-     * @see http://php.net/manual/en/function.session-get-cookie-params.php
+     * @see https://secure.php.net/manual/en/function.session-get-cookie-params.php
      */
     public function getCookieParams()
     {
@@ -367,8 +367,18 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
+     * Starting with Yii 2.0.21 `sameSite` is also supported. It requires PHP version 7.3.0 or higher.
+     * For securtiy, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
+     * To use this feature across different PHP versions check the version first. E.g.
+     * ```php
+     * [
+     *     'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
+     * ]
+     * ```
+     * See https://www.owasp.org/index.php/SameSite for more information about `sameSite`.
+     *
      * @throws InvalidArgumentException if the parameters are incomplete.
-     * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+     * @see https://secure.php.net/manual/en/function.session-set-cookie-params.php
      */
     public function setCookieParams(array $value)
     {
@@ -379,13 +389,21 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Sets the session cookie parameters.
      * This method is called by [[open()]] when it is about to open the session.
      * @throws InvalidArgumentException if the parameters are incomplete.
-     * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+     * @see https://secure.php.net/manual/en/function.session-set-cookie-params.php
      */
     private function setCookieParamsInternal()
     {
         $data = $this->getCookieParams();
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
-            session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
+            if (PHP_VERSION_ID >= 70300) {
+                session_set_cookie_params($data);
+            } else {
+                if (!empty($data['sameSite'])) {
+                    throw new InvalidConfigException('sameSite cookie is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
+                }
+                session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
+            }
+
         } else {
             throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
@@ -435,7 +453,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+     * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
      */
     public function getGCProbability()
     {

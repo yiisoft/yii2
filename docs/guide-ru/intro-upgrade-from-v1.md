@@ -28,16 +28,16 @@ Yii 2.0 широко использует [Composer](https://getcomposer.org/), 
 версией 5.2, которая использовалась Yii 1.1. Таким образом, существует много различий в языке, которые вы должны принимать
 во внимание:
 
-- [Пространства имён](http://php.net/manual/ru/language.namespaces.php);
-- [Анонимные функции](http://php.net/manual/ru/functions.anonymous.php);
+- [Пространства имён](https://secure.php.net/manual/ru/language.namespaces.php);
+- [Анонимные функции](https://secure.php.net/manual/ru/functions.anonymous.php);
 - Использование короткого синтаксиса для массивов: `[...элементы...]` вместо `array(...элементы...)`;
 - Использование короткого echo `<?=` для вывода в файлах представлений. С версии PHP 5.4 данную возможность можно
   использовать не опасаясь;
-- [Классы и интерфейсы SPL](http://php.net/manual/ru/book.spl.php);
-- [Позднее статическое связывание (LSB)](http://php.net/manual/ru/language.oop5.late-static-bindings.php);
-- [Классы для дат и времени](http://php.net/manual/ru/book.datetime.php);
-- [Трейты](http://php.net/manual/ru/language.oop5.traits.php);
-- [Интернационализация (intl)](http://php.net/manual/ru/book.intl.php); Yii 2.0 использует расширение PHP `intl`
+- [Классы и интерфейсы SPL](https://secure.php.net/manual/ru/book.spl.php);
+- [Позднее статическое связывание (LSB)](https://secure.php.net/manual/ru/language.oop5.late-static-bindings.php);
+- [Классы для дат и времени](https://secure.php.net/manual/ru/book.datetime.php);
+- [Трейты](https://secure.php.net/manual/ru/language.oop5.traits.php);
+- [Интернационализация (intl)](https://secure.php.net/manual/ru/book.intl.php); Yii 2.0 использует расширение PHP `intl`
   для различного функционала интернационализации.
 
 
@@ -286,7 +286,7 @@ Yii 2.0 поддерживает автоматическую генерацию
 I18N
 ----
 
-В Yii 2.0 встроенные форматтеры времени и чисел были убраны в пользу [PECL расширения PHP intl](http://pecl.php.net/package/intl).
+В Yii 2.0 встроенные форматтеры времени и чисел были убраны в пользу [PECL расширения PHP intl](https://pecl.php.net/package/intl).
 
 Перевод сообщений теперь осуществляется через компонент приложения `i18n`. Данный компонент управляет множеством
 исходных хранилищ сообщений, что позволяет вам использовать разные хранилища для исходных сообщений в зависимости

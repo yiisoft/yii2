@@ -544,10 +544,10 @@ class Module extends ServiceLocator
      * to resolve the given route:
      *
      * 1. If the route is empty, use [[defaultRoute]];
-     * 2. If the first segment of the route is a valid module ID as declared in [[modules]],
-     *    call the module's `createController()` with the rest part of the route;
-     * 3. If the first segment of the route is found in [[controllerMap]], create a controller
+     * 2. If the first segment of the route is found in [[controllerMap]], create a controller
      *    based on the corresponding configuration found in [[controllerMap]];
+     * 3. If the first segment of the route is a valid module ID as declared in [[modules]],
+     *    call the module's `createController()` with the rest part of the route;
      * 4. The given route is in the format of `abc/def/xyz`. Try either `abc\DefController`
      *    or `abc\def\XyzController` class within the [[controllerNamespace|controller namespace]].
      *

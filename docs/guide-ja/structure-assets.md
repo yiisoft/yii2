@@ -266,9 +266,11 @@ Yii を使ってこれらのアセットを発行したい場合は、プロジ�
 
 ```json
 "config": {
-    "asset-installer-paths": {
-        "npm-asset-library": "vendor/npm",
-        "bower-asset-library": "vendor/bower"
+    "fxp-asset": {
+        "installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```

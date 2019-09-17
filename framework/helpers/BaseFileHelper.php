@@ -50,6 +50,9 @@ class BaseFileHelper
      * - Turn multiple consecutive slashes into a single one (e.g. "/a///b/c" becomes "/a/b/c")
      * - Remove ".." and "." based on their meanings (e.g. "/a/./b/../c" becomes "/a/c")
      *
+     * Note: For registered stream wrappers, the consecutive slashes rule
+     * and ".."/"." translations are skipped.
+     *
      * @param string $path the file/directory path to be normalized
      * @param string $ds the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
      * @return string the normalized file/directory path
@@ -59,6 +62,12 @@ class BaseFileHelper
         $path = rtrim(strtr($path, '/\\', $ds . $ds), $ds);
         if (strpos($ds . $path, "{$ds}.") === false && strpos($path, "{$ds}{$ds}") === false) {
             return $path;
+        }
+        // fix #17235 stream wrappers
+        foreach (stream_get_wrappers() as $protocol) {
+            if (strpos($path, "{$protocol}://") === 0) {
+                return $path;
+            }
         }
         // the path may contain ".", ".." or double slashes, need to clean them up
         if (strpos($path, "{$ds}{$ds}") === 0 && $ds == '\\') {
@@ -128,11 +137,11 @@ class BaseFileHelper
     /**
      * Determines the MIME type of the specified file.
      * This method will first try to determine the MIME type based on
-     * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
+     * [finfo_open](https://secure.php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
      * it will fall back to [[getMimeTypeByExtension()]] when `$checkExtension` is true.
      * @param string $file the file name.
      * @param string $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
-     * This will be passed as the second parameter to [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
+     * This will be passed as the second parameter to [finfo_open()](https://secure.php.net/manual/en/function.finfo-open.php)
      * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
      * and this is null, it will use the file specified by [[mimeMagicFile]].
      * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
@@ -415,9 +424,16 @@ class BaseFileHelper
             return unlink($path);
         } catch (ErrorException $e) {
             // last resort measure for Windows
-            $lines = [];
-            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
-            return $deleteError !== 0;
+            if (is_dir($path) && count(static::findFiles($path)) !== 0) {
+                return false;
+            }
+            if (function_exists('exec') && file_exists($path)) {
+                exec('DEL /F/Q ' . escapeshellarg($path));
+
+                return !file_exists($path);
+            }
+
+            return false;
         }
     }
 
@@ -520,7 +536,7 @@ class BaseFileHelper
         return $list;
     }
 
-    /*
+    /**
      * @param string $dir
      */
     private static function setBasePath($dir, $options)
@@ -534,7 +550,7 @@ class BaseFileHelper
         return $options;
     }
 
-    /*
+    /**
      * @param string $dir
      */
     private static function openDir($dir)
@@ -546,7 +562,7 @@ class BaseFileHelper
         return $handle;
     }
 
-    /*
+    /**
      * @param string $dir
      */
     private static function clearDir($dir)
@@ -771,8 +787,8 @@ class BaseFileHelper
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
      * @param bool $caseSensitive
-     * @throws InvalidArgumentException
      * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
+     * @throws InvalidArgumentException
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {

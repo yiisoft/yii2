@@ -1,7 +1,7 @@
 Объекты доступа к данным (DAO)
 ==============================
 
-Построенные поверх [PDO](http://php.net/manual/ru/book.pdo.php), Yii DAO (объекты доступа к данным) обеспечивают
+Построенные поверх [PDO](https://secure.php.net/manual/ru/book.pdo.php), Yii DAO (объекты доступа к данным) обеспечивают
 объектно-ориентированный API для доступа к реляционным базам данных. Это основа для других, более продвинутых, методов
 доступа к базам данных, включая [построитель запросов](db-query-builder.md) и [active record](db-active-record.md).
 
@@ -62,7 +62,7 @@ return [
 > Tip: Вы можете настроить несколько компонентов подключения, если в вашем приложении используется несколько баз данных.
 
 При настройке подключения, вы должны обязательно указывать Имя Источника Данных (DSN) через параметр [[yii\db\Connection::dsn|dsn]].
-Формат DSN отличается для разных баз данных. Дополнительное описание смотрите в [справочнике PHP](http://php.net/manual/ru/pdo.construct.php).
+Формат DSN отличается для разных баз данных. Дополнительное описание смотрите в [справочнике PHP](https://secure.php.net/manual/ru/pdo.construct.php).
 Ниже представлены несколько примеров:
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
@@ -174,7 +174,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-Привязка переменных реализована через [подготавливаемые запросы](http://php.net/manual/ru/mysqli.quickstart.prepared-statements.php).
+Привязка переменных реализована через [подготавливаемые запросы](https://secure.php.net/manual/ru/mysqli.quickstart.prepared-statements.php).
 Помимо предотвращения атак путём SQL инъекций, это увеличивает производительность, так как запрос подготавливается
 один раз, а потом выполняется много раз с разными параметрами. Например,
 
@@ -338,7 +338,7 @@ try {
 ```
 
 > Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
-> `\Exception` реализует интерфейс [`\Throwable` interface](http://php.net/manual/ru/class.throwable.php)
+> `\Exception` реализует интерфейс [`\Throwable` interface](https://secure.php.net/manual/ru/class.throwable.php)
 > начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 При вызове метода [[yii\db\Connection::beginTransaction()|beginTransaction()]], будет запущена новая транзакция.

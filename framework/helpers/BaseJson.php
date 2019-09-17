@@ -51,7 +51,7 @@ class BaseJson
      *
      * @param mixed $value the data to be encoded.
      * @param int $options the encoding options. For more details please refer to
-     * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
+     * <https://secure.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * @return string the encoding result.
      * @throws InvalidArgumentException if there is any encoding error.
      */
@@ -112,7 +112,7 @@ class BaseJson
     /**
      * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
      *
-     * @param int $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
+     * @param int $lastError error code from [json_last_error()](https://secure.php.net/manual/en/function.json-last-error.php).
      * @throws InvalidArgumentException if there is any encoding/decoding error.
      * @since 2.0.6
      */
