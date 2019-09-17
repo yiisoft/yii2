@@ -37,7 +37,7 @@ Em particular, os seguintes filtros serão executados na ordem em que estão lis
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: suporta a negociação de conteúdo, a ser explicado na seção [Formatação de Resposta](rest-response-formatting.md);
 * [[yii\filters\VerbFilter|verbFilter]]: suporta validação de métodos HTTP;
-* [[yii\filters\AuthMethod|authenticator]]: suporta autenticação de usuários, que será explicado na seção [Autenticação](rest-authentication.md);
+* [[yii\filters\auth\AuthMethod|authenticator]]: suporta autenticação de usuários, que será explicado na seção [Autenticação](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: suporta limitação de taxa, que será explicado na seção
  [Limitação de taxa](rest-rate-limiting.md).
 
@@ -112,7 +112,7 @@ Ao disponibilizar recursos por meio de APIs RESTful, muitas vezes você precisa 
 * se o usuário não tiver acesso, uma [[ForbiddenHttpException]] deve ser lançada.
 *
 * @param string $action o ID da ação a ser executada
-* @param \yii\base\Model $model o model a ser acessado. Se null, isso significa que nenhum model específico está sendo acessado.
+* @param \yii\base\Model $model o model a ser acessado. Se `null`, isso significa que nenhum model específico está sendo acessado.
 * @param array $params parâmetros adicionais
 * @throws ForbiddenHttpException se o usuário não tiver acesso
 */
@@ -120,6 +120,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
    // verifica se o usuário pode acessar $action and $model
    // lança a ForbiddenHttpException se o acesso for negado
+   if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

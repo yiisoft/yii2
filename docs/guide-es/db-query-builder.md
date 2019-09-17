@@ -1,7 +1,7 @@
-﻿Constructor de Consultas
+Constructor de Consultas
 ========================
 
-> Nota: Esta sección está en desarrollo.
+> Note: Esta sección está en desarrollo.
 
 Yii proporciona una capa de acceso básico a bases de datos como se describe en la sección
 [Objetos de Acceso a Bases de Datos](db-dao.md). La capa de acceso a bases de datos proporciona un método de bajo
@@ -76,7 +76,7 @@ $query->select(['id', 'name'])
     ->from('user');
 ```
 
-> Información: Se debe usar siempre el formato array si la clausula `SELECT` contiene expresiones SQL. Esto se debe a
+> Info: Se debe usar siempre el formato array si la clausula `SELECT` contiene expresiones SQL. Esto se debe a
   que una expresión SQL como `CONCAT(first_name, last_name) AS full_name` puede contener comas. Si se junta con otra
   cadena de texto de otra columna, puede ser que la expresión se divida en varias partes por comas, esto puede
   conllevar a errores.
@@ -240,7 +240,7 @@ El operando puede ser uno de los siguientes (ver también [[yii\db\QueryInterfac
   cuenta que cuando se usa un el mapeo de filtrado (o no se especifica el tercer operando), los valores se encerraran
   automáticamente entre un par de caracteres de porcentaje.
 
-> Nota: Cuando se usa PostgreSQL también se puede usar
+> Note: Cuando se usa PostgreSQL también se puede usar
 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) en lugar de `like` para
 filtrar resultados insensibles a mayúsculas (case-insensitive).
 

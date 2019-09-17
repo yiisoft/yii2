@@ -11,8 +11,8 @@ na utworzenie testów następujących typów:
 - [Testy akceptacyjne](test-acceptance.md) - weryfikujące scenariusze działań z perspektywy użytkownika w przeglądarce.
 
 Yii dostarcza gotowy do użycia zestaw testów wszystkich trzech typów zarówno dla szablonu projektu 
-[`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) jak i 
-[`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced).
+[`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) jak i 
+[`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced).
 
 W celu uruchomienia testów koniecznie jest zainstalowanie [Codeception](https://github.com/Codeception/Codeception).
 Instalację można wykonać lokalnie - dla konkretnego pojedynczego projektu - lub globalnie - na komputerze deweloperskim.
@@ -42,7 +42,7 @@ Changed current directory to <directory>
 Następnie dodaj `<directory>/vendor/bin` do zmiennej systemowej `PATH`. Od tej pory będziesz mógł użyć `codecept` z linii komend globalnie.
 
 > Uwaga: instalacja globalna Codeception pozwala na użycie go we wszystkich projektach na komputerze deweloperskim oraz na wykonywanie 
-  komendy `codecept` globalnie bez konieczności wskazywania ścieżki. Taka instalacja może jednak nie być pożądana, kiedy, dla przykładu, 
-  dwa różne projekty wymagają różnych wersji Codeception.
-  Dla uproszczenia wszystkie komendy powłoki odnoszące się do uruchamiania testów użyte w tym przewodniku są napisane przy założeniu, że Codeception
-  został zainstalowany globalnie.
+> komendy `codecept` globalnie bez konieczności wskazywania ścieżki. Taka instalacja może jednak nie być pożądana, kiedy, dla przykładu, 
+> dwa różne projekty wymagają różnych wersji Codeception.
+> Dla uproszczenia wszystkie komendy powłoki odnoszące się do uruchamiania testów użyte w tym przewodniku są napisane przy założeniu, że Codeception
+> został zainstalowany globalnie.

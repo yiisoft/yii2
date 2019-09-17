@@ -1,7 +1,7 @@
 Функциональные тесты
 ====================
 
-> Примечание: Данный раздел находится в разработке.
+> Note: Данный раздел находится в разработке.
 
 - [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
 

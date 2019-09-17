@@ -7,12 +7,13 @@
 
 namespace yii\test;
 
-use Yii;
 use yii\base\ArrayAccessTrait;
 use yii\base\InvalidConfigException;
 
 /**
  * BaseActiveFixture is the base class for fixture classes that support accessing fixture data as ActiveRecord objects.
+ *
+ * For more details and usage information on BaseActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,6 +21,7 @@ use yii\base\InvalidConfigException;
 abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     use ArrayAccessTrait;
+    use FileFixtureTrait;
 
     /**
      * @var string the AR model class associated with this fixture.
@@ -29,11 +31,6 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      * @var array the data rows. Each array element represents one row of data (column name => column value).
      */
     public $data = [];
-    /**
-     * @var string|boolean the file path or path alias of the data file that contains the fixture data
-     * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
-     */
-    public $dataFile;
 
     /**
      * @var \yii\db\ActiveRecord[] the loaded AR models
@@ -63,10 +60,8 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         $row = $this->data[$name];
         /* @var $modelClass \yii\db\ActiveRecord */
         $modelClass = $this->modelClass;
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
         $keys = [];
-        foreach ($model->primaryKey() as $key) {
+        foreach ($modelClass::primaryKey() as $key) {
             $keys[$key] = isset($row[$key]) ? $row[$key] : null;
         }
 
@@ -87,27 +82,17 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     /**
      * Returns the fixture data.
      *
-     * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
-     * The file should return the data array that will be stored in [[data]] after inserting into the database.
-     *
      * @return array the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
+     * @see [[loadData]]
      */
     protected function getData()
     {
-        if ($this->dataFile === false || $this->dataFile === null) {
-            return [];
-        }
-        $dataFile = Yii::getAlias($this->dataFile);
-        if (is_file($dataFile)) {
-            return require($dataFile);
-        } else {
-            throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");
-        }
+        return $this->loadData($this->dataFile);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unload()
     {

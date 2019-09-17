@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+
+  php:
+    depends_on:
+      - postgres
+
+  postgres:
+    image: ${DOCKER_POSTGRES_IMAGE}
+    environment:
+      - POSTGRES_DB=yiitest
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

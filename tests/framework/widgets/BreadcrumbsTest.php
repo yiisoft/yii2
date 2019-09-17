@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
@@ -18,8 +23,8 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $this->mockWebApplication();
         $this->breadcrumbs = new Breadcrumbs();
@@ -33,7 +38,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"/index.php\">Home</a></li>\n"
             . "<li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
-            . "</ul>";
+            . '</ul>';
 
         ob_start();
         $this->breadcrumbs->run();
@@ -55,7 +60,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
 
         $expectedHtml = "<ul class=\"breadcrumb\"><li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
-            . "</ul>";
+            . '</ul>';
 
         ob_start();
         $this->breadcrumbs->run();
@@ -74,7 +79,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $expectedHtml = "<ul class=\"breadcrumb\"><li>home-link</li>\n"
             . "<li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
-            . "</ul>";
+            . '</ul>';
 
         ob_start();
         $this->breadcrumbs->run();
@@ -88,7 +93,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     {
         $link = ['url' => 'http://localhost/yii2'];
         $method = $this->reflectMethod();
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->expectException('yii\base\InvalidConfigException');
         $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
     }
 
@@ -162,8 +167,30 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
     }
 
+    public function testTag()
+    {
+        $this->breadcrumbs->homeLink = ['label' => 'home-link'];
+        $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
+        $this->breadcrumbs->itemTemplate = "{link}\n";
+        $this->breadcrumbs->activeItemTemplate = "{link}\n";
+        $this->breadcrumbs->tag = false;
+
+        $expectedHtml = "home-link\n"
+            . "My Home Page\n"
+            . "http://my.example.com/yii2/link/page\n";
+
+        ob_start();
+        $this->breadcrumbs->run();
+        $actualHtml = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertEquals($expectedHtml, $actualHtml);
+    }
+
     /**
-     * Helper methods
+     * Helper methods.
+     * @param string $class
+     * @param string $method
      */
     protected function reflectMethod($class = '\yii\widgets\Breadcrumbs', $method = 'renderItem')
     {

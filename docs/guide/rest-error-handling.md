@@ -24,7 +24,7 @@ Content-Type: application/json; charset=UTF-8
 }
 ```
 
-The following list summarizes the HTTP status code that are used by the Yii REST framework:
+The following list summarizes the HTTP status codes that are used by the Yii REST framework:
 
 * `200`: OK. Everything worked as expected.
 * `201`: A resource was successfully created in response to a `POST` request. The `Location` header

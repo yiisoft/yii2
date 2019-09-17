@@ -8,9 +8,7 @@
 namespace yiiunit\framework\console;
 
 use yii\console\Controller;
-use yiiunit\framework\di\stubs\QuxInterface;
-use yiiunit\framework\web\stubs\Bar;
-use yii\validators\EmailValidator;
+use yii\console\Response;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -18,49 +16,88 @@ use yii\validators\EmailValidator;
  */
 class FakeController extends Controller
 {
+    public $test;
 
-    public function actionAksi1(Bar $bar, $fromParam, $other = 'default')
+    public $testArray = [];
+
+    public $alias;
+
+    private static $_wasActionIndexCalled = false;
+
+    public static function getWasActionIndexCalled()
     {
-        return[$bar, $fromParam, $other];
+        $wasCalled = self::$_wasActionIndexCalled;
+        self::$_wasActionIndexCalled = false;
+
+        return $wasCalled;
     }
 
-    public function actionAksi2(Bar $barBelongApp, QuxInterface $qux)
+    public function options($actionID)
     {
-        return[$barBelongApp, $qux];
+        return array_merge(parent::options($actionID), [
+            'test',
+            'testArray',
+            'alias',
+        ]);
     }
 
-    public function actionAksi3(QuxInterface $quxApp)
+    public function optionAliases()
     {
-        return[$quxApp];
+        return [
+            't' => 'test',
+            'ta' => 'testArray',
+            'a' => 'alias',
+        ];
     }
 
-    public function actionAksi4(Bar $bar, QuxInterface $quxApp, array $values, $value)
+    public function actionIndex()
     {
-        return [$bar->foo, $quxApp->quxMethod(), $values, $value];
+        self::$_wasActionIndexCalled = true;
     }
 
-    public function actionAksi5($q, Bar $bar, QuxInterface $quxApp)
+    public function actionAksi1($fromParam, $other = 'default')
     {
-        return [$q, $bar->foo, $quxApp->quxMethod()];
+        return[$fromParam, $other];
     }
 
-    public function actionAksi6($q, EmailValidator $validator)
+    public function actionAksi2(array $values, $value)
     {
-        return [$q, $validator->validate($q), $validator->validate('misbahuldmunir@gmail.com')];
-    }
-    
-    public function actionAksi7(Bar $bar, $avaliable, $missing)
-    {
-        
+        return [$values, $value];
     }
 
-    public function actionAksi8($arg1, $arg2)
+    public function actionAksi3($available, $missing)
     {
-        return func_get_args();
     }
 
-    public function actionAksi9($arg1, $arg2, QuxInterface $quxApp)
+    public function actionAksi4()
     {
-        return func_get_args();
+        return $this->test;
+    }
+
+    public function actionAksi5()
+    {
+        return $this->alias;
+    }
+
+    public function actionAksi6()
+    {
+        return $this->testArray;
+    }
+
+    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
+    {
+        return $simpleArgument;
+    }
+
+    public function actionStatus($status = 0)
+    {
+        return $status;
+    }
+
+    public function actionResponse($status = 0)
+    {
+        $response = new Response();
+        $response->exitStatus = (int) $status;
+        return $response;
     }
 }

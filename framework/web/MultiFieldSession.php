@@ -22,7 +22,7 @@ namespace yii\web;
  * While extending this class you should use [[composeFields()]] method - while writing the session data into the storage and
  * [[extractData()]] - while reading session data from the storage.
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.6
@@ -80,7 +80,7 @@ abstract class MultiFieldSession extends Session
     /**
      * Returns a value indicating whether to use custom session storage.
      * This method overrides the parent implementation and always returns true.
-     * @return boolean whether to use custom storage.
+     * @return bool whether to use custom storage.
      */
     public function getUseCustomStorage()
     {
@@ -89,30 +89,19 @@ abstract class MultiFieldSession extends Session
 
     /**
      * Composes storage field set for session writing.
-     * @param string $id session id
-     * @param string $data session data
+     * @param string $id Optional session id
+     * @param string $data Optional session data
      * @return array storage fields
      */
-    protected function composeFields($id, $data)
+    protected function composeFields($id = null, $data = null)
     {
-        $fields = [
-            'data' => $data,
-        ];
-        if ($this->writeCallback !== null) {
-            $fields = array_merge(
-                $fields,
-                call_user_func($this->writeCallback, $this)
-            );
-            if (!is_string($fields['data'])) {
-                $_SESSION = $fields['data'];
-                $fields['data'] = session_encode();
-            }
+        $fields = $this->writeCallback ? call_user_func($this->writeCallback, $this) : [];
+        if ($id !== null) {
+            $fields['id'] = $id;
         }
-        // ensure 'id' and 'expire' are never affected by [[writeCallback]]
-        $fields = array_merge($fields, [
-            'id' => $id,
-            'expire' => time() + $this->getTimeout(),
-        ]);
+        if ($data !== null) {
+            $fields['data'] = $data;
+        }
         return $fields;
     }
 
@@ -130,12 +119,13 @@ abstract class MultiFieldSession extends Session
             $extraData = call_user_func($this->readCallback, $fields);
             if (!empty($extraData)) {
                 session_decode($fields['data']);
-                $_SESSION = array_merge((array)$_SESSION, (array)$extraData);
+                $_SESSION = array_merge((array) $_SESSION, (array) $extraData);
                 return session_encode();
             }
+
             return $fields['data'];
-        } else {
-            return isset($fields['data']) ? $fields['data'] : '';
         }
+
+        return isset($fields['data']) ? $fields['data'] : '';
     }
 }

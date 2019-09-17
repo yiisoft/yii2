@@ -24,10 +24,20 @@ interface ActiveQueryInterface extends QueryInterface
 {
     /**
      * Sets the [[asArray]] property.
-     * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
+     * @param bool $value whether to return the query results in terms of arrays instead of Active Records.
      * @return $this the query object itself
      */
     public function asArray($value = true);
+
+    /**
+     * Executes query and returns a single row of result.
+     * @param Connection $db the DB connection used to create the DB command.
+     * If `null`, the DB connection returned by [[ActiveQueryTrait::$modelClass|modelClass]] will be used.
+     * @return ActiveRecordInterface|array|null a single row of query result. Depending on the setting of [[asArray]],
+     * the query result may be either an array or an ActiveRecord object. `null` will be returned
+     * if the query results in nothing.
+     */
+    public function one($db = null);
 
     /**
      * Sets the [[indexBy]] property.
@@ -35,14 +45,14 @@ interface ActiveQueryInterface extends QueryInterface
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row or model data. The signature of the callable should be:
      *
-     * ~~~
+     * ```php
      * // $model is an AR instance when `asArray` is false,
      * // or an array of column values when `asArray` is true.
      * function ($model)
      * {
      *     // return the index value corresponding to $model
      * }
-     * ~~~
+     * ```
      *
      * @return $this the query object itself
      */
@@ -61,19 +71,19 @@ interface ActiveQueryInterface extends QueryInterface
      *
      * The following are some usage examples:
      *
-     * ~~~
+     * ```php
      * // find customers together with their orders and country
      * Customer::find()->with('orders', 'country')->all();
      * // find customers together with their orders and the orders' shipping address
      * Customer::find()->with('orders.address')->all();
      * // find customers together with their country and orders of status 1
      * Customer::find()->with([
-     *     'orders' => function ($query) {
+     *     'orders' => function (\yii\db\ActiveQuery $query) {
      *         $query->andWhere('status = 1');
      *     },
      *     'country',
      * ])->all();
-     * ~~~
+     * ```
      *
      * @return $this the query object itself
      */

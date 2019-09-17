@@ -10,7 +10,7 @@ namespace yiiunit\data\ar;
 /**
  * Class Category.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  */
 class Category extends ActiveRecord

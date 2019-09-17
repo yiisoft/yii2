@@ -28,15 +28,15 @@ Yii 2.0 richiede PHP 5.4 o superiore, il che è un passaggio notevole rispetto a
 Di conseguenza ci sono diverse differenze a livello di linguaggio a cui devi fare attenzione.
 Di seguito un riepilogo delle principali differenze relative a PHP:
 
-- [Namespace](http://php.net/manual/en/language.namespaces.php).
-- [Funzioni anonime](http://php.net/manual/en/functions.anonymous.php).
+- [Namespace](https://secure.php.net/manual/en/language.namespaces.php).
+- [Funzioni anonime](https://secure.php.net/manual/en/functions.anonymous.php).
 - La sintassi breve per gli array `[...elementi...]` è utilizzabile invece di `array(...elementi...)`.
 - Le tag brevi per le echo `<?=` sono utilizzabili nei file delle viste. Il loro utilizzo è sicuro da PHP 5.4.
-- [Interfacce e classi SPL](http://php.net/manual/en/book.spl.php).
-- [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Data e ora](http://php.net/manual/en/book.datetime.php).
-- [Trait](http://php.net/manual/en/language.oop5.traits.php).
-- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 utilizza l'estensione PHP `intl` per le funzionalità di 
+- [Interfacce e classi SPL](https://secure.php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://secure.php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Data e ora](https://secure.php.net/manual/en/book.datetime.php).
+- [Trait](https://secure.php.net/manual/en/language.oop5.traits.php).
+- [intl](https://secure.php.net/manual/en/book.intl.php). Yii 2.0 utilizza l'estensione PHP `intl` per le funzionalità di 
   internazionalizzazione.
 
 
@@ -54,24 +54,24 @@ classe si trova in `web/Request.php` nella directory principale del framework Yi
 Componenti ed oggetti
 ---------------------
 
-Yii2 divide la classe `CComponent` della versione 1.1 in due classi: [[yii\base\Object]] and [[yii\base\Component]].
-La classe [[yii\base\Object|Object]] è una classe leggera da usare come base, che consente la definizione di 
+Yii 2 divide la classe `CComponent` della versione 1.1 in due classi: [[yii\base\BaseObject]] and [[yii\base\Component]].
+La classe [[yii\base\BaseObject|BaseObject]] è una classe leggera da usare come base, che consente la definizione di 
 [proprietà dell'oggetto](concept-properties.md) tramite *geters* e *setters*. La classe [[yii\base\Component|Component]] estende
-[[yii\base\Object|Object]] e supporta [eventi](concept-events.md) e [behavior](concept-behaviors.md).
+[[yii\base\BaseObject|BaseObject]] e supporta [eventi](concept-events.md) e [behavior](concept-behaviors.md).
 
-Se la tua classe non ha necessità di usare eventi o behavior conviene usare [[yii\base\Object|Object]] come classe base.
+Se la tua classe non ha necessità di usare eventi o behavior conviene usare [[yii\base\BaseObject|BaseObject]] come classe base.
 Di solito viene impiegata per classi che rappresentano strutture di dati semplici.
 
 
 Configurazione oggetti
 ----------------------
 
-La classe [[yii\base\Object|Object]] introduce un metodo uniforme per la configurazione degli oggetti. 
-Ogni classe figlia di [[yii\base\Object|Object]] dovrebbe dichiarare il suo costruttore (se necessario) in questo modo, così da essere 
+La classe [[yii\base\BaseObject|BaseObject]] introduce un metodo uniforme per la configurazione degli oggetti. 
+Ogni classe figlia di [[yii\base\BaseObject|BaseObject]] dovrebbe dichiarare il suo costruttore (se necessario) in questo modo, così da essere 
 configurato correttamente:
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -91,7 +91,7 @@ class MyClass extends \yii\base\Object
 
 Nell'esempio sopra, l'ultimo parametro del costruttore riceve l'array di configurazione che contiene coppie di nome-valore per
 inizializzare le proprietà alla fine del costruttore.
-Puoi sovrascrivere il metodo [[yii\base\Object::init()|init()]] per eseguire operazioni dopo che la configurazione è stata applicata.
+Puoi sovrascrivere il metodo [[yii\base\BaseObject::init()|init()]] per eseguire operazioni dopo che la configurazione è stata applicata.
 
 Seguendo questa convenzione potrai creare e configurare nuovi oggetti usando un array di configurazione:
 
@@ -285,7 +285,7 @@ Fai riferimento alla sezione [Console Commands](tutorial-console.md) per ulterio
 I18N
 ----
 
-Yii 2.0 ha rimosso la formattazione interna di date e numeri in favore del [modulo PECL di PHP](http://pecl.php.net/package/intl).
+Yii 2.0 ha rimosso la formattazione interna di date e numeri in favore del [modulo PECL di PHP](https://pecl.php.net/package/intl).
 
 La traduzione dei messaggi viene effettuata dal componente `i18n`.
 Questo componente gestisce una serie di sorgenti di messaggi, il che ti consente di usare diverse sorgenti di messaggio basate sulle

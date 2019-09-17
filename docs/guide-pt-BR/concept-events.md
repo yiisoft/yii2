@@ -9,7 +9,7 @@ Se sua classe precisar disparar eventos, ela deverá estender de [[yii\base\Comp
 Manipuladores de Evento <span id="event-handlers"></span>
 --------------
 
-Um manipulador de evento é uma função [Callback do PHP] (http://www.php.net/manual/en/language.types.callable.php) que é executada quando o evento é disparado. Você pode usar qualquer um dos seguintes callbacks:
+Um manipulador de evento é uma função [Callback do PHP] (https://secure.php.net/manual/en/language.types.callable.php) que é executada quando o evento é disparado. Você pode usar qualquer um dos seguintes callbacks:
 - uma função global do PHP especificada como uma string (sem parênteses), por exemplo, `'trim'`;
 - Um método do objeto especificado como um array, informando o objeto e um nome do método como uma string (sem parênteses), por exemplo `[$object, 'methodName']`;
 - Um método estático da classe especificado como um array informando o nome da classe e nome do método como string (sem parênteses), por exemplo, `['ClassName', 'methodName']`; 
@@ -192,7 +192,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-   Yii::trace(get_class($event->sender) . ' is inserted');
+   Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -206,7 +206,7 @@ Você pode disparar um evento de *nível de classe* chamando o método estático
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-   echo $event->sender;  // displays "app\models\Foo"
+   var_dump($event->sender);  // displays "null"
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
@@ -214,7 +214,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 Note que, neste caso, `$event->sender` refere-se ao nome da classe acionando o evento em vez de uma instância do objeto.
 
-> Observação: Já que um manipulador de nível de classe vai responder a um evento acionado por qualquer instância dessa classe, ou qualquer classe filha, você deve usá-lo com cuidado, especialmente se a classe é uma classe base de baixo nível, tal como [[yii\base\Object]].
+> Observação: Já que um manipulador de nível de classe vai responder a um evento acionado por qualquer instância dessa classe, ou qualquer classe filha, você deve usá-lo com cuidado, especialmente se a classe é uma classe base de baixo nível, tal como [[yii\base\BaseObject]].
 
 Para desvincular um manipulador de evento de nível de classe, chame [[yii\base\Event::off()]]. Por exemplo:
 

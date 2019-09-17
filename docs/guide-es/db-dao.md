@@ -1,7 +1,7 @@
-﻿Objetos de Acceso a Bases de Datos
+Objetos de Acceso a Bases de Datos
 ==================================
 
-Construido sobre [PDO](http://php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
+Construido sobre [PDO](https://secure.php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
 API orientada a objetos para el acceso a bases de datos relacionales. Es el fundamento para otros métodos de acceso a bases de datos
 más avanzados, incluyendo el [constructor de consultas](db-query-builder.md) y [active record](db-active-record.md).
 
@@ -14,7 +14,7 @@ Yii DAO soporta las siguientes bases de datos:
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): versión 8.4 o superior.
 - [CUBRID](http://www.cubrid.org/): versión 9.3 o superior.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): versión 2008 o superior.
@@ -22,7 +22,7 @@ Yii DAO soporta las siguientes bases de datos:
 ## Creando Conexiones DB <span id="creating-db-connections"></span>
 
 Para acceder a una base de datos, primero necesitas conectarte a tu bases de datos mediante la creación
-de una instancia de [yii\db\Connection]]:
+de una instancia de [[yii\db\Connection]]:
 
 ```php
 $db = new yii\db\Connection([
@@ -56,11 +56,11 @@ return [
 
 Puedes acceder a la conexión DB mediante la expresión `Yii::$app->db`.
 
-> Consejo: Puedes configurar múltiples componentes de aplicación DB si tu aplicación necesita acceder a múltiples bases de datos.
+> Tip: Puedes configurar múltiples componentes de aplicación DB si tu aplicación necesita acceder a múltiples bases de datos.
 
 Cuando configuras una conexión DB, deberías siempre especificar el Nombre de Origen de Datos (DSN) mediante la
 propiedad [[yii\db\Connection::dsn|dsn]]. El formato del DSN varia para cada diferente base de datos. Por favor consulte el
-[manual de PHP](http://www.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
+[manual de PHP](https://secure.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -87,7 +87,7 @@ para que Yii pueda conocer el tipo de base de datos actual. Por ejemplo,
 Además de la propiedad [[yii\db\Connection::dsn|dsn]], a menudo es necesario configurar el [[yii\db\Connection::username|username]]
 y [[yii\db\Connection::password|password]]. Por favor consulta [[yii\db\Connection]] para ver la lista completa de propiedades configurables.
 
-> Información: Cuando se crea una instancia de conexión DB, la conexión actual a la base de datos no se establece hasta que
+> Info: Cuando se crea una instancia de conexión DB, la conexión actual a la base de datos no se establece hasta que
   ejecutes el primer SQL o llames explícitamente al método [[yii\db\Connection::open()|open()]].
 
 
@@ -111,7 +111,7 @@ $posts = $db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // retorna una sola fila (la primera fila)
-// false es retornado si no hay resultados
+// `false` es retornado si no hay resultados
 $post = $db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
@@ -121,15 +121,15 @@ $titles = $db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
 // retorna un escalar
-// false es retornado si no hay resultados
+// `false` es retornado si no hay resultados
 $count = $db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
-> Nota: Para preservar la precisión, los datos obtenidos de las bases de datos son todos representados como cadenas, incluso si el tipo de columna correspondiente
+> Note: Para preservar la precisión, los datos obtenidos de las bases de datos son todos representados como cadenas, incluso si el tipo de columna correspondiente
 a la base de datos es numérico.
 
-> Consejo: Si necesitas ejecutar una consulta SQL inmediatamente después de establecer una conexión (ej., para establecer una zona horaria o un conjunto de caracteres),
+> Tip: Si necesitas ejecutar una consulta SQL inmediatamente después de establecer una conexión (ej., para establecer una zona horaria o un conjunto de caracteres),
 > puedes hacerlo con el evento [[yii\db\Connection::EVENT_AFTER_OPEN]]. Por ejemplo,
 >
 ```php
@@ -185,7 +185,7 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status',
            ->queryOne();
 ```
 
-La vinculación parámetros es implementada mediante [sentencias preparadas (prepared statements)](http://php.net/manual/es/mysqli.quickstart.prepared-statements.php).
+La vinculación parámetros es implementada mediante [sentencias preparadas (prepared statements)](https://secure.php.net/manual/es/mysqli.quickstart.prepared-statements.php).
 Además de prevenir ataques de inyección de SQL, también puede mejorar el rendimiento preparando una sola vez una sentencia SQL y ejecutándola múltiples veces con diferentes
 parámetros. Por ejemplo,
 
@@ -279,7 +279,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 ```
 
 
-### Usadno Prefijos de Tabla <span id="using-table-prefix"></span>
+### Usando Prefijos de Tabla <span id="using-table-prefix"></span>
 
 Si la mayoría de tus tablas de BD utilizan algún prefijo común en sus tablas, puedes usar la función de prefijo de tabla soportado
 por Yii DAO.
@@ -389,10 +389,10 @@ es posible que necesites ajustar el nivel de aislamiento para todas las transacc
 en las configuraciones.
 En el momento de escribir esto, solo MSSQL y SQLite serán afectadas.
 
-> Nota: SQLite solo soporta dos niveles de aislamiento, por lo que solo se puede usar `READ UNCOMMITTED` y
+> Note: SQLite solo soporta dos niveles de aislamiento, por lo que solo se puede usar `READ UNCOMMITTED` y
 `SERIALIZABLE`. El uso de otros niveles causará el lanzamiento de una excepción.
 
-> Nota: PostgreSQL no permite configurar el nivel de aislamiento antes que la transacción empiece por lo que no se
+> Note: PostgreSQL no permite configurar el nivel de aislamiento antes que la transacción empiece por lo que no se
   puede especificar el nivel de aislamiento directamente cuando empieza la transacción. Se tiene que llamar a
   [[yii\db\Transaction::setIsolationLevel()]] después de que la transacción haya empezado.
 
@@ -490,7 +490,7 @@ $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
-> Información: Las consultas realizadas llamando a [[yii\db\Command::execute()]] se consideran consultas de escritura,
+> Info: Las consultas realizadas llamando a [[yii\db\Command::execute()]] se consideran consultas de escritura,
   mientras que todas las demás se ejecutan mediante alguno de los métodos "query" de [[yii\db\Command]] son consultas
   de lectura. Se puede obtener la conexión de esclavo activa mediante `$db->slave`.
 
@@ -500,7 +500,7 @@ una conexión a este. Si el esclavo se encuentra "muerto", se intentará con otr
 "muertos" por lo que no se intentará volver a conectar a ellos durante
 [[yii\db\Connection::serverRetryInterval|certain period of time]].
 
-> Información: En la configuración anterior, se especifica un tiempo de espera (timeout) de conexión de 10 segundos
+> Info: En la configuración anterior, se especifica un tiempo de espera (timeout) de conexión de 10 segundos
   para cada esclavo. Esto significa que si no se puede conectar a un esclavo en 10 segundos, este será considerado
   como "muerto". Se puede ajustar el parámetro basado en el entorno actual.
 
@@ -550,7 +550,7 @@ La configuración anterior especifica dos maestros y cuatro esclavos. El compone
 balanceo de carga y la conmutación de errores entre maestros igual que hace con los esclavos. La diferencia es que
 cuando no se encuentra ningún maestro disponible se lanza una excepción.
 
-> Nota: cuando se usa la propiedad [[yii\db\Connection::masters|masters]] para configurar uno o múltiples maestros, se
+> Note: cuando se usa la propiedad [[yii\db\Connection::masters|masters]] para configurar uno o múltiples maestros, se
   ignorarán todas las otras propiedades que especifiquen una conexión de base de datos
   (ej. `dsn`, `username`, `password`), junto con el mismo objeto `Connection`.
 

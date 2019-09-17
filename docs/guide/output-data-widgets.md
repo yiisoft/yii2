@@ -7,7 +7,7 @@ While the [DetailView](#detail-view) widget can be used to display data for a si
 providing features like pagination, sorting and filtering.
 
 
-DetailView <a name="detail-view"></a>
+DetailView <span id="detail-view"></span>
 ----------
 
 The [[yii\widgets\DetailView|DetailView]] widget displays the details of a single data [[yii\widgets\DetailView::$model|model]].
@@ -19,23 +19,47 @@ DetailView uses the [[yii\widgets\DetailView::$attributes|$attributes]] property
 should be formatted. See the [formatter section](output-formatting.md) for available formatting options.
 
 A typical usage of DetailView is as follows:
- 
+
 ```php
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title attribute (in plain text)
-        'description:html',    // description attribute formatted as HTML
-        [                      // the owner name of the model
+        'title',                                           // title attribute (in plain text)
+        'description:html',                                // description attribute formatted as HTML
+        [                                                  // the owner name of the model
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
         ],
-        'created_at:datetime', // creation date formatted as datetime
+        'created_at:datetime',                             // creation date formatted as datetime
     ],
 ]);
 ```
 
-ListView <a name="list-view"></a>
+Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the time there is no need for using closure since
+`$model` is the only one model for display and available in view as a variable.
+
+However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
+`value` calculations in case it evaluates to `false`:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
+ListView <span id="list-view"></span>
 --------
 
 The [[yii\widgets\ListView|ListView]] widget is used to display data from a [data provider](output-data-providers.md).
@@ -71,7 +95,7 @@ use yii\helpers\HtmlPurifier;
 ?>
 <div class="post">
     <h2><?= Html::encode($model->title) ?></h2>
-    
+
     <?= HtmlPurifier::process($model->text) ?>    
 </div>
 ```
@@ -100,12 +124,12 @@ echo ListView::widget([
 These are then also available as variables in the view.
 
 
-GridView <a name="grid-view"></a>
+GridView <span id="grid-view"></span>
 --------
 
-Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
+Data grid or [[yii\grid\GridView|GridView]] is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
 section of the system. It takes data from a [data provider](output-data-providers.md) and renders each row using a set of [[yii\grid\GridView::columns|columns]]
-presenting data in the form of a table. 
+presenting data in the form of a table.
 
 Each row of the table represents the data of a single data item, and a column usually represents an attribute of
 the item (some columns may correspond to complex expressions of attributes or static text).
@@ -131,7 +155,7 @@ The above code first creates a data provider and then uses GridView to display e
 the data provider. The displayed table is equipped with sorting and pagination functionality out of the box.
 
 
-### Grid columns
+### Grid columns <span id="grid-columns"></span>
 
 The columns of the grid table are configured in terms of [[yii\grid\Column]] classes, which are
 configured in the [[yii\grid\GridView::columns|columns]] property of GridView configuration.
@@ -162,7 +186,7 @@ Note that if the [[yii\grid\GridView::columns|columns]] part of the configuratio
 Yii tries to show all possible columns of the data provider's model.
 
 
-### Column classes
+### Column classes <span id="column-classes"></span>
 
 Grid columns could be customized by using different column classes:
 
@@ -219,8 +243,15 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // shortcut format
+        [
+            'label' => 'Education',
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
-]); 
+]);
 ```
 
 In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
@@ -229,11 +260,17 @@ column is, again, passed as the first argument while 'php:Y-m-d' is used as the 
 
 For a list of available formatters see the [section about Data Formatting](output-formatting.md).
 
-For configuring data columns there is also a shortcut format which is described in the 
+For configuring data columns there is also a shortcut format which is described in the
 API documentation for [[yii\grid\GridView::columns|columns]].
 
+Use [[yii\grid\DataColumn::filter|filter]] and [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] to
+control HTML for the filter input.
 
-#### Action column
+By default, column headers are rendered by [[yii\data\Sort::link]]. It could be adjusted using [[yii\grid\Column::header]].
+To change header text you should set [[yii\grid\DataColumn::$label]] like in the example above. 
+By default the label will be populated from data model. For more details see [[yii\grid\DataColumn::getHeaderCellLabel]].
+
+#### Action column <span id="action-column"></span>
 
 [[yii\grid\ActionColumn|Action column]] displays action buttons such as update or delete for each row.
 
@@ -271,9 +308,26 @@ Available properties you can configure are:
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] is a callback that creates a button URL using the specified model information. The signature of
   the callback should be the same as that of [[yii\grid\ActionColumn::createUrl()]]. If this property is not set,
   button URLs will be created using [[yii\grid\ActionColumn::createUrl()]].
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] is an array of visibility conditions for each button.
+  The array keys are the button names (without curly brackets), and the values are the boolean `true`/`false` or the
+  anonymous function. When the button name is not specified in this array it will be shown by default.
+  The callbacks must use the following signature:
 
+  ```php
+  function ($model, $key, $index) {
+      return $model->status === 'editable';
+  }
+  ```
 
-#### Checkbox column
+  Or you can pass a boolean value:
+
+  ```php
+  [
+      'update' => \Yii::$app->user->can('update')
+  ]
+  ```
+
+#### Checkbox column <span id="checkbox-column"></span>
 
 [[yii\grid\CheckboxColumn|Checkbox column]] displays a column of checkboxes.
 
@@ -299,7 +353,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 // keys is an array consisting of the keys associated with the selected rows
 ```
 
-#### Serial column
+#### Serial column <span id="serial-column"></span>
 
 [[yii\grid\SerialColumn|Serial column]] renders row numbers starting with `1` and going forward.
 
@@ -314,21 +368,22 @@ echo GridView::widget([
 ```
 
 
-### Sorting data
+### Sorting data <span id="sorting-data"></span>
 
 > Note: This section is under development.
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
-### Filtering data
+### Filtering data <span id="filtering-data"></span>
 
-For filtering data the GridView needs a [model](structure-models.md) that takes the input from, the filtering
-form and adjusts the query of the dataProvider to respect the search criteria.
+For filtering data, the GridView needs a [model](structure-models.md) that represents the search criteria which is
+usually taken from the filter fields in the GridView table.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
-that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation 
-rules for the search and provides a `search()` method that will return the data provider.
+that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation
+rules to show filter controls on the GridView table and to provide a `search()` method that will return the data 
+provider with an adjusted query that processes the search criteria.
 
-To add the search capability for the `Post` model, we can create `PostSearch` like the following example:
+To add the search capability for the `Post` model, we can create a `PostSearch` model like the following example:
 
 ```php
 <?php
@@ -342,7 +397,7 @@ use yii\data\ActiveDataProvider;
 class PostSearch extends Post
 {
     public function rules()
-    {
+    { 
         // only fields in rules() are searchable
         return [
             [['id'], 'integer'],
@@ -377,8 +432,10 @@ class PostSearch extends Post
         return $dataProvider;
     }
 }
-
 ```
+
+> Tip: See [Query Builder](db-query-builder.md) and especially [Filter Conditions](db-query-builder.md#filter-conditions)
+> to learn how to build filtering query.
 
 You can use this function in the controller to get the dataProvider for the GridView:
 
@@ -404,8 +461,85 @@ echo GridView::widget([
 ]);
 ```
 
+### Separate filter form <span id="separate-filter-form"></span>
 
-### Working with model relations
+Most of the time using GridView header filters is enough, but in case you need a separate filter form,
+you can easily add it as well. You can create partial view `_search.php` with the following contents:
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Reset', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+and include it in `index.php` view like so:
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: if you use Gii to generate CRUD code, the separate filter form (`_search.php`) is generated by default,
+but is commented in `index.php` view. Uncomment it and it's ready to use!
+
+Separate filter form is useful when you need to filter by fields, that are not displayed in GridView
+or for special filtering conditions, like date range. For filtering by date range we can add non DB attributes
+`createdFrom` and `createdTo` to the search model:
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+Extend query conditions in the `search()` method like so:
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+And add the representative fields to the filter form:
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
+```
+
+### Working with model relations <span id="working-with-model-relations"></span>
 
 When displaying active records in a GridView you might encounter the case where you display values of related
 columns such as the post author's name instead of just his `id`.
@@ -426,6 +560,7 @@ $dataProvider = new ActiveDataProvider([
 // join with relation `author` that is a relation to the table `users`
 // and set the table alias to be `author`
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
+// since version 2.0.7, the above line can be simplified to $query->joinWith('author AS author');
 // enable sorting for the related column
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
@@ -467,8 +602,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > For example, if you use the alias `au` for the author relation table, the joinWith statement looks like the following:
 >
 > ```php
-> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> $query->joinWith(['author au']);
 > ```
+>
 > It is also possible to just call `$query->joinWith(['author']);` when the alias is defined in the relation definition.
 >
 > The alias has to be used in the filter condition but the attribute name stays the same:
@@ -496,9 +632,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on joining with relations](db-active-record.md#joining-with-relations).
 
-#### Using SQL views for filtering, sorting and displaying data
+#### Using SQL views for filtering, sorting and displaying data <span id="using-sql-views"></span>
 
-There is also another approach that can be faster and more useful - SQL views. For example, if we need to show the gridview 
+There is also another approach that can be faster and more useful - SQL views. For example, if we need to show the gridview
 with users and their profiles, we can do so in this way:
 
 ```sql
@@ -520,7 +656,7 @@ class UserView extends ActiveRecord
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -533,7 +669,7 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -543,9 +679,9 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
             // define here your attribute labels
@@ -565,7 +701,7 @@ All attributes will be working out of the box. Note that this approach has sever
 `isDeleted` or others that will influence the UI, you will need to duplicate them in this class too.
 
 
-### Multiple GridViews on one page
+### Multiple GridViews on one page <span id="multiple-gridviews"></span>
 
 You can use more than one GridView on a single page but some additional configuration is needed so that
 they do not interfere with each other.
@@ -598,11 +734,44 @@ echo GridView::widget([
 ]);
 ```
 
-### Using GridView with Pjax
+### Using GridView with Pjax <span id="using-gridview-with-pjax"></span>
 
-> Note: This section is under development.
+The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
+page instead of reloading the entire page. You can use it to update only the
+[[yii\grid\GridView|GridView]] content when using filters.
 
-TBD
+```php
+use yii\widgets\Pjax;
+use yii\grid\GridView;
+
+Pjax::begin([
+    // PJax options
+]);
+    Gridview::widget([
+        // GridView options
+    ]);
+Pjax::end();
+```
+
+Pjax also works for the links inside the [[yii\widgets\Pjax|Pjax]] widget and
+for the links specified by [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]].
+But this might be a problem for the links of an [[yii\grid\ActionColumn|ActionColumn]].
+To prevent this, add the HTML attribute `data-pjax="0"` to the links when you edit
+the [[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] property.
+
+#### GridView/ListView with Pjax in Gii
+
+Since 2.0.5, the CRUD generator of [Gii](start-gii.md) has an option called
+`$enablePjax` that can be used via either web interface or command line.
+
+```php
+yii gii/crud --controllerClass="backend\\controllers\PostController" \
+  --modelClass="common\\models\\Post" \
+  --enablePjax=1
+```
+
+Which generates a [[yii\widgets\Pjax|Pjax]] widget wrapping the
+[[yii\grid\GridView|GridView]] or [[yii\widgets\ListView|ListView]] widgets.
 
 Further reading
 ---------------

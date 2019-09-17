@@ -1,23 +1,24 @@
 响应格式
 ===================
 
-当处理一个 RESTful API 请求时， 一个应用程序通常需要如下步骤
+当处理一个 RESTful API 请求时，一个应用程序通常需要如下步骤
 来处理响应格式：
 
-1. 确定可能影响响应格式的各种因素， 例如媒介类型， 语言， 版本， 等等。
+1. 确定可能影响响应格式的各种因素，例如媒介类型，语言，版本，等等。
    这个过程也被称为 [content negotiation](http://en.wikipedia.org/wiki/Content_negotiation)。
-2. 资源对象转换为数组， 如在 [Resources](rest-resources.md) 部分中所描述的。
+2. 资源对象转换为数组，如在 [Resources](rest-resources.md) 部分中所描述的。
    通过 [[yii\rest\Serializer]] 来完成。
 3. 通过内容协商步骤将数组转换成字符串。
-   [yii\web\ResponseFormatterInterface|response formatters]] 通过
-   [yii\web\Response::formatters|response]] 应用程序组件来注册完成。
+   [[yii\web\ResponseFormatterInterface|response formatters]] 通过
+   [[yii\web\Response::formatters|response]] 应用程序
+   组件来注册完成。
 
 
 ## 内容协商 <span id="content-negotiation"></span>
 
 Yii 提供了通过 [[yii\filters\ContentNegotiator]] 过滤器支持内容协商。RESTful API 基于
 控制器类 [[yii\rest\Controller]] 在 `contentNegotiator` 下配备这个过滤器。
-文件管理器提供了涉及的响应格式和语言。 例如， 如果一个 RESTful
+文件管理器提供了涉及的响应格式和语言。例如，如果一个 RESTful
 API 请求中包含以下 header，
 
 ```
@@ -77,7 +78,7 @@ public function behaviors()
 }
 ```
 
-`formats` 属性的keys支持 MIME 类型，而 values 必须在 [[yii\web\Response::formatters]]
+`formats` 属性的 keys 支持 MIME 类型，而 values 必须在 [[yii\web\Response::formatters]]
 中支持被响应格式名称。
 
 
@@ -85,8 +86,8 @@ public function behaviors()
 
 正如我们上面所描述的，[[yii\rest\Serializer]] 负责转换资源的中间件
 对象或集合到数组。它将对象 [[yii\base\ArrayableInterface]] 作为
-[[yii\data\DataProviderInterface]]。 前者主要由资源对象实现， 而
-后者是资源集合。
+[[yii\data\DataProviderInterface]]。前者主要由资源对象实现，
+而后者是资源集合。
 
 你可以通过设置 [[yii\rest\Controller::serializer]] 属性和一个配置数组。
 例如，有时你可能想通过直接在响应主体内包含分页信息来
@@ -106,7 +107,7 @@ class UserController extends ActiveController
 }
 ```
 
-那么你的请求可能会得到的响应如下 `http://localhost/users`:
+那么你的请求可能会得到的响应如下 `http://localhost/users`：
 
 ```
 HTTP/1.1 200 OK
@@ -154,3 +155,33 @@ Content-Type: application/json; charset=UTF-8
     }
 }
 ```
+
+### 控制 JSON 输出
+
+JSON 响应将由 [[yii\web\JsonResponseFormatter|JsonResponseFormatter]] 类来生成，
+并且将在内部使用 [[yii\helpers\Json|JSON helper]]。
+这个格式化程序可以配置不同的选项，
+比如 [[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]]，这对于开发更好的可读式响应更有用，
+或者用 [[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] 去控制 JSON 编码的输出。
+
+格式化程序可以在 [configuration](concept-configuration.md) 的 `response` 应用程序组件 [[yii\web\Response::formatters|formatters]] 的属性进行配置，
+如下所示：
+
+```php
+'response' => [
+    // ...
+    'formatters' => [
+        \yii\web\Response::FORMAT_JSON => [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+            'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+            // ...
+        ],
+    ],
+],
+```
+
+当使用 [DAO](db-dao.md) 数据库层从数据库返回数据时，所有的数据将会表示成字符串，
+这不总是预期的结果，尤其是数值应该表现为 JSON 的中的数字时。
+当使用 ActiveRecord 层从数据库检索数据时，
+在 [[yii\db\ActiveRecord::populateRecord()]] 中从数据库中提取数据，数字列的值将会被转换为整数。

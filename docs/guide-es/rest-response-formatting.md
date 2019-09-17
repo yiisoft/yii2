@@ -9,8 +9,9 @@ con el formato de la respuesta:
 2. La conversión de objetos recurso en arrays, como está descrito en la sección [Recursos (Resources)](rest-resources.md).
    Esto es realizado por la clase [[yii\rest\Serializer]].
 3. La conversión de arrays en cadenas con el formato determinado por el paso de negociación de contenido. Esto es
-   realizado por los [[yii\web\ResponseFormatterInterface|response formatters]] registrados con el
-   componente de la aplicación [[yii\web\Response::formatters|response]].
+   realizado por los [[yii\web\ResponseFormatterInterface|formatos de respuesta]] registrados
+   con la propiedad [[yii\web\Response::formatters|formatters]] del
+   [componente de la aplicación](structure-application-components.md) `response`.
 
 
 ## Negociación de contenido (Content Negotiation) <span id="content-negotiation"></span>

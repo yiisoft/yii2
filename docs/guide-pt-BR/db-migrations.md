@@ -109,7 +109,7 @@ class m150101_185401_criar_tabela_noticias extends \yii\db\Migration
   Neste caso, você deve retornar `false` no método `down()` para indicar que a migração não é reversível.
 
 A classe base [[yii\db\Migration]] expõe a conexão ao banco através da propriedade [[yii\db\Migration::db|db]].
-Você pode usá-la para manipular o esquema do banco de dados usando os métodos como descritos em [Trabalhando com um Esquema de Banco de Dados](db-dao.md#working-with-database-schema-).
+Você pode usá-la para manipular o esquema do banco de dados usando os métodos como descritos em [Trabalhando com um Esquema de Banco de Dados](db-dao.md#database-schema).
 
 Ao invés de usar tipos físicos, ao criar uma tabela ou coluna, você deve usar *tipos abstratos* para que
 suas migrações sejam independentes do SGBD. A classe [[yii\db\Schema]] define uma gama de constantes para
@@ -314,8 +314,8 @@ Existem várias maneiras de customizar o comando de migração.
 
 O comando de migração vem com algumas opções de linha de comando que podem ser usadas para customizar o seu comportamento:
 
-* `interactive`: boolean (o padrão é true), especifica se as migrações serão executadas em modo interativo.
-  Quando for true, ao usuário será perguntado se a execução deve continuar antes de o comando executar certas ações. 
+* `interactive`: boolean (o padrão é `true`), especifica se as migrações serão executadas em modo interativo.
+  Quando for `true`, ao usuário será perguntado se a execução deve continuar antes de o comando executar certas ações. 
   Você provavelmente marcará isto para falso se o comando estiver sendo feito em algum processo em segundo plano.
 
 * `migrationPath`: string (o padrão é `@app/migrations`), especifica o diretório em que os arquivos das classes de migração estão. Isto pode ser especificado ou como um diretório ou como um [alias](concept-aliases.md).

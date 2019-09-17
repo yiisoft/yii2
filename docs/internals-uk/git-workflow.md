@@ -69,7 +69,7 @@ php build/build dev/ext <extension-name>
 де `<extension-name>` є назвою розширення, наприклад `redis`.
 
 Якщо бажаєте протестувати розширення в одному із шаблонів додатку, просто додайте його до `composer.json` додатку, як ви будете
-робити зазвичай. Наприклад, додайте `"yiisoft/yii2-redis": "*"` до секції `require` базового додатку.
+робити зазвичай. Наприклад, додайте `"yiisoft/yii2-redis": "~2.0.0"` до секції `require` базового додатку.
 Команда `php build/build dev/app basic` встановить розширення та його залежності й створить
 символьне посилання на `extensions/redis`, тому ви можете працювати безпосередньо в директорії репозиторію yii2,
 а не у специфічній для composer директорії vendor.
@@ -138,7 +138,7 @@ Enh #999: a description of the enhancement (Your Name)
 
 ### 6. Створіть комміт ваших змін
 
-Додайте файли/зміни, призначені для комміту, в [буферну зону](http://gitref.org/basic/#add) за допомогою команди:
+Додайте файли/зміни, призначені для комміту, в [буферну зону](http://git.github.io/git-reference/basic/#add) за допомогою команди:
 
 ```
 git add path/to/my/file.php
@@ -173,7 +173,7 @@ git push -u origin 999-name-of-your-branch-goes-here
 Це означає, якщо ви виконаєте `git push` наступного разу, програма буде знати куди відправляти. Це корисно, якщо ви
 бажаєте пізніше додавати більше коммітів у "pull request".
 
-### 9. Відправте ["pull request"](http://help.github.com/send-pull-requests/) до upstream.
+### 9. Відправте ["pull request"](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) до upstream.
 
 Перейдіть до вашого репозиторію на GitHub та натисніть "Pull Request", оберіть вашу гілку справа та внесіть трохи деталей
 у полі коментарю. Щоб пов’язати "pull request" із запитанням, внесіть десь у коментарі `#999`, де 999 - це номер питання.
@@ -203,7 +203,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 Для виявлення регресу на ранніх стадіях кожне поєднання з кодовою базою Yii на GitHub опрацьовується у
 [Travis CI](http://travis-ci.org) для автоматичного запуску тестів. Оскільки основна команда розробників не бажає
-перевантажувати сервіс, додавайте [`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) до
+перевантажувати сервіс, додавайте [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) до
 опису поєднання, якщо ваш "pull request":
 
 * зачіпає лише файли javascript, css або файли зображень,

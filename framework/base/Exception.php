@@ -10,6 +10,8 @@ namespace yii\base;
 /**
  * Exception represents a generic exception for all purposes.
  *
+ * For more details and usage information on Exception, see the [guide article on handling errors](guide:runtime-handling-errors).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

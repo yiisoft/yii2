@@ -3,17 +3,17 @@
 
 RESTful API のリクエストを処理するとき、アプリケーションは、通常、レスポンス形式の設定に関して次のステップを踏みます。
 
-1. レスポンス形式に影響するさまざまな要因、例えば、メディアタイプ、言語、バージョンなどを決定します。
-   このプロセスは [コンテントネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
-2. リソースオブジェクトを配列に変換します。
-   [リソース](rest-resources.md) の節で説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
-3. 配列をコンテントネゴシエーションのステップで決定された形式の文字列に変換します。
-   この作業は、`response` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
+1. レスポンス形式に影響するさまざまな要因、例えば、メディア・タイプ、言語、バージョンなどを決定します。
+   このプロセスは [コンテント・ネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
+2. リソース・オブジェクトを配列に変換します。
+   [リソース](rest-resources.md) のセクションで説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
+3. 配列をコンテント・ネゴシエーションのステップで決定された形式の文字列に変換します。
+   この作業は、`response` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンス・フォーマッタ]] によって実行されます。
 
-## コンテントネゴシエーション <span id="content-negotiation"></span>
+## コンテント・ネゴシエーション <span id="content-negotiation"></span>
 
-Yii は [[yii\filters\ContentNegotiator]] フィルタによってコンテントネゴシエーションをサポートします。
-RESTful API の基底コントローラクラス [[yii\rest\Controller]] は `contentNegotiator` という名前でこのフィルタを持っています。
+Yii は [[yii\filters\ContentNegotiator]] フィルタによってコンテント・ネゴシエーションをサポートします。
+RESTful API の基底コントローラ・クラス [[yii\rest\Controller]] は `contentNegotiator` という名前でこのフィルタを持っています。
 このフィルタは、レスポンス形式のネゴシエーションと同時に言語のネゴシエーションも提供します。
 例えば、RESTful API リクエストが下記のヘッダを含んでいるとします。
 
@@ -53,12 +53,12 @@ Content-Type: application/json; charset=UTF-8
 ]
 ```
 
-舞台裏では、RESTful API コントローラアクションが実行される前に、[[yii\filters\ContentNegotiator]] フィルタがリクエストの `Accept` HTTP ヘッダをチェックして、[[yii\web\Response::format|レスポンス形式]] を `'json'` に設定します。
+舞台裏では、RESTful API コントローラ・アクションが実行される前に、[[yii\filters\ContentNegotiator]] フィルタがリクエストの `Accept` HTTP ヘッダをチェックして、[[yii\web\Response::format|レスポンス形式]] を `'json'` に設定します。
 アクションが実行されて、その結果のリソースのオブジェクトまたはコレクションが返されると、[[yii\rest\Serializer]] が結果を配列に変換します。
-そして最後に、[[yii\web\JsonResponseFormatter]] が配列を JSON 文字列に変換して、それをレスポンスボディに入れます。
+そして最後に、[[yii\web\JsonResponseFormatter]] が配列を JSON 文字列に変換して、それをレスポンス・ボディに入れます。
 
 デフォルトでは、RESTful API は JSON と XML の両方の形式をサポートします。
-新しい形式をサポートするためには、下記のように、API コントローラクラスの中で `contentNegotiator` フィルタの [[yii\filters\ContentNegotiator::formats|formats]] プロパティを構成しなければなりません。
+新しい形式をサポートするためには、下記のように、API コントローラ・クラスの中で `contentNegotiator` フィルタの [[yii\filters\ContentNegotiator::formats|formats]] プロパティを構成しなければなりません。
 
 ```php
 use yii\web\Response;
@@ -78,11 +78,11 @@ public function behaviors()
 ## データのシリアライズ <span id="data-serializing"></span>
 
 上記で説明したように、[[yii\rest\Serializer]] が、リソースのオブジェクトやコレクションを配列に変換する際に、中心的な役割を果たします。
-`Serializer` は、[[yii\base\ArrayableInterface]] および [[yii\data\DataProviderInterface]] のインタフェイスを実装したオブジェクトを認識します。
-前者は主としてリソースオブジェクトによって実装され、後者はリソースコレクションによって実装されています。
+`Serializer` は、[[yii\base\Arrayable]] および [[yii\data\DataProviderInterface]] のインタフェイスを実装したオブジェクトを認識します。
+前者は主としてリソース・オブジェクトによって実装され、後者はリソース・コレクションによって実装されています。
 
 [[yii\rest\Controller::serializer]] プロパティに構成情報配列をセットしてシリアライザを構成することが出来ます。
-例えば、場合によっては、クライアントの開発作業を単純化するために、ページネーション情報をレスポンスボディに直接に含ませたいことがあるでしょう。
+例えば、場合によっては、クライアントの開発作業を単純化するために、ページネーション情報をレスポンス・ボディに直接に含ませたいことがあるでしょう。
 そうするためには、[[yii\rest\Serializer::collectionEnvelope]] プロパティを次のように構成します。
 
 ```php
@@ -146,3 +146,30 @@ Content-Type: application/json; charset=UTF-8
     }
 }
 ```
+
+### JSON 出力を制御する
+
+JSON 形式のレスポンスを生成する [[yii\web\JsonResponseFormatter|JsonResponseFormatter]] クラスは [[yii\helpers\Json|JSON ヘルパ]] を内部的に使用します。
+このフォーマッタはさまざまなオプションによって構成することが可能です。
+例えば、[[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]] オプションは、より読みやすいレスポンスのためのもので、開発時に有用なオプションです。
+また、[[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] によって JSON エンコーディングの出力を制御することが出来ます。
+
+フォーマッタは、以下のように、アプリケーションの [構成情報](concept-configuration.md) の中で、`response` アプリケーション・コンポーネントの [[yii\web\Response::formatters|formatters]] プロパティの中で構成することが出来ます。
+
+```php
+'response' => [
+    // ...
+    'formatters' => [
+        \yii\web\Response::FORMAT_JSON => [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'prettyPrint' => YII_DEBUG, // デバッグ・モードでは "きれい" な出力を使用
+            'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+            // ...
+        ],
+    ],
+],
+```
+
+[DAO](db-dao.md) データベース・レイヤを使ってデータベースからデータを返す場合は、全てのデータが文字列として表されます。
+しかし、特に数値は JSON では数として表現されなければなりませんので、これは必ずしも期待通りの結果であるとは言えません。
+一方、ActiveRecord レイヤを使ってデータベースからデータを取得する場合は、数値カラムの値は、[[yii\db\ActiveRecord::populateRecord()]] においてデータベースからデータが取得される際に、整数に変換されます。
