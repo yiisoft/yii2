@@ -83,9 +83,6 @@
                 var $e = $(this);
                 var settings = $.extend({}, defaults, options || {});
                 var id = $e.attr('id');
-                if (!settings.filterOnFocusOut) {
-                    return false;
-                }
                 if (gridData[id] === undefined) {
                     gridData[id] = {};
                 }
@@ -107,6 +104,9 @@
                             enterPressed = false;
                             return;
                         }
+                    }
+                    if (!settings.filterOnFocusOut && event.type !== 'keydown') {
+                        return false;
                     }
 
                     methods.applyFilter.apply($e);
@@ -192,11 +192,11 @@
             var inputs = options['class'] ? "input." + options['class'] : "input[name='" + options.name + "']";
             var inputsEnabled = "#" + id + " " + inputs + ":enabled";
             initEventHandler($grid, 'checkAllRows', 'click.yiiGridView', checkAll, function () {
-                $grid.find(inputs + ":enabled").prop('checked', this.checked);
+                $grid.find(inputs + ":enabled").prop('checked', this.checked).change();
             });
             initEventHandler($grid, 'checkRow', 'click.yiiGridView', inputsEnabled, function () {
                 var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
-                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
+                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all).change();
             });
         },
 

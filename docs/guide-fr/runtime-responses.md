@@ -11,7 +11,7 @@ Dans cette section, nous décrivons comment composer et envoyer des réponses à
 ## Code d'état <span id="status-code"></span>
 
 Une des premières choses que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  
-[[yii\web\Response::statusCode (code d'état)]] 
+[[yii\web\Response::statusCode|code d'état]]
 qui peut prendre un des [codes d'état HTTP](https://tools.ietf.org/html/rfc2616#section-10) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
 
 ```php

@@ -160,20 +160,4 @@ class LinkPagerTest extends \yiiunit\TestCase
 
         $this->assertTrue($initTriggered);
     }
-
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-
-        ob_start();
-        LinkPager::widget([
-            'pagination' => $this->getPagination(1),
-            'on afterRun' => function ($event) use (&$result) {
-                $result = $event->result;
-            },
-        ]);
-        ob_end_clean();
-
-        $this->assertNotNull($result);
-    }
 }

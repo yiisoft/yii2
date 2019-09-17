@@ -472,9 +472,9 @@ ou la méthode [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 Cela est souvent le cas lorsque le modèle reçoit des entrées utilisateur de formulaires HTML ou chacune des valeurs est représentée par une chaîne de caractères. 
 Pour garantir le type correct pour p. ex. des valeurs entières, vous devez appliquer un [filtre de validation](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. 
-Cela fonctionne pour toutes les fonctions de transformation de type de PHP comme [intval()](http://php.net/manual/en/function.intval.php), 
-[floatval()](http://php.net/manual/en/function.floatval.php), 
-[boolval](http://php.net/manual/en/function.boolval.php), etc...
+Cela fonctionne pour toutes les fonctions de transformation de type de PHP comme [intval()](https://secure.php.net/manual/en/function.intval.php), 
+[floatval()](https://secure.php.net/manual/en/function.floatval.php), 
+[boolval](https://secure.php.net/manual/en/function.boolval.php), etc...
 
 ### Valeurs d'attribut par défaut <span id="default-attribute-values"></span>
 
@@ -688,7 +688,7 @@ try {
 ```
 
 > Note : dans le code précédent, nous utilisons deux blocs de capture pour être compatible avec PHP 5.x et PHP 7.x. 
-`\Exception` met en œuvre l'[interface `\Throwable`](http://php.net/manual/en/class.throwable.php)
+`\Exception` met en œuvre l'[interface `\Throwable`](https://secure.php.net/manual/en/class.throwable.php)
 > à partir de  PHP 7.0, c'est pourquoi vous pouvez sauter la partie avec `\Exception` si votre application utilise PHP 7.0 ou une version plus récente.
 
 La deuxième façon consiste à lister les opérations de base de données qui nécessitent une prise en charge transactionnelle dans la méthode [[yii\db\ActiveRecord::transactions()]]. 

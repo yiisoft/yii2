@@ -52,7 +52,7 @@ use yii\helpers\Html;
 
 Notez que contrairement à  la méthode [[yii\base\Widget::widget()]] qui retourne le résultat du rendu d'un objet graphique, la méthode [[yii\base\Widget::begin()]] retourne une instance de l'objet graphique que vous pouvez utiliser pour construire le contenu de l'objet d'interface. 
 
-> Note: quelques objets graphiques utilisent [la mise en tampon de sortie](http://php.net/manual/en/book.outcontrol.php) 
+> Note: quelques objets graphiques utilisent [la mise en tampon de sortie](https://secure.php.net/manual/en/book.outcontrol.php) 
 > pour ajuster le contenu inclus quand la méthode [[yii\base\Widget::end()]] est appelée. 
 > Pour cette raison, l'appel des méthodes [[yii\base\Widget::begin()]] et
 > [[yii\base\Widget::end()]]  est attendu dans le même fichier de vue.

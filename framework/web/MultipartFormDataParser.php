@@ -320,7 +320,8 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                 $namePart = trim($namePart, ']');
                 if ($namePart === '') {
                     $current[] = [];
-                    $lastKey = array_pop(array_keys($current));
+                    $keys = array_keys($current);
+                    $lastKey = array_pop($keys);
                     $current = &$current[$lastKey];
                 } else {
                     if (!isset($current[$namePart])) {

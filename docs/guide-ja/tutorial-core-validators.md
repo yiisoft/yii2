@@ -142,7 +142,7 @@ compare バリデータは、文字列や数値を比較するためにしか使
   これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
   で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
-  サポートされている書式については、<http://php.net/manual/ja/datetime.createfromformat.php> を参照してください。
+  サポートされている書式については、<https://secure.php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
 
 - `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
@@ -389,7 +389,7 @@ function foo($model, $attribute) {
 > Tip: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
 > Tip: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
-> 例えば、([intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) 
+> 例えば、([intval](https://secure.php.net/manual/ja/function.intval.php) や [boolval](https://secure.php.net/manual/ja/function.boolval.php) 
 > などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、
 > それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >

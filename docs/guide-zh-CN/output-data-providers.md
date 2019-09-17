@@ -136,7 +136,7 @@ $provider = new SqlDataProvider([
 $models = $provider->getModels();
 ```
 
-> 说明：[[yii\data\SqlDataProvider::totalCount|totalCount]] 的属性只有你需要
+> Info: [[yii\data\SqlDataProvider::totalCount|totalCount]] 的属性只有你需要
   分页数据的时候才会用到。这是因为通过 [[yii\data\SqlDataProvider::sql|sql]] 
   指定的SQL语句将被数据提供者所修改并且只返回当
   前页面数据。数据提供者为了正确计算可用页面的数量仍旧需要知道数据项的总数。
@@ -246,19 +246,19 @@ use yii\data\BaseDataProvider;
 class CsvDataProvider extends BaseDataProvider
 {
     /**
-     * @var string name of the CSV file to read
+     * @var string 要读取的 CSV 文件的名称
      */
     public $filename;
 
     /**
-     * @var string|callable name of the key column or a callable returning it
+     * @var string|callable 键列的名称或返回它的可调用列表
      */
     public $key;
 
     /**
      * @var SplFileObject
      */
-    protected $fileObject; // SplFileObject is very convenient for seeking to particular line in a file
+    protected $fileObject; // SplFileObject 非常便于搜索文件中的特定行
 
 
     /**
@@ -339,3 +339,61 @@ class CsvDataProvider extends BaseDataProvider
     }
 }
 ```
+
+## 使用数据过滤器过滤数据提供者 <span id="filtering-data-providers-using-data-filters"></span>
+
+虽然您可以手动为活动数据提供构建条件，
+例如使用 [过滤数据](output-data-widgets.md#filtering-data) 和 [单独过滤表格](output-data-widgets.md#separate-filter-form) 数据小部件，
+但如果你需要灵活的过滤条件，Yii 的数据过滤器会非常有用。
+以下是数据过滤器使用的方式：
+
+```php
+$filter = new ActiveDataFilter([
+    'searchModel' => 'app\models\PostSearch'
+]);
+
+$filterCondition = null;
+
+// 您可以从任何来源加载过滤器。例如：
+// 如果你更喜欢请求体中的 JSON，
+// 使用 Yii::$app->request->getBodyParams() 如下：
+if ($filter->load(\Yii::$app->request->get())) { 
+    $filterCondition = $filter->build();
+    if ($filterCondition === false) {
+        // Serializer would get errors out of it
+        return $filter;
+    }
+}
+
+$query = Post::find();
+if ($filterCondition !== null) {
+    $query->andWhere($filterCondition);
+}
+
+return new ActiveDataProvider([
+    'query' => $query,
+]);
+```
+
+`PostSearch` 模型用于定义允许过滤的属性和值：
+
+```php
+use yii\base\Model;
+
+class PostSearch extends Model 
+{
+    public $id;
+    public $title;
+    
+    public function rules()
+    {
+        return [
+            ['id', 'integer'],
+            ['title', 'string', 'min' => 2, 'max' => 200],            
+        ];
+    }
+}
+```
+
+数据过滤器非常灵活。您可以自定义构建的条件以及允许的运算符。
+更多的细节请查看 [[\yii\data\DataFilter]] 的 API 文档。

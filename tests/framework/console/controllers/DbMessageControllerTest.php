@@ -186,4 +186,11 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $this->assertArrayHasKey($obsoleteMessage, $messages, "Obsolete message should not be removed. Command output:\n\n" . $out);
         $this->assertEquals($obsoleteTranslation, $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
     }
+
+    public function testMessagesSorting()
+    {
+        $this->markTestSkipped('There\'s no need to order messages for database');
+    }
+
+
 }

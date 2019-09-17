@@ -40,24 +40,4 @@ class BlockTest extends \yiiunit\TestCase
 
         $this->assertTrue($initTriggered);
     }
-
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-
-        ob_start();
-        Block::begin([
-            'renderInPlace' => true,
-            'on afterRun' => function($event) use (&$result) {
-                $result = $event->result;
-            },
-        ]);
-
-        echo 'The Block';
-
-        Block::end();
-        ob_end_clean();
-
-        $this->assertEquals('The Block', $result);
-    }
 }

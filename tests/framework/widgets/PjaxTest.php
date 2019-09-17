@@ -56,19 +56,4 @@ class PjaxTest extends TestCase
         ob_end_clean();
         $this->assertTrue($initTriggered);
     }
-
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-
-        ob_start();
-        Pjax::widget([
-            'on afterRun' => function ($event) use (&$result) {
-                $result = $event->result;
-            },
-        ]);
-        ob_end_clean();
-
-        $this->assertNotNull($result);
-    }
 }

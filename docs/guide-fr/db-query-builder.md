@@ -326,7 +326,7 @@ Ainsi l'exemple de code suivant est vulnérable :
 ```php
 // Code vulnérable:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value est sûre, mais le nom  $column n'est pas encodé !
 ```
@@ -771,7 +771,7 @@ foreach ($query->each() as $username => $user) {
 #### Limitations des requêtes par lots dans MySQL <span id="batch-query-mysql"></span>
 
 La mise en œuvre des requêtes par lots de MySQL s'appuie sur la bibliothèque du pilote PDO. Par défaut, les requêtes MySQL sont 
-[`mises en tampon`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). 
+[`mises en tampon`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php). 
 Cela empêche d'utiliser le curseur pour obtenir les données, parce que cela n'empêche pas le jeu résultant complet d'être chargé dans la mémoire du client par le pilote.
 
 

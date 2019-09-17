@@ -278,6 +278,7 @@ The controller ID is: <?= $this->context->id ?>
 缺点是需要手动构建数组，有些繁琐，
 在不同地方渲染时容易出错。
 
+
 ### 视图间共享数据 <span id="sharing-data-among-views"></span>
 
 [[yii\base\View|view component]]视图组件提供[[yii\base\View::params|params]]

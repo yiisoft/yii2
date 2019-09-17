@@ -483,7 +483,7 @@ window.yii = (function ($) {
                 return true;
             }
 
-            if (message !== undefined) {
+            if (message !== undefined && message !== false && message !== '') {
                 $.proxy(pub.confirm, this)(message, function () {
                     pub.handleAction($this, event);
                 });

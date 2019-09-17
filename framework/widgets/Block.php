@@ -64,7 +64,7 @@ class Block extends Widget
     {
         $block = ob_get_clean();
         if ($this->renderInPlace) {
-            return $block;
+            echo $block;
         }
         $this->view->blocks[$this->getId()] = $block;
     }

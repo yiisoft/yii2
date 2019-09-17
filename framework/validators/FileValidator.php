@@ -61,8 +61,8 @@ class FileValidator extends Validator
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
-     * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
-     * @see http://php.net/post-max-size
+     * @see https://secure.php.net/manual/en/ini.core.php#ini.upload-max-filesize
+     * @see https://secure.php.net/post-max-size
      * @see getSizeLimit
      * @see tooBig for the customized message for a file that is too big.
      */
@@ -76,7 +76,7 @@ class FileValidator extends Validator
      * > Note: The maximum number of files allowed to be uploaded simultaneously is
      * also limited with PHP directive `max_file_uploads`, which defaults to 20.
      *
-     * @see http://php.net/manual/en/ini.core.php#ini.max-file-uploads
+     * @see https://secure.php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
@@ -227,7 +227,7 @@ class FileValidator extends Validator
             if ($this->maxFiles && $filesCount > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             }
-            
+
             if ($this->minFiles && $this->minFiles > $filesCount) {
                 $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
             }
@@ -509,7 +509,7 @@ class FileValidator extends Validator
      */
     private function buildMimeTypeRegexp($mask)
     {
-        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/';
+        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/i';
     }
 
     /**
@@ -523,10 +523,10 @@ class FileValidator extends Validator
      */
     protected function validateMimeType($file)
     {
-        $fileMimeType = FileHelper::getMimeType($file->tempName);
+        $fileMimeType = $this->getMimeTypeByFile($file->tempName);
 
         foreach ($this->mimeTypes as $mimeType) {
-            if ($mimeType === $fileMimeType) {
+            if (strcasecmp($mimeType, $fileMimeType) === 0) {
                 return true;
             }
 
@@ -536,5 +536,17 @@ class FileValidator extends Validator
         }
 
         return false;
+    }
+
+    /**
+     * Get MIME type by file path
+     *
+     * @param string $filePath
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.26
+     */
+    protected function getMimeTypeByFile($filePath) {
+        return FileHelper::getMimeType($filePath);
     }
 }

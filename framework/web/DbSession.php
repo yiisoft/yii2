@@ -76,6 +76,12 @@ class DbSession extends MultiFieldSession
      */
     public $sessionTable = '{{%session}}';
 
+    /**
+     * @var array Session fields to be written into session table columns
+     * @since 2.0.17
+     */
+    protected $fields = [];
+
 
     /**
      * Initializes the DbSession component.
@@ -90,7 +96,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Updates the current session ID with a newly generated one .
-     * Please refer to <http://php.net/session_regenerate_id> for more details.
+     * Please refer to <https://secure.php.net/session_regenerate_id> for more details.
      * @param bool $deleteOldSession Whether to delete the old associated session file or not.
      */
     public function regenerateID($deleteOldSession = false)
@@ -137,6 +143,19 @@ class DbSession extends MultiFieldSession
     }
 
     /**
+     * Ends the current session and store session data.
+     * @since 2.0.17
+     */
+    public function close()
+    {
+        if ($this->getIsActive()) {
+            // prepare writeCallback fields before session closes
+            $this->fields = $this->composeFields();
+            YII_DEBUG ? session_write_close() : @session_write_close();
+        }
+    }
+
+    /**
      * Session read handler.
      * @internal Do not call this method directly.
      * @param string $id session ID
@@ -167,16 +186,30 @@ class DbSession extends MultiFieldSession
     public function writeSession($id, $data)
     {
         // exception must be caught in session write handler
-        // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
+        // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $fields = $this->composeFields($id, $data);
-            $fields = $this->typecastFields($fields);
-            $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
+            // ensure backwards compatability (fixed #9438)
+            if ($this->writeCallback && !$this->fields) {
+                $this->fields = $this->composeFields();
+            }
+            // ensure data consistency
+            if (!isset($this->fields['data'])) {
+                $this->fields['data'] = $data;
+            } else {
+                $_SESSION = $this->fields['data'];
+            }
+            // ensure 'id' and 'expire' are never affected by [[writeCallback]]
+            $this->fields = array_merge($this->fields, [
+                'id' => $id,
+                'expire' => time() + $this->getTimeout(),
+            ]);
+            $this->fields = $this->typecastFields($this->fields);
+            $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
+            $this->fields = [];
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
         }
-
         return true;
     }
 
@@ -221,7 +254,7 @@ class DbSession extends MultiFieldSession
      */
     protected function typecastFields($fields)
     {
-        if (isset($fields['data']) && is_array($fields['data'] && is_object($fields['data']))) {
+        if (isset($fields['data']) && !is_array($fields['data']) && !is_object($fields['data'])) {
             $fields['data'] = new PdoValue($fields['data'], \PDO::PARAM_LOB);
         }
 

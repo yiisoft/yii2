@@ -1518,6 +1518,41 @@ describe('yii.validation', function () {
                 {operator: '<', compareValue: '2', type: 'number'},
                 false
             ],
+            'number type, ">=" operator, 2nd is lower': [
+                10,
+                {operator: '>=', compareValue: 2, type: 'number'},
+                true
+            ],
+            'number type, "<=" operator, 2nd is lower': [
+                10,
+                {operator: '<=', compareValue: 2, type: 'number'},
+                false
+            ],
+            'number type, ">" operator, 2nd is lower': [
+                10,
+                {operator: '>', compareValue: 2, type: 'number'},
+                true
+            ],
+            'number type, ">" operator, compare value undefined': [
+                undefined,
+                {operator: '>', compareValue: 2, type: 'number'},
+                false
+            ],
+            'number type, "<" operator, compare value undefined': [
+                undefined,
+                {operator: '<', compareValue: 2, type: 'number'},
+                true
+            ],
+            'number type, ">=" operator, compare value undefined': [
+                undefined,
+                {operator: '>=', compareValue: 2, type: 'number'},
+                false
+            ],
+            'number type, "<=" operator, compare value undefined': [
+                undefined,
+                {operator: '<=', compareValue: 2, type: 'number'},
+                true
+            ],
             // default compare value
             'default compare value, "===" operator, against undefined': [undefined, {operator: '==='}, true]
         }, function (value, options, expectValid) {

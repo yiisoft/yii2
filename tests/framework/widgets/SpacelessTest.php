@@ -60,20 +60,4 @@ class SpacelessTest extends \yiiunit\TestCase
         Spaceless::end();
         $this->assertTrue($initTriggered);
     }
-
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-
-        ob_start();
-        Spaceless::begin([
-            'on afterRun' => function ($event) use (&$result) {
-                $result = $event->result;
-            },
-        ]);
-        Spaceless::end();
-        ob_end_clean();
-
-        $this->assertNotNull($result);
-    }
 }

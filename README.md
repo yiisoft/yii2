@@ -55,6 +55,7 @@ You may join us and:
 - [Translate documentation or messages](docs/internals/translation-workflow.md)
 - [Give us feedback or start a design discussion](https://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
 - [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
+- [Become a sponsor](#sponsoring)
 
 ### Reporting Security issues
 
@@ -91,3 +92,9 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 ```
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 ```
+
+### Sponsoring
+
+Support this project by becoming a sponsor or a backer. 
+
+[![OpenCollective sponsors](https://opencollective.com/yiisoft/sponsors/badge.svg)](https://opencollective.com/yiisoft) [![OpenCollective backers](https://opencollective.com/yiisoft/backers/badge.svg)](https://opencollective.com/yiisoft)

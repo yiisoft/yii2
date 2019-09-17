@@ -77,6 +77,8 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(-20));
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
+        $this->assertFalse($val->validate(false));
+        $this->assertFalse($val->validate(true));
 
         $this->setPointDecimalLocale();
         $this->assertFalse($val->validate('25,45'));
@@ -94,6 +96,8 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate('020'));
         $this->assertTrue($val->validate(0x14));
         $this->assertFalse($val->validate('0x14')); // todo check this
+        $this->assertFalse($val->validate(false));
+        $this->assertFalse($val->validate(true));
     }
 
     public function testValidateValueAdvanced()

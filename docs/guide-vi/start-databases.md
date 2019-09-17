@@ -50,7 +50,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 Cấu hình kết nối tới CSDL <span id="configuring-db-connection"></span>
 ---------------------------
 
-Trước tiên, hãy chắc chắn rằng bạn đã cài 2 gói PHP [PDO](http://www.php.net/manual/en/book.pdo.php) và
+Trước tiên, hãy chắc chắn rằng bạn đã cài 2 gói PHP [PDO](https://secure.php.net/manual/en/book.pdo.php) và
 PDO driver dành cho các CSDL mà đang sử dụng(ví dụ `pdo_mysql` cho MySQL). Đối với các CSDL quan hệ thì những gói này 
 cần phải có.
 
