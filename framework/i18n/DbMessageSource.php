@@ -9,12 +9,12 @@ namespace yii\i18n;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\caching\CacheInterface;
+use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
-use yii\caching\Cache;
-use yii\db\Connection;
-use yii\db\Query;
 
 /**
  * DbMessageSource extends [[MessageSource]] and represents a message source that stores translated
@@ -55,7 +55,7 @@ class DbMessageSource extends MessageSource
      */
     public $db = 'db';
     /**
-     * @var Cache|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
      * The messages data will be cached using this cache object.
      * Note, that to enable caching you have to set [[enableCaching]] to `true`, otherwise setting this property has no effect.
      *
@@ -98,7 +98,7 @@ class DbMessageSource extends MessageSource
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
         if ($this->enableCaching) {
-            $this->cache = Instance::ensure($this->cache, Cache::className());
+            $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
         }
     }
 
@@ -127,9 +127,9 @@ class DbMessageSource extends MessageSource
             }
 
             return $messages;
-        } else {
-            return $this->loadMessagesFromDb($category, $language);
         }
+
+        return $this->loadMessagesFromDb($category, $language);
     }
 
     /**
@@ -183,7 +183,7 @@ class DbMessageSource extends MessageSource
                 't1.category' => $category,
                 't2.language' => $fallbackLanguage,
             ])->andWhere([
-                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language])
+                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language]),
             ]);
     }
 }

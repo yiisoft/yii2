@@ -1,0 +1,37 @@
+<form id="w0">
+    <input id="name" type="text" name="name" value="">
+</form>
+
+<form id="w1">
+    <fieldset disabled="">
+        <div class="form-group required">
+            <label class="control-label" for="test_text">Test text</label>
+            <input type="text" id="test_text" class="form-control" name="Test[text]" aria-required="true">
+            <div class="help-block"></div>
+        </div>
+    </fieldset>
+
+    <fieldset disabled="">
+        <div class="form-group required">
+            <label class="control-label">Test radio</label>
+            <input type="hidden" name="Test[radio]" value="">
+            <div id="test_radio" aria-required="true">
+                <label><input type="radio" name="Test[radio]" value="1"> Test1</label>
+                <label><input type="radio" name="Test[radio]" value="0"> Test2</label>
+            </div>
+            <div class="help-block"></div>
+        </div>
+    </fieldset>
+
+    <fieldset disabled="">
+        <div class="form-group required">
+            <label class="control-label">Test checkbox</label>
+            <input type="hidden" name="Test[checkbox]" value="">
+            <div id="test_checkbox" aria-required="true">
+                <label><input type="checkbox" name="Test[checkbox][]" value="1"> Test1</label>
+                <label><input type="checkbox" name="Test[checkbox][]" value="0"> Test2</label>
+            </div>
+            <div class="help-block"></div>
+        </div>
+    </fieldset>
+</form>

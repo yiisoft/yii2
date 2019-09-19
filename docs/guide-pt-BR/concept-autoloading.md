@@ -1,7 +1,7 @@
 Autoloading de Classes 
 =================
 
-O Yii baseia-se no [mecanismo de autoloading de classe](http://www.php.net/manual/en/language.oop5.autoload.php) para localizar e incluir todos os arquivos de classe necessários. Ele fornece um autoloader de alto desempenho que é compatível com o
+O Yii baseia-se no [mecanismo de autoloading de classe](https://secure.php.net/manual/en/language.oop5.autoload.php) para localizar e incluir todos os arquivos de classe necessários. Ele fornece um autoloader de alto desempenho que é compatível com o
 [PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md).
 O autoloader é instalado quando o arquivo `Yii.php` é incluído. 
 > Observação: Para simplificar a descrição, nesta seção, nós falaremos apenas sobre autoloading de classe. No entanto, tenha em mente que o conteúdo que estamos descrevendo aqui se aplica a autoloading de interfaces e traits também.
@@ -12,7 +12,7 @@ Usando o Autoloader do Yii <span id="using-yii-autoloader"></span>
 
 Para fazer uso da autoloader de classe do Yii, você deve seguir duas regras simples ao criar e nomear suas classes:
 
-* Cada classe deve estar debaixo de um [namespace](http://php.net/manual/en/language.namespaces.php) (exemplo. `foo\bar\MyClass`)
+* Cada classe deve estar debaixo de um [namespace](https://secure.php.net/manual/en/language.namespaces.php) (exemplo. `foo\bar\MyClass`)
 * Cada classe deve ser salvo em um arquivo individual cujo caminho é determinado pelo seguinte algoritmo:
 
 ```php
@@ -48,8 +48,8 @@ Uma vez que o Yii utiliza o Composer como seu gerenciador de dependência de pac
 Ao usar o Yii autoloader junto com outros autoloaders, você deve incluir o arquivo `Yii.php` *depois* de todos os outros autoloaders serem instalados. Isso fará com que o Yii autoloader seja o primeiro a responder a qualquer solicitação de autoloading  de classe. Por exemplo, o código a seguir foi extraído do [script de entrada](structure-entry-scripts.md) do [Template Básico de Projeto](start-installation.md). A primeira linha instala o Composer autoloader, enquanto a segunda linha instala o Yii autoloader:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 Você pode usar o autoloader do Composer sozinho sem o autoloader do Yii. No entanto, ao fazê-lo, o desempenho do carregamento automático das classes pode ser degradada, e você deve seguir as regras estabelecidas pelo Composer para que suas classes sejam auto carregáveis.
 

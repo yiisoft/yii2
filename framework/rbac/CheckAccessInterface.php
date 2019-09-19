@@ -9,7 +9,7 @@ namespace yii\rbac;
 
 /**
  * For more details and usage information on CheckAccessInterface, see the [guide article on security authorization](guide:security-authorization).
- * 
+ *
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.9
  */

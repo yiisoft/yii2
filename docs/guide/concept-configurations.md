@@ -97,7 +97,7 @@ configuration file for the [Basic Project Template](start-installation.md).
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -135,6 +135,28 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 More details about configuring the `components` property of an application can be found
 in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
+Since version 2.0.11, the application configuration supports [Dependency Injection Container](concept-di-container.md)
+configuration using `container` property. For example:
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Dependency Injection Container singletons configuration
+        ]
+    ]
+];
+```
+
+To know more about the possible values of `definitions` and `singletons` configuration arrays and real-life examples,
+please read [Advanced Practical Usage](concept-di-container.md#advanced-practical-usage) subsection of the
+[Dependency Injection Container](concept-di-container.md) article.
 
 ### Widget Configurations <span id="widget-configurations"></span>
 
@@ -171,8 +193,8 @@ For example, you may keep an application configuration in a file named `web.php`
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -209,7 +231,7 @@ return [
 To get a configuration stored in a configuration file, simply "require" it, like the following:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 

@@ -40,7 +40,7 @@ dengan menjalankan `composer self-update`.
 Dengan Komposer diinstal, Anda dapat menginstal Yii dengan menjalankan perintah berikut di bawah folder yang terakses web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -131,7 +131,7 @@ persyaratan Yii. Anda dapat memeriksa apakah persyaratan minimumnya cocok dengan
   ```
 
 Anda harus mengkonfigurasi instalasi PHP Anda sehingga memenuhi persyaratan minimal Yii. Yang paling penting, Anda
-harus memiliki PHP versi 5.4 atau lebih. Anda juga harus menginstal [PDO PHP Ekstensi](http://www.php.net/manual/en/pdo.installation.php)
+harus memiliki PHP versi 5.4 atau lebih. Anda juga harus menginstal [PDO PHP Ekstensi](https://secure.php.net/manual/en/pdo.installation.php)
 dan driver database yang sesuai (seperti `pdo_mysql` untuk database MySQL), jika aplikasi Anda membutuhkan database.
 
 
@@ -187,9 +187,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Konfigurasi Nginx yang Direkomendasikan<span id="recommended-nginx-configuration"></span>
 
-Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](http://php.net/install.fpm).
+Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](https://secure.php.net/install.fpm).
 Anda dapat menggunakan konfigurasi Nginx berikut, menggantikan `path/to/basic/web` dengan path yang sebenarnya untuk
-`basic/web` dan `mysite.local` dengan hostname yang sebenarnya untuk server.
+`basic/web` dan `mysite.test` dengan hostname yang sebenarnya untuk server.
 
 ```nginx
 server {
@@ -199,7 +199,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

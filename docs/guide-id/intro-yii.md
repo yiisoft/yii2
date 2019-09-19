@@ -48,5 +48,5 @@ Yii 2.0 memerlukan PHP 5.4.0 atau versi lebih tinggi. Anda dapat menemukan persy
 dengan menjalankan pengecek persyaratan yang diikutsertakan dalam setiap rilis Yii.
 
 Menggunakan Yii memerlukan pengetahuan dasar tentang pemrograman berorientasi objek (OOP), mengingat Yii adalah framework berbasis OOP murni.
-Yii 2.0 juga memanfaatkan fitur terbaru dari PHP, seperti [namespace](http://www.php.net/manual/en/language.namespaces.php) dan [traits](http://www.php.net/manual/en/language.oop5.traits.php). 
+Yii 2.0 juga memanfaatkan fitur terbaru dari PHP, seperti [namespace](https://secure.php.net/manual/en/language.namespaces.php) dan [traits](https://secure.php.net/manual/en/language.oop5.traits.php). 
 Memahami konsep-konsep ini akan membantu Anda lebih mudah memahami Yii 2.0.

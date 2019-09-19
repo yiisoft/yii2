@@ -224,7 +224,7 @@ des données. Dans le cas où vous auriez désactivé le Javascript sur votre na
 effectuée coté serveur, comme montré dans la méthode `actionEntry()`. Cela garantit la validité des données en toutes 
 circonstances.
 
-> Attention : La validation coté client est un confort qui permet une meilleure expérience utilisateur. La validation coté serveur est toujours nécessaire, que la validation coté client soit ou non en place.
+> Warning: La validation coté client est un confort qui permet une meilleure expérience utilisateur. La validation coté serveur est toujours nécessaire, que la validation coté client soit ou non en place.
 
 Les étiquettes des champs de saisie sont générés par la méthode `field()`, en utilisant les noms des propriété du
 modèle.

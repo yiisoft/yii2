@@ -18,6 +18,7 @@ Introducción
 Primeros pasos
 --------------
 
+* [Qué necesita saber](start-prerequisites.md)
 * [Instalar Yii](start-installation.md)
 * [Funcionamiento de aplicaciones](start-workflow.md)
 * [Hola a todos](start-hello.md)

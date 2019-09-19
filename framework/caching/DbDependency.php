@@ -43,12 +43,13 @@ class DbDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the value of the global state.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      * @throws InvalidConfigException if [[db]] is not a valid application component ID
      */
     protected function generateDependencyData($cache)
     {
+        /* @var $db Connection */
         $db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
             throw new InvalidConfigException('DbDependency::sql must be set.');

@@ -3,7 +3,7 @@ The Definitive Guide to Yii 2.0
 
 Các hướng dẫn được phát hành theo [Các điều khoản về tài liệu Yii](http://www.yiiframework.com/doc/terms/).
 
-All Rights Reserved.
+Tất cả bản quyền đã được bảo hộ (All Rights Reserved).
 
 2014 (c) Yii Software LLC.
 
@@ -12,19 +12,20 @@ Giới thiệu
 ------------
 
 * [Về Yii](intro-yii.md)
-* [Nâng cấp lên từ phiên bản 1.1](intro-upgrade-from-v1.md)
+* [Hướng dẫn nâng cấp lên từ phiên bản 1.1](intro-upgrade-from-v1.md)
 
 
 Bắt đầu
 ---------------
 
+* [Những gì bạn cần biết](start-prerequisites.md)
 * [Cài đặt Yii](start-installation.md)
 * [Thực hiện chạy ứng dụng](start-workflow.md)
-* [Viết lời chào đầu tiên](start-hello.md)
+* [Viết chương trình đầu tiên](start-hello.md)
 * [Làm việc với Forms](start-forms.md)
 * [Làm việc với Databases](start-databases.md)
-* [Sử dụng Gii để sinh code](start-gii.md)
-* [Mức cao hơn](start-looking-ahead.md)
+* [Sử dụng Gii để sinh mã tự động](start-gii.md)
+* [Nâng cao](start-looking-ahead.md)
 
 
 Kiến trúc ứng dụng (Application Structure)
@@ -33,8 +34,8 @@ Kiến trúc ứng dụng (Application Structure)
 * [Tổng quan về kiến trúc ứng dụng](structure-overview.md)
 * [Mục Scripts](structure-entry-scripts.md)
 * [Ứng dụng (Applications)](structure-applications.md)
-* [Thành phần ứng dụng](structure-application-components.md)
-* [Bộ điều khiển (Controllers)](structure-controllers.md)
+* [Các thành phần bên trong ứng dụng](structure-application-components.md)
+* [Controllers](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
 * [Modules](structure-modules.md)
@@ -44,14 +45,14 @@ Kiến trúc ứng dụng (Application Structure)
 * [Phần mở rộng (Extensions)](structure-extensions.md)
 
 
-Yêu cầu xử lý (Handling Requests)
+Xử lý yêu cầu (Handling Requests)
 -----------------
 
 * [Tổng quan](runtime-overview.md)
-* [Bootstrapping](runtime-bootstrapping.md)
-* [Routing và URL Creation](runtime-routing.md)
+* [Khởi động](runtime-bootstrapping.md)
+* [Định tuyến (Routing) và khởi tạo đường dẫn (URL Creation)](runtime-routing.md)
 * [Yêu cầu (Requests)](runtime-requests.md)
-* [Responses](runtime-responses.md)
+* [Kết quả (Responses)](runtime-responses.md)
 * [Sessions và Cookies](runtime-sessions-cookies.md)
 * [Xử lý lỗi (Handling Error)](runtime-handling-errors.md)
 * [Logging](runtime-logging.md)
@@ -77,11 +78,11 @@ Làm việc với Databases
 * [Data Access Objects](db-dao.md): Kết nối cơ sở dữ liệu, truy vấn cơ bản, giao dịch và phương thức hoạt động
 * [Query Builder](db-query-builder.md): Sử dụng một truy vấn đơn giản, các lớp cơ sở dữ liệu trừu tượng
 * [Active Record](db-active-record.md): The Active Record ORM, truy vấn và thao tác với dữ liệu, định nghĩa các mối quan hệ giữa các bảng
-* [Migrations](db-migrations.md): Cung cấp cho đội dự án dễ dàng trong việc quản lý những schema CSDL trong ứng dụng
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elasticsearch.md)
+* [Migrations](db-migrations.md): Cung cấp cho đội dự án một công cụ dễ dàng trong việc quản lý những schema CSDL trong ứng dụng
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
+* [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
+* [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
 Nhận dữ liệu từ user
@@ -92,6 +93,7 @@ Nhận dữ liệu từ user
 * [File Upload](input-file-upload.md)
 * [Thu thập dữ liệu từ danh sách đầu vào (Đang phát triển)](input-tabular-input.md)
 * [Lấy dữ liệu cho nhiều Models (Chưa giải quyết)](input-multiple-models.md)
+* [Mở rộng ActiveForm ở phía Máy khách](input-form-javascript.md)
 
 
 Hiển thị dữ liệu
@@ -112,7 +114,7 @@ Bảo mật (Security)
 * [Xác thực (Authentication)](security-authentication.md)
 * [Quyền (Authorization)](security-authorization.md)
 * [Các thao tác xử lý với Passwords (Đang phát triển)](security-passwords.md)
-* [Auth Clients](security-auth-clients.md)
+* [Auth Clients](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
 * [Best Practices](security-best-practices.md)
 
 
@@ -143,9 +145,9 @@ RESTful Web Services
 Công cụ phát triển (Development Tools)
 -----------------
 
-* [Thanh công cụ gỡ lỗi và sửa lỗi (Debug Toolbar và Debugger)](tool-debugger.md)
-* [Sử dụng Gii để tạo code](tool-gii.md)
-* **TBD** [Tạo tài liệu về API ](tool-api-doc.md)
+* [Thanh công cụ gỡ lỗi và sửa lỗi (Debug Toolbar và Debugger)](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
+* [Sử dụng Gii để tạo code](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide)
+* [Tạo tài liệu về API ](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
 
 
 Testing
@@ -162,7 +164,7 @@ Testing
 Chủ đề năng cao
 --------------
 
-* [Advanced Application Template](tutorial-advanced-app.md)
+* [Advanced Application Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Giao diện dòng lệnh (Console Commands)](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)
@@ -171,22 +173,23 @@ Chủ đề năng cao
 * [Tối ưu hiệu năng ứng dụng (Performance Tuning)](tutorial-performance-tuning.md)
 * [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
-* [Working with Third-Party Code](tutorial-yii-integration.md)
+* [Tích hợp mã nguồn của bên thứ ba (Working with Third-Party Code)](tutorial-yii-integration.md)
+* [Dùng Yii như các framework nhỏ](tutorial-yii-as-micro-framework.md)
 
 
 Widgets
 -------
 
-* GridView: **TBD** liên kết tới trang demo
-* ListView: **TBD** liên kết tới trang demo
-* DetailView: **TBD** liên kết tới trang demo
-* ActiveForm: **TBD** liên kết tới trang demo
-* Pjax: **TBD** liên kết tới trang demo
-* Menu: **TBD** liên kết tới trang demo
-* LinkPager: **TBD** liên kết tới trang demo
-* LinkSorter: **TBD** liên kết tới trang demo
-* [Bootstrap Widgets](widget-bootstrap.md)
-* [jQuery UI Widgets](widget-jui.md)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [Bootstrap Widgets](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
+* [jQuery UI Widgets](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 
 
 Helpers

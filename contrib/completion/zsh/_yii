@@ -1,0 +1,40 @@
+#compdef yii
+
+_yii() {
+    local state command lastArgument commands options executive
+    lastArgument=${words[${#words[@]}]}
+    prevArgument=${words[${#words[@]}-1]}
+    executive=$words[1]
+
+    # lookup for command
+    for word in ${words[@]:1}; do
+        if [[ $word != -* ]]; then
+            command=$word
+            break
+        fi
+    done
+
+
+    [[ $lastArgument == $command ]] && state="command"
+    [[ $lastArgument != $command ]] && state="option"
+    [[ $prevArgument == "help" ]] && state="help"
+
+    case $state in
+        command|help)
+            commands=("${(@f)$(${executive} help/list 2>/dev/null)}")
+            _describe 'command' commands
+        ;;
+        option)
+            options=("${(@f)$(${executive} help/usage ${command} 2>/dev/null)}")
+            _message -r "$options"
+
+            suboptions=("${(@f)$(${executive} help/list-action-options ${command} 2>/dev/null)}")
+            _describe -V -o -t suboption 'action options' suboptions
+        ;;
+        *)
+    esac
+
+}
+
+compdef _yii yii
+

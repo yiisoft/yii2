@@ -1,8 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
+use yii\db\ArrayExpression;
 use yii\validators\EachValidator;
+use yiiunit\data\base\ArrayAccessObject;
+use yiiunit\data\base\TraversableObject;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -14,7 +22,9 @@ class EachValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testArrayFormat()
@@ -43,7 +53,7 @@ class EachValidatorTest extends TestCase
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                '  to be trimmed  '
+                '  to be trimmed  ',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['trim']]);
@@ -58,7 +68,7 @@ class EachValidatorTest extends TestCase
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                'text'
+                'text',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['integer']]);
@@ -110,7 +120,7 @@ class EachValidatorTest extends TestCase
 
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                ''
+                '',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => true]]);
@@ -141,7 +151,7 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two']]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotEmpty($model->getErrors('attr_one'));
-        $this->assertEquals(3, count($model->attr_one));
+        $this->assertCount(3, $model->attr_one);
 
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -154,5 +164,40 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two', 'operator' => '!=']]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertEmpty($model->getErrors('attr_one'));
+    }
+
+    /**
+     * @depends testValidate
+     */
+    public function testStopOnFirstError()
+    {
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_one' => [
+                'one', 2, 'three',
+            ],
+        ]);
+        $validator = new EachValidator(['rule' => ['integer']]);
+
+        $validator->stopOnFirstError = true;
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertCount(1, $model->getErrors('attr_one'));
+
+        $model->clearErrors();
+        $validator->stopOnFirstError = false;
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertCount(2, $model->getErrors('attr_one'));
+    }
+
+    public function testValidateArrayAccess()
+    {
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_array' => new ArrayAccessObject([1,2,3]),
+        ]);
+
+        $validator = new EachValidator(['rule' => ['integer']]);
+        $validator->validateAttribute($model, 'attr_array');
+        $this->assertFalse($model->hasErrors('array'));
+
+        $this->assertTrue($validator->validate($model->attr_array));
     }
 }

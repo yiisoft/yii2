@@ -51,7 +51,7 @@ class RangeValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -68,7 +68,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -89,7 +89,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -100,7 +100,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -108,6 +108,17 @@ class RangeValidator extends Validator
             $this->range = call_user_func($this->range, $model, $attribute);
         }
 
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $range = [];
         foreach ($this->range as $value) {
             $range[] = (string) $value;
@@ -115,9 +126,9 @@ class RangeValidator extends Validator
         $options = [
             'range' => $range,
             'not' => $this->not,
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
+            ]),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
@@ -126,8 +137,6 @@ class RangeValidator extends Validator
             $options['allowArray'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

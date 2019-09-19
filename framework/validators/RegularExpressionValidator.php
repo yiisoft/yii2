@@ -10,8 +10,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
-use yii\web\JsExpression;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * RegularExpressionValidator validates that the attribute value matches the specified [[pattern]].
@@ -35,7 +35,7 @@ class RegularExpressionValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,7 +49,7 @@ class RegularExpressionValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -61,25 +61,34 @@ class RegularExpressionValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientOptions($model, $attribute)
     {
         $pattern = Html::escapeJsRegularExpression($this->pattern);
 
         $options = [
             'pattern' => new JsExpression($pattern),
             'not' => $this->not,
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
+            ]),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }

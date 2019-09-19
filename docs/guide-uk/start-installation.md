@@ -40,7 +40,7 @@
 Після встановлення Composer, встановити Yii можна виконавши наступну команду з директорії, яка доступна через Web:
 
 ```bash
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -136,7 +136,7 @@ http://localhost:8080/
   ```
 
 Необхідно налаштувати PHP таким чином, щоб він відповідав мінімальним вимогам Yii. Основна вимога — PHP версії 5.4 або вище.
-Якщо ваш додаток працює з базою даних, необхідно встановити [розширення PHP PDO](http://www.php.net/manual/en/pdo.installation.php)
+Якщо ваш додаток працює з базою даних, необхідно встановити [розширення PHP PDO](https://secure.php.net/manual/en/pdo.installation.php)
 та відповідний драйвер (наприклад, `pdo_mysql` для MySQL).
 
 
@@ -191,9 +191,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
-Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
+Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://secure.php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
-`basic/web`, а `mysite.local` на актуальний домен.
+`basic/web`, а `mysite.test` на актуальний домен.
 
 ```
 server {
@@ -203,7 +203,7 @@ server {
     listen 80; ## "слухаємо порт" для ipv4
     #listen [::]:80 default_server ipv6only=on; ## "слухаємо порт" для ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

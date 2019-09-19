@@ -31,15 +31,15 @@ Yii 2.0 requiert PHP 5.4 ou plus, ce qui est une grosse amélioration par rappor
 Par conséquent, il y a beaucoup de différences au niveau du langage auxquelles vous devriez prêter attention.
 Voici un résumé des principaux changements concernant PHP:
 
-- [Espaces de noms](http://php.net/manual/fr/language.namespaces.php).
-- [Fonctions anonymes](http://php.net/manual/fr/functions.anonymous.php).
+- [Espaces de noms](https://secure.php.net/manual/fr/language.namespaces.php).
+- [Fonctions anonymes](https://secure.php.net/manual/fr/functions.anonymous.php).
 - Syntaxe courte pour les tableaux : `[...éléments...]` est utilisé au lieu de `array(...éléments...)`.
 - Syntaxe courte pour echo : `<?=` est utilisé dans les vues. Cela ne pose aucun problème à partir de PHP 5.4.
-- [Classes SPL et interfaces](http://php.net/manual/fr/book.spl.php).
-- [Late Static Bindings (résolution statique à la volée)](http://php.net/manual/fr/language.oop5.late-static-bindings.php).
-- [Date et heure](http://php.net/manual/fr/book.datetime.php).
-- [Traits](http://php.net/manual/fr/language.oop5.traits.php).
-- [intl](http://php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl` pour les fonctionnalités
+- [Classes SPL et interfaces](https://secure.php.net/manual/fr/book.spl.php).
+- [Late Static Bindings (résolution statique à la volée)](https://secure.php.net/manual/fr/language.oop5.late-static-bindings.php).
+- [Date et heure](https://secure.php.net/manual/fr/book.datetime.php).
+- [Traits](https://secure.php.net/manual/fr/language.oop5.traits.php).
+- [intl](https://secure.php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl` pour les fonctionnalités
   d'internationalisation.
 
 
@@ -58,26 +58,26 @@ chargeur de classe de Yii.)
 Composants et objets
 --------------------
 
-Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\Object]] et [[yii\base\Component]].
-Le classe [[yii\base\Object|Object]] est une classe de base légère qui permet de définir les
+Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\BaseObject]] et [[yii\base\Component]].
+Le classe [[yii\base\BaseObject|BaseObject]] est une classe de base légère qui permet de définir les
 [Propriétés de l'objet](concept-properties.md) via des accesseurs. La classe [[yii\base\Component|Component]] est une
-sous classe de [[yii\base\Object|Object]] et prend en charge les [Evénements](concept events.md) et les
+sous classe de [[yii\base\BaseObject|BaseObject]] et prend en charge les [Événements](concept events.md) et les
 [Comportements](concept-behaviors.md).
 
 Si votre classe n'a pas besoin des événements et des comportements, vous devriez envisager d'utiliser
-[[yii\base\Object|Object]] comme classe de base. C'est généralement le cas pour les classes qui représentent
+[[yii\base\BaseObject|BaseObject]] comme classe de base. C'est généralement le cas pour les classes qui représentent
 une structure de données basique.
 
 
 Configuration d'objets
 ---------------------
 
-La classe [[yii\base\Object|Object]] introduit une manière uniforme de configurer les objets. Toute sous-classe
-de [[yii\base\Object|Object]] doit déclarer son constructeur (si besoin) de la manière suivante afin qu'elle
+La classe [[yii\base\BaseObject|BaseObject]] introduit une manière uniforme de configurer les objets. Toute sous-classe
+de [[yii\base\BaseObject|BaseObject]] doit déclarer son constructeur (si besoin) de la manière suivante afin qu'elle
 puisse être configurée correctement :
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -97,7 +97,7 @@ class MyClass extends \yii\base\Object
 
 Dans ce qui précède, le dernier paramètre du constructeur doit être un tableau de configuration
 qui contient des entrées nom-valeur pour initialiser les propriétés à la fin du constructeur.
-Vous pouvez remplacer la méthode [[yii\base\Object::init()|init()]] pour le travail d'initialisation qui doit être fait
+Vous pouvez remplacer la méthode [[yii\base\BaseObject::init()|init()]] pour le travail d'initialisation qui doit être fait
 après que la configuration a été appliquée.
 
 En suivant cette convention, vous serez en mesure de créer et de configurer de nouveaux objets en utilisant un tableau
@@ -134,7 +134,7 @@ $component->on($eventName, $handler);
 // Pour détacher le gestionnaire, utilisez :
 // $component->off($eventName, $handler);
 ```
-Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, reportez-vous à la section [Evénements](concept-events.md).
+Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, reportez-vous à la section [Événements](concept-events.md).
 
 
 Alias
@@ -293,7 +293,7 @@ Reportez-vous à la section [Commandes console](tutorial-console.md) pour plus d
 I18N
 ----
 
-Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](http://pecl.php.net/package/intl).
+Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](https://pecl.php.net/package/intl).
 
 La traduction des messages est désormais effectuée via le composant d'application `i18n`.
 Ce composant gère un ensemble de sources de messages, ce qui vous permet d'utiliser différentes
@@ -503,7 +503,7 @@ Au lieu de cela, vous devez implémenter [[yii\web\IdentityInterface]] qui est b
 Le modèle de projet avancé fournit un exemple.
 
 Reportez-vous aux sections [Authentification](security-authentication.md), [Authorisation](security-authorization.md), et
-[Modèle de projet avancé](tutorial-advanced-app.md) pour en savoir plus.
+[Modèle de projet avancé](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) pour en savoir plus.
 
 
 Gestion des URL

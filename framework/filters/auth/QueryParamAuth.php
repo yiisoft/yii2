@@ -22,7 +22,7 @@ class QueryParamAuth extends AuthMethod
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function authenticate($user, $request, $response)
     {

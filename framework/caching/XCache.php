@@ -17,9 +17,10 @@ namespace yii\caching;
  * See [[Cache]] for common cache operations that XCache supports.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @deprecated since 2.0.14. This class will be removed in 2.1.0.
  */
 class XCache extends Cache
 {

@@ -19,9 +19,18 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bool_values"'; EXCEPTION WHEN OTHERS THEN I
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "animal"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "default_pk"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "document"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "dossier"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "employee"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "department"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP VIEW "animal_view"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_main"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_ref"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END; --
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_4"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_3"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_2"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_1"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_upsert"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "profile_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "customer_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
@@ -33,6 +42,9 @@ BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "null_values_SEQ"'; EXCEPTION WHEN OTHERS
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "bool_values_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "animal_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "document_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "T_upsert_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "department_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "employee_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 
 /* STATEMENTS */
 
@@ -52,7 +64,7 @@ CREATE SEQUENCE "profile_SEQ";
 
 CREATE TABLE "customer" (
   "id" integer not null,
-  "email" varchar2(128) NOT NULL,
+  "email" varchar2(128) NOT NULL UNIQUE,
   "name" varchar2(128),
   "address" varchar(4000),
   "status" integer DEFAULT 0,
@@ -132,6 +144,7 @@ CREATE TABLE "null_values" (
 CREATE SEQUENCE "null_values_SEQ";
 
 CREATE TABLE "negative_default_values" (
+    "tinyint_col" number(3) default -123,
     "smallint_col" smallint default -123,
     "int_col" integer default -123,
     "bigint_col" integer default -123,
@@ -142,6 +155,7 @@ CREATE TABLE "negative_default_values" (
 CREATE TABLE "type" (
   "int_col" integer NOT NULL,
   "int_col2" integer DEFAULT 1,
+  "tinyint_col" number(3) DEFAULT 1,
   "smallint_col" smallint DEFAULT 1,
   "char_col" char(100) NOT NULL,
   "char_col2" varchar2(100) DEFAULT 'something',
@@ -189,7 +203,91 @@ CREATE TABLE "document" (
 );
 CREATE SEQUENCE "document_SEQ";
 
+CREATE TABLE "department" (
+  "id" INTEGER NOT NULL,
+  "title" varchar2(255) not null,
+  CONSTRAINT "department_PK" PRIMARY KEY ("id") ENABLE
+);
+CREATE SEQUENCE "department_SEQ";
+
+CREATE TABLE "employee" (
+  "id" INTEGER NOT NULL,
+  "department_id" INTEGER NOT NULL,
+  "first_name" varchar2(255) not null,
+  "last_name" varchar2(255) not null,
+  CONSTRAINT "employee_PK" PRIMARY KEY ("id", "department_id") ENABLE
+);
+CREATE SEQUENCE "employee_SEQ";
+
+CREATE TABLE "dossier" (
+  "id" INTEGER NOT NULL,
+  "department_id" INTEGER NOT NULL,
+  "employee_id" INTEGER NOT NULL,
+  "summary" varchar2(255) not null,
+  CONSTRAINT "dossier_PK" PRIMARY KEY ("id", "department_id") ENABLE
+);
+
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
+
+CREATE TABLE "bit_values" (
+  "id" integer not null,
+  "val" char(1) NOT NULL,
+  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
+  CONSTRAINT "bit_values_val" CHECK ("val" IN ('1','0'))
+);
+
+CREATE TABLE "T_constraints_1"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_not_null" INT NOT NULL,
+    "C_check" VARCHAR(255) NULL CHECK ("C_check" <> ''),
+    "C_unique" INT NOT NULL,
+    "C_default" INT DEFAULT 0 NOT NULL,
+    CONSTRAINT "CN_unique" UNIQUE ("C_unique")
+);
+
+CREATE TABLE "T_constraints_2"
+(
+    "C_id_1" INT NOT NULL,
+    "C_id_2" INT NOT NULL,
+    "C_index_1" INT NULL,
+    "C_index_2_1" INT NULL,
+    "C_index_2_2" INT NULL,
+    CONSTRAINT "CN_constraints_2_multi" UNIQUE ("C_index_2_1", "C_index_2_2"),
+    CONSTRAINT "CN_pk" PRIMARY KEY ("C_id_1", "C_id_2")
+);
+
+CREATE INDEX "CN_constraints_2_single" ON "T_constraints_2" ("C_index_1");
+
+CREATE TABLE "T_constraints_3"
+(
+    "C_id" INT NOT NULL,
+    "C_fk_id_1" INT NOT NULL,
+    "C_fk_id_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_3" FOREIGN KEY ("C_fk_id_1", "C_fk_id_2") REFERENCES "T_constraints_2" ("C_id_1", "C_id_2") ON DELETE CASCADE
+);
+
+CREATE TABLE "T_constraints_4"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_col_1" INT NULL,
+    "C_col_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);
+
+CREATE TABLE "T_upsert"
+(
+    "id" INT NOT NULL PRIMARY KEY,
+    "ts" INT NULL,
+    "email" VARCHAR(128) NOT NULL UNIQUE,
+    "recovery_email" VARCHAR(128) NULL,
+    "address" CLOB NULL,
+    "status" NUMBER(5,0) DEFAULT 0 NOT NULL,
+    "orders" INT DEFAULT 0 NOT NULL,
+    "profile_id" INT NULL,
+    CONSTRAINT "CN_T_upsert_multi" UNIQUE ("email", "recovery_email")
+);
+CREATE SEQUENCE "T_upsert_SEQ";
 
 /**
  * (Postgres-)Database Schema for validator tests
@@ -255,6 +353,16 @@ CREATE TRIGGER "animal_TRG" BEFORE INSERT ON "animal" FOR EACH ROW BEGIN <<COLUM
 END COLUMN_SEQUENCES;
 END;
 /
+CREATE TRIGGER "document_TRG" BEFORE INSERT ON "document" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
+  IF INSERTING AND :NEW."id" IS NULL THEN SELECT "document_SEQ".NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
+END COLUMN_SEQUENCES;
+END;
+/
+CREATE TRIGGER "T_upsert_TRG" BEFORE INSERT ON "T_upsert" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
+    IF INSERTING AND :NEW."id" IS NULL THEN SELECT "T_upsert_SEQ".NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
+END COLUMN_SEQUENCES;
+END;
+/
 
 /* TRIGGERS */
 
@@ -302,6 +410,17 @@ INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subto
 
 INSERT INTO "document" ("title", "content", "version") VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
+INSERT INTO "department" ("id", "title") VALUES (1, 'IT');
+INSERT INTO "department" ("id", "title") VALUES (2, 'accounting');
+
+INSERT INTO "employee" ("id", "department_id", "first_name", "last_name") VALUES (1, 1, 'John', 'Doe');
+INSERT INTO "employee" ("id", "department_id", "first_name", "last_name") VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO "employee" ("id", "department_id", "first_name", "last_name") VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO "dossier" ("id", "department_id", "employee_id", "summary") VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO "dossier" ("id", "department_id", "employee_id", "summary") VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO "dossier" ("id", "department_id", "employee_id", "summary") VALUES (3, 2, 2, 'Good employee.');
+
 INSERT INTO "validator_main" ("id", "field1") VALUES (1, 'just a string1');
 INSERT INTO "validator_main" ("id", "field1") VALUES (2, 'just a string2');
 INSERT INTO "validator_main" ("id", "field1") VALUES (3, 'just a string3');
@@ -313,23 +432,6 @@ INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (6, 'ref_to_5', 5);
 
-/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
-
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
-
-CREATE TABLE [dbo].[] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
-	[val] [bit] NOT NULL,
-	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
-);
-
-CREATE TABLE "bit_values" (
-  "id" integer not null,
-  "val" char(1) NOT NULL,
-  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
-  CONSTRAINT "bit_values_val" CHECK (val IN ('1','0'))
-);
-
-INSERT INTO "bit_values" ("id", "val") VALUES (1, '0'), (2, '1');
+INSERT INTO "bit_values" ("id", "val")
+  SELECT 1, '0' FROM SYS.DUAL
+  UNION ALL SELECT 2, '1' FROM SYS.DUAL;

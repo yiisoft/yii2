@@ -1,20 +1,25 @@
 <?php
 /**
- * @author Dmitriy Makarov <makarov.dmitriy@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\log {
 
-    function openlog() {
-        \yiiunit\framework\log\SyslogTargetTest::openlog(func_get_args());
+    function openlog()
+    {
+        return \yiiunit\framework\log\SyslogTargetTest::openlog(func_get_args());
     }
 
-    function syslog() {
-        \yiiunit\framework\log\SyslogTargetTest::syslog(func_get_args());
+    function syslog()
+    {
+        return \yiiunit\framework\log\SyslogTargetTest::syslog(func_get_args());
     }
 
-    function closelog() {
-        \yiiunit\framework\log\SyslogTargetTest::closelog(func_get_args());
+    function closelog()
+    {
+        return \yiiunit\framework\log\SyslogTargetTest::closelog(func_get_args());
     }
 }
 
@@ -22,23 +27,22 @@ namespace yiiunit\framework\log {
 
     use PHPUnit_Framework_MockObject_MockObject;
     use yii\helpers\VarDumper;
-    use yiiunit\TestCase;
     use yii\log\Logger;
+    use yiiunit\TestCase;
 
     /**
-     * Class SyslogTargetTest
-     * 
-     * @package yiiunit\framework\log
+     * Class SyslogTargetTest.
+     *
      * @group log
      */
     class SyslogTargetTest extends TestCase
     {
         /**
-         * Array of static functions
-         * 
+         * Array of static functions.
+         *
          * @var array
          */
-        static $functions = [];
+        public static $functions = [];
 
         /**
          * @var PHPUnit_Framework_MockObject_MockObject
@@ -46,19 +50,22 @@ namespace yiiunit\framework\log {
         protected $syslogTarget;
 
         /**
-         * Set up syslogTarget as the mock object
+         * Set up syslogTarget as the mock object.
          */
         protected function setUp()
         {
-            $this->syslogTarget = $this->getMock('yii\\log\\SyslogTarget', ['getMessagePrefix']);
+            $this->syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+                ->setMethods(['getMessagePrefix'])
+                ->getMock();
         }
 
         /**
-         * @covers yii\log\SyslogTarget::export()
+         * @covers \yii\log\SyslogTarget::export()
          */
         public function testExport()
         {
             $identity = 'identity string';
+            $options = LOG_ODELAY | LOG_PID;
             $facility = 'facility string';
             $messages = [
                 ['info message', Logger::LEVEL_INFO],
@@ -69,10 +76,12 @@ namespace yiiunit\framework\log {
                 ['profile begin message', Logger::LEVEL_PROFILE_BEGIN],
                 ['profile end message', Logger::LEVEL_PROFILE_END],
             ];
-            $syslogTarget = $this
-                ->getMock('yii\\log\\SyslogTarget', ['openlog', 'syslog', 'formatMessage', 'closelog']);
+            $syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+                ->setMethods(['openlog', 'syslog', 'formatMessage', 'closelog'])
+                ->getMock();
 
             $syslogTarget->identity = $identity;
+            $syslogTarget->options = $options;
             $syslogTarget->facility = $facility;
             $syslogTarget->messages = $messages;
 
@@ -80,7 +89,7 @@ namespace yiiunit\framework\log {
                 ->method('openlog')
                 ->with(
                     $this->equalTo($identity),
-                    $this->equalTo(LOG_ODELAY | LOG_PID),
+                    $this->equalTo($options),
                     $this->equalTo($facility)
                 );
 
@@ -121,20 +130,56 @@ namespace yiiunit\framework\log {
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
                 list($identity, $option, $facility) = $arguments;
-                $syslogTarget->openlog($identity, $option, $facility);
+                return $syslogTarget->openlog($identity, $option, $facility);
             };
-
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
                 list($priority, $message) = $arguments;
-                $syslogTarget->syslog($priority, $message);
+                return $syslogTarget->syslog($priority, $message);
             };
-
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(0, $arguments);
-                $syslogTarget->closelog();
+                return $syslogTarget->closelog();
             };
 
+            $syslogTarget->export();
+        }
+
+        /**
+         * @covers \yii\log\SyslogTarget::export()
+         *
+         * See https://github.com/yiisoft/yii2/issues/14296
+         */
+        public function testFailedExport()
+        {
+            $syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+                ->setMethods(['openlog', 'syslog', 'formatMessage', 'closelog'])
+                ->getMock();
+            $syslogTarget->method('syslog')->willReturn(false);
+
+            $syslogTarget->identity = 'identity string';
+            $syslogTarget->options = LOG_ODELAY | LOG_PID;
+            $syslogTarget->facility = 'facility string';
+            $syslogTarget->messages = [
+                ['test', Logger::LEVEL_INFO],
+            ];
+
+            static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
+                $this->assertCount(3, $arguments);
+                list($identity, $option, $facility) = $arguments;
+                return $syslogTarget->openlog($identity, $option, $facility);
+            };
+            static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
+                $this->assertCount(2, $arguments);
+                list($priority, $message) = $arguments;
+                return $syslogTarget->syslog($priority, $message);
+            };
+            static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
+                $this->assertCount(0, $arguments);
+                return $syslogTarget->closelog();
+            };
+
+            $this->expectException('yii\log\LogRuntimeException');
             $syslogTarget->export();
         }
 
@@ -143,7 +188,8 @@ namespace yiiunit\framework\log {
          * @param $arguments
          * @return mixed
          */
-        public static function __callStatic($name, $arguments) {
+        public static function __callStatic($name, $arguments)
+        {
             if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
                 $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
                 return forward_static_call(static::$functions[$name], $arguments);
@@ -152,7 +198,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::formatMessage()
+         * @covers \yii\log\SyslogTarget::formatMessage()
          */
         public function testFormatMessageWhereTextIsString()
         {
@@ -169,7 +215,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::formatMessage()
+         * @covers \yii\log\SyslogTarget::formatMessage()
          */
         public function testFormatMessageWhereTextIsException()
         {
@@ -187,7 +233,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::formatMessage()
+         * @covers \yii\log\SyslogTarget::formatMessage()
          */
         public function testFormatMessageWhereTextIsNotStringAndNotThrowable()
         {

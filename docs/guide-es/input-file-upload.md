@@ -77,7 +77,7 @@ use yii\widgets\ActiveForm;
 Es importante recordad que agregues la opción `enctype` al formulario para que el archivo pueda ser subido apropiadamente.
 La llamada a `fileInput()` renderizará un tag `<input type="file">` que le permitirá al usuario seleccionar el archivo a subir.
 
-> Tip: desde la versión 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] agrega la opción `enctype` al formulario
+> Tip: desde la versión 2.0.8, [[yii\widgets\ActiveField::fileInput|fileInput]] agrega la opción `enctype` al formulario
   automáticamente cuando se utiliza una campo de subida de archivo.
 
 ## Uniendo Todo <span id="wiring-up"></span>
@@ -123,7 +123,7 @@ También puedes subir varios archivos a la vez, con algunos ajustes en el códig
 Primero debes ajustar la clase del modelo, agregando la opción `maxFiles` en la regla de validación `file` para limitar
 el número máximo de archivos a subir. Definir `maxFiles` como `0` significa que no hay límite en el número de archivos
 a subir simultáneamente. El número máximo de archivos permitidos para subir simultáneamente está también limitado
-por la directiva PHP [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads),
+por la directiva PHP [`max_file_uploads`](https://secure.php.net/manual/en/ini.core.php#ini.max-file-uploads),
 cuyo valor por defecto es 20. El método `upload()` debería también ser modificado para guardar los archivos uno a uno.
 
 ```php

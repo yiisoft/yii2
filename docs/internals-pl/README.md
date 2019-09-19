@@ -33,6 +33,7 @@ Wersjonowanie i wydania
 
 - [Organizacja projektu](project-organization.md)
 - [Wersjonowanie Yii](versions.md)
+- [Wsteczna kompatybilność](bc.md)
 - [Wydawanie nowej wersji](release.md)
 
 Inne zagadnienia

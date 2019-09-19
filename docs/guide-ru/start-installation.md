@@ -1,4 +1,4 @@
-Установка Yii
+Установка Yii <span id="installing-from-composer"></span>
 ==============
 
 Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
@@ -47,18 +47,14 @@ mv composer.phar /usr/local/bin/composer
 ### Установка Yii
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
-который позволяет управлять зависимостями пакетов bower и npm через Composer. Эту команду достаточно выполнить один раз.
-Вторая команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
+Эта команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
 имя директории.
 
-> Info: Если команда `composer create-project` не выполняется нормально, убедитесь, что вы корректно установили composer
-> asset plugin. Вы можете сделать это выполнив `composer global show`. Вывод должен содержать `fxp/composer-asset-plugin`.
-> Также можно обратиться к [разделу "Troubleshooting" документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
+> Info: Если команда `composer create-project` не выполняется нормально, попробуйте обратиться к
+> [разделу "Troubleshooting" документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
 > Там описаны другие типичные ошибки. После того, как вы исправили ошибку, запустите `composer update` в директории `basic`.
 
 > Tip: Если вы хотите установить последнюю нестабильную ревизию Yii, можете использовать следующую команду,
@@ -126,7 +122,7 @@ php requirements.php
 
 Для корректной работы фреймворка вам необходима установка PHP, соответствующая его минимальным требованиям. Основное
 требование — PHP версии 5.4 и выше. Если ваше приложение работает с базой данных, необходимо установить
-[расширение PHP PDO](http://www.php.net/manual/ru/pdo.installation.php) и соответствующий драйвер 
+[расширение PHP PDO](https://secure.php.net/manual/ru/pdo.installation.php) и соответствующий драйвер 
 (например, `pdo_mysql` для MySQL).
 
 
@@ -178,9 +174,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендуемые настройки Nginx <span id="recommended-nginx-configuration"></span>
 
-PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
+PHP должен быть установлен как [FPM SAPI](https://secure.php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
-`mysite.local` на ваше имя хоста.
+`mysite.test` на ваше имя хоста.
 
 ```
 server {
@@ -190,7 +186,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## слушаем ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

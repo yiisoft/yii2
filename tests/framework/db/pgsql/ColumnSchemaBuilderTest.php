@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
 use yii\db\ColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle.
  * @group db
  * @group pgsql
  */

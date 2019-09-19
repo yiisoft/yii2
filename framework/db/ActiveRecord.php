@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -98,7 +99,7 @@ class ActiveRecord extends BaseActiveRecord
 
 
     /**
-     * Loads default values from database table schema
+     * Loads default values from database table schema.
      *
      * You may call this method to load default values after creating a new instance:
      *
@@ -119,6 +120,7 @@ class ActiveRecord extends BaseActiveRecord
                 $this->{$column->name} = $column->defaultValue;
             }
         }
+
         return $this;
     }
 
@@ -164,7 +166,7 @@ class ActiveRecord extends BaseActiveRecord
      * This method is internally called by [[findOne()]] and [[findAll()]].
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws InvalidConfigException if there is no primary key defined
+     * @throws InvalidConfigException if there is no primary key defined.
      * @internal
      */
     protected static function findByCondition($condition)
@@ -179,22 +181,142 @@ class ActiveRecord extends BaseActiveRecord
                 if (!empty($query->join) || !empty($query->joinWith)) {
                     $pk = static::tableName() . '.' . $pk;
                 }
-                $condition = [$pk => $condition];
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
+        } elseif (is_array($condition)) {
+            $aliases = static::filterValidAliases($query);
+            $condition = static::filterCondition($condition, $aliases);
         }
 
         return $query->andWhere($condition);
     }
 
     /**
+     * Returns table aliases which are not the same as the name of the tables.
+     *
+     * @param Query $query
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidAliases(Query $query)
+    {
+        $tables = $query->getTablesUsedInFrom();
+
+        $aliases = array_diff(array_keys($tables), $tables);
+
+        return array_map(function ($alias) {
+            return preg_replace('/{{([\w]+)}}/', '$1', $alias);
+        }, array_values($aliases));
+    }
+
+    /**
+     * Filters array condition before it is assiged to a Query filter.
+     *
+     * This method will ensure that an array condition only filters on existing table columns.
+     *
+     * @param array $condition condition to filter.
+     * @param array $aliases
+     * @return array filtered condition.
+     * @throws InvalidArgumentException in case array contains unsafe values.
+     * @throws InvalidConfigException
+     * @since 2.0.15
+     * @internal
+     */
+    protected static function filterCondition(array $condition, array $aliases = [])
+    {
+        $result = [];
+        $db = static::getDb();
+        $columnNames = static::filterValidColumnNames($db, $aliases);
+
+        foreach ($condition as $key => $value) {
+            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
+                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
+            }
+            $result[$key] = is_array($value) ? array_values($value) : $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Valid column names are table column names or column names prefixed with table name or table alias
+     *
+     * @param Connection $db
+     * @param array $aliases
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidColumnNames($db, array $aliases)
+    {
+        $columnNames = [];
+        $tableName = static::tableName();
+        $quotedTableName = $db->quoteTableName($tableName);
+
+        foreach (static::getTableSchema()->getColumnNames() as $columnName) {
+            $columnNames[] = $columnName;
+            $columnNames[] = $db->quoteColumnName($columnName);
+            $columnNames[] = "$tableName.$columnName";
+            $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
+            foreach ($aliases as $tableAlias) {
+                $columnNames[] = "$tableAlias.$columnName";
+                $quotedTableAlias = $db->quoteTableName($tableAlias);
+                $columnNames[] = $db->quoteSql("$quotedTableAlias.[[$columnName]]");
+            }
+        }
+
+        return $columnNames;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function refresh()
+    {
+        $query = static::find();
+        $tableName = key($query->getTablesUsedInFrom());
+        $pk = [];
+        // disambiguate column names in case ActiveQuery adds a JOIN
+        foreach ($this->getPrimaryKey(true) as $key => $value) {
+            $pk[$tableName . '.' . $key] = $value;
+        }
+        $query->where($pk);
+
+        /* @var $record BaseActiveRecord */
+        $record = $query->one();
+        return $this->refreshInternal($record);
+    }
+
+    /**
      * Updates the whole table using the provided attribute values and conditions.
+     *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
      * ```php
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
+     *
+     * > Warning: If you do not specify any condition, this method will update **all** rows in the table.
+     *
+     * Note that this method will not trigger any events. If you need [[EVENT_BEFORE_UPDATE]] or
+     * [[EVENT_AFTER_UPDATE]] to be triggered, you need to [[find()|find]] the models first and then
+     * call [[update()]] on each of them. For example an equivalent of the example above would be:
+     *
+     * ```php
+     * $models = Customer::find()->where('status = 2')->all();
+     * foreach ($models as $model) {
+     *     $model->status = 1;
+     *     $model->update(false); // skipping validation as no user input is involved
+     * }
+     * ```
+     *
+     * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
      *
      * @param array $attributes attribute values (name-value pairs) to be saved into the table
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
@@ -212,11 +334,14 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Updates the whole table using the provided counter changes and conditions.
+     *
      * For example, to increment all customers' age by 1,
      *
      * ```php
      * Customer::updateAllCounters(['age' => 1]);
      * ```
+     *
+     * Note that this method will not trigger any events.
      *
      * @param array $counters the counters to be updated (attribute name => increment value).
      * Use negative values if you want to decrement the counters.
@@ -241,7 +366,6 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Deletes rows in the table using the provided conditions.
-     * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
      *
      * For example, to delete all customers whose status is 3:
      *
@@ -249,12 +373,27 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::deleteAll('status = 3');
      * ```
      *
+     * > Warning: If you do not specify any condition, this method will delete **all** rows in the table.
+     *
+     * Note that this method will not trigger any events. If you need [[EVENT_BEFORE_DELETE]] or
+     * [[EVENT_AFTER_DELETE]] to be triggered, you need to [[find()|find]] the models first and then
+     * call [[delete()]] on each of them. For example an equivalent of the example above would be:
+     *
+     * ```php
+     * $models = Customer::find()->where('status = 3')->all();
+     * foreach ($models as $model) {
+     *     $model->delete();
+     * }
+     * ```
+     *
+     * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
+     *
      * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows deleted
      */
-    public static function deleteAll($condition = '', $params = [])
+    public static function deleteAll($condition = null, $params = [])
     {
         $command = static::getDb()->createCommand();
         $command->delete(static::tableName(), $condition, $params);
@@ -263,7 +402,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
@@ -363,7 +502,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function populateRecord($record, $row)
     {
@@ -414,7 +553,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception in case insert failed.
+     * @throws \Exception|\Throwable in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -435,8 +574,12 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -520,7 +663,7 @@ class ActiveRecord extends BaseActiveRecord
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
-     * @throws \Exception in case update failed.
+     * @throws \Exception|\Throwable in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -541,8 +684,12 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -565,7 +712,7 @@ class ActiveRecord extends BaseActiveRecord
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
-     * @throws \Exception in case delete failed.
+     * @throws \Exception|\Throwable in case delete failed.
      */
     public function delete()
     {
@@ -581,8 +728,12 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -634,7 +785,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
+     * Returns a value indicating whether the specified operation is transactional in the current [[$scenario]].
      * @param int $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
      * @return bool whether the specified operation is transactional in the current [[scenario]].
      */

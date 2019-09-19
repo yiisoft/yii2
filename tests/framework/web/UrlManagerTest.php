@@ -1,495 +1,269 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\web;
 
+use Yii;
 use yii\web\Request;
 use yii\web\UrlManager;
-use yii\web\UrlNormalizer;
 use yiiunit\TestCase;
 
 /**
+ * This tests verifies all features provided by UrlManager according to the documentation.
+ *
+ * UrlManager has two main operation modes:
+ *
+ * - "default" url format, which is the simple case. Tests in this class cover this case.
+ *   Things to be covered in this mode are the following:
+ *    - route only createUrl(['post/index']);
+ *    - with params createUrl(['post/view', 'id' => 100]);
+ *    - with anchor createUrl(['post/view', 'id' => 100, '#' => 'content']);
+ *   Variations here are createUrl and createAbsoluteUrl, where absolute Urls also vary by schema.
+ *
+ * - "pretty" url format. This is the complex case, which involves UrlRules and url parsing.
+ *   Url creation for "pretty" url format is covered by [[UrlManagerCreateUrlTest]].
+ *   Url parsing for "pretty" url format is covered by [[UrlManagerParseUrlTest]].
+ *
  * @group web
  */
 class UrlManagerTest extends TestCase
 {
-    protected function setUp()
+    protected function getUrlManager($config = [], $showScriptName = true, $enableStrictParsing = false)
     {
-        parent::setUp();
+        // in this test class, all tests have enablePrettyUrl disabled.
+        $config['enablePrettyUrl'] = false;
+        $config['cache'] = null;
+
+        // baseUrl should not be used when prettyUrl is disabled
+        // trigger an exception here in case it gets called
+        $config['baseUrl'] = null;
         $this->mockApplication();
+        Yii::$app->set('request', function () {
+            $this->fail('Request component should not be accessed by UrlManager with current settings.');
+        });
+
+        // set default values if they are not set
+        $config = array_merge([
+            'scriptUrl' => '/index.php',
+            'hostInfo' => 'http://www.example.com',
+            'showScriptName' => $showScriptName,
+            'enableStrictParsing' => $enableStrictParsing,
+        ], $config);
+
+        return new UrlManager($config);
     }
 
-    public function testCreateUrl()
+    /**
+     * $showScriptName and $enableStrictParsing should have no effect in default format.
+     * Passing these options ensures that.
+     */
+    public function ignoredOptionsProvider()
+    {
+        return [
+            [false, false],
+            [true,  false],
+            [false, true],
+            [true,  true],
+        ];
+    }
+
+    /**
+     * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
+     */
+    public function testCreateUrlSimple($showScriptName, $enableStrictParsing)
     {
         // default setting with '/' as base url
-        $manager = new UrlManager([
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-            'cache' => null,
-        ]);
+        $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
+        $url = $manager->createUrl('post/view');
+        $this->assertEquals('/index.php?r=post%2Fview', $url);
         $url = $manager->createUrl(['post/view']);
-        $this->assertEquals('?r=post%2Fview', $url);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertEquals('/index.php?r=post%2Fview', $url);
 
         // default setting with '/test/' as base url
-        $manager = new UrlManager([
+        $manager = $this->getUrlManager([
             'baseUrl' => '/test/',
             'scriptUrl' => '/test',
-            'cache' => null,
-        ]);
+        ], $showScriptName, $enableStrictParsing);
+        $url = $manager->createUrl('post/view');
+        $this->assertEquals('/test?r=post%2Fview', $url);
+        $url = $manager->createUrl(['post/view']);
+        $this->assertEquals('/test?r=post%2Fview', $url);
+    }
+
+    /**
+     * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
+     */
+    public function testCreateUrlWithParams($showScriptName, $enableStrictParsing)
+    {
+        // default setting with '/' as base url
+        $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+
+        // default setting with '/test/' as base url
+        $manager = $this->getUrlManager([
+            'baseUrl' => '/test/',
+            'scriptUrl' => '/test',
+        ], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/test?r=post%2Fview&id=1&title=sample+post', $url);
+    }
 
-        // pretty URL without rules
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-            'cache' => null,
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/post/view?id=1&title=sample+post', $url);
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
+    /**
+     * @dataProvider ignoredOptionsProvider
+     *
+     * @see https://github.com/yiisoft/yii2/pull/9596
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
+     */
+    public function testCreateUrlWithAnchor($showScriptName, $enableStrictParsing)
+    {
+        // default setting with '/' as base url
+        $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
+        $url = $manager->createUrl(['post/view', '#' => 'anchor']);
+        $this->assertEquals('/index.php?r=post%2Fview#anchor', $url);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post', '#' => 'anchor']);
+        $this->assertEquals('/index.php?r=post%2Fview&id=1&title=sample+post#anchor', $url);
+
+        // default setting with '/test/' as base url
+        $manager = $this->getUrlManager([
             'baseUrl' => '/test/',
             'scriptUrl' => '/test',
-            'cache' => null,
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'baseUrl' => '/test',
-            'scriptUrl' => '/test/index.php',
-            'cache' => null,
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
-
-        // test showScriptName
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'baseUrl' => '/test',
-            'scriptUrl' => '/test/index.php',
-            'showScriptName' => true,
-            'cache' => null,
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
-        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'baseUrl' => '/test',
-            'scriptUrl' => '/test/index.php',
-            'showScriptName' => false,
-            'cache' => null,
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
-        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
-
-        // pretty URL with rules
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                ],
-            ],
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/post/1/sample+post', $url);
-        $url = $manager->createUrl(['post/index', 'page' => 1]);
-        $this->assertEquals('/post/index?page=1', $url);
-
-        // rules with defaultAction
-        $url = $manager->createUrl(['/post', 'page' => 1]);
-        $this->assertEquals('/post?page=1', $url);
-
-        // pretty URL with rules and suffix
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                ],
-            ],
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-            'suffix' => '.html',
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/post/1/sample+post.html', $url);
-        $url = $manager->createUrl(['post/index', 'page' => 1]);
-        $this->assertEquals('/post/index.html?page=1', $url);
-
-        // pretty URL with rules that have host info
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                    'host' => 'http://<lang:en|fr>.example.com',
-                ],
-            ],
-            'baseUrl' => '/test',
-            'scriptUrl' => '/test',
-        ]);
-        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en']);
-        $this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
-        $url = $manager->createUrl(['post/index', 'page' => 1]);
-        $this->assertEquals('/test/post/index?page=1', $url);
-
-        // create url with the same route but different params/defaults
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                [
-                    'pattern' => '',
-                    'route' => 'frontend/page/view',
-                    'defaults' => ['slug' => 'index'],
-                ],
-                'page/<slug>' => 'frontend/page/view',
-            ],
-            'baseUrl' => '/test',
-            'scriptUrl' => '/test',
-        ]);
-        $url = $manager->createUrl(['frontend/page/view', 'slug' => 'services']);
-        $this->assertEquals('/test/page/services', $url);
-        $url = $manager->createUrl(['frontend/page/view', 'slug' => 'index']);
-        $this->assertEquals('/test/', $url);
+        ], $showScriptName, $enableStrictParsing);
+        $url = $manager->createUrl(['post/view', '#' => 'anchor']);
+        $this->assertEquals('/test?r=post%2Fview#anchor', $url);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post', '#' => 'anchor']);
+        $this->assertEquals('/test?r=post%2Fview&id=1&title=sample+post#anchor', $url);
     }
 
     /**
-     * @depends testCreateUrl
-     * @see https://github.com/yiisoft/yii2/issues/10935
+     * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
      */
-    public function testCreateUrlWithNullParams()
+    public function testCreateAbsoluteUrl($showScriptName, $enableStrictParsing)
     {
-        $manager = new UrlManager([
-            'rules' => [
-                '<param1>/<param2>' => 'site/index',
-                '<param1>' => 'site/index',
-            ],
-            'enablePrettyUrl' => true,
-            'scriptUrl' => '/test',
+        $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
+        $url = $manager->createAbsoluteUrl('post/view');
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $url = $manager->createAbsoluteUrl(['post/view']);
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
 
-        ]);
-        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => null]));
-        $this->assertEquals('/test/123', $manager->createUrl(['site/index', 'param1' => 123, 'param2' => null]));
-        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => 222]));
-        $this->assertEquals('/test/112/222', $manager->createUrl(['site/index', 'param1' => 112, 'param2' => 222]));
-    }
+        $url = $manager->createAbsoluteUrl('post/view', true);
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $url = $manager->createAbsoluteUrl(['post/view'], true);
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
 
-    /**
-     * https://github.com/yiisoft/yii2/issues/6717
-     */
-    public function testCreateUrlWithEmptyPattern()
-    {
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                '' => 'front/site/index',
-            ],
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-        ]);
-        $url = $manager->createUrl(['front/site/index']);
-        $this->assertEquals('/', $url);
-        $url = $manager->createUrl(['/front/site/index']);
-        $this->assertEquals('/', $url);
-        $url = $manager->createUrl(['front/site/index', 'page' => 1]);
-        $this->assertEquals('/?page=1', $url);
-        $url = $manager->createUrl(['/front/site/index', 'page' => 1]);
-        $this->assertEquals('/?page=1', $url);
+        $url = $manager->createAbsoluteUrl('post/view', 'http');
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $url = $manager->createAbsoluteUrl(['post/view'], 'http');
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
 
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                '' => '/front/site/index',
-            ],
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-        ]);
-        $url = $manager->createUrl(['front/site/index']);
-        $this->assertEquals('/', $url);
-        $url = $manager->createUrl(['/front/site/index']);
-        $this->assertEquals('/', $url);
-        $url = $manager->createUrl(['front/site/index', 'page' => 1]);
-        $this->assertEquals('/?page=1', $url);
-        $url = $manager->createUrl(['/front/site/index', 'page' => 1]);
-        $this->assertEquals('/?page=1', $url);
-    }
+        $url = $manager->createAbsoluteUrl('post/view', 'https');
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
+        $url = $manager->createAbsoluteUrl(['post/view'], 'https');
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
 
-    public function testCreateAbsoluteUrl()
-    {
-        $manager = new UrlManager([
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-            'hostInfo' => 'http://www.example.com',
-            'cache' => null,
-        ]);
-        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
-
-        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'https');
-        $this->assertEquals('https://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
+        $url = $manager->createAbsoluteUrl('post/view', '');
+        $this->assertEquals('//www.example.com/index.php?r=post%2Fview', $url);
+        $url = $manager->createAbsoluteUrl(['post/view'], '');
+        $this->assertEquals('//www.example.com/index.php?r=post%2Fview', $url);
 
         $manager->hostInfo = 'https://www.example.com';
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'https');
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'http');
-        $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
+        $this->assertEquals('//www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
-    public function testCreateAbsoluteUrlWithSuffix()
+    /**
+     * Test normalisation of different routes.
+     * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
+     */
+    public function testCreateUrlRouteVariants($showScriptName, $enableStrictParsing)
     {
-        $manager = new UrlManager([
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-            'hostInfo' => 'http://app.example.com',
-            'cache' => null,
-
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'suffix' => '/',
-            'rules' => [
-                'http://app.example.com/login' => 'site/login',
-            ],
-        ]);
-        $url = $manager->createAbsoluteUrl(['site/login']);
-        $this->assertEquals('http://app.example.com/login/', $url);
-        $url = $manager->createUrl(['site/login']);
-        $this->assertEquals('http://app.example.com/login/', $url);
+        // default setting with '/' as base url
+        $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
+        $url = $manager->createUrl(['/post/view']);
+        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $url = $manager->createUrl(['/post/view/']);
+        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $url = $manager->createUrl(['/module/post/view']);
+        $this->assertEquals('/index.php?r=module%2Fpost%2Fview', $url);
+        $url = $manager->createUrl(['/post/view/']);
+        $this->assertEquals('/index.php?r=post%2Fview', $url);
     }
 
-    public function testParseRequest()
+
+    /**
+     * @return array provides different names for UrlManager::$routeParam
+     */
+    public function routeParamProvider()
     {
-        $manager = new UrlManager(['cache' => null]);
-        $request = new Request;
+        return [
+            ['r'], // default value
+            ['route'],
+            ['_'],
+        ];
+    }
+
+    /**
+     * @dataProvider routeParamProvider
+     * @param string $routeParam
+     */
+    public function testParseRequest($routeParam)
+    {
+        $manager = $this->getUrlManager(['routeParam' => $routeParam]);
+        $request = new Request();
 
         // default setting without 'r' param
-        unset($_GET['r']);
+        $request->setQueryParams([]);
         $result = $manager->parseRequest($request);
         $this->assertEquals(['', []], $result);
 
         // default setting with 'r' param
-        $_GET['r'] = 'site/index';
+        $request->setQueryParams([$routeParam => 'site/index']);
         $result = $manager->parseRequest($request);
         $this->assertEquals(['site/index', []], $result);
 
         // default setting with 'r' param as an array
-        $_GET['r'] = ['site/index'];
+        $request->setQueryParams([$routeParam => ['site/index']]);
         $result = $manager->parseRequest($request);
         $this->assertEquals(['', []], $result);
 
-        // pretty URL without rules
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'normalizer' => false,
-        ]);
-        // empty pathinfo
-        $request->pathInfo = '';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['', []], $result);
-        // normal pathinfo
-        $request->pathInfo = 'site/index';
+        // other parameters are not returned here
+        $request->setQueryParams([$routeParam => 'site/index', 'id' => 5]);
         $result = $manager->parseRequest($request);
         $this->assertEquals(['site/index', []], $result);
-        // pathinfo with module
-        $request->pathInfo = 'module/site/index';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['module/site/index', []], $result);
-        // pathinfo with trailing slashes
-        $request->pathInfo = '/module/site/index/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['module/site/index/', []], $result);
-
-        // trailing slash is insignificant if normalizer is enabled
-        $manager->normalizer = new UrlNormalizer([
-            'action' => null,
-        ]);
-        $request->pathInfo = '/module/site/index/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['module/site/index', []], $result);
-
-        // pretty URL rules
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'normalizer' => false,
-            'rules' => [
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                ],
-            ],
-        ]);
-        // matching pathinfo
-        $request->pathInfo = 'post/123/this+is+sample';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        // trailing slash is significant
-        $request->pathInfo = 'post/123/this+is+sample/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/123/this+is+sample/', []], $result);
-        // empty pathinfo
-        $request->pathInfo = '';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['', []], $result);
-        // normal pathinfo
-        $request->pathInfo = 'site/index';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['site/index', []], $result);
-        // pathinfo with module
-        $request->pathInfo = 'module/site/index';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['module/site/index', []], $result);
-
-        // trailing slash is insignificant if normalizer is enabled
-        $manager->normalizer = new UrlNormalizer([
-            'action' => null,
-        ]);
-        $request->pathInfo = 'post/123/this+is+sample/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
-
-        // pretty URL rules
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'suffix' => '.html',
-            'cache' => null,
-            'rules' => [
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                ],
-            ],
-        ]);
-        // matching pathinfo
-        $request->pathInfo = 'post/123/this+is+sample.html';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        // matching pathinfo without suffix
-        $request->pathInfo = 'post/123/this+is+sample';
-        $result = $manager->parseRequest($request);
-        $this->assertFalse($result);
-        // empty pathinfo
-        $request->pathInfo = '';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['', []], $result);
-        // normal pathinfo
-        $request->pathInfo = 'site/index.html';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['site/index', []], $result);
-        // pathinfo without suffix
-        $request->pathInfo = 'site/index';
-        $result = $manager->parseRequest($request);
-        $this->assertFalse($result);
-
-        // strict parsing
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
-            'suffix' => '.html',
-            'cache' => null,
-            'rules' => [
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                ],
-            ],
-        ]);
-        // matching pathinfo
-        $request->pathInfo = 'post/123/this+is+sample.html';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        // unmatching pathinfo
-        $request->pathInfo = 'site/index.html';
-        $result = $manager->parseRequest($request);
-        $this->assertFalse($result);
+        $this->assertEquals(5, $request->getQueryParam('id'));
     }
 
-    public function testParseRESTRequest()
+    public function testSetBaseUrl()
     {
-        $request = new Request;
+        $manager = $this->getUrlManager();
 
-        // pretty URL rules
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'cache' => null,
-            'rules' => [
-                'PUT,POST post/<id>/<title>' => 'post/create',
-                'DELETE post/<id>' => 'post/delete',
-                'post/<id>/<title>' => 'post/view',
-                'POST/GET' => 'post/get',
-            ],
-        ]);
-        // matching pathinfo GET request
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $request->pathInfo = 'post/123/this+is+sample';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        // matching pathinfo PUT/POST request
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $request->pathInfo = 'post/123/this+is+sample';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $request->pathInfo = 'post/123/this+is+sample';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $manager->setBaseUrl('example.com');
+        $this->assertEquals('example.com', $manager->getBaseUrl());
 
-        // no wrong matching
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $request->pathInfo = 'POST/GET';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/get', []], $result);
-
-        // createUrl should ignore REST rules
-        $this->mockApplication([
-            'components' => [
-                'request' => [
-                    'hostInfo' => 'http://localhost/',
-                    'baseUrl' => '/app'
-                ]
-            ]
-        ], \yii\web\Application::className());
-        $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
-        $this->destroyApplication();
-
-        unset($_SERVER['REQUEST_METHOD']);
-    }
-
-    /**
-     * Tests if hash-anchor present
-     *
-     * https://github.com/yiisoft/yii2/pull/9596
-     */
-    public function testHash()
-    {
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'cache' => null,
-            'rules' => [
-                'http://example.com/testPage' => 'site/test',
-            ],
-            'hostInfo' => 'http://example.com',
-            'scriptUrl' => '/index.php',
-        ]);
-        $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
-        $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
+        Yii::setAlias('@testAlias', 'example.com/');
+        $manager->setBaseUrl('@testAlias');
+        $this->assertEquals('example.com', $manager->getBaseUrl());
     }
 }

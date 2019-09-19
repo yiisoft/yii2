@@ -8,7 +8,7 @@
 namespace yii\data;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\web\Link;
 use yii\web\Linkable;
 use yii\web\Request;
@@ -58,13 +58,13 @@ use yii\web\Request;
  *
  * For more details and usage information on Pagination, see the [guide article on pagination](guide:output-pagination).
  *
- * @property int $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
- * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
- * This property is read-only.
+ * @property int $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement for
+ * fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned. This
+ * property is read-only.
  * @property array $links The links for navigational purpose. The array keys specify the purpose of the links
  * (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs. This property is read-only.
- * @property int $offset The offset of the data. This may be used to set the OFFSET value for a SQL
- * statement for fetching the current page of data. This property is read-only.
+ * @property int $offset The offset of the data. This may be used to set the OFFSET value for a SQL statement
+ * for fetching the current page of data. This property is read-only.
  * @property int $page The zero-based current page number.
  * @property int $pageCount Number of pages. This property is read-only.
  * @property int $pageSize The number of items per page. If it is less than 1, it means the page size is
@@ -73,7 +73,7 @@ use yii\web\Request;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Pagination extends Object implements Linkable
+class Pagination extends BaseObject implements Linkable
 {
     const LINK_NEXT = 'next';
     const LINK_PREV = 'prev';
@@ -153,11 +153,11 @@ class Pagination extends Object implements Linkable
         $pageSize = $this->getPageSize();
         if ($pageSize < 1) {
             return $this->totalCount > 0 ? 1 : 0;
-        } else {
-            $totalCount = $this->totalCount < 0 ? 0 : (int) $this->totalCount;
-
-            return (int) (($totalCount + $pageSize - 1) / $pageSize);
         }
+
+        $totalCount = $this->totalCount < 0 ? 0 : (int) $this->totalCount;
+
+        return (int) (($totalCount + $pageSize - 1) / $pageSize);
     }
 
     private $_page;
@@ -281,9 +281,9 @@ class Pagination extends Object implements Linkable
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
-        } else {
-            return $urlManager->createUrl($params);
         }
+
+        return $urlManager->createUrl($params);
     }
 
     /**

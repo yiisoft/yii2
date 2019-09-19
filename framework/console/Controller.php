@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * Controller is the base class of console command classes.
@@ -39,7 +40,13 @@ use yii\helpers\Console;
  */
 class Controller extends \yii\base\Controller
 {
+    /**
+     * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
+     */
     const EXIT_CODE_NORMAL = 0;
+    /**
+     * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
+     */
     const EXIT_CODE_ERROR = 1;
 
     /**
@@ -98,12 +105,32 @@ class Controller extends \yii\base\Controller
                     if (array_key_exists($name, $optionAliases)) {
                         $params[$optionAliases[$name]] = $value;
                     } else {
-                        throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
+                        $message = Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]);
+                        if (!empty($optionAliases)) {
+                            $aliasesAvailable = [];
+                            foreach ($optionAliases as $alias => $option) {
+                                $aliasesAvailable[] = '-' . $alias . ' (--' . $option . ')';
+                            }
+
+                            $message .= '. ' . Yii::t('yii', 'Aliases available: {aliases}', [
+                                'aliases' => implode(', ', $aliasesAvailable)
+                            ]);
+                        }
+                        throw new Exception($message);
                     }
                 }
                 unset($params['_aliases']);
             }
             foreach ($params as $name => $value) {
+                // Allow camelCase options to be entered in kebab-case
+                if (!in_array($name, $options, true) && strpos($name, '-') !== false) {
+                    $kebabName = $name;
+                    $altName = lcfirst(Inflector::id2camel($kebabName));
+                    if (in_array($altName, $options, true)) {
+                        $name = $altName;
+                    }
+                }
+
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
                     if (is_array($default)) {
@@ -116,15 +143,24 @@ class Controller extends \yii\base\Controller
                     }
                     $this->_passedOptions[] = $name;
                     unset($params[$name]);
+                    if (isset($kebabName)) {
+                        unset($params[$kebabName]);
+                    }
                 } elseif (!is_int($name)) {
-                    throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
+                    $message = Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]);
+                    if (!empty($options)) {
+                        $message .= '. ' . Yii::t('yii', 'Options available: {options}', ['options' => '--' . implode(', --', $options)]);
+                    }
+
+                    throw new Exception($message);
                 }
             }
         }
         if ($this->help) {
-            $route = $this->id . '/' . $id;
+            $route = $this->getUniqueId() . '/' . $id;
             return Yii::$app->runAction('help', [$route]);
         }
+
         return parent::runAction($id, $params);
     }
 
@@ -151,7 +187,7 @@ class Controller extends \yii\base\Controller
         $missing = [];
         foreach ($method->getParameters() as $i => $param) {
             if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
+                $args[$i] = $args[$i] === '' ? [] : preg_split('/\s*,\s*/', $args[$i]);
             }
             if (!isset($args[$i])) {
                 if ($param->isDefaultValueAvailable()) {
@@ -170,7 +206,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Formats a string with ANSI codes
+     * Formats a string with ANSI codes.
      *
      * You may pass additional parameters using the constants defined in [[\yii\helpers\Console]].
      *
@@ -190,11 +226,12 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
+
         return $string;
     }
 
     /**
-     * Prints a string to STDOUT
+     * Prints a string to STDOUT.
      *
      * You may optionally format the string with ANSI codes by
      * passing additional parameters using the constants defined in [[\yii\helpers\Console]].
@@ -215,11 +252,12 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
+
         return Console::stdout($string);
     }
 
     /**
-     * Prints a string to STDERR
+     * Prints a string to STDERR.
      *
      * You may optionally format the string with ANSI codes by
      * passing additional parameters using the constants defined in [[\yii\helpers\Console]].
@@ -240,11 +278,12 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
+
         return fwrite(\STDERR, $string);
     }
 
     /**
-     * Prompts the user for input and validates it
+     * Prompts the user for input and validates it.
      *
      * @param string $text prompt string
      * @param array $options the options to validate the input:
@@ -265,7 +304,7 @@ class Controller extends \yii\base\Controller
      *         return false;
      *     }
      *     return true;
-     * });
+     * }]);
      * ```
      *
      * @return string the user input
@@ -281,6 +320,16 @@ class Controller extends \yii\base\Controller
 
     /**
      * Asks user to confirm by typing y or n.
+     *
+     * A typical usage looks like the following:
+     *
+     * ```php
+     * if ($this->confirm("Are you sure?")) {
+     *     echo "user typed yes\n";
+     * } else {
+     *     echo "user typed no\n";
+     * }
+     * ```
      *
      * @param string $message to echo out before waiting for user input
      * @param bool $default this value is returned if no selection is made.
@@ -341,7 +390,7 @@ class Controller extends \yii\base\Controller
     public function optionAliases()
     {
         return [
-            'h' => 'help'
+            'h' => 'help',
         ];
     }
 
@@ -359,6 +408,7 @@ class Controller extends \yii\base\Controller
         foreach ($this->options($this->action->id) as $property) {
             $properties[$property] = $this->$property;
         }
+
         return $properties;
     }
 
@@ -373,7 +423,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the properties corresponding to the passed options
+     * Returns the properties corresponding to the passed options.
      *
      * @return array the properties corresponding to the passed options
      */
@@ -383,6 +433,7 @@ class Controller extends \yii\base\Controller
         foreach ($this->_passedOptions as $property) {
             $properties[$property] = $this->$property;
         }
+
         return $properties;
     }
 
@@ -418,6 +469,10 @@ class Controller extends \yii\base\Controller
      */
     public function getActionHelpSummary($action)
     {
+        if ($action === null) {
+            return $this->ansiFormat(Yii::t('yii', 'Action not found.'), Console::FG_RED);
+        }
+
         return $this->parseDocCommentSummary($this->getActionMethodReflection($action));
     }
 
@@ -433,6 +488,7 @@ class Controller extends \yii\base\Controller
 
     /**
      * Returns the help information for the anonymous arguments for the action.
+     *
      * The returned value should be an array. The keys are the argument names, and the values are
      * the corresponding help information. Each value must be an array of the following structure:
      *
@@ -457,6 +513,9 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
+            if ($reflection->getClass() !== null) {
+                continue;
+            }
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
@@ -482,11 +541,13 @@ class Controller extends \yii\base\Controller
                 ];
             }
         }
+
         return $args;
     }
 
     /**
      * Returns the help information for the options for the action.
+     *
      * The returned value should be an array. The keys are the option names, and the values are
      * the corresponding help information. Each value must be an array of the following structure:
      *
@@ -516,6 +577,10 @@ class Controller extends \yii\base\Controller
             }
             $defaultValue = $property->getValue($this);
             $tags = $this->parseDocCommentTags($property);
+
+            // Display camelCase options in kebab-case
+            $name = Inflector::camel2id($name, '-', true);
+
             if (isset($tags['var']) || isset($tags['property'])) {
                 $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
                 if (is_array($doc)) {
@@ -541,6 +606,7 @@ class Controller extends \yii\base\Controller
                 ];
             }
         }
+
         return $options;
     }
 
@@ -559,6 +625,7 @@ class Controller extends \yii\base\Controller
                 $this->_reflections[$action->id] = new \ReflectionMethod($action, 'run');
             }
         }
+
         return $this->_reflections[$action->id];
     }
 
@@ -585,6 +652,7 @@ class Controller extends \yii\base\Controller
                 }
             }
         }
+
         return $tags;
     }
 
@@ -600,6 +668,7 @@ class Controller extends \yii\base\Controller
         if (isset($docLines[1])) {
             return trim($docLines[1], "\t *");
         }
+
         return '';
     }
 
@@ -618,6 +687,7 @@ class Controller extends \yii\base\Controller
         if ($comment !== '') {
             return rtrim(Console::renderColoredString(Console::markdownToAnsi($comment)));
         }
+
         return '';
     }
 }
