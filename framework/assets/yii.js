@@ -293,7 +293,7 @@ window.yii = (function ($) {
                 return value !== '';
             });
             var params = {};
-            
+
             for (var i = 0, len = pairs.length; i < len; i++) {
                 var pair = pairs[i].split('=');
                 if (pair.length >= 2) {
