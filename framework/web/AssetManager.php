@@ -486,7 +486,7 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_file($dstFile)) {
                 try { // fix #6226 symlinking multi threaded
-                    symlink($src, $dstFile);
+                    @symlink($src, $dstFile);
                 } catch (\Exception $e) {
                     if (!is_file($dstFile)) {
                         throw $e;
@@ -531,7 +531,7 @@ class AssetManager extends Component
             if (!is_dir($dstDir)) {
                 FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
                 try { // fix #6226 symlinking multi threaded
-                    symlink($src, $dstDir);
+                    @symlink($src, $dstDir);
                 } catch (\Exception $e) {
                     if (!is_dir($dstDir)) {
                         throw $e;
