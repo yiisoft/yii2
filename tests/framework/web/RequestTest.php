@@ -741,4 +741,16 @@ class RequestTest extends TestCase
 
         $this->assertSame($expectedMethod, $request->getMethod());
     }
+
+    public function testTrustedHostAndSecureConnection()
+    {
+        $_SERVER['REMOTE_ADDR'] = '30.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '50.0.0.1,30.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+        $request = new Request([
+            'trustedHosts' => ['30.0.0.1'],
+        ]);
+        $this->assertSame('50.0.0.1', $request->userIP);
+        $this->assertSame(true, $request->isSecureConnection);
+    }
 }
