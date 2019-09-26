@@ -291,6 +291,23 @@ class Request extends \yii\base\Request
      */
     protected function filterHeaders(HeaderCollection $headerCollection)
     {
+        $trustedHeaders = $this->getTrustedIpHeaders();
+
+        // filter all secure headers unless they are trusted
+        foreach ($this->secureHeaders as $secureHeader) {
+            if (!in_array($secureHeader, $trustedHeaders)) {
+                $headerCollection->remove($secureHeader);
+            }
+        }
+    }
+
+    /**
+     * Trusted Ip headers according to the [[trustedHosts]].
+     * @return array
+     * @since 2.0.28
+     */
+    protected function getTrustedIpHeaders()
+    {
         // do not trust any of the [[secureHeaders]] by default
         $trustedHeaders = [];
 
@@ -310,13 +327,7 @@ class Request extends \yii\base\Request
                 }
             }
         }
-
-        // filter all secure headers unless they are trusted
-        foreach ($this->secureHeaders as $secureHeader) {
-            if (!in_array($secureHeader, $trustedHeaders)) {
-                $headerCollection->remove($secureHeader);
-            }
-        }
+        return $trustedHeaders;
     }
 
     /**
@@ -1131,13 +1142,53 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
-        foreach ($this->ipHeaders as $ipHeader) {
+        foreach($this->getTrustedIpHeaders() as $ipHeader) {
             if ($this->headers->has($ipHeader)) {
-                return trim(explode(',', $this->headers->get($ipHeader))[0]);
+                $ip = $this->getUserIpFromIpHeader($this->headers->get($ipHeader));
+                if(isset($ip)) {
+                    return $ip;
+                }
             }
         }
 
         return $this->getRemoteIP();
+    }
+
+    /**
+     * Return user IP's from IP header.
+     * @param string $ips comma separated IP list
+     * @return string|null
+     * @see $getUserHost
+     * @see $ipHeader
+     * @see $trustedHeaders
+     * @since 2.0.28
+     */
+    protected function getUserIpFromIpHeader($ips)
+    {
+        $ips = preg_split('/\s*,\s*/', trim($ips));
+        krsort($ips);
+        $validator = $this->getIpValidator();
+        $resultIp = null;
+        $stop = false;
+        foreach ($ips as $ip) {
+            foreach ($this->trustedHosts as $cidr => $cidrOrHeaders) {
+                if (!is_array($cidrOrHeaders)) {
+                    $cidr = $cidrOrHeaders;
+                }
+                $validator->setRanges($cidr);
+                $resultIp = $ip;
+                if ($validator->validate($ip)) {
+                    $stop = false;
+                    break;
+                } else {
+                    $stop = true;
+                }
+            }
+            if ($stop) {
+                break;
+            }
+        }
+        return $resultIp;
     }
 
     /**

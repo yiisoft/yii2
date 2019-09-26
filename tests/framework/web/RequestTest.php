@@ -725,6 +725,37 @@ class RequestTest extends TestCase
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 
+    public function testTrustedHostAndInjectedXForwardedFor()
+    {
+        $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1, 8.8.8.8, 2.2.2.2';
+        $request = new Request([
+            'trustedHosts' => ['1.1.1.1']
+        ]);
+        $this->assertSame('2.2.2.2', $request->getUserIP());
+
+        $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1, 8.8.8.8, 2.2.2.2';
+        $request = new Request([
+            'trustedHosts' => ['1.1.1.1', '2.2.2.2']
+        ]);
+        $this->assertSame('8.8.8.8', $request->getUserIP());
+
+        $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1, 8.8.8.8, 2.2.2.2';
+        $request = new Request([
+            'trustedHosts' => ['1.1.1.1', '2.2.2.2', '8.8.8.8']
+        ]);
+        $this->assertSame('127.0.0.1', $request->getUserIP());
+
+        $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1, 8.8.8.8, 2.2.2.2';
+        $request = new Request([
+            'trustedHosts' => ['127.0.0.1', '1.1.1.1', '2.2.2.2', '8.8.8.8']
+        ]);
+        $this->assertSame('127.0.0.1', $request->getUserIP());
+    }
+
     /**
      * @testWith    ["POST", "GET", "POST"]
      *              ["POST", "OPTIONS", "POST"]
