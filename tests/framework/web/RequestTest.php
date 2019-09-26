@@ -742,15 +742,78 @@ class RequestTest extends TestCase
         $this->assertSame($expectedMethod, $request->getMethod());
     }
 
-    public function testTrustedHostAndSecureConnection()
+    /**
+     * @dataProvider trustedHostsDataProvider
+     */
+    public function testTrustedHosts($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $userIpIsRemoteIp, $expectedUserIp, $expectedRemoteAddress, $expectedISecureConnection)
     {
-        $_SERVER['REMOTE_ADDR'] = '30.0.0.1';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '50.0.0.1,30.0.0.1';
-        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        if(isset($xForwardedFor)) {
+            $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
+        } else {
+            unset($_SERVER['HTTP_X_FORWARDED_FOR']);
+        }
+        if(isset($xForwardedProto)) {
+            $_SERVER['HTTP_X_FORWARDED_PROTO'] = $xForwardedProto;
+        } else {
+            unset($_SERVER['HTTP_X_FORWARDED_PROTO']);
+        }
         $request = new Request([
-            'trustedHosts' => ['30.0.0.1'],
+            'trustedHosts' => $trustedHosts,
+            'userIpIsAlwaysRemoteIp' => $userIpIsRemoteIp,
         ]);
-        $this->assertSame('50.0.0.1', $request->userIP);
-        $this->assertSame(true, $request->isSecureConnection);
+        $this->assertSame($expectedRemoteAddress, $request->remoteIP, 'Remote IP fail!');
+        $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
+        $this->assertSame($expectedISecureConnection, $request->isSecureConnection, 'Secure connection fail!');
+    }
+
+    public function trustedHostsDataProvider()
+    {
+        return [
+            'normalTrustedHosts' => [
+                '30.0.0.1',
+                '50.0.0.1,30.0.0.1',
+                null,
+                ['30.0.0.1'],
+                false,
+                // checks:
+                '50.0.0.1',
+                '30.0.0.1',
+                false,
+            ],
+            'normalTrustedHostsWithHttps' => [
+                '30.0.0.1',
+                '50.0.0.1,30.0.0.1',
+                'https',
+                ['30.0.0.1'],
+                false,
+                // checks:
+                '50.0.0.1',
+                '30.0.0.1',
+                true,
+            ],
+            'resolvedXForwardedFor' => [
+                '50.0.0.1',
+                'trallala',         // It doesn't matter because it's already resolved
+                null,
+                ['0.0.0.0/0'],
+                true,
+                // checks:
+                '50.0.0.1',
+                '50.0.0.1',
+                false,
+            ],
+            'resolvedXForwardedForWithHttps' => [
+                '50.0.0.1',
+                'trallala',         // It doesn't matter because it's already resolved
+                'https',
+                ['0.0.0.0/0'],
+                true,
+                // checks:
+                '50.0.0.1',
+                '50.0.0.1',
+                true,
+            ],
+        ];
     }
 }

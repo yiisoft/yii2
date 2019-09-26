@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.28 under development
 ------------------------
 
-- no changes in this release.
+- Enh #17521: `Request::$userIpIsAlwaysRemoteIp` added for the resolved X-Forwarded-For case. (kamarton)
 
 
 2.0.27 September 18, 2019

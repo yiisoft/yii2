@@ -253,6 +253,14 @@ class Request extends \yii\base\Request
     ];
 
     /**
+     * @var bool If set true, then [[getUserIp]] will always return [[getRemoteIp]] result.
+     * This is needed in cases where the user's IP has already been resolved to [[getRemoteIp()]], e.g. based on X-Forwarded-For HTTP header.
+     * @see $trustedHosts
+     * @since 2.0.28
+     */
+    public $userIpIsAlwaysRemoteIp = false;
+
+    /**
      * @var CookieCollection Collection of request cookies.
      */
     private $_cookies;
@@ -1131,9 +1139,11 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
-        foreach ($this->ipHeaders as $ipHeader) {
-            if ($this->headers->has($ipHeader)) {
-                return trim(explode(',', $this->headers->get($ipHeader))[0]);
+        if(!$this->userIpIsAlwaysRemoteIp) {
+            foreach ($this->ipHeaders as $ipHeader) {
+                if ($this->headers->has($ipHeader)) {
+                    return trim(explode(',', $this->headers->get($ipHeader))[0]);
+                }
             }
         }
 
