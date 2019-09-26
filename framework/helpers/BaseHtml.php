@@ -1826,6 +1826,8 @@ class BaseHtml
         $selection = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
         if (!array_key_exists('unselect', $options)) {
             $options['unselect'] = '';
+        } elseif ($options['unselect'] === false) {
+            unset($options['unselect']);
         }
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
