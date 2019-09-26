@@ -1139,15 +1139,17 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
-        if(!$this->userIpIsAlwaysRemoteIp) {
-            foreach ($this->ipHeaders as $ipHeader) {
-                if ($this->headers->has($ipHeader)) {
-                    return trim(explode(',', $this->headers->get($ipHeader))[0]);
-                }
+        $userIp = $this->getRemoteIP();
+        if ($this->userIpIsAlwaysRemoteIp) {
+            return $userIp;
+        }
+        foreach ($this->ipHeaders as $ipHeader) {
+            if ($this->headers->has($ipHeader)) {
+                return trim(explode(',', $this->headers->get($ipHeader))[0]);
             }
         }
 
-        return $this->getRemoteIP();
+        return $userIp;
     }
 
     /**
