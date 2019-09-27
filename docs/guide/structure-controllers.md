@@ -250,11 +250,6 @@ For example, `index` becomes `actionIndex`, and `hello-world` becomes `actionHel
   method does NOT define an inline action.
 
 
-Inline actions are the most commonly defined actions because they take little effort to create. However,
-if you plan to reuse the same action in different places, or if you want to redistribute an action,
-you should consider defining it as a *standalone action*.
-
-
 ### Standalone Actions <span id="standalone-actions"></span>
 
 Standalone actions are defined in terms of action classes extending [[yii\base\Action]] or its child classes.
