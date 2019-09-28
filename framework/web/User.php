@@ -92,19 +92,7 @@ class User extends Component
      * If this property is `null`, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
      */
     public $loginUrl = ['site/login'];
-    /**
-     * @var string|array the URL for login when [[guestRequired()]] is called.
-     * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
-     * The first element of the array should be the route to the guest action, and the rest of
-     * the name-value pairs are GET parameters used to construct the login URL. For example,
-     *
-     * ```php
-     * ['site/account', 'ref' => 1]
-     * ```
-     *
-     * If this property is `null`, a 403 HTTP exception will be raised when [[guestRequired()]] is called.
-     */
-    public $guestUrl = 'account';
+
     /**
      * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is `true`.
      * @see Cookie
@@ -468,28 +456,16 @@ class User extends Component
     }
 
     /**
-     * Redirects the user browser to a guest page.
+     * Redirects the user browser away from a guest page.
      *
-     * Make sure you set [[guestUrl]] so that the user browser can be redirected to the specified guest URL after
-     * calling this method.
-     *
-     * Note that when [[loginUrl]] is set, calling this method will NOT terminate the application execution.
-     *
-     * @param bool $checkAcceptHeader whether to check if the request accepts HTML responses. Defaults to `true`. When this is true and
-     * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
-     * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
-     * @return Response the redirection response if [[guestUrl]] is set
-     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[guestUrl]] is not set or a redirect is
+     * @return Response the redirection response
+     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if redirect is acceptable
      * not applicable.
      */
-    public function guestRequired($checkAcceptHeader = true)
+    public function guestRequired()
     {
-        $canRedirect = !$checkAcceptHeader || $this->checkRedirectAcceptable();
-        if ($this->guestUrl !== null && $canRedirect) {
-            $guestUrl = (array) $this->guestUrl;
-            if ($guestUrl[0] !== Yii::$app->requestedRoute) {
-                return Yii::$app->getResponse()->redirect($this->guestUrl);
-            }
+        if ($this->checkRedirectAcceptable()) {
+            return Yii::$app->getResponse()->redirect(Yii::$app->user->returnUrl);
         }
         throw new ForbiddenHttpException(Yii::t('yii', 'Guest Required'));
     }
