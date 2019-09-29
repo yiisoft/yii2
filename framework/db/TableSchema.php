@@ -64,10 +64,11 @@ class TableSchema extends BaseObject
 
     /**
      * @return array see more [[$internalForeignKeys]]
+     * @throws \Exception if DB query fails
      */
     public function getForeignKeys() {
         if(is_callable($this->internalForeignKeys)) {
-            $this->internalForeignKeys = call_user_func($this->internalForeignKeys, $this);
+            call_user_func($this->internalForeignKeys, $this);
         }
         return $this->internalForeignKeys;
     }
