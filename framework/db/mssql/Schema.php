@@ -570,13 +570,14 @@ SQL;
             ':object' => $object,
         ])->queryAll();
 
-        $table->foreignKeys = [];
+        $foreignKeys = [];
         foreach ($rows as $row) {
-            if (!isset($table->foreignKeys[$row['fk_name']])) {
-                $table->foreignKeys[$row['fk_name']][] = $row['uq_table_name'];
+            if (!isset($foreignKeys[$row['fk_name']])) {
+                $foreignKeys[$row['fk_name']][] = $row['uq_table_name'];
             }
-            $table->foreignKeys[$row['fk_name']][$row['fk_column_name']] = $row['uq_column_name'];
+            $foreignKeys[$row['fk_name']][$row['fk_column_name']] = $row['uq_column_name'];
         }
+        $table->foreignKeys = $foreignKeys;
     }
 
     /**

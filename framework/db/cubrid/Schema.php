@@ -138,17 +138,19 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             }
         }
 
-        $foreignKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
-        foreach ($foreignKeys as $key) {
-            if (isset($table->foreignKeys[$key['FK_NAME']])) {
-                $table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
+        $foreignKeysInput = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
+        $foreignKeys = [];
+        foreach ($foreignKeysInput as $key) {
+            if (isset($foreignKeys[$key['FK_NAME']])) {
+                $foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
             } else {
-                $table->foreignKeys[$key['FK_NAME']] = [
+                $foreignKeys[$key['FK_NAME']] = [
                     $key['PKTABLE_NAME'],
                     $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME'],
                 ];
             }
         }
+        $table->foreignKeys = $foreignKeys;
 
         return $table;
     }

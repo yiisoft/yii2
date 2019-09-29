@@ -418,6 +418,7 @@ SQL;
             // table does not exist, try to determine the foreign keys using the table creation sql
             $sql = $this->getCreateTableSql($table);
             $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+            $foreignKeys = [];
             if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
                 foreach ($matches as $match) {
                     $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
@@ -426,9 +427,9 @@ SQL;
                     foreach ($fks as $k => $name) {
                         $constraint[$name] = $pks[$k];
                     }
-                    $table->foreignKeys[md5(serialize($constraint))] = $constraint;
+                    $foreignKeys[md5(serialize($constraint))] = $constraint;
                 }
-                $table->foreignKeys = array_values($table->foreignKeys);
+                $table->foreignKeys = array_values($foreignKeys);
             }
         }
     }

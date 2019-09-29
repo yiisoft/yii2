@@ -385,9 +385,11 @@ SQL;
             }
             $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
         }
+        $foreignKeys = [];
         foreach ($constraints as $name => $constraint) {
-            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
+            $foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
+        $table->foreignKeys = $foreignKeys;
     }
 
     /**
