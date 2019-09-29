@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.28 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17444: fixed super slow schema queries with MySQL 8.0.16 (kamarton) 
 
 
 2.0.27 September 18, 2019

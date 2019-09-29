@@ -123,7 +123,14 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         $this->resolveTableNames($table, $name);
 
         if ($this->findColumns($table)) {
-            $this->findConstraints($table);
+            $table->foreignKeys = function($table) {
+                /* @var TableSchema $table */
+                if ($this->findColumns($table)) {
+                    $this->findConstraints($table);
+                } else {
+                    $table->foreignKeys = [];
+                }
+            };
             return $table;
         }
 

@@ -14,6 +14,7 @@ use yii\base\InvalidArgumentException;
  * TableSchema represents the metadata of a database table.
  *
  * @property array $columnNames List of column names. This property is read-only.
+ * @property array $foreignKeys see more: [[$internalForeignKeys]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,7 +44,7 @@ class TableSchema extends BaseObject
      */
     public $sequenceName;
     /**
-     * @var array foreign keys of this table. Each array element is of the following structure:
+     * @var array|callable foreign keys of this table. Each array element is of the following structure:
      *
      * ```php
      * [
@@ -52,12 +53,31 @@ class TableSchema extends BaseObject
      *  'fk2' => 'pk2',  // if composite foreign key
      * ]
      * ```
+     *
+     * If its value is callable, it has not yet been loaded and will be loaded the first time it is used.
      */
-    public $foreignKeys = [];
+    private $internalForeignKeys = [];
     /**
      * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
      */
     public $columns = [];
+
+    /**
+     * @return array see more [[$internalForeignKeys]]
+     */
+    public function getForeignKeys() {
+        if(is_callable($this->internalForeignKeys)) {
+            $this->internalForeignKeys = call_user_func($this->internalForeignKeys, $this);
+        }
+        return $this->internalForeignKeys;
+    }
+
+    /**
+     * @param array|callable $value see more [[$internalForeignKeys]]
+     */
+    public function setForeignKeys($value) {
+        $this->internalForeignKeys = $value;
+    }
 
 
     /**
