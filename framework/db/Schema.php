@@ -838,6 +838,20 @@ abstract class Schema extends BaseObject
             return;
         }
 
+        $schema = $metadata['schema'];
+        /* @var $schema TableSchema */
+        if($this instanceof SchemaInterface && $schema->foreignKeys === false) {
+            $schema->foreignKeys = function($table) {
+                /* @var TableSchema $table */
+                if ($this->findColumns($table)) {
+                    $this->findConstraints($table);
+                } else {
+                    $table->foreignKeys = [];
+                }
+            };
+        } elseif($schema->foreignKeys === false) {
+            $schema->foreignKeys = [];
+        }
         unset($metadata['cacheVersion']);
         $this->_tableMetadata[$name] = $metadata;
     }
@@ -855,6 +869,12 @@ abstract class Schema extends BaseObject
 
         $metadata = $this->_tableMetadata[$name];
         $metadata['cacheVersion'] = static::SCHEMA_CACHE_VERSION;
+        $schema = $metadata['schema'];
+        /* @var $schema TableSchema */
+        if(is_callable($schema->foreignKeys)) {
+            $schema->foreignKeys = false;
+        }
+
         $cache->set(
             $this->getCacheKey($name),
             $metadata,

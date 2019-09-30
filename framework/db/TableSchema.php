@@ -14,7 +14,7 @@ use yii\base\InvalidArgumentException;
  * TableSchema represents the metadata of a database table.
  *
  * @property array $columnNames List of column names. This property is read-only.
- * @property array $foreignKeys see more: [[$internalForeignKeys]]
+ * @property array $foreignKeys Foreign keys of this table, see more: [[$internalForeignKeys]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -44,7 +44,7 @@ class TableSchema extends BaseObject
      */
     public $sequenceName;
     /**
-     * @var array|callable foreign keys of this table. Each array element is of the following structure:
+     * @var array|callable|false foreign keys of this table. Each array element is of the following structure:
      *
      * ```php
      * [
@@ -54,7 +54,8 @@ class TableSchema extends BaseObject
      * ]
      * ```
      *
-     * If its value is callable, it has not yet been loaded and will be loaded the first time it is used.
+     * If value is callable, it has not yet been loaded and will be loaded the first time it is used, see more [[SchemaInterface]]
+     * If value is false, then converting to callable, see more [[SchemaInterface]]
      */
     private $internalForeignKeys = [];
     /**
@@ -120,5 +121,13 @@ class TableSchema extends BaseObject
                 throw new InvalidArgumentException("Primary key '$key' cannot be found in table '{$this->name}'.");
             }
         }
+    }
+
+    /**
+     * Caching prepare
+     * @return static
+     */
+    public function prepareCache() {
+        return clone $this;
     }
 }

@@ -16,6 +16,7 @@ use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
+use yii\db\SchemaInterface;
 use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 
@@ -25,7 +26,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface, SchemaInterface
 {
     use ConstraintFinderTrait;
 
@@ -319,7 +320,7 @@ SQL;
      * @return bool whether the table exists in the database
      * @throws \Exception if DB query fails
      */
-    protected function findColumns($table)
+    public function findColumns($table)
     {
         $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
         try {
@@ -373,7 +374,7 @@ SQL;
      * @param TableSchema $table the table metadata
      * @throws \Exception
      */
-    protected function findConstraints($table)
+    public function findConstraints($table)
     {
         $sql = <<<'SQL'
 SELECT

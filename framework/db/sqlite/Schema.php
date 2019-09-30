@@ -254,15 +254,17 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     {
         $sql = 'PRAGMA foreign_key_list(' . $this->quoteSimpleTableName($table->name) . ')';
         $keys = $this->db->createCommand($sql)->queryAll();
+        $foreignKeys = [];
         foreach ($keys as $key) {
             $id = (int) $key['id'];
-            if (!isset($table->foreignKeys[$id])) {
-                $table->foreignKeys[$id] = [$key['table'], $key['from'] => $key['to']];
+            if (!isset($foreignKeys[$id])) {
+                $foreignKeys[$id] = [$key['table'], $key['from'] => $key['to']];
             } else {
                 // composite FK
-                $table->foreignKeys[$id][$key['from']] = $key['to'];
+                $foreignKeys[$id][$key['from']] = $key['to'];
             }
         }
+        $table->foreignKeys = $foreignKeys;
     }
 
     /**
