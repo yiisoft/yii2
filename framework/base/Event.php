@@ -270,11 +270,7 @@ class Event extends BaseObject
         }
         $wildcardEventHandlers = [];
         if ($classHandlersList) {
-            if (version_compare(PHP_VERSION, '5.6', '>=')) {
-                $wildcardEventHandlers = array_merge(...$classHandlersList);
-            } else {
-                $wildcardEventHandlers = call_user_func_array('array_merge', $classHandlersList);
-            }
+            $wildcardEventHandlers = call_user_func_array('array_merge', $classHandlersList);
         }
 
         if (empty(self::$_events[$name]) && empty($wildcardEventHandlers)) {
@@ -317,11 +313,7 @@ class Event extends BaseObject
 
             $eventHandlers = [];
             if ($handlersList) {
-                if (version_compare(PHP_VERSION, '5.6', '>=')) {
-                    $eventHandlers = array_merge(...$handlersList);
-                } else {
-                    $eventHandlers = call_user_func_array('array_merge', $handlersList);
-                }
+                $eventHandlers = call_user_func_array('array_merge', $handlersList);
             }
             foreach ($eventHandlers as $handler) {
                 $event->data = $handler[1];
