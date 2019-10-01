@@ -268,10 +268,7 @@ class Event extends BaseObject
             }
             $classHandlersList[] = $classHandlers;
         }
-        $wildcardEventHandlers = [];
-        if ($classHandlersList) {
-            $wildcardEventHandlers = call_user_func_array('array_merge', $classHandlersList);
-        }
+        $wildcardEventHandlers = call_user_func_array('array_merge', $classHandlersList);
 
         if (empty(self::$_events[$name]) && empty($wildcardEventHandlers)) {
             return;
@@ -311,10 +308,7 @@ class Event extends BaseObject
                 $handlersList[] = self::$_events[$name][$class];
             }
 
-            $eventHandlers = [];
-            if ($handlersList) {
-                $eventHandlers = call_user_func_array('array_merge', $handlersList);
-            }
+            $eventHandlers = call_user_func_array('array_merge', $handlersList);
             foreach ($eventHandlers as $handler) {
                 $event->data = $handler[1];
                 call_user_func($handler[0], $event);
