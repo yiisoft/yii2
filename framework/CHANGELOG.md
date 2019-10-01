@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.28 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17585: Fix `yii\i18n\Formatter` including the `@calendar` locale param in `Yii::t()` calls (brandonkelly)
 
 
 2.0.27 September 18, 2019
