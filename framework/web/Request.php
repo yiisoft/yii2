@@ -1172,12 +1172,12 @@ class Request extends \yii\base\Request
         $resultIp = null;
         foreach ($ips as $ip) {
             $hasValid = false;
+            $resultIp = $ip;
             foreach ($this->trustedHosts as $cidr => $cidrOrHeaders) {
                 if (!is_array($cidrOrHeaders)) {
                     $cidr = $cidrOrHeaders;
                 }
                 $validator->setRanges($cidr);
-                $resultIp = $ip;
                 if ($validator->validate($ip) /* check trusted range */) {
                     $hasValid = true;
                     break;
