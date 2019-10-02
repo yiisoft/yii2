@@ -1165,7 +1165,7 @@ class Request extends \yii\base\Request
      */
     protected function getUserIpFromIpHeader($ips)
     {
-        $ips = preg_split('/\s*,\s*/', trim($ips));
+        $ips = preg_split('/\s*,\s*/', trim($ips), -1, PREG_SPLIT_NO_EMPTY);
         krsort($ips);
         $validator = $this->getIpValidator();
         $resultIp = null;
