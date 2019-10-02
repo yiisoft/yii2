@@ -1156,8 +1156,9 @@ class Request extends \yii\base\Request
 
     /**
      * Return user IP's from IP header.
+     *
      * @param string $ips comma separated IP list
-     * @return string|null
+     * @return string|null IP string or NULL, if there are no usable result.
      * @see $getUserHost
      * @see $ipHeader
      * @see $trustedHeaders
@@ -1170,23 +1171,27 @@ class Request extends \yii\base\Request
         $validator = $this->getIpValidator();
         $resultIp = null;
         foreach ($ips as $ip) {
-            $stop = true;
+            $hasValid = false;
             foreach ($this->trustedHosts as $cidr => $cidrOrHeaders) {
                 if (!is_array($cidrOrHeaders)) {
                     $cidr = $cidrOrHeaders;
                 }
                 $validator->setRanges($cidr);
                 $resultIp = $ip;
-                if ($validator->validate($ip)) {
-                    $stop = false;
+                if ($validator->validate($ip) /* check trusted range */) {
+                    $hasValid = true;
                     break;
                 }
             }
-            if ($stop) {
+            if (!$hasValid) {
                 break;
             }
         }
-        return $resultIp;
+        if ($resultIp === null) {
+            return null;
+        }
+        $validator->setRanges('any');   // checking for IP address
+        return $validator->validate($resultIp) ? $resultIp : null;
     }
 
     /**
