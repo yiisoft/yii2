@@ -1145,7 +1145,7 @@ class Request extends \yii\base\Request
         foreach($this->getTrustedIpHeaders() as $ipHeader) {
             if ($this->headers->has($ipHeader)) {
                 $ip = $this->getUserIpFromIpHeader($this->headers->get($ipHeader));
-                if(isset($ip)) {
+                if ($ip !== null) {
                     return $ip;
                 }
             }
