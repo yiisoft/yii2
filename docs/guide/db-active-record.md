@@ -667,7 +667,14 @@ $customer = Customer::findOne(123);
 
 Customer::getDb()->transaction(function($db) use ($customer) {
     $customer->id = 200;
-    $customer->save();
+    if(!$customer->save())
+        throw new Exception('customer data saving failed!');
+        
+    $order = new Order;
+    $order->name = 'zzz';
+    if(!$order->save())
+        throw new Exception('order data saving failed!');
+        
     // ...other DB operations...
 });
 
@@ -676,7 +683,14 @@ Customer::getDb()->transaction(function($db) use ($customer) {
 $transaction = Customer::getDb()->beginTransaction();
 try {
     $customer->id = 200;
-    $customer->save();
+    if(!$customer->save())
+        throw new Exception('customer data saving failed!');
+
+    $order = new Order;
+    $order->name = 'zzz';
+    if(!$order->save())
+        throw new Exception('order data saving failed!');    
+    
     // ...other DB operations...
     $transaction->commit();
 } catch(\Exception $e) {
