@@ -1169,8 +1169,8 @@ class Request extends \yii\base\Request
         krsort($ips);
         $validator = $this->getIpValidator();
         $resultIp = null;
-        $stop = false;
         foreach ($ips as $ip) {
+            $stop = true;
             foreach ($this->trustedHosts as $cidr => $cidrOrHeaders) {
                 if (!is_array($cidrOrHeaders)) {
                     $cidr = $cidrOrHeaders;
@@ -1180,8 +1180,6 @@ class Request extends \yii\base\Request
                 if ($validator->validate($ip)) {
                     $stop = false;
                     break;
-                } else {
-                    $stop = true;
                 }
             }
             if ($stop) {
