@@ -50,23 +50,35 @@ class RetryAcquireTraitTest extends TestCase
             'There could be no more than 20 attempts consideing 50ms delay and 1s timeout.'
         );
 
-        foreach ($mutexTwo->attemptsTime as $i => $attemptTime) {
-            if ($i === 0) {
-                continue;
-            }
+        // https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
+        // If dwMilliseconds is less than the resolution of the system clock, the thread may sleep for less
+        // than the specified length of time.
+        if (!$this->isRunningOnWindows()) {
+            foreach ($mutexTwo->attemptsTime as $i => $attemptTime) {
+                if ($i === 0) {
+                    continue;
+                }
 
-            // Rounding to ms since Windows usleep sleeps a fraction of ms less than actually specified
-            $attemptInterval = round(($mutexTwo->attemptsTime[$i] - $mutexTwo->attemptsTime[$i - 1]) * 1000);
-            $this->assertGreaterThanOrEqual(
-                $mutexTwo->retryDelay,
-                $attemptInterval,
-                sprintf(
-                    'Retry delay of %s ms was not properly taken into account. Actual interval was %s ms.',
+                $attemptInterval = ($mutexTwo->attemptsTime[$i] - $mutexTwo->attemptsTime[$i - 1]) * 1000;
+                $this->assertGreaterThanOrEqual(
                     $mutexTwo->retryDelay,
-                    $attemptInterval
-                )
-            );
+                    $attemptInterval,
+                    sprintf(
+                        'Retry delay of %s ms was not properly taken into account. Actual interval was %s ms.',
+                        $mutexTwo->retryDelay,
+                        $attemptInterval
+                    )
+                );
+            }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isRunningOnWindows()
+    {
+        return DIRECTORY_SEPARATOR === '\\';
     }
 
     /**
