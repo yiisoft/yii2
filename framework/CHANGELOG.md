@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #17521: `Request::$userIpIsAlwaysRemoteIp` added for the resolved X-Forwarded-For case (kamarton)
+- Bug #17853: Fix errors in ActiveField to be properly caught when PHP 7 is used (My6UoT9)
+- Bug #17573: `Request::getUserIP()` security fix for the case when `Request::$trustedHost` and `Request::$ipHeaders` are used (kamarton)
 
 
 2.0.27 September 18, 2019
