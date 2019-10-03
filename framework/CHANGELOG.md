@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.28 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17853: Fix errors in ActiveField to be properly caught when PHP 7 is used (My6UoT9)
 
 
 2.0.27 September 18, 2019
