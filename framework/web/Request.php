@@ -1158,7 +1158,7 @@ class Request extends \yii\base\Request
      * Return user IP's from IP header.
      *
      * @param string $ips comma separated IP list
-     * @return string|null IP string or NULL (if there are no usable result).
+     * @return string|null IP as string. Null is returned if IP can not be determined from header.
      * @see $getUserHost
      * @see $ipHeader
      * @see $trustedHeaders
