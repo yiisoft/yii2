@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.28 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17573: `Request::getUserIP()` security fix for the case when `Request::$trustedHost` and `Request::$ipHeaders` are used (kamarton)
 
 
 2.0.27 September 18, 2019
