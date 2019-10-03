@@ -293,7 +293,7 @@ class Request extends \yii\base\Request
     {
         $trustedHeaders = $this->getTrustedIpHeaders();
 
-        // filter all secure headers unless they are trusted
+        // remove all secure headers unless they are trusted
         foreach ($this->secureHeaders as $secureHeader) {
             if (!in_array($secureHeader, $trustedHeaders)) {
                 $headerCollection->remove($secureHeader);
