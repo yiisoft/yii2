@@ -1158,7 +1158,7 @@ class Request extends \yii\base\Request
      * Return user IP's from IP header.
      *
      * @param string $ips comma separated IP list
-     * @return string|null IP string or NULL, if there are no usable result.
+     * @return string|null IP string or NULL (if there are no usable result).
      * @see $getUserHost
      * @see $ipHeader
      * @see $trustedHeaders
@@ -1166,32 +1166,36 @@ class Request extends \yii\base\Request
      */
     protected function getUserIpFromIpHeader($ips)
     {
-        $ips = preg_split('/\s*,\s*/', trim($ips), -1, PREG_SPLIT_NO_EMPTY);
+        $ips = trim($ips);
+        if ($ips === '') {
+            return null;
+        }
+        $ips = preg_split('/\s*,\s*/', $ips, -1, PREG_SPLIT_NO_EMPTY);
         krsort($ips);
         $validator = $this->getIpValidator();
         $resultIp = null;
         foreach ($ips as $ip) {
-            $hasValid = false;
+            $validator->setRanges('any');
+            if (!$validator->validate($ip) /* checking IP format */) {
+                break;
+            }
             $resultIp = $ip;
-            foreach ($this->trustedHosts as $cidr => $cidrOrHeaders) {
-                if (!is_array($cidrOrHeaders)) {
-                    $cidr = $cidrOrHeaders;
+            $isTrusted = false;
+            foreach ($this->trustedHosts as $trustedCidr => $trustedCidrOrHeaders) {
+                if (!is_array($trustedCidrOrHeaders)) {
+                    $trustedCidr = $trustedCidrOrHeaders;
                 }
-                $validator->setRanges($cidr);
-                if ($validator->validate($ip) /* check trusted range */) {
-                    $hasValid = true;
+                $validator->setRanges($trustedCidr);
+                if ($validator->validate($ip) /* checking trusted range */) {
+                    $isTrusted = true;
                     break;
                 }
             }
-            if (!$hasValid) {
+            if (!$isTrusted) {
                 break;
             }
         }
-        if ($resultIp === null) {
-            return null;
-        }
-        $validator->setRanges('any');   // checking for IP address
-        return $validator->validate($resultIp) ? $resultIp : null;
+        return $resultIp;
     }
 
     /**
