@@ -33,6 +33,8 @@ DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_1` CASCADE;
 DROP TABLE IF EXISTS `T_upsert` CASCADE;
 DROP TABLE IF EXISTS `T_upsert_1`;
+DROP TABLE IF EXISTS `product`;
+DROP TABLE IF EXISTS `product_attribute`;
 
 CREATE TABLE `constraints`
 (
@@ -402,3 +404,20 @@ CREATE TABLE `T_upsert_1` (
   `a` int(11) NOT NULL,
   PRIMARY KEY (`a`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE product (
+       sku varchar(45) NOT NULL PRIMARY KEY,
+       title varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE product_attribute (
+     id INTEGER NOT NULL PRIMARY KEY,
+     product_sku varchar(45),
+     value varchar(128)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `product` (sku, title) VALUES ('ARTi01', 'Yii1');
+INSERT INTO `product` (sku, title) VALUES ('ARTI02', 'Yii2');
+INSERT INTO `product_attribute` (id, product_sku, value) VALUES (1, 'ARTI01', 'UPPERCASE');
+INSERT INTO `product_attribute` (id, product_sku, value) VALUES (2, 'ARTI01', 'UPPERCASE2');
+INSERT INTO `product_attribute` (id, product_sku, value) VALUES (3, 'ARTi01', 'EXACT');

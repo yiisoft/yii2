@@ -31,6 +31,8 @@ use yiiunit\data\ar\OrderItemWithConstructor;
 use yiiunit\data\ar\OrderItemWithNullFK;
 use yiiunit\data\ar\OrderWithConstructor;
 use yiiunit\data\ar\OrderWithNullFK;
+use yiiunit\data\ar\Product;
+use yiiunit\data\ar\ProductAttribute;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
@@ -198,6 +200,39 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $order = Order::find()->where(['id' => 1])->asArray()->one();
         $this->assertInternalType('array', $order);
+    }
+
+    /**
+     * related to https://github.com/yiisoft/active-record/issues/22#issuecomment-443460996
+     */
+    public function testCaseInsensitiveKeys()
+    {
+        if (!in_array($this->driverName, ['mysql'])) {
+            $this->markTestSkipped('This test only for databases that make case insensitive search by key like MySQL or postgres with citext');
+        }
+
+        $productAttributes = ProductAttribute::find()->where(['product_sku' => 'ARTi01'])->all();
+        $this->assertCount(3, $productAttributes); // there are here ARTi01 and ARTI01 records
+
+        \Yii::$container->set(ActiveQuery::className(), [
+            'caseInsensitiveKeys' => false,
+        ]);
+
+        $product = Product::find()->where(['sku' => 'ARTi01'])->with('productAttributes')->one(); // join for ARTi01
+        $this->assertNotNull($product);
+        $this->assertNotCount(3, $product->productAttributes); // joined one record of 3
+
+        \Yii::$container->set(ActiveQuery::className(), [
+            'caseInsensitiveKeys' => true,
+        ]);
+
+        $product = Product::find()->where(['sku' => 'ARTi01'])->with('productAttributes')->one(); // join for ARTi01
+        $this->assertCount(3, $product->productAttributes);
+
+        \Yii::$container->set(ActiveQuery::className(), [
+            'caseInsensitiveKeys' => false,
+        ]);
+
     }
 
     public function testFindEagerViaTable()
