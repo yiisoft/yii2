@@ -778,4 +778,45 @@ class RequestTest extends TestCase
 
         $this->assertSame($expectedMethod, $request->getMethod());
     }
+
+    public function alreadyResolvedIpDataProvider() {
+        return [
+            'resolvedXForwardedFor' => [
+                '50.0.0.1',
+                '1.1.1.1, 8.8.8.8, 9.9.9.9',
+                'http',
+                ['0.0.0.0/0'],
+                // checks:
+                '50.0.0.1',
+                '50.0.0.1',
+                false,
+            ],
+            'resolvedXForwardedForWithHttps' => [
+                '50.0.0.1',
+                '1.1.1.1, 8.8.8.8, 9.9.9.9',
+                'https',
+                ['0.0.0.0/0'],
+                // checks:
+                '50.0.0.1',
+                '50.0.0.1',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider alreadyResolvedIpDataProvider
+     */
+    public function testAlreadyResolvedIp($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $expectedRemoteAddress, $expectedUserIp, $expectedIsSecureConnection) {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = $xForwardedProto;
+        $request = new Request([
+            'trustedHosts' => $trustedHosts,
+            'ipHeaders' => []
+        ]);
+        $this->assertSame($expectedRemoteAddress, $request->remoteIP, 'Remote IP fail!');
+        $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
+        $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
+    }
 }
