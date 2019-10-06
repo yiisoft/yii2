@@ -201,10 +201,10 @@ except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is
 In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
 will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].
 
-### Already resolved user IP (before the yii application) <span id="already-respolved-user-ip"></span>
+### Already resolved user IP <span id="already-respolved-user-ip"></span>
 
-If the user's IP address is resolved before the Yii application (e.g. `ngx_http_realip_module`),
-the` request` component will work correctly with the following configuration:
+If the user's IP address is resolved before the Yii application (e.g. `ngx_http_realip_module` or similar),
+the `request` component will work correctly with the following configuration:
 
 ```php
 'request' => [
@@ -216,7 +216,7 @@ the` request` component will work correctly with the following configuration:
 ],
 ```
 
-In this case, the value of [[yii\web\Request::userIP|userIP] will be equal to `$_SERVER['REMOTE_ADDR']`.
-Also, properties that are resolved from HTTP headers are work correctly (e.g. [[yii\web\Request:: getIsSecureConnection()]].
+In this case, the value of [[yii\web\Request::userIP|userIP]] will be equal to `$_SERVER['REMOTE_ADDR']`.
+Also, properties that are resolved from HTTP headers will work correctly (e.g. [[yii\web\Request:: getIsSecureConnection()]].
 
-> Warning: The `trustedHosts=['0.0.0.0/0']` setting assumes that IP resolving is always secure.
+> Warning: The `trustedHosts=['0.0.0.0/0']` setting assumes that all IPs are trusted.
