@@ -725,6 +725,43 @@ class RequestTest extends TestCase
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 
+    public function trustedHostAndInjectedXForwardedForDataProvider()
+    {
+        return [
+            'emptyIPs' => ['1.1.1.1', '', null, ['10.10.10.10'], '1.1.1.1'],
+            'invalidIp' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2, apple', null, ['10.10.10.10'], '1.1.1.1'],
+            'invalidIp2' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2, 300.300.300.300', null, ['10.10.10.10'], '1.1.1.1'],
+            'invalidIp3' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2, 10.0.0.0/26', null, ['10.0.0.0/24'], '1.1.1.1'],
+            'invalidLatestIp' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2, apple, 2.2.2.2', null, ['1.1.1.1', '2.2.2.2'], '2.2.2.2'],
+            'notTrusted' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2', null, ['10.10.10.10'], '1.1.1.1'],
+            'trustedLevel1' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2', null, ['1.1.1.1'], '2.2.2.2'],
+            'trustedLevel2' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2', null, ['1.1.1.1', '2.2.2.2'], '8.8.8.8'],
+            'trustedLevel3' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2', null, ['1.1.1.1', '2.2.2.2', '8.8.8.8'], '127.0.0.1'],
+            'trustedLevel4' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2', null, ['1.1.1.1', '2.2.2.2', '8.8.8.8', '127.0.0.1'], '127.0.0.1'],
+            'trustedLevel4EmptyElements' => ['1.1.1.1', '127.0.0.1, 8.8.8.8,,,, ,   , 2.2.2.2', null, ['1.1.1.1', '2.2.2.2', '8.8.8.8', '127.0.0.1'], '127.0.0.1'],
+            'trustedWithCidr' => ['10.0.0.2', '127.0.0.1, 8.8.8.8, 10.0.0.240, 10.0.0.32, 10.0.0.99', null, ['10.0.0.0/24'], '8.8.8.8'],
+            'trustedAll' => ['10.0.0.2', '127.0.0.1, 8.8.8.8, 10.0.0.240, 10.0.0.32, 10.0.0.99', null, ['0.0.0.0/0'], '127.0.0.1'],
+            'emptyIpHeaders' => ['1.1.1.1', '127.0.0.1, 8.8.8.8, 2.2.2.2', [], ['1.1.1.1'], '1.1.1.1'],
+        ];
+    }
+
+    /**
+     * @dataProvider trustedHostAndInjectedXForwardedForDataProvider
+     */
+    public function testTrustedHostAndInjectedXForwardedFor($remoteAddress, $xForwardedFor, $ipHeaders, $trustedHosts, $expectedUserIp)
+    {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
+        $params = [
+            'trustedHosts' => $trustedHosts,
+        ];
+        if($ipHeaders !== null) {
+            $params['ipHeaders'] = $ipHeaders;
+        }
+        $request = new Request($params);
+        $this->assertSame($expectedUserIp, $request->getUserIP());
+    }
+
     /**
      * @testWith    ["POST", "GET", "POST"]
      *              ["POST", "OPTIONS", "POST"]
@@ -740,5 +777,46 @@ class RequestTest extends TestCase
         $_POST[$request->methodParam] = $requestOverrideMethod;
 
         $this->assertSame($expectedMethod, $request->getMethod());
+    }
+
+    public function alreadyResolvedIpDataProvider() {
+        return [
+            'resolvedXForwardedFor' => [
+                '50.0.0.1',
+                '1.1.1.1, 8.8.8.8, 9.9.9.9',
+                'http',
+                ['0.0.0.0/0'],
+                // checks:
+                '50.0.0.1',
+                '50.0.0.1',
+                false,
+            ],
+            'resolvedXForwardedForWithHttps' => [
+                '50.0.0.1',
+                '1.1.1.1, 8.8.8.8, 9.9.9.9',
+                'https',
+                ['0.0.0.0/0'],
+                // checks:
+                '50.0.0.1',
+                '50.0.0.1',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider alreadyResolvedIpDataProvider
+     */
+    public function testAlreadyResolvedIp($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $expectedRemoteAddress, $expectedUserIp, $expectedIsSecureConnection) {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = $xForwardedProto;
+        $request = new Request([
+            'trustedHosts' => $trustedHosts,
+            'ipHeaders' => []
+        ]);
+        $this->assertSame($expectedRemoteAddress, $request->remoteIP, 'Remote IP fail!');
+        $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
+        $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
     }
 }
