@@ -217,6 +217,6 @@ the `request` component will work correctly with the following configuration:
 ```
 
 In this case, the value of [[yii\web\Request::userIP|userIP]] will be equal to `$_SERVER['REMOTE_ADDR']`.
-Also, properties that are resolved from HTTP headers will work correctly (e.g. [[yii\web\Request:: getIsSecureConnection()]].
+Also, properties that are resolved from HTTP headers will work correctly (e.g. [[yii\web\Request::getIsSecureConnection()]]).
 
 > Warning: The `trustedHosts=['0.0.0.0/0']` setting assumes that all IPs are trusted.
