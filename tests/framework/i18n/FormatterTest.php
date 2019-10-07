@@ -75,6 +75,20 @@ class FormatterTest extends TestCase
         $this->assertEquals('ru-RU', $f->locale);
     }
 
+    public function testLanguage()
+    {
+        // language is configured explicitly
+        $f = new Formatter(['language' => 'en-US']);
+        $this->assertEquals('en-US', $f->language);
+
+        // language is configured via locale (omitting @calendar param)
+        $f = new Formatter(['locale' => 'en-US@calendar=persian']);
+        $this->assertEquals('en-US', $f->language);
+
+        // if not, take from application
+        $f = new Formatter();
+        $this->assertEquals('ru-RU', $f->language);
+    }
 
     public function testAsRaw()
     {
