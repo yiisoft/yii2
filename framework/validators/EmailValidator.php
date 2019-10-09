@@ -128,17 +128,13 @@ class EmailValidator extends Validator
 
         try {
             // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
-            $mxRecords = dns_get_record($normalizedDomain, ($mx ? DNS_MX : DNS_A));
+            $records = dns_get_record($normalizedDomain, ($mx ? DNS_MX : DNS_A));
         } catch (ErrorException $exception) {
             Yii::warning($exception->getMessage(). '. Domain: "' . $domain . '"', __METHOD__);
             return false;
         }
 
-        if ($mxRecords !== false && count($mxRecords) > 0) {
-            return true;
-        }
-
-        return false;
+        return !empty($records);
     }
 
     private function idnToAscii($idn)
