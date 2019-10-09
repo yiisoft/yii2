@@ -278,12 +278,12 @@ class AssetManager extends Component
     protected function loadDummyBundle($name)
     {
         if (!isset($this->_dummyBundles[$name])) {
-            $this->_dummyBundles[$name] = $this->loadBundle($name, [
+            $this->_dummyBundles[$name] = $this->loadBundle(AssetBundle::className(), [
                 'sourcePath' => null,
                 'js' => [],
                 'css' => [],
                 'depends' => [],
-            ]);
+            ], false);
         }
 
         return $this->_dummyBundles[$name];
