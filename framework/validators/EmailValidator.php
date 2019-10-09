@@ -112,11 +112,7 @@ class EmailValidator extends Validator
      */
     protected function isDNSValid($domain)
     {
-        if ($this->hasDNSRecord($domain, true)) {
-            return true;
-        }
-
-        return $this->hasDNSRecord($domain, false) === true;
+        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false) === true;
     }
 
     private function hasDNSRecord($domain, $mx)
@@ -130,7 +126,6 @@ class EmailValidator extends Validator
             // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
             $records = dns_get_record($normalizedDomain, ($mx ? DNS_MX : DNS_A));
         } catch (ErrorException $exception) {
-            Yii::warning($exception->getMessage(). '. Domain: "' . $domain . '"', __METHOD__);
             return false;
         }
 
