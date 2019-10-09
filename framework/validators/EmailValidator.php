@@ -115,16 +115,16 @@ class EmailValidator extends Validator
         return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false);
     }
 
-    private function hasDNSRecord($domain, $mx)
+    private function hasDNSRecord($domain, $isMX)
     {
         $normalizedDomain = $domain . '.';
-        if (!checkdnsrr($normalizedDomain, ($mx ? 'MX' : 'A'))) {
+        if (!checkdnsrr($normalizedDomain, ($isMX ? 'MX' : 'A'))) {
             return false;
         }
 
         try {
             // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
-            $records = dns_get_record($normalizedDomain, ($mx ? DNS_MX : DNS_A));
+            $records = dns_get_record($normalizedDomain, ($isMX ? DNS_MX : DNS_A));
         } catch (ErrorException $exception) {
             return false;
         }
