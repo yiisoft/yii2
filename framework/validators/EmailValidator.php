@@ -112,7 +112,7 @@ class EmailValidator extends Validator
      */
     protected function isDNSValid($domain)
     {
-        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false) === true;
+        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false);
     }
 
     private function hasDNSRecord($domain, $mx)
