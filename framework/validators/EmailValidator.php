@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\UserException;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 
@@ -112,14 +113,25 @@ class EmailValidator extends Validator
     protected function isDNSValid($domain)
     {
         if (checkdnsrr($domain . '.', 'MX')) {
-            $mxRecords = dns_get_record($domain . '.', DNS_MX);
+            try {
+                // dns_get_record can return true and emit Warning that may or may not be converted to UserException
+                $mxRecords = dns_get_record($domain . '.', DNS_MX);
+            } catch (UserException $exception) {
+                return false;
+            }
+
             if ($mxRecords !== false && count($mxRecords) > 0) {
                 return true;
             }
         }
 
         if (checkdnsrr($domain . '.', 'A')) {
-            $aRecords = dns_get_record($domain . '.', DNS_A);
+            try {
+                $aRecords = dns_get_record($domain . '.', DNS_A);
+            } catch (UserException $exception) {
+                return false;
+            }
+
             if ($aRecords !== false && count($aRecords) > 0) {
                 return true;
             }
