@@ -8,8 +8,8 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
-use yii\base\UserException;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 
@@ -112,29 +112,30 @@ class EmailValidator extends Validator
      */
     protected function isDNSValid($domain)
     {
-        if (checkdnsrr($domain . '.', 'MX')) {
-            try {
-                // dns_get_record can return true and emit Warning that may or may not be converted to UserException
-                $mxRecords = dns_get_record($domain . '.', DNS_MX);
-            } catch (UserException $exception) {
-                return false;
-            }
-
-            if ($mxRecords !== false && count($mxRecords) > 0) {
-                return true;
-            }
+        if ($this->hasDNSRecord($domain, true)) {
+            return true;
         }
 
-        if (checkdnsrr($domain . '.', 'A')) {
-            try {
-                $aRecords = dns_get_record($domain . '.', DNS_A);
-            } catch (UserException $exception) {
-                return false;
-            }
+        return $this->hasDNSRecord($domain, false) === true;
+    }
 
-            if ($aRecords !== false && count($aRecords) > 0) {
-                return true;
-            }
+    private function hasDNSRecord($domain, $mx)
+    {
+        $normalizedDomain = $domain . '.';
+        if (!checkdnsrr($normalizedDomain, ($mx ? 'MX' : 'A'))) {
+            return false;
+        }
+
+        try {
+            // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
+            $mxRecords = dns_get_record($normalizedDomain, ($mx ? DNS_MX : DNS_A));
+        } catch (ErrorException $exception) {
+            Yii::warning($exception->getMessage(). '. Domain: "' . $domain . '"', __METHOD__);
+            return false;
+        }
+
+        if ($mxRecords !== false && count($mxRecords) > 0) {
+            return true;
         }
 
         return false;
