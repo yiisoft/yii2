@@ -142,9 +142,9 @@ class ActionColumn extends Column
      */
     protected function initDefaultButtons()
     {
-        $this->initDefaultButton('view', 'eye-open');
-        $this->initDefaultButton('update', 'pencil');
-        $this->initDefaultButton('delete', 'trash', [
+        $this->initDefaultButton('view');
+        $this->initDefaultButton('update');
+        $this->initDefaultButton('delete', [
             'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
             'data-method' => 'post',
         ]);
@@ -153,33 +153,53 @@ class ActionColumn extends Column
     /**
      * Initializes the default button rendering callback for single button.
      * @param string $name Button name as it's written in template
-     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
      * @param array $additionalOptions Array of additional options
      * @since 2.0.11
      */
-    protected function initDefaultButton($name, $iconName, $additionalOptions = [])
+    protected function initDefaultButton($name, $additionalOptions = [])
     {
         if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
-            $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
+            $this->buttons[$name] = function ($url, $model, $key) use ($name, $additionalOptions) {
                 switch ($name) {
                     case 'view':
                         $title = Yii::t('yii', 'View');
+                        // https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/regular/eye.svg
+                        $path = 'M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z';
                         break;
                     case 'update':
                         $title = Yii::t('yii', 'Update');
+                        // https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/pencil-alt.svg
+                        $path = 'M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z';
                         break;
                     case 'delete':
                         $title = Yii::t('yii', 'Delete');
+                        // https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/trash-alt.svg
+                        $path = 'M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z';
                         break;
                     default:
                         $title = ucfirst($name);
+                        $path = '';
                 }
+
                 $options = array_merge([
                     'title' => $title,
                     'aria-label' => $title,
                     'data-pjax' => '0',
                 ], $additionalOptions, $this->buttonOptions);
-                $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
+
+                $icon = Html::beginTag('svg', [
+                    'xmlns' => 'http://www.w3.org/2000/svg',
+                    'viewBox' => '0 0 576 512',
+                    'style' => 'width: 20px'
+                ]);
+
+                $icon .= Html::tag('path','',[
+                    'd' => $path,
+                    'fill' => 'currentColor'
+                ]);
+
+                $icon .= Html::endTag('svg');
+
                 return Html::a($icon, $url, $options);
             };
         }
