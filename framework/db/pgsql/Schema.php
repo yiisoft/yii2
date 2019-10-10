@@ -641,7 +641,7 @@ SELECT
     "fa"."attname" AS "foreign_column_name",
     "c"."confupdtype" AS "on_update",
     "c"."confdeltype" AS "on_delete",
-    "c"."consrc" AS "check_expr"
+    pg_get_constraintdef("c"."oid") AS "check_expr"
 FROM "pg_class" AS "tc"
 INNER JOIN "pg_namespace" AS "tcns"
     ON "tcns"."oid" = "tc"."relnamespace"
