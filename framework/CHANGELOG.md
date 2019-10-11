@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.29 under development
 ------------------------
 
-- Bug #17573: `EmailValidator` with `checkDNS=true` throws `ErrorException` on bad domains on Alpine (batyrmastyr)
+- Bug #17602: `EmailValidator` with `checkDNS=true` throws `ErrorException` on bad domains on Alpine (batyrmastyr)
 
 
 2.0.28 October 08, 2019
