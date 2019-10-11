@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Chg: no changes in this release yet.
+- Bug #17479: remove deprecated glyphicons in `yii\grid\ActionColumn`. A Link as Bootstrap button is rendered instead. (HenryVolkmer)
 
 2.0.15.1 March 21, 2018
 -----------------------
