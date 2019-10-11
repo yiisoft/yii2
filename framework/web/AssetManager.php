@@ -278,12 +278,12 @@ class AssetManager extends Component
     protected function loadDummyBundle($name)
     {
         if (!isset($this->_dummyBundles[$name])) {
-            $this->_dummyBundles[$name] = $this->loadBundle(AssetBundle::className(), [
-                'sourcePath' => null,
-                'js' => [],
-                'css' => [],
-                'depends' => [],
-            ], false);
+            $bundle = Yii::createObject(['class' => $name]);
+            $bundle->sourcePath = null;
+            $bundle->js = [];
+            $bundle->css = [];
+
+            $this->_dummyBundles[$name] = $bundle;
         }
 
         return $this->_dummyBundles[$name];
