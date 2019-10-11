@@ -282,6 +282,24 @@ class ContainerTest extends TestCase
         }
     }
 
+    public function testDi3Compatibility()
+    {
+        $container = new Container();
+        $container->setDefinitions([
+            'test\TraversableInterface' => [
+                '__class' => 'yiiunit\data\base\TraversableObject',
+                '__construct()' => [['item1', 'item2']],
+            ],
+            'my.cat' => [
+                '__class' => Cat::className(),
+            ],
+        ]);
+
+        $traversable = $container->get('test\TraversableInterface');
+        $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
+        $this->assertEquals('item1', $traversable->current());
+    }
+
     public function testContainerSingletons()
     {
         $container = new Container();

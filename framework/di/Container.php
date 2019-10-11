@@ -326,6 +326,9 @@ class Container extends Component
         } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
+            if (!isset($definition['class']) && isset($definition['__class'])) {
+                $definition['class'] = $definition['__class'];
+            }
             if (!isset($definition['class'])) {
                 if (strpos($class, '\\') !== false) {
                     $definition['class'] = $class;
@@ -363,6 +366,13 @@ class Container extends Component
     {
         /* @var $reflection ReflectionClass */
         list($reflection, $dependencies) = $this->getDependencies($class);
+
+        if (isset($config['__construct()'])) {
+            foreach ($config['__construct()'] as $index => $param) {
+                $dependencies[$index] = $param;
+            }
+            unset($config['__construct()']);
+        }
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
