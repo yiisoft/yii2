@@ -149,6 +149,9 @@ class Container extends Component
      */
     public function get($class, $params = [], $config = [])
     {
+        if ($class instanceof Instance) {
+            $class = $class->id;
+        }
         if (isset($this->_singletons[$class])) {
             // singleton
             return $this->_singletons[$class];
@@ -323,6 +326,8 @@ class Container extends Component
             return ['class' => $class];
         } elseif (is_string($definition)) {
             return ['class' => $definition];
+        } elseif ($definition instanceof Instance) {
+            return ['class' => $definition->id];
         } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {

@@ -327,6 +327,21 @@ class ContainerTest extends TestCase
         $this->assertSame(42, $qux->a);
     }
 
+    public function testGetByInstance(): void
+    {
+        $container = new Container();
+        $container->setSingletons([
+            'one' => Qux::className(),
+            'two' => Instance::of('one'),
+        ]);
+        $one = $container->get(Instance::of('one'));
+        $two = $container->get(Instance::of('two'));
+        $this->assertInstanceOf(Qux::className(), $one);
+        $this->assertSame($one, $two);
+        $this->assertSame($one, $container->get('one'));
+        $this->assertSame($one, $container->get('two'));
+    }
+
     public function testContainerSingletons()
     {
         $container = new Container();
