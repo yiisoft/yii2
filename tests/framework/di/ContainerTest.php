@@ -290,14 +290,41 @@ class ContainerTest extends TestCase
                 '__class' => 'yiiunit\data\base\TraversableObject',
                 '__construct()' => [['item1', 'item2']],
             ],
-            'my.cat' => [
-                '__class' => Cat::className(),
+            'qux' => [
+                '__class' => Qux::className(),
+                'a' => 42,
             ],
         ]);
+
+        $qux = $container->get('qux');
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
 
         $traversable = $container->get('test\TraversableInterface');
         $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
         $this->assertEquals('item1', $traversable->current());
+    }
+
+    public function testInstanceOf()
+    {
+        $container = new Container();
+        $container->setDefinitions([
+            'qux' => [
+                'class' => Qux::className(),
+                'a' => 42,
+            ],
+            'bar' => [
+                '__class' => Bar::className(),
+                '__construct()' => [
+                    Instance::of('qux')
+                ],
+            ],
+        ]);
+        $bar = $container->get('bar');
+        $this->assertInstanceOf(Bar::className(), $bar);
+        $qux = $bar->qux;
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
     }
 
     public function testContainerSingletons()

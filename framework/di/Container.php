@@ -328,6 +328,7 @@ class Container extends Component
         } elseif (is_array($definition)) {
             if (!isset($definition['class']) && isset($definition['__class'])) {
                 $definition['class'] = $definition['__class'];
+                unset($definition['__class']);
             }
             if (!isset($definition['class'])) {
                 if (strpos($class, '\\') !== false) {
