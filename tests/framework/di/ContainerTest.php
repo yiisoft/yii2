@@ -327,7 +327,7 @@ class ContainerTest extends TestCase
         $this->assertSame(42, $qux->a);
     }
 
-    public function testGetByInstance(): void
+    public function testGetByInstance()
     {
         $container = new Container();
         $container->setSingletons([
