@@ -646,7 +646,7 @@ class Container extends Component
     public function setDefinitions(array $definitions)
     {
         foreach ($definitions as $class => $definition) {
-            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition && is_array($definition[1])) {
                 $this->set($class, $definition[0], $definition[1]);
                 continue;
             }

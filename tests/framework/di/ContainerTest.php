@@ -20,6 +20,7 @@ use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
+use yiiunit\framework\di\stubs\QuxFactory;
 use yiiunit\TestCase;
 
 /**
@@ -280,6 +281,30 @@ class ContainerTest extends TestCase
         {
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
         }
+    }
+
+    public function testStaticCall()
+    {
+        $container = new Container();
+        $container->setDefinitions([
+            'qux' => [QuxFactory::class, 'create'],
+        ]);
+
+        $qux = $container->get('qux');
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
+    }
+
+    public function testObject()
+    {
+        $container = new Container();
+        $container->setDefinitions([
+            'qux' => new Qux(42),
+        ]);
+
+        $qux = $container->get('qux');
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
     }
 
     public function testDi3Compatibility()
