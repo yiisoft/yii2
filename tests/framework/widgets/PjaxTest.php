@@ -18,7 +18,7 @@ class PjaxTest extends TestCase
     {
         ListView::$counter = 0;
         Pjax::$counter = 0;
-        $nonPjaxWidget1 = new ListView(['dataProvider' => new ArrayDataProvider()]);
+        $nonPjaxWidget1 = new ListView([ 'dataProvider' => new ArrayDataProvider()]);
         ob_start();
         $pjax1 = new Pjax();
         ob_end_clean();
@@ -27,10 +27,10 @@ class PjaxTest extends TestCase
         $pjax2 = new Pjax();
         ob_end_clean();
 
-        $this->assertEquals('w0', $nonPjaxWidget1->options['id']);
-        $this->assertEquals('w1', $nonPjaxWidget2->options['id']);
-        $this->assertEquals('p0', $pjax1->options['id']);
-        $this->assertEquals('p1', $pjax2->options['id']);
+        $this->assertRegExp('/^w[a-z0-9]{8}0$/', $nonPjaxWidget1->options['id']);
+        $this->assertRegExp('/^w[a-z0-9]{8}1$/', $nonPjaxWidget2->options['id']);
+        $this->assertRegExp('/^p[a-z0-9]{8}0$/', $pjax1->options['id']);
+        $this->assertRegExp('/^p[a-z0-9]{8}1$/', $pjax2->options['id']);
     }
 
     protected function setUp()

@@ -161,7 +161,7 @@ class Widget extends Component implements ViewContextInterface
     public function getId($autoGenerate = true)
     {
         if ($autoGenerate && $this->_id === null) {
-            $this->_id = static::$autoIdPrefix . static::$counter++;
+            $this->_id = static::$autoIdPrefix . substr(md5(random_bytes(5)), 0, 8) . static::$counter++;
         }
 
         return $this->_id;

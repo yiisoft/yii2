@@ -120,16 +120,15 @@ HTML
         $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
         $view->method('registerAssetBundle')->willReturn(true);
 
-        Widget::$counter = 0;
         ob_start();
         ob_implicit_flush(false);
 
-        $form = ActiveForm::begin(['view' => $view, 'validateOnSubmit' => false]);
+        $form = ActiveForm::begin(['id' => 'w0', 'view' => $view, 'validateOnSubmit' => false]);
         $form->field($model, 'name');
         $form::end();
 
         // Disable clientScript will not call `View->registerJs()`
-        $form = ActiveForm::begin(['view' => $view, 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['id' => 'w1', 'view' => $view, 'enableClientScript' => false]);
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
