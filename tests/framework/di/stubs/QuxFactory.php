@@ -9,7 +9,7 @@ namespace yiiunit\framework\di\stubs;
 
 use yii\di\Container;
 
-class QuxFactory
+class QuxFactory extends \yii\base\BaseObject
 {
     public static function create(Container $container)
     {

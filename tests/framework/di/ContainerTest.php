@@ -287,7 +287,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->setDefinitions([
-            'qux' => [QuxFactory::class, 'create'],
+            'qux' => [QuxFactory::className(), 'create'],
         ]);
 
         $qux = $container->get('qux');
@@ -365,6 +365,43 @@ class ContainerTest extends TestCase
         $this->assertSame($one, $two);
         $this->assertSame($one, $container->get('one'));
         $this->assertSame($one, $container->get('two'));
+    }
+
+    public function testWithoutDefinition()
+    {
+        $container = new Container();
+
+        $one = $container->get(Qux::className());
+        $two = $container->get(Qux::className());
+        $this->assertInstanceOf(Qux::className(), $one);
+        $this->assertInstanceOf(Qux::className(), $two);
+        $this->assertSame(1, $one->a);
+        $this->assertSame(1, $two->a);
+        $this->assertNotSame($one, $two);
+    }
+
+    public function testGetByClassIndirectly()
+    {
+        $container = new Container();
+        $container->setSingletons([
+            'qux' => Qux::className(),
+            Qux::className() => [
+                'a' => 42,
+            ],
+        ]);
+
+        $qux = $container->get('qux');
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testThrowingNotFoundException()
+    {
+        $container = new Container();
+        $container->get('non_existing');
     }
 
     public function testContainerSingletons()
