@@ -14,6 +14,7 @@ use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 use yiiunit\data\base\CallableClass;
+use yiiunit\framework\di\stubs\Qux;
 
 /**
  * BaseYiiTest.
@@ -70,6 +71,19 @@ class BaseYiiTest extends TestCase
     public function testPowered()
     {
         $this->assertInternalType('string', Yii::powered());
+    }
+
+    public function testCreateObjectArray()
+    {
+        Yii::$container = new Container();
+
+        $qux = Yii::createObject([
+            '__class' => Qux::className(),
+            'a' => 42,
+        ]);
+
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
     }
 
     public function testCreateObjectCallable()

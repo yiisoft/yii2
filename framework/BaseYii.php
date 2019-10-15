@@ -347,6 +347,10 @@ class BaseYii
             $class = $type['class'];
             unset($type['class']);
             return static::$container->get($class, $params, $type);
+        } elseif (is_array($type) && isset($type['__class'])) {
+            $class = $type['__class'];
+            unset($type['__class']);
+            return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
