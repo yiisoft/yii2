@@ -459,9 +459,9 @@
                         $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
 
                     $errorElement.removeClass(
-                        data.settings.validatingCssClass + ' ' +
-                            data.settings.errorCssClass + ' ' +
-                            data.settings.successCssClass
+                      data.settings.validatingCssClass + ' ' +
+                      data.settings.errorCssClass + ' ' +
+                      data.settings.successCssClass
                     );
                     $container.find(this.error).html('');
                 });
@@ -705,19 +705,20 @@
             return false;
         }
 
+        var errorAttributes = [], $input;
+        $.each(data.attributes, function () {
+            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form, this, messages));
+            $input = findInput($form, this);
+
+            if (!$input.is(":disabled") && !this.cancelled && hasError) {
+                errorAttributes.push(this);
+            }
+        });
+
+        $form.trigger(events.afterValidate, [messages, errorAttributes]);
+
         if (submitting) {
-            var errorAttributes = [];
-            var $input = findInput($form, this);
-            $.each(data.attributes, function () {
-                if (!$input.is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
-                }
-            });
-
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
-
             updateSummary($form, messages);
-
             if (errorAttributes.length) {
                 if (data.settings.scrollToError) {
                     var top = $form.find($.map(errorAttributes, function(attribute) {
@@ -787,7 +788,7 @@
     var updateInput = function ($form, attribute, messages) {
         var data = $form.data('yiiActiveForm'),
             $input = findInput($form, attribute),
-            hasError = false;
+            hasError = attrHasError($form, attribute, messages);
 
         if (!$.isArray(messages[attribute.id])) {
             messages[attribute.id] = [];
@@ -795,7 +796,6 @@
 
         attribute.status = 1;
         if ($input.length) {
-            hasError = messages[attribute.id].length > 0;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
             updateAriaInvalid($form, attribute, hasError);
@@ -809,16 +809,38 @@
                     $error.html(messages[attribute.id][0]);
                 }
                 $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
-                    .addClass(data.settings.errorCssClass);
+                  .addClass(data.settings.errorCssClass);
             } else {
                 $error.empty();
                 $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
-                    .addClass(data.settings.successCssClass);
+                  .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);
         }
 
         $form.trigger(events.afterValidateAttribute, [attribute, messages[attribute.id]]);
+
+        return hasError;
+    };
+
+    /**
+     * Checks if a particular attribute has an error
+     * @param $form the form jQuery object
+     * @param attribute object the configuration for a particular attribute.
+     * @param messages array the validation error messages
+     * @return boolean whether there is a validation error for the specified attribute
+     */
+    var attrHasError = function ($form, attribute, messages) {
+        var $input = findInput($form, attribute),
+            hasError = false;
+
+        if (!$.isArray(messages[attribute.id])) {
+            messages[attribute.id] = [];
+        }
+
+        if ($input.length) {
+            hasError = messages[attribute.id].length > 0;
+        }
 
         return hasError;
     };

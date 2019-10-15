@@ -278,6 +278,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $insertSql;
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         if ($updateColumns === true) {
             $updateColumns = [];
@@ -302,11 +306,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
             $this->getColumnDefinition($table, $column)));
 
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+        $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
+        $check = preg_match($checkRegex, $definition, $checkMatches);
+        if ($check === 1) {
+            $definition = preg_replace($checkRegex, '', $definition);
+        }
+        $alterSql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' CHANGE ' . $this->db->quoteColumnName($column)
             . ' ' . $this->db->quoteColumnName($column)
             . (empty($definition) ? '' : ' ' . $definition)
             . ' COMMENT ' . $this->db->quoteValue($comment);
+        if ($check === 1) {
+            $alterSql .= ' ' . $checkMatches[0];
+        }
+        return $alterSql;
     }
 
     /**

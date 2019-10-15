@@ -588,6 +588,16 @@ describe('yii.gridView', function () {
         });
 
         describe('with name, multiple and checkAll options, multiple set to true and', function () {
+            var changedSpy;
+
+            before(function () {
+                changedSpy = sinon.spy();
+            });
+
+            after(function () {
+                changedSpy.reset();
+            });
+
             withData({
                 'nothing else': [{}],
                 // https://github.com/yiisoft/yii2/pull/11729
@@ -602,44 +612,63 @@ describe('yii.gridView', function () {
 
                     assert.equal($gridView.yiiGridView('data').selectionColumn, 'selection[]');
 
+                    $checkRowCheckboxes
+                        .off('change.yiiGridView') // unbind any subscriptions for clean expectations
+                        .on('change.yiiGridView', changedSpy);
+
                     var $checkFirstRowCheckbox = $checkRowCheckboxes.filter('[value="1"]');
 
                     // Check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isTrue($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 1);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
 
                     // Then check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    // "change" should be called 3 times, 1 time per each row, no matter what state it has
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isFalse($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 2);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
                 });
             });
         });

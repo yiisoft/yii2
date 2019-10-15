@@ -19,12 +19,6 @@ In Yii 2.0, DAO supports the following databases out of the box:
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
-> Info: In Yii 2.1 and later, the DAO supports for CUBRID, Oracle and MSSQL are no longer provided as the built-in
-  core components of the framework. They have to be installed as the separated [extensions](structure-extensions.md).
-  There are [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) and
-  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) in the 
-  [official extensions](https://www.yiiframework.com/extensions/official).
-
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
   [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
   to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).

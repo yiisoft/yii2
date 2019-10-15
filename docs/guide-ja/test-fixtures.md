@@ -154,7 +154,7 @@ class UserProfileTest extends \Codeception\Test\Unit
 そうすると、テスト・メソッドの中でエイリアスを使ってフィクスチャ・オブジェクトにアクセスすることが出来るようになります。例えば、
 
 ```php
-$profile = $I->grabFixture('profiles', 'user1');
+$profile = $I->grabFixture('profiles');
 ```
 
 は `UserProfileFixture` オブジェクトを返します。

@@ -212,7 +212,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition);
 

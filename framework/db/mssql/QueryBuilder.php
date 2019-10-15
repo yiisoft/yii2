@@ -250,13 +250,62 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $command;
     }
 
+     /**
+      * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
+      * already exists. If so, it will be updated, otherwise, it will be added.
+      *
+      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+      * @param string $table the table to be commented or whose column is to be commented. The table name will be
+      * properly quoted by the method.
+      * @param string $column optional. The name of the column to be commented. If empty, the command will add the
+      * comment to the table instead. The column name will be properly quoted by the method.
+      * @return string the SQL statement for adding a comment.
+      * @throws InvalidArgumentException if the table does not exist.
+      * @since 2.0.24
+      */
+    protected function buildAddCommentSql($comment, $table, $column = null)
+    {
+        $tableSchema = $this->db->schema->getTableSchema($table);
+
+        if ($tableSchema === null) {
+            throw new InvalidArgumentException("Table not found: $table");
+        }
+
+        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
+        $tableName = "N" . $this->db->quoteValue($tableSchema->name);
+        $columnName = $column ? "N" . $this->db->quoteValue($column) : null;
+        $comment = "N" . $this->db->quoteValue($comment);
+
+        $functionParams = "
+            @name = N'MS_description',
+            @value = $comment,
+            @level0type = N'SCHEMA', @level0name = $schemaName,
+            @level1type = N'TABLE', @level1name = $tableName"
+            . ($column ? ", @level2type = N'COLUMN', @level2name = $columnName" : '') . ';';
+
+        return "
+            IF NOT EXISTS (
+                    SELECT 1
+                    FROM fn_listextendedproperty (
+                        N'MS_description',
+                        'SCHEMA', $schemaName,
+                        'TABLE', $tableName,
+                        " . ($column ? "'COLUMN', $columnName " : ' DEFAULT, DEFAULT ') . "
+                    )
+            )
+                EXEC sys.sp_addextendedproperty $functionParams
+            ELSE
+                EXEC sys.sp_updateextendedproperty $functionParams
+        ";
+    }
+
     /**
      * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+        return $this->buildAddCommentSql($comment, $table, $column);
     }
 
     /**
@@ -265,7 +314,48 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnTable($table, $comment)
     {
-        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+        return $this->buildAddCommentSql($comment, $table);
+    }
+
+    /**
+     * Builds a SQL command for removing a comment from a table or a column. The command built will check if a comment
+     * already exists before trying to perform the removal.
+     *
+     * @param string $table the table that will have the comment removed or whose column will have the comment removed.
+     * The table name will be properly quoted by the method.
+     * @param string $column optional. The name of the column whose comment will be removed. If empty, the command
+     * will remove the comment from the table instead. The column name will be properly quoted by the method.
+     * @return string the SQL statement for removing the comment.
+     * @throws InvalidArgumentException if the table does not exist.
+     * @since 2.0.24
+     */
+    protected function buildRemoveCommentSql($table, $column = null)
+    {
+        $tableSchema = $this->db->schema->getTableSchema($table);
+
+        if ($tableSchema === null) {
+            throw new InvalidArgumentException("Table not found: $table");
+        }
+
+        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
+        $tableName = "N" . $this->db->quoteValue($tableSchema->name);
+        $columnName = $column ? "N" . $this->db->quoteValue($column) : null;
+
+        return "
+            IF EXISTS (
+                    SELECT 1
+                    FROM fn_listextendedproperty (
+                        N'MS_description',
+                        'SCHEMA', $schemaName,
+                        'TABLE', $tableName,
+                        " . ($column ? "'COLUMN', $columnName " : ' DEFAULT, DEFAULT ') . "
+                    )
+            )
+                EXEC sys.sp_dropextendedproperty
+                    @name = N'MS_description',
+                    @level0type = N'SCHEMA', @level0name = $schemaName,
+                    @level1type = N'TABLE', @level1name = $tableName"
+                    . ($column ? ", @level2type = N'COLUMN', @level2name = $columnName" : '') . ';';
     }
 
     /**
@@ -274,7 +364,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromColumn($table, $column)
     {
-        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+        return $this->buildRemoveCommentSql($table, $column);
     }
 
     /**
@@ -283,7 +373,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropCommentFromTable($table)
     {
-        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+        return $this->buildRemoveCommentSql($table);
     }
 
     /**
@@ -364,6 +454,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         $onCondition = ['or'];
         $quotedTableName = $this->db->quoteTableName($table);
@@ -415,5 +509,30 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function update($table, $columns, $condition, &$params)
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getColumnType($type)
+    {
+        $columnType = parent::getColumnType($type);
+        // remove unsupported keywords
+        $columnType = preg_replace("/\s*comment '.*'/i", '', $columnType);
+        $columnType = preg_replace('/ first$/i', '', $columnType);
+
+        return $columnType;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function extractAlias($table)
+    {
+        if (preg_match('/^\[.*\]$/', $table)) {
+            return false;
+        }
+
+        return parent::extractAlias($table);
     }
 }

@@ -1,3 +1,4 @@
+IF OBJECT_ID('[dbo].[composite_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[composite_fk];
 IF OBJECT_ID('[dbo].[order_item]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item];
 IF OBJECT_ID('[dbo].[order_item_with_null_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item_with_null_fk];
 IF OBJECT_ID('[dbo].[item]', 'U') IS NOT NULL DROP TABLE [dbo].[item];
@@ -21,6 +22,9 @@ IF OBJECT_ID('[T_constraints_3]', 'U') IS NOT NULL DROP TABLE [T_constraints_3];
 IF OBJECT_ID('[T_constraints_2]', 'U') IS NOT NULL DROP TABLE [T_constraints_2];
 IF OBJECT_ID('[T_constraints_1]', 'U') IS NOT NULL DROP TABLE [T_constraints_1];
 IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
+IF OBJECT_ID('[T_upsert_1]', 'U') IS NOT NULL DROP TABLE [T_upsert_1];
+IF OBJECT_ID('[table.with.special.characters]', 'U') IS NOT NULL DROP TABLE [table.with.special.characters];
+IF OBJECT_ID('[stranger ''table]', 'U') IS NOT NULL DROP TABLE [stranger 'table];
 
 CREATE TABLE [dbo].[profile] (
     [id] [int] IDENTITY NOT NULL,
@@ -89,7 +93,21 @@ CREATE TABLE [dbo].[order_item] (
         [item_id] ASC
     ) ON [PRIMARY]
 
-);CREATE TABLE [dbo].[order_item_with_null_fk] (
+);
+
+create table [dbo].[composite_fk]
+(
+    id int not null
+        constraint composite_fk_pk
+            primary key nonclustered,
+    order_id int not null,
+    item_id int not null,
+    constraint FK_composite_fk_order_item
+        foreign key (order_id, item_id) references order_item
+            on delete cascade
+);
+
+CREATE TABLE [dbo].[order_item_with_null_fk] (
     [order_id] [int],
     [item_id] [int],
     [quantity] [int] NOT NULL,
@@ -310,4 +328,50 @@ CREATE TABLE [T_upsert]
     [orders] INT NOT NULL DEFAULT 0,
     [profile_id] INT NULL,
     UNIQUE ([email], [recovery_email])
+);
+
+CREATE TABLE [T_upsert_1]
+(
+    [a] INT NOT NULL,
+    UNIQUE ([a])
+);
+
+CREATE TABLE [dbo].[table.with.special.characters] (
+    [id] [int]
+);
+
+IF OBJECT_ID('[validator_main]', 'U') IS NOT NULL DROP TABLE [dbo].[validator_main];
+IF OBJECT_ID('[validator_ref]', 'U') IS NOT NULL DROP TABLE [dbo].[validator_ref];
+
+create table [dbo].[validator_main]
+(
+    id     int identity
+        constraint validator_main_pk
+            primary key nonclustered,
+    field1 nvarchar(255)
+);
+
+create table [dbo].[validator_ref]
+(
+    id      int identity
+        constraint validator_ref_pk
+            primary key nonclustered,
+    a_field nvarchar(255),
+    ref     int
+);
+
+INSERT INTO [validator_main] (field1) VALUES ('just a string1');
+INSERT INTO [validator_main] (field1) VALUES ('just a string2');
+INSERT INTO [validator_main] (field1) VALUES ('just a string3');
+INSERT INTO [validator_main] (field1) VALUES ('just a string4');
+INSERT INTO [validator_ref] (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO [validator_ref] (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO [validator_ref] (a_field, ref) VALUES ('ref_to_3', 3);
+INSERT INTO [validator_ref] (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO [validator_ref] (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO [validator_ref] (a_field, ref) VALUES ('ref_to_5', 5);
+
+CREATE TABLE [dbo].[stranger 'table] (
+    [id] [int],
+    [stranger 'field] [varchar] (32)
 );

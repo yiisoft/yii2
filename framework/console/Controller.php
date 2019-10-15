@@ -105,7 +105,18 @@ class Controller extends \yii\base\Controller
                     if (array_key_exists($name, $optionAliases)) {
                         $params[$optionAliases[$name]] = $value;
                     } else {
-                        throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
+                        $message = Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]);
+                        if (!empty($optionAliases)) {
+                            $aliasesAvailable = [];
+                            foreach ($optionAliases as $alias => $option) {
+                                $aliasesAvailable[] = '-' . $alias . ' (--' . $option . ')';
+                            }
+
+                            $message .= '. ' . Yii::t('yii', 'Aliases available: {aliases}', [
+                                'aliases' => implode(', ', $aliasesAvailable)
+                            ]);
+                        }
+                        throw new Exception($message);
                     }
                 }
                 unset($params['_aliases']);
@@ -136,7 +147,12 @@ class Controller extends \yii\base\Controller
                         unset($params[$kebabName]);
                     }
                 } elseif (!is_int($name)) {
-                    throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
+                    $message = Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]);
+                    if (!empty($options)) {
+                        $message .= '. ' . Yii::t('yii', 'Options available: {options}', ['options' => '--' . implode(', --', $options)]);
+                    }
+
+                    throw new Exception($message);
                 }
             }
         }
@@ -453,6 +469,10 @@ class Controller extends \yii\base\Controller
      */
     public function getActionHelpSummary($action)
     {
+        if ($action === null) {
+            return $this->ansiFormat(Yii::t('yii', 'Action not found.'), Console::FG_RED);
+        }
+
         return $this->parseDocCommentSummary($this->getActionMethodReflection($action));
     }
 

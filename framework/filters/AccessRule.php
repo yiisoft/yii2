@@ -240,7 +240,7 @@ class AccessRule extends Component
                 }
             } else {
                 if (!isset($roleParams)) {
-                    $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+                    $roleParams = !is_array($this->roleParams) && is_callable($this->roleParams) ? call_user_func($this->roleParams, $this) : $this->roleParams;
                 }
                 if ($user->can($item, $roleParams)) {
                     return true;

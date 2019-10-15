@@ -535,7 +535,9 @@ class ReleaseController extends Controller
         $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
         $this->stdout("    git clone git@github.com:yiisoft/yii2-framework.git\n");
         $this->stdout("    cd yii2-framework/\n");
-        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep $version |grep -Po \"^[0-9a-f]+\")\n");
+
+        $grepVersion = preg_quote($version, '~');
+        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep \"$grepVersion\" | grep -Po \"^[0-9a-f]+\")\n");
         $this->stdout("    git tag -s $version -m \"version $version\" \$RELEASECOMMIT\n");
         $this->stdout("    git tag --verify $version\n");
         $this->stdout("    git push --tags\n\n");

@@ -36,8 +36,10 @@
 コンソールのコントローラ・アクションは次の構文を使って実行します。
 
 ```
-yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
+yii <route> [--option1=value1 ... argument1 argument2 ... --option2=value2]
 ```
+
+オプションはどの位置で指定しても構いません。
 
 上記において、`<route>` はコントローラ・アクションへのルートを示すものです。
 オプション (options) はクラスのプロパティに代入され、引数 (arguments) はアクション・メソッドのパラメータとなります。
