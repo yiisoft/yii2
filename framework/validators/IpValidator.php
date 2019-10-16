@@ -247,7 +247,7 @@ class IpValidator extends Validator
      *
      * @property array the IPv4 or IPv6 ranges that are allowed or forbidden.
      * See [[setRanges()]] for detailed description.
-     * @param array $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
+     * @param array|string $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
      *
      * When the array is empty, or the option not set, all IP addresses are allowed.
      *

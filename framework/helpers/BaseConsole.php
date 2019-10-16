@@ -897,7 +897,7 @@ class BaseConsole
     /**
      * Starts display of a progress bar on screen.
      *
-     * This bar will be updated by [[updateProgress()]] and my be ended by [[endProgress()]].
+     * This bar will be updated by [[updateProgress()]] and may be ended by [[endProgress()]].
      *
      * The following example shows a simple usage of a progress bar:
      *
@@ -911,6 +911,7 @@ class BaseConsole
      * ```
      *
      * Git clone like progress (showing only status information):
+     *
      * ```php
      * Console::startProgress(0, 1000, 'Counting objects: ', false);
      * for ($n = 1; $n <= 1000; $n++) {
