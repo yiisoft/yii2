@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.29 under development
 ------------------------
 
+- Enh #17607: Added Yii version 3 DI config compatibility (hiqsol)
 - Bug #17573: `EmailValidator` with `checkDNS=true` throws `ErrorException` on bad domains on Alpine (batyrmastyr)
 - Bug #17606: Fix error in `AssetBundle` when a disabled bundle with custom init() was still published (onmotion)
 
