@@ -362,7 +362,7 @@ class BaseYii
         }
 
         if (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+            throw new InvalidConfigException('Object configuration must be an array containing a "class" or "__class" element.');
         }
 
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
