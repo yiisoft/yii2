@@ -137,7 +137,7 @@ class Container extends Component
      * In this case, the constructor parameters and object configurations will be used
      * only if the class is instantiated the first time.
      *
-     * @param string $class the class name or an alias name (e.g. `foo`) that was previously registered via [[set()]]
+     * @param string|Instance $class the class Instance, name or an alias name (e.g. `foo`) that was previously registered via [[set()]]
      * or [[setSingleton()]].
      * @param array $params a list of constructor parameter values. The parameters should be provided in the order
      * they appear in the constructor declaration. If you want to skip some parameters, you should index the remaining
