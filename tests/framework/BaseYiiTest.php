@@ -113,7 +113,7 @@ class BaseYiiTest extends TestCase
     public function testCreateObjectEmptyArrayException()
     {
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('Object configuration must be an array containing a "class" element.');
+        $this->expectExceptionMessage('Object configuration must be an array containing a "class" or "__class" element.');
 
         Yii::createObject([]);
     }
