@@ -435,6 +435,25 @@ class BaseHtml
     }
 
     /**
+     * Generates a tel hyperlink.
+     * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
+     * such as an image tag. If this is coming from end users, you should consider [[encode()]]
+     * it to prevent XSS attacks.
+     * @param string $telephone a telephone number. If this is null, the first parameter (link body) will be treated
+     * as the telephone number and used.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * If a value is null, the corresponding attribute will not be rendered.
+     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @return string the generated tel link
+     */
+    public static function tel($text, $telephone = null, $options = [])
+    {
+        $options['href'] = 'tel:' . ($telephone === null ? $text : $telephone);
+        return statitic::tag('a', $text, $options);
+    }
+
+    /**
      * Generates an image tag.
      * @param array|string $src the image URL. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
