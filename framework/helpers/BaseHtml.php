@@ -450,7 +450,7 @@ class BaseHtml
     public static function tel($text, $telephone = null, $options = [])
     {
         $options['href'] = 'tel:' . ($telephone === null ? $text : $telephone);
-        return statitic::tag('a', $text, $options);
+        return static::tag('a', $text, $options);
     }
 
     /**
