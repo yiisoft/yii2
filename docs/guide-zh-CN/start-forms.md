@@ -80,7 +80,7 @@ if ($model->validate()) {
 创建动作 <span id="creating-action"></span>
 ------------------
 
-下面你得在 `site` 控制器中创建一个 `entry` 操作用于新建的模型。
+下面你得在 `siteController` 中创建一个 `entry` 操作用于新建的模型。
 操作的创建和使用已经在[说一声你好](start-hello.md)小节中解释了。
 
 ```php
