@@ -80,7 +80,7 @@ if ($model->validate()) {
 Creating an Action <span id="creating-action"></span>
 ------------------
 
-Next, you'll need to create an `entry` action in the `site` controller that will use the new model. The process
+Next, you'll need to create an `entry` action in the `siteController` that will use the new model. The process
 of creating and using actions was explained in the [Saying Hello](start-hello.md) section.
 
 ```php
