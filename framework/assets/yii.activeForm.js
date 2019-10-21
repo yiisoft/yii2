@@ -877,7 +877,7 @@
         if (type === 'checkbox' || type === 'radio') {
             var $realInput = $input.filter(':checked');
             if ($realInput.length > 1) {
-                var values= [];
+                var values = [];
                 $realInput.each(function(index) {
                     values.push($($realInput.get(index)).val());
                 });
