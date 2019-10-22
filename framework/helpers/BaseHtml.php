@@ -1955,8 +1955,10 @@ class BaseHtml
                     foreach ($value as $n => $v) {
                         if (is_array($v)) {
                             $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
-                        } elseif (is_bool($v) && $v) {
-                            $html .= " $name-$n";
+                        } elseif (is_bool($v)) {
+                            if ($v) {
+                                $html .= " $name-$n";
+                            }
                         } else {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
