@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17606: Fix error in `AssetBundle` when a disabled bundle with custom init() was still published (onmotion)
 - Bug #8225: Fixed AJAX validation with checkboxList was only triggered on first select (execut)
 - Bug #17597: PostgreSQL 12 and partitioned tables support (batyrmastyr)
+- Bug #17625: Fix boolean `data` attributes from subkeys rendering in `Html::renderTagAttributes()` (brandonkelly)
 
 2.0.28 October 08, 2019
 -----------------------
