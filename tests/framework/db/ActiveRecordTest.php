@@ -205,7 +205,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     /**
      * related to https://github.com/yiisoft/active-record/issues/22#issuecomment-443460996
      */
-    public function testCaseInsensitiveKeys()
+    public function testCaseInsensitiveKeysPopulation()
     {
         if (!in_array($this->driverName, ['mysql'])) {
             $this->markTestSkipped('This test only for databases that make case insensitive search by key like MySQL or postgres with citext');
@@ -214,24 +214,24 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $productAttributes = ProductAttribute::find()->where(['product_sku' => 'ARTi01'])->all();
         $this->assertCount(3, $productAttributes); // there are here ARTi01 and ARTI01 records
 
-        \Yii::$container->set(ActiveQuery::className(), [
-            'caseInsensitiveKeys' => false,
-        ]);
+        // explicitly change to caseSensitive collation utf8_bin
+        $this->getConnection()->createCommand("ALTER TABLE " . Product::tableName() . " CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin")
+            ->execute();
+        $this->getConnection()->createCommand("ALTER TABLE " . ProductAttribute::tableName() . " CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin")
+            ->execute();
 
         $product = Product::find()->where(['sku' => 'ARTi01'])->with('productAttributes')->one(); // join for ARTi01
         $this->assertNotNull($product);
         $this->assertNotCount(3, $product->productAttributes); // joined one record of 3
 
-        \Yii::$container->set(ActiveQuery::className(), [
-            'caseInsensitiveKeys' => true,
-        ]);
+        // revert to caseInsensitive collation utf8_general_ci
+        $this->getConnection()->createCommand("ALTER TABLE " . Product::tableName() . " CHARACTER SET utf8 COLLATE utf8_general_ci")
+            ->execute();
+        $this->getConnection()->createCommand("ALTER TABLE " . ProductAttribute::tableName() . " CHARACTER SET utf8 COLLATE utf8_general_ci")
+            ->execute();
 
         $product = Product::find()->where(['sku' => 'ARTi01'])->with('productAttributes')->one(); // join for ARTi01
         $this->assertCount(3, $product->productAttributes);
-
-        \Yii::$container->set(ActiveQuery::className(), [
-            'caseInsensitiveKeys' => false,
-        ]);
 
     }
 

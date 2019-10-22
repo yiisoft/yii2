@@ -405,16 +405,16 @@ CREATE TABLE `T_upsert_1` (
   PRIMARY KEY (`a`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE product (
+CREATE TABLE `product` (
        sku varchar(45) NOT NULL PRIMARY KEY,
        title varchar(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
 
-CREATE TABLE product_attribute (
+CREATE TABLE `product_attribute` (
      id INTEGER NOT NULL PRIMARY KEY,
      product_sku varchar(45),
      value varchar(128)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
 
 INSERT INTO `product` (sku, title) VALUES ('ARTi01', 'Yii1');
 INSERT INTO `product` (sku, title) VALUES ('ARTI02', 'Yii2');
