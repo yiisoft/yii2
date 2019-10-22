@@ -50,6 +50,12 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public $deserializeArrayColumnToArrayExpression = true;
 
+    /**
+     * @var string name of associated sequence if column is auto-incremental
+     * @since 2.0.29
+     */
+    public $sequenceName;
+
 
     /**
      * {@inheritdoc}

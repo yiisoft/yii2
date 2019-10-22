@@ -261,6 +261,27 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
+    public function testResetSequencePostgres12()
+    {
+        if (version_compare($this->getConnection(false)->getServerVersion(), '12.0', '<')) {
+            $this->markTestSkipped('PostgreSQL < 12.0 does not support GENERATED AS IDENTITY columns.');
+        }
+
+        $config = $this->database;
+        unset($config['fixture']);
+        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres12.sql');
+
+        $qb = $this->getQueryBuilder(false);
+
+        $expected = "SELECT SETVAL('\"item_12_id_seq\"',(SELECT COALESCE(MAX(\"id\"),0) FROM \"item_12\")+1,false)";
+        $sql = $qb->resetSequence('item_12');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "SELECT SETVAL('\"item_12_id_seq\"',4,false)";
+        $sql = $qb->resetSequence('item_12', 4);
+        $this->assertEquals($expected, $sql);
+    }
+
     public function upsertProvider()
     {
         $concreteData = [

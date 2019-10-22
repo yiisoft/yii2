@@ -1,11 +1,22 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.28 under development
+2.0.29 under development
 ------------------------
 
-- Bug #17853: Fix errors in ActiveField to be properly caught when PHP 7 is used (My6UoT9)
+- Bug #17602: `EmailValidator` with `checkDNS=true` throws `ErrorException` on bad domains on Alpine (batyrmastyr)
+- Enh #17607: Added Yii version 3 DI config compatibility (hiqsol)
+- Bug #17606: Fix error in `AssetBundle` when a disabled bundle with custom init() was still published (onmotion)
+- Bug #8225: Fixed AJAX validation with checkboxList was only triggered on first select (execut)
+- Bug #17597: PostgreSQL 12 and partitioned tables support (batyrmastyr)
+- Bug #17625: Fix boolean `data` attributes from subkeys rendering in `Html::renderTagAttributes()` (brandonkelly)
+
+2.0.28 October 08, 2019
+-----------------------
+
 - Bug #17573: `Request::getUserIP()` security fix for the case when `Request::$trustedHost` and `Request::$ipHeaders` are used (kamarton)
+- Bug #17585: Fix `yii\i18n\Formatter` including the `@calendar` locale param in `Yii::t()` calls (brandonkelly)
+- Bug #17853: Fix errors in ActiveField to be properly caught when PHP 7 is used (My6UoT9)
 
 
 2.0.27 September 18, 2019

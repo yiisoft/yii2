@@ -291,7 +291,7 @@ class Request extends \yii\base\Request
      */
     protected function filterHeaders(HeaderCollection $headerCollection)
     {
-        $trustedHeaders = $this->getTrustedIpHeaders();
+        $trustedHeaders = $this->getTrustedHeaders();
 
         // remove all secure headers unless they are trusted
         foreach ($this->secureHeaders as $secureHeader) {
@@ -302,11 +302,11 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Trusted Ip headers according to the [[trustedHosts]].
+     * Trusted headers according to the [[trustedHosts]].
      * @return array
      * @since 2.0.28
      */
-    protected function getTrustedIpHeaders()
+    protected function getTrustedHeaders()
     {
         // do not trust any of the [[secureHeaders]] by default
         $trustedHeaders = [];
@@ -1136,13 +1136,13 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns the user IP address.
-     * The IP is determined using headers and / or `$_SERVER` variables.
+     * Returns the user IP address from [[ipHeaders]].
      * @return string|null user IP address, null if not available
+     * @see $ipHeaders
+     * @since 2.0.28
      */
-    public function getUserIP()
-    {
-        foreach($this->getTrustedIpHeaders() as $ipHeader) {
+    protected function getUserIpFromIpHeaders() {
+        foreach($this->ipHeaders as $ipHeader) {
             if ($this->headers->has($ipHeader)) {
                 $ip = $this->getUserIpFromIpHeader($this->headers->get($ipHeader));
                 if ($ip !== null) {
@@ -1150,8 +1150,18 @@ class Request extends \yii\base\Request
                 }
             }
         }
+        return null;
+    }
 
-        return $this->getRemoteIP();
+    /**
+     * Returns the user IP address.
+     * The IP is determined using headers and / or `$_SERVER` variables.
+     * @return string|null user IP address, null if not available
+     */
+    public function getUserIP()
+    {
+        $ip = $this->getUserIpFromIpHeaders();
+        return $ip === null ? $this->getRemoteIP() : $ip;
     }
 
     /**
@@ -1205,13 +1215,11 @@ class Request extends \yii\base\Request
      */
     public function getUserHost()
     {
-        foreach ($this->ipHeaders as $ipHeader) {
-            if ($this->headers->has($ipHeader)) {
-                return gethostbyaddr(trim(explode(',', $this->headers->get($ipHeader))[0]));
-            }
+        $userIp = $this->getUserIpFromIpHeaders();
+        if($userIp === null) {
+            return $this->getRemoteHost();
         }
-
-        return $this->getRemoteHost();
+        return gethostbyaddr($userIp);
     }
 
     /**
