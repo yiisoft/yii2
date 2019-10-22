@@ -90,7 +90,11 @@ class MessageFormatter extends Component
             return $pattern;
         }
 
-        if (!class_exists('MessageFormatter', false)) {
+        if (
+            !class_exists('MessageFormatter', false) ||
+            !defined('INTL_ICU_VERSION') ||
+            version_compare(INTL_ICU_VERSION, '4.8', '<')
+        ) {
             return $this->fallbackFormat($pattern, $params, $language);
         }
 
