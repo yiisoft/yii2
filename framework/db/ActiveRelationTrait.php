@@ -24,9 +24,11 @@ use yii\base\InvalidConfigException;
 trait ActiveRelationTrait
 {
     /**
-     * @var bool whether use strtolower() for keys while populate relation.
-     * For example, mysql can join records by strings with different cases (Key = key), but AR doesn't
-     * So if this param is true, AR will populate these records
+     * @var bool whether use strtolower() for values while populating relation.
+     * That is helpful for MySQL and other databases that can join records
+     * by strings with different case such as Key1 = key1. By default Active Record
+     * relation population checks are case sensitive so while records are selected
+     * they are not populated properly.
      */
     public $caseInsensitiveKeys = false;
     /**
