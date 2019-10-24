@@ -714,6 +714,8 @@ abstract class BaseMigrateController extends Controller
      */
     protected function migrateUp($class)
     {
+        $class = str_replace('/', '\\', $class);
+        
         if ($class === self::BASE_MIGRATION) {
             return true;
         }
