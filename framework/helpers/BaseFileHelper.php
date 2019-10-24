@@ -636,13 +636,10 @@ class BaseFileHelper
         if ($recursive && !is_dir($parentDir) && $parentDir !== $path) {
             static::createDirectory($parentDir, $mode, true);
         }
-        try {
-            if (!mkdir($path, $mode)) {
-                return false;
-            }
-        } catch (\Exception $e) {
-            if (!is_dir($path)) {// https://github.com/yiisoft/yii2/issues/9288
-                throw new \yii\base\Exception("Failed to create directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+        if (false === @mkdir($path, $mode)) {
+            $error = error_get_last();// https://github.com/yiisoft/yii2/issues/9288
+            if (false === is_dir($path)) {
+                throw new \yii\base\Exception("Failed to create directory \"$path\": " . $error['message'], $error['type']);
             }
         }
         try {
