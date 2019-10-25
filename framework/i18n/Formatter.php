@@ -782,6 +782,10 @@ class Formatter extends Component
                 $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
             }
 
+            $firstDayOfWeek = \IntlCalendar::createInstance();
+			$firstDayOfWeek->setFirstDayOfWeek(date('w', strtotime('yyyy-m-01')));
+			$formatter->setCalendar($firstDayOfWeek);
+
             return $formatter->format($timestamp);
         }
 
@@ -797,6 +801,10 @@ class Formatter extends Component
                 $timestamp->setTimezone(new DateTimeZone($timeZone));
             }
         }
+        
+        $firstDayOfWeek = \IntlCalendar::createInstance();
+        $firstDayOfWeek->setFirstDayOfWeek(date('w', strtotime('yyyy-m-01')));
+        $formatter->setCalendar($firstDayOfWeek);
 
         return $timestamp->format($format);
     }
