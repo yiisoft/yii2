@@ -783,8 +783,8 @@ class Formatter extends Component
             }
 
             $firstDayOfWeek = \IntlCalendar::createInstance();
-			$firstDayOfWeek->setFirstDayOfWeek(date('w', strtotime('yyyy-m-01')));
-			$formatter->setCalendar($firstDayOfWeek);
+            $firstDayOfWeek->setFirstDayOfWeek(date('w', strtotime('yyyy-m-01')));
+            $formatter->setCalendar($firstDayOfWeek);
 
             return $formatter->format($timestamp);
         }
