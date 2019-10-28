@@ -28,7 +28,7 @@ Par exemple, pour installer l'extension `yiisoft/yii2-imagine`, modifier votre f
     "require": {
         // ... autres dépendances
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -115,7 +115,7 @@ L'exemple suivant montre le fichier `composer.json` de l'extension `yiisoft/yii2
 
     // dépendances du paquet
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -290,7 +290,7 @@ Dans les versions de votre extension, en plus des fichiers de code, vous devez e
 * Un fichier *changelog* (journal des modifications) dans le dossier racine du paquet : il liste les changements apportés dans chacune des versions. Ce fichier peut être écrit dans le format Markdown et nommé `changelog.md`.
 * Un fichier *upgrade* (mise à jour) dans le dossier racine du paquet : il donne les instructions sur la manière de mettre l'extension à jour en partant d'une version précédente.   Ce fichier peut être écrit dans le format Markdown et nommé `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: ces derniers sont nécessaires si votre extension fournit de nombreuses fonctionnalités qui ne peuvent être couvertes dans le fichier readme. 
-* Une documentation de l'API : votre code doit être bien documenté pour permettre aux autres personnes de le lire plus facilement et de le comprendre. Vous pouvez faire référence au [fichier de la classe Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) pour savoir comment documenter votre code. 
+* Une documentation de l'API : votre code doit être bien documenté pour permettre aux autres personnes de le lire plus facilement et de le comprendre. Vous pouvez faire référence au [fichier de la classe BaseObject](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) pour savoir comment documenter votre code. 
  
 > Info: les commentaires de votre code peuvent être écrits dans le format Markdown. L'extension `yiisoft/yii2-apidoc` vous fournit un outil pour générer une documentation d'API agréable et basée sur les commentaires de votre code. 
 
@@ -299,21 +299,39 @@ Dans les versions de votre extension, en plus des fichiers de code, vous devez e
 
 ## Extensions du noyau <span id="core-extensions"></span>
 
-Yii fournit les extensions du noyau suivantes qui sont développées et maintenues par l'équipe de développement de Yii. Elles sont toutes enregistrées sur[Packagist](https://packagist.org/) et peuvent être facilement installées comme décrit dans la sous-section [Utilisation des extensions](#using-extensions).
+Yii fournit les extensions du noyau suivantes (ou ["les extensions officielles"](https://www.yiiframework.com/extensions/official)) qui sont développées et maintenues par l'équipe de développement de Yii. Elles sont toutes enregistrées sur[Packagist](https://packagist.org/) et peuvent être facilement installées comme décrit dans la sous-section [Utilisation des extensions](#using-extensions).
 
-- [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc) : fournit un générateur  d'API extensible et de haute performance. Elle est aussi utilisée pour générer l'API du noyau du framework.  
-- [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient) : fournit un jeu de clients d'authentification courants tels que  Facebook OAuth2 client, GitHub OAuth2 client.
-- [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap) : fournit un jeu d'objets graphiques qui encapsulent les composants et les greffons de [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception): fournit la prise en charge des fonctionnalités de test basées sur [Codeception](http://codeception.com/).
-- [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug): fournit la prise en charge du débogage des applications Yii. Lorsque cette extension est utilisée, une barre de débogage apparaît au pied de chacune des pages. Cette extension fournit aussi un jeu de pages autonomes pour afficher des informations de débogage plus détaillées. 
-- [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch) : fournit la prise en charge d'[Elasticsearch](http://www.elasticsearch.org/). Elle inclut un moteur de requêtes/recherches de base et met en œuvre le motif [Active Record](db-active-record.md) qui permet de stocker des enregistrement actifs dans Elasticsearch.
-- [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker) : fournit la prise en charge de [Faker](https://github.com/fzaninotto/Faker) pour générer des données factices pour vous.
-- [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii) : fournit un générateur de code basé sur le Web qui est hautement extensible et peut être utilisé pour générer rapidement des modèles, des formulaires, des modules, des requêtes CRUD, etc. 
-- [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) : fournit des fonctionnalités couramment utilisées de manipulation d'images basées sur [Imagine](http://imagine.readthedocs.org/).
-- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
-- [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb) : fournit la prise en charge de [MongoDB](http://www.mongodb.org/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, les migrations, la mise en cache, la génération de code, etc.
+- [yiisoft/yii2-apidoc](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc) : fournit un générateur  d'API extensible et de haute performance. Elle est aussi utilisée pour générer l'API du noyau du framework.  
+- [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient) : fournit un jeu de clients d'authentification courants tels que  Facebook OAuth2 client, GitHub OAuth2 client.
+- [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap) : fournit un jeu d'objets graphiques qui encapsulent les composants et les greffons de [Bootstrap](http://getbootstrap.com/).
+- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception)(obsolète) : fournit la prise en charge des fonctionnalités de test basées sur [Codeception](http://codeception.com/).
+- [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug) : fournit la prise en charge du débogage des applications Yii. Lorsque cette extension est utilisée, une barre de débogage apparaît au pied de chacune des pages. Cette extension fournit aussi un jeu de pages autonomes pour afficher des informations de débogage plus détaillées. 
+- [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch) : fournit la prise en charge d'[Elasticsearch](http://www.elasticsearch.org/). Elle inclut un moteur de requêtes/recherches de base et met en œuvre le motif [Active Record](db-active-record.md) qui permet de stocker des enregistrement actifs dans Elasticsearch.
+- [yiisoft/yii2-faker](https://www.yiiframework.com/extension/yiisoft/yii2-faker) : fournit la prise en charge de [Faker](https://www.yiiframework.com/extension/fzaninotto/Faker) pour générer des données factices pour vous.
+- [yiisoft/yii2-gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii) : fournit un générateur de code basé sur le Web qui est hautement extensible et peut être utilisé pour générer rapidement des modèles, des formulaires, des modules, des requêtes CRUD, etc. 
+- [yiisoft/yii2-httpclient](https://www.yiiframework.com/extension/yiisoft/yii2-httpclient) : provides an HTTP client.
+- [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) : fournit des fonctionnalités couramment utilisées de manipulation d'images basées sur [Imagine](https://www.yiiframework.com/extension/yiisoft/yii2-imagine).
+- [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
+- [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb) : fournit la prise en charge de [MongoDB](http://www.mongodb.org/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, les migrations, la mise en cache, la génération de code, etc.
+- [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue): fournit la prise en charge pour exécuter des tâches en asynchrone via des queues. Il prend en charge les queues en se basant sur, DB, Redis, RabbitMQ, AMQP, Beanstalk et Gearman.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis) : fournit la prise en charge de [redis](http://redis.io/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la mise en cache, etc.
-- [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](http://www.smarty.net/).
-- [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx) : fournit la prise en charge de [Sphinx](http://sphinxsearch.com). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la génération de code, etc.
-- [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](http://swiftmailer.org/).
-- [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig) : fournit un moteur de modèles basé sur [Twig](http://twig.sensiolabs.org/).
+- [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell): fournit un interprète de commandes (shell) basé sur [psysh](http://psysh.org/).
+- [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](http://www.smarty.net/).
+- [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx) : fournit la prise en charge de [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la génération de code, etc.
+- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](http://swiftmailer.org/).
+- [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig) : fournit un moteur de modèles basé sur [Twig](http://twig.sensiolabs.org/).
+
+Les extensions officielles suivantes sont valables pour les versions Yii 2.1 et plus récentes. Vous n'avez pas besoin de les installer car elles sont incluse dans le cœur du framework.
+
+- [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha):
+  fournit un CAPTCHA.
+- [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
+  fournit une prise en charge de [jQuery](https://jquery.com/).
+- [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
+  fournit un composant graphique de saisie masqué basé sur [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
+- [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
+  fournit la prise en charge de [MSSQL](https://www.microsoft.com/sql-server/).
+- [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):
+  fournit la prise en charge de [Oracle](https://www.oracle.com/).
+- [yiisoft/yii2-rest](https://www.yiiframework.com/extension/yiisoft/yii2-rest):
+  fournit le support pour l'API REST.

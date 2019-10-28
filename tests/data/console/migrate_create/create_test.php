@@ -1,31 +1,36 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
- * Handles the creation of table `test`.
+ * Handles the creation of table `{{%{table}}}`.
  */
 class {$class} extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%{table}}}', [
             'id' => \$this->primaryKey(),
         ]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%{table}}}');
     }
 }
 

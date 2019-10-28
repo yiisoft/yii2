@@ -1,28 +1,38 @@
 <?php
 /* @var $file string|null */
-/* @var $line integer|null */
+/* @var $line int|null */
 /* @var $class string|null */
 /* @var $method string|null */
-/* @var $index integer */
+/* @var $index int */
 /* @var $lines string[] */
-/* @var $begin integer */
-/* @var $end integer */
+/* @var $begin int */
+/* @var $end int */
 /* @var $args array */
 /* @var $handler \yii\web\ErrorHandler */
+$html = <<<HTML
+IDE
+<svg class="icon icon--new-window" focusable="false" aria-hidden="true" width="16" height="16">
+    <use href="#new-window"></use>
+</svg>
+HTML;
 ?>
-<li class="<?php if ($index === 1 || !$handler->isCoreFile($file)) echo 'application'; ?> call-stack-item"
+<li class="<?= ($index === 1 || !$handler->isCoreFile($file)) ? 'application' : '' ?> call-stack-item"
     data-line="<?= (int) ($line - $begin) ?>">
     <div class="element-wrap">
         <div class="element">
             <span class="item-number"><?= (int) $index ?>.</span>
-            <span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
+            <span class="text"><?= $file !== null ? 'in ' . $handler->htmlEncode($file) : '' ?></span>
+            <?php if ($handler->traceLine !== '{html}'): ?>
+                <span> &ndash; </span>
+                <?= strtr($handler->traceLine, ['{file}' => $file, '{line}' => $line + 1, '{html}' => $html]) ?>
+            <?php endif; ?>
             <span class="at">
-                <?php if ($line !== null) echo 'at line'; ?>
-                <span class="line"><?php if ($line !== null) echo (int) $line + 1; ?></span>
+                <?= $line !== null ? 'at line' : '' ?>
+                <span class="line"><?= $line !== null ? $line + 1 : '' ?></span>
             </span>
             <?php if ($method !== null): ?>
                 <span class="call">
-                    <?php if ($file !== null) echo '&ndash;'; ?>
+                    <?= $file !== null ? '&ndash;' : '' ?>
                     <?= ($class !== null ? $handler->addTypeLinks("$class::$method") : $handler->htmlEncode($method)) . '(' . $handler->argumentsToString($args) . ')' ?>
                 </span>
             <?php endif; ?>
@@ -39,7 +49,7 @@
                     for ($i = $begin; $i <= $end; ++$i) {
                         echo (trim($lines[$i]) === '') ? " \n" : $handler->htmlEncode($lines[$i]);
                     }
-                ?></pre>
+                    ?></pre>
             </div>
         </div>
     <?php endif; ?>

@@ -222,7 +222,7 @@ An action is often designed to perform a particular manipulation of a resource. 
 action IDs are usually verbs, such as `view`, `update`, etc.
 
 By default, action IDs should contain these characters only: English letters in lower case, digits,
-underscores, and hyphens. (You can use hyphens to separate words.) For example,
+underscores, and hyphens (you can use hyphens to separate words). For example,
 `view`, `update2`, and `comment-post` are all valid action IDs, while `view?` and `Update` are not.
 
 You can create actions in two ways: inline actions and standalone actions. An inline action is
@@ -355,7 +355,7 @@ class PostController extends Controller
 The action parameters will be populated as follows for different requests:
 
 * `http://hostname/index.php?r=post/view&id=123`: the `$id` parameter will be filled with the value
-  `'123'`,  while `$version` is still null because there is no `version` query parameter.
+  `'123'`,  while `$version` is still `null` because there is no `version` query parameter.
 * `http://hostname/index.php?r=post/view&id=123&version=2`: the `$id` and `$version` parameters will
   be filled with `'123'` and `'2'`, respectively.
 * `http://hostname/index.php?r=post/view`: a [[yii\web\BadRequestHttpException]] exception will be thrown
@@ -421,7 +421,7 @@ to fulfill the request:
    * Otherwise an [[yii\base\InvalidRouteException]] exception will be thrown.
 3. The controller sequentially calls the `beforeAction()` method of the application, the module (if the controller
    belongs to a module), and the controller.
-   * If one of the calls returns false, the rest of the uncalled `beforeAction()` methods will be skipped and the
+   * If one of the calls returns `false`, the rest of the uncalled `beforeAction()` methods will be skipped and the
      action execution will be cancelled.
    * By default, each `beforeAction()` method call will trigger a `beforeAction` event to which you can attach a handler.
 4. The controller runs the action.

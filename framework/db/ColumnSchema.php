@@ -7,7 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
+use yii\helpers\StringHelper;
 
 /**
  * ColumnSchema class describes the metadata of a column in a database table.
@@ -15,14 +16,14 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ColumnSchema extends Object
+class ColumnSchema extends BaseObject
 {
     /**
      * @var string name of this column (without quotes).
      */
     public $name;
     /**
-     * @var boolean whether this column can be null.
+     * @var bool whether this column can be null.
      */
     public $allowNull;
     /**
@@ -33,7 +34,7 @@ class ColumnSchema extends Object
     public $type;
     /**
      * @var string the PHP type of this column. Possible PHP types include:
-     * `string`, `boolean`, `integer`, `double`.
+     * `string`, `boolean`, `integer`, `double`, `array`.
      */
     public $phpType;
     /**
@@ -49,27 +50,27 @@ class ColumnSchema extends Object
      */
     public $enumValues;
     /**
-     * @var integer display size of the column.
+     * @var int display size of the column.
      */
     public $size;
     /**
-     * @var integer precision of the column data, if it is numeric.
+     * @var int precision of the column data, if it is numeric.
      */
     public $precision;
     /**
-     * @var integer scale of the column data, if it is numeric.
+     * @var int scale of the column data, if it is numeric.
      */
     public $scale;
     /**
-     * @var boolean whether this column is a primary key
+     * @var bool whether this column is a primary key
      */
     public $isPrimaryKey;
     /**
-     * @var boolean whether this column is auto-incremental
+     * @var bool whether this column is auto-incremental
      */
     public $autoIncrement = false;
     /**
-     * @var boolean whether this column is unsigned. This is only meaningful
+     * @var bool whether this column is unsigned. This is only meaningful
      * when [[type]] is `smallint`, `integer` or `bigint`.
      */
     public $unsigned;
@@ -113,12 +114,36 @@ class ColumnSchema extends Object
      */
     protected function typecast($value)
     {
-        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
+        if ($value === ''
+            && !in_array(
+                $this->type,
+                [
+                    Schema::TYPE_TEXT,
+                    Schema::TYPE_STRING,
+                    Schema::TYPE_BINARY,
+                    Schema::TYPE_CHAR
+                ],
+                true)
+        ) {
             return null;
         }
-        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
+
+        if ($value === null
+            || gettype($value) === $this->phpType
+            || $value instanceof ExpressionInterface
+            || $value instanceof Query
+        ) {
             return $value;
         }
+
+        if (is_array($value)
+            && count($value) === 2
+            && isset($value[1])
+            && in_array($value[1], $this->getPdoParamTypes(), true)
+        ) {
+            return new PdoValue($value[0], $value[1]);
+        }
+
         switch ($this->phpType) {
             case 'resource':
             case 'string':
@@ -127,7 +152,7 @@ class ColumnSchema extends Object
                 }
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
-                    return str_replace(',', '.', (string) $value);
+                    return StringHelper::floatToString($value);
                 }
                 return (string) $value;
             case 'integer':
@@ -137,9 +162,17 @@ class ColumnSchema extends Object
                 // https://github.com/yiisoft/yii2/issues/9006
                 return (bool) $value && $value !== "\0";
             case 'double':
-                return (double) $value;
+                return (float) $value;
         }
 
         return $value;
+    }
+
+    /**
+     * @return int[] array of numbers that represent possible PDO parameter types
+     */
+    private function getPdoParamTypes()
+    {
+        return [\PDO::PARAM_BOOL, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_LOB, \PDO::PARAM_NULL, \PDO::PARAM_STMT];
     }
 }

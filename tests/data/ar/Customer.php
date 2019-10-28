@@ -1,17 +1,23 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\data\ar;
 
 use yii\db\ActiveQuery;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**
- * Class Customer
+ * Class Customer.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $address
- * @property integer $status
+ * @property int $status
  *
  * @method CustomerQuery findBySql($sql, $params = []) static
  */
@@ -89,11 +95,11 @@ class Customer extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return CustomerQuery
      */
     public static function find()
     {
-        return new CustomerQuery(get_called_class());
+        return new CustomerQuery(\get_called_class());
     }
 }

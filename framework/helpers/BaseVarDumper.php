@@ -30,8 +30,8 @@ class BaseVarDumper
      * This method achieves the similar functionality as var_dump and print_r
      * but is more robust when handling complex objects such as Yii controllers.
      * @param mixed $var variable to be dumped
-     * @param integer $depth maximum depth that the dumper should go into the variable. Defaults to 10.
-     * @param boolean $highlight whether the result should be syntax-highlighted
+     * @param int $depth maximum depth that the dumper should go into the variable. Defaults to 10.
+     * @param bool $highlight whether the result should be syntax-highlighted
      */
     public static function dump($var, $depth = 10, $highlight = false)
     {
@@ -43,8 +43,8 @@ class BaseVarDumper
      * This method achieves the similar functionality as var_dump and print_r
      * but is more robust when handling complex objects such as Yii controllers.
      * @param mixed $var variable to be dumped
-     * @param integer $depth maximum depth that the dumper should go into the variable. Defaults to 10.
-     * @param boolean $highlight whether the result should be syntax-highlighted
+     * @param int $depth maximum depth that the dumper should go into the variable. Defaults to 10.
+     * @param bool $highlight whether the result should be syntax-highlighted
      * @return string the string representation of the variable
      */
     public static function dumpAsString($var, $depth = 10, $highlight = false)
@@ -63,7 +63,7 @@ class BaseVarDumper
 
     /**
      * @param mixed $var variable to be dumped
-     * @param integer $level depth level
+     * @param int $level depth level
      */
     private static function dumpInternal($var, $level)
     {
@@ -72,10 +72,10 @@ class BaseVarDumper
                 self::$_output .= $var ? 'true' : 'false';
                 break;
             case 'integer':
-                self::$_output .= "$var";
+                self::$_output .= (string)$var;
                 break;
             case 'double':
-                self::$_output .= "$var";
+                self::$_output .= (string)$var;
                 break;
             case 'string':
                 self::$_output .= "'" . addslashes($var) . "'";
@@ -161,7 +161,7 @@ class BaseVarDumper
 
     /**
      * @param mixed $var variable to be exported
-     * @param integer $level depth level
+     * @param int $level depth level
      */
     private static function exportInternal($var, $level)
     {

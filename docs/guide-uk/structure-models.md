@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 Ви також можете отримувати доступ до атрибутів як до елементів масиву, завдяки підтримці
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) та [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+[ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) та [ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php)
 у класі [[yii\base\Model]]:
 
 ```php
@@ -236,8 +236,8 @@ class User extends ActiveRecord
 
 Ви можете викликати [[yii\base\Model::validate()|validate()]] для перевірки отриманих даних. Даний метод використає
 правила перевірки, оголошені у [[yii\base\Model::rules()|rules()]], для перевірки кожного необхідного атрибуту. При відсутності
-помилок він поверне true. В іншому випадку, він збереже помилки у властивості [[yii\base\Model::errors]]
-та поверне false. Наприклад:
+помилок він поверне `true`. В іншому випадку, він збереже помилки у властивості [[yii\base\Model::errors]]
+та поверне `false`. Наприклад:
 
 ```php
 $model = new \app\models\ContactForm;

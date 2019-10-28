@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%test}}`.
+ * Handles the creation of table `{{%{table}}}`.
  * Has foreign keys to the tables:
  *
  * - `{{%user}}`
@@ -16,11 +21,11 @@ use yii\db\Migration;
 class {$class} extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
-        \$this->createTable('{{%test}}', [
+        \$this->createTable('{{%{table}}}', [
             'id' => \$this->primaryKey(),
             'user_id' => \$this->integer(),
             'product_id' => \$this->integer()->unsigned()->notNull(),
@@ -30,15 +35,15 @@ class {$class} extends Migration
 
         // creates index for column `user_id`
         \$this->createIndex(
-            '{{%idx-test-user_id}}',
-            '{{%test}}',
+            '{{%idx-{table}-user_id}}',
+            '{{%{table}}}',
             'user_id'
         );
 
         // add foreign key for table `{{%user}}`
         \$this->addForeignKey(
-            '{{%fk-test-user_id}}',
-            '{{%test}}',
+            '{{%fk-{table}-user_id}}',
+            '{{%{table}}}',
             'user_id',
             '{{%user}}',
             'id',
@@ -47,15 +52,15 @@ class {$class} extends Migration
 
         // creates index for column `product_id`
         \$this->createIndex(
-            '{{%idx-test-product_id}}',
-            '{{%test}}',
+            '{{%idx-{table}-product_id}}',
+            '{{%{table}}}',
             'product_id'
         );
 
         // add foreign key for table `{{%product}}`
         \$this->addForeignKey(
-            '{{%fk-test-product_id}}',
-            '{{%test}}',
+            '{{%fk-{table}-product_id}}',
+            '{{%{table}}}',
             'product_id',
             '{{%product}}',
             'id',
@@ -64,15 +69,15 @@ class {$class} extends Migration
 
         // creates index for column `order_id`
         \$this->createIndex(
-            '{{%idx-test-order_id}}',
-            '{{%test}}',
+            '{{%idx-{table}-order_id}}',
+            '{{%{table}}}',
             'order_id'
         );
 
         // add foreign key for table `{{%user_order}}`
         \$this->addForeignKey(
-            '{{%fk-test-order_id}}',
-            '{{%test}}',
+            '{{%fk-{table}-order_id}}',
+            '{{%{table}}}',
             'order_id',
             '{{%user_order}}',
             'id',
@@ -81,47 +86,47 @@ class {$class} extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
         // drops foreign key for table `{{%user}}`
         \$this->dropForeignKey(
-            '{{%fk-test-user_id}}',
-            '{{%test}}'
+            '{{%fk-{table}-user_id}}',
+            '{{%{table}}}'
         );
 
         // drops index for column `user_id`
         \$this->dropIndex(
-            '{{%idx-test-user_id}}',
-            '{{%test}}'
+            '{{%idx-{table}-user_id}}',
+            '{{%{table}}}'
         );
 
         // drops foreign key for table `{{%product}}`
         \$this->dropForeignKey(
-            '{{%fk-test-product_id}}',
-            '{{%test}}'
+            '{{%fk-{table}-product_id}}',
+            '{{%{table}}}'
         );
 
         // drops index for column `product_id`
         \$this->dropIndex(
-            '{{%idx-test-product_id}}',
-            '{{%test}}'
+            '{{%idx-{table}-product_id}}',
+            '{{%{table}}}'
         );
 
         // drops foreign key for table `{{%user_order}}`
         \$this->dropForeignKey(
-            '{{%fk-test-order_id}}',
-            '{{%test}}'
+            '{{%fk-{table}-order_id}}',
+            '{{%{table}}}'
         );
 
         // drops index for column `order_id`
         \$this->dropIndex(
-            '{{%idx-test-order_id}}',
-            '{{%test}}'
+            '{{%idx-{table}-order_id}}',
+            '{{%{table}}}'
         );
 
-        \$this->dropTable('{{%test}}');
+        \$this->dropTable('{{%{table}}}');
     }
 }
 

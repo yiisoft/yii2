@@ -8,6 +8,7 @@ In particular, Yii supports the following features about RESTful APIs:
 * Response format negotiation (supporting JSON and XML by default);
 * Customizable object serialization with support for selectable output fields;
 * Proper formatting of collection data and validation errors;
+* Collection pagination, filtering and sorting;
 * Support for [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
 * Efficient routing with proper HTTP verb check;
 * Built-in support for the `OPTIONS` and `HEAD` verbs;
@@ -60,6 +61,9 @@ Then, modify the configuration of the `urlManager` component in your application
 The above configuration mainly adds a URL rule for the `user` controller so that the user data
 can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
+> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
+> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
+
 
 ## Enabling JSON Input <span id="enabling-json-input"></span>
 
@@ -92,9 +96,6 @@ for accessing the user data. The APIs you have created include:
 * `DELETE /users/123`: delete the user 123;
 * `OPTIONS /users`: show the supported verbs regarding endpoint `/users`;
 * `OPTIONS /users/123`: show the supported verbs regarding endpoint `/users/123`.
-
-> Info: Yii will automatically pluralize controller names for use in endpoints.
-> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 You may access your APIs with the `curl` command like the following,
 
@@ -185,7 +186,12 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 
 > Info: You may have noticed that the result of `http://localhost/users` includes some sensitive fields,
 > such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
-> You can and should filter out these fields as described in the [Resources](rest-resources.md) section.
+> You can and should remove these fields from result as described in the [Resources](rest-resources.md) section.
+
+Addionally, you can sort collections like `http://localhost/users?sort=email` or
+`http://localhost/users?sort=-email`. Filtering collections like `http://localhost/users?filter[id]=10` or
+`http://localhost/users?filter[email][like]=gmail.com` could be implemented using
+data filters. See [Resources](rest-resources.md#filtering-collections) section for details.
 
 
 ## Summary <span id="summary"></span>

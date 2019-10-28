@@ -39,7 +39,7 @@ class MyBehavior extends Behavior
 ```
 
 O código acima define a classe behavior `app\components\MyBehavior`, com duas propriedades --`prop1` e `prop2`-- e um método `foo()`. Note que a propriedade `prop2`
-É definida através do método getter `getProp2()` e setter `setProp2()`. Isto é possível porque [[yii\base\Behavior]] estende de [[yii\base\Object]] e portanto suporta definição de propriedades através de [propriedades](concept-properties.md) getters e setters.
+É definida através do método getter `getProp2()` e setter `setProp2()`. Isto é possível porque [[yii\base\Behavior]] estende de [[yii\base\BaseObject]] e portanto suporta definição de propriedades através de [propriedades](concept-properties.md) getters e setters.
 
 Como essa classe é um behavior, quando ela está anexada a um componente, então este componente terá as propriedades `prop1` e `prop2` e o método `foo()`.
 
@@ -291,7 +291,7 @@ $user->touch('login_time');
 Comparando Behaviors com Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-Apesar de behaviors serem semelhantes a [traits](http://www.php.net/traits) em que ambos "injetam" suas propriedades e métodos para a classe principal, eles diferem em muitos aspectos. Tal como explicado abaixo, ambos têm prós e contras. Eles funcionam mais como complemento um do outro.
+Apesar de behaviors serem semelhantes a [traits](https://secure.php.net/traits) em que ambos "injetam" suas propriedades e métodos para a classe principal, eles diferem em muitos aspectos. Tal como explicado abaixo, ambos têm prós e contras. Eles funcionam mais como complemento um do outro.
 
 
 ### Razões para usar Behaviors <span id="pros-for-behaviors"></span>

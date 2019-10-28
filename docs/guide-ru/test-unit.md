@@ -21,4 +21,4 @@
 --------------------------
 
 Если вам необходимо запустить набор модульных тестов для самого Yii, прочитайте
-"[Подготовка к разработке Yii2](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/getting-started.md)".
+"[Подготовка к разработке Yii 2](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/getting-started.md)".

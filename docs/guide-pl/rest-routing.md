@@ -73,7 +73,7 @@ Dla przykładu, aby dodać obsługę nowej akcji `search` dla punktu końcowego 
 
 Na pewno zwróciłeś uwagę na to, że ID kontrolera `user` występuje tu w formie mnogiej jako `users` dla URLi punktu końcowego.
 Dzieje się tak, ponieważ [[yii\rest\UrlRule|UrlRule]] automatycznie przechodzi na formę mnogą dla ID kontrolerów podczas tworzenia potomnych zasad URL.
-Zachowanie to można wyłączyć ustawiając [[yii\rest\UrlRule::pluralize|pluralize]] na false. 
+Zachowanie to można wyłączyć ustawiając [[yii\rest\UrlRule::pluralize|pluralize]] na `false`. 
 
 > Info: forma mnoga ID kontrolerów jest tworzona poprzez metodę [[yii\helpers\Inflector::pluralize()|pluralize()]]. Uwzględnia ona specjalne zasady tworzenia form mnogich. 
 > Dla przykładu, od słowa `box` zostanie utworzona liczba mnoga `boxes` a nie `boxs`.

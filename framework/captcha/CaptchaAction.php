@@ -44,50 +44,50 @@ class CaptchaAction extends Action
     const REFRESH_GET_VAR = 'refresh';
 
     /**
-     * @var integer how many times should the same CAPTCHA be displayed. Defaults to 3.
+     * @var int how many times should the same CAPTCHA be displayed. Defaults to 3.
      * A value less than or equal to 0 means the test is unlimited (available since version 1.1.2).
      */
     public $testLimit = 3;
     /**
-     * @var integer the width of the generated CAPTCHA image. Defaults to 120.
+     * @var int the width of the generated CAPTCHA image. Defaults to 120.
      */
     public $width = 120;
     /**
-     * @var integer the height of the generated CAPTCHA image. Defaults to 50.
+     * @var int the height of the generated CAPTCHA image. Defaults to 50.
      */
     public $height = 50;
     /**
-     * @var integer padding around the text. Defaults to 2.
+     * @var int padding around the text. Defaults to 2.
      */
     public $padding = 2;
     /**
-     * @var integer the background color. For example, 0x55FF00.
+     * @var int the background color. For example, 0x55FF00.
      * Defaults to 0xFFFFFF, meaning white color.
      */
     public $backColor = 0xFFFFFF;
     /**
-     * @var integer the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
+     * @var int the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
      */
     public $foreColor = 0x2040A0;
     /**
-     * @var boolean whether to use transparent background. Defaults to false.
+     * @var bool whether to use transparent background. Defaults to false.
      */
     public $transparent = false;
     /**
-     * @var integer the minimum length for randomly generated word. Defaults to 6.
+     * @var int the minimum length for randomly generated word. Defaults to 6.
      */
     public $minLength = 6;
     /**
-     * @var integer the maximum length for randomly generated word. Defaults to 7.
+     * @var int the maximum length for randomly generated word. Defaults to 7.
      */
     public $maxLength = 7;
     /**
-     * @var integer the offset between characters. Defaults to -2. You can adjust this property
+     * @var int the offset between characters. Defaults to -2. You can adjust this property
      * in order to decrease or increase the readability of the captcha.
      */
     public $offset = -2;
     /**
-     * @var string the TrueType font file. This can be either a file path or path alias.
+     * @var string the TrueType font file. This can be either a file path or [path alias](guide:concept-aliases).
      */
     public $fontFile = '@yii/captcha/SpicyRice.ttf';
     /**
@@ -132,17 +132,18 @@ class CaptchaAction extends Action
                 'hash2' => $this->generateValidationHash(strtolower($code)),
                 // we add a random 'v' parameter so that FireFox can refresh the image
                 // when src attribute of image tag is changed
-                'url' => Url::to([$this->id, 'v' => uniqid()]),
+                'url' => Url::to([$this->id, 'v' => uniqid('', true)]),
             ];
-        } else {
-            $this->setHttpHeaders();
-            Yii::$app->response->format = Response::FORMAT_RAW;
-            return $this->renderImage($this->getVerifyCode());
         }
+
+        $this->setHttpHeaders();
+        Yii::$app->response->format = Response::FORMAT_RAW;
+
+        return $this->renderImage($this->getVerifyCode());
     }
 
     /**
-     * Generates a hash code that can be used for client side validation.
+     * Generates a hash code that can be used for client-side validation.
      * @param string $code the CAPTCHA code
      * @return string a hash code generated from the CAPTCHA code
      */
@@ -157,7 +158,7 @@ class CaptchaAction extends Action
 
     /**
      * Gets the verification code.
-     * @param boolean $regenerate whether the verification code should be regenerated.
+     * @param bool $regenerate whether the verification code should be regenerated.
      * @return string the verification code.
      */
     public function getVerifyCode($regenerate = false)
@@ -180,8 +181,8 @@ class CaptchaAction extends Action
     /**
      * Validates the input to see if it matches the generated code.
      * @param string $input user input
-     * @param boolean $caseSensitive whether the comparison should be case-sensitive
-     * @return boolean whether the input is valid
+     * @param bool $caseSensitive whether the comparison should be case-sensitive
+     * @return bool whether the input is valid
      */
     public function validate($input, $caseSensitive)
     {
@@ -190,7 +191,7 @@ class CaptchaAction extends Action
         $session = Yii::$app->getSession();
         $session->open();
         $name = $this->getSessionKey() . 'count';
-        $session[$name] = $session[$name] + 1;
+        $session[$name] += 1;
         if ($valid || $session[$name] > $this->testLimit && $this->testLimit > 0) {
             $this->getVerifyCode(true);
         }
@@ -255,9 +256,9 @@ class CaptchaAction extends Action
             return $this->renderImageByGD($code);
         } elseif ($imageLibrary === 'imagick') {
             return $this->renderImageByImagick($code);
-        } else {
-            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
         }
+
+        throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
     }
 
     /**
@@ -297,8 +298,8 @@ class CaptchaAction extends Action
         $x = 10;
         $y = round($this->height * 27 / 40);
         for ($i = 0; $i < $length; ++$i) {
-            $fontSize = (int) (rand(26, 32) * $scale * 0.8);
-            $angle = rand(-10, 10);
+            $fontSize = (int) (mt_rand(26, 32) * $scale * 0.8);
+            $angle = mt_rand(-10, 10);
             $letter = $code[$i];
             $box = imagettftext($image, $fontSize, $angle, $x, $y, $foreColor, $this->fontFile, $letter);
             $x = $box[2] + $this->offset;
@@ -340,9 +341,9 @@ class CaptchaAction extends Action
         for ($i = 0; $i < $length; ++$i) {
             $draw = new \ImagickDraw();
             $draw->setFont($this->fontFile);
-            $draw->setFontSize((int) (rand(26, 32) * $scale * 0.8));
+            $draw->setFontSize((int) (mt_rand(26, 32) * $scale * 0.8));
             $draw->setFillColor($foreColor);
-            $image->annotateImage($draw, $x, $y, rand(-10, 10), $code[$i]);
+            $image->annotateImage($draw, $x, $y, mt_rand(-10, 10), $code[$i]);
             $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
             $x += (int) $fontMetrics['textWidth'] + $this->offset;
         }

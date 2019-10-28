@@ -76,23 +76,23 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             return $this->_attributes[$name];
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
         } else {
             parent::__set($name, $value);
@@ -100,27 +100,54 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __isset($name)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             return isset($this->_attributes[$name]);
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __unset($name)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             unset($this->_attributes[$name]);
         } else {
             parent::__unset($name);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        return parent::canGetProperty($name, $checkVars, $checkBehaviors) || $this->hasAttribute($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        return parent::canSetProperty($name, $checkVars, $checkBehaviors) || $this->hasAttribute($name);
+    }
+
+    /**
+     * Returns a value indicating whether the model has an attribute with the specified name.
+     * @param string $name the name of the attribute
+     * @return bool whether the model has an attribute with the specified name.
+     * @since 2.0.16
+     */
+    public function hasAttribute($name)
+    {
+        return array_key_exists($name, $this->_attributes);
     }
 
     /**
@@ -155,7 +182,7 @@ class DynamicModel extends Model
     public function addRule($attributes, $validator, $options = [])
     {
         $validators = $this->getValidators();
-        $validators->append(Validator::createValidator($validator, $this, (array) $attributes, $options));
+        $validators->append(Validator::createValidator($validator, $this, (array)$attributes, $options));
 
         return $this;
     }
@@ -179,7 +206,7 @@ class DynamicModel extends Model
                 if ($rule instanceof Validator) {
                     $validators->append($rule);
                 } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-                    $validator = Validator::createValidator($rule[1], $model, (array) $rule[0], array_slice($rule, 2));
+                    $validator = Validator::createValidator($rule[1], $model, (array)$rule[0], array_slice($rule, 2));
                     $validators->append($validator);
                 } else {
                     throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
@@ -193,7 +220,7 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributes()
     {

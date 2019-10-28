@@ -1,21 +1,40 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Model;
+use yii\base\DynamicModel;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
-use yiiunit\TestCase;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
+use yiiunit\TestCase;
 
 /**
  * @group helpers
  */
 class JsonTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testEncode()
     {
+        // Arrayable data encoding
+        $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
+        $dataArrayable->method('toArray')->willReturn([]);
+        $actual = Json::encode($dataArrayable);
+        $this->assertSame('{}', $actual);
+
         // basic data encoding
         $data = '1';
         $this->assertSame('"1"', Json::encode($data));
@@ -48,7 +67,7 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
@@ -102,14 +121,14 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::htmlEncode($data));
 
         // https://github.com/yiisoft/yii2/issues/957
-        $data = (object)null;
+        $data = (object) null;
         $this->assertSame('{}', Json::htmlEncode($data));
 
         // JsonSerializable
@@ -137,6 +156,11 @@ class JsonTest extends TestCase
 
     public function testDecode()
     {
+        // empty value
+        $json = '';
+        $actual = Json::decode($json);
+        $this->assertNull($actual);
+
         // basic data decoding
         $json = '"1"';
         $this->assertSame('1', Json::decode($json));
@@ -147,8 +171,17 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Json::decode($json);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Invalid JSON data.
+     */
+    public function testDecodeInvalidParamException()
+    {
+        Json::decode([]);
     }
 
     public function testHandleJsonError()
@@ -175,14 +208,39 @@ class JsonTest extends TestCase
             }
         }
     }
+
+    public function testErrorSummary()
+    {
+        $model = new JsonModel();
+        $model->name = 'not_an_integer';
+        $model->addError('name', 'Error message. Here are some chars: < >');
+        $model->addError('name', 'Error message. Here are even more chars: ""');
+        $model->validate(null, false);
+        $options = ['showAllErrors' => true];
+        $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
+        $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
+    }
 }
 
-class JsonModel extends Model implements \JsonSerializable
+class JsonModel extends DynamicModel implements \JsonSerializable
 {
     public $data = ['json' => 'serializable'];
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->data;
+    }
+
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init()
+    {
+       $this->defineAttribute('name');
     }
 }

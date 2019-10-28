@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\oci;
 
@@ -40,8 +45,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame('test123', $model->char_col3);
 //        $this->assertSame(1337.42, $model->float_col);
 //        $this->assertSame(42.1337, $model->float_col2);
-//        $this->assertSame(true, $model->bool_col);
-//        $this->assertSame(false, $model->bool_col2);
+//        $this->assertTrue($model->bool_col);
+//        $this->assertFalse($model->bool_col2);
     }
 
     public function testDefaultValues()
@@ -52,7 +57,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertEquals('something', $model->char_col2);
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertEquals(true, $model->bool_col2);
+        $this->assertTrue($model->bool_col2);
 
         // not testing $model->time, because oci\Schema can't read default value
 
@@ -88,7 +93,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         // find all asArray
         $customers = $customerClass::find()->asArray()->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertArrayHasKey('id', $customers[0]);
         $this->assertArrayHasKey('name', $customers[0]);
         $this->assertArrayHasKey('email', $customers[0]);

@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Link represents a link object as defined in [JSON Hypermedia API Language](https://tools.ietf.org/html/draft-kelly-json-hal-03).
@@ -15,7 +15,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Link extends Object
+class Link extends BaseObject
 {
     /**
      * The self link.
@@ -36,7 +36,7 @@ class Link extends Object
      */
     public $type;
     /**
-     * @var boolean a value indicating whether [[href]] refers to a URI or URI template.
+     * @var bool a value indicating whether [[href]] refers to a URI or URI template.
      */
     public $templated = false;
     /**

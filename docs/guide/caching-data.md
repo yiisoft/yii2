@@ -13,8 +13,8 @@ a [cache component](#cache-components):
 $data = $cache->get($key);
 
 if ($data === false) {
-
     // $data is not found in cache, calculate it from scratch
+    $data = $this->calculateSomething();
 
     // store $data in cache so that it can be retrieved next time
     $cache->set($key, $data);
@@ -23,6 +23,32 @@ if ($data === false) {
 // $data is available here
 ```
 
+Since version 2.0.11, [cache component](#cache-components) provides [[yii\caching\Cache::getOrSet()|getOrSet()]] method
+that simplifies code for data getting, calculating and storing. The following code does exactly the same as the 
+previous example:
+
+```php
+$data = $cache->getOrSet($key, function () {
+    return $this->calculateSomething();
+});
+```
+
+When cache has data associated with the `$key`, the cached value will be returned. 
+Otherwise, the passed anonymous function will be executed to calculate the value that will be cached and returned.
+
+If the anonymous function requires some data from the outer scope, you can pass it with the `use` statement.
+For example:
+
+```php
+$user_id = 42;
+$data = $cache->getOrSet($key, function () use ($user_id) {
+    return $this->calculateSomething($user_id);
+});
+```
+
+> Note: [[yii\caching\Cache::getOrSet()|getOrSet()]] method supports duration and dependencies as well. 
+  See [Cache Expiration](#cache-expiration) and [Cache Dependencies](#cache-dependencies) to know more.
+  
 
 ## Cache Components <span id="cache-components"></span>
 
@@ -77,11 +103,14 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 
 Yii supports a wide range of cache storage. The following is a summary:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
+* [[yii\caching\ApcCache]]: uses PHP [APC](https://secure.php.net/manual/en/book.apc.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
   create a table as specified in [[yii\caching\DbCache::cacheTable]].
+* [[yii\caching\ArrayCache]]: provides caching for the current request only by storing the values in an array.
+  For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting
+  [[yii\caching\ArrayCache::$serializer]] to `false`.
 * [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
   The purpose of this component is to simplify the code that needs to check the availability of cache.
   For example, during development or if the server doesn't have actual cache support, you may configure
@@ -91,16 +120,16 @@ Yii supports a wide range of cache storage. The following is a summary:
   `Yii::$app->cache` might be `null`.
 * [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
+* [[yii\caching\MemCache]]: uses PHP [memcache](https://secure.php.net/manual/en/book.memcache.php)
+  and [memcached](https://secure.php.net/manual/en/book.memcached.php) extensions. This option can be considered as
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
 * [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](http://php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
-* [[yii\caching\ZendDataCache]]: uses
+  ([see also](https://secure.php.net/manual/en/book.wincache.php)) extension.
+* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
+* [[yii\caching\ZendDataCache]] _(deprecated)_: uses
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
@@ -118,6 +147,8 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
   value will be returned if the data item is not found in the cache or is expired/invalidated.
 * [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
 * [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
+* [[yii\caching\Cache::getOrSet()|getOrSet()]]: retrieves a data item from cache with a specified key or executes passed
+  callback, stores return of the callback in a cache by a key and returns that data.  
 * [[yii\caching\Cache::multiGet()|multiGet()]]: retrieves multiple data items from cache with the specified keys.
 * [[yii\caching\Cache::multiSet()|multiSet()]]: stores multiple data items in cache. Each item is identified by a key.
 * [[yii\caching\Cache::multiAdd()|multiAdd()]]: stores multiple data items in cache. Each item is identified by a key.
@@ -128,7 +159,7 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
 
 > Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
 `false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
-this array instead to avoid this problem.
+this array instead to avoid this problem. 
 
 Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
 which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::multiGet()|multiGet()]]
@@ -167,6 +198,10 @@ For example, [[yii\db\Schema]] uses the following key to cache schema informatio
 
 As you can see, the key includes all necessary information needed to uniquely specify a database table.
 
+> Note: Values stored in cache via [[yii\caching\Cache::multiSet()|multiSet()]] or [[yii\caching\Cache::multiAdd()|multiAdd()]] can
+have only string or integer keys. If you need to set more complex key store the value separately via 
+[[yii\caching\Cache::set()|set()]] or [[yii\caching\Cache::add()|add()]].
+
 When the same cache storage is used by different applications, you should specify a unique cache key prefix
 for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
 property. For example, in the application configuration you can write the following code:
@@ -203,6 +238,10 @@ if ($data === false) {
     // $data is expired or is not found in the cache
 }
 ```
+
+Since 2.0.11 you may set [[yii\caching\Cache::$defaultDuration|defaultDuration]] value in your cache component configuration if you prefer a custom cache duration
+over the default unlimited duration.
+This will allow you not to pass custom `duration` parameter to [[yii\caching\Cache::set()|set()]] each time.
 
 
 ### Cache Dependencies <span id="cache-dependencies"></span>
@@ -272,23 +311,17 @@ $result = Customer::getDb()->cache(function ($db) {
 ```
 
 > Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support query caching on the DB server side. You may choose to use either query caching mechanism.
+  also support query caching on the DB server-side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
+Since 2.0.14 you can use the following shortcuts:
 
-### Cache Flushing <span id="cache-flushing">
-
-When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
-
-You can flush the cache from the console by calling `yii cache/flush` as well.
- - `yii cache`: lists the available caches in application
- - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
- names separated with space)
- - `yii cache/flush-all`: flushes all cache components in the application
-
-> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
-components in your web and console application configs to reach the proper effect.
+```php
+(new Query())->cache(7200)->all();
+// and
+User::find()->cache(7200)->all();
+```
 
 
 ### Configurations <span id="query-caching-configs"></span>
@@ -296,7 +329,7 @@ components in your web and console application configs to reach the proper effec
 Query caching has three global configurable options through [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
+  It defaults to `true`. Note that to effectively turn on query caching, you also need to have a valid
   cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. You can use 0 to indicate a query result should
@@ -383,4 +416,19 @@ handler for the column data.
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
 the caching will fail.
+
+
+## Cache Flushing <span id="cache-flushing">
+
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+
+You can flush the cache from the console by calling `yii cache/flush` as well.
+ - `yii cache`: lists the available caches in application
+ - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ names separated with space)
+ - `yii cache/flush-all`: flushes all cache components in the application
+ - `yii cache/flush-schema db`: clears DB schema cache for a given connection component
+
+> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
+components in your web and console application configs to reach the proper effect.
 

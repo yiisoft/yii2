@@ -1,7 +1,7 @@
 Database Access Objects
 =======================
 
-Built on top of [PDO](http://www.php.net/manual/en/book.pdo.php), Yii DAO (Database Access Objects) provides an
+Built on top of [PDO](https://secure.php.net/manual/en/book.pdo.php), Yii DAO (Database Access Objects) provides an
 object-oriented API for accessing relational databases. It is the foundation for other more advanced database
 access methods, including [query builder](db-query-builder.md) and [active record](db-active-record.md).
 
@@ -9,16 +9,19 @@ When using Yii DAO, you mainly need to deal with plain SQLs and PHP arrays. As a
 way to access databases. However, because SQL syntax may vary for different databases, using Yii DAO also means 
 you have to take extra effort to create a database-agnostic application.
 
-Yii DAO supports the following databases out of box:
+In Yii 2.0, DAO supports the following databases out of the box:
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
 - [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
+> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
+  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
+  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
 
 ## Creating DB Connections <span id="creating-db-connections"></span>
 
@@ -58,7 +61,7 @@ You can then access the DB connection via the expression `Yii::$app->db`.
 > Tip: You can configure multiple DB application components if your application needs to access multiple databases.
 
 When configuring a DB connection, you should always specify its Data Source Name (DSN) via the [[yii\db\Connection::dsn|dsn]] 
-property. The format of DSN varies for different databases. Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) 
+property. The format of DSN varies for different databases. Please refer to the [PHP manual](https://secure.php.net/manual/en/function.PDO-construct.php) 
 for more details. Below are some examples:
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
@@ -175,7 +178,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-Parameter binding is implemented via [prepared statements](http://php.net/manual/en/mysqli.quickstart.prepared-statements.php).
+Parameter binding is implemented via [prepared statements](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php).
 Besides preventing SQL injection attacks, it may also improve performance by preparing a SQL statement once and
 executing it multiple times with different parameters. For example,
 
@@ -205,6 +208,11 @@ $post2 = $command->queryOne();
 Notice that you bind the placeholder to the `$id` variable before the execution, and then change the value of that variable 
 before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly 
 more efficient than running a new query for every different parameter value. 
+
+> Info: Parameter binding is only used in places where values need to be inserted into strings that contain plain SQL.
+> In many places in higher abstraction layers like [query builder](db-query-builder.md) and [active record](db-active-record.md)
+> you often specify an array of values which will be transformed into SQL. In these places parameter binding is done by Yii
+> internally, so there is no need to specify params manually.
 
 
 ### Executing Non-SELECT Queries <span id="non-select-queries"></span>
@@ -248,6 +256,21 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Linda', 25],
 ])->execute();
 ```
+
+Another useful method is [[yii\db\Command::upsert()|upsert()]]. Upsert is an atomic operation that inserts rows into
+a database table if they do not already exist (matching unique constraints), or update them if they do:
+
+```php
+Yii::$app->db->createCommand()->upsert('pages', [
+    'name' => 'Front page',
+    'url' => 'http://example.com/', // url is unique
+    'visits' => 0,
+], [
+    'visits' => new \yii\db\Expression('visits + 1'),
+], $params)->execute();
+```
+
+The code above will either insert a new page record or increment its visit counter atomically.
 
 Note that the aforementioned methods only create the query and you always have to call [[yii\db\Command::execute()|execute()]]
 to actually run them.
@@ -325,18 +348,17 @@ The above code is equivalent to the following, which gives you more control abou
 ```php
 $db = Yii::$app->db;
 $transaction = $db->beginTransaction();
-
 try {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
+    throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
     throw $e;
 }
 ```
@@ -348,6 +370,10 @@ the [[yii\db\Transaction::commit()|commit()]] method is called to commit the tra
 will be triggered and caught, the [[yii\db\Transaction::rollBack()|rollBack()]] method is called to roll back
 the changes made by the queries prior to that failed query in the transaction. `throw $e` will then re-throw the
 exception as if we had not caught it, so the normal error handling process will take care of it.
+
+> Note: in the above code we have two catch-blocks for compatibility 
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
+> since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 
 ### Specifying Isolation Levels <span id="specifying-isolation-levels"></span>
@@ -375,7 +401,7 @@ Yii provides four constants for the most common isolation levels:
 - [[\yii\db\Transaction::SERIALIZABLE]] - the strongest level, avoids all of the above named problems.
 
 Besides using the above constants to specify isolation levels, you may also use strings with a valid syntax supported
-by the DBMS that you are using. For example, in PostgreSQL, you may use `SERIALIZABLE READ ONLY DEFERRABLE`. 
+by the DBMS that you are using. For example, in PostgreSQL, you may use `"SERIALIZABLE READ ONLY DEFERRABLE"`.
 
 Note that some DBMS allow setting the isolation level only for the whole connection. Any subsequent transactions
 will get the same isolation level even if you do not specify any. When using this feature
@@ -421,10 +447,16 @@ try {
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
         throw $e;
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
+    $outerTransaction->rollBack();
+    throw $e;
+} catch (\Throwable $e) {
     $outerTransaction->rollBack();
     throw $e;
 }
@@ -570,6 +602,9 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -588,7 +623,7 @@ $rows = Yii::$app->db->useMaster(function ($db) {
 });
 ```
 
-You may also directly set `Yii::$app->db->enableSlaves` to be false to direct all queries to the master connection.
+You may also directly set `Yii::$app->db->enableSlaves` to be `false` to direct all queries to the master connection.
 
 
 ## Working with Database Schema <span id="database-schema"></span>

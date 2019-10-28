@@ -50,11 +50,11 @@ use yii\base\ErrorHandler;
  * Yii::$app->log->targets['file']->enabled = false;
  * ```
  *
- * @property integer $flushInterval How many messages should be logged before they are sent to targets. This
+ * @property int $flushInterval How many messages should be logged before they are sent to targets. This
  * method returns the value of [[Logger::flushInterval]].
  * @property Logger $logger The logger. If not set, [[\Yii::getLogger()]] will be used. Note that the type of
  * this property differs in getter and setter. See [[getLogger()]] and [[setLogger()]] for details.
- * @property integer $traceLevel How many application call stacks should be logged together with each message.
+ * @property int $traceLevel How many application call stacks should be logged together with each message.
  * This method returns the value of [[Logger::traceLevel]]. Defaults to 0.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -75,7 +75,7 @@ class Dispatcher extends Component
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct($config = [])
     {
@@ -91,7 +91,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -115,6 +115,7 @@ class Dispatcher extends Component
         if ($this->_logger === null) {
             $this->setLogger(Yii::getLogger());
         }
+
         return $this->_logger;
     }
 
@@ -133,7 +134,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @return integer how many application call stacks should be logged together with each message.
+     * @return int how many application call stacks should be logged together with each message.
      * This method returns the value of [[Logger::traceLevel]]. Defaults to 0.
      */
     public function getTraceLevel()
@@ -142,7 +143,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @param integer $value how many application call stacks should be logged together with each message.
+     * @param int $value how many application call stacks should be logged together with each message.
      * This method will set the value of [[Logger::traceLevel]]. If the value is greater than 0,
      * at most that number of call stacks will be logged. Note that only application call stacks are counted.
      * Defaults to 0.
@@ -153,7 +154,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @return integer how many messages should be logged before they are sent to targets.
+     * @return int how many messages should be logged before they are sent to targets.
      * This method returns the value of [[Logger::flushInterval]].
      */
     public function getFlushInterval()
@@ -162,7 +163,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @param integer $value how many messages should be logged before they are sent to targets.
+     * @param int $value how many messages should be logged before they are sent to targets.
      * This method will set the value of [[Logger::flushInterval]].
      * Defaults to 1000, meaning the [[Logger::flush()]] method will be invoked once every 1000 messages logged.
      * Set this property to be 0 if you don't want to flush messages until the application terminates.
@@ -177,7 +178,7 @@ class Dispatcher extends Component
     /**
      * Dispatches the logged messages to [[targets]].
      * @param array $messages the logged messages
-     * @param boolean $final whether this method is called at the end of the current application
+     * @param bool $final whether this method is called at the end of the current application
      */
     public function dispatch($messages, $final)
     {
@@ -189,7 +190,7 @@ class Dispatcher extends Component
                 } catch (\Exception $e) {
                     $target->enabled = false;
                     $targetErrors[] = [
-                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToString($e),
+                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($e),
                         Logger::LEVEL_WARNING,
                         __METHOD__,
                         microtime(true),

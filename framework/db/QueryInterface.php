@@ -34,7 +34,7 @@ interface QueryInterface
      * Executes the query and returns a single row of result.
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
-     * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+     * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      */
     public function one($db = null);
@@ -44,7 +44,7 @@ interface QueryInterface
      * @param string $q the COUNT expression. Defaults to '*'.
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer number of records.
+     * @return int number of records.
      */
     public function count($q = '*', $db = null);
 
@@ -52,7 +52,7 @@ interface QueryInterface
      * Returns a value indicating whether the query result contains any row of data.
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
-     * @return boolean whether the query result contains any row of data.
+     * @return bool whether the query result contains any row of data.
      */
     public function exists($db = null);
 
@@ -153,7 +153,9 @@ interface QueryInterface
      * - Additionally you can specify arbitrary operators as follows: A condition of `['>=', 'id', 10]` will result in the
      *   following SQL expression: `id >= 10`.
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * **Note that this method will override any existing WHERE condition. You might want to use [[andWhere()]] or [[orWhere()]] instead.**
+     *
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -163,7 +165,7 @@ interface QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -174,7 +176,7 @@ interface QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -241,15 +243,27 @@ interface QueryInterface
 
     /**
      * Sets the LIMIT part of the query.
-     * @param integer $limit the limit. Use null or negative value to disable limit.
+     * @param int|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit);
 
     /**
      * Sets the OFFSET part of the query.
-     * @param integer $offset the offset. Use null or negative value to disable offset.
+     * @param int|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset);
+
+    /**
+     * Sets whether to emulate query execution, preventing any interaction with data storage.
+     * After this mode is enabled, methods, returning query results like [[one()]], [[all()]], [[exists()]]
+     * and so on, will return empty or false values.
+     * You should use this method in case your program logic indicates query should not return any results, like
+     * in case you set false where condition like `0=1`.
+     * @param bool $value whether to prevent query execution.
+     * @return $this the query object itself.
+     * @since 2.0.11
+     */
+    public function emulateExecution($value = true);
 }

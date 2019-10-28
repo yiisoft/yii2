@@ -8,18 +8,18 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yii\web\UploadedFile;
-use yii\helpers\FileHelper;
 
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
  *
  * Note that you should enable `fileinfo` PHP extension.
  *
- * @property integer $sizeLimit The size limit for uploaded files. This property is read-only.
+ * @property int $sizeLimit The size limit for uploaded files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -36,7 +36,7 @@ class FileValidator extends Validator
      */
     public $extensions;
     /**
-     * @var boolean whether to check file type (extension) with mime-type. If extension produced by
+     * @var bool whether to check file type (extension) with mime-type. If extension produced by
      * file mime-type check differs from uploaded file extension, the file will be considered as invalid.
      */
     public $checkExtensionByMimeType = true;
@@ -51,24 +51,24 @@ class FileValidator extends Validator
      */
     public $mimeTypes;
     /**
-     * @var integer the minimum number of bytes required for the uploaded file.
+     * @var int the minimum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * @see tooSmall for the customized message for a file that is too small.
      */
     public $minSize;
     /**
-     * @var integer the maximum number of bytes required for the uploaded file.
+     * @var int the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
-     * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
-     * @see http://php.net/post-max-size
+     * @see https://secure.php.net/manual/en/ini.core.php#ini.upload-max-filesize
+     * @see https://secure.php.net/post-max-size
      * @see getSizeLimit
      * @see tooBig for the customized message for a file that is too big.
      */
     public $maxSize;
     /**
-     * @var integer the maximum file count the given attribute can hold.
+     * @var int the maximum file count the given attribute can hold.
      * Defaults to 1, meaning single file upload. By defining a higher number,
      * multiple uploads become possible. Setting it to `0` means there is no limit on
      * the number of files that can be uploaded simultaneously.
@@ -76,10 +76,18 @@ class FileValidator extends Validator
      * > Note: The maximum number of files allowed to be uploaded simultaneously is
      * also limited with PHP directive `max_file_uploads`, which defaults to 20.
      *
-     * @see http://php.net/manual/en/ini.core.php#ini.max-file-uploads
+     * @see https://secure.php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
+    /**
+     * @var int the minimum file count the given attribute can hold.
+     * Defaults to 0. Higher value means at least that number of files should be uploaded.
+     *
+     * @see tooFew for the customized message when too few files are uploaded.
+     * @since 2.0.14
+     */
+    public $minFiles = 0;
     /**
      * @var string the error message used when a file is not uploaded correctly.
      */
@@ -121,6 +129,16 @@ class FileValidator extends Validator
      */
     public $tooMany;
     /**
+     * @var string the error message used if the count of multiple uploads less that minFiles.
+     * You may use the following tokens in the message:
+     *
+     * - {attribute}: the attribute name
+     * - {limit}: the value of [[minFiles]]
+     *
+     * @since 2.0.14
+     */
+    public $tooFew;
+    /**
      * @var string the error message used when the uploaded file has an extension name
      * that is not listed in [[extensions]]. You may use the following tokens in the message:
      *
@@ -142,7 +160,7 @@ class FileValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -155,6 +173,9 @@ class FileValidator extends Validator
         }
         if ($this->tooMany === null) {
             $this->tooMany = Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.');
+        }
+        if ($this->tooFew === null) {
+            $this->tooFew = Yii::t('yii', 'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.');
         }
         if ($this->wrongExtension === null) {
             $this->wrongExtension = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
@@ -181,34 +202,40 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles != 1) {
-            $files = $model->$attribute;
-            if (!is_array($files)) {
+        if ($this->maxFiles != 1 || $this->minFiles > 1) {
+            $rawFiles = $model->$attribute;
+            if (!is_array($rawFiles)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
 
                 return;
             }
-            foreach ($files as $i => $file) {
-                if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
-                    unset($files[$i]);
-                }
-            }
-            $model->$attribute = array_values($files);
+
+            $files = $this->filterFiles($rawFiles);
+            $model->$attribute = $files;
+
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
+
+                return;
             }
-            if ($this->maxFiles && count($files) > $this->maxFiles) {
+
+            $filesCount = count($files);
+            if ($this->maxFiles && $filesCount > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
-            } else {
-                foreach ($files as $file) {
-                    $result = $this->validateValue($file);
-                    if (!empty($result)) {
-                        $this->addError($model, $attribute, $result[0], $result[1]);
-                    }
+            }
+
+            if ($this->minFiles && $this->minFiles > $filesCount) {
+                $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
+            }
+
+            foreach ($files as $file) {
+                $result = $this->validateValue($file);
+                if (!empty($result)) {
+                    $this->addError($model, $attribute, $result[0], $result[1]);
                 }
             }
         } else {
@@ -220,58 +247,77 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * Files filter.
+     * @param array $files
+     * @return UploadedFile[]
      */
-    protected function validateValue($file)
+    private function filterFiles(array $files)
     {
-        if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+        $result = [];
+
+        foreach ($files as $fileName => $file) {
+            if ($file instanceof UploadedFile && $file->error !== UPLOAD_ERR_NO_FILE) {
+                $result[$fileName] = $file;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function validateValue($value)
+    {
+        if (!$value instanceof UploadedFile || $value->error == UPLOAD_ERR_NO_FILE) {
             return [$this->uploadRequired, []];
         }
 
-        switch ($file->error) {
+        switch ($value->error) {
             case UPLOAD_ERR_OK:
-                if ($this->maxSize !== null && $file->size > $this->getSizeLimit()) {
+                if ($this->maxSize !== null && $value->size > $this->getSizeLimit()) {
                     return [
                         $this->tooBig,
                         [
-                            'file' => $file->name,
+                            'file' => $value->name,
                             'limit' => $this->getSizeLimit(),
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                         ],
                     ];
-                } elseif ($this->minSize !== null && $file->size < $this->minSize) {
+                } elseif ($this->minSize !== null && $value->size < $this->minSize) {
                     return [
                         $this->tooSmall,
                         [
-                            'file' => $file->name,
+                            'file' => $value->name,
                             'limit' => $this->minSize,
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
                         ],
                     ];
-                } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
-                    return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($file)) {
-                    return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
+                } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
+                    return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
+                } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
+                    return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
+
                 return null;
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
                 return [$this->tooBig, [
-                    'file' => $file->name,
+                    'file' => $value->name,
                     'limit' => $this->getSizeLimit(),
                     'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                 ]];
             case UPLOAD_ERR_PARTIAL:
-                Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
+                Yii::warning('File was only partially uploaded: ' . $value->name, __METHOD__);
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
+                Yii::warning('Missing the temporary folder to store the uploaded file: ' . $value->name, __METHOD__);
                 break;
             case UPLOAD_ERR_CANT_WRITE:
-                Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
+                Yii::warning('Failed to write the uploaded file to disk: ' . $value->name, __METHOD__);
                 break;
             case UPLOAD_ERR_EXTENSION:
-                Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
+                Yii::warning('File upload was stopped by some PHP extension: ' . $value->name, __METHOD__);
                 break;
             default:
                 break;
@@ -282,6 +328,7 @@ class FileValidator extends Validator
 
     /**
      * Returns the maximum size allowed for uploaded files.
+     *
      * This is determined based on four factors:
      *
      * - 'upload_max_filesize' in php.ini
@@ -289,7 +336,7 @@ class FileValidator extends Validator
      * - 'MAX_FILE_SIZE' hidden field
      * - [[maxSize]]
      *
-     * @return integer the size limit for uploaded files.
+     * @return int the size limit for uploaded files.
      */
     public function getSizeLimit()
     {
@@ -311,7 +358,8 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     * @param bool $trim
      */
     public function isEmpty($value, $trim = false)
     {
@@ -320,10 +368,10 @@ class FileValidator extends Validator
     }
 
     /**
-     * Converts php.ini style size to bytes
+     * Converts php.ini style size to bytes.
      *
      * @param string $sizeStr $sizeStr
-     * @return integer
+     * @return int
      */
     private function sizeToBytes($sizeStr)
     {
@@ -345,14 +393,13 @@ class FileValidator extends Validator
     /**
      * Checks if given uploaded file have correct type (extension) according current validator settings.
      * @param UploadedFile $file
-     * @return boolean
+     * @return bool
      */
     protected function validateExtension($file)
     {
         $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
-
             $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
                 return false;
@@ -373,7 +420,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -383,28 +430,25 @@ class FileValidator extends Validator
     }
 
     /**
-     * Returns the client side validation options.
-     * @param \yii\base\Model $model the model being validated
-     * @param string $attribute the attribute name being validated
-     * @return array the client side validation options
+     * {@inheritdoc}
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);
 
         $options = [];
         if ($this->message !== null) {
-            $options['message'] = Yii::$app->getI18n()->format($this->message, [
+            $options['message'] = $this->formatMessage($this->message, [
                 'attribute' => $label,
-            ], Yii::$app->language);
+            ]);
         }
 
         $options['skipOnEmpty'] = $this->skipOnEmpty;
 
         if (!$this->skipOnEmpty) {
-            $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [
+            $options['uploadRequired'] = $this->formatMessage($this->uploadRequired, [
                 'attribute' => $label,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->mimeTypes !== null) {
@@ -413,51 +457,51 @@ class FileValidator extends Validator
                 $mimeTypes[] = new JsExpression(Html::escapeJsRegularExpression($this->buildMimeTypeRegexp($mimeType)));
             }
             $options['mimeTypes'] = $mimeTypes;
-            $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
+            $options['wrongMimeType'] = $this->formatMessage($this->wrongMimeType, [
                 'attribute' => $label,
                 'mimeTypes' => implode(', ', $this->mimeTypes),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->extensions !== null) {
             $options['extensions'] = $this->extensions;
-            $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
+            $options['wrongExtension'] = $this->formatMessage($this->wrongExtension, [
                 'attribute' => $label,
                 'extensions' => implode(', ', $this->extensions),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->minSize !== null) {
             $options['minSize'] = $this->minSize;
-            $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
+            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
                 'attribute' => $label,
                 'limit' => $this->minSize,
                 'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxSize !== null) {
             $options['maxSize'] = $this->maxSize;
-            $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
+            $options['tooBig'] = $this->formatMessage($this->tooBig, [
                 'attribute' => $label,
                 'limit' => $this->getSizeLimit(),
                 'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxFiles !== null) {
             $options['maxFiles'] = $this->maxFiles;
-            $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
+            $options['tooMany'] = $this->formatMessage($this->tooMany, [
                 'attribute' => $label,
                 'limit' => $this->maxFiles,
-            ], Yii::$app->language);
+            ]);
         }
 
         return $options;
     }
 
     /**
-     * Builds the RegExp from the $mask
+     * Builds the RegExp from the $mask.
      *
      * @param string $mask
      * @return string the regular expression
@@ -465,24 +509,24 @@ class FileValidator extends Validator
      */
     private function buildMimeTypeRegexp($mask)
     {
-        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/';
+        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/i';
     }
 
     /**
-     * Checks the mimeType of the $file against the list in the [[mimeTypes]] property
+     * Checks the mimeType of the $file against the list in the [[mimeTypes]] property.
      *
      * @param UploadedFile $file
-     * @return boolean whether the $file mimeType is allowed
+     * @return bool whether the $file mimeType is allowed
      * @throws \yii\base\InvalidConfigException
      * @see mimeTypes
      * @since 2.0.8
      */
     protected function validateMimeType($file)
     {
-        $fileMimeType = FileHelper::getMimeType($file->tempName);
+        $fileMimeType = $this->getMimeTypeByFile($file->tempName);
 
         foreach ($this->mimeTypes as $mimeType) {
-            if ($mimeType === $fileMimeType) {
+            if (strcasecmp($mimeType, $fileMimeType) === 0) {
                 return true;
             }
 
@@ -492,5 +536,17 @@ class FileValidator extends Validator
         }
 
         return false;
+    }
+
+    /**
+     * Get MIME type by file path
+     *
+     * @param string $filePath
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.26
+     */
+    protected function getMimeTypeByFile($filePath) {
+        return FileHelper::getMimeType($filePath);
     }
 }

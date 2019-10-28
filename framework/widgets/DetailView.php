@@ -9,13 +9,13 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\i18n\Formatter;
 
 /**
  * DetailView displays the detail of a single data [[model]].
@@ -44,6 +44,8 @@ use yii\helpers\Inflector;
  * ]);
  * ```
  *
+ * For more details and usage information on DetailView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -59,22 +61,34 @@ class DetailView extends Widget
      * @var array a list of attributes to be displayed in the detail view. Each array element
      * represents the specification for displaying one particular attribute.
      *
-     * An attribute can be specified as a string in the format of "attribute", "attribute:format" or "attribute:format:label",
-     * where "attribute" refers to the attribute name, and "format" represents the format of the attribute. The "format"
+     * An attribute can be specified as a string in the format of `attribute`, `attribute:format` or `attribute:format:label`,
+     * where `attribute` refers to the attribute name, and `format` represents the format of the attribute. The `format`
      * is passed to the [[Formatter::format()]] method to format an attribute value into a displayable text.
-     * Please refer to [[Formatter]] for the supported types. Both "format" and "label" are optional.
+     * Please refer to [[Formatter]] for the supported types. Both `format` and `label` are optional.
      * They will take default values if absent.
      *
      * An attribute can also be specified in terms of an array with the following elements:
      *
-     * - attribute: the attribute name. This is required if either "label" or "value" is not specified.
-     * - label: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
-     * - value: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
+     * - `attribute`: the attribute name. This is required if either `label` or `value` is not specified.
+     * - `label`: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
+     * - `value`: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
      *   by calling [[ArrayHelper::getValue()]]. Note that this value will be formatted into a displayable text
-     *   according to the "format" option.
-     * - format: the type of the value that determines how the value would be formatted into a displayable text.
-     *   Please refer to [[Formatter]] for supported types.
-     * - visible: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
+     *   according to the `format` option. Since version 2.0.11 it can be defined as closure with the following
+     *   parameters:
+     *
+     *   ```php
+     *   function ($model, $widget)
+     *   ```
+     *
+     *   `$model` refers to displayed model and `$widget` is an instance of `DetailView` widget.
+     *
+     * - `format`: the type of the value that determines how the value would be formatted into a displayable text.
+     *   Please refer to [[Formatter]] for supported types and [[Formatter::format()]] on how to specify this value.
+     * - `visible`: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
+     * - `contentOptions`: the HTML attributes to customize value tag. For example: `['class' => 'bg-red']`.
+     *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
+     * - `captionOptions`: the HTML attributes to customize label tag. For example: `['class' => 'bg-red']`.
+     *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
      */
     public $attributes;
     /**
@@ -88,18 +102,21 @@ class DetailView extends Widget
      *
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
+     *
+     * Since Version 2.0.10, the tokens `{captionOptions}` and `{contentOptions}` are available, which will represent
+     * HTML attributes of HTML container elements for the label and value.
      */
-    public $template = '<tr><th>{label}</th><td>{value}</td></tr>';
+    public $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
     /**
-     * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
-     * what container tag should be used. It defaults to "table" if not set.
+     * @var array the HTML attributes for the container tag of this widget. The `tag` option specifies
+     * what container tag should be used. It defaults to `table` if not set.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'table table-striped table-bordered detail-view'];
     /**
      * @var array|Formatter the formatter used to format model attribute values into displayable texts.
      * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
-     * instance. If this property is not set, the "formatter" application component will be used.
+     * instance. If this property is not set, the `formatter` application component will be used.
      */
     public $formatter;
 
@@ -110,6 +127,8 @@ class DetailView extends Widget
      */
     public function init()
     {
+        parent::init();
+
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }
@@ -148,19 +167,23 @@ class DetailView extends Widget
     /**
      * Renders a single attribute.
      * @param array $attribute the specification of the attribute to be rendered.
-     * @param integer $index the zero-based index of the attribute in the [[attributes]] array
+     * @param int $index the zero-based index of the attribute in the [[attributes]] array
      * @return string the rendering result
      */
     protected function renderAttribute($attribute, $index)
     {
         if (is_string($this->template)) {
+            $captionOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'captionOptions', []));
+            $contentOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'contentOptions', []));
             return strtr($this->template, [
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
+                '{captionOptions}' => $captionOptions,
+                '{contentOptions}' => $contentOptions,
             ]);
-        } else {
-            return call_user_func($this->template, $attribute, $index, $this);
         }
+
+        return call_user_func($this->template, $attribute, $index, $this);
     }
 
     /**
@@ -184,7 +207,7 @@ class DetailView extends Widget
 
         foreach ($this->attributes as $i => $attribute) {
             if (is_string($attribute)) {
-                if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
+                if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
                     throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
                 }
                 $attribute = [
@@ -216,6 +239,10 @@ class DetailView extends Widget
                 }
             } elseif (!isset($attribute['label']) || !array_key_exists('value', $attribute)) {
                 throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
+            }
+
+            if ($attribute['value'] instanceof \Closure) {
+                $attribute['value'] = call_user_func($attribute['value'], $this->model, $this);
             }
 
             $this->attributes[$i] = $attribute;

@@ -8,6 +8,8 @@
 namespace yii\rbac;
 
 /**
+ * For more details and usage information on ManagerInterface, see the [guide article on security authorization](guide:security-authorization).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -34,7 +36,7 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Adds a role, permission or rule to the RBAC system.
      * @param Role|Permission|Rule $object
-     * @return boolean whether the role, permission or rule is successfully added to the system
+     * @return bool whether the role, permission or rule is successfully added to the system
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
     public function add($object);
@@ -42,7 +44,7 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Removes a role, permission or rule from the RBAC system.
      * @param Role|Permission|Rule $object
-     * @return boolean whether the role, permission or rule is successfully removed
+     * @return bool whether the role, permission or rule is successfully removed
      */
     public function remove($object);
 
@@ -50,7 +52,7 @@ interface ManagerInterface extends CheckAccessInterface
      * Updates the specified role, permission or rule in the system.
      * @param string $name the old name of the role, permission or rule
      * @param Role|Permission|Rule $object
-     * @return boolean whether the update is successful
+     * @return bool whether the update is successful
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
     public function update($name, $object);
@@ -71,10 +73,20 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns the roles that are assigned to the user via [[assign()]].
      * Note that child roles that are not assigned directly to the user will not be returned.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Role[] all roles directly assigned to the user. The array is indexed by the role names.
      */
     public function getRolesByUser($userId);
+
+    /**
+     * Returns child roles of the role specified. Depth isn't limited.
+     * @param string $roleName name of the role to file child roles for
+     * @return Role[] Child roles. The array is indexed by the role names.
+     * First element is an instance of the parent Role itself.
+     * @throws \yii\base\InvalidParamException if Role was not found that are getting by $roleName
+     * @since 2.0.10
+     */
+    public function getChildRoles($roleName);
 
     /**
      * Returns the named permission.
@@ -98,7 +110,7 @@ interface ManagerInterface extends CheckAccessInterface
 
     /**
      * Returns all permissions that the user has.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all permissions that the user has. The array is indexed by the permission names.
      */
     public function getPermissionsByUser($userId);
@@ -117,10 +129,10 @@ interface ManagerInterface extends CheckAccessInterface
     public function getRules();
 
     /**
-     * Checks the possibility of adding a child to parent
+     * Checks the possibility of adding a child to parent.
      * @param Item $parent the parent item
      * @param Item $child the child item to be added to the hierarchy
-     * @return boolean possibility of adding
+     * @return bool possibility of adding
      *
      * @since 2.0.8
      */
@@ -130,7 +142,7 @@ interface ManagerInterface extends CheckAccessInterface
      * Adds an item as a child of another item.
      * @param Item $parent
      * @param Item $child
-     * @return boolean whether the child successfully added
+     * @return bool whether the child successfully added
      * @throws \yii\base\Exception if the parent-child relationship already exists or if a loop has been detected.
      */
     public function addChild($parent, $child);
@@ -140,7 +152,7 @@ interface ManagerInterface extends CheckAccessInterface
      * Note, the child item is not deleted. Only the parent-child relationship is removed.
      * @param Item $parent
      * @param Item $child
-     * @return boolean whether the removal is successful
+     * @return bool whether the removal is successful
      */
     public function removeChild($parent, $child);
 
@@ -148,7 +160,7 @@ interface ManagerInterface extends CheckAccessInterface
      * Removed all children form their parent.
      * Note, the children items are not deleted. Only the parent-child relationships are removed.
      * @param Item $parent
-     * @return boolean whether the removal is successful
+     * @return bool whether the removal is successful
      */
     public function removeChildren($parent);
 
@@ -156,7 +168,7 @@ interface ManagerInterface extends CheckAccessInterface
      * Returns a value indicating whether the child already exists for the parent.
      * @param Item $parent
      * @param Item $child
-     * @return boolean whether `$child` is already a child of `$parent`
+     * @return bool whether `$child` is already a child of `$parent`
      */
     public function hasChild($parent, $child);
 
@@ -170,8 +182,8 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Assigns a role to a user.
      *
-     * @param Role $role
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param Role|Permission $role
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Assignment the role assignment information.
      * @throws \Exception if the role has already been assigned to the user
      */
@@ -179,23 +191,23 @@ interface ManagerInterface extends CheckAccessInterface
 
     /**
      * Revokes a role from a user.
-     * @param Role $role
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
-     * @return boolean whether the revoking is successful
+     * @param Role|Permission $role
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
+     * @return bool whether the revoking is successful
      */
     public function revoke($role, $userId);
 
     /**
      * Revokes all roles from a user.
      * @param mixed $userId the user ID (see [[\yii\web\User::id]])
-     * @return boolean whether the revoking is successful
+     * @return bool whether the revoking is successful
      */
     public function revokeAll($userId);
 
     /**
      * Returns the assignment information regarding a role and a user.
      * @param string $roleName the role name
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return null|Assignment the assignment information. Null is returned if
      * the role is not assigned to the user.
      */
@@ -203,7 +215,7 @@ interface ManagerInterface extends CheckAccessInterface
 
     /**
      * Returns all role assignment information for the specified user.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Assignment[] the assignments indexed by role names. An empty array will be
      * returned if there is no role assigned to the user.
      */

@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -53,8 +55,8 @@ EOF
         $converter->commands['php'] = ['txt', 'php {from} > {to}'];
         $this->assertEquals('test.txt', $converter->convert('test.php', $tmpPath));
 
-        $this->assertTrue(file_exists($tmpPath . '/test.txt'), 'Failed asserting that asset output file exists.');
-        $this->assertEquals("Hello World!\nHello Yii!", file_get_contents($tmpPath . '/test.txt'));
+        $this->assertFileExists($tmpPath . '/test.txt', 'Failed asserting that asset output file exists.');
+        $this->assertStringEqualsFile($tmpPath . '/test.txt', "Hello World!\nHello Yii!");
     }
 
     /**
@@ -63,7 +65,7 @@ EOF
     public function testForceConvert()
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents($tmpPath . '/test.php', <<<EOF
+        file_put_contents($tmpPath . '/test.php', <<<'EOF'
 <?php
 
 echo microtime();
@@ -78,7 +80,7 @@ EOF
 
         usleep(1);
         $converter->convert('test.php', $tmpPath);
-        $this->assertEquals($initialConvertTime, file_get_contents($tmpPath . '/test.txt'));
+        $this->assertStringEqualsFile($tmpPath . '/test.txt', $initialConvertTime);
 
         $converter->forceConvert = true;
         $converter->convert('test.php', $tmpPath);

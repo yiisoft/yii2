@@ -27,25 +27,25 @@ class ImageValidator extends FileValidator
      */
     public $notImage;
     /**
-     * @var integer the minimum width in pixels.
+     * @var int the minimum width in pixels.
      * Defaults to null, meaning no limit.
      * @see underWidth for the customized message used when image width is too small.
      */
     public $minWidth;
     /**
-     * @var integer the maximum width in pixels.
+     * @var int the maximum width in pixels.
      * Defaults to null, meaning no limit.
      * @see overWidth for the customized message used when image width is too big.
      */
     public $maxWidth;
     /**
-     * @var integer the minimum height in pixels.
+     * @var int the minimum height in pixels.
      * Defaults to null, meaning no limit.
      * @see underHeight for the customized message used when image height is too small.
      */
     public $minHeight;
     /**
-     * @var integer the maximum width in pixels.
+     * @var int the maximum width in pixels.
      * Defaults to null, meaning no limit.
      * @see overWidth for the customized message used when image height is too big.
      */
@@ -89,7 +89,7 @@ class ImageValidator extends FileValidator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -113,13 +113,13 @@ class ImageValidator extends FileValidator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function validateValue($file)
+    protected function validateValue($value)
     {
-        $result = parent::validateValue($file);
+        $result = parent::validateValue($value);
 
-        return empty($result) ? $this->validateImage($file) : $result;
+        return empty($result) ? $this->validateImage($value) : $result;
     }
 
     /**
@@ -160,7 +160,7 @@ class ImageValidator extends FileValidator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -170,50 +170,50 @@ class ImageValidator extends FileValidator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $options = parent::getClientOptions($model, $attribute);
 
         $label = $model->getAttributeLabel($attribute);
 
         if ($this->notImage !== null) {
-            $options['notImage'] = Yii::$app->getI18n()->format($this->notImage, [
+            $options['notImage'] = $this->formatMessage($this->notImage, [
                 'attribute' => $label,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->minWidth !== null) {
             $options['minWidth'] = $this->minWidth;
-            $options['underWidth'] = Yii::$app->getI18n()->format($this->underWidth, [
+            $options['underWidth'] = $this->formatMessage($this->underWidth, [
                 'attribute' => $label,
                 'limit' => $this->minWidth,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxWidth !== null) {
             $options['maxWidth'] = $this->maxWidth;
-            $options['overWidth'] = Yii::$app->getI18n()->format($this->overWidth, [
+            $options['overWidth'] = $this->formatMessage($this->overWidth, [
                 'attribute' => $label,
                 'limit' => $this->maxWidth,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->minHeight !== null) {
             $options['minHeight'] = $this->minHeight;
-            $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
+            $options['underHeight'] = $this->formatMessage($this->underHeight, [
                 'attribute' => $label,
                 'limit' => $this->minHeight,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxHeight !== null) {
             $options['maxHeight'] = $this->maxHeight;
-            $options['overHeight'] = Yii::$app->getI18n()->format($this->overHeight, [
+            $options['overHeight'] = $this->formatMessage($this->overHeight, [
                 'attribute' => $label,
                 'limit' => $this->maxHeight,
-            ], Yii::$app->language);
+            ]);
         }
 
         return $options;

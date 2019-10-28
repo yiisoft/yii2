@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -25,19 +26,19 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property integer $levels The message levels that this target is interested in. This is a bitmap of level
- * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
- * and setter. See [[getLevels()]] and [[setLevels()]] for details.
+ * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
+ * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
+ * @property int $levels The message levels that this target is interested in. This is a bitmap of level
+ * values. Defaults to 0, meaning all available levels. Note that the type of this property differs in getter and
+ * setter. See [[getLevels()]] and [[setLevels()]] for details.
+ *
+ * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 abstract class Target extends Component
 {
-    /**
-     * @var boolean whether to enable this log target. Defaults to true.
-     */
-    public $enabled = true;
     /**
      * @var array list of message categories that this target is interested in. Defaults to empty, meaning all categories.
      * You can use an asterisk at the end of a category so that the category may be used to
@@ -67,9 +68,37 @@ abstract class Target extends Component
      * - `var.key` - only `var[key]` key will be logged.
      * - `!var.key` - `var[key]` key will be excluded.
      *
+     * Note that if you need $_SESSION to logged regardless if session was used you have to open it right at
+     * the start of your request.
+     *
      * @see \yii\helpers\ArrayHelper::filter()
      */
-    public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
+    public $logVars = [
+        '_GET',
+        '_POST',
+        '_FILES',
+        '_COOKIE',
+        '_SESSION',
+        '_SERVER',
+    ];
+    /**
+     * @var array list of the PHP predefined variables that should NOT be logged "as is" and should always be replaced
+     * with a mask `***` before logging, when exist.
+     *
+     * Defaults to `[ '_SERVER.HTTP_AUTHORIZATION', '_SERVER.PHP_AUTH_USER', '_SERVER.PHP_AUTH_PW']`
+     *
+     * Each element could be specified as one of the following:
+     *
+     * - `var` - `var` will be logged as `***`
+     * - `var.key` - only `var[key]` will be logged as `***`
+     *
+     * @since 2.0.16
+     */
+    public $maskVars = [
+        '_SERVER.HTTP_AUTHORIZATION',
+        '_SERVER.PHP_AUTH_USER',
+        '_SERVER.PHP_AUTH_PW',
+    ];
     /**
      * @var callable a PHP callable that returns a string to be prefixed to every exported message.
      *
@@ -80,7 +109,7 @@ abstract class Target extends Component
      */
     public $prefix;
     /**
-     * @var integer how many messages should be accumulated before they are exported.
+     * @var int how many messages should be accumulated before they are exported.
      * Defaults to 1000. Note that messages will always be exported when the application terminates.
      * Set this property to be 0 if you don't want to export messages until the application terminates.
      */
@@ -90,8 +119,15 @@ abstract class Target extends Component
      * Please refer to [[Logger::messages]] for the details about the message structure.
      */
     public $messages = [];
+    /**
+     * @var bool whether to log time with microseconds.
+     * Defaults to false.
+     * @since 2.0.13
+     */
+    public $microtime = false;
 
     private $_levels = 0;
+    private $_enabled = true;
 
 
     /**
@@ -106,7 +142,7 @@ abstract class Target extends Component
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
      * @param array $messages log messages to be processed. See [[Logger::messages]] for the structure
      * of each message.
-     * @param boolean $final whether this method is called at the end of the current application
+     * @param bool $final whether this method is called at the end of the current application
      */
     public function collect($messages, $final)
     {
@@ -114,7 +150,7 @@ abstract class Target extends Component
         $count = count($this->messages);
         if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
             if (($context = $this->getContextMessage()) !== '') {
-                $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
+                $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME, [], 0];
             }
             // set exportInterval to 0 to avoid triggering export again while exporting
             $oldExportInterval = $this->exportInterval;
@@ -134,16 +170,22 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        foreach ($this->maskVars as $var) {
+            if (ArrayHelper::getValue($context, $var) !== null) {
+                ArrayHelper::setValue($context, $var, '***');
+            }
+        }
         $result = [];
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
+
         return implode("\n\n", $result);
     }
 
     /**
-     * @return integer the message levels that this target is interested in. This is a bitmap of
-     * level values. Defaults to 0, meaning  all available levels.
+     * @return int the message levels that this target is interested in. This is a bitmap of
+     * level values. Defaults to 0, meaning all available levels.
      */
     public function getLevels()
     {
@@ -167,8 +209,8 @@ abstract class Target extends Component
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
      * ```
      *
-     * @param array|integer $levels message levels that this target is interested in.
-     * @throws InvalidConfigException if an unknown level name is given
+     * @param array|int $levels message levels that this target is interested in.
+     * @throws InvalidConfigException if $levels value is not correct.
      */
     public function setLevels($levels)
     {
@@ -189,6 +231,12 @@ abstract class Target extends Component
                 }
             }
         } else {
+            $bitmapValues = array_reduce($levelMap, function ($carry, $item) {
+                return $carry | $item;
+            });
+            if (!($bitmapValues & $levels) && $levels !== 0) {
+                throw new InvalidConfigException("Incorrect $levels value");
+            }
             $this->_levels = $levels;
         }
     }
@@ -197,7 +245,7 @@ abstract class Target extends Component
      * Filters the given messages according to their categories and levels.
      * @param array $messages messages to be filtered.
      * The message structure follows that in [[Logger::messages]].
-     * @param integer $levels the message levels to filter by. This is a bitmap of
+     * @param int $levels the message levels to filter by. This is a bitmap of
      * level values. Value 0 means allowing all levels.
      * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
      * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
@@ -233,6 +281,7 @@ abstract class Target extends Component
                 unset($messages[$i]);
             }
         }
+
         return $messages;
     }
 
@@ -262,7 +311,7 @@ abstract class Target extends Component
         }
 
         $prefix = $this->getMessagePrefix($message);
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+        return $this->getTime($timestamp) . " {$prefix}[$level][$category] $text"
             . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 
@@ -300,5 +349,53 @@ abstract class Target extends Component
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 
         return "[$ip][$userID][$sessionID]";
+    }
+
+    /**
+     * Sets a value indicating whether this log target is enabled.
+     * @param bool|callable $value a boolean value or a callable to obtain the value from.
+     * The callable value is available since version 2.0.13.
+     *
+     * A callable may be used to determine whether the log target should be enabled in a dynamic way.
+     * For example, to only enable a log if the current user is logged in you can configure the target
+     * as follows:
+     *
+     * ```php
+     * 'enabled' => function() {
+     *     return !Yii::$app->user->isGuest;
+     * }
+     * ```
+     */
+    public function setEnabled($value)
+    {
+        $this->_enabled = $value;
+    }
+
+    /**
+     * Check whether the log target is enabled.
+     * @property bool Indicates whether this log target is enabled. Defaults to true.
+     * @return bool A value indicating whether this log target is enabled.
+     */
+    public function getEnabled()
+    {
+        if (is_callable($this->_enabled)) {
+            return call_user_func($this->_enabled, $this);
+        }
+
+        return $this->_enabled;
+    }
+
+    /**
+     * Returns formatted ('Y-m-d H:i:s') timestamp for message.
+     * If [[microtime]] is configured to true it will return format 'Y-m-d H:i:s.u'.
+     * @param float $timestamp
+     * @return string
+     * @since 2.0.13
+     */
+    protected function getTime($timestamp)
+    {
+        $parts = explode('.', sprintf('%F', $timestamp));
+
+        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime ? ('.' . $parts[1]) : '');
     }
 }

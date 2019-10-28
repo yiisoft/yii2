@@ -136,7 +136,7 @@ class m150101_185401_create_news_table extends Migration
 
 La clase de migración de base de datos [[yii\db\Migration]] expone una conexión a la base de datos mediante la propiedad [[yii\db\Migration::db|db]].
 Puedes utilizar esto para manipular el esquema de la base de datos utilizando métodos como se describen en
-[Trabajando con Esquemas de Base de Datos](db-dao.md#working-with-database-schema-).
+[Trabajando con Esquemas de Base de Datos](db-dao.md#database-schema).
 
 En vez de utilizar tipos físicos, al crear tablas o columnas deberías utilizar los *tipos abstractos*
 así las migraciones son independientes de algún DBMS específico. La clase [[yii\db\Schema]] define
@@ -147,7 +147,7 @@ serán traducidos a los tipos físicos correspondientes. En el caso de MySQL, `T
 en `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, mientras `TYPE_STRING` se vuelve `varchar(255)`.
 
 Puedes agregar restricciones adicionales al utilizar tipos abstractos. En el ejemplo anterior, ` NOT NULL` es agregado
-a `Schema::TYPE_STRING` para especificar que la columna no puede ser null.
+a `Schema::TYPE_STRING` para especificar que la columna no puede ser `null`.
 
 > Info: El mapeo entre tipos abstractos y tipos físicos es especificado en
   la propiedad [[yii\db\QueryBuilder::$typeMap|$typeMap]] en cada clase concreta `QueryBuilder`.
@@ -204,7 +204,7 @@ esto genera
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -214,7 +214,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -238,7 +238,7 @@ genera
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -250,7 +250,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -275,7 +275,7 @@ genera
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -287,7 +287,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -320,7 +320,7 @@ genera
 class m160328_040430_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -368,7 +368,7 @@ class m160328_040430_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -522,7 +522,7 @@ genera
 class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -569,7 +569,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -818,9 +818,9 @@ Hay varias maneras de personalizar el comando de migración.
 
 El comando de migración trae algunas opciones de línea de comandos que pueden ser utilizadas para personalizar su comportamiento:
 
-* `interactive`: boolean (por defecto true), especificar si se debe ejecutar la migración en modo interactivo.
-  Cuando se indica true, se le pedirá confirmación al usuario antes de ejecutar ciertas acciones.
-  Puedes querer definirlo como false si el comando está siendo utilizado como un proceso de fondo.
+* `interactive`: boolean (por defecto `true`), especificar si se debe ejecutar la migración en modo interactivo.
+  Cuando se indica `true`, se le pedirá confirmación al usuario antes de ejecutar ciertas acciones.
+  Puedes querer definirlo como `false` si el comando está siendo utilizado como un proceso de fondo.
 
 * `migrationPath`: string (por defecto `@app/migrations`), especifica el directorio que contiene todos los archivos
   de clase de las migraciones. Este puede ser especificado tanto como una ruta a un directorio un [alias](concept-aliases.md) de ruta.
@@ -843,13 +843,13 @@ El comando de migración trae algunas opciones de línea de comandos que pueden 
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), especifica los templates utilizados para generar las migraciones. Ver "[Generar Migraciones](#generating-migrations)"
   para más detalles.
 
 * `fields`: array de strings de definiciones de columna utilizado por el código de migración. Por defecto `[]`. El formato de cada
   definición es `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Por ejemplo, `--fields=name:string(12):notNull` produce
-  una columna string de tamaño 12 que es not null.
+  una columna string de tamaño 12 que es not `null`.
 
 El siguiente ejemplo muestra cómo se pueden utilizar estas opciones.
 

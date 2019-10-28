@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\mssql;
 
@@ -57,6 +62,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('{{table}}.[[column]]', $connection->quoteColumnName('{{table}}.[[column]]'));
         $this->assertEquals('{{%table}}.[column]', $connection->quoteColumnName('{{%table}}.column'));
         $this->assertEquals('{{%table}}.[column]', $connection->quoteColumnName('{{%table}}.[column]'));
+
+        $this->assertEquals('[column.name]', $connection->quoteColumnName('[column.name]'));
+        $this->assertEquals('[column.name.with.dots]', $connection->quoteColumnName('[column.name.with.dots]'));
+        $this->assertEquals('[table].[column.name.with.dots]', $connection->quoteColumnName('[table].[column.name.with.dots]'));
 
         $this->assertEquals('[table].[column]', $connection->quoteSql('[[table.column]]'));
         $this->assertEquals('[table].[column]', $connection->quoteSql('{{table}}.[[column]]'));

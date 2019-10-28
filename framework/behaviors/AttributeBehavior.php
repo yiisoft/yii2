@@ -7,7 +7,6 @@
 
 namespace yii\behaviors;
 
-use Yii;
 use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
@@ -67,7 +66,7 @@ class AttributeBehavior extends Behavior
     public $attributes = [];
     /**
      * @var mixed the value that will be assigned to the current attributes. This can be an anonymous function,
-     * callable in array format (e.g. `[$this, 'methodName']`), an [[Expression]] object representing a DB expression
+     * callable in array format (e.g. `[$this, 'methodName']`), an [[\yii\db\Expression|Expression]] object representing a DB expression
      * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
      * function will be assigned to the attributes.
      * The signature of the function should be as follows,
@@ -81,15 +80,20 @@ class AttributeBehavior extends Behavior
      */
     public $value;
     /**
-     * @var boolean whether to skip this behavior when the `$owner` has not been
+     * @var bool whether to skip this behavior when the `$owner` has not been
      * modified
      * @since 2.0.8
      */
     public $skipUpdateOnClean = true;
+    /**
+     * @var bool whether to preserve non-empty attribute values.
+     * @since 2.0.13
+     */
+    public $preserveNonEmptyValues = false;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {
@@ -118,6 +122,9 @@ class AttributeBehavior extends Behavior
             foreach ($attributes as $attribute) {
                 // ignore attribute names which are not string (e.g. when set by TimestampBehavior::updatedAtAttribute)
                 if (is_string($attribute)) {
+                    if ($this->preserveNonEmptyValues && !empty($this->owner->$attribute)) {
+                        continue;
+                    }
                     $this->owner->$attribute = $value;
                 }
             }
@@ -133,7 +140,7 @@ class AttributeBehavior extends Behavior
      */
     protected function getValue($event)
     {
-        if ($this->value instanceof Closure || is_array($this->value) && is_callable($this->value)) {
+        if ($this->value instanceof Closure || (is_array($this->value) && is_callable($this->value))) {
             return call_user_func($this->value, $event);
         }
 

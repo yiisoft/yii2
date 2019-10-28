@@ -7,25 +7,27 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use Yii;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use Yii;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
  * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
- * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
+ * The name is the [fully qualified class name](https://secure.php.net/manual/en/language.namespaces.rules.php)
  * of the class representing it.
  *
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
  * with a view, all its dependent asset bundles will be automatically registered.
  *
+ * For more details and usage information on AssetBundle, see the [guide article on assets](guide:structure-assets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AssetBundle extends Object
+class AssetBundle extends BaseObject
 {
     /**
      * @var string the directory that contains the source asset files for this asset bundle.
@@ -180,7 +182,7 @@ class AssetBundle extends Object
     public function publish($am)
     {
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
-            list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
+            list($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
         }
 
         if (isset($this->basePath, $this->baseUrl) && ($converter = $am->getConverter()) !== null) {

@@ -136,7 +136,7 @@ public function prepareDataProvider()
  * Если у пользователя нет доступа, следует выбросить исключение [[ForbiddenHttpException]].
  *
  * @param string $action ID действия, которое надо выполнить
- * @param \yii\base\Model $model модель, к которой нужно получить доступ. Если null, это означает, что модель, к которой нужно получить доступ, отсутствует.
+ * @param \yii\base\Model $model модель, к которой нужно получить доступ. Если `null`, это означает, что модель, к которой нужно получить доступ, отсутствует.
  * @param array $params дополнительные параметры
  * @throws ForbiddenHttpException если у пользователя нет доступа
  */
@@ -144,6 +144,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // проверить, имеет ли пользователь доступ к $action и $model
     // выбросить ForbiddenHttpException, если доступ следует запретить
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

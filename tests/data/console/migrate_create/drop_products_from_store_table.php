@@ -1,29 +1,34 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
- * Handles the dropping of table `products_from_store`.
+ * Handles the dropping of table `{{%{table}}}`.
  */
 class {$class} extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
-        \$this->dropTable('products_from_store');
+        \$this->dropTable('{{%{table}}}');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
-        \$this->createTable('products_from_store', [
+        \$this->createTable('{{%{table}}}', [
             'id' => \$this->primaryKey(),
         ]);
     }

@@ -1,13 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
 /**
- * Class OrderItem
+ * Class OrderItem.
  *
- * @property integer $order_id
- * @property integer $item_id
- * @property integer $quantity
+ * @property int $order_id
+ * @property int $item_id
+ * @property int $quantity
  * @property string $subtotal
  */
 class OrderItem extends ActiveRecord
@@ -32,11 +37,16 @@ class OrderItem extends ActiveRecord
     // relations used by ::testFindCompositeWithJoin()
     public function getOrderItemCompositeWithJoin()
     {
-        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ])
+        return $this->hasOne(self::className(), ['item_id' => 'item_id', 'order_id' => 'order_id'])
             ->joinWith('item');
     }
     public function getOrderItemCompositeNoJoin()
     {
-        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ]);
+        return $this->hasOne(self::className(), ['item_id' => 'item_id', 'order_id' => 'order_id']);
+    }
+
+    public function getCustom()
+    {
+        return Order::find();
     }
 }

@@ -82,16 +82,16 @@ class TimestampBehavior extends AttributeBehavior
      */
     public $updatedAtAttribute = 'updated_at';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
-     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * In case, when the value is `null`, the result of the PHP function [time()](https://secure.php.net/manual/en/function.time.php)
      * will be used as value.
      */
     public $value;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -106,9 +106,9 @@ class TimestampBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
-     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](https://secure.php.net/manual/en/function.time.php)
      * will be used as value.
      */
     protected function getValue($event)
@@ -116,6 +116,7 @@ class TimestampBehavior extends AttributeBehavior
         if ($this->value === null) {
             return time();
         }
+
         return parent::getValue($event);
     }
 

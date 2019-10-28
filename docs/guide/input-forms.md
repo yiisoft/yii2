@@ -1,15 +1,21 @@
 Creating Forms
 ==============
 
+ActiveRecord based forms: ActiveForm
+-----------------------
 The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when
 the form is based upon a model. Additionally, there are some useful methods in [[yii\helpers\Html]] that are typically
 used for adding buttons and help text to any form.
 
-A form, that is displayed on the client side, will in most cases have a corresponding [model](structure-models.md) which is used
-to validate its input on the server side (Check the [Validating Input](input-validation.md) section for more details on validation).
+A form, that is displayed on the client-side, will in most cases have a corresponding [model](structure-models.md) which is used
+to validate its input on the server-side (Check the [Validating Input](input-validation.md) section for more details on validation).
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
+
+> Tip: If the form fields are different from database columns or there are formatting and logic that is specific to that
+> form only, prefer creating a separate model extended from [[yii\base\Model]].
+
 In the following example, we show how a generic model can be used for a login form:
 
 ```php
@@ -52,6 +58,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
+### Wrapping with `begin()` and `end()` <span id="wrapping-with-begin-and-end"></span>
 In the above code, [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] not only creates a form instance, but also marks the beginning of the form.
 All of the content placed between [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] and
 [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] will be wrapped within the HTML `<form>` tag.
@@ -59,6 +66,7 @@ As with any widget, you can specify some options as to how the widget should be 
 the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 For all available options, please refer to the API documentation of [[yii\widgets\ActiveForm]].
 
+### ActiveField <span id="activefield"></span>
 In order to create a form element in the form, along with the element's label, and any applicable JavaScript validation,
 the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method is called, which returns an instance of [[yii\widgets\ActiveField]].
 When the result of this method is echoed directly, the result is a regular (text) input.
@@ -76,7 +84,7 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
 The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute name.
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
-of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
+of all attributes for the login form to be available in `$_POST['LoginForm']` on the server-side.
 
 > Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
 > overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
@@ -119,26 +127,77 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
-Creating Drop-down List <span id="creating-activeform-dropdownlist"></span>
+Creating Lists <span id="creating-activeform-lists"></span>
 -----------------------
 
-We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-method to create a drop-down list:
+There are 3 types of lists:
+* Dropdown lists 
+* Radio lists
+* Checkbox lists
+
+To create a list, you have to prepare the items. This can be done manually:
 
 ```php
-use app\models\ProductCategory;
+$items = [
+    1 => 'item 1', 
+    2 => 'item 2'
+]
+```
 
-/* @var $this yii\web\View */
+or by retrieval from the DB:
+
+```php
+$items = Category::find()
+        ->select(['label'])
+        ->indexBy('id')
+        ->column();
+```
+
+These `$items` have to be processed by the different list widgets.
+The value of the form field (and the current active item) will be automatically set 
+by the current value of the `$model`'s attribute. 
+
+#### Creating a drop-down list <span id="creating-activeform-dropdownlist"></span>
+
+We can use ActiveField [[\yii\widgets\ActiveField::dropDownList()]] method to create a drop-down list:
+
+```php
 /* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\Product */
 
-echo $form->field($model, 'product_category')->dropdownList(
-    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
+echo $form->field($model, 'category')->dropdownList([
+        1 => 'item 1', 
+        2 => 'item 2'
+    ],
     ['prompt'=>'Select Category']
 );
 ```
 
-The value of your model field will be automatically pre-selected.
+#### Creating a radio list <span id="creating-activeform-radioList"></span>
+
+We can use ActiveField [[\yii\widgets\ActiveField::radioList()]] method to create a radio list:
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->radioList([
+    1 => 'radio 1', 
+    2 => 'radio 2'
+]);
+```
+
+#### Creating a checkbox List <span id="creating-activeform-checkboxList"></span>
+
+We can use ActiveField [[\yii\widgets\ActiveField::checkboxList()]] method to create a checkbox list:
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->checkboxList([
+    1 => 'checkbox 1', 
+    2 => 'checkbox 2'
+]);
+```
+
 
 Working with Pjax <span id="working-with-pjax"></span>
 -----------------------
@@ -175,21 +234,20 @@ Pjax::end();
 #### Values in Submit Buttons and File Upload
 
 There are known issues using `jQuery.serializeArray()` when dealing with
-[[https://github.com/jquery/jquery/issues/2321|files]] and
-[[https://github.com/jquery/jquery/issues/2321|submit button values]] which
+[files](https://github.com/jquery/jquery/issues/2321) and
+[submit button values](https://github.com/jquery/jquery/issues/2321) which
 won't be solved and are instead deprecated in favor of the `FormData` class
 introduced in HTML5.
 
 That means the only official support for files and submit button values with
 ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
-[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|browser support]]
+[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
 for the `FormData` class.
 
 Further Reading <span id="further-reading"></span>
 ---------------
 
-The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server
-side as well as ajax- and client side validation.
+The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server-side as well as ajax and client-side validation.
 
 To read about more complex usage of forms, you may want to check out the following sections:
 

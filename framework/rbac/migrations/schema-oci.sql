@@ -18,7 +18,7 @@ drop table "auth_rule";
 create table "auth_rule"
 (
    "name"  varchar(64) not null,
-   "data"  varchar(1000),
+   "data"  BYTEA,
    "created_at"           integer,
    "updated_at"           integer,
     primary key ("name")
@@ -28,16 +28,15 @@ create table "auth_rule"
 create table "auth_item"
 (
    "name"                 varchar(64) not null,
-   "type"                 integer not null,
+   "type"                 smallint not null,
    "description"          varchar(1000),
    "rule_name"            varchar(64),
-   "data"                 varchar(1000),
-   "created_at"           integer,
+   "data"                 BYTEA,
    "updated_at"           integer,
         foreign key ("rule_name") references "auth_rule"("name") on delete set null,
         primary key ("name")
 );
--- adds oracle specific index to auth_item 
+-- adds oracle specific index to auth_item
 CREATE INDEX auth_type_index ON "auth_item"("type");
 
 create table "auth_item_child"
@@ -57,3 +56,5 @@ create table "auth_assignment"
    primary key ("item_name","user_id"),
    foreign key ("item_name") references "auth_item" ("name") on delete cascade
 );
+
+CREATE INDEX auth_assignment_user_id_idx ON "auth_assignment" ("user_id");

@@ -8,7 +8,8 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
+use yii\helpers\StringHelper;
 
 /**
  * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
@@ -18,7 +19,7 @@ use yii\base\Object;
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
-class ColumnSchemaBuilder extends Object
+class ColumnSchemaBuilder extends BaseObject
 {
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
@@ -34,18 +35,18 @@ class ColumnSchemaBuilder extends Object
      */
     protected $type;
     /**
-     * @var integer|string|array column size or precision definition. This is what goes into the parenthesis after
+     * @var int|string|array column size or precision definition. This is what goes into the parenthesis after
      * the column type. This can be either a string, an integer or an array. If it is an array, the array values will
      * be joined into a string separated by comma.
      */
     protected $length;
     /**
-     * @var boolean|null whether the column is or not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * @var bool|null whether the column is or not nullable. If this is `true`, a `NOT NULL` constraint will be added.
      * If this is `false`, a `NULL` constraint will be added.
      */
     protected $isNotNull;
     /**
-     * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
+     * @var bool whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
     protected $isUnique = false;
     /**
@@ -62,7 +63,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected $append;
     /**
-     * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
+     * @var bool whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
      */
     protected $isUnsigned = false;
@@ -72,7 +73,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected $after;
     /**
-     * @var boolean whether this column is to be inserted at the beginning of the table.
+     * @var bool whether this column is to be inserted at the beginning of the table.
      * @since 2.0.8
      */
     protected $isFirst;
@@ -90,6 +91,7 @@ class ColumnSchemaBuilder extends Object
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_TINYINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
         Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
@@ -120,7 +122,7 @@ class ColumnSchemaBuilder extends Object
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
-     * @param integer|string|array $length length or precision of the column. See [[$length]].
+     * @param int|string|array $length length or precision of the column. See [[$length]].
      * @param \yii\db\Connection $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
@@ -143,7 +145,7 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Adds a `NULL` constraint to the column
+     * Adds a `NULL` constraint to the column.
      * @return $this
      * @since 2.0.9
      */
@@ -258,7 +260,8 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Specify additional SQL to be appended to schema string.
+     * Specify additional SQL to be appended to column definition.
+     * Position modifiers will be appended after column definition in databases that support them.
      * @param string $sql the SQL string to be appended.
      * @return $this
      * @since 2.0.9
@@ -270,7 +273,7 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Builds the full string for the column's schema
+     * Builds the full string for the column's schema.
      * @return string
      */
     public function __toString()
@@ -282,6 +285,7 @@ class ColumnSchemaBuilder extends Object
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
+
         return $this->buildCompleteString($format);
     }
 
@@ -297,6 +301,7 @@ class ColumnSchemaBuilder extends Object
         if (is_array($this->length)) {
             $this->length = implode(',', $this->length);
         }
+
         return "({$this->length})";
     }
 
@@ -311,9 +316,9 @@ class ColumnSchemaBuilder extends Object
             return ' NOT NULL';
         } elseif ($this->isNotNull === false) {
             return ' NULL';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -342,7 +347,7 @@ class ColumnSchemaBuilder extends Object
                 break;
             case 'double':
                 // ensure type cast always has . as decimal separator in all locales
-                $string .= str_replace(',', '.', (string) $this->default);
+                $string .= StringHelper::floatToString($this->default);
                 break;
             case 'boolean':
                 $string .= $this->default ? 'TRUE' : 'FALSE';
@@ -427,7 +432,7 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Returns the complete column definition from input format
+     * Returns the complete column definition from input format.
      * @param string $format the format of the definition.
      * @return string a string containing the complete column definition.
      * @since 2.0.8

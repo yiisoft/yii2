@@ -98,7 +98,7 @@ The first argument could be:
 - an empty string: the currently requested URL will be returned;
 - a normal string: it will be returned as is.
 
-When `$scheme` is specified (either a string or true), an absolute URL with host info (obtained from
+When `$scheme` is specified (either a string or `true`), an absolute URL with host info (obtained from
 [[\yii\web\UrlManager::hostInfo]]) will be returned. If `$url` is already an absolute URL, its scheme
 will be replaced with the specified one.
 

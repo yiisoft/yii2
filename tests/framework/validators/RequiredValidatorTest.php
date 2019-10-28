@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\RequiredValidator;
@@ -13,7 +19,9 @@ class RequiredValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValueWithDefaults()
@@ -29,14 +37,14 @@ class RequiredValidatorTest extends TestCase
     {
         $val = new RequiredValidator(['requiredValue' => 55]);
         $this->assertTrue($val->validate(55));
-        $this->assertTrue($val->validate("55"));
-        $this->assertFalse($val->validate("should fail"));
+        $this->assertTrue($val->validate('55'));
+        $this->assertFalse($val->validate('should fail'));
         $this->assertTrue($val->validate(true));
         $val->strict = true;
         $this->assertTrue($val->validate(55));
-        $this->assertFalse($val->validate("55"));
-        $this->assertFalse($val->validate("0x37"));
-        $this->assertFalse($val->validate("should fail"));
+        $this->assertFalse($val->validate('55'));
+        $this->assertFalse($val->validate('0x37'));
+        $this->assertFalse($val->validate('should fail'));
         $this->assertFalse($val->validate(true));
     }
 
@@ -47,12 +55,12 @@ class RequiredValidatorTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_val' => null]);
         $val->validateAttribute($m, 'attr_val');
         $this->assertTrue($m->hasErrors('attr_val'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_val')), 'blank') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_val')), 'blank'));
         $val = new RequiredValidator(['requiredValue' => 55]);
         $m = FakedValidationModel::createWithAttributes(['attr_val' => 56]);
         $val->validateAttribute($m, 'attr_val');
         $this->assertTrue($m->hasErrors('attr_val'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_val')), 'must be') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_val')), 'must be'));
         $val = new RequiredValidator(['requiredValue' => 55]);
         $m = FakedValidationModel::createWithAttributes(['attr_val' => 55]);
         $val->validateAttribute($m, 'attr_val');

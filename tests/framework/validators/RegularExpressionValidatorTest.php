@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -14,7 +19,9 @@ class RegularExpressionValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValue()
@@ -43,12 +50,12 @@ class RegularExpressionValidatorTest extends TestCase
     public function testMessageSetOnInit()
     {
         $val = new RegularExpressionValidator(['pattern' => '/^[a-zA-Z0-9](\.)?([^\/]*)$/m']);
-        $this->assertTrue(is_string($val->message));
+        $this->assertInternalType('string', $val->message);
     }
 
     public function testInitException()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->expectException('yii\base\InvalidConfigException');
         $val = new RegularExpressionValidator();
         $val->validate('abc');
     }

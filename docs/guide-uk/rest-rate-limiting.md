@@ -62,5 +62,5 @@ public function behaviors()
 * `X-Rate-Limit-Remaining`: скільки залишилось дозволених запитів в поточний період часу
 * `X-Rate-Limit-Reset`: скільки часу у секундах потрібно почекати до отримання максимальної кількості дозволених запитів
 
-Ви можете відключити ці заголовки, встановивши властивість [[yii\filters\RateLimiter::enableRateLimitHeaders]] у false,
+Ви можете відключити ці заголовки, встановивши властивість [[yii\filters\RateLimiter::enableRateLimitHeaders]] у `false`,
 як показано у прикладі вище.

@@ -35,8 +35,15 @@ All these tools are accessible through the command `yii migrate`. In this sectio
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
-> Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
+> Tip: Migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
   hierarchy or clean up cache.
+
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
 
 
 ## Creating Migrations <span id="creating-migrations"></span>
@@ -136,7 +143,7 @@ class m150101_185401_create_news_table extends Migration
 
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
 property. You can use it to manipulate the database schema using the methods as described in
-[Working with Database Schema](db-dao.md#working-with-database-schema-).
+[Working with Database Schema](db-dao.md#database-schema).
 
 Rather than using physical types, when creating a table or column you should use *abstract types*
 so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines
@@ -147,7 +154,7 @@ will be translated into the corresponding physical types. In the case of MySQL, 
 into `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, while `TYPE_STRING` becomes `varchar(255)`.
 
 You can append additional constraints when using abstract types. In the above example, ` NOT NULL` is appended
-to `Schema::TYPE_STRING` to specify that the column cannot be null.
+to `Schema::TYPE_STRING` to specify that the column cannot be `null`.
 
 > Info: The mapping between abstract types and physical types is specified by
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
@@ -191,7 +198,7 @@ In the following all variants of this feature are described.
 
 ### Create Table
 
-```php
+```
 yii migrate/create create_post_table
 ```
 
@@ -204,7 +211,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -214,7 +221,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -225,7 +232,7 @@ class m150811_220037_create_post_table extends Migration
 
 To create table fields right away, specify them via `--fields` option.
 
-```php
+```
 yii migrate/create create_post_table --fields="title:string,body:text"
 ```
 
@@ -238,7 +245,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -250,7 +257,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -262,7 +269,7 @@ class m150811_220037_create_post_table extends Migration
 
 You can specify more field parameters.
 
-```php
+```
 yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ```
 
@@ -275,7 +282,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -287,7 +294,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -296,14 +303,14 @@ class m150811_220037_create_post_table extends Migration
 }
 ```
 
-> Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
+> Note: Primary key is added automatically and is named `id` by default. If you want to use another name you may
 > specify it explicitly like `--fields="name:primaryKey"`.
 
 #### Foreign keys
 
 Since 2.0.8 the generator supports foreign keys using the `foreignKey` keyword.
 
-```php
+```
 yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
@@ -320,7 +327,7 @@ generates
 class m160328_040430_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -368,7 +375,7 @@ class m160328_040430_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -419,9 +426,14 @@ column named `author_id` with a foreign key to the `user` table while
 `category_id:integer:defaultValue(1):foreignKey` will generate a column
 `category_id` with a foreign key to the `category` table.
 
+Since 2.0.11, `foreignKey` keyword accepts a second parameter, separated by whitespace.
+It accepts the name of the related column for the foreign key generated.
+If no second parameter is passed, the column name will be fetched from table schema.
+If no schema exists, primary key isn't set or is composite, default name `id` will be used.
+
 ### Drop Table
 
-```php
+```
 yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ```
 
@@ -453,7 +465,7 @@ content would contain `addColumn` and `dropColumn` statements necessary.
 
 To add column:
 
-```php
+```
 yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
@@ -472,6 +484,12 @@ class m150811_220037_add_position_column_to_post_table extends Migration
         $this->dropColumn('post', 'position');
     }
 }
+```
+
+You can specify multiple columns as follows:
+
+```
+yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,yyy:text"
 ```
 
 ### Drop Column
@@ -505,7 +523,7 @@ class m150811_220037_drop_position_column_from_post_table extends Migration
 If the migration name is of the form `create_junction_table_for_xxx_and_yyy_tables` or `create_junction_xxx_and_yyy_tables`
 then code necessary to create junction table will be generated.
 
-```php
+```
 yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 
@@ -522,7 +540,7 @@ generates
 class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -569,7 +587,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -601,6 +619,9 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 }
 ```
+
+Since 2.0.11 foreign key column names for junction tables are fetched from table schema.
+In case table isn't defined in schema, or the primary key isn't set or is composite, default name `id` is used.
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
@@ -669,6 +690,7 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::insert()|insert()]]: inserting a single row
 * [[yii\db\Migration::batchInsert()|batchInsert()]]: inserting multiple rows
 * [[yii\db\Migration::update()|update()]]: updating rows
+* [[yii\db\Migration::upsert()|upsert()]]: inserting a single row or updating it if it exists (since 2.0.14)
 * [[yii\db\Migration::delete()|delete()]]: deleting rows
 * [[yii\db\Migration::createTable()|createTable()]]: creating a table
 * [[yii\db\Migration::renameTable()|renameTable()]]: renaming a table
@@ -690,16 +712,16 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: dropping comment from table
 
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
-  to display extra message about retrieving data from a database. It is also because you can use the powerful
-  [Query Builder](db-query-builder.md) to build and run complex queries.
-
-> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
-> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
-> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
-> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
-> existing migrations. For this reason migration code should be kept independent from other application logic such
-> as Active Record classes.
-
+> to display extra message about retrieving data from a database. It is also because you can use the powerful
+> [Query Builder](db-query-builder.md) to build and run complex queries.
+> Using Query Builder in a migration may look like this:
+>
+> ```php
+> // update status field for all users
+> foreach((new Query)->from('users')->each() as $user) {
+>     $this->update('users', ['status' => 1], ['id' => $user['id']]);
+> }
+> ```
 
 ## Applying Migrations <span id="applying-migrations"></span>
 
@@ -774,6 +796,13 @@ yii migrate/redo 3      # redo the last 3 applied migrations
 
 > Note: If a migration is not reversible, you will not be able to redo it.
 
+## Refreshing Migrations <span id="refreshing-migrations"></span>
+
+Since Yii 2.0.13 you can delete all tables and foreign keys from the database and apply all migrations from the beginning.
+
+```
+yii migrate/fresh       # truncate the database and apply all migrations from the beginning
+```
 
 ## Listing Migrations <span id="listing-migrations"></span>
 
@@ -817,13 +846,14 @@ There are several ways to customize the migration command.
 
 The migration command comes with a few command-line options that can be used to customize its behaviors:
 
-* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode.
-  When this is true, the user will be prompted before the command performs certain actions.
-  You may want to set this to false if the command is being used in a background process.
+* `interactive`: boolean (defaults to `true`), specifies whether to perform migrations in an interactive mode.
+  When this is `true`, the user will be prompted before the command performs certain actions.
+  You may want to set this to `false` if the command is being used in a background process.
 
-* `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration
+* `migrationPath`: string|array (defaults to `@app/migrations`), specifies the directory storing all migration
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md).
-  Note that the directory must exist, or the command may trigger an error.
+  Note that the directory must exist, or the command may trigger an error. Since version 2.0.12 an array can be
+  specified for loading migrations from multiple sources.
 
 * `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
   migration history information. The table will be automatically created by the command if it does not exist.
@@ -842,13 +872,13 @@ The migration command comes with a few command-line options that can be used to 
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
   for more details.
 
 * `fields`: array of column definition strings used for creating migration code. Defaults to `[]`. The format of each
   definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. For example, `--fields=name:string(12):notNull` produces
-  a string column of size 12 which is not null.
+  a string column of size 12 which is not `null`.
 
 The following example shows how you can use these options.
 
@@ -881,6 +911,120 @@ return [
 With the above configuration, each time you run the migration command, the `backend_migration` table
 will be used to record the migration history. You no longer need to specify it via the `migrationTable`
 command-line option.
+
+
+### Namespaced Migrations <span id="namespaced-migrations"></span>
+
+Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
+[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
+migration classes allows you usage of the several source locations for the migrations. For example:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => null, // disable non-namespaced migrations if app\migrations is listed below
+            'migrationNamespaces' => [
+                'app\migrations', // Common migrations for the whole application
+                'module\migrations', // Migrations for the specific project's module
+                'some\extension\migrations', // Migrations for the specific extension
+            ],
+        ],
+    ],
+];
+```
+
+> Note: Migrations applied from different namespaces will create a **single** migration history, e.g. you might be
+  unable to apply or revert migrations from particular namespace only.
+
+While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
+migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
+to escape it properly to avoid shell errors or incorrect behavior. For example:
+
+```
+yii migrate/create app\\migrations\\CreateUserTable
+```
+
+> Note: Migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
+  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
+  property.
+
+Since version 2.0.12 the [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] property
+also accepts an array for specifying multiple directories that contain migrations without a namespace.
+This is mainly added to be used in existing projects which use migrations from different locations. These migrations mainly come
+from external sources, like Yii extensions developed by other developers,
+which can not be changed to use namespaces easily when starting to use the new approach.
+
+#### Generating namespaced migrations
+
+Namespaced migrations follow "CamelCase" naming pattern `M<YYMMDDHHMMSS><Name>` (for example `M190720100234CreateUserTable`). 
+When generating such migration remember that table name will be converted from "CamelCase" format to "underscored". For 
+example:
+
+```
+yii migrate/create app\\migrations\\DropGreenHotelTable
+```
+
+generates migration within namespace `app\migrations` dropping table `green_hotel` and
+
+```
+yii migrate/create app\\migrations\\CreateBANANATable
+```
+
+generates migration within namespace `app\migrations` creating table `b_a_n_a_n_a`.
+
+If table's name is mixed-cased (like `studentsExam`) you need to precede the name with underscore:
+
+```
+yii migrate/create app\\migrations\\Create_studentsExamTable
+```
+
+This generates migration within namespace `app\migrations` creating table `studentsExam`.
+
+### Separated Migrations <span id="separated-migrations"></span>
+
+Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
+'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
+the ones dedicated to main project functionality.
+
+If you want several migrations to be applied and tracked down completely separated from each other, you can configure multiple
+migration commands which will use different namespaces and migration history tables:
+
+```php
+return [
+    'controllerMap' => [
+        // Common migrations for the whole application
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+            'migrationPath' => null,
+        ],
+        // Migrations for the specific project's module
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+            'migrationPath' => null,
+        ],
+        // Migrations for the specific extension
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@yii/rbac/migrations',
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+Note that to synchronize database you now need to run multiple commands instead of one:
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
 
 
 ## Migrating Multiple Databases <span id="migrating-multiple-databases"></span>

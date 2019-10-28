@@ -1,5 +1,5 @@
-Yii2 Core Framework Code Style
-==============================
+Yii 2 Core Framework Code Style
+===============================
 
 The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code
 into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose
@@ -7,8 +7,7 @@ what suits you better.
 
 You can get a config for CodeSniffer here: https://github.com/yiisoft/yii2-coding-standards
 
-1. Overview
------------
+## 1. Overview
 
 Overall we're using [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
 compatible style so everything that applies to
@@ -26,8 +25,7 @@ style as well.
 - Property names MUST start with an initial underscore if they are private.
 - Always use `elseif` instead of `else if`.
 
-2. Files
---------
+## 2. Files
 
 ### 2.1. PHP Tags
 
@@ -40,13 +38,11 @@ style as well.
 
 PHP code MUST use only UTF-8 without BOM.
 
-3. Class Names
---------------
+## 3. Class Names
 
 Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`.
 
-4. Classes
-----------
+## 4. Classes
 
 The term "class" refers to all classes and interfaces here.
 
@@ -62,7 +58,7 @@ The term "class" refers to all classes and interfaces here.
 /**
  * Documentation
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // code
 }
@@ -142,9 +138,29 @@ class Foo
 }
 ```
 
-### 4.4 Doc blocks
+### 4.4 PHPDoc blocks
 
-`@param`, `@var`, `@property` and `@return` must declare types as `boolean`, `integer`, `string`, `array` or `null`. You can use a class names as well such as `Model` or `ActiveRecord`. For a typed arrays use `ClassName[]`.
+ - `@param`, `@var`, `@property` and `@return` must declare types as `bool`, `int`, `string`, `array` or `null`.
+   You can use a class names as well such as `Model` or `ActiveRecord`.
+ - For a typed arrays use `ClassName[]`.
+ - The first line of the PHPDoc must describe the purpose of the method.
+ - If method checks something (`isActive`, `hasClass`, etc) the first line should start with `Checks whether`.
+ - `@return` should explicitly describe what exactly will be returned.
+
+```php
+/**
+ * Checks whether the IP is in subnet range
+ *
+ * @param string $ip an IPv4 or IPv6 address
+ * @param int $cidr the CIDR lendth
+ * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
+ * @return bool whether the IP is in subnet range
+ */
+ private function inRange($ip, $cidr, $range)
+ {
+   // ...
+ }
+```
 
 ### 4.5 Constructors
 
@@ -351,7 +367,7 @@ Documentation
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
 - There is no need to use `@return` if method does return nothing.
-- All virtual properties in classes that extend from `yii\base\Object`
+- All virtual properties in classes that extend from `yii\base\BaseObject`
   are documented with an `@property` tag in the class doc block.
   These annotations are automatically generated from the `@return` or `@param`
   tag in the corresponding getter or setter by running `./build php-doc` in the build directory.
@@ -396,7 +412,7 @@ Documentation
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 
@@ -432,10 +448,10 @@ As you can see in the examples above we use markdown to format the phpDoc commen
 
 There is additional syntax for cross linking between classes, methods and properties in the documentation:
 
-- `'[[canSetProperty]] ` will create a link to the `canSetProperty` method or property of the same class.
-- `'[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
-- `'[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
-- `'[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
+- `[[canSetProperty]]` will create a link to the `canSetProperty` method or property of the same class.
+- `[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
+- `[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
+- `[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
 
 To give one of the above mentioned links another label than the class or method name you can use the syntax shown in the following example:
 

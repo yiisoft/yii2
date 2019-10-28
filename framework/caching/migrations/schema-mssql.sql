@@ -8,6 +8,8 @@
  * @license http://www.yiiframework.com/license/
  * @since 2.0.7
  */
+if object_id('[cache]', 'U') is not null
+    drop table [cache];
 
 drop table if exists [cache];
 

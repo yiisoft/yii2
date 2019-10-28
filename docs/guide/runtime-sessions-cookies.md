@@ -141,6 +141,11 @@ session storage class without the need to modify your application code that uses
   sure that the session has already been started by [[yii\web\Session::open()]]. This is because custom session storage
   handlers are registered within this method.
 
+> Note: If you use a custom session storage you may need to configure the session garbage collector explicitly.
+  Some installations of PHP (e.g. Debian) use a garbage collector probability of 0 and clean session files
+  offline in a cronjob. This process does not apply to your custom storage so you need to configure
+  [[yii\web\Session::$GCProbability]] to use a non-zero value.
+
 To learn how to configure and use these component classes, please refer to their API documentation. Below is
 an example showing how to configure [[yii\web\DbSession]] in the application configuration to use a database table
 for session storage:
@@ -178,6 +183,31 @@ where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB 
   the length of the `id` column. For example, if `session.hash_function=sha256`, you should use a
   length 64 instead of 40.
 
+Alternatively, this can be accomplished with the following migration:
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m170529_050554_create_table_session extends Migration
+{
+    public function up()
+    {
+        $this->createTable('{{%session}}', [
+            'id' => $this->char(64)->notNull(),
+            'expire' => $this->integer(),
+            'data' => $this->binary()
+        ]);
+        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropTable('{{%session}}');
+    }
+}
+```
 
 ### Flash Data <span id="flash-data"></span>
 
@@ -302,17 +332,12 @@ examples, the [[yii\web\Cookie]] class also defines other properties to fully re
 information, such as [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. You may configure these
 properties as needed to prepare a cookie and then add it to the response's cookie collection.
 
-> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set to true. This helps mitigate
-the risk of a client side script accessing the protected cookie (if the browser supports it). You may read
-the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
-
-
 ### Cookie Validation <span id="cookie-validation"></span>
 
 When you are reading and sending cookies through the `request` and `response` components as shown in the last
 two subsections, you enjoy the added security of cookie validation which protects cookies from being modified
-on the client side. This is achieved by signing each cookie with a hash string, which allows the application to
-tell if a cookie has been modified on the client side. If so, the cookie will NOT be accessible through the
+on the client-side. This is achieved by signing each cookie with a hash string, which allows the application to
+tell if a cookie has been modified on the client-side. If so, the cookie will NOT be accessible through the
 [[yii\web\Request::cookies|cookie collection]] of the `request` component.
 
 > Note: Cookie validation only protects cookie values from being modified. If a cookie fails the validation, 
@@ -320,7 +345,7 @@ you may still access it through `$_COOKIE`. This is because third-party librarie
 in their own way, which does not involve cookie validation.
 
 Cookie validation is enabled by default. You can disable it by setting the [[yii\web\Request::enableCookieValidation]]
-property to be false, although we strongly recommend you do not do so.
+property to be `false`, although we strongly recommend you do not do so.
 
 > Note: Cookies that are directly read/sent via `$_COOKIE` and `setcookie()` will NOT be validated.
 
@@ -339,3 +364,36 @@ return [
 
 > Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] is critical to your application's security.
   It should only be known to people you trust. Do not store it in the version control system.
+  
+## Security settings
+
+Both [[yii\web\Cookie]] and [[yii\web\Session]] support the following security flags:
+
+### httpOnly
+
+For better security, the default value of [[yii\web\Cookie::httpOnly]] and the 'httponly' parameter of 
+[[yii\web\Session::cookieParams]] is set to `true`. This helps mitigate the risk of a client-side script accessing 
+the protected cookie (if the browser supports it).
+You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+
+### secure
+
+The purpose of the secure flag is to prevent cookies from being sent in clear text. If the browser supports the
+secure flag it will only include the cookie when the request is sent over a secure (TLS) connection.
+You may read the [SecureFlag wiki article](https://www.owasp.org/index.php/SecureFlag) for more details.
+
+### sameSite
+
+Starting with Yii 2.0.21 the [[yii\web\Cookie::sameSite]] setting is supported. It requires PHP version 7.3.0 or higher.
+The purpose of the `sameSite` setting is to prevent CSRF (Cross-Site Request Forgery) attacks.
+If the browser supports the `sameSite` setting it will only include the cookie according to the specified policy ('Lax' or 'Strict').
+You may read the [SameSite wiki article](https://www.owasp.org/index.php/SameSite) for more details.
+For better security, an exception will be thrown if `sameSite` is used with an unsupported version of PHP.
+To use this feature across different PHP versions check the version first. E.g.
+```php
+[
+    'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
+]
+```
+> Note: Since not all browsers support the `sameSite` setting yet, it is still strongly recommended to also include
+  [additional CSRF protection](security-best-practices.md#avoiding-csrf).

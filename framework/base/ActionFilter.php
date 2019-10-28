@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use yii\helpers\StringHelper;
+
 /**
  * ActionFilter is the base class for action filters.
  *
@@ -14,6 +16,8 @@ namespace yii\base;
  * the `beforeAction` and `afterAction` events triggered by modules and controllers.
  *
  * Check implementation of [[\yii\filters\AccessControl]], [[\yii\filters\PageCache]] and [[\yii\filters\HttpCache]] as examples on how to use it.
+ *
+ * For more details and usage information on ActionFilter, see the [guide article on filters](guide:structure-filters).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -41,7 +45,7 @@ class ActionFilter extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attach($owner)
     {
@@ -50,7 +54,7 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function detach()
     {
@@ -93,7 +97,7 @@ class ActionFilter extends Behavior
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
@@ -113,7 +117,7 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * Returns an action ID by converting [[Action::$uniqueId]] into an ID relative to the module
+     * Returns an action ID by converting [[Action::$uniqueId]] into an ID relative to the module.
      * @param Action $action
      * @return string
      * @since 2.0.7
@@ -136,7 +140,7 @@ class ActionFilter extends Behavior
     /**
      * Returns a value indicating whether the filter is active for the given action.
      * @param Action $action the action being filtered
-     * @return boolean whether the filter is active for the given action.
+     * @return bool whether the filter is active for the given action.
      */
     protected function isActive($action)
     {
@@ -147,7 +151,7 @@ class ActionFilter extends Behavior
         } else {
             $onlyMatch = false;
             foreach ($this->only as $pattern) {
-                if (fnmatch($pattern, $id)) {
+                if (StringHelper::matchWildcard($pattern, $id)) {
                     $onlyMatch = true;
                     break;
                 }
@@ -156,7 +160,7 @@ class ActionFilter extends Behavior
 
         $exceptMatch = false;
         foreach ($this->except as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 $exceptMatch = true;
                 break;
             }

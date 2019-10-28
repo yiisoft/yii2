@@ -11,7 +11,7 @@ experience than before. In particular, the Yii error handler does the following 
 * Supports different error response formats.
 
 The [[yii\web\ErrorHandler|error handler]] is enabled by default. You may disable it by defining the constant
-`YII_ENABLE_ERROR_HANDLER` to be false in the [entry script](structure-entry-scripts.md) of your application.
+`YII_ENABLE_ERROR_HANDLER` to be `false` in the [entry script](structure-entry-scripts.md) of your application.
 
 
 ## Using Error Handler <span id="using-error-handler"></span>
@@ -62,8 +62,8 @@ throw new NotFoundHttpException();
 ## Customizing Error Display <span id="customizing-error-display"></span>
 
 The [[yii\web\ErrorHandler|error handler]] adjusts the error display according to the value of the constant `YII_DEBUG`.
-When `YII_DEBUG` is true (meaning in debug mode), the error handler will display exceptions with detailed call
-stack information and source code lines to help easier debugging. And when `YII_DEBUG` is false, only the error
+When `YII_DEBUG` is `true` (meaning in debug mode), the error handler will display exceptions with detailed call
+stack information and source code lines to help easier debugging. And when `YII_DEBUG` is `false`, only the error
 message will be displayed to prevent revealing sensitive information about the application.
 
 > Info: If an exception is a descendant of [[yii\base\UserException]], no call stack will be displayed regardless
@@ -73,7 +73,7 @@ developers do not need to fix anything.
 By default, the [[yii\web\ErrorHandler|error handler]] displays errors using two [views](structure-views.md):
 
 * `@yii/views/errorHandler/error.php`: used when errors should be displayed WITHOUT call stack information.
-  When `YII_DEBUG` is false, this is the only error view to be displayed.
+  When `YII_DEBUG` is `false`, this is the only error view to be displayed.
 * `@yii/views/errorHandler/exception.php`: used when errors should be displayed WITH call stack information.
 
 You can configure the [[yii\web\ErrorHandler::errorView|errorView]] and [[yii\web\ErrorHandler::exceptionView|exceptionView]]

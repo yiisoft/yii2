@@ -18,7 +18,7 @@ namespace yii\helpers;
 class BaseHtmlPurifier
 {
     /**
-     * Passes markup through HTMLPurifier making it safe to output to end user
+     * Passes markup through HTMLPurifier making it safe to output to end user.
      *
      * @param string $content The HTML content to purify
      * @param array|\Closure|null $config The config to use for HtmlPurifier.

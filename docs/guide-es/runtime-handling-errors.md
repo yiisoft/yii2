@@ -11,7 +11,7 @@ anteriormente. En particular, el gestor de errores de Yii hace lo siguiente para
 * Soporta diferentes formatos de respuesta (response) de errores.
 
 El [[yii\web\ErrorHandler|error handler]] esta habilitado de forma predeterminada. Se puede deshabilitar definiendo la
-constante `YII_ENABLE_ERROR_HANDLER` con valor false en el [script de entrada (entry script)](structure-entry-scripts.md) de la aplicación.
+constante `YII_ENABLE_ERROR_HANDLER` con valor `false` en el [script de entrada (entry script)](structure-entry-scripts.md) de la aplicación.
 
 
 ## Uso del Gestor de Errores <span id="using-error-handler"></span>

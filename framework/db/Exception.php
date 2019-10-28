@@ -17,7 +17,7 @@ class Exception extends \yii\base\Exception
 {
     /**
      * @var array the error info provided by a PDO exception. This is the same as returned
-     * by [PDO::errorInfo](http://www.php.net/manual/en/pdo.errorinfo.php).
+     * by [PDO::errorInfo](https://secure.php.net/manual/en/pdo.errorinfo.php).
      */
     public $errorInfo = [];
 
@@ -26,7 +26,7 @@ class Exception extends \yii\base\Exception
      * Constructor.
      * @param string $message PDO error message
      * @param array $errorInfo PDO error info
-     * @param integer $code PDO error code
+     * @param int $code PDO error code
      * @param \Exception $previous The previous exception used for the exception chaining.
      */
     public function __construct($message, $errorInfo = [], $code = 0, \Exception $previous = null)

@@ -7,11 +7,12 @@
 
 namespace yii\widgets;
 
+use Closure;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -60,7 +61,9 @@ class Menu extends Widget
      *   otherwise, [[labelTemplate]] will be used.
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
      * - items: array, optional, specifies the sub-menu items. Its format is the same as the parent items.
-     * - active: boolean, optional, whether this menu item is in active state (currently selected).
+     * - active: boolean or Closure, optional, whether this menu item is in active state (currently selected).
+     *   When using a closure, its signature should be `function ($item, $hasActiveChild, $isItemActive, $widget)`.
+     *   Closure must return `true` if item should be marked as `active`, otherwise - `false`.
      *   If a menu item is active, its CSS class will be appended with [[activeCssClass]].
      *   If this option is not set, the menu item will be set active automatically when the current request
      *   is triggered by `url`. For more details, please refer to [[isItemActive()]].
@@ -105,7 +108,7 @@ class Menu extends Widget
      */
     public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
     /**
-     * @var boolean whether the labels for menu items should be HTML-encoded.
+     * @var bool whether the labels for menu items should be HTML-encoded.
      */
     public $encodeLabels = true;
     /**
@@ -113,18 +116,18 @@ class Menu extends Widget
      */
     public $activeCssClass = 'active';
     /**
-     * @var boolean whether to automatically activate items according to whether their route setting
+     * @var bool whether to automatically activate items according to whether their route setting
      * matches the currently requested route.
      * @see isItemActive()
      */
     public $activateItems = true;
     /**
-     * @var boolean whether to activate parent menu items when one of the corresponding child menu items is active.
+     * @var bool whether to activate parent menu items when one of the corresponding child menu items is active.
      * The activated parent menu items will also have its CSS classes appended with [[activeCssClass]].
      */
     public $activateParents = false;
     /**
-     * @var boolean whether to hide empty menu items. An empty menu item is one whose `url` option is not
+     * @var bool whether to hide empty menu items. An empty menu item is one whose `url` option is not
      * set and which has no visible child menu items.
      */
     public $hideEmptyItems = true;
@@ -205,13 +208,7 @@ class Menu extends Widget
             if ($i === $n - 1 && $this->lastItemCssClass !== null) {
                 $class[] = $this->lastItemCssClass;
             }
-            if (!empty($class)) {
-                if (empty($options['class'])) {
-                    $options['class'] = implode(' ', $class);
-                } else {
-                    $options['class'] .= ' ' . implode(' ', $class);
-                }
-            }
+            Html::addCssClass($options, $class);
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
@@ -241,19 +238,19 @@ class Menu extends Widget
                 '{url}' => Html::encode(Url::to($item['url'])),
                 '{label}' => $item['label'],
             ]);
-        } else {
-            $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
-
-            return strtr($template, [
-                '{label}' => $item['label'],
-            ]);
         }
+
+        $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
+
+        return strtr($template, [
+            '{label}' => $item['label'],
+        ]);
     }
 
     /**
      * Normalizes the [[items]] property to remove invisible items and activate certain items.
      * @param array $items the items to be normalized.
-     * @param boolean $active whether there is an active child menu item.
+     * @param bool $active whether there is an active child menu item.
      * @return array the normalized menu items
      */
     protected function normalizeItems($items, &$active)
@@ -285,6 +282,8 @@ class Menu extends Widget
                 } else {
                     $items[$i]['active'] = false;
                 }
+            } elseif ($item['active'] instanceof Closure) {
+                $active = $items[$i]['active'] = call_user_func($item['active'], $item, $hasActiveChild, $this->isItemActive($item), $this);
             } elseif ($item['active']) {
                 $active = true;
             }
@@ -301,7 +300,7 @@ class Menu extends Widget
      * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
      * be considered active.
      * @param array $item the menu item to be checked
-     * @return boolean whether the menu item is active
+     * @return bool whether the menu item is active
      */
     protected function isItemActive($item)
     {

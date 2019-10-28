@@ -8,9 +8,10 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
-use yii\web\JsExpression;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -32,18 +33,18 @@ class EmailValidator extends Validator
      */
     public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
     /**
-     * @var boolean whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
+     * @var bool whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
      * @see fullPattern
      */
     public $allowName = false;
     /**
-     * @var boolean whether to check whether the email's domain exists and has either an A or MX record.
+     * @var bool whether to check whether the email's domain exists and has either an A or MX record.
      * Be aware that this check can fail due to temporary DNS problems even if the email address is
      * valid and an email would be deliverable. Defaults to false.
      */
     public $checkDNS = false;
     /**
-     * @var boolean whether validation process should take into account IDN (internationalized domain
+     * @var bool whether validation process should take into account IDN (internationalized domain
      * names). Defaults to false meaning that validation of emails containing IDN will always fail.
      * Note that in order to use IDN validation you have to install and enable `intl` PHP extension,
      * otherwise an exception would be thrown.
@@ -52,7 +53,7 @@ class EmailValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -66,7 +67,7 @@ class EmailValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -76,8 +77,8 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = idn_to_ascii($matches['local']);
-                $matches['domain'] = idn_to_ascii($matches['domain']);
+                $matches['local'] = $this->idnToAscii($matches['local']);
+                $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
 
@@ -94,9 +95,9 @@ class EmailValidator extends Validator
                 // http://www.rfc-editor.org/errata_search.php?eid=1690
                 $valid = false;
             } else {
-                $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
+                $valid = preg_match($this->pattern, $value) || ($this->allowName && preg_match($this->fullPattern, $value));
                 if ($valid && $this->checkDNS) {
-                    $valid = checkdnsrr($matches['domain'], 'MX') || checkdnsrr($matches['domain'], 'A');
+                    $valid = $this->isDNSValid($matches['domain']);
                 }
             }
         }
@@ -105,28 +106,74 @@ class EmailValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * @param string $domain
+     * @return bool if DNS records for domain are valid
+     * @see https://github.com/yiisoft/yii2/issues/17083
+     */
+    protected function isDNSValid($domain)
+    {
+        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false);
+    }
+
+    private function hasDNSRecord($domain, $isMX)
+    {
+        $normalizedDomain = $domain . '.';
+        if (!checkdnsrr($normalizedDomain, ($isMX ? 'MX' : 'A'))) {
+            return false;
+        }
+
+        try {
+            // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
+            $records = dns_get_record($normalizedDomain, ($isMX ? DNS_MX : DNS_A));
+        } catch (ErrorException $exception) {
+            return false;
+        }
+
+        return !empty($records);
+    }
+
+    private function idnToAscii($idn)
+    {
+        if (PHP_VERSION_ID < 50600) {
+            // TODO: drop old PHP versions support
+            return idn_to_ascii($idn);
+        }
+
+        return idn_to_ascii($idn, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        if ($this->enableIDN) {
+            PunycodeAsset::register($view);
+        }
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientOptions($model, $attribute)
     {
         $options = [
             'pattern' => new JsExpression($this->pattern),
             'fullPattern' => new JsExpression($this->fullPattern),
             'allowName' => $this->allowName,
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
-            'enableIDN' => (bool)$this->enableIDN,
+            ]),
+            'enableIDN' => (bool) $this->enableIDN,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-
-        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }

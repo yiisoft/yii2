@@ -44,12 +44,12 @@ INSERT INTO `country` VALUES ('RU','Russia',146519759);
 INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
-W tym miejscu masz już utworzoną bazę danych o nazwie `yii2basic`, posiadającą tabelę `country` z trzeba kolumnami. Tabela zawiera 10 wierszy danych.
+W tym miejscu masz już utworzoną bazę danych o nazwie `yii2basic`, posiadającą tabelę `country` z trzema kolumnami. Tabela zawiera 10 wierszy danych.
 
 Konfiguracja połączenia z bazą danych <span id="configuring-db-connection"></span>
 ---------------------------
 
-Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](http://www.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
+Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](https://secure.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
 (np. `pdo_mysql` dla MySQL).
 Jest to podstawowe wymaganie, jeśli Twoja aplikacja używa relacyjnej bazy danych.
 
@@ -69,7 +69,7 @@ return [
 
 Plik `config/db.php` jest typowym narzędziem [konfiguracyjnym](concept-configurations.md) opartym na plikach.
 Ten szczególny plik konfiguracyjny określa parametry potrzebne do utworzenia oraz zainicjalizowania instancji [[yii\db\Connection|Connection]], dzięki czemu będziesz mógł wywoływać 
-komendy SQL dp swojej bazy przez aplikację.
+komendy SQL do swojej bazy przez aplikację.
 
 Powyższa konfiguracja może być dostępna z poziomu kodu aplikacji używając wyrażenia `Yii::$app->db`.
 
@@ -213,7 +213,7 @@ Aby zobaczyć jak działa powyższy kod, użyj przeglądarki i przejdź pod poda
 http://hostname/index.php?r=country%2Findex
 ```
 
-![Lista krajów](../guide/images/start-country-list.png)
+![Lista krajów](images/start-country-list.png)
 
 Na początku zobaczysz stronę pokazującą pięć krajów. Poniżej listy znajduje się paginacja z czterema przyciskami.
 Jeśli klikniesz przycisk "2", zobaczysz stronę wyświetlającą pięć innych krajów z bazy danych: druga strona wierszy.

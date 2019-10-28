@@ -12,7 +12,7 @@ use yii\console\Controller;
 use yii\helpers\Console;
 
 /**
- * Runs PHP built-in web server
+ * Runs PHP built-in web server.
  *
  * In order to access server from remote machines use 0.0.0.0:8000. That is especially useful when running server in
  * a virtual machine.
@@ -32,7 +32,7 @@ class ServeController extends Controller
      */
     public $port = 8080;
     /**
-     * @var string path or path alias to directory to serve
+     * @var string path or [path alias](guide:concept-aliases) to directory to serve
      */
     public $docroot = '@app/web';
     /**
@@ -43,11 +43,11 @@ class ServeController extends Controller
 
 
     /**
-     * Runs PHP built-in web server
+     * Runs PHP built-in web server.
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
-     * @return integer
+     * @return int
      */
     public function actionIndex($address = 'localhost')
     {
@@ -83,7 +83,7 @@ class ServeController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -95,7 +95,7 @@ class ServeController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
@@ -109,7 +109,7 @@ class ServeController extends Controller
 
     /**
      * @param string $address server address
-     * @return boolean if address is already in use
+     * @return bool if address is already in use
      */
     protected function isAddressTaken($address)
     {

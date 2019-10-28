@@ -11,6 +11,9 @@ use yii\test\Fixture;
 use yii\test\FixtureTrait;
 use yiiunit\TestCase;
 
+/**
+ * @group fixture
+ */
 class Fixture1 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture2'];
