@@ -599,7 +599,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if ($attribute === null) {
             $errors = $this->getFirstErrors();
-            return $errors ? $errors[0] : null;
+            return $errors ? reset($errors) : null;
         }
         return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
     }
