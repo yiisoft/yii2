@@ -112,6 +112,18 @@ class FormatterTest extends TestCase
         $value = '<>';
         $this->assertSame('&lt;&gt;', $this->formatter->asText($value));
 
+        // cut string
+        $value = '我在年青時候也曾經做過許多夢，後來大半忘卻了，但自己也並不以爲可惜';
+        $this->assertSame('我在年青時候...', $this->formatter->asText($value, ['width' => 15]));
+        $value = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.';
+        $this->assertSame('Lorem ipsum dolor...', $this->formatter->asText($value, ['width' => 20]));
+        $value = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.';
+        $this->assertSame('Lorem ipsum dolor s~', $this->formatter->asText($value, ['width' => 20, 'suffixSymbol' => '~']));
+        $value = 123456789;
+        $this->assertSame("12...", $this->formatter->asText($value, ['width' => 5]));
+        $value = '<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</p>';
+        $this->assertSame('&lt;p&gt;Lorem ipsum do...', $this->formatter->asText($value, ['width' => 20]));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asText(null));
     }

@@ -477,14 +477,35 @@ class Formatter extends Component
     }
 
     /**
+     * Cut the value as short text.
+     *
+     * @param [type] $value the value to be cut.
+     * @param array $options string cut options.
+     * @return string the cut string result.
+     */
+    public function cut($value, $options = [])
+    {
+        $options = array_merge(
+            ['width' => 0, 'suffixSymbol' => '...'],
+            $options
+        );
+        return mb_strimwidth($value, 0, $options['width'], $options['suffixSymbol']);
+    }
+    
+    /**
      * Formats the value as an HTML-encoded plain text.
      * @param string $value the value to be formatted.
+     * @param array $options string cut options.
      * @return string the formatted result.
      */
-    public function asText($value)
+    public function asText($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
+        }
+        
+        if (isset($options['width'])) {
+            $value = $this->cut($value, $options);
         }
 
         return Html::encode($value);
