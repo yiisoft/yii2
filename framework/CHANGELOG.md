@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.30 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17648: Handle empty column arrays in console `Table` widget (alex-code)
 
 
 2.0.29 October 22, 2019
