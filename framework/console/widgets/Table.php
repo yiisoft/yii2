@@ -131,7 +131,11 @@ class Table extends Widget
      */
     public function setRows(array $rows)
     {
-        $this->rows = array_map('array_values', $rows);
+        $this->rows = array_map(function($row) {
+            return array_map(function($value) {
+                return $value ?: ' ';
+            }, array_values($row));
+        }, $rows);
         return $this;
     }
 
