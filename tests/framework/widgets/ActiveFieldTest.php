@@ -459,22 +459,18 @@ EOD;
         $this->activeField->textInput();
         $actualValue = $this->activeField->getClientOptions();
 
-        $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-input-id',
-            'input' => '#custom-input-id',
-        ], $actualValue);
+        $this->assertSame('activefieldtestmodel-attributename', $actualValue['id']);
+        $this->assertSame($this->attributeName, $actualValue['name']);
+        $this->assertSame('.field-custom-input-id', $actualValue['container']);
+        $this->assertSame('#custom-input-id', $actualValue['input']);
 
         $this->activeField->textInput(['id' => 'custom-textinput-id']);
         $actualValue = $this->activeField->getClientOptions();
 
-        $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-textinput-id',
-            'input' => '#custom-textinput-id',
-        ], $actualValue);
+        $this->assertSame('activefieldtestmodel-attributename', $actualValue['id']);
+        $this->assertSame($this->attributeName, $actualValue['name']);
+        $this->assertSame('.field-custom-textinput-id', $actualValue['container']);
+        $this->assertSame('#custom-textinput-id', $actualValue['input']);
     }
 
     public function testAriaAttributes()
