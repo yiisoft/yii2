@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class JsonTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -175,12 +175,11 @@ class JsonTest extends TestCase
         Json::decode($json);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Invalid JSON data.
-     */
     public function testDecodeInvalidParamException()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+        $this->expectExceptionMessage('Invalid JSON data.');
+
         Json::decode([]);
     }
 

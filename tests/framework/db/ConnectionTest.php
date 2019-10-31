@@ -166,11 +166,10 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertTrue(true); // should not be any exception so far
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testTransactionShortcutException()
     {
+        $this->expectException(\Exception::class);
+
         $connection = $this->getConnection(true);
         $connection->transaction(function () use ($connection) {
             $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
@@ -339,7 +338,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         try {
             $connection->createCommand('INSERT INTO qlog1(a) VALUES(:a);', [':a' => 1])->execute();
         } catch (\yii\db\Exception $e) {
-            $this->assertContains('INSERT INTO qlog1(a) VALUES(1);', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e);
+            $this->assertStringContainsString('INSERT INTO qlog1(a) VALUES(1);', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e);
             $thrown = true;
         }
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
@@ -348,7 +347,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         try {
             $connection->createCommand('SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;', [':a' => 1])->queryAll();
         } catch (\yii\db\Exception $e) {
-            $this->assertContains('SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e);
+            $this->assertStringContainsString('SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e);
             $thrown = true;
         }
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');

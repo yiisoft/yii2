@@ -68,7 +68,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         $databases = static::getParam('databases');
@@ -82,13 +82,13 @@ abstract class DbManagerTestCase extends ManagerTestCase
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         static::runConsoleAction('migrate/down', ['all', 'migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
         parent::tearDownAfterClass();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (defined('HHVM_VERSION') && static::$driverName === 'pgsql') {
             static::markTestSkipped('HHVM PDO for pgsql does not work with binary columns, which are essential for rbac schema. See https://github.com/yiisoft/yii2/issues/14244');
@@ -97,7 +97,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->auth = $this->createManager();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->auth->removeAll();
@@ -359,7 +359,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     private function assertSingleQueryToAssignmentsTable($logTarget)
     {
         $this->assertCount(1, $logTarget->messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
-        $this->assertContains('auth_assignment', $logTarget->messages[0][0], 'Log message should be a query to auth_assignment table');
+        $this->assertStringContainsString('auth_assignment', $logTarget->messages[0][0], 'Log message should be a query to auth_assignment table');
         $logTarget->messages = [];
     }
 }

@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class ViewTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -35,7 +35,7 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsVar('username', 'samdark');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script>var username = "samdark";</script></head>', $html);
+        $this->assertStringContainsString('<script>var username = "samdark";</script></head>', $html);
 
         $view = new View();
         $view->registerJsVar('objectTest',
@@ -44,7 +44,7 @@ class ViewTest extends TestCase
                 'question' => 'Unknown',
             ]);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
+        $this->assertStringContainsString('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
     }
 
     public function testRegisterJsFileWithAlias()
@@ -61,7 +61,7 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_HEAD]);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
+        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></head>', $html);
 
         $view = new View();
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_BEGIN]);
@@ -71,13 +71,13 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_END]);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
+        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
 
         // alias with depends
         $view = new View();
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_END, 'depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
+        $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
 
     public function testRegisterCssFileWithAlias()
@@ -94,14 +94,14 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerCssFile('@web/css/somefile.css');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
+        $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
 
         // with depends
         $view = new View();
         $view->registerCssFile('@web/css/somefile.css',
             ['position' => View::POS_END, 'depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
+        $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
 
     public function testRegisterregisterCsrfMetaTags()
@@ -122,16 +122,16 @@ class ViewTest extends TestCase
 
         $view->registerCsrfMetaTags();
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<meta name="csrf-param" content="_csrf">', $html);
-        $this->assertContains('<meta name="csrf-token" content="', $html);
+        $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
+        $this->assertStringContainsString('<meta name="csrf-token" content="', $html);
         $csrfToken1 = $this->getCSRFTokenValue($html);
 
         // regenerate token
         \Yii::$app->request->getCsrfToken(true);
         $view->registerCsrfMetaTags();
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<meta name="csrf-param" content="_csrf">', $html);
-        $this->assertContains('<meta name="csrf-token" content="', $html);
+        $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
+        $this->assertStringContainsString('<meta name="csrf-token" content="', $html);
         $csrfToken2 = $this->getCSRFTokenValue($html);
 
         $this->assertNotSame($csrfToken1, $csrfToken2);
@@ -232,21 +232,21 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertStringContainsString('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         $view = new View();
         $view->registerJsFile('//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertStringContainsString('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         $view = new View();
         $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertStringContainsString('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         \Yii::$app->assetManager->appendTimestamp = false;
@@ -288,21 +288,21 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertStringContainsString('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         $view = new View();
         $view->registerJsFile('//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertStringContainsString('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         $view = new View();
         $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertStringContainsString('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
     }
@@ -378,21 +378,21 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
+        $this->assertStringContainsString('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
             $html);
 
         $view = new View();
         $view->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
+        $this->assertStringContainsString('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
             $html);
 
         $view = new View();
         $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
+        $this->assertStringContainsString('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
             $html);
 
         \Yii::$app->assetManager->appendTimestamp = false;
@@ -434,21 +434,21 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
+        $this->assertStringContainsString('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
             $html);
 
         $view = new View();
         $view->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
+        $this->assertStringContainsString('<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
             $html);
 
         $view = new View();
         $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
+        $this->assertStringContainsString('<link href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.css" rel="stylesheet">',
             $html);
     }
 }

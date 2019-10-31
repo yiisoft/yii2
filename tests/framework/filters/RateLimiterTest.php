@@ -23,7 +23,7 @@ use yiiunit\TestCase;
  */
 class RateLimiterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class RateLimiterTest extends TestCase
 
         $this->mockWebApplication();
     }
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::setLogger(null);

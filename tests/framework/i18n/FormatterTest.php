@@ -25,7 +25,7 @@ class FormatterTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +38,7 @@ class FormatterTest extends TestCase
         $this->formatter = new Formatter(['locale' => 'en-US']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -439,21 +439,19 @@ class FormatterTest extends TestCase
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     * @expectedExceptionMessage Format of mass is only supported when PHP intl extension is installed.
-     */
     public function testAsWeight()
     {
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('Format of mass is only supported when PHP intl extension is installed.');
+
         $this->formatter->asWeight(10);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     * @expectedExceptionMessage Format of length is only supported when PHP intl extension is installed.
-     */
     public function testAsLength()
     {
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('Format of length is only supported when PHP intl extension is installed.');
+
         $this->formatter->asShortLength(10);
     }
 

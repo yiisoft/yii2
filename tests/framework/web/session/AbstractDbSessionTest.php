@@ -25,7 +25,7 @@ abstract class AbstractDbSessionTest extends TestCase
      */
     abstract protected function getDriverNames();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +35,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->createTableSession();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->dropTableSession();
         parent::tearDown();

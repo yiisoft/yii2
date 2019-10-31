@@ -46,7 +46,7 @@ class Post3 extends BaseObject
  */
 class ArrayHelperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -343,20 +343,18 @@ class ArrayHelperTest extends TestCase
         ], $changelog);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMultisortInvalidParamExceptionDirection()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], []);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMultisortInvalidParamExceptionSortFlag()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], ['foo'], []);
     }
@@ -1188,12 +1186,11 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isIn('1', [1, 'a'], true));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
-     */
     public function testInException()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+        $this->expectExceptionMessage('Argument $haystack must be an array or implement Traversable');
+
         ArrayHelper::isIn('value', null);
     }
 
@@ -1209,12 +1206,11 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b'], true));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
-     */
     public function testIsSubsetException()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+        $this->expectExceptionMessage('Argument $needles must be an array or implement Traversable');
+
         ArrayHelper::isSubset('a', new \ArrayObject(['a', 'b']));
     }
 

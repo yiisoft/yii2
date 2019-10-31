@@ -22,7 +22,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -34,7 +34,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAssureMessageSetOnInit()
     {
         $val = new UniqueValidator();
-        $this->assertInternalType('string', $val->message);
+        $this->assertIsString($val->message);
     }
 
     public function testCustomMessage()
@@ -445,7 +445,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
     }
-    
+
     /**
      * Test join with doesn't attempt to eager load joinWith relations
      * @see https://github.com/yiisoft/yii2/issues/17389
@@ -463,7 +463,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             $this->fail('Query is crashed because "joinWith" relation cannot be loaded');
         }
     }
-    
+
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();
@@ -504,9 +504,9 @@ class WithCustomer extends Customer {
 class JoinWithCustomer extends Customer {
     public static function find() {
         $res = parent::find();
-        
+
         $res->joinWith('profile');
-        
+
         return $res;
     }
 }

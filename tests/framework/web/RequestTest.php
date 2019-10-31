@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\base\InvalidConfigException;
 use yii\web\Request;
 use yiiunit\TestCase;
 
@@ -370,22 +371,20 @@ class RequestTest extends TestCase
         $this->assertSame('servername.com', $request->getHostName());
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testGetScriptFileWithEmptyServer()
     {
+        $this->expectException(InvalidConfigException::class);
+
         $request = new Request();
         $_SERVER = [];
 
         $request->getScriptFile();
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testGetScriptUrlWithEmptyServer()
     {
+        $this->expectException(InvalidConfigException::class);
+
         $request = new Request();
         $_SERVER = [];
 

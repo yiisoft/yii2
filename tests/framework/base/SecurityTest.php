@@ -53,10 +53,12 @@ namespace yii\base {
 
 namespace yiiunit\framework\base {
 
-use yii\base\Security;
-use yiiunit\TestCase;
+    use yii\base\InvalidConfigException;
+    use yii\base\InvalidParamException;
+    use yii\base\Security;
+    use yiiunit\TestCase;
 
-/**
+    /**
  * @group base
  */
 class SecurityTest extends TestCase
@@ -78,7 +80,7 @@ class SecurityTest extends TestCase
      */
     protected $security;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::$functions = [];
         static::$fopen = null;
@@ -88,7 +90,7 @@ class SecurityTest extends TestCase
         $this->security->derivationIterations = 1000; // speed up test running
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         static::$functions = [];
         static::$fopen = null;
@@ -880,12 +882,13 @@ TEXT;
 
     /**
      * @dataProvider randomKeyInvalidInputs
-     * @expectedException \yii\base\InvalidParamException
      * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
-        $key1 = $this->security->generateRandomKey($input);
+        $this->expectException(\yii\base\InvalidParamException::class);
+
+        $this->security->generateRandomKey($input);
     }
 
     /**
@@ -957,10 +960,10 @@ TEXT;
         // test various string lengths
         for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key1);
+            $this->assertIsString($key1);
             $this->assertEquals($length, strlen($key1));
             $key2 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key2);
+            $this->assertIsString($key2);
             $this->assertEquals($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
                 $this->assertNotEquals($key1, $key2);
@@ -970,10 +973,10 @@ TEXT;
         // test for /dev/urandom, reading larger data to see if loop works properly
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
+        $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
         $key2 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key2);
+        $this->assertIsString($key2);
         $this->assertEquals($length, strlen($key2));
         $this->assertNotEquals($key1, $key2);
 
@@ -984,7 +987,7 @@ TEXT;
         static::$fopen = fopen('php://memory', 'rwb');
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
+        $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
     }
 
@@ -1275,11 +1278,9 @@ TEXT;
         $this->assertEquals('', $this->security->unmaskToken('1'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMaskingInvalidStrings()
     {
+        $this->expectException(InvalidParamException::class);
         $this->security->maskToken('');
     }
 

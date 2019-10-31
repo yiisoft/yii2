@@ -82,7 +82,7 @@ class TestController extends Controller
  */
 class CompositeAuthTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

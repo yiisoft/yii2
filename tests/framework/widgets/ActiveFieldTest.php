@@ -37,7 +37,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     private $helperForm;
     private $attributeName = 'attributeName';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
@@ -459,22 +459,18 @@ EOD;
         $this->activeField->textInput();
         $actualValue = $this->activeField->getClientOptions();
 
-        $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-input-id',
-            'input' => '#custom-input-id',
-        ], $actualValue);
+        $this->assertSame('activefieldtestmodel-attributename', $actualValue['id']);
+        $this->assertSame($this->attributeName, $actualValue['name']);
+        $this->assertSame('.field-custom-input-id', $actualValue['container']);
+        $this->assertSame('#custom-input-id', $actualValue['input']);
 
         $this->activeField->textInput(['id' => 'custom-textinput-id']);
         $actualValue = $this->activeField->getClientOptions();
 
-        $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-textinput-id',
-            'input' => '#custom-textinput-id',
-        ], $actualValue);
+        $this->assertSame('activefieldtestmodel-attributename', $actualValue['id']);
+        $this->assertSame($this->attributeName, $actualValue['name']);
+        $this->assertSame('.field-custom-textinput-id', $actualValue['container']);
+        $this->assertSame('#custom-textinput-id', $actualValue['input']);
     }
 
     public function testAriaAttributes()
@@ -616,14 +612,14 @@ HTML;
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_direct'],
         ]);
-        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
 
         // transfer options from ActiveField to widget
         $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
         $widget = $this->activeField->widget(TestMaskedInput::className(), [
             'mask' => '999-999-9999',
         ]);
-        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_input"', (string) $widget);
 
         // set both AF and widget options (second one takes precedence)
         $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
@@ -631,7 +627,7 @@ HTML;
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_both_direct']
         ]);
-        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
     }
 
     /**

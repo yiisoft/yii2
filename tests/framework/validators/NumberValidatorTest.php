@@ -48,7 +48,7 @@ class NumberValidatorTest extends TestCase
         setlocale(LC_NUMERIC, $this->oldLocale);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -61,12 +61,12 @@ class NumberValidatorTest extends TestCase
     public function testEnsureMessageOnInit()
     {
         $val = new NumberValidator();
-        $this->assertInternalType('string', $val->message);
+        $this->assertIsString($val->message);
         $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
-        $this->assertInternalType('string', $val->message);
-        $this->assertInternalType('string', $val->tooSmall);
-        $this->assertInternalType('string', $val->tooBig);
+        $this->assertIsString($val->message);
+        $this->assertIsString($val->tooSmall);
+        $this->assertIsString($val->tooBig);
     }
 
     public function testValidateValueSimple()
@@ -138,7 +138,7 @@ class NumberValidatorTest extends TestCase
         $val = new NumberValidator(['min' => 1]);
         $this->assertTrue($val->validate(1));
         $this->assertFalse($val->validate(-1, $error));
-        $this->assertContains('the input value must be no less than 1.', $error);
+        $this->assertStringContainsString('the input value must be no less than 1.', $error);
         $this->assertFalse($val->validate('22e-12'));
         $this->assertTrue($val->validate(PHP_INT_MAX + 1));
         $val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
@@ -265,8 +265,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5', $js);
-        $this->assertContains('"max":10', $js);
+        $this->assertStringContainsString('"min":5', $js);
+        $this->assertStringContainsString('"max":10', $js);
 
         $val = new NumberValidator([
             'min' => '5',
@@ -274,8 +274,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5', $js);
-        $this->assertContains('"max":10', $js);
+        $this->assertStringContainsString('"min":5', $js);
+        $this->assertStringContainsString('"max":10', $js);
 
         $val = new NumberValidator([
             'min' => 5.65,
@@ -283,8 +283,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5.65', $js);
-        $this->assertContains('"max":13.37', $js);
+        $this->assertStringContainsString('"min":5.65', $js);
+        $this->assertStringContainsString('"max":13.37', $js);
 
         $val = new NumberValidator([
             'min' => '5.65',
@@ -292,8 +292,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5.65', $js);
-        $this->assertContains('"max":13.37', $js);
+        $this->assertStringContainsString('"min":5.65', $js);
+        $this->assertStringContainsString('"max":13.37', $js);
     }
 
     public function testValidateObject()
@@ -313,7 +313,7 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = $fp;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-        
+
         // the check is here for HHVM that
         // was losing handler for unknown reason
         if (is_resource($fp)) {

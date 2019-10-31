@@ -42,7 +42,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 {
     use ActiveRecordTestTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -197,7 +197,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(0, $order->books);
 
         $order = Order::find()->where(['id' => 1])->asArray()->one();
-        $this->assertInternalType('array', $order);
+        $this->assertIsArray($order);
     }
 
     public function testFindEagerViaTable()
@@ -223,10 +223,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // https://github.com/yiisoft/yii2/issues/1402
         $orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]['orderItems'][0]);
+        $this->assertIsArray($orders[0]['orderItems'][0]);
 
         $order = $orders[0];
-        $this->assertInternalType('array', $order);
+        $this->assertIsArray($order);
         $this->assertEquals(1, $order['id']);
         $this->assertCount(2, $order['books']);
         $this->assertEquals(1, $order['books'][0]['id']);
@@ -925,7 +925,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
 
         $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
-        $this->assertInternalType('array', $customerWithJoinIndexOrdered);
+        $this->assertIsArray($customerWithJoinIndexOrdered);
         $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
     }

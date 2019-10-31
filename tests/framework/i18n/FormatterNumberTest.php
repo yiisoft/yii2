@@ -22,7 +22,7 @@ class FormatterNumberTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +35,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter = new Formatter(['locale' => 'en-US']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -141,19 +141,17 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('+123,456', $this->formatter->asInteger(123456.789));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testAsIntegerException()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+
         $this->formatter->asInteger('a');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testAsIntegerException2()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+
         $this->formatter->asInteger('-123abc');
     }
 
@@ -414,11 +412,10 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('USD 95 836 208 451 783 051,86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testAsCurrencyStringFallbackException()
     {
+        $this->expectException(\yii\base\InvalidConfigException::class);
+
         $this->formatter->asCurrency('87654321098765436');
     }
 
@@ -528,7 +525,7 @@ class FormatterNumberTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
 
-        $this->assertSame('8.76543210987654E16', $this->formatter->asScientific('87654321098765436'));
+        $this->assertSame('8.765432109876544E16', $this->formatter->asScientific('87654321098765436'));
     }
 
     public function testAsScientific()

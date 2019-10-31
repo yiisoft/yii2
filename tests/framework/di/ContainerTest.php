@@ -30,7 +30,7 @@ use yiiunit\TestCase;
  */
 class ContainerTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
@@ -395,11 +395,10 @@ class ContainerTest extends TestCase
         $this->assertSame(42, $qux->a);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testThrowingNotFoundException()
     {
+        $this->expectException(\yii\base\InvalidConfigException::class);
+
         $container = new Container();
         $container->get('non_existing');
     }
@@ -443,6 +442,8 @@ class ContainerTest extends TestCase
 
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
+
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 
     /**
@@ -455,5 +456,7 @@ class ContainerTest extends TestCase
         }
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
+
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 }

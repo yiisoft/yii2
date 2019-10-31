@@ -20,7 +20,7 @@ class FileHelperTest extends TestCase
      */
     private $testFilePath = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
         $this->createDir($this->testFilePath);
@@ -49,13 +49,13 @@ class FileHelperTest extends TestCase
         $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
         mkdir($dir);
         chmod($dir, 0700);
-        $mode = $this->getMode($dir);
+        $isChmodReliable = 0700 === (fileperms($dir) & 0777);
         rmdir($dir);
 
-        return $mode === '0700';
+        return $isChmodReliable;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -96,16 +96,6 @@ class FileHelperTest extends TestCase
     }
 
     /**
-     * Get file permission mode.
-     * @param  string $file file name.
-     * @return string permission mode.
-     */
-    protected function getMode($file)
-    {
-        return substr(sprintf('%o', fileperms($file)), -4);
-    }
-
-    /**
      * Creates test files structure.
      * @param array  $items    file system objects to be created in format: objectName => objectContent
      *                         Arrays specifies directories, other values - files.
@@ -139,8 +129,7 @@ class FileHelperTest extends TestCase
      */
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
-        $expectedMode = sprintf('%o', $expectedMode);
-        $this->assertEquals($expectedMode, $this->getMode($fileName), $message);
+        $this->assertSame($expectedMode, (fileperms($fileName) & 0777), $message);
     }
 
     // Tests :
@@ -367,6 +356,8 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
+
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 
     public function testRemoveDirectory()

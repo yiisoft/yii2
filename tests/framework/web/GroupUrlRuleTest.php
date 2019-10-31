@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class GroupUrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

@@ -18,7 +18,7 @@ use yii\web\View;
  */
 class AssetBundleTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -189,7 +189,9 @@ class AssetBundleTest extends \yiiunit\TestCase
         $view = $this->getView(['basePath' => '@testReadOnlyAssetPath']);
         $bundle = new TestSourceAsset();
 
-        $this->setExpectedException('yii\base\InvalidConfigException', 'The directory is not writable by the Web process');
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('The directory is not writable by the Web process');
+
         $bundle->publish($view->getAssetManager());
 
         FileHelper::removeDirectory($path);
