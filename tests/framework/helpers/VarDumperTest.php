@@ -198,6 +198,6 @@ RESULT;
 
         $dumpResult = VarDumper::dumpAsString($object);
         $this->assertStringContainsString('totalPrice', $dumpResult);
-        $this->assertNotContains('unitPrice', $dumpResult);
+        $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
 }

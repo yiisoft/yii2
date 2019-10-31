@@ -61,7 +61,7 @@ class CheckboxColumnTest extends TestCase
         $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
 
         $column = new CheckboxColumn(['checkboxOptions' => ['value' => 42], 'grid' => $this->getGrid()]);
-        $this->assertNotContains('value="1"', $column->renderDataCell([], 1, 0));
+        $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
 
         $column = new CheckboxColumn([
@@ -80,7 +80,7 @@ class CheckboxColumnTest extends TestCase
             },
             'grid' => $this->getGrid(),
         ]);
-        $this->assertNotContains('value="1"', $column->renderDataCell([], 1, 0));
+        $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
     }
 

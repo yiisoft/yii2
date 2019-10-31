@@ -44,7 +44,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
 
         $this->assertCount(2, $result);
 
-        $this->assertNotContains(1, $result);
+        $this->assertStringNotContainsString(1, $result);
         $this->assertStringContainsString(2, $result);
         $this->assertStringContainsString(3, $result);
     }

@@ -80,7 +80,7 @@ class EachValidatorTest extends TestCase
         $model->clearErrors();
         $validator->allowMessageFromRule = false;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertNotContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringNotContainsString('integer', $model->getFirstError('attr_one'));
     }
 
     /**
