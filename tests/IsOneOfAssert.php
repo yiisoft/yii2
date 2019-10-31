@@ -22,7 +22,6 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
      */
     public function __construct(array $allowedValues)
     {
-        parent::__construct();
         $this->allowedValues = $allowedValues;
     }
 
