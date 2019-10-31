@@ -403,7 +403,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth = $this->createManager();
 
         $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
-        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEqualsCanonicalizing(['reader A', '123'], $this->auth->getUserIdsByRole('reader'));
         $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
         $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
