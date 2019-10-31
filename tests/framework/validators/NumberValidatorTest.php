@@ -61,12 +61,12 @@ class NumberValidatorTest extends TestCase
     public function testEnsureMessageOnInit()
     {
         $val = new NumberValidator();
-        $this->assertInternalType('string', $val->message);
+        $this->assertIsString($val->message);
         $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
-        $this->assertInternalType('string', $val->message);
-        $this->assertInternalType('string', $val->tooSmall);
-        $this->assertInternalType('string', $val->tooBig);
+        $this->assertIsString($val->message);
+        $this->assertIsString($val->tooSmall);
+        $this->assertIsString($val->tooBig);
     }
 
     public function testValidateValueSimple()

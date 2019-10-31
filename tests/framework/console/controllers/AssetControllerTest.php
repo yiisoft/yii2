@@ -258,7 +258,7 @@ EOL;
         $this->runAssetControllerAction('template', [$configFileName]);
         $this->assertFileExists($configFileName, 'Unable to create config file template!');
         $config = require $configFileName;
-        $this->assertInternalType('array', $config, 'Invalid config created!');
+        $this->assertIsArray($config, 'Invalid config created!');
     }
 
     public function testActionCompress()
@@ -304,7 +304,7 @@ EOL;
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
         $compressedBundleConfig = require $bundleFile;
-        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
+        $this->assertIsArray($compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertCount(2, $compressedBundleConfig, 'Output bundle config contains wrong bundle count!');
 
         $this->assertArrayHasKey($assetBundleClassName, $compressedBundleConfig, 'Source bundle is lost!');
@@ -384,7 +384,7 @@ EOL;
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
         $compressedBundleConfig = require $bundleFile;
-        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
+        $this->assertIsArray($compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
 
         $compressedExternalAssetConfig = $compressedBundleConfig[$externalAssetBundleClassName];

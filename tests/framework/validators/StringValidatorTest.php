@@ -112,9 +112,9 @@ class StringValidatorTest extends TestCase
     public function testEnsureMessagesOnInit()
     {
         $val = new StringValidator(['min' => 1, 'max' => 2]);
-        $this->assertInternalType('string', $val->message);
-        $this->assertInternalType('string', $val->tooLong);
-        $this->assertInternalType('string', $val->tooShort);
+        $this->assertIsString($val->message);
+        $this->assertIsString($val->tooLong);
+        $this->assertIsString($val->tooShort);
     }
 
     public function testCustomErrorMessageInValidateAttribute()

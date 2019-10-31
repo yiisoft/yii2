@@ -29,7 +29,7 @@ class FileValidatorTest extends TestCase
     {
         $val = new FileValidator();
         foreach (['message', 'uploadRequired', 'tooMany', 'wrongExtension', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
-            $this->assertInternalType('string', $val->$attr);
+            $this->assertIsString($val->$attr);
         }
     }
 
