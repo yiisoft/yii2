@@ -13,7 +13,7 @@ use yiiunit\TestCase;
 
 class ErrorHandlerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -61,7 +61,7 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::className(), null, null, null);
 
-        $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
+        $this->assertStringContainsString('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 }
 

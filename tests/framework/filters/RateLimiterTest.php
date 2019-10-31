@@ -23,7 +23,7 @@ use yiiunit\TestCase;
  */
 class RateLimiterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class RateLimiterTest extends TestCase
 
         $this->mockWebApplication();
     }
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::setLogger(null);
@@ -83,7 +83,7 @@ class RateLimiterTest extends TestCase
 
         $result = $rateLimiter->beforeAction('test');
 
-        $this->assertContains('Check rate limit', Yii::getLogger()->messages);
+        $this->assertStringContainsString('Check rate limit', Yii::getLogger()->messages);
         $this->assertTrue($result);
     }
 
@@ -93,7 +93,7 @@ class RateLimiterTest extends TestCase
 
         $result = $rateLimiter->beforeAction('test');
 
-        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
+        $this->assertStringContainsString('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
         $this->assertTrue($result);
     }
 
@@ -105,7 +105,7 @@ class RateLimiterTest extends TestCase
 
         $result = $rateLimiter->beforeAction('test');
 
-        $this->assertContains('Rate limit skipped: user not logged in.', Yii::getLogger()->messages);
+        $this->assertStringContainsString('Rate limit skipped: user not logged in.', Yii::getLogger()->messages);
         $this->assertTrue($result);
     }
 

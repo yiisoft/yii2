@@ -16,7 +16,7 @@ use yii\web\CacheSession;
  */
 class CacheSessionTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

@@ -20,7 +20,7 @@ class ArrayFixtureTest extends TestCase
      */
     private $_fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_fixture = new ArrayFixture();

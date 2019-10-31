@@ -46,7 +46,7 @@ class Post3 extends BaseObject
  */
 class ArrayHelperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

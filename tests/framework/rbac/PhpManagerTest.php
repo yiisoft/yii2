@@ -74,7 +74,7 @@ class PhpManagerTest extends ManagerTestCase
         ]);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::$filemtime = null;
         static::$time = null;
@@ -89,7 +89,7 @@ class PhpManagerTest extends ManagerTestCase
         $this->auth = $this->createManager();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->removeDataFiles();
         static::$filemtime = null;
@@ -154,10 +154,10 @@ class PhpManagerTest extends ManagerTestCase
         $role = $this->auth->createRole('Admin');
         $this->auth->add($role);
         $this->auth->assign($role, 13);
-        $this->assertContains('Admin', file_get_contents($this->getAssignmentFile()));
+        $this->assertStringContainsString('Admin', file_get_contents($this->getAssignmentFile()));
         $role->name = 'NewAdmin';
         $this->auth->update('Admin', $role);
-        $this->assertContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
+        $this->assertStringContainsString('NewAdmin', file_get_contents($this->getAssignmentFile()));
         $this->auth->remove($role);
         $this->assertNotContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
     }

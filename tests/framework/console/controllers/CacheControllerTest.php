@@ -29,7 +29,7 @@ class CacheControllerTest extends TestCase
 
     private $driverName = 'mysql';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

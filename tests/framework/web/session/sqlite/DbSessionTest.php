@@ -19,7 +19,7 @@ use Yii;
  */
 class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -26,7 +26,7 @@ use yiiunit\framework\db\UnqueryableQueryMock;
  */
 abstract class ActiveDataProviderTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();

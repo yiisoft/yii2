@@ -29,7 +29,7 @@ class ResultPrinter extends \PHPUnit\TextUI\ResultPrinter
         parent::__construct($out, $verbose, $colors, $debug, $numberOfColumns, $reverse);
     }
 
-    public function flush()
+    public function flush(): void
     {
         if ($this->out !== STDOUT) {
             parent::flush();

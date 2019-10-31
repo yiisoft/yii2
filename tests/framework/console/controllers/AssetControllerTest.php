@@ -32,7 +32,7 @@ class AssetControllerTest extends TestCase
      */
     protected $testAssetsBasePath = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication();
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
@@ -41,7 +41,7 @@ class AssetControllerTest extends TestCase
         $this->createDir($this->testAssetsBasePath);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -320,11 +320,11 @@ EOL;
 
         $compressedCssFileContent = file_get_contents($compressedCssFileName);
         foreach ($cssFiles as $name => $content) {
-            $this->assertContains($content, $compressedCssFileContent, "Source of '{$name}' is missing in combined file!");
+            $this->assertStringContainsString($content, $compressedCssFileContent, "Source of '{$name}' is missing in combined file!");
         }
         $compressedJsFileContent = file_get_contents($compressedJsFileName);
         foreach ($jsFiles as $name => $content) {
-            $this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
+            $this->assertStringContainsString($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
         }
     }
 
@@ -392,7 +392,7 @@ EOL;
         $this->assertEquals($externalAssetConfig['css'], $compressedExternalAssetConfig['css'], 'External bundle css is lost!');
 
         $compressedRegularAssetConfig = $compressedBundleConfig[$regularAssetBundleClassName];
-        $this->assertContains($externalAssetBundleClassName, $compressedRegularAssetConfig['depends'], 'Dependency on external bundle is lost!');
+        $this->assertStringContainsString($externalAssetBundleClassName, $compressedRegularAssetConfig['depends'], 'Dependency on external bundle is lost!');
     }
 
     /**

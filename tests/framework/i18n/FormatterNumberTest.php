@@ -22,7 +22,7 @@ class FormatterNumberTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +35,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter = new Formatter(['locale' => 'en-US']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -528,7 +528,7 @@ class FormatterNumberTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
 
-        $this->assertSame('8.76543210987654E16', $this->formatter->asScientific('87654321098765436'));
+        $this->assertSame('8.765432109876544E16', $this->formatter->asScientific('87654321098765436'));
     }
 
     public function testAsScientific()
