@@ -134,7 +134,7 @@ HTML
         $form::end();
         ob_get_clean();
 
-        assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 
     /**

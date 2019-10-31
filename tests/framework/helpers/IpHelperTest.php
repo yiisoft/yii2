@@ -59,7 +59,7 @@ class IpHelperTest extends TestCase
             $this->assertStringEndsWith('Unrecognized address fa01::1/64', $exception->getMessage());
         }
 
-        assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 
     /**

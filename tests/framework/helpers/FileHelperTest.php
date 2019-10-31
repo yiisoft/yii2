@@ -129,7 +129,7 @@ class FileHelperTest extends TestCase
      */
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
-        assertTrue($expectedMode === (fileperms($fileName) & 0777), $message);
+        $this->assertSame($expectedMode, (fileperms($fileName) & 0777), $message);
     }
 
     // Tests :
@@ -357,7 +357,7 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
 
-        assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 
     public function testRemoveDirectory()

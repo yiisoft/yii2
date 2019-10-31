@@ -443,7 +443,7 @@ class ContainerTest extends TestCase
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
 
-        assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 
     /**
@@ -457,6 +457,6 @@ class ContainerTest extends TestCase
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
 
-        assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
+        $this->assertTrue(true, 'Предотвращаем выдачу сообщения «This test did not perform any assertions»');
     }
 }
