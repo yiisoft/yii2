@@ -55,12 +55,11 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals($targetLanguage, Yii::$app->language);
     }
 
-    /**
-     * @expectedException yii\web\BadRequestHttpException
-     * @expectedExceptionMessageRegExp |Invalid data received for GET parameter '.+'|
-     */
     public function testWhenFormatGETParamIsArray()
     {
+        $this->expectException(yii\web\BadRequestHttpException::class);
+        $this->expectExceptionMessageMatches("/Invalid data received for GET parameter '.+'/");
+
         list($action, $filter) = $this->mockActionAndFilter();
 
         $_SERVER['REQUEST_METHOD'] = 'GET';

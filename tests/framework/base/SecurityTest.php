@@ -53,10 +53,12 @@ namespace yii\base {
 
 namespace yiiunit\framework\base {
 
-use yii\base\Security;
-use yiiunit\TestCase;
+    use yii\base\InvalidConfigException;
+    use yii\base\InvalidParamException;
+    use yii\base\Security;
+    use yiiunit\TestCase;
 
-/**
+    /**
  * @group base
  */
 class SecurityTest extends TestCase
@@ -880,12 +882,13 @@ TEXT;
 
     /**
      * @dataProvider randomKeyInvalidInputs
-     * @expectedException \yii\base\InvalidParamException
      * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
-        $key1 = $this->security->generateRandomKey($input);
+        $this->expectException(\yii\base\InvalidParamException::class);
+
+        $this->security->generateRandomKey($input);
     }
 
     /**
@@ -1275,11 +1278,9 @@ TEXT;
         $this->assertEquals('', $this->security->unmaskToken('1'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMaskingInvalidStrings()
     {
+        $this->expectException(InvalidParamException::class);
         $this->security->maskToken('');
     }
 
