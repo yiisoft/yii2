@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.30 under development
 ------------------------
 
+- Bug #17632: Unicode file name was not correctly parsed in multipart forms (AlexRas007, samdark)
 - Bug #17648: Handle empty column arrays in console `Table` widget (alex-code)
 - Bug #17657: Fix migration errors from missing `$schema` in RBAC init file when using MSSQL (PoohOka)
 
