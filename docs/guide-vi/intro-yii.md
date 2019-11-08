@@ -2,7 +2,7 @@ Yii là gì
 ===========
 
 Yii là một PHP Framework mã nguồn mở và hoàn toàn miễn phí, có hiệu năng xử lý cao, phát triển tốt nhất trên các ứng dụng Web 2.0, sử dụng tối đa các thành phần (component-based PHP framework) để tăng tốc độ viết ứng dụng.
-Tên Yii (được phát âm là `Yee` hoặc `[ji:]`) ở Trung Quốc có nghĩa là  "thật đơn giản và luôn phát triển". Nghĩa thứ hai có thể đọc ngắn gọn là **Yes It Is**!
+Tên Yii (được phát âm là `Yee` hoặc `[ji:]`) ở Trung Quốc có nghĩa là  "thật đơn giản và luôn phát triển" (Hán tự "易", âm "dịch"). Nghĩa thứ hai có thể đọc ngắn gọn là **Yes It Is**!
 
 
 Yii thích hợp nhất để làm gì?

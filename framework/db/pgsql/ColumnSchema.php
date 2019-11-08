@@ -49,6 +49,11 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
     public $deserializeArrayColumnToArrayExpression = true;
+    /**
+     * @var string name of associated sequence if column is auto-incremental
+     * @since 2.0.29
+     */
+    public $sequenceName;
 
 
     /**

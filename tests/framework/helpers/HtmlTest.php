@@ -1013,6 +1013,21 @@ EOD;
             ],
         ];
         $this->assertEquals(' data-foo=\'[]\'', Html::renderTagAttributes($attributes));
+
+        $attributes = [
+            'data' => [
+                'foo' => true,
+            ],
+        ];
+        $this->assertEquals(' data-foo', Html::renderTagAttributes($attributes));
+
+
+        $attributes = [
+            'data' => [
+                'foo' => false,
+            ],
+        ];
+        $this->assertEquals('', Html::renderTagAttributes($attributes));
     }
 
     public function testAddCssClass()
