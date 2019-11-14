@@ -2318,7 +2318,7 @@ class BaseHtml
             $pattern = substr($pattern, 0, $pos + 1);
         }
         if (!empty($flag)) {
-            $pattern .= preg_replace('/[^igm]/', '', $flag);
+            $pattern .= preg_replace('/[^igmu]/', '', $flag);
         }
 
         return $pattern;

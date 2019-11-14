@@ -98,7 +98,7 @@ class MessageController extends \yii\console\Controller
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
+        '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
      * @var array 指定应处理哪些文件(而不是目录)的模式列表。
@@ -669,7 +669,7 @@ EOD;
         }
 
         if ($removeUnused) {
-            $this->deleteUnusedPhpMessageFiles($dirName, array_keys($messages));
+            $this->deleteUnusedPhpMessageFiles(array_keys($messages), $dirName);
         }
     }
 
@@ -722,7 +722,7 @@ EOD;
                     }
                 }
             }
-            $merged = array_merge($todo, $merged);
+            $merged = array_merge($merged, $todo);
             if ($sort) {
                 ksort($merged);
             }
@@ -825,7 +825,7 @@ EOD;
                     }
                 }
 
-                $merged = array_merge($todos, $merged);
+                $merged = array_merge($merged, $todos);
                 if ($sort) {
                     ksort($merged);
                 }
@@ -889,13 +889,16 @@ EOD;
         }
     }
 
-    private function deleteUnusedPhpMessageFiles($dirName, $existingCategories)
+    private function deleteUnusedPhpMessageFiles($existingCategories, $dirName)
     {
         $messageFiles = FileHelper::findFiles($dirName);
-        foreach ($messageFiles as $file) {
-            $category = preg_replace('#\.php$#', '', basename($file));
+        foreach ($messageFiles as $messageFile) {
+            $categoryFileName = str_replace($dirName, '', $messageFile);
+            $categoryFileName = ltrim($categoryFileName, DIRECTORY_SEPARATOR);
+            $category = preg_replace('#\.php$#', '', $categoryFileName);
+
             if (!in_array($category, $existingCategories, true)) {
-                unlink($file);
+                unlink($messageFile);
             }
         }
     }

@@ -255,7 +255,7 @@ $alerts = $session->getFlash('alerts');
 ```
 
 > Note: 不要在相同名称的 flash 数据中使用 [[yii\web\Session::setFlash()]] 的同时也使用 [[yii\web\Session::addFlash()]]，
-  因为后一个防范会自动将 flash 信息转换为数组以使新的 flash 数据可追加进来，因此，
+  因为后一个方法会自动将 flash 信息转换为数组以使新的 flash 数据可追加进来，因此，
   当你调用 [[yii\web\Session::getFlash()]] 时，
   会发现有时获取到一个数组，有时获取到一个字符串，
   取决于你调用这两个方法的顺序。

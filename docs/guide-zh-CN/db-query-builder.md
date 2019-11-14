@@ -261,7 +261,7 @@ $query->where([$column => $value]);
   
 - `or`：用法和 `and` 操作符类似，这里就不再赘述。
 
-- `not`：只需要操作数 1，它将包含在 `NOT()` 中。例如，`['not'，'id = 1']` 将生成 `['not', 'id=1']`。操作数 1 也可以是个描述多个表达式的数组。例如 `['not', ['status' => 'draft', 'name' => 'example']]` 将生成 `NOT ((status='draft') AND (name='example'))`。
+- `not`：只需要操作数 1，它将包含在 `NOT()` 中。例如，`['not'，'id = 1']` 将生成 `NOT (id=1)`。操作数 1 也可以是个描述多个表达式的数组。例如 `['not', ['status' => 'draft', 'name' => 'example']]` 将生成 `NOT ((status='draft') AND (name='example'))`。
 
 - `between`：第一个操作数为字段名称，第二个和第三个操作数代表的是这个字段
   的取值范围。例如，`['between', 'id', 1, 10]` 将会生成
@@ -610,7 +610,7 @@ $query1->union($query2);
 - [[yii\db\Query::one()|one()]]：返回结果集的第一行。
 - [[yii\db\Query::column()|column()]]：返回结果集的第一列。
 - [[yii\db\Query::scalar()|scalar()]]：返回结果集的第一行第一列的标量值。
-- [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包结果集的值。
+- [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包含结果集的值。
 - [[yii\db\Query::count()|count()]]：返回 `COUNT` 查询的结果。
 - 其它集合查询方法：包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
   [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等。`$q` 是一个必选参数，

@@ -79,6 +79,19 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $defaultDuration = 0;
 
+    /**
+     * @var bool whether [igbinary serialization](http://pecl.php.net/package/igbinary) is available or not.
+     */
+    private $_igbinaryAvailable = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        $this->_igbinaryAvailable = \extension_loaded('igbinary');
+    }
 
     /**
      * 根据给定的键构建标准的缓存键。
@@ -95,7 +108,13 @@ abstract class Cache extends Component implements CacheInterface
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
-            $key = md5(json_encode($key));
+            if ($this->_igbinaryAvailable) {
+                $serializedKey = igbinary_serialize($key);
+            } else {
+                $serializedKey = serialize($key);
+            }
+
+            $key = md5($serializedKey);
         }
 
         return $this->keyPrefix . $key;

@@ -112,7 +112,7 @@ class MigrateController extends BaseMigrateController
      * `post` 生成器将返回 `{{%post}}`。
      * @since 2.0.8
      */
-    public $useTablePrefix = false;
+    public $useTablePrefix = true;
     /**
      * @var array 列定义字符串，用于创建迁移代码。
      *

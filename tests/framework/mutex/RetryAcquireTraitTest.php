@@ -33,7 +33,17 @@ class RetryAcquireTraitTest extends TestCase
         $this->assertTrue($mutexOne->acquire($mutexName));
         $this->assertFalse($mutexTwo->acquire($mutexName, 1));
 
-        $this->assertSame(20, $mutexTwo->attemptsCounter);
+        $this->assertGreaterThanOrEqual(1, count($mutexTwo->attemptsTime));
+        $this->assertLessThanOrEqual(20, count($mutexTwo->attemptsTime));
+
+        foreach ($mutexTwo->attemptsTime as $i => $attemptTime) {
+            if ($i === 0) {
+                continue;
+            }
+
+            $intervalMilliseconds = ($mutexTwo->attemptsTime[$i] - $mutexTwo->attemptsTime[$i-1]) * 1000;
+            $this->assertGreaterThanOrEqual($mutexTwo->retryDelay, $intervalMilliseconds);
+        }
     }
 
     /**

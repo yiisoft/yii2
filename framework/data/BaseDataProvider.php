@@ -46,6 +46,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public $id;
 
     private $_sort;
+    /**
+     * @var Pagination|false $_pagination
+     */
     private $_pagination;
     private $_keys;
     private $_models;
@@ -191,6 +194,13 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     {
         if ($this->_pagination === null) {
             $this->setPagination([]);
+        }
+
+        if (($this->_pagination !== false) && ($this->_pagination->totalCount === null)) {
+            if ($this->_totalCount === null) {
+                $this->setTotalCount($this->prepareTotalCount());
+            }
+            $this->_pagination->totalCount = $this->_totalCount;
         }
 
         return $this->_pagination;

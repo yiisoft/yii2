@@ -170,7 +170,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $query->from('order')->orderBy('id'),
         ]);
         $pagination = $provider->getPagination();
-        $this->assertEquals(0, $pagination->getPageCount());
+        $this->assertEquals(1, $pagination->getPageCount());
         $this->assertCount(3, $provider->getModels());
         $this->assertEquals(1, $pagination->getPageCount());
 
@@ -198,4 +198,45 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
         $this->assertEquals(0, $pagination->getPageCount());
     }
+
+    public function testValidateTotalCount()
+    {
+        $provider = new ActiveDataProvider([
+            'query' => Order::find()->orderBy('id'),
+            'totalCount' => 100,
+            'pagination' => [
+            ],
+        ]);
+        $this->assertSame(100, $provider->pagination->totalCount);
+
+        $provider = new ActiveDataProvider([
+            'query' => Order::find()->orderBy('id'),
+            'totalCount' => 100,
+            'pagination' => false,
+        ]);
+        $this->assertSame(false, $provider->pagination);
+    }
+
+    public function testValidatePageCount()
+    {
+        $provider = new ActiveDataProvider([
+            'query' => Order::find()->orderBy('id'),
+            'totalCount' => 100,
+            'pagination' => [
+                'pageSize' => 101,
+            ],
+        ]);
+        $this->assertSame(1, $provider->pagination->pageCount);
+
+        $provider = new ActiveDataProvider([
+            'query' => Order::find()->orderBy('id'),
+            'totalCount' => 100,
+            'pagination' => [
+                'pageSize' => 1,
+            ],
+        ]);
+        $this->assertSame(100, $provider->pagination->pageCount);
+
+    }
+
 }

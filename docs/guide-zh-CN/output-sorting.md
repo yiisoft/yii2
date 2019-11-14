@@ -51,7 +51,7 @@ $articles = Article::find()
 ]
 ```
 
-`name` 属性是由 `Article` 的 `firsr_name` 和 `last_name` 定义的一个复合属性。
+`name` 属性是由 `Article` 的 `first_name` 和 `last_name` 定义的一个复合属性。
 使用下面的数组结构来对它进行声明：
 
 - `asc` 和 `desc` 元素指定了如何按照该属性进行升序和降序的排序。

@@ -592,6 +592,35 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($positiveKey1, $messages);
         $this->assertArrayHasKey($positiveKey2, $messages);
     }
+
+    public function testMessagesSorting()
+    {
+        $category = 'test_order_category';
+        $key1 = 'key1';
+        $key2 = 'key2';
+
+        $sourceFileContent = "Yii::t('{$category}', '{$key1}');Yii::t('{$category}', '{$key2}');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveMessages([$key2 => 'already translated'], $category);
+
+        $this->saveConfigFile($this->getConfig([
+            'sort' => true,
+        ]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $keys = array_keys($this->loadMessages($category));
+        $this->assertEquals([$key1, $key2], $keys, "The order of messages should be '{$key1}, {$key2}' when sort equals true");
+
+
+        $this->saveMessages([$key2 => 'already translated'], $category);
+        $this->saveConfigFile($this->getConfig([
+            'sort' => false,
+        ]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $keys = array_keys($this->loadMessages($category));
+        $this->assertEquals([$key2, $key1], $keys, "The order of messages should be '{$key2}, {$key1}' when sort equals false and {$key1} was added later");
+    }
 }
 
 class MessageControllerMock extends MessageController
