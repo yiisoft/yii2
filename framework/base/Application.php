@@ -241,6 +241,11 @@ abstract class Application extends Module
             $this->getRuntimePath();
         }
 
+        if (isset($config['envFile'])) {
+            $this->environmentFileLoad($config['envFile']);
+            unset($config['envFile']);
+        }
+
         if (isset($config['timeZone'])) {
             $this->setTimeZone($config['timeZone']);
             unset($config['timeZone']);
@@ -271,6 +276,30 @@ abstract class Application extends Module
     {
         $this->state = self::STATE_INIT;
         $this->bootstrap();
+    }
+
+    /**
+     *
+     *
+     * @param string $filename
+     *
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function environmentFileLoad(string $filename): void
+    {
+        $environment = parse_ini_file($filename, false, INI_SCANNER_RAW);
+
+        if ($environment === false) {
+            if (false === file_exists($filename)) {
+                throw new InvalidConfigException("Environment configuration file does not exist: {$filename}.");
+            }
+
+            throw new InvalidConfigException("Error reading environment configuration file: {$filename}.");
+        }
+
+        foreach ($environment as $param => $value) {
+            putenv("{$param}={$value}");
+        }
     }
 
     /**
