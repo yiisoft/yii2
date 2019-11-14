@@ -8,15 +8,15 @@
 namespace yii\db;
 
 /**
- * Class PdoValue represents a $value that should be bound to PDO with exact $type.
+ * 类 PdoValue 表示应该使用确切的 $type 绑定到 PDO 的一个 $value。
  *
- * For example, it will be useful when you need to bind binary data to BLOB column in DBMS:
+ * 例如，当您需要将二进制数据绑定到 DBMS 中的 BLOB 列时，它将会非常有用：
  *
  * ```php
  * [':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
  * ```
  *
- * To see possible types, check [PDO::PARAM_* constants](http://php.net/manual/en/pdo.constants.php).
+ * 要查看可能的类型，请参考 [PDO::PARAM_* constants](http://php.net/manual/en/pdo.constants.php)。
  *
  * @see http://php.net/manual/en/pdostatement.bindparam.php
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
@@ -29,14 +29,14 @@ final class PdoValue implements ExpressionInterface
      */
     private $value;
     /**
-     * @var int One of PDO_PARAM_* constants
+     * @var int PDO_PARAM_* 常量之一
      * @see http://php.net/manual/en/pdo.constants.php
      */
     private $type;
 
 
     /**
-     * PdoValue constructor.
+     * PdoValue 构造函数。
      *
      * @param $value
      * @param $type

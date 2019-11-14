@@ -13,10 +13,10 @@ use yii\helpers\Json;
 use yii\web\JsExpression;
 
 /**
- * UrlValidator validates that the attribute value is a valid http or https URL.
+ * UrlValidator 校验指定的属性值是否是一个合法的 http 或者 https URL。
  *
- * Note that this validator only checks if the URL scheme and host part are correct.
- * It does not check the remaining parts of a URL.
+ * 注意：这个校验器只确保 URL 的协议和主机名部分是否正确，
+ * 它并不会校验其余部分。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -24,27 +24,27 @@ use yii\web\JsExpression;
 class UrlValidator extends Validator
 {
     /**
-     * @var string the regular expression used to validate the attribute value.
-     * The pattern may contain a `{schemes}` token that will be replaced
-     * by a regular expression which represents the [[validSchemes]].
+     * @var string 校验属性值的正则表达式。
+     * 模式包含一个 `{schemes}` 占位，
+     * 这个占位将会被一个代表 [[validSchemes]] 的正则表达式替换。
      */
     public $pattern = '/^{schemes}:\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i';
     /**
-     * @var array list of URI schemes which should be considered valid. By default, http and https
-     * are considered to be valid schemes.
+     * @var array 合法的 URI 协议列表。
+     * 默认 http 和 https 是合法的协议。
      */
     public $validSchemes = ['http', 'https'];
     /**
-     * @var string the default URI scheme. If the input doesn't contain the scheme part, the default
-     * scheme will be prepended to it (thus changing the input). Defaults to null, meaning a URL must
-     * contain the scheme part.
+     * @var string 默认的 URI 协议。如果输入没有包含协议部分，
+     * 默认的协议会被插入前面（即会改变输入）。
+     * 默认为 null ，意味着 URL 必须包含协议部分。
      */
     public $defaultScheme;
     /**
-     * @var bool whether validation process should take into account IDN (internationalized
-     * domain names). Defaults to false meaning that validation of URLs containing IDN will always
-     * fail. Note that in order to use IDN validation you have to install and enable `intl` PHP
-     * extension, otherwise an exception would be thrown.
+     * @var bool 是否校验过程启用 IDN (国际化域名名称）。
+     * 默认为 false 意味着校验包含 IDN 的 URLs 将会失败。
+     * 注意为了使用 IDN 校验，
+     * 你需要安装和启用 PHP 扩展 `intl` 否则将会抛出异常。
      */
     public $enableIDN = false;
 

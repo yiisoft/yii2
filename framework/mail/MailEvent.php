@@ -10,9 +10,9 @@ namespace yii\mail;
 use yii\base\Event;
 
 /**
- * MailEvent represents the event parameter used for events triggered by [[BaseMailer]].
+ * MailEvent 表示用于由 [[BaseMailer]] 触发的事件参数。
  *
- * By setting the [[isValid]] property, one may control whether to continue running the action.
+ * 通过设置 [[isValid]] 属性，可以控制是否继续运行该操作。
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -20,17 +20,17 @@ use yii\base\Event;
 class MailEvent extends Event
 {
     /**
-     * @var \yii\mail\MessageInterface the mail message being send.
+     * @var \yii\mail\MessageInterface 正在发送的邮件消息。
      */
     public $message;
     /**
-     * @var bool if message was sent successfully.
+     * @var bool 消息是否成功发送。
      */
     public $isSuccessful;
     /**
-     * @var bool whether to continue sending an email. Event handlers of
-     * [[\yii\mail\BaseMailer::EVENT_BEFORE_SEND]] may set this property to decide whether
-     * to continue send or not.
+     * @var bool 是否继续发送电子邮件。
+     * [[\yii\mail\BaseMailer::EVENT_BEFORE_SEND]] 的事件处理程序可以设置此属性
+     * 来决定是否继续发送。
      */
     public $isValid = true;
 }

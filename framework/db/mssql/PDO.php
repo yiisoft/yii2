@@ -8,8 +8,8 @@
 namespace yii\db\mssql;
 
 /**
- * This is an extension of the default PDO class of MSSQL and DBLIB drivers.
- * It provides workarounds for improperly implemented functionalities of the MSSQL and DBLIB drivers.
+ * MSSQL 和 DBLIB 驱动默认的 PDO 类扩展。
+ * 该扩展为 MSSQL 和 DBLIB 驱动的不能正确实现的功能提供了变通方法。
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -17,9 +17,9 @@ namespace yii\db\mssql;
 class PDO extends \PDO
 {
     /**
-     * Returns value of the last inserted ID.
-     * @param string|null $sequence the sequence name. Defaults to null.
-     * @return int last inserted ID value.
+     * 返回最后插入的 ID 的值。
+     * @param string|null $sequence 序列名。默认为空。
+     * @return int 最后插入的 ID 的值。
      */
     public function lastInsertId($sequence = null)
     {
@@ -27,9 +27,9 @@ class PDO extends \PDO
     }
 
     /**
-     * Starts a transaction. It is necessary to override PDO's method as MSSQL PDO driver does not
-     * natively support transactions.
-     * @return bool the result of a transaction start.
+     * 开始事务方法。因为 MSSQL PDO 驱动本身不支持事务，
+     * 所以有必要覆盖 PDO 类的方法。
+     * @return bool 开始事务的结果。
      */
     public function beginTransaction()
     {
@@ -39,9 +39,9 @@ class PDO extends \PDO
     }
 
     /**
-     * Commits a transaction. It is necessary to override PDO's method as MSSQL PDO driver does not
-     * natively support transactions.
-     * @return bool the result of a transaction commit.
+     * 提交事务方法。因为 MSSQL PDO 驱动本身不支持事务，
+     * 所以有必要覆盖 PDO 类的方法。
+     * @return bool 提交事务的结果。
      */
     public function commit()
     {
@@ -51,9 +51,9 @@ class PDO extends \PDO
     }
 
     /**
-     * Rollbacks a transaction. It is necessary to override PDO's method as MSSQL PDO driver does not
-     * natively support transactions.
-     * @return bool the result of a transaction roll back.
+     * 回滚事务方法。因为 MSSQL PDO 驱动本身不支持事务，
+     * 所以有必要覆盖 PDO 类的方法。
+     * @return bool 回滚事务的结果。
      */
     public function rollBack()
     {
@@ -63,13 +63,13 @@ class PDO extends \PDO
     }
 
     /**
-     * Retrieve a database connection attribute.
+     * 检索数据库连接属性。
      *
-     * It is necessary to override PDO's method as some MSSQL PDO driver (e.g. dblib) does not
-     * support getting attributes.
-     * @param int $attribute One of the PDO::ATTR_* constants.
-     * @return mixed A successful call returns the value of the requested PDO attribute.
-     * An unsuccessful call returns null.
+     * 因为某些 MSSQL PDO 驱动（例如：dblib）不支持获取连接属性，
+     * 所以有必要覆盖 PDO 类的方法。
+     * @param int $attribute PDO::ATTR_* 常量之一。
+     * @return mixed 调用成功后将返回所请求的 PDO 属性的值。
+     * 调用不成功，则返回 null。
      */
     public function getAttribute($attribute)
     {

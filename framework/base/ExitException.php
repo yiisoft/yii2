@@ -8,9 +8,9 @@
 namespace yii\base;
 
 /**
- * ExitException represents a normal termination of an application.
+ * ExitException 表示应用程序的正常终止。
  *
- * Do not catch ExitException. Yii will handle this exception to terminate the application gracefully.
+ * 不要捕获 ExitException。Yii 将处理此异常以优雅地终止应用程序。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,17 +18,17 @@ namespace yii\base;
 class ExitException extends \Exception
 {
     /**
-     * @var int the exit status code
+     * @var int 退出的状态码
      */
     public $statusCode;
 
 
     /**
-     * Constructor.
-     * @param int $status the exit status code
-     * @param string $message error message
-     * @param int $code error code
-     * @param \Exception $previous The previous exception used for the exception chaining.
+     * 构造函数。
+     * @param int $status 退出的状态码
+     * @param string $message 错误信息
+     * @param int $code 错误码
+     * @param \Exception $previous 用于异常链接的前一个异常。
      */
     public function __construct($status = 0, $message = null, $code = 0, \Exception $previous = null)
     {

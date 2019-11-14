@@ -17,22 +17,22 @@ use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 
 /**
- * DbMessageSource extends [[MessageSource]] and represents a message source that stores translated
- * messages in database.
+ * DbMessageSource 继承自 [[MessageSource]]，
+ * 并表示将翻译后的消息存储在数据库中作为消息源。
  *
- * The database must contain the following two tables: source_message and message.
+ * 数据库必须包含以下两个表：source_message 和 message。
  *
- * The `source_message` table stores the messages to be translated, and the `message` table stores
- * the translated messages. The name of these two tables can be customized by setting [[sourceMessageTable]]
- * and [[messageTable]], respectively.
+ * 表 `source_message` 存储要翻译的消息，
+ * 表 `message` 储存翻译后的消息。
+ * 可以通过设置 [[sourceMessageTable]] 和 [[messageTable]] 来自定义这两个表的名称。
  *
- * The database connection is specified by [[db]]. Database schema could be initialized by applying migration:
+ * 数据库连接由 [[db]] 指定。可以通过应用迁移来初始化数据库模式:
  *
  * ```
  * yii migrate --migrationPath=@yii/i18n/migrations/
  * ```
  *
- * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
+ * 如果你不想使用迁移，而是需要 SQL，那么所有数据库的文件都在 migrations 目录中。
  *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
@@ -40,58 +40,58 @@ use yii\helpers\ArrayHelper;
 class DbMessageSource extends MessageSource
 {
     /**
-     * Prefix which would be used when generating cache key.
-     * @deprecated This constant has never been used and will be removed in 2.1.0.
+     * 在生成缓存键时将使用的前缀。
+     * @deprecated 此常量从未使用过，将在 2.1.0 中删除。
      */
     const CACHE_KEY_PREFIX = 'DbMessageSource';
 
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件 ID。
      *
-     * After the DbMessageSource object is created, if you want to change this property, you should only assign
-     * it with a DB connection object.
+     * 在创建 DbMessageSource 对象之后，
+     * 如果您希望更改此属性，则应该仅使用 DB 连接对象对其进行分配。
      *
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * 从 2.0.2 版本开始，它也可以是用于创建对象的配置数组。
      */
     public $db = 'db';
     /**
-     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
-     * The messages data will be cached using this cache object.
-     * Note, that to enable caching you have to set [[enableCaching]] to `true`, otherwise setting this property has no effect.
+     * @var CacheInterface|array|string 缓存对象或缓存对象的应用程序组件 ID。
+     * 消息数据将使用此缓存对象进行缓存。
+     * 注意，要启用缓存，必须将 [[enableCaching]] 设置为 `true`，否则设置此属性没有效果。
      *
-     * After the DbMessageSource object is created, if you want to change this property, you should only assign
-     * it with a cache object.
+     * 在创建 DbMessageSource 对象之后，如果您想更改此属性，
+     * 您应该只使用缓存对象分配它。
      *
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * 从 2.0.2 版本开始，它也可以是用于创建对象的配置数组。
      * @see cachingDuration
      * @see enableCaching
      */
     public $cache = 'cache';
     /**
-     * @var string the name of the source message table.
+     * @var string 源消息表的名称。
      */
     public $sourceMessageTable = '{{%source_message}}';
     /**
-     * @var string the name of the translated message table.
+     * @var string 翻译后的消息表的名称。
      */
     public $messageTable = '{{%message}}';
     /**
-     * @var int the time in seconds that the messages can remain valid in cache.
-     * Use 0 to indicate that the cached data will never expire.
+     * @var int 消息在缓存中保持有效的时间，以秒为单位。
+     * 使用 0 表示缓存的数据永远不会过期。
      * @see enableCaching
      */
     public $cachingDuration = 0;
     /**
-     * @var bool whether to enable caching translated messages
+     * @var bool 是否要缓存翻译后的消息
      */
     public $enableCaching = false;
 
 
     /**
-     * Initializes the DbMessageSource component.
-     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-     * Configured [[cache]] component would also be initialized.
-     * @throws InvalidConfigException if [[db]] is invalid or [[cache]] is invalid.
+     * 初始化 DbMessageSource 组件。
+     * 这个方法将初始化 [[db]] 属性，以确保它引用一个有效的 DB 连接。
+     * 配置的 [[cache]] 组件也将被初始化。
+     * @throws InvalidConfigException 如果 [[db]] 无效或 [[cache]] 无效。
      */
     public function init()
     {
@@ -103,14 +103,14 @@ class DbMessageSource extends MessageSource
     }
 
     /**
-     * Loads the message translation for the specified language and category.
-     * If translation for specific locale code such as `en-US` isn't found it
-     * tries more generic `en`.
+     * 加载指定语言和类别的消息翻译。
+     * 如果没有找到 `en-US` 等特定语言环境代码的翻译，
+     * 它会尝试更通用的 `en`。
      *
-     * @param string $category the message category
-     * @param string $language the target language
-     * @return array the loaded messages. The keys are original messages, and the values
-     * are translated messages.
+     * @param string $category 消息的分类
+     * @param string $language 目标语言
+     * @return array 加载消息。键是原始消息，
+     * 值是经过翻译的消息。
      */
     protected function loadMessages($category, $language)
     {
@@ -133,11 +133,11 @@ class DbMessageSource extends MessageSource
     }
 
     /**
-     * Loads the messages from database.
-     * You may override this method to customize the message storage in the database.
-     * @param string $category the message category.
-     * @param string $language the target language.
-     * @return array the messages loaded from database.
+     * 从数据库加载消息。
+     * 您可以重写此方法来自定义数据库中的消息存储。
+     * @param string $category 消息类别。
+     * @param string $language 目标语言。
+     * @return array 从数据库加载的消息。
      */
     protected function loadMessagesFromDb($category, $language)
     {
@@ -164,12 +164,12 @@ class DbMessageSource extends MessageSource
     }
 
     /**
-     * The method builds the [[Query]] object for the fallback language messages search.
-     * Normally is called from [[loadMessagesFromDb]].
+     * 该方法为后备语言消息搜索构建 [[Query]] 对象。
+     * 通常由 [[loadMessagesFromDb]] 调用。
      *
-     * @param string $category the message category
-     * @param string $language the originally requested language
-     * @param string $fallbackLanguage the target fallback language
+     * @param string $category 消息类别
+     * @param string $language 最初请求的语言
+     * @param string $fallbackLanguage 目标后备语言
      * @return Query
      * @see loadMessagesFromDb
      * @since 2.0.7

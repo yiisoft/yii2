@@ -11,9 +11,9 @@ use Yii;
 use yii\web\ServerErrorHttpException;
 
 /**
- * DeleteAction implements the API endpoint for deleting a model.
+ * DeleteAction 实现一个 API 端点，用于删除一个模型。
  *
- * For more details and usage information on DeleteAction, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 DeleteAction 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,9 +21,9 @@ use yii\web\ServerErrorHttpException;
 class DeleteAction extends Action
 {
     /**
-     * Deletes a model.
-     * @param mixed $id id of the model to be deleted.
-     * @throws ServerErrorHttpException on failure.
+     * 删除模型。
+     * @param mixed $id 将被删除的模型的 ID。
+     * @throws ServerErrorHttpException 失败时
      */
     public function run($id)
     {

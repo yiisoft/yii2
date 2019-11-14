@@ -12,12 +12,12 @@ use yii\helpers\VarDumper;
 use yii\web\HttpException;
 
 /**
- * ErrorHandler handles uncaught PHP errors and exceptions.
+ * ErrorHandler 处理未捕获的 PHP 错误和异常。
  *
- * ErrorHandler is configured as an application component in [[\yii\base\Application]] by default.
- * You can access that instance via `Yii::$app->errorHandler`.
+ * 默认情况下，ErrorHandler 在 [[\yii\base\Application]] 中配置为应用程序组件。
+ * 您可以通过 `Yii::$app->errorHandler` 访问该实例。
  *
- * For more details and usage information on ErrorHandler, see the [guide article on handling errors](guide:runtime-handling-errors).
+ * 有关 ErrorHandler 的更多详细信息和用法信息，请参阅 [有关错误处理的指南文章](guide:runtime-handling-errors)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -27,7 +27,7 @@ use yii\web\HttpException;
 abstract class ErrorHandler extends Component
 {
     /**
-     * @var bool whether to discard any existing page output before error display. Defaults to true.
+     * @var bool 是否在错误显示之前丢弃任何现有页面输出。默认为 true。
      */
     public $discardExistingOutput = true;
     /**
@@ -38,22 +38,22 @@ abstract class ErrorHandler extends Component
      */
     public $memoryReserveSize = 262144;
     /**
-     * @var \Exception|null the exception that is being handled currently.
+     * @var \Exception|null 当前正在处理的异常。
      */
     public $exception;
 
     /**
-     * @var string Used to reserve memory for fatal error handler.
+     * @var string 用于为致命错误处理程序保留内存。
      */
     private $_memoryReserve;
     /**
-     * @var \Exception from HHVM error that stores backtrace
+     * @var \Exception 来自存储回溯的 HHVM 错误
      */
     private $_hhvmException;
 
 
     /**
-     * Register this error handler.
+     * 注册此错误处理程序。
      */
     public function register()
     {
@@ -71,7 +71,7 @@ abstract class ErrorHandler extends Component
     }
 
     /**
-     * Unregisters this error handler by restoring the PHP error and exception handlers.
+     * 通过还原 PHP 错误和异常处理程序取消注册此错误处理程序。
      */
     public function unregister()
     {
@@ -80,11 +80,11 @@ abstract class ErrorHandler extends Component
     }
 
     /**
-     * Handles uncaught PHP exceptions.
+     * 处理未捕获的 PHP 异常。
      *
-     * This method is implemented as a PHP exception handler.
+     * 此方法实现为 PHP 异常处理程序。
      *
-     * @param \Exception $exception the exception that is not caught
+     * @param \Exception $exception 未捕获的异常
      */
     public function handleException($exception)
     {
@@ -293,7 +293,7 @@ abstract class ErrorHandler extends Component
     }
 
     /**
-     * Removes all output echoed before calling this method.
+     * 在调用此方法之前删除所有回显的输出。
      */
     public function clearOutput()
     {
@@ -306,11 +306,11 @@ abstract class ErrorHandler extends Component
     }
 
     /**
-     * Converts an exception into a PHP error.
+     * 将异常转换为 PHP 错误。
      *
-     * This method can be used to convert exceptions inside of methods like `__toString()`
-     * to PHP errors because exceptions cannot be thrown inside of them.
-     * @param \Exception $exception the exception to convert to a PHP error.
+     * 此方法可用于将类似 `__toString()`
+     * 的方法内的异常转换为 PHP 错误，因为异常不能在其中抛出。
+     * @param \Exception $exception 转换为 PHP 错误的异常。
      */
     public static function convertExceptionToError($exception)
     {
@@ -318,9 +318,9 @@ abstract class ErrorHandler extends Component
     }
 
     /**
-     * Converts an exception into a simple string.
-     * @param \Exception|\Error $exception the exception being converted
-     * @return string the string representation of the exception.
+     * 将异常转换为简单字符串。
+     * @param \Exception|\Error $exception 被转换的异常
+     * @return string 异常的字符串表示形式。
      */
     public static function convertExceptionToString($exception)
     {
@@ -336,9 +336,9 @@ abstract class ErrorHandler extends Component
     }
 
     /**
-     * Converts an exception into a string that has verbose information about the exception and its trace.
-     * @param \Exception|\Error $exception the exception being converted
-     * @return string the string representation of the exception.
+     * 将异常转换为具有关于异常及其跟踪的详细信息的字符串。
+     * @param \Exception|\Error $exception 被转换的异常
+     * @return string 异常的字符串表示形式。
      *
      * @since 2.0.14
      */

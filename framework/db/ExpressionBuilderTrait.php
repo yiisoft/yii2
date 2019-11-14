@@ -8,8 +8,8 @@
 namespace yii\db;
 
 /**
- * Trait ExpressionBuilderTrait provides common constructor for classes that
- * should implement [[ExpressionBuilderInterface]]
+ * Trait ExpressionBuilderTrait 为应实现
+ * [[ExpressionBuilderInterface]] 的类提供公共的构造函数
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -22,7 +22,7 @@ trait ExpressionBuilderTrait
     protected $queryBuilder;
 
     /**
-     * ExpressionBuilderTrait constructor.
+     * ExpressionBuilderTrait 构造函数。
      *
      * @param QueryBuilder $queryBuilder
      */

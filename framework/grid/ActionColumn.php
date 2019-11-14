@@ -12,9 +12,9 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
+ * ActionColumn 是 [[GridView]] 小部件的列，该小部件显示用于查看和操作项目的按钮。
  *
- * To add an ActionColumn to the gridview, add it to the [[GridView::columns|columns]] configuration as follows:
+ * 要将 ActionColumn 添加到 gridview，请将其添加到 [[GridView::columns|columns]] 配置中，如下所示：
  *
  * ```php
  * 'columns' => [
@@ -26,7 +26,7 @@ use yii\helpers\Url;
  * ]
  * ```
  *
- * For more details and usage information on ActionColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ * 关于 ActionColumn 更多的细节和用法，请参阅 [guide article on data widgets](guide:output-data-widgets)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -38,20 +38,20 @@ class ActionColumn extends Column
      */
     public $headerOptions = ['class' => 'action-column'];
     /**
-     * @var string the ID of the controller that should handle the actions specified here.
-     * If not set, it will use the currently active controller. This property is mainly used by
-     * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
-     * to each action name to form the route of the action.
+     * @var string 应该处理此处指定的操作的控制器的 ID。
+     * 如果没有设置，将使用当前有效的控制器。
+     * 此属性主要是由 [[urlCreator]] 用于为不同的操作创建 URLs。
+     * 此属性的值将作为每个操作名称的前缀，以形成操作的路径。
      */
     public $controller;
     /**
-     * @var string the template used for composing each cell in the action column.
-     * Tokens enclosed within curly brackets are treated as controller action IDs (also called *button names*
-     * in the context of action column). They will be replaced by the corresponding button rendering callbacks
-     * specified in [[buttons]]. For example, the token `{view}` will be replaced by the result of
-     * the callback `buttons['view']`. If a callback cannot be found, the token will be replaced with an empty string.
+     * @var string 用于组合操作列中每个单元格的模板。
+     * 括在大括号的标记被视为控制器操作 IDs（在操作列上的上下文中也称为 *按钮名称*）。
+     * 它们将被 [[buttons]] 中指定的相应按钮渲染回调替换。
+     * 例如，令牌 `{view}` 将被回调 `buttons['view']` 的结果所取代。
+     * 如果找不到回调，则令牌将替换为空字符串。
      *
-     * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
+     * 例如，要只有视图和更新按钮，你可以将 ActionColumn 添加到 GridView 列，如下所示：
      *
      * ```php
      * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
@@ -61,9 +61,9 @@ class ActionColumn extends Column
      */
     public $template = '{view} {update} {delete}';
     /**
-     * @var array button rendering callbacks. The array keys are the button names (without curly brackets),
-     * and the values are the corresponding button rendering callbacks. The callbacks should use the following
-     * signature:
+     * @var array 按钮渲染的回调。
+     * 数组键是按钮名称（没有大括号），并且值是相应的按钮渲染的回调。
+     * 回调应该像以下来实现：
      *
      * ```php
      * function ($url, $model, $key) {
@@ -71,11 +71,11 @@ class ActionColumn extends Column
      * }
      * ```
      *
-     * where `$url` is the URL that the column creates for the button, `$model` is the model object
-     * being rendered for the current row, and `$key` is the key of the model in the data provider array.
+     * 其中 `$url` 是列为按钮创建的 URL，`$model` 是为当前行渲染的模型对象，
+     * `$key` 是数据提供程序数组中模型的键。
      *
-     * You can add further conditions to the button, for example only display it, when the model is
-     * editable (here assuming you have a status field that indicates that):
+     * 你可以为该按钮添加更多的条件，
+     * 例如仅在模型可编辑的时候显示它（假设你有一个指示该状态的字段）：
      *
      * ```php
      * [
@@ -86,10 +86,10 @@ class ActionColumn extends Column
      * ```
      */
     public $buttons = [];
-    /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
-     * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
-     * this array it will be shown by default.
-     * The callbacks must use the following signature:
+    /** @var array 每个按钮的可见性条件。
+     * 数组键是按钮名称（没有大括号），值是布尔值 true/false 或者匿名函数。
+     * 如果未在此数组中指定按钮名称，则默认情况下将显示该名称。
+     * 回调应该像以下来实现：
      *
      * ```php
      * function ($model, $key, $index) {
@@ -108,9 +108,9 @@ class ActionColumn extends Column
      */
     public $visibleButtons = [];
     /**
-     * @var callable a callback that creates a button URL using the specified model information.
-     * The signature of the callback should be the same as that of [[createUrl()]]
-     * Since 2.0.10 it can accept additional parameter, which refers to the column instance itself:
+     * @var callable 使用指定的模型信息创建按钮 URL 的回调。
+     * 回调的写法应该与 [[createUrl()]] 的写法相同
+     * 从 2.0.10 版本开始，它可以接受附加参数，它引用实例本身：
      *
      * ```php
      * function (string $action, mixed $model, mixed $key, integer $index, ActionColumn $this) {
@@ -118,11 +118,11 @@ class ActionColumn extends Column
      * }
      * ```
      *
-     * If this property is not set, button URLs will be created using [[createUrl()]].
+     * 如果未设置此属性，将使用 [[createUrl()]] 创建 URLs。
      */
     public $urlCreator;
     /**
-     * @var array html options to be applied to the [[initDefaultButton()|default button]].
+     * @var array 要用于 [[initDefaultButton()|default button]] 的 html 选项。
      * @since 2.0.4
      */
     public $buttonOptions = [];
@@ -138,7 +138,7 @@ class ActionColumn extends Column
     }
 
     /**
-     * Initializes the default button rendering callbacks.
+     * 初始化默认按钮渲染回调。
      */
     protected function initDefaultButtons()
     {
@@ -151,10 +151,10 @@ class ActionColumn extends Column
     }
 
     /**
-     * Initializes the default button rendering callback for single button.
-     * @param string $name Button name as it's written in template
-     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
-     * @param array $additionalOptions Array of additional options
+     * 初始化单个按钮的默认按钮渲染回调。
+     * @param string $name 在模板中写入的按钮名称
+     * @param string $iconName Bootstrap glyphicon 类的一部分，使其独一无二
+     * @param array $additionalOptions 一系列的附加选项
      * @since 2.0.11
      */
     protected function initDefaultButton($name, $iconName, $additionalOptions = [])
@@ -186,13 +186,13 @@ class ActionColumn extends Column
     }
 
     /**
-     * Creates a URL for the given action and model.
-     * This method is called for each button and each row.
-     * @param string $action the button name (or action ID)
-     * @param \yii\db\ActiveRecordInterface $model the data model
-     * @param mixed $key the key associated with the data model
-     * @param int $index the current row index
-     * @return string the created URL
+     * 为给定的操作和模型创建 URL。
+     * 为每个按钮和每一行调用此方法。
+     * @param string $action 按钮名称（或方法 ID）。
+     * @param \yii\db\ActiveRecordInterface $model 数据模型
+     * @param mixed $key 与数据模型相关的键
+     * @param int $index 当前行索引
+     * @return string 创建的 URL
      */
     public function createUrl($action, $model, $key, $index)
     {

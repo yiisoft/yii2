@@ -10,28 +10,28 @@ namespace yii\base;
 use Yii;
 
 /**
- * Action is the base class for all controller action classes.
+ * Action 是所有控制器动作类的基类。
  *
- * Action provides a way to reuse action method code. An action method in an Action
- * class can be used in multiple controllers or in different projects.
+ * Action 提供了重用动作方法代码的方法。
+ * Action 类中的 action 方法可用于多个控制器或不同的项目中。
  *
- * Derived classes must implement a method named `run()`. This method
- * will be invoked by the controller when the action is requested.
- * The `run()` method can have parameters which will be filled up
- * with user input values automatically according to their names.
- * For example, if the `run()` method is declared as follows:
+ * 派生类必须实现名为 `run()` 的方法。
+ * 请求动作时，控制器将调用此方法。
+ * `run()` 方法可以有参数，
+ * 这些参数将根据用户输入值的名称自动填充。
+ * 例如，如果 `run()` 方法声明如下：
  *
  * ```php
  * public function run($id, $type = 'book') { ... }
  * ```
  *
- * And the parameters provided for the action are: `['id' => 1]`.
- * Then the `run()` method will be invoked as `run(1)` automatically.
+ * 为该动作提供的参数是：`['id' => 1]`。
+ * 然后 `run()` 方法将自动调用为 `run(1)`。
  *
- * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
+ * 有关 Action 的更多详细信息和用法信息，请参阅 [动作指南](guide:structure-controllers)。
  *
- * @property string $uniqueId The unique ID of this action among the whole application. This property is
- * read-only.
+ * @property string $uniqueId 整个应用程序中此动作的唯一 ID。
+ * 此属性是只读的。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -39,21 +39,21 @@ use Yii;
 class Action extends Component
 {
     /**
-     * @var string ID of the action
+     * @var string 动作的 ID
      */
     public $id;
     /**
-     * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
+     * @var Controller|\yii\web\Controller|\yii\console\Controller 拥有此操作的控制器
      */
     public $controller;
 
 
     /**
-     * Constructor.
+     * 构造函数。
      *
-     * @param string $id the ID of this action
-     * @param Controller $controller the controller that owns this action
-     * @param array $config name-value pairs that will be used to initialize the object properties
+     * @param string $id 动作的 ID
+     * @param Controller $controller 拥有此动作的控制器
+     * @param array $config 将用于初始化对象属性的键值对
      */
     public function __construct($id, $controller, $config = [])
     {
@@ -63,9 +63,9 @@ class Action extends Component
     }
 
     /**
-     * Returns the unique ID of this action among the whole application.
+     * 返回整个应用程序中此动作的唯一 ID。
      *
-     * @return string the unique ID of this action among the whole application.
+     * @return string 整个应用程序中此操作的唯一 ID。
      */
     public function getUniqueId()
     {
@@ -73,12 +73,12 @@ class Action extends Component
     }
 
     /**
-     * Runs this action with the specified parameters.
-     * This method is mainly invoked by the controller.
+     * 使用指定的参数运行此动作。
+     * 该方法主要由控制器调用。
      *
-     * @param array $params the parameters to be bound to the action's run() method.
-     * @return mixed the result of the action
-     * @throws InvalidConfigException if the action class does not have a run() method
+     * @param array $params 要绑定到 action 的 run() 方法的参数。
+     * @return mixed action 的结果
+     * @throws InvalidConfigException 如果 action 类没有 run() 方法
      */
     public function runWithParams($params)
     {
@@ -101,11 +101,11 @@ class Action extends Component
     }
 
     /**
-     * This method is called right before `run()` is executed.
-     * You may override this method to do preparation work for the action run.
-     * If the method returns false, it will cancel the action.
+     * 在执行 `run()` 之前调用此方法。
+     * 您可以重写此方法来为动作运行做准备工作。
+     * 如果该方法返回 false，将取消该动作。
      *
-     * @return bool whether to run the action.
+     * @return bool 是否运行该动作。
      */
     protected function beforeRun()
     {
@@ -113,8 +113,8 @@ class Action extends Component
     }
 
     /**
-     * This method is called right after `run()` is executed.
-     * You may override this method to do post-processing work for the action run.
+     * 执行 `run()` 后立即调用此方法。
+     * 您可以重写此方法以对动作运行执行后处理工作。
      */
     protected function afterRun()
     {

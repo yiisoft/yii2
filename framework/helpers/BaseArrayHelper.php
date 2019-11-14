@@ -12,9 +12,9 @@ use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
 
 /**
- * BaseArrayHelper provides concrete implementation for [[ArrayHelper]].
+ * BaseArrayHelper 为 [[ArrayHelper]] 提供了具体的实现方法。
  *
- * Do not use BaseArrayHelper. Use [[ArrayHelper]] instead.
+ * 不要使用 BaseArrayHelper 类。使用 [[ArrayHelper]] 类来代替。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,10 +22,10 @@ use yii\base\InvalidArgumentException;
 class BaseArrayHelper
 {
     /**
-     * Converts an object or an array of objects into an array.
-     * @param object|array|string $object the object to be converted into an array
-     * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
-     * The properties specified for each class is an array of the following format:
+     * 将对象或者对象数组转换成数组。
+     * @param object|array|string $object 要转成数组的对象
+     * @param array $properties 从对象类的名称到需要将生成的数组结果集放入到属性中的映射。
+     * 每个类的属性集合指定一个以下格式的数组：
      *
      * ```php
      * [
@@ -42,7 +42,7 @@ class BaseArrayHelper
      * ]
      * ```
      *
-     * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
+     * `ArrayHelper::toArray($post, $properties)` 调用此方法生成的数组集合可能如下：
      *
      * ```php
      * [
@@ -53,8 +53,8 @@ class BaseArrayHelper
      * ]
      * ```
      *
-     * @param bool $recursive whether to recursively converts properties which are objects into arrays.
-     * @return array the array representation of the object
+     * @param bool $recursive 是否使用递归的方式将对象的属性转换为数组。
+     * @return array 这种对象的数组表示
      */
     public static function toArray($object, $properties = [], $recursive = true)
     {
@@ -100,19 +100,19 @@ class BaseArrayHelper
     }
 
     /**
-     * Merges two or more arrays into one recursively.
-     * If each array has an element with the same string key value, the latter
-     * will overwrite the former (different from array_merge_recursive).
-     * Recursive merging will be conducted if both arrays have an element of array
-     * type and are having the same key.
-     * For integer-keyed elements, the elements from the latter array will
-     * be appended to the former array.
-     * You can use [[UnsetArrayValue]] object to unset value from previous array or
-     * [[ReplaceArrayValue]] to force replace former value instead of recursive merging.
-     * @param array $a array to be merged to
-     * @param array $b array to be merged from. You can specify additional
-     * arrays via third argument, fourth argument etc.
-     * @return array the merged array (the original arrays are not changed.)
+     * 递归合并 2 个及以上的数组。
+     * 如果每个数组元素有相同的字符串键值对，
+     * 后者将会覆盖前者（不同于 array_merge_recursive）。
+     * 如果两个数组都有数组类型的元素并且具有相同的键，
+     * 那么将进行递归合并。
+     * 对于整型键类型元素，后面数组中的元素将
+     * 会被追加到前面的数组中去。
+     * 你能够使用 [[UnsetArrayValue]] 对象从之前的数组中设置值或者
+     * [[ReplaceArrayValue]] 强制替换原先的值来替代递归数组合并。
+     * @param array $a 需要合并的数组
+     * @param array $b 需要合并的数组。你能够指定额外的
+     * 数组中的第三个参数，第四个参数等。
+     * @return array 合并之后的数组（不改变原始数组。）
      */
     public static function merge($a, $b)
     {
@@ -142,19 +142,19 @@ class BaseArrayHelper
     }
 
     /**
-     * Retrieves the value of an array element or object property with the given key or property name.
-     * If the key does not exist in the array, the default value will be returned instead.
-     * Not used when getting value from an object.
+     * 检索具有给定键或属性名的数组元素或对象属性的值。
+     * 如果这个数组中不存在键，将返回默认值。
+     * 从对象中获取值时不使用。
      *
-     * The key may be specified in a dot format to retrieve the value of a sub-array or the property
-     * of an embedded object. In particular, if the key is `x.y.z`, then the returned value would
-     * be `$array['x']['y']['z']` or `$array->x->y->z` (if `$array` is an object). If `$array['x']`
-     * or `$array->x` is neither an array nor an object, the default value will be returned.
-     * Note that if the array already has an element `x.y.z`, then its value will be returned
-     * instead of going through the sub-arrays. So it is better to be done specifying an array of key names
-     * like `['x', 'y', 'z']`.
+     * 数组中的键可以指定圆点来检索子数组中的值或者对象中包含的属性。
+     * 特别是，如果键是 `x.y.z`，
+     * 然后返回的值中像这样 `$array['x']['y']['z']` 或者 `$array->x->y->z`（如果 `$array` 是一个对象）。
+     * 如果 `$array['x']` 或者 `$array->x` 既不是数组也不是对象，将返回默认值。
+     * 注意如果数组已经有元素 `x.y.z`，然后它的值将被返回来替代遍历子数组。
+     * 因此最好要做指定键值对的数组
+     * 像这样 `['x', 'y', 'z']`。
      *
-     * Below are some usage examples,
+     * 以下是一些用法示例,
      *
      * ```php
      * // working with array
@@ -171,14 +171,14 @@ class BaseArrayHelper
      * $value = \yii\helpers\ArrayHelper::getValue($versions, ['1.0', 'date']);
      * ```
      *
-     * @param array|object $array array or object to extract value from
-     * @param string|\Closure|array $key key name of the array element, an array of keys or property name of the object,
-     * or an anonymous function returning the value. The anonymous function signature should be:
-     * `function($array, $defaultValue)`.
-     * The possibility to pass an array of keys is available since version 2.0.4.
-     * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
-     * getting value from an object.
-     * @return mixed the value of the element if found, default value otherwise
+     * @param array|object $array 从对象或数组中进行提取
+     * @param string|\Closure|array $key 数组元素的键名，数组当中的键或者对象当中的属性名称，或者一个返回值的匿名函数。
+     * 匿名函数应该像这样签名：
+     * `function($array, $defaultValue)`。
+     * 在 2.0.4 版本中可以通过数组当中可用的键来传递。
+     * @param mixed $default 如果指定的数组当中的键不存在则返回默认值。
+     * 从对象当中获取值时不使用。
+     * @return mixed 找到该元素当中的值并返回，否则直接返回默认的值。
      */
     public static function getValue($array, $key, $default = null)
     {
@@ -215,9 +215,9 @@ class BaseArrayHelper
     }
 
     /**
-     * Writes a value into an associative array at the key path specified.
-     * If there is no such key path yet, it will be created recursively.
-     * If the key exists, it will be overwritten.
+     * 在指定键的路径上将值写入关联数组。
+     * 如果没有这样的关键路径，它将通过递归创建。
+     * 如果键存在，就会被覆盖。
      *
      * ```php
      *  $array = [
@@ -230,7 +230,7 @@ class BaseArrayHelper
      *  ];
      * ```
      *
-     * The result of `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` will be the following:
+     * `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` 的结果如下：
      *
      * ```php
      *  [
@@ -244,10 +244,10 @@ class BaseArrayHelper
      *
      * ```
      *
-     * The result of
-     * `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` or
+     * 这个
+     * `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` 或者
      * `ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);`
-     * will be the following:
+     * 生成的结果集如下：
      *
      * ```php
      *  [
@@ -259,12 +259,12 @@ class BaseArrayHelper
      *  ]
      * ```
      *
-     * @param array $array the array to write the value to
-     * @param string|array|null $path the path of where do you want to write a value to `$array`
-     * the path can be described by a string when each key should be separated by a dot
-     * you can also describe the path as an array of keys
-     * if the path is null then `$array` will be assigned the `$value`
-     * @param mixed $value the value to be written
+     * @param array $array 将值写入到数组中
+     * @param string|array|null $path 你想将值写入到 `$array` 中的路径
+     * 它的组成可以是将每个路径的描述用圆点连起来
+     * 也可以用数组中的键来描述路径
+     * 如果路径为空 `$array` 则被分配给 `$value`
+     * @param mixed $value 被写入的值
      * @since 2.0.13
      */
     public static function setValue(&$array, $path, $value)
@@ -291,10 +291,10 @@ class BaseArrayHelper
     }
 
     /**
-     * Removes an item from an array and returns the value. If the key does not exist in the array, the default value
-     * will be returned instead.
+     * 从数组中移除元素并返回值。
+     * 如果数组中不存在键，则默认值将被返回。
      *
-     * Usage examples,
+     * 用法示例，
      *
      * ```php
      * // $array = ['type' => 'A', 'options' => [1, 2]];
@@ -304,10 +304,10 @@ class BaseArrayHelper
      * // $array = ['options' => [1, 2]];
      * ```
      *
-     * @param array $array the array to extract value from
-     * @param string $key key name of the array element
-     * @param mixed $default the default value to be returned if the specified key does not exist
-     * @return mixed|null the value of the element if found, default value otherwise
+     * @param array $array 要从中提取值得数组
+     * @param string $key 数组元素的键名
+     * @param mixed $default 如果指定的键不存在则返回默认值
+     * @return mixed|null 如果找到该元素的值，否则为默认值
      */
     public static function remove(&$array, $key, $default = null)
     {
@@ -322,9 +322,9 @@ class BaseArrayHelper
     }
 
     /**
-     * Removes items with matching values from the array and returns the removed items.
+     * 从数组中移除对应的值并返回移除的项。
      *
-     * Example,
+     * 比如，
      *
      * ```php
      * $array = ['Bob' => 'Dylan', 'Michael' => 'Jackson', 'Mick' => 'Jagger', 'Janet' => 'Jackson'];
@@ -334,9 +334,9 @@ class BaseArrayHelper
      * // $removed = ['Michael' => 'Jackson', 'Janet' => 'Jackson'];
      * ```
      *
-     * @param array $array the array where to look the value from
-     * @param string $value the value to remove from the array
-     * @return array the items that were removed from the array
+     * @param array $array 查找值得数组
+     * @param string $value 从这个数组中移除的值
+     * @return array 返回从数组中移除的项
      * @since 2.0.11
      */
     public static function removeValue(&$array, $value)
@@ -355,19 +355,19 @@ class BaseArrayHelper
     }
 
     /**
-     * Indexes and/or groups the array according to a specified key.
-     * The input should be either multidimensional array or an array of objects.
+     * 根据指定的键对数组进行索引和/或分组。
+     * 输入的应该是多维数组或对象数组。
      *
-     * The $key can be either a key name of the sub-array, a property name of object, or an anonymous
-     * function that must return the value that will be used as a key.
+     * 这个 $key 可以是子数组的键名，对象的属性名，
+     * 或匿名函数返回的值将被用作键。
      *
-     * $groups is an array of keys, that will be used to group the input array into one or more sub-arrays based
-     * on keys specified.
+     * $groups 是数组中的键，
+     * 用于根据指定的键将输入数组分组为一个或多个子数组。
      *
-     * If the `$key` is specified as `null` or a value of an element corresponding to the key is `null` in addition
-     * to `$groups` not specified then the element is discarded.
+     * 如果 `$key` 被指定为 `null` 或者与该键对应的元素的值除未指定的 `$groups`
+     * 外为 `null` 那么该元素将被丢弃。
      *
-     * For example:
+     * 比如：
      *
      * ```php
      * $array = [
@@ -378,7 +378,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::index($array, 'id');
      * ```
      *
-     * The result will be an associative array, where the key is the value of `id` attribute
+     * 结果会生成一个关联数组，这个键就是 `id` 属性的值
      *
      * ```php
      * [
@@ -388,7 +388,7 @@ class BaseArrayHelper
      * ]
      * ```
      *
-     * An anonymous function can be used in the grouping array as well.
+     * 匿名函数也可以用作于分组数组当中。
      *
      * ```php
      * $result = ArrayHelper::index($array, function ($element) {
@@ -396,14 +396,14 @@ class BaseArrayHelper
      * });
      * ```
      *
-     * Passing `id` as a third argument will group `$array` by `id`:
+     * `id` 将作为第三个参数传入到 `$array` 并按 `id` 进行分组：
      *
      * ```php
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
-     * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
-     * and indexed by `data` on the third level:
+     * 结果将生成多维数组并按 `id` 进行一维分组，
+     * 二维按索引 `device` 进行分组并生成 `data` 索引三维数组：
      *
      * ```php
      * [
@@ -417,7 +417,7 @@ class BaseArrayHelper
      * ]
      * ```
      *
-     * The anonymous function can be used in the array of grouping keys as well:
+     * 通过键进行分组的数组中也可以使用匿名函数：
      *
      * ```php
      * $result = ArrayHelper::index($array, 'data', [function ($element) {
@@ -425,8 +425,8 @@ class BaseArrayHelper
      * }, 'device']);
      * ```
      *
-     * The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
-     * and indexed by the `data` on the third level:
+     * 结果将返回一个多维数组一维按 `id` 分组，
+     * 二维按索引 `device` 分组并且三维按索引 `data` 进行分组：
      *
      * ```php
      * [
@@ -446,13 +446,13 @@ class BaseArrayHelper
      * ]
      * ```
      *
-     * @param array $array the array that needs to be indexed or grouped
-     * @param string|\Closure|null $key the column name or anonymous function which result will be used to index the array
-     * @param string|string[]|\Closure[]|null $groups the array of keys, that will be used to group the input array
-     * by one or more keys. If the $key attribute or its value for the particular element is null and $groups is not
-     * defined, the array element will be discarded. Otherwise, if $groups is specified, array element will be added
-     * to the result array without any key. This parameter is available since version 2.0.8.
-     * @return array the indexed and/or grouped array
+     * @param array $array 需要索引或者分组的数组
+     * @param string|\Closure|null $key 列名或者匿名函数的结果将用于对数组进行分组
+     * @param string|string[]|\Closure[]|null $groups 数组当中的键，将用一个或多个键来对传入的数组进行分组。
+     * 如果 $key 属性或者它的值的特定元素为空和 $groups 没有定义，数组的元素将被丢弃。
+     * 因此，如果变量 $groups 是指定的，数组元素将被添加到没有任何键的数组当中。
+     * 此参数自版本 2.0.8 起可用。
+     * @return array 索引数组和/或分组数组
      */
     public static function index($array, $key, $groups = [])
     {
@@ -490,10 +490,10 @@ class BaseArrayHelper
     }
 
     /**
-     * Returns the values of a specified column in an array.
-     * The input array should be multidimensional or an array of objects.
+     * 返回数组中指定列的值。
+     * 传入的数组类型可以是多维数组或者对象数组。
      *
-     * For example,
+     * 比如，
      *
      * ```php
      * $array = [
@@ -511,9 +511,9 @@ class BaseArrayHelper
      *
      * @param array $array
      * @param int|string|\Closure $name
-     * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
-     * will be re-indexed with integers.
-     * @return array the list of column values
+     * @param bool $keepKeys 是否保留数组的键。如果不保留，
+     * 数组的结果的索引将被重新定义为整数。
+     * @return array 返回列表的列值
      */
     public static function getColumn($array, $name, $keepKeys = true)
     {
@@ -532,11 +532,11 @@ class BaseArrayHelper
     }
 
     /**
-     * Builds a map (key-value pairs) from a multidimensional array or an array of objects.
-     * The `$from` and `$to` parameters specify the key names or property names to set up the map.
-     * Optionally, one can further group the map according to a grouping field `$group`.
+     * 从多维数组当中或者对象数组（key-value pairs）构建一个映射。
+     * 那个 `$from` 和 `$to` 参数指定的键名或者属性名来设置映射。
+     * 可选，可以根据 `$group` 变量对映射键值对进一步分组。
      *
-     * For example,
+     * 比如，
      *
      * ```php
      * $array = [
@@ -589,13 +589,13 @@ class BaseArrayHelper
     }
 
     /**
-     * Checks if the given array contains the specified key.
-     * This method enhances the `array_key_exists()` function by supporting case-insensitive
-     * key comparison.
-     * @param string $key the key to check
-     * @param array $array the array with keys to check
-     * @param bool $caseSensitive whether the key comparison should be case-sensitive
-     * @return bool whether the array contains the specified key
+     * 检查给定数组是否包含指定键。
+     * 此方法通过支持不区分大小写键的比较增强了 `array_key_exists()`
+     * 函数。
+     * @param string $key 检测的键名
+     * @param array $array 需要检查键的数组
+     * @param bool $caseSensitive 键的比较是否支持区分大小写
+     * @return bool 数组是否包含指定的键
      */
     public static function keyExists($key, $array, $caseSensitive = true)
     {
@@ -615,20 +615,20 @@ class BaseArrayHelper
     }
 
     /**
-     * Sorts an array of objects or arrays (with the same structure) by one or several keys.
-     * @param array $array the array to be sorted. The array will be modified after calling this method.
-     * @param string|\Closure|array $key the key(s) to be sorted by. This refers to a key name of the sub-array
-     * elements, a property name of the objects, or an anonymous function returning the values for comparison
-     * purpose. The anonymous function signature should be: `function($item)`.
-     * To sort by multiple keys, provide an array of keys here.
-     * @param int|array $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
-     * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
-     * @param int|array $sortFlag the PHP sort flag. Valid values include
-     * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
-     * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
-     * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
-     * @throws InvalidArgumentException if the $direction or $sortFlag parameters do not have
-     * correct number of elements as that of $key.
+     * 按一个或多个键对对象数组或者数组（具有相同结构）进行排序。
+     * @param array $array 要排序的数组。调用此方法后数组将被修改。
+     * @param string|\Closure|array $key 按 key(s) 进行排序。
+     * 引用子数组的键名元素，对象的属性名，或一个匿名函数返回用于比较的值。
+     * 匿名函数的签名应该是这样的：`function($item)`。
+     * 要按多维键排序，需提供数组中的键。
+     * @param int|array $direction 排序方向。它可以按照 `SORT_ASC` 或者 `SORT_DESC` 来排序。
+     * 当按照不同排序方向的多个键排序时，使用数组进行排序。
+     * @param int|array $sortFlag PHP 排序标记。包括有效的值
+     * `SORT_REGULAR`，`SORT_NUMERIC`，`SORT_STRING`，`SORT_LOCALE_STRING`，`SORT_NATURAL` 和 `SORT_FLAG_CASE`。
+     * 请参考 [PHP manual](http://php.net/manual/en/function.sort.php)
+     * 获取更多详细信息。按具有不同排序标志的多个键排序时，使用数组中的标记排序。
+     * @throws InvalidArgumentException 如果 $direction 或者 $sortFlag 参数的个数
+     * 与 $key 参数的个数不一致。
      */
     public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
     {
@@ -666,16 +666,16 @@ class BaseArrayHelper
     }
 
     /**
-     * Encodes special characters in an array of strings into HTML entities.
-     * Only array values will be encoded by default.
-     * If a value is an array, this method will also encode it recursively.
-     * Only string values will be encoded.
-     * @param array $data data to be encoded
-     * @param bool $valuesOnly whether to encode array values only. If false,
-     * both the array keys and array values will be encoded.
-     * @param string $charset the charset that the data is using. If not set,
-     * [[\yii\base\Application::charset]] will be used.
-     * @return array the encoded data
+     * 将字符串数组中的特殊字符编码为 HTML 实体。
+     * 默认情况下只对数组值进行编码。
+     * 如果数组是一个值，此方法还将递归的进行编码。
+     * 只有字符串值才会被编码。
+     * @param array $data 将要被编码的数据
+     * @param bool $valuesOnly 是否只对数组值进行编码。
+     * 如果不是，数组的键和值将同时被编码。
+     * @param string $charset 数据使用的字符集。如果没有设置，
+     * [[\yii\base\Application::charset]] 将被使用。
+     * @return array 返回编码的数据
      * @see http://www.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
@@ -701,14 +701,14 @@ class BaseArrayHelper
     }
 
     /**
-     * Decodes HTML entities into the corresponding characters in an array of strings.
-     * Only array values will be decoded by default.
-     * If a value is an array, this method will also decode it recursively.
-     * Only string values will be decoded.
-     * @param array $data data to be decoded
-     * @param bool $valuesOnly whether to decode array values only. If false,
-     * both the array keys and array values will be decoded.
-     * @return array the decoded data
+     * 将 HTML 实体解码为字符串数组中的相应字符。
+     * 只有数组值将被默认解码。
+     * 如果数组是一个值，此方法还将递归的进行解码。
+     * 只有字符串值才会被解码。
+     * @param array $data 将要被解码的数据
+     * @param bool $valuesOnly 是否只对数组值进行解码。
+     * 如果不是，数组的键和值都将被解码。
+     * @return array 返回解码的数据
      * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function htmlDecode($data, $valuesOnly = true)
@@ -731,17 +731,17 @@ class BaseArrayHelper
     }
 
     /**
-     * Returns a value indicating whether the given array is an associative array.
+     * 返回一个值，该值指示给定数组是否是关联数组。
      *
-     * An array is associative if all its keys are strings. If `$allStrings` is false,
-     * then an array will be treated as associative if at least one of its keys is a string.
+     * 如果数组的键都是字符串，那么数组就是关联的。如果 `$allStrings` 设置为假，
+     * 如果数组的键中至少有一个是字符串，那么该数组将被视为关联数组。
      *
-     * Note that an empty array will NOT be considered associative.
+     * 注意，空数组不会被认为是关联的。
      *
-     * @param array $array the array being checked
-     * @param bool $allStrings whether the array keys must be all strings in order for
-     * the array to be treated as associative.
-     * @return bool whether the array is associative
+     * @param array $array 将被检测的数组
+     * @param bool $allStrings 数组键是否必须为所有字符串
+     * 以便数组被视为关联的。
+     * @return bool 返回数组是否是关联数组
      */
     public static function isAssociative($array, $allStrings = true)
     {
@@ -769,17 +769,17 @@ class BaseArrayHelper
     }
 
     /**
-     * Returns a value indicating whether the given array is an indexed array.
+     * 返回一个值，该值指示给定数组是否是索引数组。
      *
-     * An array is indexed if all its keys are integers. If `$consecutive` is true,
-     * then the array keys must be a consecutive sequence starting from 0.
+     * 如果一个数组的所有键都是整数，那么该数组是索引数组。如果变量 `$consecutive` 设置为真，
+     * 那么数组键必须是从 0 开始的连续序列。
      *
-     * Note that an empty array will be considered indexed.
+     * 注意，空数组将被认为是索引的。
      *
-     * @param array $array the array being checked
-     * @param bool $consecutive whether the array keys must be a consecutive sequence
-     * in order for the array to be treated as indexed.
-     * @return bool whether the array is indexed
+     * @param array $array 将被检测的数组
+     * @param bool $consecutive 数组键是否必须是连续序列
+     * 以便数组是不是索引数组。
+     * @return bool 是否为索引数组
      */
     public static function isIndexed($array, $consecutive = false)
     {
@@ -805,15 +805,15 @@ class BaseArrayHelper
     }
 
     /**
-     * Check whether an array or [[\Traversable]] contains an element.
+     * 检查是否为数组或 [[\Traversable]] 包含一个元素。
      *
-     * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
-     * but additionally works for objects that implement the [[\Traversable]] interface.
-     * @param mixed $needle The value to look for.
-     * @param array|\Traversable $haystack The set of values to search.
-     * @param bool $strict Whether to enable strict (`===`) comparison.
-     * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
-     * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * 这个方法与 PHP 函数 [in_array()](http://php.net/manual/en/function.in-array.php) 相同
+     * 但它还适用于实现 [[\Traversable]] 接口。
+     * @param mixed $needle 寻找的值。
+     * @param array|\Traversable $haystack 要寻找的值。
+     * @param bool $strict 是否启用 (`===`) 比较。
+     * @return bool 如果 `$needle` 存在于 `$haystack` 中返回 `true`，否则将返回 `false`。
+     * @throws InvalidArgumentException 如果 `$haystack` 不能遍历也不是数组则返回异常。
      * @see http://php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
@@ -835,12 +835,12 @@ class BaseArrayHelper
     }
 
     /**
-     * Checks whether a variable is an array or [[\Traversable]].
+     * 检查变量是数组还是 [[\Traversable]]。
      *
-     * This method does the same as the PHP function [is_array()](http://php.net/manual/en/function.is-array.php)
-     * but additionally works on objects that implement the [[\Traversable]] interface.
-     * @param mixed $var The variable being evaluated.
-     * @return bool whether $var is array-like
+     * 该方法与 PHP 函数 [is_array()](http://php.net/manual/en/function.is-array.php) 相同，
+     * 但是，它还可以用于实现 [[\Traversable]] 接口。
+     * @param mixed $var 被评估的变量。
+     * @return bool 变量 $var 是否是一个数组
      * @see http://php.net/manual/en/function.is-array.php
      * @since 2.0.8
      */
@@ -850,15 +850,15 @@ class BaseArrayHelper
     }
 
     /**
-     * Checks whether an array or [[\Traversable]] is a subset of another array or [[\Traversable]].
+     * 检测是否为一个数组或者 [[\Traversable]] 是另一个数组的子集还是 [[\Traversable]]。
      *
-     * This method will return `true`, if all elements of `$needles` are contained in
-     * `$haystack`. If at least one element is missing, `false` will be returned.
-     * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
-     * @param array|\Traversable $haystack The set of value to search.
-     * @param bool $strict Whether to enable strict (`===`) comparison.
-     * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
-     * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     * 这个方法将返回 `true`，如果 `$needles` 所有的元素都包含在 `$haystack`。
+     * 如果至少缺少一个元素的话，将被返回 `false`。
+     * @param array|\Traversable $needles 这个值必须 **all** 在 `$haystack` 存在。
+     * @param array|\Traversable $haystack 要搜索的值。
+     * @param bool $strict 是否启用 (`===`) 比较。
+     * @throws InvalidArgumentException 如果 `$haystack` 或者 `$needles` 既不能遍历也不是数组。
+     * @return bool 如果 `$needles` 存在于 `$haystack` 返回 `true`，否则返回 `false`。
      * @since 2.0.7
      */
     public static function isSubset($needles, $haystack, $strict = false)
@@ -877,9 +877,9 @@ class BaseArrayHelper
     }
 
     /**
-     * Filters array according to rules specified.
+     * 根据指定的规则筛选数组。
      *
-     * For example:
+     * 比如：
      *
      * ```php
      * $array = [
@@ -911,13 +911,13 @@ class BaseArrayHelper
      * // ]
      * ```
      *
-     * @param array $array Source array
-     * @param array $filters Rules that define array keys which should be left or removed from results.
-     * Each rule is:
-     * - `var` - `$array['var']` will be left in result.
-     * - `var.key` = only `$array['var']['key'] will be left in result.
-     * - `!var.key` = `$array['var']['key'] will be removed from result.
-     * @return array Filtered array
+     * @param array $array 源数组
+     * @param array $filters 定义应该从结果中保留或删除的数组键的规则。
+     * 具体规则如下：
+     * - `var` - `$array['var']` 将被留在数组中。
+     * - 只有 `var.key` = `$array['var']['key'] 将留在数组中。
+     * - `!var.key` = `$array['var']['key'] 将从结果集中移除。
+     * @return array 过滤后的数组
      * @since 2.0.9
      */
     public static function filter($array, $filters)

@@ -13,14 +13,14 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
 
 /**
- * BaseManager is a base class implementing [[ManagerInterface]] for RBAC management.
+ * BaseManager 是实现 RBAC 管理 [[ManagerInterface]] 的基类。
  *
- * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 DbManager 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
- * @property Role[] $defaultRoleInstances Default roles. The array is indexed by the role names. This property
- * is read-only.
- * @property string[] $defaultRoles Default roles. Note that the type of this property differs in getter and
- * setter. See [[getDefaultRoles()]] and [[setDefaultRoles()]] for details.
+ * @property Role[] $defaultRoleInstances 默认的角色。该数组由角色名称索引。
+ * 此属性是只读的。
+ * @property string[] $defaultRoles 默认的角色。请注意，此属性的类型在 getter 和 setter 中有所不同。
+ * 参阅 [[getDefaultRoles()]] 和 [[setDefaultRoles()]] 获取详细信息。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -28,73 +28,73 @@ use yii\base\InvalidValueException;
 abstract class BaseManager extends Component implements ManagerInterface
 {
     /**
-     * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
-     * Note that these roles are applied to users, regardless of their state of authentication.
+     * @var array 在不调用 [[assign()]] 的情况下自动分配给每个用户的角色名称列表。
+     * 请注意，无论身份验证的状态如何，这些角色都将应用于用户。
      */
     protected $defaultRoles = [];
 
 
     /**
-     * Returns the named auth item.
-     * @param string $name the auth item name.
-     * @return Item the auth item corresponding to the specified name. Null is returned if no such item.
+     * 返回指定的 auth 项。
+     * @param string $name auth 项的名称。
+     * @return Item 与指定名称对应的 auth 项。如果没有这样的项目，则返回 Null。
      */
     abstract protected function getItem($name);
 
     /**
-     * Returns the items of the specified type.
-     * @param int $type the auth item type (either [[Item::TYPE_ROLE]] or [[Item::TYPE_PERMISSION]]
-     * @return Item[] the auth items of the specified type.
+     * 返回指定类型的项。
+     * @param int $type auth 项类型（[[Item::TYPE_ROLE]] 或 [[Item::TYPE_PERMISSION]]。
+     * @return Item[] 指定类型的 auth 项。
      */
     abstract protected function getItems($type);
 
     /**
-     * Adds an auth item to the RBAC system.
-     * @param Item $item the item to add
-     * @return bool whether the auth item is successfully added to the system
-     * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
+     * 将一个 auth 项添加到 RBAC 系统。
+     * @param Item $item 要添加的项目
+     * @return bool 是否已成功将 auth 项添加到系统中
+     * @throws \Exception 如果数据验证或保存失败（例如角色名称或权限不唯一）
      */
     abstract protected function addItem($item);
 
     /**
-     * Adds a rule to the RBAC system.
-     * @param Rule $rule the rule to add
-     * @return bool whether the rule is successfully added to the system
-     * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
+     * 向 RBAC 系统添加规则。
+     * @param Rule $rule 要添加的规则
+     * @return bool 规则是否已成功添加到系统中
+     * @throws \Exception 如果数据验证或保存失败（例如规则名称不唯一）
      */
     abstract protected function addRule($rule);
 
     /**
-     * Removes an auth item from the RBAC system.
-     * @param Item $item the item to remove
-     * @return bool whether the role or permission is successfully removed
-     * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
+     * 从 RBAC 系统中删除 auth 项。
+     * @param Item $item 要删除的项目
+     * @return bool 是否成功删除了角色或权限
+     * @throws \Exception 如果数据验证或保存失败（例如角色名称或权限不唯一）
      */
     abstract protected function removeItem($item);
 
     /**
-     * Removes a rule from the RBAC system.
-     * @param Rule $rule the rule to remove
-     * @return bool whether the rule is successfully removed
-     * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
+     * 从 RBAC 系统中删除规则。
+     * @param Rule $rule 要删除的规则
+     * @return bool 是否成功删除了规则
+     * @throws \Exception 如果数据验证或保存失败（例如规则名称不唯一）
      */
     abstract protected function removeRule($rule);
 
     /**
-     * Updates an auth item in the RBAC system.
-     * @param string $name the name of the item being updated
-     * @param Item $item the updated item
-     * @return bool whether the auth item is successfully updated
-     * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
+     * 更新 RBAC 系统中的 auth 项。
+     * @param string $name 要更新的项目名称
+     * @param Item $item 更新的项目
+     * @return bool 是否已成功更新 auth 项
+     * @throws \Exception 如果数据验证或保存失败（例如角色名称或权限不唯一）
      */
     abstract protected function updateItem($name, $item);
 
     /**
-     * Updates a rule to the RBAC system.
-     * @param string $name the name of the rule being updated
-     * @param Rule $rule the updated rule
-     * @return bool whether the rule is successfully updated
-     * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
+     * 更新 RBAC 系统中的规则。
+     * @param string $name 要更新的规则的名称
+     * @param Rule $rule 更新的规则
+     * @return bool 规则是否已成功更新
+     * @throws \Exception 如果数据验证或保存失败（例如规则名称不唯一）
      */
     abstract protected function updateRule($name, $rule);
 
@@ -199,10 +199,10 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Set default roles
-     * @param string[]|\Closure $roles either array of roles or a callable returning it
-     * @throws InvalidArgumentException when $roles is neither array nor Closure
-     * @throws InvalidValueException when Closure return is not an array
+     * 设置默认角色
+     * @param string[]|\Closure $roles 角色的数组，或者返回角色数组的回调函数
+     * @throws InvalidArgumentException 当 $roles 既不是数组也不是回调函数
+     * @throws InvalidValueException 当回调函数返回不是数组时
      * @since 2.0.14
      */
     public function setDefaultRoles($roles)
@@ -221,8 +221,8 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Get default roles
-     * @return string[] default roles
+     * 获取默认角色
+     * @return string[] 默认角色
      * @since 2.0.14
      */
     public function getDefaultRoles()
@@ -231,9 +231,9 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Returns defaultRoles as array of Role objects.
+     * 将 defaultRoles 作为 Role 对象的数组返回。
      * @since 2.0.12
-     * @return Role[] default roles. The array is indexed by the role names
+     * @return Role[] 默认角色。该数组由角色名称索引
      */
     public function getDefaultRoleInstances()
     {
@@ -254,17 +254,17 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Executes the rule associated with the specified auth item.
+     * 执行与指定 auth 项关联的规则。
      *
-     * If the item does not specify a rule, this method will return true. Otherwise, it will
-     * return the value of [[Rule::execute()]].
+     * 如果项目未指定规则，则此方法将返回 true。
+     * 否则返回 [[Rule::execute()]] 的值。
      *
-     * @param string|int $user the user ID. This should be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param Item $item the auth item that needs to execute its rule
-     * @param array $params parameters passed to [[CheckAccessInterface::checkAccess()]] and will be passed to the rule
-     * @return bool the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be returned.
-     * @throws InvalidConfigException if the auth item has an invalid rule.
+     * @param string|int $user 用户 ID。这应该是整数或字符串，
+     * 表示用户的唯一标识符。参阅 [[\yii\web\User::id]]。
+     * @param Item $item 需要执行其规则的 auth 项
+     * @param array $params 传递给 [[CheckAccessInterface::checkAccess()]] 的参数，并且也将传递给规则
+     * @return bool [[Rule::execute()]] 的返回值。如果 auth 项目未指定规则，则返回 true。
+     * @throws InvalidConfigException 如果 auth 项目有无效规则。
      */
     protected function executeRule($user, $item, $params)
     {
@@ -280,10 +280,10 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well.
+     * 检查 $assignment 和 [[defaultRoles]] 数组是否都为空。
      *
-     * @param Assignment[] $assignments array of user's assignments
-     * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     * @param Assignment[] 用户分配的 $assignments 数组
+     * @return bool $assignment 和 [[defaultRoles]] 数组是否都为空
      * @since 2.0.11
      */
     protected function hasNoAssignments(array $assignments)

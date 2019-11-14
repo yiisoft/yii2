@@ -11,9 +11,9 @@ use yii\console\Markdown as ConsoleMarkdown;
 use yii\base\Model;
 
 /**
- * BaseConsole provides concrete implementation for [[Console]].
+ * BaseConsole 为 [[Console]] 提供了具体的实现方法。
  *
- * Do not use BaseConsole. Use [[Console]] instead.
+ * 不要使用 BaseConsole 类。使用 [[Console]] 类代替。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -54,9 +54,9 @@ class BaseConsole
 
 
     /**
-     * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
-     * If the cursor is already at the edge of the screen, this has no effect.
-     * @param int $rows number of rows the cursor should be moved up
+     * 通过向终端发送 ANSI 控制代码 CUU 将终端光标向上移动。
+     * 如果光标已经在屏幕边缘，则不会有任何效果。
+     * @param int $rows 光标应该向上移动的行数
      */
     public static function moveCursorUp($rows = 1)
     {
@@ -64,9 +64,9 @@ class BaseConsole
     }
 
     /**
-     * Moves the terminal cursor down by sending ANSI control code CUD to the terminal.
-     * If the cursor is already at the edge of the screen, this has no effect.
-     * @param int $rows number of rows the cursor should be moved down
+     * 通过向终端发送 ANSI 控制代码 CUD 将终端光标向下移动。
+     * 如果光标已经在屏幕边缘，则不会有任何效果。
+     * @param int $rows 光标应向下移动的行数
      */
     public static function moveCursorDown($rows = 1)
     {
@@ -74,9 +74,9 @@ class BaseConsole
     }
 
     /**
-     * Moves the terminal cursor forward by sending ANSI control code CUF to the terminal.
-     * If the cursor is already at the edge of the screen, this has no effect.
-     * @param int $steps number of steps the cursor should be moved forward
+     * 通过向终端发送 ANSI 控制代码 CUF，将终端光标向前移动。
+     * 如果光标已经在屏幕边缘，则不会有任何效果。
+     * @param int $steps 光标应向前移动的步数
      */
     public static function moveCursorForward($steps = 1)
     {
@@ -84,9 +84,9 @@ class BaseConsole
     }
 
     /**
-     * Moves the terminal cursor backward by sending ANSI control code CUB to the terminal.
-     * If the cursor is already at the edge of the screen, this has no effect.
-     * @param int $steps number of steps the cursor should be moved backward
+     * 通过向终端发送 ANSI 控制代码 CUB，将终端光标向后移动。
+     * 如果光标已经在屏幕边缘，则不会有任何效果。
+     * @param int $steps 光标应向后移动的步数
      */
     public static function moveCursorBackward($steps = 1)
     {
@@ -94,8 +94,8 @@ class BaseConsole
     }
 
     /**
-     * Moves the terminal cursor to the beginning of the next line by sending ANSI control code CNL to the terminal.
-     * @param int $lines number of lines the cursor should be moved down
+     * 通过向终端发送 ANSI 控制代码 CNL，将终端光标移动到下一行的开头。
+     * @param int $lines 光标应向下移动的行数
      */
     public static function moveCursorNextLine($lines = 1)
     {
@@ -103,8 +103,8 @@ class BaseConsole
     }
 
     /**
-     * Moves the terminal cursor to the beginning of the previous line by sending ANSI control code CPL to the terminal.
-     * @param int $lines number of lines the cursor should be moved up
+     * 通过向终端发送 ANSI 控制代码 CPL，将终端光标移动到前一行的开头。
+     * @param int $lines 应该向上移动光标的行数
      */
     public static function moveCursorPrevLine($lines = 1)
     {
@@ -112,9 +112,9 @@ class BaseConsole
     }
 
     /**
-     * Moves the cursor to an absolute position given as column and row by sending ANSI control code CUP or CHA to the terminal.
-     * @param int $column 1-based column number, 1 is the left edge of the screen.
-     * @param int|null $row 1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
+     * 通过发送 ANSI 控制码 CUP 或 CHA 到终端，将光标移动到列和行给定的绝对位置。
+     * @param int $column 基于 1 的列号，1 是屏幕的左边缘。
+     * @param int|null $row 基于 1 的行号，1 是屏幕的上边缘。如果没有设置，将光标移动到当前行。
      */
     public static function moveCursorTo($column, $row = null)
     {
@@ -126,9 +126,9 @@ class BaseConsole
     }
 
     /**
-     * Scrolls whole page up by sending ANSI control code SU to the terminal.
-     * New lines are added at the bottom. This is not supported by ANSI.SYS used in windows.
-     * @param int $lines number of lines to scroll up
+     * 通过向终端发送 ANSI 控制码 SU，将整个页面向上滚动。
+     * 在底部添加了新行。ANSI 不支持这种方法。windows 中使用的 SYS。
+     * @param int $lines 向上滚动的行数
      */
     public static function scrollUp($lines = 1)
     {
@@ -136,9 +136,9 @@ class BaseConsole
     }
 
     /**
-     * Scrolls whole page down by sending ANSI control code SD to the terminal.
-     * New lines are added at the top. This is not supported by ANSI.SYS used in windows.
-     * @param int $lines number of lines to scroll down
+     * 通过向终端发送 ANSI 控制码 SD，向下滚动整个页面。
+     * 在顶部添加新行。ANSI 不支持这种方法。windows 中使用的 SYS。
+     * @param int $lines 向下滚动的行数
      */
     public static function scrollDown($lines = 1)
     {
@@ -146,8 +146,8 @@ class BaseConsole
     }
 
     /**
-     * Saves the current cursor position by sending ANSI control code SCP to the terminal.
-     * Position can then be restored with [[restoreCursorPosition()]].
+     * 将 ANSI 控制代码 SCP 发送到终端，保存当前光标位置。
+     * 可以使用 [[restoreCursorPosition()]] 恢复位置。
      */
     public static function saveCursorPosition()
     {
@@ -155,7 +155,7 @@ class BaseConsole
     }
 
     /**
-     * Restores the cursor position saved with [[saveCursorPosition()]] by sending ANSI control code RCP to the terminal.
+     * 通过将 ANSI 控制代码 RCP 发送到终端，恢复 [[saveCursorPosition()]] 保存的光标位置。
      */
     public static function restoreCursorPosition()
     {
@@ -163,9 +163,9 @@ class BaseConsole
     }
 
     /**
-     * Hides the cursor by sending ANSI DECTCEM code ?25l to the terminal.
-     * Use [[showCursor()]] to bring it back.
-     * Do not forget to show cursor when your application exits. Cursor might stay hidden in terminal after exit.
+     * 通过向终端发送 ANSI DECTCEM 代码 ?25l 来隐藏光标。
+     * 使用 [[showCursor()]] 将它带回来。
+     * 应用程序退出时不要忘记显示光标。退出后光标可能会隐藏在终端中。
      */
     public static function hideCursor()
     {
@@ -173,7 +173,7 @@ class BaseConsole
     }
 
     /**
-     * Will show a cursor again when it has been hidden by [[hideCursor()]]  by sending ANSI DECTCEM code ?25h to the terminal.
+     * 当光标被 [[hideCursor()]] 隐藏时，将通过发送 ANSI DECTCEM 代码 ?25h 再次显示光标。
      */
     public static function showCursor()
     {
@@ -181,9 +181,9 @@ class BaseConsole
     }
 
     /**
-     * Clears entire screen content by sending ANSI control code ED with argument 2 to the terminal.
-     * Cursor position will not be changed.
-     * **Note:** ANSI.SYS implementation used in windows will reset cursor position to upper left corner of the screen.
+     * 通过发送参数带有 2 的 ANSI 控制代码 ED 到终端来清除整个屏幕内容。
+     * 不会改变光标位置。
+     * **Note:** ANSI.SYS 能够实现在 windows 中将坐标位置重置到屏幕左上角。
      */
     public static function clearScreen()
     {
@@ -191,8 +191,8 @@ class BaseConsole
     }
 
     /**
-     * Clears text from cursor to the beginning of the screen by sending ANSI control code ED with argument 1 to the terminal.
-     * Cursor position will not be changed.
+     * 通过发送参数带有 1 的 ANSI 控制代码 ED 发送到终端，将文本从光标处清除到屏幕的开头。
+     * 不会改变光标位置。
      */
     public static function clearScreenBeforeCursor()
     {
@@ -200,8 +200,8 @@ class BaseConsole
     }
 
     /**
-     * Clears text from cursor to the end of the screen by sending ANSI control code ED with argument 0 to the terminal.
-     * Cursor position will not be changed.
+     * 通过发送参数带有 0 的 ANSI 控制代码 ED 发送到终端，将文本从光标清除到屏幕末端。
+     * 不会改变光标位置。
      */
     public static function clearScreenAfterCursor()
     {
@@ -209,8 +209,8 @@ class BaseConsole
     }
 
     /**
-     * Clears the line, the cursor is currently on by sending ANSI control code EL with argument 2 to the terminal.
-     * Cursor position will not be changed.
+     * 清除行，光标当前是通过发送 ANSI 控制代码 EL 带有参数 2 到终端。
+     * 不会改变光标位置。
      */
     public static function clearLine()
     {
@@ -218,8 +218,8 @@ class BaseConsole
     }
 
     /**
-     * Clears text from cursor position to the beginning of the line by sending ANSI control code EL with argument 1 to the terminal.
-     * Cursor position will not be changed.
+     * 通过向终端发送带有变量 1 的 ANSI 控制码 EL，将文本从光标位置清除到行的开始位置。
+     * 不会改变光标位置。
      */
     public static function clearLineBeforeCursor()
     {
@@ -227,8 +227,8 @@ class BaseConsole
     }
 
     /**
-     * Clears text from cursor position to the end of the line by sending ANSI control code EL with argument 0 to the terminal.
-     * Cursor position will not be changed.
+     * 通过将参数为 0 的 ANSI 控制代码 EL 发送到终端，将文本从光标位置清除到行尾。
+     * 不会改变光标位置。
      */
     public static function clearLineAfterCursor()
     {
@@ -236,12 +236,12 @@ class BaseConsole
     }
 
     /**
-     * Returns the ANSI format code.
+     * 返回 ANSI 格式代码。
      *
-     * @param array $format An array containing formatting values.
-     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
-     * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
-     * @return string The ANSI format code according to the given formatting constants.
+     * @param array $format 包含格式化值的数组。
+     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*`
+     * 常量，也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
+     * @return string ANSI 格式代码根据给定的格式化常量进行格式化。
      */
     public static function ansiFormatCode($format)
     {
@@ -249,11 +249,11 @@ class BaseConsole
     }
 
     /**
-     * Echoes an ANSI format code that affects the formatting of any text that is printed afterwards.
+     * 输出一种 ANSI 格式代码，它影响以后打印的任何文本的格式。
      *
-     * @param array $format An array containing formatting values.
-     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
-     * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+     * @param array $format 包含格式化值的数组。
+     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*`
+     * 常量，也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
      * @see ansiFormatCode()
      * @see endAnsiFormat()
      */
@@ -263,9 +263,9 @@ class BaseConsole
     }
 
     /**
-     * Resets any ANSI format set by previous method [[beginAnsiFormat()]]
-     * Any output after this will have default text format.
-     * This is equal to calling.
+     * 重置之前方法 [[beginAnsiFormat()]] 设置的任何 ANSI 格式。
+     * 在此之后的任何输出都将具有默认的文本格式。
+     * 这等于调用。
      *
      * ```php
      * echo Console::ansiFormatCode([Console::RESET])
@@ -277,12 +277,12 @@ class BaseConsole
     }
 
     /**
-     * Will return a string formatted with the given ANSI style.
+     * 将返回一个使用给定 ANSI 样式格式化的字符串。
      *
-     * @param string $string the string to be formatted
-     * @param array $format An array containing formatting values.
-     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
-     * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+     * @param string $string 要格式化的字符串
+     * @param array $format 包含格式化值的数组。
+     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*`
+     * 常量，也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
      * @return string
      */
     public static function ansiFormat($string, $format = [])
@@ -293,12 +293,12 @@ class BaseConsole
     }
 
     /**
-     * Returns the ansi format code for xterm foreground color.
+     * 返回 xterm 前景颜色的 ansi 格式代码。
      *
-     * You can pass the return value of this to one of the formatting methods:
-     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]].
+     * 您可以将这个函数的返回值传递给以下格式方法之一：
+     * [[ansiFormat]]，[[ansiFormatCode]]，[[beginAnsiFormat]]。
      *
-     * @param int $colorCode xterm color code
+     * @param int $colorCode xterm 颜色代码
      * @return string
      * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
@@ -308,12 +308,12 @@ class BaseConsole
     }
 
     /**
-     * Returns the ansi format code for xterm background color.
+     * 返回 xterm 背景颜色的 ansi 格式代码。
      *
-     * You can pass the return value of this to one of the formatting methods:
-     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]].
+     * 您可以将它的返回值传递给一个格式化方法：
+     * [[ansiFormat]]，[[ansiFormatCode]]，[[beginAnsiFormat]]。
      *
-     * @param int $colorCode xterm color code
+     * @param int $colorCode xterm 颜色代码
      * @return string
      * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
@@ -323,9 +323,9 @@ class BaseConsole
     }
 
     /**
-     * Strips ANSI control codes from a string.
+     * 从字符串中剥离 ANSI 控制代码
      *
-     * @param string $string String to strip
+     * @param string $string 匹配替换的字符串
      * @return string
      */
     public static function stripAnsiFormat($string)
@@ -334,9 +334,9 @@ class BaseConsole
     }
 
     /**
-     * Returns the length of the string without ANSI color codes.
-     * @param string $string the string to measure
-     * @return int the length of the string not counting ANSI format characters
+     * 返回没有 ANSI 颜色代码的字符串长度。
+     * @param string $string 计算长度的字符串
+     * @return int 不包括 ANSI 格式字符的字符串长度
      */
     public static function ansiStrlen($string)
     {
@@ -344,17 +344,17 @@ class BaseConsole
     }
 
     /**
-     * Converts an ANSI formatted string to HTML.
+     * 将 ANSI 格式的字符串转换为 HTML。
      *
-     * Note: xTerm 256 bit colors are currently not supported.
+     * Note: 目前不支持 xTerm 256 位颜色。
      *
-     * @param string $string the string to convert.
-     * @param array $styleMap an optional mapping of ANSI control codes such as
-     * FG\_*COLOR* or [[BOLD]] to a set of css style definitions.
-     * The CSS style definitions are represented as an array where the array keys correspond
-     * to the css style attribute names and the values are the css values.
-     * values may be arrays that will be merged and imploded with `' '` when rendered.
-     * @return string HTML representation of the ANSI formatted string
+     * @param string $string 要转换的字符串。
+     * @param array $styleMap ANSI 控件代码的可选映射，
+     * 如 FG\_*COLOR* 或者 [[BOLD]] 去设置一组 CSS 样式的定义。
+     * CSS 样式的定义被描述为一个数组,
+     * 其中数组键对应 CSS 样式属性名称，且值为 CSS 值。
+     * 当渲染的时候如果值是数组将使用 `' '` 进行拼接合并。
+     * @return string ANSI 格式字符串的 HTML 表示
      */
     public static function ansiToHtml($string, $styleMap = [])
     {
@@ -458,9 +458,9 @@ class BaseConsole
     }
 
     /**
-     * Converts Markdown to be better readable in console environments by applying some ANSI format.
-     * @param string $markdown the markdown string.
-     * @return string the parsed result as ANSI formatted string.
+     * 通过应用一些 ANSI 格式，将 Markdown 转换为在控制台环境中更好的可读性。
+     * @param string $markdown markdown 的字符串。
+     * @return string 解析后的结果为 ANSI 格式化字符串。
      */
     public static function markdownToAnsi($markdown)
     {
@@ -469,11 +469,11 @@ class BaseConsole
     }
 
     /**
-     * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes.
+     * 将字符串转换成 ansi 格式，用 ansi 控制代码模式 %y 替换成（黄色）。
      *
-     * Uses almost the same syntax as https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
-     * The conversion table is: ('bold' meaning 'light' on some
-     * terminals). It's almost the same conversion table irssi uses.
+     * 与 https://github.com/pear/Console_Color2/blob/master/Console/Color2.php 使用几乎相同的语法
+     * 这张转换表如下：
+     *（在一些终端上 'bold' 意思是 'light'）。它几乎与 irssi 使用的转换表相同。
      * <pre>
      *                  text      text            background
      *      ------------------------------------------------
@@ -495,12 +495,12 @@ class BaseConsole
      *      %n     Resets the color
      *      %%     A single %
      * </pre>
-     * First param is the string to convert, second is an optional flag if
-     * colors should be used. It defaults to true, if set to false, the
-     * color codes will just be removed (And %% will be transformed into %)
+     * 第一个参数是要转换的字符串，
+     * 第二个参数是可选的标志是否需要使用颜色。它默认设置为 true，如果设置为 false，
+     * 颜色代码将被移除（并且 %% 将被改变为 %）
      *
-     * @param string $string String to convert
-     * @param bool $colored Should the string be colored?
+     * @param string $string 转换的字符串
+     * @param bool $colored 是否应该为字符串设定颜色？
      * @return string
      */
     public static function renderColoredString($string, $colored = true)
@@ -560,10 +560,10 @@ class BaseConsole
     }
 
     /**
-     * Escapes % so they don't get interpreted as color codes when
-     * the string is parsed by [[renderColoredString]].
+     * 当字符串被解析时如果包含转义符 %
+     * 则它们不会通过 [[renderColoredString]] 解释为颜色代码。
      *
-     * @param string $string String to escape
+     * @param string $string 转义字符串
      *
      * @return string
      */
@@ -574,13 +574,13 @@ class BaseConsole
     }
 
     /**
-     * Returns true if the stream supports colorization. ANSI colors are disabled if not supported by the stream.
+     * 如果流支持彩色化则返回 true。如果流不支持则 ANSI 颜色被禁用。
      *
-     * - windows without ansicon
-     * - not tty consoles
+     * - 不含 ansicon 窗口
+     * - 非 tty 控制台
      *
      * @param mixed $stream
-     * @return bool true if the stream supports ANSI colors, otherwise false.
+     * @return bool 如果流支持 ANSI 颜色返回 true，否则返回 false。
      */
     public static function streamSupportsAnsiColors($stream)
     {
@@ -590,7 +590,7 @@ class BaseConsole
     }
 
     /**
-     * Returns true if the console is running on windows.
+     * 如果控制台在 windows 上运行，则返回 true。
      * @return bool
      */
     public static function isRunningOnWindows()
@@ -599,18 +599,18 @@ class BaseConsole
     }
 
     /**
-     * Returns terminal screen size.
+     * 返回终端屏幕大小。
      *
-     * Usage:
+     * 使用如下：
      *
      * ```php
      * list($width, $height) = ConsoleHelper::getScreenSize();
      * ```
      *
-     * @param bool $refresh whether to force checking and not re-use cached size value.
-     * This is useful to detect changing window size while the application is running but may
-     * not get up to date values on every terminal.
-     * @return array|bool An array of ($width, $height) or false when it was not able to determine size.
+     * @param bool $refresh 是否强制检查而不是重用缓存的大小值。
+     * 这有助于在应用程序运行时检测窗口大小的变化，
+     * 但可能无法在每个终端上获得最新的值。
+     * @return array|bool 当无法确定数组中的值（$width，$height）或者返回 false。
      */
     public static function getScreenSize($refresh = false)
     {
@@ -657,12 +657,12 @@ class BaseConsole
     }
 
     /**
-     * Word wrap text with indentation to fit the screen size.
+     * 自动缩进以适合屏幕大小
      *
-     * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
+     * 如果无法检测到屏幕大小，或者缩进大于屏幕尺寸，则文本不会被换行。
      *
-     * The first line will **not** be indented, so `Console::wrapText("Lorem ipsum dolor sit amet.", 4)` will result in the
-     * following output, given the screen width is 16 characters:
+     * 第一行将被 **not** 定义，因此 `Console::wrapText("Lorem ipsum dolor sit amet.", 4)`
+     * 会产生以下输出，给定屏幕宽度为 16 个字符：
      *
      * ```
      * Lorem ipsum
@@ -670,11 +670,11 @@ class BaseConsole
      *     amet.
      * ```
      *
-     * @param string $text the text to be wrapped
-     * @param int $indent number of spaces to use for indentation.
-     * @param bool $refresh whether to force refresh of screen size.
-     * This will be passed to [[getScreenSize()]].
-     * @return string the wrapped text.
+     * @param string $text 将要被覆盖的字符串
+     * @param int $indent 用于缩进的空格数。
+     * @param bool $refresh 是否强制刷新屏幕大小。
+     * 这个将被传递给 [[getScreenSize()]]。
+     * @return string 被覆盖的字符串。
      * @since 2.0.4
      */
     public static function wrapText($text, $indent = 0, $refresh = false)
@@ -698,10 +698,10 @@ class BaseConsole
     }
 
     /**
-     * Gets input from STDIN and returns a string right-trimmed for EOLs.
+     * 从 STDIN 获取输入，并为 EOL 返回右侧被截取后的字符串
      *
-     * @param bool $raw If set to true, returns the raw string without trimming
-     * @return string the string read from stdin
+     * @param bool $raw 如果设置 true，返回的字符串不进行删除
+     * @return string 从 stdin 读取的字符串
      */
     public static function stdin($raw = false)
     {
@@ -709,10 +709,10 @@ class BaseConsole
     }
 
     /**
-     * Prints a string to STDOUT.
+     * 打印字符串到 STDOUT。
      *
-     * @param string $string the string to print
-     * @return int|bool Number of bytes printed or false on error
+     * @param string $string 将要打印的字符串
+     * @return int|bool 发生错误时将打印字节数或者返回 false
      */
     public static function stdout($string)
     {
@@ -720,10 +720,10 @@ class BaseConsole
     }
 
     /**
-     * Prints a string to STDERR.
+     * 将字符串打印到 STDERR。
      *
-     * @param string $string the string to print
-     * @return int|bool Number of bytes printed or false on error
+     * @param string $string 要打印的字符串
+     * @return int|bool 发生错误时将打印字节数或者返回 false
      */
     public static function stderr($string)
     {
@@ -731,11 +731,11 @@ class BaseConsole
     }
 
     /**
-     * Asks the user for input. Ends when the user types a carriage return (PHP_EOL). Optionally, It also provides a
-     * prompt.
+     * 请求用户输入。当用户键入回车时结束（PHP_EOL）。
+     * 可选，它还提供了一个提示。
      *
-     * @param string $prompt the prompt to display before waiting for input (optional)
-     * @return string the user's input
+     * @param string $prompt 等待输入之前显示提示（可选）
+     * @return string 用户的输入
      */
     public static function input($prompt = null)
     {
@@ -747,10 +747,10 @@ class BaseConsole
     }
 
     /**
-     * Prints text to STDOUT appended with a carriage return (PHP_EOL).
+     * 打印带有回车信息的 STDOUT 文本（PHP_EOL）。
      *
-     * @param string $string the text to print
-     * @return int|bool number of bytes printed or false on error.
+     * @param string $string 打印的字符串
+     * @return int|bool 发生错误时将打印字节数或者返回 false。
      */
     public static function output($string = null)
     {
@@ -758,10 +758,10 @@ class BaseConsole
     }
 
     /**
-     * Prints text to STDERR appended with a carriage return (PHP_EOL).
+     * 打印文本到 STDERR 并附加回车信息（PHP_EOL）。
      *
-     * @param string $string the text to print
-     * @return int|bool number of bytes printed or false on error.
+     * @param string $string 打印的字符串
+     * @return int|bool 发生错误时将打印字节数或者返回 false。
      */
     public static function error($string = null)
     {
@@ -769,19 +769,19 @@ class BaseConsole
     }
 
     /**
-     * Prompts the user for input and validates it.
+     * 提示用户输入并验证。
      *
-     * @param string $text prompt string
-     * @param array $options the options to validate the input:
+     * @param string $text 提示字符串
+     * @param array $options 验证输入的选项：
      *
-     * - `required`: whether it is required or not
-     * - `default`: default value if no input is inserted by the user
-     * - `pattern`: regular expression pattern to validate user input
-     * - `validator`: a callable function to validate input. The function must accept two parameters:
-     * - `input`: the user input to validate
-     * - `error`: the error value passed by reference if validation failed.
+     * - `required`：无论是否被要求
+     * - `default`：没用没有插入任何值则返回默认值
+     * - `pattern`：通过正则表达式模式匹配验证用户的输入
+     * - `validator`：回调函数验证输入。函数必须接受两个参数：
+     * - `input`：去验证用户的输入
+     * - `error`：如果验证失败则通过引用进行传递错误信息。
      *
-     * @return string the user input
+     * @return string 用户输入
      */
     public static function prompt($text, $options = [])
     {
@@ -823,9 +823,9 @@ class BaseConsole
     }
 
     /**
-     * Asks user to confirm by typing y or n.
+     * 请用户输入 y 或 n 进行确认。
      *
-     * A typical usage looks like the following:
+     * 一个典型的用法如下：
      *
      * ```php
      * if (Console::confirm("Are you sure?")) {
@@ -835,9 +835,9 @@ class BaseConsole
      * }
      * ```
      *
-     * @param string $message to print out before waiting for user input
-     * @param bool $default this value is returned if no selection is made.
-     * @return bool whether user confirmed
+     * @param string $message 在等待用户输入之前打印出来
+     * @param bool $default 如果没有选择，将返回他的值。
+     * @return bool 用户是否确认
      */
     public static function confirm($message, $default = false)
     {
@@ -860,14 +860,14 @@ class BaseConsole
     }
 
     /**
-     * Gives the user an option to choose from. Giving '?' as an input will show
-     * a list of options to choose from and their explanations.
+     * 给用户一个选项进行选择。
+     * 输入 '?' 则给出可供选择的选项及其选项列表对应的说明解释。
      *
-     * @param string $prompt the prompt message
-     * @param array $options Key-value array of options to choose from. Key is what is inputed and used, value is
-     * what's displayed to end user by help command.
+     * @param string $prompt 提示消息
+     * @param array $options 从键值数组中进行选项的选择。
+     * 输入和使用的是什么键，值是通过帮助命令显示给最终用户的内容。
      *
-     * @return string An option character the user chose
+     * @return string 用户选择的选项字符
      */
     public static function select($prompt, $options = [])
     {
@@ -895,11 +895,11 @@ class BaseConsole
     private static $_progressEtaLastUpdate;
 
     /**
-     * Starts display of a progress bar on screen.
+     * 开始在屏幕上显示进度条。
      *
-     * This bar will be updated by [[updateProgress()]] and my be ended by [[endProgress()]].
+     * 这进度条将被 [[updateProgress()]] 进行更新并且通过 [[endProgress()]] 进行结束。
      *
-     * The following example shows a simple usage of a progress bar:
+     * 下面的示例显示了进度条的简单用法：
      *
      * ```php
      * Console::startProgress(0, 1000);
@@ -910,7 +910,7 @@ class BaseConsole
      * Console::endProgress();
      * ```
      *
-     * Git clone like progress (showing only status information):
+     * 像 Git 克隆一样进步（只显示状态信息）：
      * ```php
      * Console::startProgress(0, 1000, 'Counting objects: ', false);
      * for ($n = 1; $n <= 1000; $n++) {
@@ -920,15 +920,15 @@ class BaseConsole
      * Console::endProgress("done." . PHP_EOL);
      * ```
      *
-     * @param int $done the number of items that are completed.
-     * @param int $total the total value of items that are to be done.
-     * @param string $prefix an optional string to display before the progress bar.
-     * Default to empty string which results in no prefix to be displayed.
-     * @param int|bool $width optional width of the progressbar. This can be an integer representing
-     * the number of characters to display for the progress bar or a float between 0 and 1 representing the
-     * percentage of screen with the progress bar may take. It can also be set to false to disable the
-     * bar and only show progress information like percent, number of items and ETA.
-     * If not set, the bar will be as wide as the screen. Screen size will be detected using [[getScreenSize()]].
+     * @param int $done 已完成项的数量
+     * @param int $total 需要完成的项目的总数量
+     * @param string $prefix 在进度条之前显示的可选字符串。
+     * 默认为空字符串，因此不显示前缀。
+     * @param int|bool $width 可选的进度条宽度。
+     * 可以通过整数来表示进度条显示的字符或者可以使用 0 到 1 之间的浮点数百分比来表示。
+     * 也可以将其设置为 false
+     * 以禁用只显示进度信息，比如百分比，总数量以及预估到达时间。
+     * 如果不设置，横条将和屏幕一样宽。屏幕大小将使用 [[getScreenSize()]] 来检测。
      * @see startProgress
      * @see updateProgress
      * @see endProgress
@@ -946,13 +946,13 @@ class BaseConsole
     }
 
     /**
-     * Updates a progress bar that has been started by [[startProgress()]].
+     * 使用 [[startProgress()]] 更新已启动的进度条。
      *
-     * @param int $done the number of items that are completed.
-     * @param int $total the total value of items that are to be done.
-     * @param string $prefix an optional string to display before the progress bar.
-     * Defaults to null meaning the prefix specified by [[startProgress()]] will be used.
-     * If prefix is specified it will update the prefix that will be used by later calls.
+     * @param int $done 完成的项的数量。
+     * @param int $total 需要完成的项目的总数量
+     * @param string $prefix 在进度条之前显示的可选字符串。
+     * 默认是 null 表示由 [[startProgress()]] 指定将被使用的前缀。
+     * 如果指定前缀，它将更新以后调用将使用的前缀。
      * @see startProgress
      * @see endProgress
      */
@@ -994,10 +994,10 @@ class BaseConsole
     }
 
     /**
-     * Return width of the progressbar
-     * @param string $prefix an optional string to display before the progress bar.
+     * 返回进度条的宽度
+     * @param string $prefix 在进度条之前显示的可选字符串。
      * @see updateProgress
-     * @return int screen width
+     * @return int 屏幕宽度
      * @since 2.0.14
      */
     private static function getProgressbarWidth($prefix)
@@ -1025,9 +1025,9 @@ class BaseConsole
     }
 
     /**
-     * Calculate $_progressEta, $_progressEtaLastUpdate and $_progressEtaLastDone
-     * @param int $done the number of items that are completed.
-     * @param int $total the total value of items that are to be done.
+     * 预测变量 $_progressEta，$_progressEtaLastUpdate 和 $_progressEtaLastDone
+     * @param int $done 完成的项的数量。
+     * @param int $total 需要完成的项的总数量
      * @see updateProgress
      * @since 2.0.14
      */
@@ -1048,13 +1048,13 @@ class BaseConsole
     }
 
     /**
-     * Ends a progress bar that has been started by [[startProgress()]].
+     * 通过 [[startProgress()]] 结束已启动的进度条。
      *
-     * @param string|bool $remove This can be `false` to leave the progress bar on screen and just print a newline.
-     * If set to `true`, the line of the progress bar will be cleared. This may also be a string to be displayed instead
-     * of the progress bar.
-     * @param bool $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
-     * gets removed. Defaults to true.
+     * @param string|bool $remove 它可能是 `false` 将进度条留在屏幕上，只打印一个换行符。
+     * 如果设置为 `true`，进度条的线条将被清除。
+     * 这也可能是要显示的字符串不是进度条。
+     * @param bool $keepPrefix 当进度条开始移除时是否保留指定的前缀。
+     * 默认设置为 true。
      * @see startProgress
      * @see updateProgress
      */
@@ -1079,12 +1079,12 @@ class BaseConsole
     }
 
     /**
-     * Generates a summary of the validation errors.
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
-     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+     * 生成验证错误的摘要。
+     * @param Model|Model[] $models 这个模型将显示验证错误的信息。
+     * @param array $options 标签选项的键-值对。以下是特殊处理的选项：
      *
-     * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
-     *   only the first error message for each attribute will be shown. Defaults to `false`.
+     * - showAllErrors：布尔型，如果设置为 true，则每个属性的每个错误消息将以其他方式显示。
+     *   否则将只显示每个属性的第一个错误消息。默认为 `false`。
      *
      * @return string the generated error summary
      * @since 2.0.14
@@ -1098,11 +1098,11 @@ class BaseConsole
     }
 
     /**
-     * Return array of the validation errors
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
-     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
-     * only the first error message for each attribute will be shown.
-     * @return array of the validation errors
+     * 返回验证错误数组
+     * @param Model|Model[] $models 要显示其验证错误的模型。
+     * @param $showAllErrors 布尔型，如果设置为 true 则每个属性的每个错误消息将以其他方式显示
+     * 否则将只显示每个属性的第一个错误消息。
+     * @return 验证错误数组
      * @since 2.0.14
      */
     private static function collectErrors($models, $showAllErrors)

@@ -12,10 +12,10 @@ use yii\base\BaseObject;
 use yii\base\ErrorHandler;
 
 /**
- * BaseMessage serves as a base class that implements the [[send()]] method required by [[MessageInterface]].
+ * BaseMessage 用于实现 [[MessageInterface]] 所需的 [[send()]] 方法的基类。
  *
- * By default, [[send()]] will use the "mail" application component to send the current message.
- * The "mail" application component should be a mailer instance implementing [[MailerInterface]].
+ * 默认情况下，[[send()]] 将使用 "mail" 应用程序组件发送消息。
+ * "mail" 应用程序组件应该是实现 [[MailerInterface]] 的邮件程序实例。
  *
  * @see BaseMailer
  *
@@ -25,17 +25,17 @@ use yii\base\ErrorHandler;
 abstract class BaseMessage extends BaseObject implements MessageInterface
 {
     /**
-     * @var MailerInterface the mailer instance that created this message.
-     * For independently created messages this is `null`.
+     * @var MailerInterface 创建此消息的邮件程序实例。
+     * 对于独立创建的消息，应该为 `null`。
      */
     public $mailer;
 
 
     /**
-     * Sends this email message.
-     * @param MailerInterface $mailer the mailer that should be used to send this message.
-     * If no mailer is given it will first check if [[mailer]] is set and if not,
-     * the "mail" application component will be used instead.
+     * 发送电子邮件。
+     * @param MailerInterface $mailer 应该用于发送消息的邮件程序。
+     * 如果没有给出邮件程序，首先应该检查是否设置了 [[mailer]]，
+     * 如果没有，应该使用 "mail" 应用程序组件。
      * @return bool whether this message is sent successfully.
      */
     public function send(MailerInterface $mailer = null)
@@ -50,8 +50,8 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
     }
 
     /**
-     * PHP magic method that returns the string representation of this object.
-     * @return string the string representation of this object.
+     * PHP 魔法方法，返回这个对象的字符串表现形式。
+     * @return string 对象的字符串表现形式。
      */
     public function __toString()
     {

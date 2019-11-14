@@ -10,7 +10,7 @@ namespace yii\db;
 use yii\base\Event;
 
 /**
- * AfterSaveEvent represents the information available in [[ActiveRecord::EVENT_AFTER_INSERT]] and [[ActiveRecord::EVENT_AFTER_UPDATE]].
+ * AfterSaveEvent 表示在 [[ActiveRecord::EVENT_AFTER_INSERT]] 和 [[ActiveRecord::EVENT_AFTER_UPDATE]] 中可用的信息。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -18,7 +18,7 @@ use yii\base\Event;
 class AfterSaveEvent extends Event
 {
     /**
-     * @var array The attribute values that had changed and were saved.
+     * @var array 已更改并保存的属性值。
      */
     public $changedAttributes;
 }

@@ -12,13 +12,13 @@ use yii\base\Action;
 use yii\base\ActionFilter;
 
 /**
- * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.
+ * HttpCache 通过利用 `Last-Modified` 和 `ETag` HTTP headers 来实现客户端缓存。
  *
- * It is an action filter that can be added to a controller and handles the `beforeAction` event.
+ * 它是一个动作过滤器可以添加到控制器中并处理 `beforeAction` 事件。
  *
- * To use HttpCache, declare it in the `behaviors()` method of your controller class.
- * In the following example the filter will be applied to the `index` action and
- * the Last-Modified header will contain the date of the last update to the user table in the database.
+ * 要使用 HttpCache，请在控制器类的 `behaviors()` 方法中声明它。
+ * 在下面的示例中过滤器将应用于 `index` 操作
+ * 最后修改的标题将包含数据库中用户表的最后更新日期。
  *
  * ```php
  * public function behaviors()
@@ -46,72 +46,72 @@ use yii\base\ActionFilter;
 class HttpCache extends ActionFilter
 {
     /**
-     * @var callable a PHP callback that returns the UNIX timestamp of the last modification time.
-     * The callback's signature should be:
+     * @var callable 一个 php 回调返回上次修改时间的 UNIX 时间戳。
+     * 回调的签名应为：
      *
      * ```php
      * function ($action, $params)
      * ```
      *
-     * where `$action` is the [[Action]] object that this filter is currently handling;
-     * `$params` takes the value of [[params]]. The callback should return a UNIX timestamp.
+     * 其中`$action` 是此筛选器当前正在处理的 [[Action]] 对象；
+     * `$params` 接受 [[params]] 的值。回调应该返回UNIX时间戳。
      *
      * @see http://tools.ietf.org/html/rfc7232#section-2.2
      */
     public $lastModified;
     /**
-     * @var callable a PHP callback that generates the ETag seed string.
-     * The callback's signature should be:
+     * @var callable 生成 ETag 种子字符串的 PHP 回调。
+     * 回调的签名应为：
      *
      * ```php
      * function ($action, $params)
      * ```
      *
-     * where `$action` is the [[Action]] object that this filter is currently handling;
-     * `$params` takes the value of [[params]]. The callback should return a string serving
-     * as the seed for generating an ETag.
+     * 其中`$action` 是此筛选器当前正在处理的 [[Action]] 对象；
+     * `$params` 接受 [[params]] 的值。 回调应该返回
+     * 一个字符串作为生成 ETag 的种子。
      */
     public $etagSeed;
     /**
-     * @var bool whether to generate weak ETags.
+     * @var bool 是否生成弱 ETags。
      *
-     * Weak ETags should be used if the content should be considered semantically equivalent, but not byte-equal.
+     * 如果内容在语义上是等价的而不是字节相等，则应使用弱 ETags 。
      *
      * @since 2.0.8
      * @see http://tools.ietf.org/html/rfc7232#section-2.3
      */
     public $weakEtag = false;
     /**
-     * @var mixed additional parameters that should be passed to the [[lastModified]] and [[etagSeed]] callbacks.
+     * @var mixed 应传递给 [[lastModified]] 和 [[etagSeed]] 回调的其他参数。
      */
     public $params;
     /**
-     * @var string the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
+     * @var string `Cache-Control` HTTP header的值，如果为 null, 则不会发送。
      * @see http://tools.ietf.org/html/rfc2616#section-14.9
      */
     public $cacheControlHeader = 'public, max-age=3600';
     /**
-     * @var string the name of the cache limiter to be set when [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
-     * is called. The default value is an empty string, meaning turning off automatic sending of cache headers entirely.
-     * You may set this property to be `public`, `private`, `private_no_expire`, and `nocache`.
-     * Please refer to [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
-     * for detailed explanation of these values.
+     * @var string 调用 [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * 时要设置的缓存限制器的名称。 默认值为空字符串，这意味着完全关闭缓存标头的自动发送。
+     * 您可以将此属性设置为 `public`, `private`, `private_no_expire`，和 `nocache`。
+     * 请参阅 [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * 有关这些值的详细说明.
      *
-     * If this property is `null`, then `session_cache_limiter()` will not be called. As a result,
-     * PHP will send headers according to the `session.cache_limiter` PHP ini setting.
+     * 如果此属性为 `null`，则不会调用`session_cache_limiter()` 。结果，
+     * PHP 将根据‘session.cache_limiter` PHP ini 设置发送headers 。
      */
     public $sessionCacheLimiter = '';
     /**
-     * @var bool a value indicating whether this filter should be enabled.
+     * @var bool 指示是否应启用此筛选器的值。
      */
     public $enabled = true;
 
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * 此方法是在执行操作之前（在所有可能的筛选器之后）调用的。
+     * 您可以重写此方法来为操作做最后一刻的准备。
+     * @param Action $action 要执行的操作。
+     * @return bool 是否应继续执行该操作。
      */
     public function beforeAction($action)
     {
@@ -156,12 +156,12 @@ class HttpCache extends ActionFilter
     }
 
     /**
-     * Validates if the HTTP cache contains valid content.
-     * If both Last-Modified and ETag are null, returns false.
-     * @param int $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
-     * If null, the Last-Modified header will not be validated.
-     * @param string $etag the calculated ETag value. If null, the ETag header will not be validated.
-     * @return bool whether the HTTP cache is still valid.
+     * 验证 HTTP 缓存是否包含有效内容。
+     * 如果 Last-Modified 和 ETag 均为 null，则返回False。
+     * @param int $lastModified 根据 UNIX 时间戳计算 Last-Modified 值。
+     * 如果为 null，则不会验证 Last-Modified header。
+     * @param string $etag 计算的 ETag 值。如果为 null，则不会验证 ETag header。
+     * @return bool HTTP 缓存是否仍然有效。
      */
     protected function validateCache($lastModified, $etag)
     {
@@ -177,7 +177,7 @@ class HttpCache extends ActionFilter
     }
 
     /**
-     * Sends the cache control header to the client.
+     * 将缓存控制标头发送到客户端。
      * @see cacheControlHeader
      */
     protected function sendCacheControlHeader()
@@ -201,7 +201,7 @@ class HttpCache extends ActionFilter
     }
 
     /**
-     * Generates an ETag from the given seed string.
+     * 从给定的种子字符串生成 ETag。
      * @param string $seed Seed for the ETag
      * @return string the generated ETag
      */

@@ -10,7 +10,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * Class LikeCondition represents a `LIKE` condition.
+ * 类 LikeCondition 表示 `LIKE` 条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -18,19 +18,19 @@ use yii\base\InvalidArgumentException;
 class LikeCondition extends SimpleCondition
 {
     /**
-     * @var array|false map of chars to their replacements, false if characters should not be escaped
-     * or either null or empty array if escaping is condition builder responsibility.
-     * By default it's set to `null`.
+     * @var array|false 如果字符不应转义，则为 false，
+     * 如果转义是条件生成器的职责，则为 null 或 空数组。
+     * 默认情况下设置为 null。
      */
     protected $escapingReplacements;
 
 
     /**
-     * @param string $column the column name.
-     * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
-     * @param string[]|string $value single value or an array of values that $column should be compared with.
-     * If it is an empty array the generated expression will  be a `false` value if operator is `LIKE` or `OR LIKE`
-     * and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
+     * @param string $column 列名。
+     * @param string $operator 要使用的操作符（例如：`LIKE`，`NOT LIKE`，`OR LIKE` 或 `OR NOT LIKE`）
+     * @param string[]|string $value 应该与 $column 比较的单个值或值数组。
+     * 如果是一个空数组，当操作符是 `LIKE` 或 `OR LIKE`时，生成的表达式则为 false，
+     * 如果操作符是 `NOT LIKE` 或 `OR NOT LIKE`，生成的表达式则为空。
      */
     public function __construct($column, $operator, $value)
     {
@@ -38,12 +38,12 @@ class LikeCondition extends SimpleCondition
     }
 
     /**
-     * This method allows to specify how to escape special characters in the value(s).
+     * 此方法允许指定如何转义值中的特殊字符。
      *
-     * @param array an array of mappings from the special characters to their escaped counterparts.
-     * You may use `false` or an empty array to indicate the values are already escaped and no escape
-     * should be applied. Note that when using an escape mapping (or the third operand is not provided),
-     * the values will be automatically enclosed within a pair of percentage characters.
+     * @param array 从特殊字符到其转义对应字符的映射数组。
+     * 你可以使用 `false` 或空数组来表示值已经转义，并不应该再应用转义。
+     * 注意，使用转义映射（或未提供第三个操作数）时，
+     * 值将自动包含在一对 % 字符中。
      */
     public function setEscapingReplacements($escapingReplacements)
     {
@@ -60,7 +60,7 @@ class LikeCondition extends SimpleCondition
 
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException if wrong number of operands have been given.
+     * @throws InvalidArgumentException 如果给出错误操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {

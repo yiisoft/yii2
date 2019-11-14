@@ -8,17 +8,17 @@
 namespace yii\validators;
 
 /**
- * InlineValidator represents a validator which is defined as a method in the object being validated.
+ * InlineValidator 代表一个被定义为待校验对象的某个方法的校验器。
  *
- * The validation method must have the following signature:
+ * 这个校验方法必须符合如下函数声明：
  *
  * ```php
  * function foo($attribute, $params, $validator)
  * ```
  *
- * where `$attribute` refers to the name of the attribute being validated, while `$params` is an array representing the
- * additional parameters supplied in the validation rule. Parameter `$validator` refers to the related
- * [[InlineValidator]] object and is available since version 2.0.11.
+ * 其中，`$attribute` 代表要校验的属性名字，`$params` 是一个数组，用于提供补充的校验规则。
+ * `$validator` 指向关联的 [[InlineValidator]] 对象，
+ * 并且，这个属性从 2.0.11 版本才开始支持。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,8 +26,8 @@ namespace yii\validators;
 class InlineValidator extends Validator
 {
     /**
-     * @var string|\Closure an anonymous function or the name of a model class method that will be
-     * called to perform the actual validation. The signature of the method should be like the following:
+     * @var string|\Closure 匿名函数，或者模型类方法名，用于执行实际的校验过程。
+     * 方法的签名必须类似如下：
      *
      * ```php
      * function foo($attribute, $params, $validator)
@@ -39,12 +39,12 @@ class InlineValidator extends Validator
      */
     public $method;
     /**
-     * @var mixed additional parameters that are passed to the validation method
+     * @var mixed 传递给校验方法的额外参数。
      */
     public $params;
     /**
-     * @var string|\Closure an anonymous function or the name of a model class method that returns the client validation code.
-     * The signature of the method should be like the following:
+     * @var string|\Closure 一个匿名函数或者模型类方法名，用于返回客户端校验代码。
+     * 方法的签名必须类似如下：
      *
      * ```php
      * function foo($attribute, $params, $validator)
@@ -53,9 +53,9 @@ class InlineValidator extends Validator
      * }
      * ```
      *
-     * where `$attribute` refers to the attribute name to be validated.
+     * 其中 `$attribute` 指代被校验的属性名称。
      *
-     * Please refer to [[clientValidateAttribute()]] for details on how to return client validation code.
+     * 关于如何返回客户端校验代码的更多详情，请参考 [[clientValidateAttribute()]]。
      */
     public $clientValidate;
 

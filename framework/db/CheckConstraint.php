@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * CheckConstraint represents the metadata of a table `CHECK` constraint.
+ * CheckConstraint 表示表 `CHECK` 约束的元数据。
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
@@ -16,7 +16,7 @@ namespace yii\db;
 class CheckConstraint extends Constraint
 {
     /**
-     * @var string the SQL of the `CHECK` constraint.
+     * @var string `CHECK` 约束的 SQL。
      */
     public $expression;
 }

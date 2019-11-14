@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * ConstraintFinderInterface defines methods for getting a table constraint information.
+ * ConstraintFinderInterface 定义用于获取表约束信息的方法。
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.14
@@ -16,110 +16,110 @@ namespace yii\db;
 interface ConstraintFinderInterface
 {
     /**
-     * Obtains the primary key for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return Constraint|null table primary key, `null` if the table has no primary key.
+     * 获取指定表的主键。
+     * @param string $name 表名。表名可以包含结构名（如果有）。不要引用表名。
+     * @param bool $refresh 是否重新加载信息（即使在缓存中找到）。
+     * @return Constraint|null 表主键，如果表没有主键，就为 `null`。
      */
     public function getTablePrimaryKey($name, $refresh = false);
 
     /**
-     * Returns primary keys for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is `false`,
-     * cached data may be returned if available.
-     * @return Constraint[] primary keys for all tables in the database.
-     * Each array element is an instance of [[Constraint]] or its child class.
+     * 返回数据库中所有表的主键。
+     * @param string $schema 表的结构。默认为空字符串，表示当前或默认结构名称。
+     * @param bool $refresh 是否获取最新的可用表结构。
+     * 如果为 `false`，可以返回缓存数据（如果可用）。
+     * @return Constraint[] 数据库中所有表的主键。
+     * 每一个数组元素都是 [[Constraint]] 或它的子类实例。
      */
     public function getSchemaPrimaryKeys($schema = '', $refresh = false);
 
     /**
-     * Obtains the foreign keys information for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return ForeignKeyConstraint[] table foreign keys.
+     * 获取指定表的外键信息。
+     * @param string $name 表名。表名可以包含结构名（如果有）。不要引用表名。
+     * @param bool $refresh 是否重新加载信息（即使在缓存中找到）。
+     * @return ForeignKeyConstraint[] 表的外键。
      */
     public function getTableForeignKeys($name, $refresh = false);
 
     /**
-     * Returns foreign keys for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
-     * cached data may be returned if available.
-     * @return ForeignKeyConstraint[][] foreign keys for all tables in the database.
-     * Each array element is an array of [[ForeignKeyConstraint]] or its child classes.
+     * 返回数据库中所有表的外键。
+     * @param string $schema 表的结构。默认为空字符串，表示当前或默认结构名称。
+     * @param bool $refresh 是否获取最新的可用表结构。
+     * 如果为 false，可以返回缓存数据（如果可用）。
+     * @return ForeignKeyConstraint[][] 数据库中所有表的外键。
+     * 每一个数组元素都是 [[ForeignKeyConstraint]] 或它的子类实例。
      */
     public function getSchemaForeignKeys($schema = '', $refresh = false);
 
     /**
-     * Obtains the indexes information for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return IndexConstraint[] table indexes.
+     * 获取指定表的索引信息。
+     * @param string $name 表名。表名可以包含结构名（如果有）。不要引用表名。
+     * @param bool $refresh 是否重新加载信息（即使在缓存中找到）。
+     * @return IndexConstraint[] 表的索引。
      */
     public function getTableIndexes($name, $refresh = false);
 
     /**
-     * Returns indexes for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
-     * cached data may be returned if available.
-     * @return IndexConstraint[][] indexes for all tables in the database.
-     * Each array element is an array of [[IndexConstraint]] or its child classes.
+     * 返回数据库中所有表的索引。
+     * @param string $schema 表的结构。默认为空字符串，表示当前或默认结构名称。
+     * @param bool $refresh 是否获取最新的可用表结构。
+     * 如果为 false，可以返回缓存数据（如果可用）
+     * @return IndexConstraint[][] 数据库中所有表的索引。
+     * 每一个数组元素都是 [[IndexConstraint]] 或它的子类实例。
      */
     public function getSchemaIndexes($schema = '', $refresh = false);
 
     /**
-     * Obtains the unique constraints information for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return Constraint[] table unique constraints.
+     * 从指定表中获取唯一约束信息。
+     * @param string $name 表名。表名可以包含结构名（如果有）。不要引用表名。
+     * @param bool $refresh 是否重新加载信息（即使在缓存中找到）。
+     * @return Constraint[] 表唯一约束。
      */
     public function getTableUniques($name, $refresh = false);
 
     /**
-     * Returns unique constraints for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
-     * cached data may be returned if available.
-     * @return Constraint[][] unique constraints for all tables in the database.
-     * Each array element is an array of [[Constraint]] or its child classes.
+     * 返回数据库中所有表的唯一约束。
+     * @param string $schema 表的结构。默认为空字符串，表示当前或默认结构名称。
+     * @param bool $refresh 是否获取最新的可用表结构。
+     * 如果为 false，可以返回缓存数据（如果可用）
+     * @return Constraint[][] 所有数据库表中的唯一约束。
+     * 每一个数组元素都是 [[Constraint]] 或它的子类实例。
      */
     public function getSchemaUniques($schema = '', $refresh = false);
 
     /**
-     * Obtains the check constraints information for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return CheckConstraint[] table check constraints.
+     * 获取指定表的检查约束信息。
+     * @param string $name 表名。表名可以包含结构名（如果有）。不要引用表名。
+     * @param bool $refresh 是否重新加载信息（即使在缓存中找到）。
+     * @return CheckConstraint[] 表检查约束。
      */
     public function getTableChecks($name, $refresh = false);
 
     /**
-     * Returns check constraints for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
-     * cached data may be returned if available.
-     * @return CheckConstraint[][] check constraints for all tables in the database.
-     * Each array element is an array of [[CheckConstraint]] or its child classes.
+     * 返回数据库中所有表的检查约束。
+     * @param string $schema 表的结构。默认为空字符串，表示当前或默认结构名称。
+     * @param bool $refresh 是否获取最新的可用表结构。
+     * 如果为 false，可以返回缓存数据（如果可用）
+     * @return CheckConstraint[][] 检查数据库中所有表的约束。
+     * 每一个数组元素都是 [[CheckConstraint]] 或它的子类实例。
      */
     public function getSchemaChecks($schema = '', $refresh = false);
 
     /**
-     * Obtains the default value constraints information for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return DefaultValueConstraint[] table default value constraints.
+     * 获取指定表的默认值约束信息。
+     * @param string $name 表名。表名可以包含结构名（如果有）。不要引用表名。
+     * @param bool $refresh 是否重新加载信息（即使在缓存中找到）。
+     * @return DefaultValueConstraint[] 表默认值约束。
      */
     public function getTableDefaultValues($name, $refresh = false);
 
     /**
-     * Returns default value constraints for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
-     * cached data may be returned if available.
-     * @return DefaultValueConstraint[] default value constraints for all tables in the database.
-     * Each array element is an array of [[DefaultValueConstraint]] or its child classes.
+     * 返回数据库中所有表的默认值约束。
+     * @param string $schema 表的结构。默认为空字符串，表示当前或默认结构名称。
+     * @param bool $refresh 是否获取最新的可用表结构。
+     * 如果为 false，可以返回缓存数据（如果可用）
+     * @return DefaultValueConstraint[] 数据库中所有表的默认值约束。
+     * 每一个数组元素都是 [[DefaultValueConstraint]] 或它的子类实例。
      */
     public function getSchemaDefaultValues($schema = '', $refresh = false);
 }

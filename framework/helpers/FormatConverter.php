@@ -8,9 +8,9 @@
 namespace yii\helpers;
 
 /**
- * FormatConverter provides functionality to convert between different formatting pattern formats.
+ * FormatConverter 提供了在不同格式模式格式之间进行转换的功能。
  *
- * It provides functions to convert date format patterns between different conventions.
+ * 它提供了在不同约定之间转换日期格式模式的函数。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Enrica Ruedin <e.ruedin@guggach.com>

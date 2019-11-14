@@ -8,9 +8,9 @@
 namespace yii\helpers;
 
 /**
- * BaseHtmlPurifier provides concrete implementation for [[HtmlPurifier]].
+ * BaseHtmlPurifier 为 [[HtmlPurifier]] 提供了具体的实现方法。
  *
- * Do not use BaseHtmlPurifier. Use [[HtmlPurifier]] instead.
+ * 不要使用 BaseHtmlPurifier 类。使用 [[HtmlPurifier]] 类来代替。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
@@ -18,19 +18,19 @@ namespace yii\helpers;
 class BaseHtmlPurifier
 {
     /**
-     * Passes markup through HTMLPurifier making it safe to output to end user.
+     * 通过 HTMLPurifier 来传递标记使其安全传输给最终的用户。
      *
-     * @param string $content The HTML content to purify
-     * @param array|\Closure|null $config The config to use for HtmlPurifier.
-     * If not specified or `null` the default config will be used.
-     * You can use an array or an anonymous function to provide configuration options:
+     * @param string $content 需要过滤的 HTML 内容
+     * @param array|\Closure|null $config 为 HtmlPurifier 提供使用的配置。
+     * 如果未指定或为 `null` 则使用默认配置。
+     * 这里你将可以使用数组或匿名函数提供配置选项：
      *
-     * - An array will be passed to the `HTMLPurifier_Config::create()` method.
-     * - An anonymous function will be called after the config was created.
-     *   The signature should be: `function($config)` where `$config` will be an
-     *   instance of `HTMLPurifier_Config`.
+     * - 以数组的形式将传递给 `HTMLPurifier_Config::create()` 方法。
+     * - 一种匿名函数将在创建配置后调用。
+     *   签名应是这样的：`function($config)` 中的 `$config`
+     *   将是 `HTMLPurifier_Config` 的一个实例。
      *
-     *   Here is a usage example of such a function:
+     *   下面是这样一个函数的使用示例：
      *
      *   ```php
      *   // Allow the HTML5 data attribute `data-type` on `img` elements.
@@ -40,7 +40,7 @@ class BaseHtmlPurifier
      *   });
      * ```
      *
-     * @return string the purified HTML content.
+     * @return string 需要过滤的 HTML 内容。
      */
     public static function process($content, $config = null)
     {
@@ -59,7 +59,7 @@ class BaseHtmlPurifier
     }
 
     /**
-     * Allow the extended HtmlPurifier class to set some default config options.
+     * 允许这个扩展的 HtmlPurifier 类去设置默认的配置选项。
      * @param \HTMLPurifier_Config $config
      * @since 2.0.3
      */

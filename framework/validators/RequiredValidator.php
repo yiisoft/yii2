@@ -10,7 +10,7 @@ namespace yii\validators;
 use Yii;
 
 /**
- * RequiredValidator validates that the specified attribute does not have null or empty value.
+ * RequiredValidator 校验指定的属性不为 null 值或者空值。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,34 +18,34 @@ use Yii;
 class RequiredValidator extends Validator
 {
     /**
-     * @var bool whether to skip this validator if the value being validated is empty.
+     * @var bool 当被校验值为空时，是否跳过这个校验器。
      */
     public $skipOnEmpty = false;
     /**
-     * @var mixed the desired value that the attribute must have.
-     * If this is null, the validator will validate that the specified attribute is not empty.
-     * If this is set as a value that is not null, the validator will validate that
-     * the attribute has a value that is the same as this property value.
-     * Defaults to null.
+     * @var mixed 这个属性是否必须含有预期的值。
+     * 如果它被设置为 null， 校验器将会校验指定的属性值非空。
+     * 如果它被设置为一个非 null 值，
+     * 校验器将会校验指定的属性值和这个成员的值相同。
+     * 默认为 null。
      * @see strict
      */
     public $requiredValue;
     /**
-     * @var bool whether the comparison between the attribute value and [[requiredValue]] is strict.
-     * When this is true, both the values and types must match.
-     * Defaults to false, meaning only the values need to match.
-     * Note that when [[requiredValue]] is null, if this property is true, the validator will check
-     * if the attribute value is null; If this property is false, the validator will call [[isEmpty]]
-     * to check if the attribute value is empty.
+     * @var bool 属性值和 [[requiredValue]] 的比较是否是严格的。
+     * 当它被设置为 true 时，属性值和 [[requiredValue]] 的值和型必须匹配。
+     * 默认是 false ，意味着只需要值匹配。
+     * 注意当 [[requiredValue]] 为 null 时，
+     * 如果这个值为 true 时，校验器将会检查属性值是否是 null；
+     * 如果这个成员值是 false，校验器将会调用 [[isEmpty]] 来检查这个属性值是否为空。
      */
     public $strict = false;
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
+     * @var string 用户自定义错误消息。
+     * 它可以包含如下的占位符，将根据具体的校验器作替换：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
-     * - `{requiredValue}`: the value of [[requiredValue]]
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
+     * - `{requiredValue}`: [[requiredValue]] 的值
      */
     public $message;
 

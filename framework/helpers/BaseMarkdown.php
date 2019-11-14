@@ -11,9 +11,9 @@ use Yii;
 use yii\base\InvalidArgumentException;
 
 /**
- * BaseMarkdown provides concrete implementation for [[Markdown]].
+ * BaseMarkdown 为 [[Markdown]] 提供了具体的实现。
  *
- * Do not use BaseMarkdown. Use [[Markdown]] instead.
+ * 不要使用类 BaseMarkdown。使用 [[Markdown]] 来替代。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -21,7 +21,7 @@ use yii\base\InvalidArgumentException;
 class BaseMarkdown
 {
     /**
-     * @var array a map of markdown flavor names to corresponding parser class configurations.
+     * @var array 将标记风格名称映射到相应解析器类配置的映射。
      */
     public static $flavors = [
         'original' => [
@@ -43,21 +43,21 @@ class BaseMarkdown
         ],
     ];
     /**
-     * @var string the markdown flavor to use when none is specified explicitly.
-     * Defaults to `original`.
+     * @var 在没有显式指定时使用的 markdown 风格字符串。
+     * 默认风格设置为 `original`。
      * @see $flavors
      */
     public static $defaultFlavor = 'original';
 
 
     /**
-     * Converts markdown into HTML.
+     * 将 markdown 转变成 HTML。
      *
-     * @param string $markdown the markdown text to parse
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
-     * Defaults to [[$defaultFlavor]], if not set.
-     * @return string the parsed HTML output
-     * @throws InvalidArgumentException when an undefined flavor is given.
+     * @param string $markdown 要解析的 markdown 文本
+     * @param string $flavor 关于 markdown 使用的风格。请参考 [[$flavors]] 可用的值。
+     * 默认为 [[$defaultFlavor]]，如果没有设置的情况下。
+     * @return string 解析的 HTML 输出
+     * @throws InvalidArgumentException 当指定的风格不存在时发生异常。
      */
     public static function process($markdown, $flavor = null)
     {
@@ -67,15 +67,15 @@ class BaseMarkdown
     }
 
     /**
-     * Converts markdown into HTML but only parses inline elements.
+     * 将 markdown 转换为 HTML 但是只解析内联元素。
      *
-     * This can be useful for parsing small comments or description lines.
+     * 这对于解析小注释或描述行非常有用。
      *
-     * @param string $markdown the markdown text to parse
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
-     * Defaults to [[$defaultFlavor]], if not set.
-     * @return string the parsed HTML output
-     * @throws InvalidArgumentException when an undefined flavor is given.
+     * @param string $markdown 要解析的 markdown 文本
+     * @param string $flavor 关于 markdown 使用的风格。请参考 [[$flavors]] 可用的值。
+     * 默认为 [[$defaultFlavor]]，如果没有设置的情况下。
+     * @return string 解析的 HTML 输出
+     * @throws InvalidArgumentException 当指定的风格不存在时发生异常。
      */
     public static function processParagraph($markdown, $flavor = null)
     {
@@ -85,10 +85,10 @@ class BaseMarkdown
     }
 
     /**
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
-     * Defaults to [[$defaultFlavor]], if not set.
+     * @param string $flavor 关于 markdown 使用的风格。请参考 [[$flavors]] 可用的值。
+     * 默认为 [[$defaultFlavor]]，如果没有设置的情况下。
      * @return \cebe\markdown\Parser
-     * @throws InvalidArgumentException when an undefined flavor is given.
+     * @throws InvalidArgumentException 当指定的风格不存在时发生异常。
      */
     protected static function getParser($flavor)
     {

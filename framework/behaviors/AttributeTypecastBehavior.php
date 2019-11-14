@@ -17,16 +17,16 @@ use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
 
 /**
- * AttributeTypecastBehavior provides an ability of automatic model attribute typecasting.
- * This behavior is very useful in case of usage of ActiveRecord for the schema-less databases like MongoDB or Redis.
- * It may also come in handy for regular [[\yii\db\ActiveRecord]] or even [[\yii\base\Model]], allowing to maintain
- * strict attribute types after model validation.
+ * AttributeTypecastBehavior 提供了模型属性自动转换数据类型的能力。
+ * 这个行为在数据库语法比较弱化的数据库系统上使用 ActiveRecord 时比较有用，比如 MongoDB 或者 Redis 这些数据库。
+ * 它也可以在普通的 [[\yii\db\ActiveRecord]] 甚至 [[\yii\base\Model]] 上发挥作用。
+ * 因为它能够在执行模型验证之后保持严格的属性数据类型。
  *
- * This behavior should be attached to [[\yii\base\Model]] or [[\yii\db\BaseActiveRecord]] descendant.
+ * 这个行为应该附加到 [[\yii\base\Model]] 或者 [[\yii\db\BaseActiveRecord]] 的子类中使用。
  *
- * You should specify exact attribute types via [[attributeTypes]].
+ * 你应该通过 [[attributeTypes]] 指明确切的数据类型。
  *
- * For example:
+ * 比如：
  *
  * ```php
  * use yii\behaviors\AttributeTypecastBehavior;
@@ -54,9 +54,9 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * Tip: you may left [[attributeTypes]] blank - in this case its value will be detected
- * automatically based on owner validation rules.
- * Following example will automatically create same [[attributeTypes]] value as it was configured at the above one:
+ * Tip: 你可以把 [[attributeTypes]] 留空，
+ * 这时行为将通过属主组件的验证规则自动组装它的值。
+ * 下面的例子展示了 [[attributeTypes]] 是根据它上面的 rules 方法里的验证规则创建了一模一样的数据类型：
  *
  * ```php
  * use yii\behaviors\AttributeTypecastBehavior;
@@ -87,17 +87,17 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * This behavior allows automatic attribute typecasting at following cases:
+ * 这个行为允许自动类型转换发生在如下的场景：
  *
- * - after successful model validation
- * - before model save (insert or update)
- * - after model find (found by query or refreshed)
+ * - 在成功通过模型验证之后
+ * - 在模型保存之前（插入或者更新）
+ * - 在模型查找之后（通过查询语句找到模型或模型执行刷新）
  *
- * You may control automatic typecasting for particular case using fields [[typecastAfterValidate]],
- * [[typecastBeforeSave]] and [[typecastAfterFind]].
- * By default typecasting will be performed only after model validation.
+ * 你可以通过使用 [[typecastAfterValidate]]，[[typecastBeforeSave]] 和 [[typecastAfterFind]]
+ * 来控制自动转换发生在哪些指定的场景。
+ * 默认情况下只在模型成功通过验证之后进行类型转换。
  *
- * Note: you can manually trigger attribute typecasting anytime invoking [[typecastAttributes()]] method:
+ * Note: 你也可以在任何时候手动地通过调用 [[typecastAttributes()]] 方法触发属性的类型转换：
  *
  * ```php
  * $model = new Item();
@@ -117,14 +117,14 @@ class AttributeTypecastBehavior extends Behavior
     const TYPE_STRING = 'string';
 
     /**
-     * @var Model|BaseActiveRecord the owner of this behavior.
+     * @var Model|BaseActiveRecord 行为的属主。
      */
     public $owner;
     /**
-     * @var array attribute typecast map in format: attributeName => type.
-     * Type can be set via PHP callable, which accept raw value as an argument and should return
-     * typecast result.
-     * For example:
+     * @var array 属性进行类型转换的格式：attributeName => type。
+     * Type 可以是一个 PHP 匿名函数，
+     * 它接收属性的原始值作为参数并且应该返回类型转换的结果。
+     * 比如：
      *
      * ```php
      * [
@@ -137,59 +137,59 @@ class AttributeTypecastBehavior extends Behavior
      * ]
      * ```
      *
-     * If not set, attribute type map will be composed automatically from the owner validation rules.
+     * 如果没有设置 $attributeTypes，属性类型映射将会根据属主组件的验证规则自动组装。
      */
     public $attributeTypes;
     /**
-     * @var bool whether to skip typecasting of `null` values.
-     * If enabled attribute value which equals to `null` will not be type-casted (e.g. `null` remains `null`),
-     * otherwise it will be converted according to the type configured at [[attributeTypes]].
+     * @var bool 是否跳过 `null` 值的类型转换。
+     * 如果开启，属性值等于 `null` 时将不会执行类型转换（也就是说 `null` 还保持为 `null` ）；
+     * 如果不开启，他将根据 [[attributeTypes]] 里的类型配置执行转换。
      */
     public $skipOnNull = true;
     /**
-     * @var bool whether to perform typecasting after owner model validation.
-     * Note that typecasting will be performed only if validation was successful, e.g.
-     * owner model has no errors.
-     * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @var bool 是否在通过属主模型验证之后执行类型转换。
+     * 注意，类型转换只有在模型验证成功之后才执行。
+     * 也就是说，属主模型没有验证出错。
+     * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastAfterValidate = true;
     /**
-     * @var bool whether to perform typecasting before saving owner model (insert or update).
-     * This option may be disabled in order to achieve better performance.
-     * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting before save
-     * will grant no benefit an thus can be disabled.
-     * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @var bool 是否在保存属主模型之前执行类型转换（插入或更新）。
+     * 为了追求较好的性能该选项可以设置为 false。
+     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之前执行类型转换没什么意义，
+     * 因此可以设置为 false。
+     * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastBeforeSave = false;
     /**
-     * @var bool whether to perform typecasting after saving owner model (insert or update).
-     * This option may be disabled in order to achieve better performance.
-     * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after save
-     * will grant no benefit an thus can be disabled.
-     * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @var bool 是否在保存属主模型之后执行类型转换（插入或更新）。
+     * 为了追求较好的性能该选项可以设置为 false。
+     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之后执行类型转换没什么意义，
+     * 因此可以设置为 false。
+     * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      * @since 2.0.14
      */
     public $typecastAfterSave = false;
     /**
-     * @var bool whether to perform typecasting after retrieving owner model data from
-     * the database (after find or refresh).
-     * This option may be disabled in order to achieve better performance.
-     * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after find
-     * will grant no benefit in most cases an thus can be disabled.
-     * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @var bool 是否在从数据库获取到属主模型数据之后，
+     * 执行类型转换（获取模型或模型刷新）。
+     * 为了追求较好的性能该选项可以设置为 false。
+     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，获取模型数据之后执行类型转换大多数情况下没什么意义，
+     * 因此可以设置为 false。
+     * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastAfterFind = false;
 
     /**
-     * @var array internal static cache for auto detected [[attributeTypes]] values
-     * in format: ownerClassName => attributeTypes
+     * @var array 自动检测 [[attributeTypes]] 时的内部静态缓存值。
+     * 格式是： ownerClassName => attributeTypes
      */
     private static $autoDetectedAttributeTypes = [];
 
 
     /**
-     * Clears internal static cache of auto detected [[attributeTypes]] values
-     * over all affected owner classes.
+     * 针对所有的属主类，
+     * 清除自动检测 [[attributeTypes]] 时的内部静态缓存值
      */
     public static function clearAutoDetectedAttributeTypes()
     {
@@ -213,10 +213,10 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Typecast owner attributes according to [[attributeTypes]].
-     * @param array $attributeNames list of attribute names that should be type-casted.
-     * If this parameter is empty, it means any attribute listed in the [[attributeTypes]]
-     * should be type-casted.
+     * 根据 [[attributeTypes]] 执行属主属性的类型转换。
+     * @param array $attributeNames 给出想要执行类型转换的属性名列表。
+     * 如果这个参数为空，
+     * 那么列在 [[attributeTypes]] 之内的任何一个属性都执行类型转换。
      */
     public function typecastAttributes($attributeNames = null)
     {
@@ -243,10 +243,10 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Casts the given value to the specified type.
-     * @param mixed $value value to be type-casted.
-     * @param string|callable $type type name or typecast callable.
-     * @return mixed typecast result.
+     * 把指定的值转换为指定的数据类型。
+     * @param mixed $value 将有执行类型转换的值。
+     * @param string|callable $type 类型名或者能够执行类型转换的匿名函数。
+     * @return mixed 类型转换后的结果。
      */
     protected function typecastValue($value, $type)
     {
@@ -276,8 +276,8 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Composes default value for [[attributeTypes]] from the owner validation rules.
-     * @return array attribute type map.
+     * 从属主模型的验证规则里组装 [[attributeTypes]] 留空时的默认值。
+     * @return array 属性类型映射。
      */
     protected function detectAttributeTypes()
     {
@@ -328,8 +328,8 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Handles owner 'afterValidate' event, ensuring attribute typecasting.
-     * @param \yii\base\Event $event event instance.
+     * 响应属主 'afterValidate' 事件的方法，确保属性的类型转换。
+     * @param \yii\base\Event $event 事件对象。
      */
     public function afterValidate($event)
     {
@@ -339,8 +339,8 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Handles owner 'beforeInsert' and 'beforeUpdate' events, ensuring attribute typecasting.
-     * @param \yii\base\Event $event event instance.
+     * 响应属主 'beforeInsert' 和 'beforeUpdate' 事件的方法，确保属性的类型转换。
+     * @param \yii\base\Event $event 事件对象。
      */
     public function beforeSave($event)
     {
@@ -348,8 +348,8 @@ class AttributeTypecastBehavior extends Behavior
     }
     
     /**
-     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
-     * @param \yii\base\Event $event event instance.
+     * 响应属主 'afterInsert' 和 'afterUpdate' 事件的方法，确保属性的类型转换。
+     * @param \yii\base\Event $event 事件对象。
      * @since 2.0.14
      */
     public function afterSave($event)
@@ -358,8 +358,8 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Handles owner 'afterFind' event, ensuring attribute typecasting.
-     * @param \yii\base\Event $event event instance.
+     * 响应属主 'afterFind' 事件的方法，确保属性的类型转换。
+     * @param \yii\base\Event $event 事件对象。
      */
     public function afterFind($event)
     {

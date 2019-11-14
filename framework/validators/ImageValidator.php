@@ -11,7 +11,7 @@ use Yii;
 use yii\web\UploadedFile;
 
 /**
- * ImageValidator verifies if an attribute is receiving a valid image.
+ * ImageValidator 校验一个属性是否在接受一个合法的图片。
  *
  * @author Taras Gudz <gudz.taras@gmail.com>
  * @since 2.0
@@ -19,53 +19,53 @@ use yii\web\UploadedFile;
 class ImageValidator extends FileValidator
 {
     /**
-     * @var string the error message used when the uploaded file is not an image.
-     * You may use the following tokens in the message:
+     * @var string 当上传文件不是一个图片的时候的错误消息
+     * 你可以在消息中使用如下 token ：
      *
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
      */
     public $notImage;
     /**
-     * @var int the minimum width in pixels.
-     * Defaults to null, meaning no limit.
-     * @see underWidth for the customized message used when image width is too small.
+     * @var int 最小的像素宽度。
+     * 默认为 null，代表无限制。
+     * @see underWidth 当图片宽度小于指定像素时的自定义错误消息
      */
     public $minWidth;
     /**
-     * @var int the maximum width in pixels.
-     * Defaults to null, meaning no limit.
-     * @see overWidth for the customized message used when image width is too big.
+     * @var int 最大的像素宽度。
+     * 默认为 null，代表无限制。
+     * @see overWidth 当图片宽度大于指定像素时的自定义错误消息
      */
     public $maxWidth;
     /**
-     * @var int the minimum height in pixels.
-     * Defaults to null, meaning no limit.
-     * @see underHeight for the customized message used when image height is too small.
+     * @var int 最小的像素高度。
+     * 默认为 null，代表无限制。
+     * @see underHeight 当图片高度小于指定像素时的自定义错误消息
      */
     public $minHeight;
     /**
-     * @var int the maximum width in pixels.
-     * Defaults to null, meaning no limit.
-     * @see overWidth for the customized message used when image height is too big.
+     * @var int 最大的像素高度。
+     * 默认为 null，代表无限制。
+     * @see overHeight 当图片高度大于指定像素时的自定义错误消息
      */
     public $maxHeight;
     /**
-     * @var string the error message used when the image is under [[minWidth]].
-     * You may use the following tokens in the message:
+     * @var string 当图片宽度小于指定像素 [[minWidth]] 时的自定义错误消息。
+     * 你可以在消息中使用以下占位符：
      *
-     * - {attribute}: the attribute name
-     * - {file}: the uploaded file name
-     * - {limit}: the value of [[minWidth]]
+     * - {attribute}: 属性标签名
+     * - {file}: 上传文件名
+     * - {limit}: [[minWidth]] 的限制
      */
     public $underWidth;
     /**
-     * @var string the error message used when the image is over [[maxWidth]].
-     * You may use the following tokens in the message:
+     * @var string 当图片宽度大于指定像素 [[maxWidth]] 时的自定义错误消息。
+     * 你可以在消息中使用以下占位符：
      *
-     * - {attribute}: the attribute name
-     * - {file}: the uploaded file name
-     * - {limit}: the value of [[maxWidth]]
+     * - {attribute}: 属性标签名
+     * - {file}: 上传文件名
+     * - {limit}: [[maxWidth]] 的限制
      */
     public $overWidth;
     /**
@@ -123,10 +123,10 @@ class ImageValidator extends FileValidator
     }
 
     /**
-     * Validates an image file.
-     * @param UploadedFile $image uploaded file passed to check against a set of rules
-     * @return array|null the error message and the parameters to be inserted into the error message.
-     * Null should be returned if the data is valid.
+     * 校验一个图片文件。
+     * @param UploadedFile $image 传来的上传文件用于使用一系列规则进行校验
+     * @return array|null 错误消息和待插入消息中的参数。
+     * 如果数据是合法的将返回 Null。
      */
     protected function validateImage($image)
     {

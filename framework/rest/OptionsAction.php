@@ -10,9 +10,9 @@ namespace yii\rest;
 use Yii;
 
 /**
- * OptionsAction responds to the OPTIONS request by sending back an `Allow` header.
+ * OptionsAction 通过发送回 `Allow` 请求头来响应 OPTIONS 请求。
  *
- * For more details and usage information on OptionsAction, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 OptionsAction 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,17 +20,17 @@ use Yii;
 class OptionsAction extends \yii\base\Action
 {
     /**
-     * @var array the HTTP verbs that are supported by the collection URL
+     * @var array 此数据集 URL 所允许的 HTTP 动词。
      */
     public $collectionOptions = ['GET', 'POST', 'HEAD', 'OPTIONS'];
     /**
-     * @var array the HTTP verbs that are supported by the resource URL
+     * @var array 此资源 URL 所允许的 HTTP 动词。
      */
     public $resourceOptions = ['GET', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 
 
     /**
-     * Responds to the OPTIONS request.
+     *  响应 OPTIONS 请求。
      * @param string $id
      */
     public function run($id = null)

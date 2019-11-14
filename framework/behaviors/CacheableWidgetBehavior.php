@@ -16,12 +16,12 @@ use yii\caching\Dependency;
 use yii\di\Instance;
 
 /**
- * Cacheable widget behavior automatically caches widget contents according to duration and dependencies specified.
+ * Cacheable widget behavior 自动根据指定的缓存时长和缓存依赖缓存小部件的内容。
  *
- * The behavior may be used without any configuration if an application has `cache` component configured.
- * By default the widget will be cached for one minute.
+ * 如果应用已经配置了 `cache` 组件，这个行为可以不用任何配置就可以直接使用。
+ * 默认情况下，小部件内容的缓存时长为一分钟。
  *
- * The following example will cache the posts widget for an indefinite duration until any post is modified.
+ * 下面的例子是，如果没有任何后续 post 更新，那么将会无限时长地缓存 posts 小部件的内容。
  *
  * ```php
  * use yii\behaviors\CacheableWidgetBehavior;
@@ -47,22 +47,22 @@ use yii\di\Instance;
 class CacheableWidgetBehavior extends Behavior
 {
     /**
-     * @var CacheInterface|string|array a cache object or a cache component ID
-     * or a configuration array for creating a cache object.
-     * Defaults to the `cache` application component.
+     * @var CacheInterface|string|array 缓存对象或者缓存组件的 ID
+     * 或者是一个可以生成缓存对象的配置数组。
+     * 默认是 `cache` 应用组件。
      */
     public $cache = 'cache';
     /**
-     * @var int cache duration in seconds.
-     * Set to `0` to indicate that the cached data will never expire.
-     * Defaults to 60 seconds or 1 minute.
+     * @var int 以秒为单位的缓存时长。
+     * 设置为 `0` 表名缓存的数据将永不过期。
+     * 默认是 60 秒或者 1 分钟。
      */
     public $cacheDuration = 60;
     /**
-     * @var Dependency|array|null a cache dependency or a configuration array
-     * for creating a cache dependency or `null` meaning no cache dependency.
+     * @var Dependency|array|null 一个缓存依赖，或者是
+     * 可以生成缓存依赖的配置数组，再或者 `null`，表示不需要缓存依赖。
      *
-     * For example,
+     * 比如，
      *
      * ```php
      * [
@@ -71,16 +71,16 @@ class CacheableWidgetBehavior extends Behavior
      * ]
      * ```
      *
-     * would make the widget cache depend on the last modified time of all posts.
-     * If any post has its modification time changed, the cached content would be invalidated.
+     * 上述配置是把小部件的缓存依赖上所有 posts 的最后更新时间。
+     * 如果任何 post 的更新时间发生变化，那么之前小部件缓存的内容也就失效了。
      */
     public $cacheDependency;
     /**
-     * @var string[]|string an array of strings or a single string which would cause
-     * the variation of the content being cached (e.g. an application language, a GET parameter).
+     * @var string[]|string 一个字符串数组或者一个单独的字符串，
+     * 它用来引起被缓存内容的变化（比如 一种应用语言，一个 GET 参数）。
      *
-     * The following variation setting will cause the content to be cached in different versions
-     * according to the current application language:
+     * 下面的变化设置将会导致缓存的内容，
+     * 可以根据当前应用语言的不同而产生不同版本的缓存：
      *
      * ```php
      * [
@@ -90,9 +90,9 @@ class CacheableWidgetBehavior extends Behavior
      */
     public $cacheKeyVariations = [];
     /**
-     * @var bool whether to enable caching or not. Allows to turn the widget caching
-     * on and off according to specific conditions.
-     * The following configuration will disable caching when a special GET parameter is passed:
+     * @var bool 是否开启缓存。
+     * 可以根据指定的条件对小部件缓存进行开关控制。
+     * 下面的配置是，如果传递了指定的 GET 参数，那么本次将会禁用小部件缓存。
      *
      * ```php
      * empty(Yii::$app->request->get('disable-caching'))
@@ -112,10 +112,10 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Begins fragment caching. Prevents owner widget from execution
-     * if its contents can be retrieved from the cache.
+     * 开始标记片段缓存的起始部分。如果小部件内容能够从缓存中读取，
+     * 那么片段缓存将阻止属主小部件执行生成小部件内容的过程。
      *
-     * @param WidgetEvent $event `Widget::EVENT_BEFORE_RUN` event.
+     * @param WidgetEvent $event `Widget::EVENT_BEFORE_RUN` 事件。
      */
     public function beforeRun($event)
     {
@@ -128,9 +128,9 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Outputs widget contents and ends fragment caching.
+     * 输出小部件内容然后标记片段缓存的结束部分。
      *
-     * @param WidgetEvent $event `Widget::EVENT_AFTER_RUN` event.
+     * @param WidgetEvent $event `Widget::EVENT_AFTER_RUN` 事件。
      */
     public function afterRun($event)
     {
@@ -141,7 +141,7 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Initializes widget event handlers.
+     * 初始化（绑定）小部件事件处理器
      */
     private function initializeEventHandlers()
     {
@@ -150,10 +150,10 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Returns the cache instance.
+     * 返回缓存对象
      *
-     * @return CacheInterface cache instance.
-     * @throws InvalidConfigException if cache instance instantiation fails.
+     * @return CacheInterface 缓存对象。
+     * @throws InvalidConfigException 如果缓存对象实例化过程发生异常
      */
     private function getCacheInstance()
     {
@@ -162,9 +162,9 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Returns the widget cache key.
+     * 返回缓存小部件内容的 key。
      *
-     * @return string[] an array of strings representing the cache key.
+     * @return string[] 一个表示缓存 key 的字符串数组。
      */
     private function getCacheKey()
     {
@@ -178,9 +178,9 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Returns a fragment cache widget configuration array.
+     * 返回小部件使用片段缓存时的配置数组。
      *
-     * @return array a fragment cache widget configuration array.
+     * @return array 一个片段缓存用到的配置数组。
      */
     private function getFragmentCacheConfiguration()
     {

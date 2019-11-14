@@ -13,7 +13,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class LikeConditionBuilder builds objects of [[LikeCondition]]
+ * 类 LikeConditionBuilder 构建 [[LikeCondition]] 类的对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -23,8 +23,8 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
     use ExpressionBuilderTrait;
 
     /**
-     * @var array map of chars to their replacements in LIKE conditions.
-     * By default it's configured to escape `%`, `_` and `\` with `\`.
+     * @var array 在 LIKE 条件下，字符到替换字符的映射。
+     * 默认情况下，指定用 `\` 转义 `%`、`_` 以及 `\`。
      */
     protected $escapingReplacements = [
         '%' => '\%',
@@ -32,19 +32,19 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
         '\\' => '\\\\',
     ];
     /**
-     * @var string|null character used to escape special characters in LIKE conditions.
-     * By default it's assumed to be `\`.
+     * @var string|null 用于在 LIKE 条件下转义特殊字符的字符。
+     * 默认情况下，其假定为 `\`。
      */
     protected $escapeCharacter;
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|LikeCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|LikeCondition $expression 构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的原始 SQL 语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {

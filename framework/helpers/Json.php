@@ -8,9 +8,9 @@
 namespace yii\helpers;
 
 /**
- * Json is a helper class providing JSON data encoding and decoding.
- * It enhances the PHP built-in functions `json_encode()` and `json_decode()`
- * by supporting encoding JavaScript expressions and throwing exceptions when decoding fails.
+ * Json 是一种辅助类为 JSON 提供数据的编码和解码。 
+ * 它支持对 JavaScript 表达式进行编码，并在解码失败时抛出异常，
+ * 从而它增强了 PHP 内置函数 `json_encode()` 和 `json_decode()`。
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

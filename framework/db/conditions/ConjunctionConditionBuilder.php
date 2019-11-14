@@ -12,7 +12,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class ConjunctionConditionBuilder builds objects of abstract class [[ConjunctionCondition]]
+ * 类 ConjunctionConditionBuilder 构建抽象类 [[ConjunctionCondition]] 的具体对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -23,12 +23,12 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|ConjunctionCondition $condition the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|ConjunctionCondition $condition 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的原始 SQL 语句。
      */
     public function build(ExpressionInterface $condition, array &$params = [])
     {
@@ -46,10 +46,10 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds expressions, that are stored in $condition
+     * 构建存储在 $condition 中的表达式
      *
-     * @param ExpressionInterface|ConjunctionCondition $condition the expression to be built.
-     * @param array $params the binding parameters.
+     * @param ExpressionInterface|ConjunctionCondition $condition 要构建的表达式。
+     * @param array $params 绑定参数。
      * @return string[]
      */
     private function buildExpressionsFrom(ExpressionInterface $condition, &$params = [])

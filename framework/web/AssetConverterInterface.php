@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * The AssetConverterInterface must be implemented by asset converter classes.
+ * 资源编译器必须继承 AssetConverterInterface。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,10 +16,10 @@ namespace yii\web;
 interface AssetConverterInterface
 {
     /**
-     * Converts a given asset file into a CSS or JS file.
-     * @param string $asset the asset file path, relative to $basePath
-     * @param string $basePath the directory the $asset is relative to.
-     * @return string the converted asset file path, relative to $basePath.
+     * 将所给的资源文件编译成 JS 或者 CSS 文件。
+     * @param string $asset 资源文件路径，相对于 $basePath。
+     * @param string $basePath 资源 $asset 相对于的目录。
+     * @return string 编译成的资源文件路径，相对于 $basePath。
      */
     public function convert($asset, $basePath);
 }

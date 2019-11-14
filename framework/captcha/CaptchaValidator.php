@@ -13,13 +13,13 @@ use yii\validators\ValidationAsset;
 use yii\validators\Validator;
 
 /**
- * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
+ * CaptchaValidator 验证属性值是否与 CAPTCHA 中显示的验证码相同。
  *
- * CaptchaValidator should be used together with [[CaptchaAction]].
+ * CaptchaValidator 应与 [[CaptchaAction]] 一起使用。
  *
- * Note that once CAPTCHA validation succeeds, a new CAPTCHA will be generated automatically. As a result,
- * CAPTCHA validation should not be used in AJAX validation mode because it may fail the validation
- * even if a user enters the same code as shown in the CAPTCHA image which is actually different from the latest CAPTCHA code.
+ * 请注意，一旦 CAPTCHA 验证成功，将自动生成新的 CAPTCHA。
+ * 因此，CAPTCHA 验证不应在AJAX验证模式下使用，因为即使用户输入的 CAPTCHA
+ * 图像中显示的代码与最新的 CAPTCHA 代码实际不同，它也可能无法通过验证。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,15 +27,15 @@ use yii\validators\Validator;
 class CaptchaValidator extends Validator
 {
     /**
-     * @var bool whether to skip this validator if the input is empty.
+     * @var bool 如果输入为空，是否跳过此验证器。
      */
     public $skipOnEmpty = false;
     /**
-     * @var bool whether the comparison is case sensitive. Defaults to false.
+     * @var bool 比较是否区分大小写。默认为 false。
      */
     public $caseSensitive = false;
     /**
-     * @var string the route of the controller action that renders the CAPTCHA image.
+     * @var string 渲染 CAPTCHA 图像的控制器动作的路径。
      */
     public $captchaAction = 'site/captcha';
 
@@ -63,8 +63,8 @@ class CaptchaValidator extends Validator
     }
 
     /**
-     * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
-     * @return \yii\captcha\CaptchaAction the action object
+     * 从 [[captchaAction]] 指定的路径创建 CAPTCHA 动作对象。
+     * @return \yii\captcha\CaptchaAction 动作对象
      * @throws InvalidConfigException
      */
     public function createCaptchaAction()

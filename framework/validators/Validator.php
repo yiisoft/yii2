@@ -12,14 +12,14 @@ use yii\base\Component;
 use yii\base\NotSupportedException;
 
 /**
- * Validator is the base class for all validators.
+ * Validator 是所有校验器的基类。
  *
- * Child classes should override the [[validateValue()]] and/or [[validateAttribute()]] methods to provide the actual
- * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
- * to provide client-side validation support.
+ * 子类需要重写 [[validateValue()]] 或者/和 [[validateAttribute()]] 方法，
+ * 来提供实际的数据校验逻辑。
+ * 子类也可以重写 [[clientValidateAttribute()]] 方法来提供客户端校验功能支持。
  *
- * Validator declares a set of [[builtInValidators|built-in validators]] which can
- * be referenced using short names. They are listed as follows:
+ * Validator 声明了一系列内建校验器 [[builtInValidators|built-in validators]] 可以使用短名称来引用。
+ * 它们列表如下：
  *
  * - `boolean`: [[BooleanValidator]]
  * - `captcha`: [[\yii\captcha\CaptchaValidator]]
@@ -46,7 +46,7 @@ use yii\base\NotSupportedException;
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
  *
- * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
+ * 关于校验器的更多细节和使用详情，参阅 [guide article on validators](guide:input-validation)。
  *
  * @property array $attributeNames Attribute names. This property is read-only.
  *
@@ -99,66 +99,66 @@ class Validator extends Component
         'ip' => 'yii\validators\IpValidator',
     ];
     /**
-     * @var array|string attributes to be validated by this validator. For multiple attributes,
-     * please specify them as an array; for single attribute, you may use either a string or an array.
+     * @var array|string 将要被这个校验器校验的属性名，或者列表。如果多属性，请通过一个数组设置它们。
+     * 对于单属性，你可以使用一个字符串，也可以使用一个数组指定。
      */
     public $attributes = [];
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
+     * @var string 用户定义的错误消息。
+     * 它可以使用如下的占位符，并将会相应地被校验器替换：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
-     * Note that some validators may introduce other properties for error messages used when specific
-     * validation conditions are not met. Please refer to individual class API documentation for details
-     * about these properties. By convention, this property represents the primary error message
-     * used when the most important validation condition is not met.
+     * 注意：有一些校验器会引入其他的属性用于指定的校验条件未满足时的错误消息。
+     * 关于这些属性的具体详情，请参考具体的类 API 文档。
+     * 通常，
+     * 这些属性代表最重要的校验规则未满足时的所触发的主要错误消息。
      */
     public $message;
     /**
-     * @var array|string scenarios that the validator can be applied to. For multiple scenarios,
-     * please specify them as an array; for single scenario, you may use either a string or an array.
+     * @var array|string 校验器被应用的情景。
+     * 对于多情景，请以一个数组的形式指定它们。对于单情景，你可以使用一个字符串或者一个数组。
      */
     public $on = [];
     /**
-     * @var array|string scenarios that the validator should not be applied to. For multiple scenarios,
-     * please specify them as an array; for single scenario, you may use either a string or an array.
+     * @var array|string 校验器不应该应用的情景。
+     * 对于多情景，请以一个数组的形式指定它们。对于单情景，你可以使用一个字符串或者一个数组。
      */
     public $except = [];
     /**
-     * @var bool whether this validation rule should be skipped if the attribute being validated
-     * already has some validation error according to some previous rules. Defaults to true.
+     * @var bool 当被校验的属性根据之前的校验规则已经有一些校验错误时，这个校验规则是否应该被跳过。
+     * 默认为 true。
      */
     public $skipOnError = true;
     /**
-     * @var bool whether this validation rule should be skipped if the attribute value
-     * is null or an empty string. This property is used only when validating [[yii\base\Model]].
+     * @var bool 当被校验的属性值为 null 或者空字符串时，
+     * 是否该跳过这个校验规则。
      */
     public $skipOnEmpty = true;
     /**
-     * @var bool whether to enable client-side validation for this validator.
-     * The actual client-side validation is done via the JavaScript code returned
-     * by [[clientValidateAttribute()]]. If that method returns null, even if this property
-     * is true, no client-side validation will be done by this validator.
+     * @var bool 是否启用这个校验器的客户端校验。
+     * 实际的校验过程是通过 [[clientValidateAttribute()]] 返回的 JS 代码来执行。
+     * 如果这个方法返回 null，
+     * 即使这个属性值为 true ，也不会执行任何客户端校验。
      */
     public $enableClientValidation = true;
     /**
-     * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
-     * If not set, [[isEmpty()]] will be used to check if a value is empty. The signature
-     * of the callable should be `function ($value)` which returns a boolean indicating
-     * whether the value is empty.
+     * @var callable 用于替换默认的 [[isEmpty()]] 空值校验方法，
+     * 如果没有设置，将会使用 [[isEmpty()]] 做空值校验。
+     * 这个函数的声明应该为 `function ($value)`，
+     * 它的返回值为一个代表这个值是否为空的布尔值。
      */
     public $isEmpty;
     /**
-     * @var callable a PHP callable whose return value determines whether this validator should be applied.
-     * The signature of the callable should be `function ($model, $attribute)`, where `$model` and `$attribute`
-     * refer to the model and the attribute currently being validated. The callable should return a boolean value.
+     * @var callable 一个PHP函数调用，它的返回值将会决定这个校验器是否被应用。
+     * 这个函数的声明应该为 `function ($model, $attribute)` ，其中 `$model` 和 `$attribute` 代表被校验的模型和属性。
+     * 这个函数应该返回一个布尔值。
      *
-     * This property is mainly provided to support conditional validation on the server-side.
-     * If this property is not set, this validator will be always applied on the server-side.
+     * 这个属性主要用于支持服务端条件校验。
+     * 如果这个属性没有被设置，这个校验器将会总是在服务端执行校验。
      *
-     * The following example will enable the validator only when the country currently selected is USA:
+     * 以下是一个示例，只有当前选择的国家为 USA 时，才会在服务端执行此校验器：
      *
      * ```php
      * function ($model) {
@@ -170,15 +170,15 @@ class Validator extends Component
      */
     public $when;
     /**
-     * @var string a JavaScript function name whose return value determines whether this validator should be applied
-     * on the client-side. The signature of the function should be `function (attribute, value)`, where
-     * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
-     * and `value` the current value of the attribute.
+     * @var string 这是一个 JS 函数，它的返回值将会决定校验器是否在客户端执行。
+     * 这个函数的声明应该为 `function (attribute, value)` ，
+     * 其中 `attribute` 代表被要被校验的属性对象（参考： [[clientValidateAttribute()]]），
+     * `value` 是属性当前值。
      *
-     * This property is mainly provided to support conditional validation on the client-side.
-     * If this property is not set, this validator will be always applied on the client-side.
+     * 这个属性主要用于支持客户端条件校验。
+     * 如果这个属性没有被设置，这个校验器将会总是在客户端执行校验。
      *
-     * The following example will enable the validator only when the country currently selected is USA:
+     * 以下是一个示例，只有当前选择的国家为 USA 时，才会在客户端执行此校验器：
      *
      * ```javascript
      * function (attribute, value) {
@@ -192,16 +192,16 @@ class Validator extends Component
 
 
     /**
-     * Creates a validator object.
-     * @param string|\Closure $type the validator type. This can be either:
-     *  * a built-in validator name listed in [[builtInValidators]];
-     *  * a method name of the model class;
-     *  * an anonymous function;
-     *  * a validator class name.
-     * @param \yii\base\Model $model the data model to be validated.
-     * @param array|string $attributes list of attributes to be validated. This can be either an array of
-     * the attribute names or a string of comma-separated attribute names.
-     * @param array $params initial values to be applied to the validator properties.
+     * 创建校验器对象。
+     * @param string|\Closure $type 校验器类型，可以为:
+     *  * [[builtInValidators]] 列表中的内建校验器名称;
+     *  * 模型类的方法名;
+     *  * 匿名函数;
+     *  * 校验器类名。
+     * @param \yii\base\Model $model 被校验的数据模型。
+     * @param array|string $attributes 被校验的属性。它可以是一个属性名称数组，
+     * 也可以是逗号分隔的属性名称字符串。
+     * @param array $params 校验器属性的初始值。
      * @return Validator the validator
      */
     public static function createValidator($type, $model, $attributes, $params = [])
@@ -238,11 +238,11 @@ class Validator extends Component
     }
 
     /**
-     * Validates the specified object.
-     * @param \yii\base\Model $model the data model being validated
-     * @param array|string|null $attributes the list of attributes to be validated.
-     * Note that if an attribute is not associated with the validator - it will be
-     * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
+     * 校验指定的对象。
+     * @param \yii\base\Model $model 被校验的数据模型
+     * @param array|string|null $attributes 被校验的属性列表
+     * 注意，如果一个属性没有和校验器关联，它会被忽略。
+     * 如果这个参数为 null，[[attributes]] 里面的每个属性都会被校验。
      */
     public function validateAttributes($model, $attributes = null)
     {
@@ -280,10 +280,10 @@ class Validator extends Component
     }
 
     /**
-     * Validates a single attribute.
-     * Child classes must implement this method to provide the actual validation logic.
-     * @param \yii\base\Model $model the data model to be validated
-     * @param string $attribute the name of the attribute to be validated.
+     * 校验单个属性。
+     * 子类必须实现这个方法以实现具体的校验逻辑。
+     * @param \yii\base\Model $model 被校验的数据模型对象。
+     * @param string $attribute 被校验的属性名称。
      */
     public function validateAttribute($model, $attribute)
     {
@@ -294,11 +294,11 @@ class Validator extends Component
     }
 
     /**
-     * Validates a given value.
-     * You may use this method to validate a value out of the context of a data model.
-     * @param mixed $value the data value to be validated.
-     * @param string $error the error message to be returned, if the validation fails.
-     * @return bool whether the data is valid.
+     * 校验一个指定的值。
+     * 你可以使用这个方法在数据模型上下文之外的地方校验一个值。
+     * @param mixed $value 被校验的数据值。
+     * @param string $error 如果校验失败，被返回的错误消息
+     * @return bool 数据是否合法
      */
     public function validate($value, &$error = null)
     {
@@ -322,10 +322,10 @@ class Validator extends Component
     }
 
     /**
-     * Validates a value.
-     * A validator class can implement this method to support data validation out of the context of a data model.
-     * @param mixed $value the data value to be validated.
-     * @return array|null the error message and the array of parameters to be inserted into the error message.
+     * 校验一个值。
+     * 一个校验类可以实现这个方法，以支持在数据模型上下文之外的地方支持数据校验。
+     * @param mixed $value 被校验的数据值。
+     * @return array|null 错误消息，和可用于替换错误消息中占位符的参数。
      * ```php
      * if (!$valid) {
      *     return [$this->message, [
@@ -338,10 +338,10 @@ class Validator extends Component
      *
      * return null;
      * ```
-     * for this example `message` template can contain `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
+     * 对于这个例子 `message` 模板可以包含 `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
      *
-     * Null should be returned if the data is valid.
-     * @throws NotSupportedException if the validator does not supporting data validation without a model
+     * 如果数据是合法的，返回 null。
+     * @throws NotSupportedException 如果校验器不支持模型外数据校验。
      */
     protected function validateValue($value)
     {
@@ -349,35 +349,35 @@ class Validator extends Component
     }
 
     /**
-     * Returns the JavaScript needed for performing client-side validation.
+     * 返回可用于客户端校验的 JS 代码。
      *
-     * Calls [[getClientOptions()]] to generate options array for client-side validation.
+     * 调用 [[getClientOptions()]] 来生成客户端校验数组。
      *
-     * You may override this method to return the JavaScript validation code if
-     * the validator can support client-side validation.
+     * 如果这个校验器可以支持客户端校验的话，
+     * 你可以重写这个方法来返回 JS 校验代码。
      *
-     * The following JavaScript variables are predefined and can be used in the validation code:
+     * 如下预定义 JS  变量可以用于校验代码中：
      *
-     * - `attribute`: an object describing the the attribute being validated.
-     * - `value`: the value being validated.
-     * - `messages`: an array used to hold the validation error messages for the attribute.
-     * - `deferred`: an array used to hold deferred objects for asynchronous validation
-     * - `$form`: a jQuery object containing the form element
+     * - `attribute`: 描述被校验属性的对象
+     * - `value`: 被校验的值
+     * - `messages`: 保存属性校验错误消息的数组
+     * - `deferred`: 保存 deferred 对象的数组用于异步执行校验
+     * - `$form`: jQuery 对象用于保存表单元素
      *
-     * The `attribute` object contains the following properties:
-     * - `id`: a unique ID identifying the attribute (e.g. "loginform-username") in the form
-     * - `name`: attribute name or expression (e.g. "[0]content" for tabular input)
-     * - `container`: the jQuery selector of the container of the input field
-     * - `input`: the jQuery selector of the input field under the context of the form
-     * - `error`: the jQuery selector of the error tag under the context of the container
-     * - `status`: status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
+     * `attribute` 包含如下属性：
+     * - `id`: 唯一 ID 用于在表单中标识这个属性（例如： "loginform-username"）
+     * - `name`: 属性名称或表达式（例如：表单输入时，可以为 "[0]content" ）
+     * - `container`: 输入容器的 jQuery 选择器
+     * - `input`: 表单上下文输入字段的 jQuery 选择器
+     * - `error`: 容器上下文错误标签的 jQuery 选择器
+     * - `status`: 输入字段的状态，0：空的，没有输入，1：校验过了，2：待校验，3：校验中
      *
-     * @param \yii\base\Model $model the data model being validated
-     * @param string $attribute the name of the attribute to be validated.
-     * @param \yii\web\View $view the view object that is going to be used to render views or view files
-     * containing a model form with this validator applied.
-     * @return string|null the client-side validation script. Null if the validator does not support
-     * client-side validation.
+     * @param \yii\base\Model $model 被校验的数据模型。
+     * @param string $attribute 待校验的属性名称
+     * @param \yii\web\View $view 将要被用于渲染视图或者视图文件的视图对象
+     * 包含应用校验器的表单模型。
+     * @return string|null 客户端校验脚本。如果校验器不支持的话，返回 null。
+     * 客户端校验。
      * @see getClientOptions()
      * @see \yii\widgets\ActiveForm::enableClientValidation
      */
@@ -387,12 +387,12 @@ class Validator extends Component
     }
 
     /**
-     * Returns the client-side validation options.
-     * This method is usually called from [[clientValidateAttribute()]]. You may override this method to modify options
-     * that will be passed to the client-side validation.
-     * @param \yii\base\Model $model the model being validated
-     * @param string $attribute the attribute name being validated
-     * @return array the client-side validation options
+     * 返回客户端校验参数。
+     * 这个方法通常在 [[clientValidateAttribute()]] 中调用。
+     * 你可以改写这个方法用于修改传给客户端校验的参数。
+     * @param \yii\base\Model $model 被校验的模型。
+     * @param string $attribute 被校验的属性名称。
+     * @return array 客户端校验参数。
      * @since 2.0.11
      */
     public function getClientOptions($model, $attribute)
@@ -401,15 +401,15 @@ class Validator extends Component
     }
 
     /**
-     * Returns a value indicating whether the validator is active for the given scenario and attribute.
+     * 返回一个值代表当前校验器在当前情景和属性下是否是激活状态。
      *
-     * A validator is active if
+     * 一个校验器是激活状态，如果：
      *
-     * - the validator's `on` property is empty, or
-     * - the validator's `on` property contains the specified scenario
+     * - 这个校验器的 `on` 属性是空的，或者
+     * - 这个校验器的 `on` 属性包含指定的情景。
      *
-     * @param string $scenario scenario name
-     * @return bool whether the validator applies to the specified scenario.
+     * @param string $scenario 情景名称
+     * @return bool 是否这个校验器可以在该情景下应用。
      */
     public function isActive($scenario)
     {
@@ -417,12 +417,12 @@ class Validator extends Component
     }
 
     /**
-     * Adds an error about the specified attribute to the model object.
-     * This is a helper method that performs message selection and internationalization.
-     * @param \yii\base\Model $model the data model being validated
-     * @param string $attribute the attribute being validated
-     * @param string $message the error message
-     * @param array $params values for the placeholders in the error message
+     * 添加指定属性的错误到模型对象中。
+     * 这是一个帮助方法用于执行消息的选择和国际化。
+     * @param \yii\base\Model $model 被校验的数据模型
+     * @param string $attribute 被校验的属性
+     * @param string $message 错误消息
+     * @param array $params 用于替换错误消息中占位符的变量
      */
     public function addError($model, $attribute, $message, $params = [])
     {
@@ -441,11 +441,11 @@ class Validator extends Component
     }
 
     /**
-     * Checks if the given value is empty.
-     * A value is considered empty if it is null, an empty array, or an empty string.
-     * Note that this method is different from PHP empty(). It will return false when the value is 0.
-     * @param mixed $value the value to be checked
-     * @return bool whether the value is empty
+     * 检测指定的值是否为空。
+     * 如果它是一个 null，一个空的数组，或者一个空字符串，那么它会被认为是一个空值。
+     * 注意这个方法和 PHP 的 empty() 函数不同，当值为 0 时，它会返还 false 。（非空值）
+     * @param mixed $value 待检测的值
+     * @return bool 值是否为空
      */
     public function isEmpty($value)
     {
@@ -457,7 +457,7 @@ class Validator extends Component
     }
 
     /**
-     * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
+     * 使用 I18N 格式化消息，或者只是简单的 strtr ，如果 `\Yii::$app` 不可用的话。
      * @param string $message
      * @param array $params
      * @since 2.0.12
@@ -478,8 +478,8 @@ class Validator extends Component
     }
 
     /**
-     * Returns cleaned attribute names without the `!` character at the beginning.
-     * @return array attribute names.
+     * 返回去除开头 `!` 的属性名称。
+     * @return array 属性名称列表.
      * @since 2.0.12
      */
     public function getAttributeNames()

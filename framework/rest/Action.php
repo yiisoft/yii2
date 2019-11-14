@@ -13,9 +13,9 @@ use yii\db\ActiveRecordInterface;
 use yii\web\NotFoundHttpException;
 
 /**
- * Action is the base class for action classes that implement RESTful API.
+ * Action 是实现了 RESTful API 的动作类的基类。
  *
- * For more details and usage information on Action, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 Action 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,36 +23,36 @@ use yii\web\NotFoundHttpException;
 class Action extends \yii\base\Action
 {
     /**
-     * @var string class name of the model which will be handled by this action.
-     * The model class must implement [[ActiveRecordInterface]].
-     * This property must be set.
+     * @var string 模型的类名，用于在这个动作中处理数据。
+     * 此模型类必须继承 [[ActiveRecordInterface]]。
+     * 此属性必设置
      */
     public $modelClass;
     /**
-     * @var callable a PHP callable that will be called to return the model corresponding
-     * to the specified primary key value. If not set, [[findModel()]] will be used instead.
-     * The signature of the callable should be:
+     * @var callable PHP 回调，用于返回相应的模型实例，
+     * 基于所给的主键值。如果不设置此属性，默认是调用 [[findModel()]] 方法。
+     * 这个回调的形式如下：
      *
      * ```php
      * function ($id, $action) {
-     *     // $id is the primary key value. If composite primary key, the key values
-     *     // will be separated by comma.
-     *     // $action is the action object currently running
+     *     // $id 主键值。 如果是复合主键，
+     *     // 则为逗号分隔的键值。
+     *     // $action 当前在运行的动作对象
      * }
      * ```
      *
-     * The callable should return the model found, or throw an exception if not found.
+     * 这个回调应当返回查找出的模型实例，如果找不到则抛出异常。
      */
     public $findModel;
     /**
-     * @var callable a PHP callable that will be called when running an action to determine
-     * if the current user has the permission to execute the action. If not set, the access
-     * check will not be performed. The signature of the callable should be as follows,
+     * @var callable PHP 回调，会在此时被调用：在判断当前用户是否有此动作
+     * 的运行权限。如果不设置，默认权限检查不执行。
+     * 这个回调的形式如下，
      *
      * ```php
      * function ($action, $model = null) {
-     *     // $model is the requested model instance.
-     *     // If null, it means no specific model (e.g. IndexAction)
+     *     // $model 请求的模型实例。
+     *     // 如果为 Null，意味着没有特别的模型对象（比如 IndexAction）
      * }
      * ```
      */
@@ -70,14 +70,14 @@ class Action extends \yii\base\Action
     }
 
     /**
-     * Returns the data model based on the primary key given.
-     * If the data model is not found, a 404 HTTP exception will be raised.
-     * @param string $id the ID of the model to be loaded. If the model has a composite primary key,
-     * the ID must be a string of the primary key values separated by commas.
-     * The order of the primary key values should follow that returned by the `primaryKey()` method
-     * of the model.
-     * @return ActiveRecordInterface the model found
-     * @throws NotFoundHttpException if the model cannot be found
+     * 返回有数据的模型类，根据所给的主键值。
+     * 如果数据没有找到，会抛出一个 404 HTTP 异常。
+     * @param string $id 模型将被加载的 ID 。如果模型有复合主键，
+     * 这 ID 则是逗号分隔的键值字符串，
+     * 键值的顺序应当和模型类 的 `primaryKey()` 方法返回的一致。
+     *
+     * @return ActiveRecordInterface 查找出的模型实例
+     * @throws NotFoundHttpException 如果模型找不到
      */
     public function findModel($id)
     {

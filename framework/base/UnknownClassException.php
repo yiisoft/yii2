@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * UnknownClassException represents an exception caused by using an unknown class.
+ * UnknownClassException 表示使用未知类引起的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,7 +16,7 @@ namespace yii\base;
 class UnknownClassException extends Exception
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

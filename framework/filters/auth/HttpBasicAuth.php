@@ -8,9 +8,9 @@
 namespace yii\filters\auth;
 
 /**
- * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
+ * HttpBasicAuth 是支持 HTTP 基本身份验证方法的操作筛选器。
  *
- * You may use HttpBasicAuth by attaching it as a behavior to a controller or module, like the following:
+ * 您可以通过将 HttpBasicAuth 作为行为附加到控制器或模块，像下面这样：
  *
  * ```php
  * public function behaviors()
@@ -23,11 +23,11 @@ namespace yii\filters\auth;
  * }
  * ```
  *
- * The default implementation of HttpBasicAuth uses the [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]]
- * method of the `user` application component and only passes the user name. This implementation is used
- * for authenticating API clients.
+ * HttpBasicAuth 默认实现使用 [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]] 方法。
+ * `user` 应用程序组件的方法只传递用户名。
+ * 此实现用于对 API 客户端进行身份验证。
  *
- * If you want to authenticate users using username and password, you should provide the [[auth]] function for example like the following:
+ * 如果要使用用户名和密码对用户进行身份验证，您应该提供 [[auth]] 功能例如：
  *
  * ```php
  * public function behaviors()
@@ -47,9 +47,9 @@ namespace yii\filters\auth;
  * }
  * ```
  *
- * > Tip: In case authentication does not work like expected, make sure your web server passes
- * username and password to `$_SERVER['PHP_AUTH_USER']` and `$_SERVER['PHP_AUTH_PW']` variables.
- * If you are using Apache with PHP-CGI, you might need to add this line to your `.htaccess` file:
+ * > Tip: 如果身份验证不能按预期工作，确保您的 Web 服务器通过
+ * `$_SERVER['PHP_AUTH_USER']` 和 `$_SERVER['PHP_AUTH_PW']` 的值。
+ * 如果你使用 Apache 配合 PHP-CGI，您可能需要将此行添加到 `.htaccess` 文件中：
  * ```
  * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
  * ```
@@ -60,16 +60,16 @@ namespace yii\filters\auth;
 class HttpBasicAuth extends AuthMethod
 {
     /**
-     * @var string the HTTP authentication realm
+     * @var string  HTTP 身份验证范围
      */
     public $realm = 'api';
     /**
-     * @var callable a PHP callable that will authenticate the user with the HTTP basic auth information.
-     * The callable receives a username and a password as its parameters. It should return an identity object
-     * that matches the username and password. Null should be returned if there is no such identity.
-     * The callable will be called only if current user is not authenticated.
+     * @var callable 可调用 PHP 将使用 HTTP 基本身份验证信息对用户进行身份验证。
+     * 可调用文件接收用户名和密码作为其参数。它应该返回一个标识对象。
+     * 与用户名和密码匹配的，如果没有此类标识则应返回空值。
+     * 仅当当前用户未通过身份验证时才调用可调用。
      *
-     * The following code is a typical implementation of this callable:
+     * 以下代码是此可调用的典型实现：
      *
      * ```php
      * function ($username, $password) {
@@ -80,9 +80,9 @@ class HttpBasicAuth extends AuthMethod
      * }
      * ```
      *
-     * If this property is not set, the username information will be considered as an access token
-     * while the password information will be ignored. The [[\yii\web\User::loginByAccessToken()]]
-     * method will be called to authenticate and login the user.
+     * 如果未设置此属性，则用户名信息将被视为访问令牌。
+     * 而密码信息将被忽略。在 [[\yii\web\User::loginByAccessToken()]]
+     * 将调用方法对用户进行身份验证和登录。
      */
     public $auth;
 

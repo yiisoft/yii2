@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * Class ExpressionBuilder builds objects of [[yii\db\Expression]] class.
+ * 类 ExpressionBuilder 生成 [[yii\db\Expression]] 类的对象。
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -20,7 +20,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * {@inheritdoc}
-     * @param Expression|ExpressionInterface $expression the expression to be built
+     * @param Expression|ExpressionInterface $expression 构建的表达式
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {

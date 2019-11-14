@@ -11,9 +11,9 @@ use Yii;
 use yii\base\BaseObject;
 
 /**
- * Assignment represents an assignment of a role to a user.
+ * Assignment 表示为用户分配角色。
  *
- * For more details and usage information on Assignment, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 Assignment 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -22,15 +22,15 @@ use yii\base\BaseObject;
 class Assignment extends BaseObject
 {
     /**
-     * @var string|int user ID (see [[\yii\web\User::id]])
+     * @var string|int 用户 ID（参阅 [[\yii\web\User::id]]）
      */
     public $userId;
     /**
-     * @var string the role name
+     * @var string 角色名称
      */
     public $roleName;
     /**
-     * @var int UNIX timestamp representing the assignment creation time
+     * @var int UNIX 时间戳，代表 Assignment 的创建时间
      */
     public $createdAt;
 }

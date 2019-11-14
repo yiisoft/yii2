@@ -15,14 +15,14 @@ use yii\db\Query;
 use yii\di\Instance;
 
 /**
- * DbCache implements a cache application component by storing cached data in a database.
+ * DbCache 是使用数据库系统实现的缓存组件。
  *
- * By default, DbCache stores session data in a DB table named 'cache'. This table
- * must be pre-created. The table name can be changed by setting [[cacheTable]].
+ * 默认情况下，DbCache 把会话数据存入名为 'cache' 的数据库表。
+ * 该表必须提前创建好。表名可以通过设置 [[cacheTable]] 来修改。
  *
- * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
+ * 可以参考 [[Cache]] 查看 DbCache 支持的通用的缓存操作方法。
  *
- * The following example shows how you can configure the application to use DbCache:
+ * 下面的例子展示了如何配置应用来使用 DbCache 组件：
  *
  * ```php
  * 'cache' => [
@@ -32,7 +32,7 @@ use yii\di\Instance;
  * ]
  * ```
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -40,15 +40,15 @@ use yii\di\Instance;
 class DbCache extends Cache
 {
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
-     * After the DbCache object is created, if you want to change this property, you should only assign it
-     * with a DB connection object.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var Connection|array|string DB 连接对象或者表示 DB 连接的组件 ID。
+     * 如果在 DbCache 对象创建后想要再修改这个属性，
+     * 那么你只能设置为 DB 连接对象。
+     * 从 2.0.2 版本开始，该属性也支持配置为一个数组来创建 DB 连接对象。
      */
     public $db = 'db';
     /**
-     * @var string name of the DB table to store cache content.
-     * The table should be pre-created as follows:
+     * @var string 存储缓存内容的数据库表名。
+     * 表应该像下面这样提前创建好：
      *
      * ```php
      * CREATE TABLE cache (
@@ -58,29 +58,29 @@ class DbCache extends Cache
      * );
      * ```
      *
-     * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
-     * that can be used for some popular DBMS:
+     * 上面的 'BLOB' 表示数据库管理系统的 BLOB 类型。
+     * 下面是主流数据库管理系统中可以使用的 BLOB 类型：
      *
      * - MySQL: LONGBLOB
      * - PostgreSQL: BYTEA
      * - MSSQL: BLOB
      *
-     * When using DbCache in a production server, we recommend you create a DB index for the 'expire'
-     * column in the cache table to improve the performance.
+     * 当在生产环境中使用 DbCache 时，
+     * 我们建议为表中的 'expire' 字段增加索引来提高性能。
      */
     public $cacheTable = '{{%cache}}';
     /**
-     * @var int the probability (parts per million) that garbage collection (GC) should be performed
-     * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
-     * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
+     * @var int 当往缓存中存入一块数据时，
+     * 启动垃圾回收机制（GC）的可能性（百万分之一）。默认是 100，也就是 0.01% 的概率。
+     * 这个数字的范围应该是 0 到 1000000。0 表示关闭 GC 功能。
      */
     public $gcProbability = 100;
 
 
     /**
-     * Initializes the DbCache component.
-     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-     * @throws InvalidConfigException if [[db]] is invalid.
+     * 初始化 DbCache 组件。
+     * 该方法将会把 [[db]] 属性初始化，确保它指向一个有效的 DB 连接。
+     * @throws InvalidConfigException 如果 [[db]] 连接无效。
      */
     public function init()
     {
@@ -89,14 +89,14 @@ class DbCache extends Cache
     }
 
     /**
-     * Checks whether a specified key exists in the cache.
-     * This can be faster than getting the value from the cache if the data is big.
-     * Note that this method does not check whether the dependency associated
-     * with the cached data, if there is any, has changed. So a call to [[get]]
-     * may return false while exists returns true.
-     * @param mixed $key a key identifying the cached value. This can be a simple string or
-     * a complex data structure consisting of factors representing the key.
-     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
+     * 检测指定的键是否存在缓存中。
+     * 如果缓存数据量大的话，这比从缓存中直接获取值稍快些。
+     * 注意，如果缓存数据有缓存依赖，
+     * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false，
+     * 而调用该方法返回 true。
+     * @param mixed $key 指明缓存值的键。可以是一个简单的字符串，
+     * 或者是一个包含着缓存键的复杂数据结构。
+     * @return bool 如果缓存值存在返回 true，如果缓存值不存在或者已经过期则返回 false。
      */
     public function exists($key)
     {
@@ -119,10 +119,10 @@ class DbCache extends Cache
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return string|false the value stored in cache, false if the value is not in the cache or expired.
+     * 根据指定的键从缓存中获取缓存数据。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明缓存数据的唯一键。
+     * @return string|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
      */
     protected function getValue($key)
     {
@@ -143,9 +143,9 @@ class DbCache extends Cache
     }
 
     /**
-     * Retrieves multiple values from cache with the specified keys.
-     * @param array $keys a list of keys identifying the cached values
-     * @return array a list of cached values indexed by the keys
+     * 根据多个缓存键从缓存中一次获取多个缓存数据。
+     * @param array $keys 指明缓存数据的缓存键列表。
+     * @return array 由缓存键组成下标的缓存数据列表。
      */
     protected function getValues($keys)
     {
@@ -182,13 +182,13 @@ class DbCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
+     * 根据指定的键把数据存入缓存中。
+     * 该方法从父类中声明，在子类这里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) cannot be saved.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param string $value 要缓存的值。其它的数据类型（如果禁用了 [[serializer]] 方法），不能保存。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function setValue($key, $value, $duration)
     {
@@ -212,13 +212,13 @@ class DbCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This is the implementation of the method declared in the parent class.
+     * 在指定的键不存在的情况下，才存入指定的缓存值。
+     * 该方法从父类中声明，在子类里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) cannot be saved.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param string $value 要缓存的值。其它的数据类型（如果禁用了 [[serializer]] 方法），不能保存。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function addValue($key, $value, $duration)
     {
@@ -243,10 +243,10 @@ class DbCache extends Cache
     }
 
     /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * 根据指定的键把数据从缓存中删除。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明要删除缓存的键。
+     * @return bool 如果删除过程没有发生错误。
      */
     protected function deleteValue($key)
     {
@@ -260,9 +260,9 @@ class DbCache extends Cache
     }
 
     /**
-     * Removes the expired data values.
-     * @param bool $force whether to enforce the garbage collection regardless of [[gcProbability]].
-     * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
+     * 删除过期的缓存数据。
+     * @param bool $force 是否强制执行垃圾回收，不论 [[gcProbability]] 概率。
+     * 默认是 false，意味着是否发生垃圾回收还得参考由 [[gcProbability]] 指明的可能性概率。
      */
     public function gc($force = false)
     {
@@ -274,9 +274,9 @@ class DbCache extends Cache
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * 从缓存中删除所有值。
+     * 该方法从父类中声明，在子类这里实现。
+     * @return bool 是否成功执行了删除操作。
      */
     protected function flushValues()
     {

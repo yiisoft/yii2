@@ -13,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class NotConditionBuilder builds objects of [[SimpleCondition]]
+ * 类 SimpleConditionBuilder 构建 [[SimleCondition]] 类的对象
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -24,12 +24,12 @@ class SimpleConditionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 从不会被额外转义或引用的 $expression 接口
+     * 构建原始 SQL 语句的方法。
      *
-     * @param ExpressionInterface|SimpleCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|SimpleCondition $expression 构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被额外转义或引用的原始 SQL 语句。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {

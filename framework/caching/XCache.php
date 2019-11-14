@@ -8,15 +8,15 @@
 namespace yii\caching;
 
 /**
- * XCache provides XCache caching in terms of an application component.
+ * XCache 是使用 XCache 扩展实现的缓存应用组件。
  *
- * To use this application component, the [XCache PHP extension](http://xcache.lighttpd.net/) must be loaded.
- * Also note that the [[flush()]] functionality will work correctly only if "xcache.admin.enable_auth"
- * is set to "Off" in php.ini.
+ * 要使用该组件，必须加载 PHP 扩展 [XCache PHP extension](http://xcache.lighttpd.net/)。
+ * 而且还要注意，如果需要 [[flush()]] 函数功能正常发挥作用，那么在 php.ini 中，
+ * "xcache.admin.enable_auth" 必须设置为 "Off"。
  *
- * See [[Cache]] for common cache operations that XCache supports.
+ * 可以参考 [[Cache]] 查看 XCache 支持的通用的缓存操作方法。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,14 +25,14 @@ namespace yii\caching;
 class XCache extends Cache
 {
     /**
-     * Checks whether a specified key exists in the cache.
-     * This can be faster than getting the value from the cache if the data is big.
-     * Note that this method does not check whether the dependency associated
-     * with the cached data, if there is any, has changed. So a call to [[get]]
-     * may return false while exists returns true.
-     * @param mixed $key a key identifying the cached value. This can be a simple string or
-     * a complex data structure consisting of factors representing the key.
-     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
+     * 检测指定的键是否存在缓存中。
+     * 如果缓存数据量大的话，这比从缓存中直接获取值稍快些。
+     * 注意，如果缓存数据有缓存依赖，
+     * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false，
+     * 而调用该方法返回 true。
+     * @param mixed $key 指明缓存值的键。可以是一个简单的字符串，
+     * 或者是一个包含着缓存键的复杂数据结构。
+     * @return bool 如果缓存值存在返回 true，如果缓存值不存在或者已经过期则返回 false。
      */
     public function exists($key)
     {
@@ -42,10 +42,10 @@ class XCache extends Cache
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return mixed|false the value stored in cache, false if the value is not in the cache or expired.
+     * 根据指定的键从缓存中获取缓存数据。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明缓存数据的唯一键。
+     * @return mixed|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
      */
     protected function getValue($key)
     {
@@ -53,14 +53,14 @@ class XCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
+     * 根据指定的键把数据存入缓存中。
+     * 该方法从父类中声明，在子类这里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
-     * it could be something else.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param mixed $value 要缓存的值。大多数情况下它是一个字符串。 如果禁用了 [[serializer]],
+     * 它也可以是其它数据类型。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function setValue($key, $value, $duration)
     {
@@ -68,14 +68,14 @@ class XCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This is the implementation of the method declared in the parent class.
+     * 在指定的键不存在的情况下，才存入指定的缓存值。
+     * 该方法从父类中声明，在子类里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
-     * it could be something else.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param mixed $value 要缓存的值。大多数情况下它是一个字符串。 如果禁用了 [[serializer]],
+     * 它也可以是其它数据类型。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function addValue($key, $value, $duration)
     {
@@ -83,10 +83,10 @@ class XCache extends Cache
     }
 
     /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * 根据指定的键把数据从缓存中删除。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明要删除缓存的键。
+     * @return bool 如果删除过程没有发生错误。
      */
     protected function deleteValue($key)
     {
@@ -94,9 +94,9 @@ class XCache extends Cache
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * 从缓存中删除所有值。
+     * 该方法从父类中声明，在子类这里实现。
+     * @return bool 是否成功执行了删除操作。
      */
     protected function flushValues()
     {

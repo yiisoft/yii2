@@ -12,27 +12,27 @@ use yii\base\Model;
 use yii\web\ForbiddenHttpException;
 
 /**
- * ActiveController implements a common set of actions for supporting RESTful access to ActiveRecord.
+ * ActiveController 实现一组通用操作，以支持对 ActiveRecord 的 RESTful  访问
  *
- * The class of the ActiveRecord should be specified via [[modelClass]], which must implement [[\yii\db\ActiveRecordInterface]].
- * By default, the following actions are supported:
+ * ActiveRecord 类应该通过 [[modelClass]] 指定，并继承了 [[\yii\db\ActiveRecordInterface]]。
+ * 默认情况下，支持以下操作：
  *
- * - `index`: list of models
- * - `view`: return the details of a model
- * - `create`: create a new model
- * - `update`: update an existing model
- * - `delete`: delete an existing model
- * - `options`: return the allowed HTTP methods
+ * - `index`：模型列表
+ * - `view`：返回模型的详细信息
+ * - `create`：创建一个新模型
+ * - `update`：更新现有模型
+ * - `delete`：删除现有模型
+ * - `options`：返回允许的 HTTP 方法
  *
- * You may disable some of these actions by overriding [[actions()]] and unsetting the corresponding actions.
+ * 您可以通过覆盖 [[actions()]] 方法，取消其中相应的动作，来禁用其中一些操作。
  *
- * To add a new action, either override [[actions()]] by appending a new action class or write a new action method.
- * Make sure you also override [[verbs()]] to properly declare what HTTP methods are allowed by the new action.
+ * 要添加新操作，可以覆盖 [[actions()]] 方法，加上新的 Action 对象，或者直接写个 action 方法。
+ * 记得要重写 [[verbs()]] 方法声明你新 action 所允许的 HTTP 方法。
  *
- * You should usually override [[checkAccess()]] to check whether the current user has the privilege to perform
- * the specified action against the specified model.
+ * 通常，你可以重写 [[checkAccess()]] 方法，以检查当前用户是否具有执行权限。
  *
- * For more details and usage information on ActiveController, see the [guide article on rest controllers](guide:rest-controllers).
+ *
+ * 关于 ActiveController 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -40,16 +40,16 @@ use yii\web\ForbiddenHttpException;
 class ActiveController extends Controller
 {
     /**
-     * @var string the model class name. This property must be set.
+     * @var string 模型的类名。此属性必须设置
      */
     public $modelClass;
     /**
-     * @var string the scenario used for updating a model.
+     * @var string 更新模型时所用的场景。
      * @see \yii\base\Model::scenarios()
      */
     public $updateScenario = Model::SCENARIO_DEFAULT;
     /**
-     * @var string the scenario used for creating a model.
+     * @var string 创建模型时所用的场景。
      * @see \yii\base\Model::scenarios()
      */
     public $createScenario = Model::SCENARIO_DEFAULT;
@@ -120,16 +120,16 @@ class ActiveController extends Controller
     }
 
     /**
-     * Checks the privilege of the current user.
+     * 检查当前用户的权限。
      *
-     * This method should be overridden to check whether the current user has the privilege
-     * to run the specified action against the specified data model.
-     * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
+     * 应该重写此方法以检查当前用户是否具有该权限
+     * 对指定的数据模型运行指定的操作。
+     * 如果用户没有访问权限，则应抛出 [[ForbiddenHttpException]] 异常
      *
-     * @param string $action the ID of the action to be executed
-     * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
-     * @param array $params additional parameters
-     * @throws ForbiddenHttpException if the user does not have access
+     * @param string $action 被执行的动作类的 ID
+     * @param object $model 被访问的模型类。如果为 null，则意味着没有特别的模型对象被访问。
+     * @param array $params 额外的参数
+     * @throws ForbiddenHttpException 如果用户没有访问权限
      */
     public function checkAccess($action, $model = null, $params = [])
     {

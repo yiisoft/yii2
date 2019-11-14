@@ -8,7 +8,7 @@
 namespace yii\rbac;
 
 /**
- * For more details and usage information on ManagerInterface, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 ManagerInterface 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,244 +16,244 @@ namespace yii\rbac;
 interface ManagerInterface extends CheckAccessInterface
 {
     /**
-     * Creates a new Role object.
-     * Note that the newly created role is not added to the RBAC system yet.
-     * You must fill in the needed data and call [[add()]] to add it to the system.
-     * @param string $name the role name
-     * @return Role the new Role object
+     * 创建一个新的 Role 对象。
+     * 请注意，新创建的角色尚未添加到 RBAC 系统。
+     * 你必须填写所需数据并调用 [[add()]] 将其添加到系统中。
+     * @param string $name 角色名称
+     * @return Role 新的 Role 对象
      */
     public function createRole($name);
 
     /**
-     * Creates a new Permission object.
-     * Note that the newly created permission is not added to the RBAC system yet.
-     * You must fill in the needed data and call [[add()]] to add it to the system.
-     * @param string $name the permission name
-     * @return Permission the new Permission object
+     * 创建一个新的 Permission 对象。
+     * 请注意，新创建的权限尚未添加到 RBAC 系统。
+     * 你必须填写所需数据并调用 [[add()]] 将其添加到系统中。
+     * @param string $name 权限名称
+     * @return Permission 新的 Permission 对象
      */
     public function createPermission($name);
 
     /**
-     * Adds a role, permission or rule to the RBAC system.
+     * 向 RBAC 系统添加角色，权限或规则。
      * @param Role|Permission|Rule $object
-     * @return bool whether the role, permission or rule is successfully added to the system
-     * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
+     * @return bool 角色，权限或规则是否已成功添加到系统中
+     * @throws \Exception 如果数据验证或保存失败（例如角色名称或权限不唯一）
      */
     public function add($object);
 
     /**
-     * Removes a role, permission or rule from the RBAC system.
+     * 从 RBAC 系统中删除角色，权限或规则。
      * @param Role|Permission|Rule $object
-     * @return bool whether the role, permission or rule is successfully removed
+     * @return bool 是否成功删除了角色，权限或规则
      */
     public function remove($object);
 
     /**
-     * Updates the specified role, permission or rule in the system.
-     * @param string $name the old name of the role, permission or rule
+     * 更新系统中指定的角色，权限或规则。
+     * @param string $name 角色，权限或规则的旧名称
      * @param Role|Permission|Rule $object
-     * @return bool whether the update is successful
-     * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
+     * @return bool 更新是否成功
+     * @throws \Exception 如果数据验证或保存失败（例如角色名称或权限不唯一）
      */
     public function update($name, $object);
 
     /**
-     * Returns the named role.
-     * @param string $name the role name.
-     * @return null|Role the role corresponding to the specified name. Null is returned if no such role.
+     * 返回指定的角色。
+     * @param string $name 角色名称。
+     * @return null|Role 角色与指定名称对应的角色。如果没有这样的角色，则返回 Null。
      */
     public function getRole($name);
 
     /**
-     * Returns all roles in the system.
-     * @return Role[] all roles in the system. The array is indexed by the role names.
+     * 返回系统中的所有角色。
+     * @return Role[] 系统中的所有角色。该数组由角色名称索引。
      */
     public function getRoles();
 
     /**
-     * Returns the roles that are assigned to the user via [[assign()]].
-     * Note that child roles that are not assigned directly to the user will not be returned.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Role[] all roles directly assigned to the user. The array is indexed by the role names.
+     * 返回通过 [[assign()]] 分配给用户的角色。
+     * 请注意，不会返回未直接分配给用户的子角色。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Role[] 直接分配给用户的所有角色。该数组由角色名称索引。
      */
     public function getRolesByUser($userId);
 
     /**
-     * Returns child roles of the role specified. Depth isn't limited.
-     * @param string $roleName name of the role to file child roles for
-     * @return Role[] Child roles. The array is indexed by the role names.
-     * First element is an instance of the parent Role itself.
-     * @throws \yii\base\InvalidParamException if Role was not found that are getting by $roleName
+     * 返回指定角色的子角色。深度不受限制。
+     * @param string $roleName 要为其提供子角色的角色的名称
+     * @return Role[] 子角色。该数组由角色名称索引。
+     * 第一个元素是父角色本身的一个实例。
+     * @throws \yii\base\InvalidParamException 如果找不到通过 $roleName 获取的 Role
      * @since 2.0.10
      */
     public function getChildRoles($roleName);
 
     /**
-     * Returns the named permission.
-     * @param string $name the permission name.
-     * @return null|Permission the permission corresponding to the specified name. Null is returned if no such permission.
+     * 返回指定的权限。
+     * @param string $name 权限名称。
+     * @return null|Permission 权限对应于指定名称的权限。如果没有此类权限，则返回 Null。
      */
     public function getPermission($name);
 
     /**
-     * Returns all permissions in the system.
-     * @return Permission[] all permissions in the system. The array is indexed by the permission names.
+     * 返回系统中的所有权限。
+     * @return Permission[] 系统中的所有权限。该数组由权限名称索引。
      */
     public function getPermissions();
 
     /**
-     * Returns all permissions that the specified role represents.
-     * @param string $roleName the role name
-     * @return Permission[] all permissions that the role represents. The array is indexed by the permission names.
+     * 返回指定角色所代表的所有权限。
+     * @param string $roleName 角色名称
+     * @return Permission[] 角色所代表的所有权限。该数组由权限名称索引。
      */
     public function getPermissionsByRole($roleName);
 
     /**
-     * Returns all permissions that the user has.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Permission[] all permissions that the user has. The array is indexed by the permission names.
+     * 返回用户拥有的所有权限。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Permission[] 用户拥有的所有权限。该数组由权限名称索引。
      */
     public function getPermissionsByUser($userId);
 
     /**
-     * Returns the rule of the specified name.
-     * @param string $name the rule name
-     * @return null|Rule the rule object, or null if the specified name does not correspond to a rule.
+     * 返回指定名称的规则。
+     * @param string $name 规则名称
+     * @return null|Rule 规则对象，如果指定的名称与规则不对应，则为 null。
      */
     public function getRule($name);
 
     /**
-     * Returns all rules available in the system.
-     * @return Rule[] the rules indexed by the rule names
+     * 返回系统中可用的所有规则。
+     * @return Rule[] 由规则名称索引的规则
      */
     public function getRules();
 
     /**
-     * Checks the possibility of adding a child to parent.
-     * @param Item $parent the parent item
-     * @param Item $child the child item to be added to the hierarchy
-     * @return bool possibility of adding
+     * 检查将孩子加入父项的可能性。
+     * @param Item $parent 父项
+     * @param Item $child 要添加到层次结构中的子项
+     * @return bool 是否可以添加
      *
      * @since 2.0.8
      */
     public function canAddChild($parent, $child);
 
     /**
-     * Adds an item as a child of another item.
+     * 将项目添加为另一项目的子项。
      * @param Item $parent
      * @param Item $child
-     * @return bool whether the child successfully added
-     * @throws \yii\base\Exception if the parent-child relationship already exists or if a loop has been detected.
+     * @return bool 是否成功添加为子项
+     * @throws \yii\base\Exception 如果父子关系已经存在或者检测到循环。
      */
     public function addChild($parent, $child);
 
     /**
-     * Removes a child from its parent.
-     * Note, the child item is not deleted. Only the parent-child relationship is removed.
+     * 从父项中移除一个子项。
+     * 注意，子项目不会被删除。仅删除父子关系。
      * @param Item $parent
      * @param Item $child
-     * @return bool whether the removal is successful
+     * @return bool 是否删除成功
      */
     public function removeChild($parent, $child);
 
     /**
-     * Removed all children form their parent.
-     * Note, the children items are not deleted. Only the parent-child relationships are removed.
+     * 从父项那里删除所有子项。
+     * 注意，子项目不会被删除。仅删除父子关系。
      * @param Item $parent
-     * @return bool whether the removal is successful
+     * @return bool 是否删除成功
      */
     public function removeChildren($parent);
 
     /**
-     * Returns a value indicating whether the child already exists for the parent.
+     * 返回一个值，该值指示父项的子项是否已存在。
      * @param Item $parent
      * @param Item $child
-     * @return bool whether `$child` is already a child of `$parent`
+     * @return bool 是否 `$child` 已经是 `$parent` 的孩子了
      */
     public function hasChild($parent, $child);
 
     /**
-     * Returns the child permissions and/or roles.
-     * @param string $name the parent name
-     * @return Item[] the child permissions and/or roles
+     * 返回子项权限和角色。
+     * @param string $name 父项名
+     * @return Item[] 子项权限和角色
      */
     public function getChildren($name);
 
     /**
-     * Assigns a role to a user.
+     * 为用户分配角色。
      *
      * @param Role|Permission $role
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Assignment the role assignment information.
-     * @throws \Exception if the role has already been assigned to the user
+     * @param string|int $userId 用户 ID（见 [[\yii\web\User::id]]）
+     * @return Assignment 角色分配信息。
+     * @throws \Exception 如果该角色已分配给用户
      */
     public function assign($role, $userId);
 
     /**
-     * Revokes a role from a user.
+     * 撤消用户的角色。
      * @param Role|Permission $role
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return bool whether the revoking is successful
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return bool 是否撤销成功
      */
     public function revoke($role, $userId);
 
     /**
-     * Revokes all roles from a user.
-     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
-     * @return bool whether the revoking is successful
+     * 撤消用户的所有角色。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return bool是否撤销成功
      */
     public function revokeAll($userId);
 
     /**
-     * Returns the assignment information regarding a role and a user.
-     * @param string $roleName the role name
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return null|Assignment the assignment information. Null is returned if
-     * the role is not assigned to the user.
+     * 返回有关角色和用户的分配信息。
+     * @param string $roleName 角色名称
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return null|Assignment 分配信息。如果该角色没有分配给该用户，
+     * 则返回 Null。
      */
     public function getAssignment($roleName, $userId);
 
     /**
-     * Returns all role assignment information for the specified user.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Assignment[] the assignments indexed by role names. An empty array will be
-     * returned if there is no role assigned to the user.
+     * 返回指定用户的所有角色分配信息。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Assignment[] 由角色名称索引的分配。如果该用户没有分配角色，
+     * 则返回空数组。
      */
     public function getAssignments($userId);
 
     /**
-     * Returns all user IDs assigned to the role specified.
+     * 返回分配给指定角色的所有用户 ID。
      * @param string $roleName
-     * @return array array of user ID strings
+     * @return array 用户 ID 字符串数组
      * @since 2.0.7
      */
     public function getUserIdsByRole($roleName);
 
     /**
-     * Removes all authorization data, including roles, permissions, rules, and assignments.
+     * 删除所有授权数据，包括角色，权限，规则和分配。
      */
     public function removeAll();
 
     /**
-     * Removes all permissions.
-     * All parent child relations will be adjusted accordingly.
+     * 删除所有权限。
+     * 所有父子关系将相应调整。
      */
     public function removeAllPermissions();
 
     /**
-     * Removes all roles.
-     * All parent child relations will be adjusted accordingly.
+     * 删除所有角色。
+     * 所有父子关系将相应调整。
      */
     public function removeAllRoles();
 
     /**
-     * Removes all rules.
-     * All roles and permissions which have rules will be adjusted accordingly.
+     * 删除所有规则。
+     * 所有具有规则的角色和权限都将相应调整。
      */
     public function removeAllRules();
 
     /**
-     * Removes all role assignments.
+     * 删除所有角色分配。
      */
     public function removeAllAssignments();
 }

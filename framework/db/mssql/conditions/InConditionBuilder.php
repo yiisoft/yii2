@@ -19,7 +19,7 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
 {
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if `$columns` is an array
+     * @throws NotSupportedException 如果 `$columns` 是一个数组，则抛出 NotSupportedException 异常
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {

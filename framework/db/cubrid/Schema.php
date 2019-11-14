@@ -19,7 +19,7 @@ use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
+ * Schema 是用于从 CUBRID 数据库（版本要求 version 9.3.x 以及更高）检索元数据的类。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -29,9 +29,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
-     * @var array mapping from physical column types (keys) to abstract column types (values)
-     * Please refer to [CUBRID manual](http://www.cubrid.org/manual/91/en/sql/datatype.html) for
-     * details on data types.
+     * @var array 从物理列类型（键）映射到抽象列类型（值）
+     * 有关数据类型的详细信息，
+     * 请查阅 [CUBRID 手册](http://www.cubrid.org/manual/91/en/sql/datatype.html) 。
      */
     public $typeMap = [
         // Numeric data types
@@ -73,8 +73,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         'enum' => self::TYPE_STRING,
     ];
     /**
-     * @var array map of DB errors and corresponding exceptions
-     * If left part is found in DB error message exception class from the right part is used.
+     * @var array DB 错误和相应异常的映射
+     * 如果在 DB 错误消息中找到左侧部分，则使用右侧部分的异常类。
      */
     public $exceptionMap = [
         'Operation would have caused one or more unique constraint violations' => 'yii\db\IntegrityException',
@@ -218,7 +218,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果此方法被调用，则可以抛出异常。
      */
     protected function loadTableChecks($tableName)
     {
@@ -227,7 +227,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果此方法被调用，则可以抛出异常。
      */
     protected function loadTableDefaultValues($tableName)
     {
@@ -243,8 +243,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Creates a query builder for the CUBRID database.
-     * @return QueryBuilder query builder instance
+     * 创建 CUBRID 数据库查询构建器。
+     * @return QueryBuilder 查询构建器实例
      */
     public function createQueryBuilder()
     {
@@ -252,9 +252,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
-     * @return \yii\db\ColumnSchema the column schema object
+     * 将列信息加载到 [[ColumnSchema]] 对象中。
+     * @param array $info 列信息
+     * @return \yii\db\ColumnSchema 列架构对象
      */
     protected function loadColumnSchema($info)
     {
@@ -323,9 +323,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Determines the PDO type for the given PHP data value.
-     * @param mixed $data the data whose PDO type is to be determined
-     * @return int the PDO type
+     * 确定给定的 PHP 数据值的 PDO 类型。
+     * @param mixed $data 要确定其 PDO 类型的数据
+     * @return int PDO 类型
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
@@ -376,12 +376,12 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     * 加载多种类型的约束并返回指定的约束。
+     * @param string $tableName 表名。
+     * @param string $returnType 返回类型：
      * - indexes
      * - uniques
-     * @return mixed constraints.
+     * @return mixed 约束。
      */
     private function loadTableConstraints($tableName, $returnType)
     {

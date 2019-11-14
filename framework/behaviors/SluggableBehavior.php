@@ -15,12 +15,12 @@ use yii\helpers\Inflector;
 use yii\validators\UniqueValidator;
 
 /**
- * SluggableBehavior automatically fills the specified attribute with a value that can be used a slug in a URL.
+ * SluggableBehavior 自动地给指定的属性填充值，这些值可以在 URL 中用作 slug。
  *
- * Note: This behavior relies on php-intl extension for transliteration. If it is not installed it
- * falls back to replacements defined in [[\yii\helpers\Inflector::$transliteration]].
+ * Note: 这个行为依赖于 php-intl 扩展来完成转译。如果没有安装这个扩展，
+ * 将会退一步用 [[\yii\helpers\Inflector::$transliteration]] 来替换。
  *
- * To use SluggableBehavior, insert the following code to your ActiveRecord class:
+ * 要使用 SluggableBehavior，把下面的代码插入到 ActiveRecord 类中：
  *
  * ```php
  * use yii\behaviors\SluggableBehavior;
@@ -37,13 +37,13 @@ use yii\validators\UniqueValidator;
  * }
  * ```
  *
- * By default, SluggableBehavior will fill the `slug` attribute with a value that can be used a slug in a URL
- * when the associated AR object is being validated.
+ * 默认情况下，SluggableBehavior 会在关联的 AR 对象执行验证过程中填充 `slug` 属性的值，
+ * 该值可以在 URL 中用作 slug。
  *
- * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
- * not be validated, i.e. the `slug` attribute should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ * 由于属性值是被这个行为自动设置，所以它不必用户输入也因此没有必要验证。
+ * 因此，`slug` 属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
- * If your attribute name is different, you may configure the [[slugAttribute]] property like the following:
+ * 如果你的属性名不是 `slug`，那么你可以像下面那样配置 [[slugAttribute]] 属性来调整：
  *
  * ```php
  * public function behaviors()
@@ -64,19 +64,19 @@ use yii\validators\UniqueValidator;
 class SluggableBehavior extends AttributeBehavior
 {
     /**
-     * @var string the attribute that will receive the slug value
+     * @var string 接收 slug 值的属性。
      */
     public $slugAttribute = 'slug';
     /**
-     * @var string|array|null the attribute or list of attributes whose value will be converted into a slug
-     * or `null` meaning that the `$value` property will be used to generate a slug.
+     * @var string|array|null 单个属性或者属性列表，它们的值将会转译为 slug，
+     * 如果是 `null` 那么将会用 $value 属性来生成 slug。
      */
     public $attribute;
     /**
-     * @var callable|string|null the value that will be used as a slug. This can be an anonymous function
-     * or an arbitrary value or null. If the former, the return value of the function will be used as a slug.
-     * If `null` then the `$attribute` property will be used to generate a slug.
-     * The signature of the function should be as follows,
+     * @var callable|string|null 用来生成 slug 的值。它可以是一个匿名函数，
+     * 或者是任意的值或者 null。如果是前者，匿名函数的返回值将会当作 slug。
+     * 如果是 `null`，那么使用 `$attribute` 属性生成 slug。
+     * 匿名函数的签名应该是这样的，
      *
      * ```php
      * function ($event)
@@ -87,32 +87,32 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $value;
     /**
-     * @var bool whether to generate a new slug if it has already been generated before.
-     * If true, the behavior will not generate a new slug even if [[attribute]] is changed.
+     * @var bool 如果之前已经生成过的话，是否需要生成一个全新的 slug。
+     * 如果是 true，该行为不会生成新的 slug，即使 [[attribute]] 有变化了。
      * @since 2.0.2
      */
     public $immutable = false;
     /**
-     * @var bool whether to ensure generated slug value to be unique among owner class records.
-     * If enabled behavior will validate slug uniqueness automatically. If validation fails it will attempt
-     * generating unique slug value from based one until success.
+     * @var bool 是否确保生成的 slug 值在属主 AR 类的所有记录里是唯一的。
+     * 如果设置为 true，行为将会自动验证 slug 的唯一性。验证失败的话，
+     * 它还会在重复的 slug 基础上不断尝试生成一个唯一的 slug，直到它不再是重复的 slug 为止。
      */
     public $ensureUnique = false;
     /**
-     * @var bool whether to skip slug generation if [[attribute]] is null or an empty string.
-     * If true, the behaviour will not generate a new slug if [[attribute]] is null or an empty string.
+     * @var bool 如果 [[attribute]] 是 null 或者是一个空字符串时，是否跳过 slug 的生成过程。
+     * 如果是 true，那么在 [[attribute]] 是 null 或者是一个空字符串时就不会生成一个新的 slug。
      * @since 2.0.13
      */
     public $skipOnEmpty = false;
     /**
-     * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
-     * [[UniqueValidator]] will be used.
+     * @var array slug 的唯一性验证器配置数组。参数 'class' 可以忽略为空，
+     * 默认情况下，将会使用 [[UniqueValidator]] 作为唯一性验证器。
      * @see UniqueValidator
      */
     public $uniqueValidator = [];
     /**
-     * @var callable slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
-     * slug is not unique. This should be a PHP callable with following signature:
+     * @var callable slug 唯一值生成器。当启用了 [[ensureUnique]] 并且生成了不唯一的 slug 时使用。
+     * 唯一值生成器的函数签名应该是下面这样的：
      *
      * ```php
      * function ($baseSlug, $iteration, $model)
@@ -121,7 +121,7 @@ class SluggableBehavior extends AttributeBehavior
      * }
      * ```
      *
-     * If not set unique slug will be generated adding incrementing suffix to the base slug.
+     * 如果没有配置唯一值生成器，行为将给原来重复的 slug 填充后缀使之达到唯一性。
      */
     public $uniqueSlugGenerator;
 
@@ -169,9 +169,9 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * Checks whether the new slug generation is needed
-     * This method is called by [[getValue]] to check whether the new slug generation is needed.
-     * You may override it to customize checking.
+     * 检测是否有必要生成一个新的 slug。
+     * 该方法是在 [[getValue]] 中调用，用来检测是否有必要生成一个新的slug。
+     * 你可以覆盖它实现自定义的检测过程。
      * @return bool
      * @since 2.0.7
      */
@@ -199,12 +199,12 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * This method is called by [[getValue]] to generate the slug.
-     * You may override it to customize slug generation.
-     * The default implementation calls [[\yii\helpers\Inflector::slug()]] on the input strings
-     * concatenated by dashes (`-`).
-     * @param array $slugParts an array of strings that should be concatenated and converted to generate the slug value.
-     * @return string the conversion result.
+     * 该方法在 [[getValue]] 中调用，用来生成 slug。 
+     * 你可以通过覆盖它来自定义 slug 的生成过程。
+     * 默认的实现就是调用 [[\yii\helpers\Inflector::slug()]]，
+     * 参数就是用连字符（`-`）拼接过的字符串。
+     * @param array $slugParts 一个字符串数组，通过拼接和转译来生成 slug 值。
+     * @return string 转译过的结果。
      */
     protected function generateSlug($slugParts)
     {
@@ -212,10 +212,10 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * This method is called by [[getValue]] when [[ensureUnique]] is true to generate the unique slug.
-     * Calls [[generateUniqueSlug]] until generated slug is unique and returns it.
-     * @param string $slug basic slug value
-     * @return string unique slug
+     * 这个方法在 [[getValue]] 中调用，当 [[ensureUnique]] 为 true 时可以生成唯一的 slug。
+     * 循环调用 [[generateUniqueSlug]] 直到生成了唯一的 slug，然后返回它。
+     * @param string $slug 原始 slug 值。
+     * @return string 唯一的 slug。
      * @see getValue
      * @see generateUniqueSlug
      * @since 2.0.7
@@ -233,9 +233,9 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * Checks if given slug value is unique.
-     * @param string $slug slug value
-     * @return bool whether slug is unique.
+     * 检测给定的 slug 是否是唯一的。
+     * @param string $slug slug 值。
+     * @return bool 是否 slug 值是唯一的。
      */
     protected function validateSlug($slug)
     {
@@ -257,10 +257,10 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * Generates slug using configured callback or increment of iteration.
-     * @param string $baseSlug base slug value
-     * @param int $iteration iteration number
-     * @return string new slug value
+     * 用配置好的回调或者迭代填充的方法生成 slug。
+     * @param string $baseSlug 原始 slug 值。
+     * @param int $iteration 迭代数字
+     * @return string 新的 slug 值。
      * @throws \yii\base\InvalidConfigException
      */
     protected function generateUniqueSlug($baseSlug, $iteration)
@@ -273,10 +273,10 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * Checks if $slugPart is empty string or null.
+     * 检测 $slugPart 是否是空字符串或者 null。
      *
-     * @param string $slugPart One of attributes that is used for slug generation.
-     * @return bool whether $slugPart empty or not.
+     * @param string $slugPart 用来生成 slug 的属性列表里的一个属性。
+     * @return bool 是否 $slugPart 为空。
      * @since 2.0.13
      */
     protected function isEmpty($slugPart)

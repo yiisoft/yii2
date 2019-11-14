@@ -13,9 +13,9 @@ use yii\web\JsExpression;
 use yii\base\Model;
 
 /**
- * BaseJson provides concrete implementation for [[Json]].
+ * BaseJson 类为 [[Json]] 提供了具体的实现方法。
  *
- * Do not use BaseJson. Use [[Json]] instead.
+ * 不要使用类 BaseJson。使用 [[Json]] 类来代替。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,7 +23,7 @@ use yii\base\Model;
 class BaseJson
 {
     /**
-     * List of JSON Error messages assigned to constant names for better handling of version differences.
+     * 为更好地处理版本差异而分配给常量名的 JSON 错误消息列表。
      * @var array
      * @since 2.0.7
      */
@@ -40,20 +40,20 @@ class BaseJson
 
 
     /**
-     * Encodes the given value into a JSON string.
+     * 将给定值编码为 JSON 字符串。
      *
-     * The method enhances `json_encode()` by supporting JavaScript expressions.
-     * In particular, the method will not encode a JavaScript expression that is
-     * represented in terms of a [[JsExpression]] object.
+     * 该方法通过支持 JavaScript 表达式来增强 `json_encode()`。
+     * 特别地，该方法不会对以 [[JSExpression]]
+     * 对象表示的 JavaScript 表达式进行编码。
      *
-     * Note that data encoded as JSON must be UTF-8 encoded according to the JSON specification.
-     * You must ensure strings passed to this method have proper encoding before passing them.
+     * 这里需要注意编码为 JSON 的数据必须按照 JSON 规范进行 UTF-8 编码。
+     * 你必须确保传递给此方法的字符串在传递之前具有正确的编码。
      *
-     * @param mixed $value the data to be encoded.
-     * @param int $options the encoding options. For more details please refer to
-     * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
-     * @return string the encoding result.
-     * @throws InvalidArgumentException if there is any encoding error.
+     * @param mixed $value 即将编码的数据。
+     * @param int $options 编码选项。
+     * 有关详细信息，请参阅 <http://www.php.net/manual/en/function.json-encode.php>。默认值为 `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`。
+     * @return string 编码结果。
+     * @throws InvalidArgumentException 编码过程中发生的异常。
      */
     public static function encode($value, $options = 320)
     {
@@ -70,19 +70,19 @@ class BaseJson
     }
 
     /**
-     * Encodes the given value into a JSON string HTML-escaping entities so it is safe to be embedded in HTML code.
+     * 将给定的值编码为 JSON 字符串进行 HTML-escaping 转义实体，这样就可以安全地嵌入 HTML 代码中。
      *
-     * The method enhances `json_encode()` by supporting JavaScript expressions.
-     * In particular, the method will not encode a JavaScript expression that is
-     * represented in terms of a [[JsExpression]] object.
+     * 该方法通过支持 JavaScript 表达式来增强 `json_encode()`。
+     * 特别地，该方法不会对以 [[JsExpression]]
+     * 对象表示的 JavaScript 表达式进行编码。
      *
-     * Note that data encoded as JSON must be UTF-8 encoded according to the JSON specification.
-     * You must ensure strings passed to this method have proper encoding before passing them.
+     * 这里注意的是按照 JSON 规范编码的数据必须是 UTF-8 编码。
+     * 在传递字符串之前，必须确保传递给此方法的字符串具有适当的编码。
      *
-     * @param mixed $value the data to be encoded
-     * @return string the encoding result
+     * @param mixed $value 传递被编码的数据
+     * @return string 返回编码的结果
      * @since 2.0.4
-     * @throws InvalidArgumentException if there is any encoding error
+     * @throws InvalidArgumentException 编码过程中发生的异常
      */
     public static function htmlEncode($value)
     {
@@ -90,11 +90,11 @@ class BaseJson
     }
 
     /**
-     * Decodes the given JSON string into a PHP data structure.
-     * @param string $json the JSON string to be decoded
-     * @param bool $asArray whether to return objects in terms of associative arrays.
-     * @return mixed the PHP data
-     * @throws InvalidArgumentException if there is any decoding error
+     * 为给定的 JSON 字符串进行解码为 PHP 数据结构。
+     * @param string $json 即将解码的数据
+     * @param bool $asArray 是否以关联数组的形式返回对象。
+     * @return mixed 返回 PHP 数据格式
+     * @throws InvalidArgumentException 解码过程中发生的异常
      */
     public static function decode($json, $asArray = true)
     {
@@ -110,10 +110,10 @@ class BaseJson
     }
 
     /**
-     * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
+     * 通过抛出异常错误与相应的错误消息来处理 [[encode()]] 和 [[decode()]]。
      *
-     * @param int $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
-     * @throws InvalidArgumentException if there is any encoding/decoding error.
+     * @param int $lastError 错误代码来自 [json_last_error()](http://php.net/manual/en/function.json-last-error.php)。
+     * @throws InvalidArgumentException encoding/decoding 过程中发生的异常错误。
      * @since 2.0.6
      */
     protected static function handleJsonError($lastError)
@@ -137,11 +137,11 @@ class BaseJson
     }
 
     /**
-     * Pre-processes the data before sending it to `json_encode()`.
-     * @param mixed $data the data to be processed
-     * @param array $expressions collection of JavaScript expressions
-     * @param string $expPrefix a prefix internally used to handle JS expressions
-     * @return mixed the processed data
+     * 在将数据发送到 `json_encode()` 之前对其进行预处理。
+     * @param mixed $data 要处理的数据
+     * @param array $expressions JavaScript 表达式集合
+     * @param string $expPrefix 内部用于处理 JS 表达式的前缀
+     * @return mixed 返回处理后的数据
      */
     protected static function processData($data, &$expressions, $expPrefix)
     {
@@ -182,14 +182,14 @@ class BaseJson
     }
 
     /**
-     * Generates a summary of the validation errors.
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
-     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+     * 生成验证错误的摘要。
+     * @param Model|Model[] $models 要显示其验证错误的 model(s)。
+     * @param array $options 以键-值对表示的标记选项。以下是特殊处理的选项：
      *
-     * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
-     *   only the first error message for each attribute will be shown. Defaults to `false`.
+     * - 显示错误：boolean，如果设置为 true 则显示每个属性的所有错误消息，
+     *   否则只显示每个属性的第一条错误消息。默认 `false`。
      *
-     * @return string the generated error summary
+     * @return string 生成的错误摘要
      * @since 2.0.14
      */
     public static function errorSummary($models, $options = [])
@@ -201,11 +201,11 @@ class BaseJson
     }
 
     /**
-     * Return array of the validation errors
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
-     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
-     * only the first error message for each attribute will be shown.
-     * @return array of the validation errors
+     * 返回验证错误数组
+     * @param Model|Model[] $models 要显示其验证错误的 model(s)。
+     * @param $showAllErrors boolean，如果设置为 true 将显示每个属性的所有错误信息，
+     * 否则只显示每个属性的第一条错误消息。
+     * @return 返回验证错误的数组
      * @since 2.0.14
      */
     private static function collectErrors($models, $showAllErrors)

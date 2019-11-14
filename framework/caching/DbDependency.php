@@ -13,12 +13,12 @@ use yii\db\Connection;
 use yii\di\Instance;
 
 /**
- * DbDependency represents a dependency based on the query result of a SQL statement.
+ * DbDependency 是基于 SQL 语句的查询结果实现的依赖类。
  *
- * If the query result changes, the dependency is considered as changed.
- * The query is specified via the [[sql]] property.
+ * 如果查询结果有变化，那么就认为依赖发生了变化。
+ * 查询语句由 [[sql]] 属性指定。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,26 +26,26 @@ use yii\di\Instance;
 class DbDependency extends Dependency
 {
     /**
-     * @var string the application component ID of the DB connection.
+     * @var string 表示 DB 连接的应用组件 ID。
      */
     public $db = 'db';
     /**
-     * @var string the SQL query whose result is used to determine if the dependency has been changed.
-     * Only the first row of the query result will be used.
+     * @var string SQL 查询语句，它的查询结果决定了依赖是否发生了变化。
+     * 只使用查询结果的第一行。
      */
     public $sql;
     /**
-     * @var array the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
+     * @var array (name => value) 格式的参数，用在 [[sql]] 属性指定的 SQL 语句中。
      */
     public $params = [];
 
 
     /**
-     * Generates the data needed to determine if dependency has been changed.
-     * This method returns the value of the global state.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return mixed the data needed to determine if dependency has been changed.
-     * @throws InvalidConfigException if [[db]] is not a valid application component ID
+     * 生成在判断依赖是否发生变化时用到的依赖数据。
+     * 该方法返回全局状态的值。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return mixed 判断依赖是否发生变化时的依赖数据。
+     * @throws InvalidConfigException 如果 [[db]] 不是一个有效的应用组件 ID。
      */
     protected function generateDependencyData($cache)
     {

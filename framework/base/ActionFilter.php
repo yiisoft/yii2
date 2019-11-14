@@ -10,7 +10,7 @@ namespace yii\base;
 use yii\helpers\StringHelper;
 
 /**
- * ActionFilter is the base class for action filters.
+ * ActionFilter 是动作过滤器的基类。
  *
  * An action filter will participate in the action execution workflow by responding to
  * the `beforeAction` and `afterAction` events triggered by modules and controllers.
@@ -96,8 +96,8 @@ class ActionFilter extends Behavior
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * @param Action $action 要执行的动作。
+     * @return bool 该动作是否应继续执行。
      */
     public function beforeAction($action)
     {
@@ -105,11 +105,11 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * This method is invoked right after an action is executed.
-     * You may override this method to do some postprocessing for the action.
-     * @param Action $action the action just executed.
-     * @param mixed $result the action execution result
-     * @return mixed the processed action result.
+     * 执行动作后立即调用此方法。
+     * 您可以覆盖此方法以对操作执行一些后处理。
+     * @param Action $action 刚执行的动作。
+     * @param mixed $result 动作执行结果
+     * @return mixed 处理后的动作结果。
      */
     public function afterAction($action, $result)
     {
@@ -117,7 +117,7 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * Returns an action ID by converting [[Action::$uniqueId]] into an ID relative to the module.
+     * 通过将 [[Action::$uniqueId]] 转换为相对于模块的 ID 来返回动作 ID。
      * @param Action $action
      * @return string
      * @since 2.0.7
@@ -138,9 +138,9 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * Returns a value indicating whether the filter is active for the given action.
-     * @param Action $action the action being filtered
-     * @return bool whether the filter is active for the given action.
+     * 返回一个值，该值指示过滤器对于给定操作是否处于活动状态。
+     * @param Action $action 被过滤的动作
+     * @return bool 过滤器对于给定的动作是否处于活动状态。
      */
     protected function isActive($action)
     {

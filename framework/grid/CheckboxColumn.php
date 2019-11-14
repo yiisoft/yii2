@@ -13,9 +13,9 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 
 /**
- * CheckboxColumn displays a column of checkboxes in a grid view.
+ * CheckboxColumn 在网格视图中显示一列复选框。
  *
- * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
+ * 将 CheckboxColumn 添加到 [[GridView]]，请将其添加到 [[GridView::columns|columns]] 配置中，如下所示：
  *
  * ```php
  * 'columns' => [
@@ -27,15 +27,15 @@ use yii\helpers\Json;
  * ]
  * ```
  *
- * Users may click on the checkboxes to select rows of the grid. The selected rows may be
- * obtained by calling the following JavaScript code:
+ * 用户可以单击复选框来选择网格的行。
+ * 可以通过调用以下的 JavaScript 代码来获取所选行：
  *
  * ```javascript
  * var keys = $('#grid').yiiGridView('getSelectedRows');
  * // keys is an array consisting of the keys associated with the selected rows
  * ```
  *
- * For more details and usage information on CheckboxColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ * 关于 CheckboxColumn 的更多细节和用法，请参阅 [guide article on data widgets](guide:output-data-widgets)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,18 +43,18 @@ use yii\helpers\Json;
 class CheckboxColumn extends Column
 {
     /**
-     * @var string the name of the input checkbox input fields. This will be appended with `[]` to ensure it is an array.
+     * @var string 复选框输入字段的名称。将附加 `[]` 以确保它是一个数组。
      */
     public $name = 'selection';
     /**
-     * @var array|\Closure the HTML attributes for checkboxes. This can either be an array of
-     * attributes or an anonymous function ([[Closure]]) that returns such an array.
-     * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
-     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     * and `$column` is a reference to the [[CheckboxColumn]] object.
-     * A function may be used to assign different attributes to different rows based on the data in that row.
-     * Specifically if you want to set a different value for the checkbox
-     * you can use this option in the following way (in this example using the `name` attribute of the model):
+     * @var array|\Closure 复选框的 HTML 属性。
+     * 这可以是属性数组，也可以是返回这样一个数组的匿名函数（[[Closure]]）。
+     * 函数的写法应该为：`function ($model, $key, $index, $column)`。
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型，键和索引，
+     * `$column` 是对 [[CheckboxColumn]] 对象的引用。
+     * 可以使用函数基于该行中的数据将不同的属性分配给不同的行。
+     * 具体来说，如果要为复选框设置不同的值，
+     * 可以按照以下方式使用此选项（在此实例中使用模型的 `name` 属性）。
      *
      * ```php
      * 'checkboxOptions' => function ($model, $key, $index, $column) {
@@ -62,15 +62,15 @@ class CheckboxColumn extends Column
      * }
      * ```
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $checkboxOptions = [];
     /**
-     * @var bool whether it is possible to select multiple rows. Defaults to `true`.
+     * @var bool 是否可以选择多行。默认为 `true`。
      */
     public $multiple = true;
     /**
-     * @var string the css class that will be used to find the checkboxes.
+     * @var string 将用于查找复选框的 css 类。
      * @since 2.0.9
      */
     public $cssClass;
@@ -94,10 +94,10 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Renders the header cell content.
-     * The default implementation simply renders [[header]].
-     * This method may be overridden to customize the rendering of the header cell.
-     * @return string the rendering result
+     * 渲染标题单元格内容。
+     * 默认实现只是渲染 [[header]]。
+     * 可以重写此方法来自定义标题单元格的渲染。
+     * @return string 渲染结果
      */
     protected function renderHeaderCellContent()
     {
@@ -135,8 +135,8 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Returns header checkbox name.
-     * @return string header checkbox name
+     * 返回标题复选框名称。
+     * @return string 标题复选框名称
      * @since 2.0.8
      */
     protected function getHeaderCheckBoxName()
@@ -155,7 +155,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Registers the needed JavaScript.
+     * 注册所需的 JavaScript。
      * @since 2.0.8
      */
     public function registerClientScript()

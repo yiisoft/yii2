@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 /**
- * Inflector pluralizes and singularizes English nouns. It also contains some other useful methods.
+ * Inflector 类将英语单词转换为单复数形式。它还包含一些其他有用的方法。
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0

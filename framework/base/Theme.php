@@ -105,7 +105,7 @@ class Theme extends Component
     private $_basePath;
 
     /**
-     * @return string the root path of this theme. All resources of this theme are located under this directory.
+     * @return string 这个主题的根路径。 此主题的所有资源都位于此目录下。
      * @see pathMap
      */
     public function getBasePath()
@@ -124,11 +124,11 @@ class Theme extends Component
     }
 
     /**
-     * Converts a file to a themed file if possible.
-     * If there is no corresponding themed file, the original file will be returned.
-     * @param string $path the file to be themed
-     * @return string the themed file, or the original file if the themed version is not available.
-     * @throws InvalidConfigException if [[basePath]] is not set
+     * 如果可能，将文件转换为主题文件。
+     * 如果没有对应的主题文件，将返回原始文件。
+     * @param string $path 要转换为主题的文件
+     * @return string 主题文件，如果主题版本不可用，则为原始文件。
+     * @throws InvalidConfigException 如果未设置 [[basePath]]
      */
     public function applyTo($path)
     {
@@ -158,10 +158,10 @@ class Theme extends Component
     }
 
     /**
-     * Converts a relative URL into an absolute URL using [[baseUrl]].
-     * @param string $url the relative URL to be converted.
-     * @return string the absolute URL
-     * @throws InvalidConfigException if [[baseUrl]] is not set
+     * 使用 [[baseUrl]] 将相对 URL 转换为绝对 URL。
+     * @param string $url 要转换的相对 URL。
+     * @return string 绝对 URL
+     * @throws InvalidConfigException 如果未设置 [[baseUrl]]
      */
     public function getUrl($url)
     {
@@ -173,10 +173,10 @@ class Theme extends Component
     }
 
     /**
-     * Converts a relative file path into an absolute one using [[basePath]].
-     * @param string $path the relative file path to be converted.
-     * @return string the absolute file path
-     * @throws InvalidConfigException if [[basePath]] is not set
+     * 使用 [[basePath]] 将相对文件路径转换为绝对路径。
+     * @param string $path 要转换的相对文件路径。
+     * @return string 绝对文件路径
+     * @throws InvalidConfigException 如果未设置 [[basePath]]
      */
     public function getPath($path)
     {

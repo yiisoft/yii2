@@ -22,10 +22,10 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from an Oracle database.
+ * Schema 类用于从 Oracle 数据库检索元数据。
  *
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
- * sequence object. This property is read-only.
+ * @property string $lastInsertID 插入的最后一行的行 ID，或从序列对象检索的最后一个值。
+ * 此属性是只读的。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -35,8 +35,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
-     * @var array map of DB errors and corresponding exceptions
-     * If left part is found in DB error message exception class from the right part is used.
+     * @var array 数据库错误和相应异常的映射
+     * 如果在 DB 错误消息中找到映射关系的左侧部分，则使用右侧部分的异常类。
      */
     public $exceptionMap = [
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
@@ -233,7 +233,7 @@ SQL;
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
+     * @throws NotSupportedException 如果调用此方法，则抛出异常。
      */
     protected function loadTableDefaultValues($tableName)
     {
@@ -273,10 +273,10 @@ SQL;
     }
 
     /**
-     * Resolves the table name and schema name (if any).
+     * 解析表名和数据库结构名称（如果有的话）。
      *
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * @param TableSchema $table 表元数据对象
+     * @param string $name 表名
      */
     protected function resolveTableNames($table, $name)
     {
@@ -293,9 +293,9 @@ SQL;
     }
 
     /**
-     * Collects the table column metadata.
-     * @param TableSchema $table the table schema
-     * @return bool whether the table exists
+     * 搜集表元数据。
+     * @param TableSchema $table 表结构
+     * @return bool 表是否存在
      */
     protected function findColumns($table)
     {
@@ -348,11 +348,11 @@ SQL;
     }
 
     /**
-     * Sequence name of table.
+     * 表的序列名称。
      *
      * @param string $tableName
-     * @internal param \yii\db\TableSchema $table->name the table schema
-     * @return string|null whether the sequence exists
+     * @internal param \yii\db\TableSchema $table->name 表结构
+     * @return string|null 表序列是否存在
      */
     protected function getTableSequenceName($tableName)
     {
@@ -371,13 +371,13 @@ SQL;
     }
 
     /**
-     * @Overrides method in class 'Schema'
-     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
+     * @Overrides 类 'Schema' 中的方法
+     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle 不支持这一点
      *
-     * Returns the ID of the last inserted row or sequence value.
-     * @param string $sequenceName name of the sequence object (required by some DBMS)
-     * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @throws InvalidCallException if the DB connection is not active
+     * 返回最后插入的行或序列的 ID。
+     * @param string $sequenceName 序列对象的名称 (required by some DBMS)
+     * @return string 插入的最后一行的行 ID，或从序列对象检索的最后一个值
+     * @throws InvalidCallException 如果 DB 连接处于非活动状态，则抛出异常
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -393,7 +393,7 @@ SQL;
     }
 
     /**
-     * Creates ColumnSchema instance.
+     * 创建 ColumnSchema 实例。
      *
      * @param array $column
      * @return ColumnSchema
@@ -436,7 +436,7 @@ SQL;
     }
 
     /**
-     * Finds constraints and fills them into TableSchema object passed.
+     * 查找约束，并将它们填充到传递的 TableSchema 对象中。
      * @param TableSchema $table
      */
     protected function findConstraints($table)
@@ -503,8 +503,8 @@ SQL;
     }
 
     /**
-     * Returns all unique indexes for the given table.
-     * Each array element is of the following structure:.
+     * 返回给定表的所有唯一索引。
+     * 每个数组元素都类似如下结构：。
      *
      * ```php
      * [
@@ -513,8 +513,8 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
-     * @return array all unique indexes for the given table.
+     * @param TableSchema $table 表元数据
+     * @return array 给定表的所有唯一索引。
      * @since 2.0.4
      */
     public function findUniqueIndexes($table)
@@ -544,15 +544,15 @@ SQL;
     }
 
     /**
-     * Extracts the data types for the given column.
+     * 提取给定列的数据类型。
      * @param ColumnSchema $column
-     * @param string $dbType DB type
-     * @param string $precision total number of digits.
-     * This parameter is available since version 2.0.4.
-     * @param string $scale number of digits on the right of the decimal separator.
-     * This parameter is available since version 2.0.4.
-     * @param string $length length for character types.
-     * This parameter is available since version 2.0.4.
+     * @param string $dbType DB 类型
+     * @param string $precision 总位数。
+     * 此参数从 2.0.4 版本开始支持。
+     * @param string $scale 小数点分隔符右侧的位数。
+     * 此参数从 2.0.4 版本开始支持。
+     * @param string $length 字符类型的长度。
+     * 此参数从 2.0.4 版本开始支持。
      */
     protected function extractColumnType($column, $dbType, $precision, $scale, $length)
     {
@@ -580,15 +580,15 @@ SQL;
     }
 
     /**
-     * Extracts size, precision and scale information from column's DB type.
+     * 从列的 DB 类型中提取大小、精度和比例信息。
      * @param ColumnSchema $column
-     * @param string $dbType the column's DB type
-     * @param string $precision total number of digits.
-     * This parameter is available since version 2.0.4.
-     * @param string $scale number of digits on the right of the decimal separator.
-     * This parameter is available since version 2.0.4.
-     * @param string $length length for character types.
-     * This parameter is available since version 2.0.4.
+     * @param string $dbType 列的 DB 类型
+     * @param string $precision 总位数。
+     * 此参数从 2.0.4 版本开始支持。
+     * @param string $scale 小数点分隔符右侧的位数。
+     * 此参数从 2.0.4 版本开始支持。
+     * @param string $length 字符类型的长度。
+     * 此参数从 2.0.4 版本开始支持。
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
@@ -647,9 +647,9 @@ SQL;
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     * 加载多种类型的约束，并返回指定的约束。
+     * @param string $tableName 表名。
+     * @param string $returnType 返回约束类型：
      * - primaryKey
      * - foreignKeys
      * - uniques

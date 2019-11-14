@@ -353,7 +353,7 @@ class CaptchaAction extends Action
     }
 
     /**
-     * Sets the HTTP headers needed by image response.
+     * 设置图像响应所需的 HTTP 头信息。
      */
     protected function setHttpHeaders()
     {

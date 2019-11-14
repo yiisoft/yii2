@@ -11,9 +11,9 @@ use yii\base\ArrayAccessTrait;
 use yii\base\InvalidConfigException;
 
 /**
- * BaseActiveFixture is the base class for fixture classes that support accessing fixture data as ActiveRecord objects.
+ * BaseActiveFixture 是夹具基类用于支持以 ActiveRecord 对象的方式访问夹具数据。
  *
- * For more details and usage information on BaseActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
+ * 更多关于 BaseActiveFixture 的使用信息，参考 [guide article on fixtures](guide:test-fixtures)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -24,26 +24,26 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     use FileFixtureTrait;
 
     /**
-     * @var string the AR model class associated with this fixture.
+     * @var string 夹具关联的 AR 模型类
      */
     public $modelClass;
     /**
-     * @var array the data rows. Each array element represents one row of data (column name => column value).
+     * @var array 数据行。每个数组元素代表一行数据（形如：列名 => 列值）
      */
     public $data = [];
 
     /**
-     * @var \yii\db\ActiveRecord[] the loaded AR models
+     * @var \yii\db\ActiveRecord[] 加载的 AR 模型
      */
     private $_models = [];
 
 
     /**
-     * Returns the AR model by the specified model name.
-     * A model name is the key of the corresponding data row in [[data]].
-     * @param string $name the model name.
-     * @return null|\yii\db\ActiveRecord the AR model, or null if the model cannot be found in the database
-     * @throws \yii\base\InvalidConfigException if [[modelClass]] is not set.
+     * 根据模型名称返回 AR 模型对象
+     * 一个模型名称是关联数组 [[data]] 的键。
+     * @param string $name 模型名。
+     * @return null|\yii\db\ActiveRecord AR 模型，如果数据库中不存在，返回 null。
+     * @throws \yii\base\InvalidConfigException 如果 [[modelClass]] 不存在。
      */
     public function getModel($name)
     {
@@ -69,10 +69,10 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     }
 
     /**
-     * Loads the fixture.
+     * 加载夹具。
      *
-     * The default implementation simply stores the data returned by [[getData()]] in [[data]].
-     * You should usually override this method by putting the data into the underlying database.
+     * 这个方法的默认实现是简单的将 [[getData()]] 返回的数据存储在 [[data]] 属性中。
+     * 你通常需要重写这个方法来把数据存入底层数据库。
      */
     public function load()
     {
@@ -80,10 +80,10 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     }
 
     /**
-     * Returns the fixture data.
+     * 返回夹具数据。
      *
-     * @return array the data to be put into the database
-     * @throws InvalidConfigException if the specified data file does not exist.
+     * @return array 将要被填入数据库的数据。
+     * @throws InvalidConfigException 指定的数据文件不存在。
      * @see [[loadData]]
      */
     protected function getData()

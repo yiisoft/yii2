@@ -15,25 +15,25 @@ use yii\helpers\Console;
 use yii\helpers\Inflector;
 
 /**
- * Controller is the base class of console command classes.
+ * Controller 是控制台命令类的基类。
  *
- * A console controller consists of one or several actions known as sub-commands.
- * Users call a console command by specifying the corresponding route which identifies a controller action.
- * The `yii` program is used when calling a console command, like the following:
+ * 控制台控制器由一个或多个称为子命令的动作组成。
+ * 用户通过指定标识控制器动作的相应路由来调用控制台命令。
+ * 调用控制台命令时使用 `yii` 程序，如下所示：
  *
  * ```
  * yii <route> [--param1=value1 --param2 ...]
  * ```
  *
- * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
- * See [[options()]] for details.
+ * 其中 `<route>` 是指向控制器动作的路径，参数将作为命令的属性填充。
+ * 有关详细信息看 [[options()]]。
  *
- * @property string $help This property is read-only.
- * @property string $helpSummary This property is read-only.
- * @property array $passedOptionValues The properties corresponding to the passed options. This property is
- * read-only.
- * @property array $passedOptions The names of the options passed during execution. This property is
- * read-only.
+ * @property string $help 此属性是只读的。
+ * @property string $helpSummary 此属性是只读的。
+ * @property array $passedOptionValues 与传递的选项对应的属性。
+ * 此属性是只读的。
+ * @property array $passedOptions 执行期间传递的选项的名称。
+ * 此属性是只读的。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -41,40 +41,40 @@ use yii\helpers\Inflector;
 class Controller extends \yii\base\Controller
 {
     /**
-     * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
+     * @deprecated 自 2.0.13。使用 [[ExitCode::OK]] 替代。
      */
     const EXIT_CODE_NORMAL = 0;
     /**
-     * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
+     * @deprecated 自 2.0.13。使用 [[ExitCode::UNSPECIFIED_ERROR]] 替代。
      */
     const EXIT_CODE_ERROR = 1;
 
     /**
-     * @var bool whether to run the command interactively.
+     * @var bool 是否以交互方式运行命令。
      */
     public $interactive = true;
     /**
-     * @var bool whether to enable ANSI color in the output.
-     * If not set, ANSI color will only be enabled for terminals that support it.
+     * @var bool 是否在输出中启用 ANSI 颜色。
+     * 如果未设置，则仅为支持 ANSI 颜色的终端启用 ANSI 颜色。
      */
     public $color;
     /**
-     * @var bool whether to display help information about current command.
+     * @var bool 是否显示有关当前命令的帮助信息。
      * @since 2.0.10
      */
     public $help;
 
     /**
-     * @var array the options passed during execution.
+     * @var array 执行期间传递的选项。
      */
     private $_passedOptions = [];
 
 
     /**
-     * Returns a value indicating whether ANSI color is enabled.
+     * 返回一个指示是否启用 ANSI 颜色的值。
      *
-     * ANSI color is enabled only if [[color]] is set true or is not set
-     * and the terminal supports ANSI color.
+     * 仅当 [[color]] 设置为 true 或者没有设置并且终端支持 ANSI 颜色时
+     * 才启用 ANSI 颜色
      *
      * @param resource $stream the stream to check.
      * @return bool Whether to enable ANSI style in output.
@@ -85,13 +85,13 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Runs an action with the specified action ID and parameters.
-     * If the action ID is empty, the method will use [[defaultAction]].
-     * @param string $id the ID of the action to be executed.
-     * @param array $params the parameters (name-value pairs) to be passed to the action.
-     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
-     * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
-     * @throws Exception if there are unknown options or missing arguments
+     * 使用指定的动作 ID 和参数运行动作。
+     * 如果动作 ID 为空，则该方法将使用 [[defaultAction]]。
+     * @param string $id 要执行的动作的 ID。
+     * @param array $params 要传递给动作的参数(名称-值 对)。
+     * @return int 动作执行的状态。0 表示正常，其他值表示异常。
+     * @throws InvalidRouteException 如果请求的动作 ID 无法成功解析为动作。
+     * @throws Exception 如果存在未知选项或缺少参数
      * @see createAction
      */
     public function runAction($id, $params = [])
@@ -149,14 +149,14 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Binds the parameters to the action.
-     * This method is invoked by [[Action]] when it begins to run with the given parameters.
-     * This method will first bind the parameters with the [[options()|options]]
-     * available to the action. It then validates the given arguments.
-     * @param Action $action the action to be bound with parameters
-     * @param array $params the parameters to be bound to the action
-     * @return array the valid parameters that the action can run with.
-     * @throws Exception if there are unknown options or missing arguments
+     * 将参数绑定到动作。
+     * 当 [[Action]] 开始使用给定的参数运行时，此方法被调用。
+     * 此方法首先将参数与操作可用的 [[options()|options]]绑定。
+     * 然后验证给定的参数。
+     * @param Action $action 要用参数绑定的动作
+     * @param array $params 要绑定到动作的参数
+     * @return array 可以运行动作的有效参数。
+     * @throws Exception 如果存在未知选项或缺少参数
      */
     public function bindActionParams($action, $params)
     {
@@ -190,17 +190,17 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Formats a string with ANSI codes.
+     * 使用 ANSI 代码格式化字符串。
      *
-     * You may pass additional parameters using the constants defined in [[\yii\helpers\Console]].
+     * 你可以使用 [[\yii\helpers\Console]] 中定义的常量传递其他参数。
      *
-     * Example:
+     * 例如：
      *
      * ```
      * echo $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
      * ```
      *
-     * @param string $string the string to be formatted
+     * @param string $string 要格式化的字符串
      * @return string
      */
     public function ansiFormat($string)
@@ -215,19 +215,19 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Prints a string to STDOUT.
+     * 将字符串打印到 STDOUT。
      *
-     * You may optionally format the string with ANSI codes by
-     * passing additional parameters using the constants defined in [[\yii\helpers\Console]].
+     * 你可以选择使用 ANSI 代码格式化字符串，通过
+     * 使用 [[\yii\helpers\Console]] 中定义的常量传递其他参数。
      *
-     * Example:
+     * 例如：
      *
      * ```
      * $this->stdout('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
      * ```
      *
-     * @param string $string the string to print
-     * @return int|bool Number of bytes printed or false on error
+     * @param string $string 要打印的字符串
+     * @return int|bool 打印的字节数或 false 在错误时
      */
     public function stdout($string)
     {
@@ -241,19 +241,19 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Prints a string to STDERR.
+     * 将字符串打印到 STDERR。
      *
-     * You may optionally format the string with ANSI codes by
-     * passing additional parameters using the constants defined in [[\yii\helpers\Console]].
+     * 你可以选择使用 ANSI 代码格式化字符串，
+     * 通过使用 [[\yii\helpers\Console]] 中定义的常量传递其他参数。
      *
-     * Example:
+     * 例如：
      *
      * ```
      * $this->stderr('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
      * ```
      *
-     * @param string $string the string to print
-     * @return int|bool Number of bytes printed or false on error
+     * @param string $string 要打印的字符串
+     * @return int|bool 打印的字节数或 false 在错误时
      */
     public function stderr($string)
     {
@@ -267,19 +267,19 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Prompts the user for input and validates it.
+     * 提示用户输入并验证它。
      *
-     * @param string $text prompt string
-     * @param array $options the options to validate the input:
+     * @param string $text 提示字符串
+     * @param array $options 验证输入的选项：
      *
-     *  - required: whether it is required or not
-     *  - default: default value if no input is inserted by the user
-     *  - pattern: regular expression pattern to validate user input
-     *  - validator: a callable function to validate input. The function must accept two parameters:
-     *      - $input: the user input to validate
-     *      - $error: the error value passed by reference if validation failed.
+     *  - required：是否需要
+     *  - default：如果用户未插入输入，则为默认值
+     *  - pattern：用于验证用户输入的正则表达式模式
+     *  - validator：用于验证输入的可调用函数。该函数必须接受两个参数：
+     *      - $input：用于验证的用户输入
+     *      - $error：如果验证失败，则通过引用传递的错误值。
      *
-     * An example of how to use the prompt method with a validator function.
+     * 如何将提示方法与验证器函数一起使用的示例。
      *
      * ```php
      * $code = $this->prompt('Enter 4-Chars-Pin', ['required' => true, 'validator' => function($input, &$error) {
@@ -291,7 +291,7 @@ class Controller extends \yii\base\Controller
      * }]);
      * ```
      *
-     * @return string the user input
+     * @return string 用户输入
      */
     public function prompt($text, $options = [])
     {
@@ -303,9 +303,9 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Asks user to confirm by typing y or n.
+     * 要求用户通过键入 y 或 n 来确认。
      *
-     * A typical usage looks like the following:
+     * 典型用法如下所示：
      *
      * ```php
      * if ($this->confirm("Are you sure?")) {
@@ -315,10 +315,10 @@ class Controller extends \yii\base\Controller
      * }
      * ```
      *
-     * @param string $message to echo out before waiting for user input
-     * @param bool $default this value is returned if no selection is made.
-     * @return bool whether user confirmed.
-     * Will return true if [[interactive]] is false.
+     * @param string $message 在等待用户输入之前回显
+     * @param bool $default 如果未进行选择，则返回此值。
+     * @return bool 用户是否确认。
+     * 如果 [[interactive]] 是 false 则返回 true。
      */
     public function confirm($message, $default = false)
     {
@@ -330,13 +330,13 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Gives the user an option to choose from. Giving '?' as an input will show
-     * a list of options to choose from and their explanations.
+     * 为用户提供可供选择的选项。给予 '?' 作为输入将显示
+     * 可供选择的选项列表及其解释。
      *
-     * @param string $prompt the prompt message
-     * @param array $options Key-value array of options to choose from
+     * @param string $prompt 提示消息
+     * @param array $options 可供选择的选项的键值数组
      *
-     * @return string An option character the user chose
+     * @return string 用户选择的选项字符
      */
     public function select($prompt, $options = [])
     {
@@ -344,16 +344,16 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the names of valid options for the action (id)
-     * An option requires the existence of a public member variable whose
-     * name is the option name.
-     * Child classes may override this method to specify possible options.
+     * 返回操作的有效选项的动作（id）
+     * 选项要求存在一个名为选项名的
+     * 公共成员变量。
+     * 子类可以重写此方法以指定可能的选项。
      *
-     * Note that the values setting via options are not available
-     * until [[beforeAction()]] is being called.
+     * 请注意，通过选项设置的值不可用
+     * 直到调用 [[beforeAction()]]。
      *
-     * @param string $actionID the action id of the current request
-     * @return string[] the names of the options valid for the action
+     * @param string $actionID 当前请求的动作 id
+     * @return string[] 对操作有效的选项名称
      */
     public function options($actionID)
     {
@@ -362,11 +362,11 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns option alias names.
-     * Child classes may override this method to specify alias options.
+     * 返回选项别名。
+     * 子类可以重写此方法以指定别名选项。
      *
-     * @return array the options alias names valid for the action
-     * where the keys is alias name for option and value is option name.
+     * @return array 选项别名对操作有效，
+     * 其中键是选项的别名，值是选项名。
      *
      * @since 2.0.8
      * @see options()
@@ -379,11 +379,11 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns properties corresponding to the options for the action id
-     * Child classes may override this method to specify possible properties.
+     * 返回与动作 ID 的选项对应的属性
+     * 子类可以重写此方法以指定可能的属性。
      *
-     * @param string $actionID the action id of the current request
-     * @return array properties corresponding to the options for the action
+     * @param string $actionID 当前请求的动作 id
+     * @return array 属性对应于动作的选项
      */
     public function getOptionValues($actionID)
     {
@@ -397,9 +397,9 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the names of valid options passed during execution.
+     * 返回执行期间传递的有效选项的名称。
      *
-     * @return array the names of the options passed during execution
+     * @return array 执行期间传递的选项的名称
      */
     public function getPassedOptions()
     {
@@ -407,9 +407,9 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the properties corresponding to the passed options.
+     * 返回与传递的选项对应的属性。
      *
-     * @return array the properties corresponding to the passed options
+     * @return array 与传递的选项对应的属性
      */
     public function getPassedOptionValues()
     {
@@ -422,10 +422,10 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns one-line short summary describing this controller.
+     * 返回描述此控制器的一行简短摘要。
      *
-     * You may override this method to return customized summary.
-     * The default implementation returns first line from the PHPDoc comment.
+     * 您可以重写此方法以返回自定义摘要。
+     * 默认实现返回 PHPDoc 注释的第一行。
      *
      * @return string
      */
@@ -435,10 +435,10 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns help information for this controller.
+     * 返回此控制器的帮助信息。
      *
-     * You may override this method to return customized help.
-     * The default implementation returns help information retrieved from the PHPDoc comment.
+     * 您可以重写此方法以返回自定义帮助。
+     * 默认实现返回从 PHPDoc 注释中检索的帮助信息。
      * @return string
      */
     public function getHelp()
@@ -447,9 +447,9 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns a one-line short summary describing the specified action.
-     * @param Action $action action to get summary for
-     * @return string a one-line short summary describing the specified action.
+     * 返回描述指定动作的一行简短摘要。
+     * @param Action $action 获取摘要的动作
+     * @return string 描述指定动作的一行简短摘要。
      */
     public function getActionHelpSummary($action)
     {
@@ -457,9 +457,9 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the detailed help information for the specified action.
-     * @param Action $action action to get help for
-     * @return string the detailed help information for the specified action.
+     * 返回指定动作的详细帮助信息。
+     * @param Action $action 获取帮助的动作
+     * @return string 指定动作的详细帮助信息。
      */
     public function getActionHelp($action)
     {
@@ -467,21 +467,21 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the help information for the anonymous arguments for the action.
+     * 返回动作的匿名参数的帮助信息。
      *
-     * The returned value should be an array. The keys are the argument names, and the values are
-     * the corresponding help information. Each value must be an array of the following structure:
+     * 返回的值应该是一个数组。键是参数名称，值是
+     * 相应的帮助信息。每个值必须是以下结构的数组：
      *
-     * - required: boolean, whether this argument is required.
-     * - type: string, the PHP type of this argument.
-     * - default: string, the default value of this argument
-     * - comment: string, the comment of this argument
+     * - required: boolean，是否需要此参数。
+     * - type: string，此参数的 PHP 类型。
+     * - default: string，此参数的默认值
+     * - comment: string，这个参数的注释
      *
-     * The default implementation will return the help information extracted from the doc-comment of
-     * the parameters corresponding to the action method.
+     * 默认实现将返回从与动作方法对应的参数的文档注释中
+     * 提取的帮助信息。
      *
      * @param Action $action
-     * @return array the help information of the action arguments
+     * @return array 动作参数的帮助信息
      */
     public function getActionArgsHelp($action)
     {
@@ -526,20 +526,20 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the help information for the options for the action.
+     * 返回动作选项的帮助信息。
      *
-     * The returned value should be an array. The keys are the option names, and the values are
-     * the corresponding help information. Each value must be an array of the following structure:
+     * 返回的值应该是一个数组。键是选项名称，值是
+     * 相应的帮助信息。每个值必须是以下结构的数组：
      *
-     * - type: string, the PHP type of this argument.
-     * - default: string, the default value of this argument
-     * - comment: string, the comment of this argument
+     * - type: string，此参数的 PHP 类型。
+     * - default: string，此参数的默认值
+     * - comment: string，这个参数的注释
      *
-     * The default implementation will return the help information extracted from the doc-comment of
-     * the properties corresponding to the action options.
+     * 默认实现将返回从与动作方法对应的属性的文档注释中
+     * 提取的帮助信息。
      *
      * @param Action $action
-     * @return array the help information of the action options
+     * @return array 动作选项的帮助信息
      */
     public function getActionOptionsHelp($action)
     {
@@ -610,9 +610,9 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Parses the comment block into tags.
-     * @param \Reflector $reflection the comment block
-     * @return array the parsed tags
+     * 将注释块解析为标记。
+     * @param \Reflector $reflection 注释块
+     * @return array 解析的标记
      */
     protected function parseDocCommentTags($reflection)
     {
@@ -637,7 +637,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the first line of docblock.
+     * 返回 docblock 的第一行。
      *
      * @param \Reflector $reflection
      * @return string
@@ -653,7 +653,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns full description from the docblock.
+     * 返回 docblock 的完整描述。
      *
      * @param \Reflector $reflection
      * @return string

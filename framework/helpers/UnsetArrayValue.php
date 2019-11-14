@@ -8,9 +8,9 @@
 namespace yii\helpers;
 
 /**
- * Object that represents the removal of array value while performing [[ArrayHelper::merge()]].
+ * 该对象调用 [[ArrayHelper::merge()]] 方法后对数组中的值进行移除操作。
  *
- * Usage example:
+ * 例如：
  *
  * ```php
  * $array1 = [
@@ -33,7 +33,7 @@ namespace yii\helpers;
  * $result = \yii\helpers\ArrayHelper::merge($array1, $array2);
  * ```
  *
- * The result will be
+ * 结果如下
  *
  * ```php
  * [
@@ -50,7 +50,7 @@ namespace yii\helpers;
 class UnsetArrayValue
 {
     /**
-     * Restores class state after using `var_export()`.
+     * 使用 `var_export()` 后进行实例化。
      *
      * @param array $state
      * @return UnsetArrayValue

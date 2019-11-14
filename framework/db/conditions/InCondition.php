@@ -11,7 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\db\ExpressionInterface;
 
 /**
- * Class InCondition represents `IN` condition.
+ * 类 InCondition 表示 `IN` 条件。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -19,30 +19,30 @@ use yii\db\ExpressionInterface;
 class InCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `IN` or `NOT IN`)
+     * @var string $operator 要使用的操作符（例如：`IN` 或 `NOT IN`）
      */
     private $operator;
     /**
-     * @var string|string[] the column name. If it is an array, a composite `IN` condition
-     * will be generated.
+     * @var string|string[] 列名。如果其是数组，
+     * 将生成复合 `IN` 条件。
      */
     private $column;
     /**
-     * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
-     * If it is an empty array the generated expression will be a `false` value if
-     * [[operator]] is `IN` and empty if operator is `NOT IN`.
+     * @var ExpressionInterface[]|string[]|int[] 应该包含 [[column]] 值的值数组。
+     * 如果值是一个空数组，当 [[operator]] 是 `IN` 时,则生成的表达式将会是 `false`,
+     * 如果操作符是 `NOT IN`，则为空。
      */
     private $values;
 
 
     /**
-     * SimpleCondition constructor
+     * SimpleCondition 构造函数
      *
-     * @param string|string[] the column name. If it is an array, a composite `IN` condition
-     * will be generated.
-     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array an array of values that [[column]] value should be among. If it is an empty array the generated
-     * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
+     * @param string|string[] 列名。如果其是数组，
+     * 将生成复合 `IN` 条件。
+     * @param string $operator 要使用操作符（例如：`IN` 或 `NOT IN`）
+     * @param array 包含 [[column]] 值的值数组。如果值是一个空数组，当 [[operator]] 是 `IN` 时，则生成的表达式将会是 `false`,
+     * 如果操作符是 `NOT IN`，则为空。
      */
     public function __construct($column, $operator, $values)
     {
@@ -76,7 +76,7 @@ class InCondition implements ConditionInterface
     }
     /**
      * {@inheritdoc}
-     * @throws InvalidArgumentException if wrong number of operands have been given.
+     * @throws InvalidArgumentException 如果已给出错误的操作数，则抛出 InvalidArgumentException 异常。
      */
     public static function fromArrayDefinition($operator, $operands)
     {

@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * DefaultValueConstraint represents the metadata of a table `DEFAULT` constraint.
+ * DefaultValueConstraint 表示表 `DEFAULT` 约束的元数据。
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
@@ -16,7 +16,7 @@ namespace yii\db;
 class DefaultValueConstraint extends Constraint
 {
     /**
-     * @var mixed default value as returned by the DBMS.
+     * @var mixed DBMS 返回的默认值。
      */
     public $value;
 }

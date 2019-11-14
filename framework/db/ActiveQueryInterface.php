@@ -8,13 +8,13 @@
 namespace yii\db;
 
 /**
- * ActiveQueryInterface defines the common interface to be implemented by active record query classes.
+ * ActiveQueryInterface 定义了由活动记录查询类实现的通用接口。
  *
- * That are methods for either normal queries that return active records but also relational queries
- * in which the query represents a relation between two active record classes and will return related
- * records only.
+ * 这是用于返回活动记录的普通查询的方法，也是关系查询的方法。
+ * 其中查询表示两个活动记录类之间的关系，
+ * 并将仅返回已关联的记录。
  *
- * A class implementing this interface should also use [[ActiveQueryTrait]] and [[ActiveRelationTrait]].
+ * 实现此接口的类还应该使用 [[ActiveQueryTrait]] 和 [[ActiveRelationTrait]]。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -23,27 +23,27 @@ namespace yii\db;
 interface ActiveQueryInterface extends QueryInterface
 {
     /**
-     * Sets the [[asArray]] property.
-     * @param bool $value whether to return the query results in terms of arrays instead of Active Records.
-     * @return $this the query object itself
+     * 设置 [[asArray]] 属性。
+     * @param bool $value 是否按数组而不是活动记录返回查询结果。
+     * @return $this 查询对象本身
      */
     public function asArray($value = true);
 
     /**
-     * Executes query and returns a single row of result.
-     * @param Connection $db the DB connection used to create the DB command.
-     * If `null`, the DB connection returned by [[ActiveQueryTrait::$modelClass|modelClass]] will be used.
-     * @return ActiveRecordInterface|array|null a single row of query result. Depending on the setting of [[asArray]],
-     * the query result may be either an array or an ActiveRecord object. `null` will be returned
-     * if the query results in nothing.
+     * 执行查询并返回单行结果。
+     * @param Connection $db 用于创建数据库命令的数据库连接。
+     * 如果为 `null`，将使用 [[ActiveQueryTrait::$modelClass|modelClass]] 返回的数据库连接。
+     * @return ActiveRecordInterface|array|null 查询结果的单行。取决于 [[asArray]] 的设置，
+     * 查询结果可以是数组或活动记录对象。
+     * 如果查询没有结果将返回 `null`。
      */
     public function one($db = null);
 
     /**
-     * Sets the [[indexBy]] property.
-     * @param string|callable $column the name of the column by which the query results should be indexed by.
-     * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-     * row or model data. The signature of the callable should be:
+     * 设置 [[indexBy]] 属性。
+     * @param string|callable $column 查询结果中应被索引的列的名称。
+     * 也可以是基于给定行或模型数据返回索引值的可调用函数（例如匿名函数）。
+     * 可调用的签名应该是：
      *
      * ```php
      * // $model is an AR instance when `asArray` is false,
@@ -54,22 +54,22 @@ interface ActiveQueryInterface extends QueryInterface
      * }
      * ```
      *
-     * @return $this the query object itself
+     * @return $this 查询对象本身
      */
     public function indexBy($column);
 
     /**
-     * Specifies the relations with which this query should be performed.
+     * 指定应执行此查询的关系。
      *
-     * The parameters to this method can be either one or multiple strings, or a single array
-     * of relation names and the optional callbacks to customize the relations.
+     * 此方法的参数可以是一个或多个字符串，
+     * 也可以是关系名称的单个数组以及自定义关系的可选回调。
      *
-     * A relation name can refer to a relation defined in [[ActiveQueryTrait::modelClass|modelClass]]
-     * or a sub-relation that stands for a relation of a related record.
-     * For example, `orders.address` means the `address` relation defined
-     * in the model class corresponding to the `orders` relation.
+     * 关系名称可以指在 [[ActiveQueryTrait::modelClass|modelClass]]
+     * 中定义的关系或代表相关记录关系的子关系。
+     * 例如，`orders.address` 是指模型类中定义的对应于
+     * `orders` 关系的 `address` 关系。
      *
-     * The following are some usage examples:
+     * 以下是一些用法示例：
      *
      * ```php
      * // find customers together with their orders and country
@@ -85,25 +85,25 @@ interface ActiveQueryInterface extends QueryInterface
      * ])->all();
      * ```
      *
-     * @return $this the query object itself
+     * @return $this 查询对象本身
      */
     public function with();
 
     /**
-     * Specifies the relation associated with the junction table for use in relational query.
-     * @param string $relationName the relation name. This refers to a relation declared in the [[ActiveRelationTrait::primaryModel|primaryModel]] of the relation.
-     * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
-     * Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return $this the relation object itself.
+     * 指定与连接表相关联的关系，用于关系查询。
+     * @param string $relationName 关系名称。在关系的 [[ActiveRelationTrait::primaryModel|primaryModel]] 中声明的关系。
+     * @param callable $callable PHP 回调，用于自定义与连接表相关联的关系。
+     * 它的签名应该是 `function($query)`，其中 `$query` 是要定制的查询。
+     * @return $this 关系对象本身。
      */
     public function via($relationName, callable $callable = null);
 
     /**
-     * Finds the related records for the specified primary record.
-     * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
-     * @param string $name the relation name
-     * @param ActiveRecordInterface $model the primary model
-     * @return mixed the related record(s)
+     * 查找指定主记录的相关记录。
+     * 当以惰性方式访问活动记录的关系时，调用此方法。
+     * @param string $name 关系名称
+     * @param ActiveRecordInterface $model 主模型
+     * @return mixed 混合的相关记录
      */
     public function findFor($name, $model);
 }

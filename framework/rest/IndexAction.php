@@ -12,9 +12,9 @@ use yii\data\ActiveDataProvider;
 use yii\data\DataFilter;
 
 /**
- * IndexAction implements the API endpoint for listing multiple models.
+ * IndexAction 实现一个 API 端点，用于返回模型列表。
  *
- * For more details and usage information on IndexAction, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 IndexAction 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,33 +22,33 @@ use yii\data\DataFilter;
 class IndexAction extends Action
 {
     /**
-     * @var callable a PHP callable that will be called to prepare a data provider that
-     * should return a collection of the models. If not set, [[prepareDataProvider()]] will be used instead.
-     * The signature of the callable should be:
+     * @var callable PHP 回调，用于返回一个包含了所查找模型数据集合的数据提供器（Data Provider），
+     * 如果未设置，默认为 [[prepareDataProvider()]] 方法。
+     * 这个回调的形式如下：
      *
      * ```php
      * function (IndexAction $action) {
-     *     // $action is the action object currently running
+     *     // $action 当前运行的动作对象
      * }
      * ```
      *
-     * The callable should return an instance of [[ActiveDataProvider]].
+     * 这个回调应当返回 [[ActiveDataProvider]] 的实例。
      *
-     * If [[dataFilter]] is set the result of [[DataFilter::build()]] will be passed to the callable as a second parameter.
-     * In this case the signature of the callable should be the following:
+     * 如果设置了 [[dataFilter]] 属性 ，[[DataFilter::build()]] 的结果将作为第二个参数传递给回调。
+     * 在这种情况下，这个回调的形式如下：
      *
      * ```php
      * function (IndexAction $action, mixed $filter) {
-     *     // $action is the action object currently running
-     *     // $filter the built filter condition
+     *     // $action 当前运行的动作对象
+     *     // $filter 建立的过滤条件
      * }
      * ```
      */
     public $prepareDataProvider;
     /**
-     * @var DataFilter|null data filter to be used for the search filter composition.
-     * You must setup this field explicitly in order to enable filter processing.
-     * For example:
+     * @var DataFilter|null 数据过滤器，用于搜索过滤条件组合。
+     * 您必须明确设置此字段才能启用过滤器处理。
+     * 例如：
      *
      * ```php
      * [
@@ -83,7 +83,7 @@ class IndexAction extends Action
     }
 
     /**
-     * Prepares the data provider that should return the requested collection of the models.
+     * 准备包含了所查找模型数据集合的数据提供器。
      * @return ActiveDataProvider
      */
     protected function prepareDataProvider()

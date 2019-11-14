@@ -15,11 +15,11 @@ use yii\helpers\Json;
 use yii\web\JsExpression;
 
 /**
- * The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
+ * 这个校验器校验属性值是否是一个合法的 IPv4/IPv6 地址或者子网。
  *
- * It also may change attribute's value if normalization of IPv6 expansion is enabled.
+ * 如果启用 IPv6 扩展标准化，它同样会改变属性值。
  *
- * The following are examples of validation rules using this validator:
+ * 如下是使用这个校验器的校验规则示例：
  *
  * ```php
  * ['ip_address', 'ip'], // IPv4 or IPv6 address
@@ -41,9 +41,9 @@ use yii\web\JsExpression;
 class IpValidator extends Validator
 {
     /**
-     * Negation char.
+     * 否定操作符。
      *
-     * Used to negate [[ranges]] or [[networks]] or to negate validating value when [[negation]] is set to `true`.
+     * 用于否定 [[ranges]] 或者 [[networks]] 或者 当 [[negation]] 设置为 `true` 时，否定校验的值。
      * @see negation
      * @see networks
      * @see ranges
@@ -51,12 +51,12 @@ class IpValidator extends Validator
     const NEGATION_CHAR = '!';
 
     /**
-     * @var array The network aliases, that can be used in [[ranges]].
-     *  - key - alias name
-     *  - value - array of strings. String can be an IP range, IP address or another alias. String can be
-     *    negated with [[NEGATION_CHAR]] (independent of `negation` option).
+     * @var array 网络别名，这个可以被用于 [[ranges]] 中。
+     * - key - 别名名称
+     * - value - 数组字符串。字符串可以是 IP 范围，IP 地址 或者其他别名。
+     *   字符串可以用 [[NEGATION_CHAR]] 取反（和 `negation` 属性独立）
      *
-     * The following aliases are defined by default:
+     * 以下是预定义的别名：
      *  - `*`: `any`
      *  - `any`: `0.0.0.0/0, ::/0`
      *  - `private`: `10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fd00::/8`
@@ -77,25 +77,25 @@ class IpValidator extends Validator
         'system' => ['multicast', 'linklocal', 'localhost', 'documentation'],
     ];
     /**
-     * @var bool whether the validating value can be an IPv6 address. Defaults to `true`.
+     * @var bool 待校验的值是否可以是 IPv6 地址。默认为 `true`。
      */
     public $ipv6 = true;
     /**
-     * @var bool whether the validating value can be an IPv4 address. Defaults to `true`.
+     * @var bool 待校验的值是否可以是 IPv4 地址。默认为 `true`。
      */
     public $ipv4 = true;
     /**
-     * @var bool whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
-     * The following values are possible:
+     * @var bool 地址是否可以为一个包含 CIDR 子网的 IP，例如 `192.168.10.0/24`。
+     * 可能是以下的值之一：
      *
-     * - `false` - the address must not have a subnet (default).
-     * - `true` - specifying a subnet is required.
-     * - `null` - specifying a subnet is optional.
+     * - `false` - 地址不能包含子网（默认）。
+     * - `true` - 地址必须包含子网。
+     * - `null` - 地址不必须包含子网。
      */
     public $subnet = false;
     /**
-     * @var bool whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
-     * address without it. Works only when `subnet` is not `false`. For example:
+     * @var bool 当地址没有后缀时，是否默认添加最小长度的 CIDR 后缀（ IPv4 为32，IPv6 为128）。
+     * 只有 `subnet` 不为 `false` 时才有效。例如：
      *  - `10.0.1.5` will normalized to `10.0.1.5/32`
      *  - `2008:db0::1` will be normalized to `2008:db0::1/128`
      *    Defaults to `false`.
@@ -103,96 +103,96 @@ class IpValidator extends Validator
      */
     public $normalize = false;
     /**
-     * @var bool whether address may have a [[NEGATION_CHAR]] character at the beginning.
-     * Defaults to `false`.
+     * @var bool 地址是否可以包含 [[NEGATION_CHAR]] 在开头处。
+     * 默认为 `false`。
      */
     public $negation = false;
     /**
-     * @var bool whether to expand an IPv6 address to the full notation format.
-     * Defaults to `false`.
+     * @var bool 是否将 IPv6 扩展为完整格式。
+     * 默认为 `false`。
      */
     public $expandIPv6 = false;
     /**
-     * @var string Regexp-pattern to validate IPv4 address
+     * @var string 用于校验 IPv4 地址的正则表达式
      */
     public $ipv4Pattern = '/^(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))$/';
     /**
-     * @var string Regexp-pattern to validate IPv6 address
+     * @var string 用于校验 IPv6 地址的正则表达式
      */
     public $ipv6Pattern = '/^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/';
     /**
-     * @var string user-defined error message is used when validation fails due to the wrong IP address format.
+     * @var string 用户自定义错误消息用于校验遇到错误的 IP 地址格式时。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      */
     public $message;
     /**
-     * @var string user-defined error message is used when validation fails due to the disabled IPv6 validation.
+     * @var string 用户自定义错误消息用于禁用 IPv6 校验时遇到 IPv6 地址。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
      * @see ipv6
      */
     public $ipv6NotAllowed;
     /**
-     * @var string user-defined error message is used when validation fails due to the disabled IPv4 validation.
+     * @var string 用户自定义错误消息用于禁用 IPv4 校验时遇到 IPv4 地址。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
      * @see ipv4
      */
     public $ipv4NotAllowed;
     /**
-     * @var string user-defined error message is used when validation fails due to the wrong CIDR.
+     * @var string 用户自定义错误消息用于因 CIDR 产生时。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      * @see subnet
      */
     public $wrongCidr;
     /**
-     * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
-     * but the CIDR prefix is not set.
+     * @var string 用户自定义错误消息
+     * 当 [[subnet]] 设置为 'only'，但是 CIDR 后缀没有设置时，校验失败。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
      * @see subnet
      */
     public $noSubnet;
     /**
-     * @var string user-defined error message is used when validation fails
-     * due to [[subnet]] is false, but CIDR prefix is present.
+     * @var string 用户自定义错误消息，
+     * 当 [[subnet]] 为 false 时，但提供了 CIDR 后缀导致校验失败。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
      * @see subnet
      */
     public $hasSubnet;
     /**
-     * @var string user-defined error message is used when validation fails due to IP address
-     * is not not allowed by [[ranges]] check.
+     * @var string 用户自定义错误消息，
+     * 当 IP 地址不在 [[ranges]] 允许的范围。
      *
-     * You may use the following placeholders in the message:
+     * 你可以在消息中使用如下的占位符：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     * - `{attribute}`: 被校验的属性标签
+     * - `{value}`: 被校验的属性值
      *
      * @see ranges
      */
@@ -238,23 +238,23 @@ class IpValidator extends Validator
     }
 
     /**
-     * Set the IPv4 or IPv6 ranges that are allowed or forbidden.
+     * 设置允许或者禁止的 IPv4 或者 IPv6 范围。
      *
-     * The following preparation tasks are performed:
+     * 会执行以下预处理过程：
      *
-     * - Recursively substitutes aliases (described in [[networks]]) with their values.
-     * - Removes duplicates
+     * - 递归的将别名用其值替换（ 在 [[networks]] 中定义）
+     * - 移除重复值
      *
-     * @property array the IPv4 or IPv6 ranges that are allowed or forbidden.
-     * See [[setRanges()]] for detailed description.
-     * @param array $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
+     * @property array 允许或者禁止的 IPv4 或者 IPv6 范围.
+     * 更多描述参考 [[setRanges()]]
+     * @param array $ranges 允许或者禁止的 IPv4 或者 IPv6 范围.
      *
-     * When the array is empty, or the option not set, all IP addresses are allowed.
+     * 如果数组是空的，或者属性未涉足，所以的 IP 地址将被允许。
      *
-     * Otherwise, the rules are checked sequentially until the first match is found.
-     * An IP address is forbidden, when it has not matched any of the rules.
+     * 其他情况，这些规则将被依次执行直到找到第一条匹配的。
+     * 当一个 IP 地址没有被任意规则匹配时，它将被禁止。
      *
-     * Example:
+     * 例如:
      *
      * ```php
      * [
@@ -266,8 +266,8 @@ class IpValidator extends Validator
      * ]
      * ```
      *
-     * In this example, access is allowed for all the IPv4 and IPv6 addresses excluding the `192.168.10.0/24` subnet.
-     * IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
+     * 在这个例子中，所有的 IPv4 和 IPv6 地址都被允许，除了子网 `192.168.10.0/24`。
+     * IPv4 地址 `192.168.10.128` 将被允许，因为它列在限制前面。
      */
     public function setRanges($ranges)
     {
@@ -275,7 +275,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @return array The IPv4 or IPv6 ranges that are allowed or forbidden.
+     * @return array 允许或者禁止的 IPv4 或者 IPv6 地址
      */
     public function getRanges()
     {
@@ -313,13 +313,13 @@ class IpValidator extends Validator
     }
 
     /**
-     * Validates an IPv4/IPv6 address or subnet.
+     * 校验一个 IPv4/IPv6 地址或者子网。
      *
      * @param $ip string
      * @return string|array
-     * string - the validation was successful;
-     * array  - an error occurred during the validation.
-     * Array[0] contains the text of an error, array[1] contains values for the placeholders in the error message
+     * string - 校验成功时；
+     * array  - 校验过程中的错误
+     * Array[0] 包含错误消息， array[1] 包含错误消息中占位符替换所需要的值
      */
     private function validateSubnet($ip)
     {
@@ -398,12 +398,12 @@ class IpValidator extends Validator
     }
 
     /**
-     * Expands an IPv6 address to it's full notation.
+     * 将 IPv6 扩展成它的完整格式。
      *
-     * For example `2001:db8::1` will be expanded to `2001:0db8:0000:0000:0000:0000:0000:0001`.
+     * 例如 `2001:db8::1` 将会被扩展成 `2001:0db8:0000:0000:0000:0000:0000:0001`。
      *
-     * @param string $ip the original IPv6
-     * @return string the expanded IPv6
+     * @param string $ip 原始 IPv6
+     * @return string 扩展后的 IPv6
      */
     private function expandIPv6($ip)
     {
@@ -411,7 +411,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * The method checks whether the IP address with specified CIDR is allowed according to the [[ranges]] list.
+     * 这个方法根据 [[ranges]] 列表检查 IP 和指定的 CIDR 是否被允许。
      *
      * @param string $ip
      * @param int $cidr
@@ -435,12 +435,12 @@ class IpValidator extends Validator
     }
 
     /**
-     * Parses IP address/range for the negation with [[NEGATION_CHAR]].
+     * 根据否定操作符 [[NEGATION_CHAR]] 解析 IP 地址/范围。
      *
      * @param $string
      * @return array `[0 => bool, 1 => string]`
-     *  - boolean: whether the string is negated
-     *  - string: the string without negation (when the negation were present)
+     *  - boolean: 是否对地址字符串取反
+     *  - string: 未取反的地址字符串（取反操作在前）
      */
     private function parseNegatedRange($string)
     {
@@ -449,10 +449,10 @@ class IpValidator extends Validator
     }
 
     /**
-     * Prepares array to fill in [[ranges]].
+     * 准备一个数组来填充 [[ranges]]。
      *
-     *  - Recursively substitutes aliases, described in [[networks]] with their values,
-     *  - Removes duplicates.
+     *  - 递归的将别名替换，其值在 [[networks]] 中定义
+     *  - 移除重复值
      *
      * @param $ranges
      * @return array
@@ -478,7 +478,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Validates IPv4 address.
+     * 校验 IPv4 地址。
      *
      * @param string $value
      * @return bool
@@ -489,7 +489,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Validates IPv6 address.
+     * 校验 IPv6 地址。
      *
      * @param string $value
      * @return bool
@@ -500,7 +500,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Gets the IP version.
+     * 获得 IP 版本。
      *
      * @param string $ip
      * @return int
@@ -511,7 +511,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Used to get the Regexp pattern for initial IP address parsing.
+     * 用于获得正则表达式以初始化 IP 地址解析
      * @return string
      */
     private function getIpParsePattern()
@@ -520,7 +520,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Checks whether the IP is in subnet range.
+     * 检查 IP 是否在子网范围内。
      *
      * @param string $ip an IPv4 or IPv6 address
      * @param int $cidr

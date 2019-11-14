@@ -10,10 +10,10 @@ namespace yii\validators;
 use Yii;
 
 /**
- * BooleanValidator checks if the attribute value is a boolean value.
+ * BooleanValidator 用于校验属性是否是一个布尔值。
  *
- * Possible boolean values can be configured via the [[trueValue]] and [[falseValue]] properties.
- * And the comparison can be either [[strict]] or not.
+ * 可能的布尔值可以通过 [[trueValue]] 和 [[falseValue]] 属性来配置。
+ * [[strict]] 属性可以用来设置比较是否是严格比较。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,17 +21,17 @@ use Yii;
 class BooleanValidator extends Validator
 {
     /**
-     * @var mixed the value representing true status. Defaults to '1'.
+     * @var mixed 代表真状态的值，默认是 '1'
      */
     public $trueValue = '1';
     /**
-     * @var mixed the value representing false status. Defaults to '0'.
+     * @var mixed 代表假状态的值，默认是 '0'
      */
     public $falseValue = '0';
     /**
-     * @var bool whether the comparison to [[trueValue]] and [[falseValue]] is strict.
-     * When this is true, the attribute value and type must both match those of [[trueValue]] or [[falseValue]].
-     * Defaults to false, meaning only the value needs to be matched.
+     * @var bool 和真 [[trueValue]] 假 [[falseValue]] 值比较时是否是严格模式。
+     * 当设置为 true 时，属性的值和类型必须严格和 [[trueValue]] 或者 [[falseValue]] 相等。
+     * 默认是 false，意味着只要求值符合条件。
      */
     public $strict = false;
 

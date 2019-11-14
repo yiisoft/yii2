@@ -13,9 +13,9 @@ use yii\db\ActiveRecord;
 use yii\web\ServerErrorHttpException;
 
 /**
- * UpdateAction implements the API endpoint for updating a model.
+ * UpdateAction 实现一个 API 端点，用于更新模型
  *
- * For more details and usage information on UpdateAction, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 UpdateAction 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,16 +23,16 @@ use yii\web\ServerErrorHttpException;
 class UpdateAction extends Action
 {
     /**
-     * @var string the scenario to be assigned to the model before it is validated and updated.
+     * @var string 在验证和更新模型所指定的场景。
      */
     public $scenario = Model::SCENARIO_DEFAULT;
 
 
     /**
-     * Updates an existing model.
-     * @param string $id the primary key of the model.
-     * @return \yii\db\ActiveRecordInterface the model being updated
-     * @throws ServerErrorHttpException if there is any error when updating the model
+     * 更新现有模型
+     * @param string $id 模型的主键值
+     * @return \yii\db\ActiveRecordInterface 被更新的模型
+     * @throws ServerErrorHttpException 如果更新时发生任何错误
      */
     public function run($id)
     {

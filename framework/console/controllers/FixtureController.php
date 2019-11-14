@@ -18,7 +18,7 @@ use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
 
 /**
- * Manages fixture data loading and unloading.
+ * 管理 Fixture 数据的装载和卸载。
  *
  * ```
  * #load fixtures from UsersFixture class with default namespace "tests\unit\fixtures"
@@ -37,7 +37,7 @@ use yii\test\FixtureTrait;
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
  * ```
  *
- * The `unload` sub-command can be used similarly to unload fixtures.
+ * `unload` 子命令可用于卸载 fixtures。
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -47,16 +47,16 @@ class FixtureController extends Controller
     use FixtureTrait;
 
     /**
-     * @var string controller default action ID.
+     * @var string 控制器的 ID 的默认动作。
      */
     public $defaultAction = 'load';
     /**
-     * @var string default namespace to search fixtures in
+     * @var string 搜索 fixtures 的默认命名空间
      */
     public $namespace = 'tests\unit\fixtures';
     /**
-     * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
-     * that disables and enables integrity check, so your data can be safely loaded.
+     * @var array 加载和卸载时应用的全局 fixtures。默认情况下它将设置 `InitDbFixture`
+     * 禁用并启用完整性检查，以便可以安全地加载数据。
      */
     public $globalFixtures = [
         'yii\test\InitDbFixture',
@@ -86,9 +86,9 @@ class FixtureController extends Controller
     }
 
     /**
-     * Loads the specified fixture data.
+     * 加载指定的 fixture 数据。
      *
-     * For example,
+     * 例如，
      *
      * ```
      * # load the fixture data specified by User and UserProfile.
@@ -103,8 +103,8 @@ class FixtureController extends Controller
      * ```
      *
      * @param array $fixturesInput
-     * @return int return code
-     * @throws Exception if the specified fixture does not exist.
+     * @return int 返回代码
+     * @throws Exception 如果指定的 fixture 不存在。
      */
     public function actionLoad(array $fixturesInput = [])
     {
@@ -167,9 +167,9 @@ class FixtureController extends Controller
     }
 
     /**
-     * Unloads the specified fixtures.
+     * 卸载指定的 fixtures。
      *
-     * For example,
+     * 例如，
      *
      * ```
      * # unload the fixture data specified by User and UserProfile.
@@ -183,8 +183,8 @@ class FixtureController extends Controller
      * ```
      *
      * @param array $fixturesInput
-     * @return int return code
-     * @throws Exception if the specified fixture does not exist.
+     * @return int 返回代码
+     * @throws Exception 如果指定的 fixture 不存在。
      */
     public function actionUnload(array $fixturesInput = [])
     {
@@ -233,7 +233,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that fixtures were successfully loaded.
+     * 通知用户 fixtures 已成功加载。
      * @param array $fixtures
      */
     private function notifyLoaded($fixtures)
@@ -244,9 +244,9 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that there are no fixtures to load according input conditions.
-     * @param array $foundFixtures array of found fixtures
-     * @param array $except array of names of fixtures that should not be loaded
+     * 通知用户没有可根据输入条件加载的 fixtures。
+     * @param array $foundFixtures 找到的 fixtures 数组
+     * @param array $except 不应加载的 fixtures 的数组。
      */
     public function notifyNothingToLoad($foundFixtures, $except)
     {
@@ -266,9 +266,9 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that there are no fixtures to unload according input conditions.
-     * @param array $foundFixtures array of found fixtures
-     * @param array $except array of names of fixtures that should not be loaded
+     * 通知用户没有要根据输入条件卸载的 fixtures。
+     * @param array $foundFixtures 找到的 fixtures 数组
+     * @param array $except 不应加载的 fixtures 的数组。
      */
     public function notifyNothingToUnload($foundFixtures, $except)
     {
@@ -288,7 +288,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that fixtures were successfully unloaded.
+     * 通知用户 fixtures 已成功卸载。
      * @param array $fixtures
      */
     private function notifyUnloaded($fixtures)
@@ -299,7 +299,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that fixtures were not found under fixtures path.
+     * 通知用户在 fixtures 路径下找不到 fixtures。
      * @param array $fixtures
      */
     private function notifyNotFound($fixtures)
@@ -312,7 +312,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Prompts user with confirmation if fixtures should be loaded.
+     * 提示用户确认是否应加载 fixtures。
      * @param array $fixtures
      * @param array $except
      * @return bool
@@ -344,7 +344,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Prompts user with confirmation for fixtures that should be unloaded.
+     * 提示用户确认应卸载的 fixtures。
      * @param array $fixtures
      * @param array $except
      * @return bool
@@ -373,7 +373,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Outputs data to the console as a list.
+     * 将数据作为列表输出到控制台。
      * @param array $data
      */
     private function outputList($data)
@@ -384,7 +384,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Checks if needed to apply all fixtures.
+     * 检查是否需要应用所有 fixtures。
      * @param string $fixture
      * @return bool
      */
@@ -394,10 +394,10 @@ class FixtureController extends Controller
     }
 
     /**
-     * Finds fixtures to be loaded, for example "User", if no fixtures were specified then all of them
-     * will be searching by suffix "Fixture.php".
-     * @param array $fixtures fixtures to be loaded
-     * @return array Array of found fixtures. These may differ from input parameter as not all fixtures may exists.
+     * 找到要加载的 fixtures，例如 "User"，如果未指定任何 fixtures 然后他们
+     * 都将以 "Fixture.php" 为后缀进行搜索。
+     * @param array $fixtures 要加载的 fixtures
+     * @return array 找到的 fixtures 数组。这些参数可能与输入参数不同，因为不是所有的 fixtures 都可能存在。
      */
     private function findFixtures(array $fixtures = [])
     {
@@ -425,11 +425,11 @@ class FixtureController extends Controller
     }
 
     /**
-     * Calculates fixture's name
-     * Basically, strips [[getFixturePath()]] and `Fixture.php' suffix from fixture's full path.
+     * 计算 fixture 的名称
+     * 基本上，从 fixture's 的完整路径中去掉 [[getFixturePath()]] 和 `Fixture.php' 后缀。
      * @see getFixturePath()
-     * @param string $fullFixturePath Full fixture path
-     * @return string Relative fixture name
+     * @param string $fullFixturePath 完整的 fixture 路径
+     * @return string 相对 fixture 名称
      */
     private function getFixtureRelativeName($fullFixturePath)
     {
@@ -443,8 +443,8 @@ class FixtureController extends Controller
     }
 
     /**
-     * Returns valid fixtures config that can be used to load them.
-     * @param array $fixtures fixtures to configure
+     * 返回可用于加载它们的有效 fixtures 配置。
+     * @param array $fixtures 要配置的 fixtures
      * @return array
      */
     private function getFixturesConfig($fixtures)
@@ -468,10 +468,10 @@ class FixtureController extends Controller
     }
 
     /**
-     * Filters fixtures by splitting them in two categories: one that should be applied and not.
+     * 通过将 fixtures 分为两类进行过滤：一类是应该应用的，另一类不是。
      *
-     * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
-     * if it is not prefixed it is considered as one to be loaded. Returns array:
+     * 如果 fixture 前缀为 "-"，例如 "-User"，这意味着不应该加载 fixture，
+     * 如果它没有前缀则被认为是要加载的。返回数组：
      *
      * ```php
      * [
@@ -486,7 +486,7 @@ class FixtureController extends Controller
      * ]
      * ```
      * @param array $fixtures
-     * @return array fixtures array with 'apply' and 'except' elements.
+     * @return array fixtures 带有 'apply' 和 'except' 元素的数组。
      */
     private function filterFixtures($fixtures)
     {
@@ -507,9 +507,9 @@ class FixtureController extends Controller
     }
 
     /**
-     * Returns fixture path that determined on fixtures namespace.
-     * @throws InvalidConfigException if fixture namespace is invalid
-     * @return string fixture path
+     * 返回在 fixtures 命名空间上确定的 fixture 路径。
+     * @throws InvalidConfigException 如果 fixture 命名空间无效
+     * @return string fixture 路径
      */
     private function getFixturePath()
     {

@@ -8,15 +8,15 @@
 namespace yii\helpers;
 
 /**
- * HtmlPurifier provides an ability to clean up HTML from any harmful code.
+ * HtmlPurifier 提供了一种从任何不良的代码中清除 HTML 的能力。
  *
- * Basic usage is the following:
+ * 基本用法如下：
  *
  * ```php
  * echo HtmlPurifier::process($html);
  * ```
  *
- * If you want to configure it:
+ * 如果你想配置它：
  *
  * ```php
  * echo HtmlPurifier::process($html, [
@@ -24,7 +24,7 @@ namespace yii\helpers;
  * ]);
  * ```
  *
- * For more details please refer to [HTMLPurifier documentation](http://htmlpurifier.org/).
+ * 获取更多详情请参阅 [HTMLPurifier documentation](http://htmlpurifier.org/)。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0

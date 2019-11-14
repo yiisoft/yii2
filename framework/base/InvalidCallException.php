@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * InvalidCallException represents an exception caused by calling a method in a wrong way.
+ * InvalidCallException 表示以错误方式调用方法导致的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,7 +16,7 @@ namespace yii\base;
 class InvalidCallException extends \BadMethodCallException
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

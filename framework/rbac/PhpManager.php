@@ -13,20 +13,20 @@ use yii\base\InvalidCallException;
 use yii\helpers\VarDumper;
 
 /**
- * PhpManager represents an authorization manager that stores authorization
- * information in terms of a PHP script file.
+ * PhpManager 表示一个授权管理器，
+ * 它根据 PHP 脚本文件存储授权信息。
  *
- * The authorization data will be saved to and loaded from three files
- * specified by [[itemFile]], [[assignmentFile]] and [[ruleFile]].
+ * 授权数据将保存到 [[itemFile]]，[[assignmentFile]]
+ * 和 [[ruleFile]] 指定的三个文件中并从中加载。
  *
- * PhpManager is mainly suitable for authorization data that is not too big
- * (for example, the authorization data for a personal blog system).
- * Use [[DbManager]] for more complex authorization data.
+ * PhpManager 主要适用于不太大的授权数据
+ * （例如，个人博客系统的授权数据）。
+ * 对于更复杂的授权数据，应使用 [[DbManager]]。
  *
- * Note that PhpManager is not compatible with facebooks [HHVM](http://hhvm.com/) because
- * it relies on writing php files and including them afterwards which is not supported by HHVM.
+ * 请注意，PhpManager 与 facebooks [HHVM](http://hhvm.com/) 不兼容，
+ * 因为它依赖于编写 php 文件并在之后包含它们，而 HHVM 不支持它们。
  *
- * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 PhpManager 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -37,25 +37,25 @@ use yii\helpers\VarDumper;
 class PhpManager extends BaseManager
 {
     /**
-     * @var string the path of the PHP script that contains the authorization items.
-     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
-     * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+     * @var string 包含授权项的 PHP 脚本的路径。
+     * 这可以是文件路径，也可以是文件的 [路径别名](guide:concept-aliases)。
+     * 如果需要在线更改授权，请确保 Web 服务器进程可写入此文件。
      * @see loadFromFile()
      * @see saveToFile()
      */
     public $itemFile = '@app/rbac/items.php';
     /**
-     * @var string the path of the PHP script that contains the authorization assignments.
-     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
-     * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+     * @var string 包含授权分配的 PHP 脚本的路径。
+     * 这可以是文件路径，也可以是文件的 [路径别名](guide:concept-aliases)。
+     * 如果需要在线更改授权，请确保 Web 服务器进程可写入此文件。
      * @see loadFromFile()
      * @see saveToFile()
      */
     public $assignmentFile = '@app/rbac/assignments.php';
     /**
-     * @var string the path of the PHP script that contains the authorization rules.
-     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
-     * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+     * @var string 包含授权规则的 PHP 脚本的路径。
+     * 这可以是文件路径，也可以是文件的 [路径别名](guide:concept-aliases)。
+     * 如果需要在线更改授权，请确保 Web 服务器进程可写入此文件。
      * @see loadFromFile()
      * @see saveToFile()
      */
@@ -80,9 +80,9 @@ class PhpManager extends BaseManager
 
 
     /**
-     * Initializes the application component.
-     * This method overrides parent implementation by loading the authorization data
-     * from PHP script.
+     * 初始化应用程序组件。
+     * 此方法通过从 PHP
+     * 脚本加载授权数据来覆盖父实现。
      */
     public function init()
     {
@@ -116,17 +116,17 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Performs access check for the specified user.
-     * This method is internally called by [[checkAccess()]].
+     * 对指定用户执行访问检查。
+     * 此方法由 [[checkAccess()]] 在内部调用。
      *
-     * @param string|int $user the user ID. This should can be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param string $itemName the name of the operation that need access check
-     * @param array $params name-value pairs that would be passed to rules associated
-     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
-     * which holds the value of `$userId`.
-     * @param Assignment[] $assignments the assignments to the specified user
-     * @return bool whether the operations can be performed by the user.
+     * @param string|int $user 用户 ID。这应该是整数或字符串，
+     * 表示用户的唯一标识符。参阅 [[\yii\web\User::id]]。
+     * @param string $itemName 需要访问检查的操作的名称
+     * @param array $params 一个键值对，用于传递给与分配给用户任务和角色关联的规则。
+     * 名为 'user' 的参数将添加到此数组中，
+     * 该数组包含 `$userId` 的值。
+     * @param Assignment[] $assignments 指定用户的分配
+     * @return bool 用户是否可以执行操作。
      */
     protected function checkAccessRecursive($user, $itemName, $params, $assignments)
     {
@@ -193,11 +193,11 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Checks whether there is a loop in the authorization item hierarchy.
+     * 检查授权项层次结构中是否存在循环。
      *
-     * @param Item $parent parent item
-     * @param Item $child the child item that is to be added to the hierarchy
-     * @return bool whether a loop exists
+     * @param Item $parent 父项目
+     * @param Item $child 要添加到层次结构的子项
+     * @return bool 是否存在循环
      */
     protected function detectLoop($parent, $child)
     {
@@ -390,7 +390,7 @@ class PhpManager extends BaseManager
 
     /**
      * {@inheritdoc}
-     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
+     * 此方法返回的角色包括通过 [[$defaultRoles]] 分配的角色。
      */
     public function getRolesByUser($userId)
     {
@@ -449,10 +449,10 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Recursively finds all children and grand children of the specified item.
+     * 递归查找指定项的所有子项及子孙项。
      *
-     * @param string $name the name of the item whose children are to be looked for.
-     * @param array $result the children and grand children (in array keys)
+     * @param string $name 要查找其子项的项的名称。
+     * @param array $result 子项和子孙项（在数组键中）
      */
     protected function getChildrenRecursive($name, &$result)
     {
@@ -476,9 +476,9 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Returns all permissions that are directly assigned to user.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
+     * 返回直接分配给用户的所有权限。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Permission[] 用户拥有的所有直接权限。该数组由权限名称索引。
      * @since 2.0.7
      */
     protected function getDirectPermissionsByUser($userId)
@@ -495,9 +495,9 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Returns all permissions that the user inherits from the roles assigned to him.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
+     * 返回用户从分配给他的角色继承的所有权限。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Permission[] 用户拥有的所有继承权限。该数组由权限名称索引。
      * @since 2.0.7
      */
     protected function getInheritedPermissionsByUser($userId)
@@ -559,8 +559,8 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Removes all auth items of the specified type.
-     * @param int $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     * 删除指定类型的所有认证项。
+     * @param int $type 认证项目类型（该值为 Item::TYPE_PERMISSION 或者 Item::TYPE_ROLE）
      */
     protected function removeAllItems($type)
     {
@@ -708,7 +708,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Loads authorization data from persistent storage.
+     * 从文件中加载授权数据。
      */
     protected function load()
     {
@@ -762,7 +762,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Saves authorization data into persistent storage.
+     * 将授权数据保存到文件中。
      */
     protected function save()
     {
@@ -772,10 +772,10 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Loads the authorization data from a PHP script file.
+     * 从 PHP 脚本文件加载授权数据。
      *
-     * @param string $file the file path.
-     * @return array the authorization data
+     * @param string $file 文件路径。
+     * @return array 授权数据
      * @see saveToFile()
      */
     protected function loadFromFile($file)
@@ -788,10 +788,10 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Saves the authorization data to a PHP script file.
+     * 将授权数据保存到 PHP 脚本文件。
      *
-     * @param array $data the authorization data
-     * @param string $file the file path.
+     * @param array $data 授权数据
+     * @param string $file 文件路径。
      * @see loadFromFile()
      */
     protected function saveToFile($data, $file)
@@ -801,8 +801,8 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
-     * @param string $file the file path.
+     * 使给定文件的预编译脚本缓存（例如 OPCache 或 APC ）失效。
+     * @param string $file 文件路径。
      * @since 2.0.9
      */
     protected function invalidateScriptCache($file)
@@ -816,7 +816,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Saves items data into persistent storage.
+     * 将授权项数据保存到文件中。
      */
     protected function saveItems()
     {
@@ -842,7 +842,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Saves assignments data into persistent storage.
+     * 将授权分配数据保存到文件中。
      */
     protected function saveAssignments()
     {
@@ -857,7 +857,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Saves rules data into persistent storage.
+     * 将授权规则数据保存到文件中。
      */
     protected function saveRules()
     {

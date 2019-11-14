@@ -8,13 +8,13 @@
 namespace yii\helpers;
 
 /**
- * Html provides a set of static methods for generating commonly used HTML tags.
+ * Html 提供了一组用于生成常用 HTML 标记的静态方法。
  *
- * Nearly all of the methods in this class allow setting additional html attributes for the html
- * tags they generate. You can specify, for example, `class`, `style` or `id` for an html element
- * using the `$options` parameter. See the documentation of the [[tag()]] method for more details.
+ * 这个类中的几乎所有方法都允许为它们生成的 html 标记设置额外的 html 属性。 
+ * 你能够指定，例如，html 元素中的 `class`，`style` 或者 `id` 作为 `$options` 中的参数来使用。
+ * 请查看有关于 [[tag()]] 方法的文档获得更多的详情。
  *
- * For more details and usage information on Html, see the [guide article on html helpers](guide:helper-html).
+ * 获取有关 Html 的更多的细节和使用信息，请参见 [guide article on html helpers](guide:helper-html)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

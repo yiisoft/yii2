@@ -8,9 +8,9 @@
 namespace yii\base;
 
 /**
- * Exception represents a generic exception for all purposes.
+ * Exception 表示用于所有目的的通用异常。
  *
- * For more details and usage information on Exception, see the [guide article on handling errors](guide:runtime-handling-errors).
+ * 有关异常的更多详细信息和使用信息，请参阅 [有关错误处理的指南文章](guide:runtime-handling-errors)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,7 +18,7 @@ namespace yii\base;
 class Exception extends \Exception
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

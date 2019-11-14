@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * ViewFinderTrait implements the method getViewNames for finding views in a database.
+ * ViewFinderTrait 实现了 getViewNames 方法，用于在数据库中查找视图。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Bob Olde Hampsink <b.oldehampsink@nerds.company>
@@ -17,24 +17,24 @@ namespace yii\db;
 trait ViewFinderTrait
 {
     /**
-     * @var array list of ALL view names in the database
+     * @var array 数据库中所有视图名称的列表
      */
     private $_viewNames = [];
 
     /**
-     * Returns all views names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
-     * @return array all views names in the database. The names have NO schema name prefix.
+     * 返回数据库中的所有视图名称。
+     * @param string $schema 视图的结构。默认为空字符串，表示当前或默认结构。
+     * @return array 数据库中的所有视图名称。名称前面没有模式名称的前缀。
      */
     abstract protected function findViewNames($schema = '');
 
     /**
-     * Returns all view names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
-     * If not empty, the returned view names will be prefixed with the schema name.
-     * @param bool $refresh whether to fetch the latest available view names. If this is false,
-     * view names fetched previously (if available) will be returned.
-     * @return string[] all view names in the database.
+     * 返回数据库中的所有视图名称。
+     * @param string $schema 视图的结构。默认为空字符串，表示当前或默认结构名称。
+     * 如果不为空，则返回的视图名称将以模式名称为前缀。
+     * @param bool $refresh 是否获取最新的可用视图名称。
+     * 如果为 false，则返回先前获取的视图名称（如果可用）。
+     * @return string[] 数据库中的所有视图名称。
      */
     public function getViewNames($schema = '', $refresh = false)
     {

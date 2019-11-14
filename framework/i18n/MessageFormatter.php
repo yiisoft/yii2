@@ -12,32 +12,32 @@ use yii\base\Component;
 use yii\base\NotSupportedException;
 
 /**
- * MessageFormatter allows formatting messages via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
+ * MessageFormatter 允许通过 [ICU message format](http://userguide.icu-project.org/formatparse/messages) 格式化消息。
  *
- * This class enhances the message formatter class provided by the PHP intl extension.
+ * 此类增强了 PHP intl 扩展提供的消息格式化程序类。
  *
- * The following enhancements are provided:
+ * 提供以下增强功能：
  *
- * - It accepts named arguments and mixed numeric and named arguments.
- * - Issues no error when an insufficient number of arguments have been provided. Instead, the placeholders will not be
- *   substituted.
- * - Fixes PHP 5.5 weird placeholder replacement in case no arguments are provided at all (https://bugs.php.net/bug.php?id=65920).
- * - Offers limited support for message formatting in case PHP intl extension is not installed.
- *   However it is highly recommended that you install [PHP intl extension](http://php.net/manual/en/book.intl.php) if you want
- *   to use MessageFormatter features.
+ * - 它接受命名参数和混合的数值参数和命名参数。
+ * - 当提供的参数数量不足时，不会发出错误。
+ *   相反，占位符不会被替换。
+ * - 修复 PHP 5.5 奇怪的占位符替换，以防根本没有提供任何参数 (https://bugs.php.net/bug.php?id=65920)。
+ * - 如果未安装 PHP intl 扩展，则对消息格式化提供有限支持。
+ *   但是，如果要使用 MessageFormatter 功能，
+ *   强烈建议您安装 [PHP intl extension](https://secure.php.net/manual/en/book.intl.php)。
  *
- *   The fallback implementation only supports the following message formats:
- *   - plural formatting for english ('one' and 'other' selectors)
- *   - select format
- *   - simple parameters
- *   - integer number parameters
+ *   回退实现仅支持以下消息格式：
+ *   - 英语的复数格式（'one' 和 'other' 选择器）
+ *   - 选择格式
+ *   - 简单的参数
+ *   - 整数参数
  *
- *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](http://www.php.net/manual/en/messageformatter.formatmessage.php).
- *   Also messages that are working with the fallback implementation are not necessarily compatible with the
- *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
+ *   回退实现不支持 ['apostrophe-friendly' syntax](https://secure.php.net/manual/en/messageformatter.formatmessage.php)。
+ *   使用回退实现的消息也不一定与 PHP intl MessageFormatter 兼容，
+ *   因此如果能够安装 intl 扩展，则不要依赖回退。
  *
- * @property string $errorCode Code of the last error. This property is read-only.
- * @property string $errorMessage Description of the last error. This property is read-only.
+ * @property string $errorCode 最后一个错误的代码。 此属性是只读的。
+ * @property string $errorMessage 最后一个错误的描述。 此属性是只读的。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -50,9 +50,9 @@ class MessageFormatter extends Component
 
 
     /**
-     * Get the error code from the last operation.
-     * @link http://php.net/manual/en/messageformatter.geterrorcode.php
-     * @return string Code of the last error.
+     * 获得最后一个操作的错误代码。
+     * @link https://secure.php.net/manual/en/messageformatter.geterrorcode.php
+     * @return string 最后一个错误的代码。
      */
     public function getErrorCode()
     {
@@ -60,9 +60,9 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Get the error text from the last operation.
-     * @link http://php.net/manual/en/messageformatter.geterrormessage.php
-     * @return string Description of the last error.
+     * 获得最后一个操作的错误信息。
+     * @link https://secure.php.net/manual/en/messageformatter.geterrormessage.php
+     * @return string 最后一个错误的描述。
      */
     public function getErrorMessage()
     {
@@ -70,16 +70,16 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Formats a message via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
+     * 通过 [ICU message format](http://userguide.icu-project.org/formatparse/messages) 格式化一个消息。
      *
-     * It uses the PHP intl extension's [MessageFormatter](http://www.php.net/manual/en/class.messageformatter.php)
-     * and works around some issues.
-     * If PHP intl is not installed a fallback will be used that supports a subset of the ICU message format.
+     * 它使用 PHP intl 扩展的 [MessageFormatter](https://secure.php.net/manual/en/class.messageformatter.php)
+     * 并解决了一些问题。
+     * 如果未安装 PHP intl，将使用支持 ICU 消息格式子集的回退。
      *
-     * @param string $pattern The pattern string to insert parameters into.
-     * @param array $params The array of name value pairs to insert into the format string.
-     * @param string $language The locale to use for formatting locale-dependent parts
-     * @return string|false The formatted pattern string or `false` if an error occurred
+     * @param string $pattern 要插入参数的模式字符串。
+     * @param array $params 要插入到格式字符串中的键值对数组。
+     * @param string $language 用于格式化与区域设置相关的部件的区域设置
+     * @return string|false 格式化的模式字符串，如果发生错误，则为 `false`
      */
     public function format($pattern, $params, $language)
     {
@@ -132,17 +132,17 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
+     * 根据 [ICU message format](http://userguide.icu-project.org/formatparse/messages) 模式解析输入字符串。
      *
-     * It uses the PHP intl extension's [MessageFormatter::parse()](http://www.php.net/manual/en/messageformatter.parsemessage.php)
-     * and adds support for named arguments.
-     * Usage of this method requires PHP intl extension to be installed.
+     * 它使用 PHP intl 扩展的 [MessageFormatter::parse()](https://secure.php.net/manual/en/messageformatter.parsemessage.php)
+     * 并添加对命名参数的支持。
+     * 使用此方法需要安装 PHP intl 扩展。
      *
-     * @param string $pattern The pattern to use for parsing the message.
-     * @param string $message The message to parse, conforming to the pattern.
-     * @param string $language The locale to use for formatting locale-dependent parts
-     * @return array|bool An array containing items extracted, or `FALSE` on error.
-     * @throws \yii\base\NotSupportedException when PHP intl extension is not installed.
+     * @param string $pattern 用于解析消息的模式。
+     * @param string $message 符合模式的要解析的消息。
+     * @param string $language 用于格式化与区域设置相关的部件的区域设置
+     * @return array|bool 包含提取的项的数组，出错时为 `false`。
+     * @throws \yii\base\NotSupportedException 如果 PHP intl 扩展未安装。
      */
     public function parse($pattern, $message, $language)
     {
@@ -198,13 +198,13 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Replace named placeholders with numeric placeholders and quote unused.
+     * 用数字占位符替换为命名占位符并引用未使用的占位符。
      *
-     * @param string $pattern The pattern string to replace things into.
-     * @param array $givenParams The array of values to insert into the format string.
-     * @param array $resultingParams Modified array of parameters.
+     * @param string $pattern 用于替换东西的模式字符串。
+     * @param array $givenParams 要插入格式字符串的值数组。
+     * @param array $resultingParams 修改过的参数数组。
      * @param array $map
-     * @return string The pattern string with placeholders replaced.
+     * @return string 替换了占位符的模式字符串。
      */
     private function replaceNamedArguments($pattern, $givenParams, &$resultingParams = [], &$map = [])
     {
@@ -255,11 +255,11 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Fallback implementation for MessageFormatter::formatMessage.
-     * @param string $pattern The pattern string to insert things into.
-     * @param array $args The array of values to insert into the format string
-     * @param string $locale The locale to use for formatting locale-dependent parts
-     * @return false|string The formatted pattern string or `false` if an error occurred
+     * MessageFormatter::formatMessage 的回退实现。
+     * @param string $pattern 要插入内容的模式字符串。
+     * @param array $args 要插入格式字符串的值数组
+     * @param string $locale 用于格式化与区域设置相关的部件的区域设置
+     * @return false|string 格式化的模式字符串，如果发生错误，则为 `false`
      */
     protected function fallbackFormat($pattern, $args, $locale)
     {
@@ -284,9 +284,9 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Tokenizes a pattern by separating normal text from replaceable patterns.
-     * @param string $pattern patter to tokenize
-     * @return array|bool array of tokens or false on failure
+     * 通过将正常文本与可替换模式分开来对模式进行标记。
+     * @param string $pattern 要标记化的模式
+     * @return array|bool token 数组或失败时为假
      */
     private static function tokenizePattern($pattern)
     {
@@ -331,12 +331,12 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Parses a token.
-     * @param array $token the token to parse
-     * @param array $args arguments to replace
-     * @param string $locale the locale
-     * @return bool|string parsed token or false on failure
-     * @throws \yii\base\NotSupportedException when unsupported formatting is used.
+     * 解析一个 token。
+     * @param array $token 要解析的 token
+     * @param array $args 要替换的参数
+     * @param string $locale 用于格式化与区域设置相关的部件的区域设置
+     * @return bool|string 解析的 token 或失败时假
+     * @throws \yii\base\NotSupportedException 使用不受支持的格式时。
      */
     private function parseToken($token, $args, $locale)
     {

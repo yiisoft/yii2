@@ -10,11 +10,11 @@ namespace yii\db;
 use yii\base\BaseObject;
 
 /**
- * BatchQueryResult represents a batch query from which you can retrieve data in batches.
+ * BatchQueryResult 表示批量查询，你可以从中批量检索数据。
  *
- * You usually do not instantiate BatchQueryResult directly. Instead, you obtain it by
- * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the [[\Iterator]] interface,
- * you can iterate it to obtain a batch of data in each iteration. For example,
+ * 通常不直接实例化  BatchQueryResult。相反，
+ * 你可以通过调用 [[Query::batch()]] 或 [[Query::each()]]。因为 BatchQueryResult 实现了 [[\Iterator]] 接口，
+ * 所以可以对其进行迭代，以在每次迭代中获取一批数据。例如，
  *
  * ```php
  * $query = (new Query)->from('user');
@@ -31,39 +31,39 @@ use yii\base\BaseObject;
 class BatchQueryResult extends BaseObject implements \Iterator
 {
     /**
-     * @var Connection the DB connection to be used when performing batch query.
-     * If null, the "db" application component will be used.
+     * @var Connection 执行批处理查询时要使用的数据库连接。
+     * 如果为 null，将使用 "db" 应用程序组件。
      */
     public $db;
     /**
-     * @var Query the query object associated with this batch query.
-     * Do not modify this property directly unless after [[reset()]] is called explicitly.
+     * @var Query 与批处理查询关联的查询对象。
+     * 除非显式调用 [[reset()]] 之后，否则不要直接修改此属性。
      */
     public $query;
     /**
-     * @var int the number of rows to be returned in each batch.
+     * @var int 每批返回的行数。
      */
     public $batchSize = 100;
     /**
-     * @var bool whether to return a single row during each iteration.
-     * If false, a whole batch of rows will be returned in each iteration.
+     * @var bool 是否在每次迭代期间返回一行。
+     * 如果为 false，每次迭代将返回整批行。
      */
     public $each = false;
 
     /**
-     * @var DataReader the data reader associated with this batch query.
+     * @var DataReader 与此批处理查询关联的数据读取器。
      */
     private $_dataReader;
     /**
-     * @var array the data retrieved in the current batch
+     * @var array 当前批中检索到的数据
      */
     private $_batch;
     /**
-     * @var mixed the value for the current iteration
+     * @var mixed 当前迭代的值
      */
     private $_value;
     /**
-     * @var string|int the key for the current iteration
+     * @var string|int 当前迭代的键
      */
     private $_key;
 
@@ -73,13 +73,13 @@ class BatchQueryResult extends BaseObject implements \Iterator
      */
     public function __destruct()
     {
-        // make sure cursor is closed
+        // 确保光标已关闭
         $this->reset();
     }
 
     /**
-     * Resets the batch query.
-     * This method will clean up the existing batch query so that a new batch query can be performed.
+     * 重置批处理查询。
+     * 此方法将清除现有的批查询，以便执行新的批查询。
      */
     public function reset()
     {
@@ -93,8 +93,8 @@ class BatchQueryResult extends BaseObject implements \Iterator
     }
 
     /**
-     * Resets the iterator to the initial state.
-     * This method is required by the interface [[\Iterator]].
+     * 将迭代器重置为初始状态。
+     * 此方法是接口 [[\Iterator]] 所必需的。
      */
     public function rewind()
     {
@@ -103,8 +103,8 @@ class BatchQueryResult extends BaseObject implements \Iterator
     }
 
     /**
-     * Moves the internal pointer to the next dataset.
-     * This method is required by the interface [[\Iterator]].
+     * 将内部指针移动到下一个数据集。
+     * 此方法是接口 [[\Iterator]] 所必需的。
      */
     public function next()
     {
@@ -129,8 +129,8 @@ class BatchQueryResult extends BaseObject implements \Iterator
     }
 
     /**
-     * Fetches the next batch of data.
-     * @return array the data fetched
+     * 获取下一批数据。
+     * @return array 获取的数据
      */
     protected function fetchData()
     {
@@ -148,9 +148,9 @@ class BatchQueryResult extends BaseObject implements \Iterator
     }
 
     /**
-     * Returns the index of the current dataset.
-     * This method is required by the interface [[\Iterator]].
-     * @return int the index of the current row.
+     * 返回当前数据集的索引。
+     * 此方法是接口 [[\Iterator]] 所必需的。
+     * @return int 当前行的索引。
      */
     public function key()
     {
@@ -158,9 +158,9 @@ class BatchQueryResult extends BaseObject implements \Iterator
     }
 
     /**
-     * Returns the current dataset.
-     * This method is required by the interface [[\Iterator]].
-     * @return mixed the current dataset.
+     * 返回当前数据集。
+     * 此方法是接口 [[\Iterator]] 所必需的。
+     * @return mixed 当前数据集。
      */
     public function current()
     {
@@ -168,9 +168,9 @@ class BatchQueryResult extends BaseObject implements \Iterator
     }
 
     /**
-     * Returns whether there is a valid dataset at the current position.
-     * This method is required by the interface [[\Iterator]].
-     * @return bool whether there is a valid dataset at the current position.
+     * 返回当前位置是否存在有效的数据集。
+     * 此方法是接口 [[\Iterator]] 所必需的。
+     * @return bool 当前位置是否存在有效的数据集。
      */
     public function valid()
     {

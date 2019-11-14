@@ -17,29 +17,29 @@ use yii\helpers\VarDumper;
 use yii\web\AssetBundle;
 
 /**
- * Allows you to combine and compress your JavaScript and CSS files.
+ * 允许你合并和压缩你的 JavaScript 和 CSS 文件。
  *
- * Usage:
+ * 用法:
  *
- * 1. Create a configuration file using the `template` action:
+ * 1. 使用 `template` 方法创建配置文件：
  *
  *    yii asset/template /path/to/myapp/config.php
  *
- * 2. Edit the created config file, adjusting it for your web application needs.
- * 3. Run the 'compress' action, using created config:
+ * 2. 根据你的 web 应用的需要，编辑创建的配置文件。
+ * 3. 使用创建的配置文件，运行 'compress' 动作:
  *
  *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
  *
- * 4. Adjust your web application config to use compressed assets.
+ * 4. 调整你的 web 应用程序配置以使用压缩资源
  *
- * Note: in the console environment some [path aliases](guide:concept-aliases) like `@webroot` and `@web` may not exist,
- * so corresponding paths inside the configuration should be specified directly.
+ * 注意：在控制台环境中一些 [path alias](guide:concept-aliases) 像 `@webroot` 和 `@web` 可能不存在，
+ * 因此应该直接指定配置中的相应路径。
  *
- * Note: by default this command relies on an external tools to perform actual files compression,
- * check [[jsCompressor]] and [[cssCompressor]] for more details.
+ * 注意：默认情况下这个命令依赖外部工具来执行实际的文件压缩，
+ * 核实 [[jsCompressor]] 和 [[cssCompressor]] 获取详细信息。
  *
- * @property \yii\web\AssetManager $assetManager Asset manager instance. Note that the type of this property
- * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
+ * @property \yii\web\AssetManager $assetManager 资源管理器实例。注意此属性的类型在 getter 和 setter 中有所不同。
+ * 查看 [[getAssetManager()]] 和 [[setAssetManager()]] 获取详情。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -48,17 +48,17 @@ use yii\web\AssetBundle;
 class AssetController extends Controller
 {
     /**
-     * @var string controller default action ID.
+     * @var string 控制器默认动作 ID。
      */
     public $defaultAction = 'compress';
     /**
-     * @var array list of asset bundles to be compressed.
+     * @var array 要压缩的资源包列表。
      */
     public $bundles = [];
     /**
-     * @var array list of asset bundles, which represents output compressed files.
-     * You can specify the name of the output compressed file using 'css' and 'js' keys:
-     * For example:
+     * @var array 表示输出压缩文件的资源包列表。
+     * 你可以使用 'css' 和 'js' 键来指定输出压缩文件的名称：
+     * 例如：
      *
      * ```php
      * 'app\config\AllAsset' => [
@@ -68,13 +68,13 @@ class AssetController extends Controller
      * ]
      * ```
      *
-     * File names can contain placeholder "{hash}", which will be filled by the hash of the resulting file.
+     * 文件名可以包含占位符 "{hash}"，他将由生成的文件的哈希填充。
      *
-     * You may specify several target bundles in order to compress different groups of assets.
-     * In this case you should use 'depends' key to specify, which bundles should be covered with particular
-     * target bundle. You may leave 'depends' to be empty for single bundle, which will compress all remaining
-     * bundles in this case.
-     * For example:
+     * 为了压缩不通的资源组，你可以指定多个目标包。
+     * 在这种情况下你应该使用 'depends' 键来指定，哪些包应该包含在特定的目标包中。
+     * 对于单个包，你可以将 'depends' 保留为空，它将压缩所有剩下的包
+     * 在这种情况下。
+     * 例如：
      *
      * ```php
      * 'allShared' => [
@@ -103,43 +103,43 @@ class AssetController extends Controller
      */
     public $targets = [];
     /**
-     * @var string|callable JavaScript file compressor.
-     * If a string, it is treated as shell command template, which should contain
-     * placeholders {from} - source file name - and {to} - output file name.
-     * Otherwise, it is treated as PHP callback, which should perform the compression.
+     * @var string|callable JavaScript 文件压缩程序。
+     * 如果是个字符串，它将被视为 shell 命令模版，其中应该包含
+     * 占位符 {from} - 源文件名 - 和 {to} - 输出文件名。
+     * 否则，他被视为应该执行压缩的PHP回调。
      *
-     * Default value relies on usage of "Closure Compiler"
+     * 默认值依赖于 "Closure Compiler" 的用法
      * @see https://developers.google.com/closure/compiler/
      */
     public $jsCompressor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
     /**
-     * @var string|callable CSS file compressor.
-     * If a string, it is treated as shell command template, which should contain
-     * placeholders {from} - source file name - and {to} - output file name.
-     * Otherwise, it is treated as PHP callback, which should perform the compression.
+     * @var string|callable CSS 文件压缩程序。
+     * 如果是个字符串，它将被视为 shell 命令模版, 其中应该包含
+     * 占位符 {from} - 源文件名 - 和 {to} - 输出文件名。
+     * 否则，他被视为应该执行压缩的 PHP 回调。
      *
-     * Default value relies on usage of "YUI Compressor"
+     * 默认值依赖于 "YUI Compressor" 的用法
      * @see https://github.com/yui/yuicompressor/
      */
     public $cssCompressor = 'java -jar yuicompressor.jar --type css {from} -o {to}';
     /**
-     * @var bool whether to delete asset source files after compression.
-     * This option affects only those bundles, which have [[\yii\web\AssetBundle::sourcePath]] is set.
+     * @var bool 压缩后是否删除资源源文件
+     * 此选项仅影响那些设置了 [[\yii\web\AssetBundle::sourcePath]] 的包。
      * @since 2.0.10
      */
     public $deleteSource = false;
 
     /**
-     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] instance or its array configuration, which will be used
-     * for assets processing.
+     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] 实例或者他数组配置，将用于
+     * 资源处理
      */
     private $_assetManager = [];
 
 
     /**
-     * Returns the asset manager instance.
-     * @throws \yii\console\Exception on invalid configuration.
-     * @return \yii\web\AssetManager asset manager instance.
+     * 返回资源管理器实例。
+     * @throws \yii\console\Exception 在无效配置上。
+     * @return \yii\web\AssetManager 资源管理器实例。
      */
     public function getAssetManager()
     {
@@ -166,9 +166,9 @@ class AssetController extends Controller
     }
 
     /**
-     * Sets asset manager instance or configuration.
-     * @param \yii\web\AssetManager|array $assetManager asset manager instance or its array configuration.
-     * @throws \yii\console\Exception on invalid argument type.
+     * 设置资源管理器实例或配置。
+     * @param \yii\web\AssetManager|array $assetManager 资源管理器实例或它的配置数组。
+     * @throws \yii\console\Exception 在无效参数类型上。
      */
     public function setAssetManager($assetManager)
     {
@@ -179,11 +179,11 @@ class AssetController extends Controller
     }
 
     /**
-     * Combines and compresses the asset files according to the given configuration.
-     * During the process new asset bundle configuration file will be created.
-     * You should replace your original asset bundle configuration with this file in order to use compressed files.
-     * @param string $configFile configuration file name.
-     * @param string $bundleFile output asset bundles configuration file name.
+     * 根据给定的配置组合和压缩资源文件。
+     * 在此过程中将创建新的资产包配置文件。
+     * 为了使用压缩文件，您应该用这个文件替换原来的资源包配置。
+     * @param string $configFile 配置文件名。
+     * @param string $bundleFile 输出资源包配置文件名。
      */
     public function actionCompress($configFile, $bundleFile)
     {
@@ -210,9 +210,9 @@ class AssetController extends Controller
     }
 
     /**
-     * Applies configuration from the given file to self instance.
-     * @param string $configFile configuration file name.
-     * @throws \yii\console\Exception on failure.
+     * 将给定文件中的配置应用于自身实例。
+     * @param string $configFile 配置文件名。
+     * @throws \yii\console\Exception 失败。
      */
     protected function loadConfiguration($configFile)
     {
@@ -230,9 +230,9 @@ class AssetController extends Controller
     }
 
     /**
-     * Creates full list of source asset bundles.
-     * @param string[] $bundles list of asset bundle names
-     * @return \yii\web\AssetBundle[] list of source asset bundles.
+     * 创建源资源包的完整列表。
+     * @param string[] $bundles 资源包名称列表。
+     * @return \yii\web\AssetBundle[] 源资源包列表。
      */
     protected function loadBundles($bundles)
     {
@@ -251,10 +251,10 @@ class AssetController extends Controller
     }
 
     /**
-     * Loads asset bundle dependencies recursively.
-     * @param \yii\web\AssetBundle $bundle bundle instance
-     * @param array $result already loaded bundles list.
-     * @throws Exception on failure.
+     * 递归加载资源包依赖项。
+     * @param \yii\web\AssetBundle $bundle 包实例
+     * @param array $result 已经记载包列表。
+     * @throws Exception 失败。
      */
     protected function loadDependency($bundle, &$result)
     {
@@ -272,11 +272,11 @@ class AssetController extends Controller
     }
 
     /**
-     * Creates full list of output asset bundles.
-     * @param array $targets output asset bundles configuration.
-     * @param \yii\web\AssetBundle[] $bundles list of source asset bundles.
-     * @return \yii\web\AssetBundle[] list of output asset bundles.
-     * @throws Exception on failure.
+     * 创建输出资源包的完整列表。
+     * @param array $targets 输出资源包配置。
+     * @param \yii\web\AssetBundle[] $bundles 源资源包列表。
+     * @return \yii\web\AssetBundle[] 输出资源包列表。
+     * @throws Exception 失败。
      */
     protected function loadTargets($targets, $bundles)
     {
@@ -336,11 +336,11 @@ class AssetController extends Controller
     }
 
     /**
-     * Builds output asset bundle.
-     * @param \yii\web\AssetBundle $target output asset bundle
-     * @param string $type either 'js' or 'css'.
-     * @param \yii\web\AssetBundle[] $bundles source asset bundles.
-     * @throws Exception on failure.
+     * 构建输出资源包。
+     * @param \yii\web\AssetBundle $target 输出资源包。
+     * @param string $type 'js' 或 'css'。
+     * @param \yii\web\AssetBundle[] $bundles 源资源包。
+     * @throws Exception 失败。
      */
     protected function buildTarget($target, $type, $bundles)
     {
@@ -381,10 +381,10 @@ class AssetController extends Controller
     }
 
     /**
-     * Adjust dependencies between asset bundles in the way source bundles begin to depend on output ones.
-     * @param \yii\web\AssetBundle[] $targets output asset bundles.
-     * @param \yii\web\AssetBundle[] $bundles source asset bundles.
-     * @return \yii\web\AssetBundle[] output asset bundles.
+     * 按照源包依赖输出的方式调整资源包之间的依赖关系。
+     * @param \yii\web\AssetBundle[] $targets 输出资源包。
+     * @param \yii\web\AssetBundle[] $bundles 源资源包。
+     * @return \yii\web\AssetBundle[] 输出资源包。
      */
     protected function adjustDependency($targets, $bundles)
     {
@@ -429,11 +429,11 @@ class AssetController extends Controller
     }
 
     /**
-     * Registers asset bundles including their dependencies.
-     * @param \yii\web\AssetBundle[] $bundles asset bundles list.
-     * @param string $name bundle name.
-     * @param array $registered stores already registered names.
-     * @throws Exception if circular dependency is detected.
+     * 注册资源包包括其依赖项。
+     * @param \yii\web\AssetBundle[] $bundles 资源包列表。
+     * @param string $name 包名字。
+     * @param array $registered 存储已注册的名字。
+     * @throws Exception 如果检测到循环依赖项。
      */
     protected function registerBundle($bundles, $name, &$registered)
     {
@@ -451,10 +451,10 @@ class AssetController extends Controller
     }
 
     /**
-     * Saves new asset bundles configuration.
-     * @param \yii\web\AssetBundle[] $targets list of asset bundles to be saved.
-     * @param string $bundleFile output file name.
-     * @throws \yii\console\Exception on failure.
+     * 保存新的资源包配置。
+     * @param \yii\web\AssetBundle[] $targets 要保存的资源包列表。
+     * @param string $bundleFile 输出文件名。
+     * @throws \yii\console\Exception 失败。
      */
     protected function saveTargets($targets, $bundleFile)
     {
@@ -501,10 +501,10 @@ EOD;
     }
 
     /**
-     * Compresses given JavaScript files and combines them into the single one.
-     * @param array $inputFiles list of source file names.
-     * @param string $outputFile output file name.
-     * @throws \yii\console\Exception on failure
+     * 压缩给定的 JavaScript 文件并将他们合并到一个文件里面。
+     * @param array $inputFiles 源文件名字列表。
+     * @param string $outputFile 输出文件名。
+     * @throws \yii\console\Exception 失败
      */
     protected function compressJsFiles($inputFiles, $outputFile)
     {
@@ -530,10 +530,10 @@ EOD;
     }
 
     /**
-     * Compresses given CSS files and combines them into the single one.
-     * @param array $inputFiles list of source file names.
-     * @param string $outputFile output file name.
-     * @throws \yii\console\Exception on failure
+     * 压缩给定的 CSS 文件并将他们合并到一个文件里面。
+     * @param array $inputFiles 源文件名字列表。
+     * @param string $outputFile 输出文件名。
+     * @throws \yii\console\Exception 失败
      */
     protected function compressCssFiles($inputFiles, $outputFile)
     {
@@ -559,10 +559,10 @@ EOD;
     }
 
     /**
-     * Combines JavaScript files into a single one.
-     * @param array $inputFiles source file names.
-     * @param string $outputFile output file name.
-     * @throws \yii\console\Exception on failure.
+     * 将 JavaScript 文件合并到一个里面。
+     * @param array $inputFiles 源文件名字。
+     * @param string $outputFile 输出文件名。
+     * @throws \yii\console\Exception 失败。
      */
     public function combineJsFiles($inputFiles, $outputFile)
     {
@@ -584,10 +584,10 @@ EOD;
     }
 
     /**
-     * Combines CSS files into a single one.
-     * @param array $inputFiles source file names.
-     * @param string $outputFile output file name.
-     * @throws \yii\console\Exception on failure.
+     * 将 CSS 文件合并到一个里面。
+     * @param array $inputFiles 源文件名字。
+     * @param string $outputFile 输出文件名。
+     * @throws \yii\console\Exception 失败。
      */
     public function combineCssFiles($inputFiles, $outputFile)
     {
@@ -604,11 +604,11 @@ EOD;
     }
 
     /**
-     * Adjusts CSS content allowing URL references pointing to the original resources.
-     * @param string $cssContent source CSS content.
-     * @param string $inputFilePath input CSS file name.
-     * @param string $outputFilePath output CSS file name.
-     * @return string adjusted CSS content.
+     * 调整 CSS 内容允许指向原始资源的 URL 引用。
+     * @param string $cssContent 源 CSS 内容。
+     * @param string $inputFilePath 输入 CSS 文件名。
+     * @param string $outputFilePath 输出 CSS 文件名。
+     * @return string 调整后的 CSS 内容。
      */
     protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
     {
@@ -683,10 +683,10 @@ EOD;
     }
 
     /**
-     * Creates template of configuration file for [[actionCompress]].
-     * @param string $configFile output file name.
-     * @return int CLI exit code
-     * @throws \yii\console\Exception on failure.
+     * 创建配置文件模板给 [[actionCompress]]。
+     * @param string $configFile 输出文件名。
+     * @return int CLI 退出码。
+     * @throws \yii\console\Exception 失败。
      */
     public function actionTemplate($configFile)
     {
@@ -747,10 +747,10 @@ EOD;
     }
 
     /**
-     * Returns canonicalized absolute pathname.
-     * Unlike regular `realpath()` this method does not expand symlinks and does not check path existence.
-     * @param string $path raw path
-     * @return string canonicalized absolute pathname
+     * 返回规范化的绝对路径名。
+     * 不同于常规的 `realpath()` 这个方法不会扩展符号链接也不会检查路径是否存在。
+     * @param string $path 原始路径
+     * @return string canonicalized 绝对路径名
      */
     private function findRealPath($path)
     {
@@ -771,7 +771,7 @@ EOD;
 
     /**
      * @param AssetBundle $bundle
-     * @return bool whether asset bundle external or not.
+     * @return bool 是否是外部的资源包
      */
     private function isBundleExternal($bundle)
     {
@@ -779,8 +779,8 @@ EOD;
     }
 
     /**
-     * @param AssetBundle $bundle asset bundle instance.
-     * @return array bundle configuration.
+     * @param AssetBundle $bundle 资源包实例。
+     * @return array 包配置。
      */
     private function composeBundleConfig($bundle)
     {
@@ -790,10 +790,10 @@ EOD;
     }
 
     /**
-     * Composes trace info for bundle circular dependency.
-     * @param string $circularDependencyName name of the bundle, which have circular dependency
-     * @param array $registered list of bundles registered while detecting circular dependency.
-     * @return string bundle circular dependency trace string.
+     * 编写包循环依赖项的跟踪信息。
+     * @param string $circularDependencyName 具有循环依赖项的包名称。
+     * @param array $registered 检测循环依赖时注册的包列表。
+     * @return string 绑定循环依赖项跟踪字符串。
      */
     private function composeCircularDependencyTrace($circularDependencyName, array $registered)
     {
@@ -812,8 +812,8 @@ EOD;
     }
 
     /**
-     * Deletes bundle asset files, which have been published from `sourcePath`.
-     * @param \yii\web\AssetBundle[] $bundles asset bundles to be processed.
+     * 删除已经从 `sourcePath` 发布的资源包文件。
+     * @param \yii\web\AssetBundle[] $bundles 要处理的资源包。
      * @since 2.0.10
      */
     private function deletePublishedAssets($bundles)

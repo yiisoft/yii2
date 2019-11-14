@@ -12,21 +12,21 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
 /**
- * CompareValidator compares the specified attribute value with another value.
+ * CompareValidator 用于将指定的属性的值和其他值进行比较。
  *
- * The value being compared with can be another attribute value
- * (specified via [[compareAttribute]]) or a constant (specified via
- * [[compareValue]]. When both are specified, the latter takes
- * precedence. If neither is specified, the attribute will be compared
- * with another attribute whose name is by appending "_repeat" to the source
- * attribute name.
+ * 被比较的值可以是其他的属性的值（通过 [[compareAttribute]] 字段设置），
+ * 也可以是一个常量（ 通过 [[compareValue]] 设置）。
+ * 如果两个都设置了，后者优先。
+ * 如果都没有设置，
+ * 这个属性将会跟其他以当前属性名为前缀，
+ * 以 "_repeat" 为后缀的属性进行比较。
  *
- * CompareValidator supports different comparison operators, specified
- * via the [[operator]] property.
+ * CompareValidator 支持不同的比较运算符，
+ * 通过 [[operator]] 属性指定。
  *
- * The default comparison function is based on string values, which means the values
- * are compared byte by byte. When comparing numbers, make sure to set the [[$type]]
- * to [[TYPE_NUMBER]] to enable numeric comparison.
+ * 默认的比较功能是基于字符串值，即待比较的值将以字节的形式进行比较。
+ * 当比较数值型时，确认已将 [[$type]] 属性的值设置为 [[TYPE_NUMBER]]
+ * 以启用数值比较。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,64 +34,64 @@ use yii\helpers\Html;
 class CompareValidator extends Validator
 {
     /**
-     * Constant for specifying the comparison [[type]] by numeric values.
+     * 用于指定属性 [[type]] 以字符串型比较的常量。
      * @since 2.0.11
      * @see type
      */
     const TYPE_STRING = 'string';
     /**
-     * Constant for specifying the comparison [[type]] by numeric values.
+     * 用于指定属性 [[type]] 以数值型比较的常量。
      * @since 2.0.11
      * @see type
      */
     const TYPE_NUMBER = 'number';
 
     /**
-     * @var string the name of the attribute to be compared with. When both this property
-     * and [[compareValue]] are set, the latter takes precedence. If neither is set,
-     * it assumes the comparison is against another attribute whose name is formed by
-     * appending '_repeat' to the attribute being validated. For example, if 'password' is
-     * being validated, then the attribute to be compared would be 'password_repeat'.
+     * @var string 待比较的属性值。当它和 [[compareValue]] 都被设置时，后者优先。
+     * 如果都没有设置，它会跟以当前属性名后缀 "_repeat" 的属性进行比较。
+     * 例如：
+     * 如果当前比较的是 'password' 属性，
+     * 那么它比较的属性将为 'password_repeat'
      * @see compareValue
      */
     public $compareAttribute;
     /**
-     * @var mixed the constant value to be compared with. When both this property
-     * and [[compareAttribute]] are set, this property takes precedence.
+     * @var mixed 待比较的常量值。
+     * 当这个属性和 [[compareAttribute]] 同时设置时，这个属性优先。
      * @see compareAttribute
      */
     public $compareValue;
     /**
-     * @var string the type of the values being compared. The follow types are supported:
+     * @var string 被比较的值类型名称。支持以下类型：
      *
-     * - [[TYPE_STRING|string]]: the values are being compared as strings. No conversion will be done before comparison.
-     * - [[TYPE_NUMBER|number]]: the values are being compared as numbers. String values will be converted into numbers before comparison.
+     * - [[TYPE_STRING|string]]: 待比较的值是字符串型。在比较前不会做类型转换。
+     * - [[TYPE_NUMBER|number]]: 待比较的值是数值型。字符串值在比较前会被转换为数值。
      */
     public $type = self::TYPE_STRING;
     /**
-     * @var string the operator for comparison. The following operators are supported:
+     * @var string 比较运算符，支持如下运算符：
      *
-     * - `==`: check if two values are equal. The comparison is done is non-strict mode.
-     * - `===`: check if two values are equal. The comparison is done is strict mode.
-     * - `!=`: check if two values are NOT equal. The comparison is done is non-strict mode.
-     * - `!==`: check if two values are NOT equal. The comparison is done is strict mode.
-     * - `>`: check if value being validated is greater than the value being compared with.
-     * - `>=`: check if value being validated is greater than or equal to the value being compared with.
-     * - `<`: check if value being validated is less than the value being compared with.
-     * - `<=`: check if value being validated is less than or equal to the value being compared with.
+     * - `==`: 比较两个值是否相等。用于非严格模式比较。
+     * - `===`: 比较两个值是否全等。用于严格模式比较。
+     * - `!=`: 比较两个值是否不相等。用于非严格模式比较。
+     * - `!==`: 比较两个值是否不全等。用于严格模式比较。
+     * - `>`: 检测待校验的值是否大于待比较的值。
+     * - `>=`: 检测待校验的值是否大于等于待比较的值。
+     * - `<`: 检测待校验的值是否小于待比较的值。
+     * - `<=`: 检测待校验的值是否小于等于待比较的值。
      *
-     * When you want to compare numbers, make sure to also set [[type]] to `number`.
+     * 如果你想比较数值，确保将 [[type]] 属性设置为 `number`。
      */
     public $operator = '==';
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
+     * @var string 用户定义错误消息。
+     * 它可包含如下的占位符，并将被校验器自动的替换：
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
-     * - `{compareValue}`: the value or the attribute label to be compared with
-     * - `{compareAttribute}`: the label of the attribute to be compared with
-     * - `{compareValueOrAttribute}`: the value or the attribute label to be compared with
+     * - `{attribute}`: 待校验的属性标签名
+     * - `{value}`: 待校验的属性值
+     * - `{compareValue}`: 比较的值或者属性标签
+     * - `{compareAttribute}`: 比较的属性标签
+     * - `{compareValueOrAttribute}`: 比较的值或者属性标签
      */
     public $message;
 
@@ -182,12 +182,12 @@ class CompareValidator extends Validator
     }
 
     /**
-     * Compares two values with the specified operator.
-     * @param string $operator the comparison operator
-     * @param string $type the type of the values being compared
-     * @param mixed $value the value being compared
-     * @param mixed $compareValue another value being compared
-     * @return bool whether the comparison using the specified operator is true.
+     * 使用指定的比较运算符比较两个值。
+     * @param string $operator 比较运算符
+     * @param string $type 待比较值类型
+     * @param mixed $value 待比较值
+     * @param mixed $compareValue 被比较的值
+     * @return bool 使用指定的运算符比较返回值是否为真
      */
     protected function compareValues($operator, $type, $value, $compareValue)
     {

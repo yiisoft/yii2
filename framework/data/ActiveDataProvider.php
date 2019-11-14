@@ -15,11 +15,11 @@ use yii\db\QueryInterface;
 use yii\di\Instance;
 
 /**
- * ActiveDataProvider implements a data provider based on [[\yii\db\Query]] and [[\yii\db\ActiveQuery]].
+ * ActiveDataProvider 基于 [[\yii\db\Query]] 和 [[\yii\db\ActiveQuery]] 实现了数据提供器。
  *
- * ActiveDataProvider provides data by performing DB queries using [[query]].
+ * ActiveDataProvider 通过使用 [[query]] 执行数据库查询来提供数据。
  *
- * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
+ * 以下是使用 ActiveDataProvider 提供 ActiveRecord 实例的示例：
  *
  * ```php
  * $provider = new ActiveDataProvider([
@@ -29,11 +29,11 @@ use yii\di\Instance;
  *     ],
  * ]);
  *
- * // get the posts in the current page
+ * // 获取当前页的 posts
  * $posts = $provider->getModels();
  * ```
  *
- * And the following example shows how to use ActiveDataProvider without ActiveRecord:
+ * 下面的示例演示如何使用不带 ActiveRecord 的 ActiveDataProvider：
  *
  * ```php
  * $query = new Query();
@@ -44,11 +44,11 @@ use yii\di\Instance;
  *     ],
  * ]);
  *
- * // get the posts in the current page
+ * // 获取当前页的 posts
  * $posts = $provider->getModels();
  * ```
  *
- * For more details and usage information on ActiveDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ * 有关 ActiveDataProvider 的详细信息和使用信息，请参阅 [guide article on data providers](guide:output-data-providers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -56,34 +56,34 @@ use yii\di\Instance;
 class ActiveDataProvider extends BaseDataProvider
 {
     /**
-     * @var QueryInterface the query that is used to fetch data models and [[totalCount]]
-     * if it is not explicitly set.
+     * @var QueryInterface 用于获取数据模型和 [[totalCount]]
+     * 如果未显示设置。
      */
     public $query;
     /**
-     * @var string|callable the column that is used as the key of the data models.
-     * This can be either a column name, or a callable that returns the key value of a given data model.
+     * @var string|callable 用作数据模型键的列。
+     * 可以是列名，也可以是返回给定数据模型的键值的回调函数。
      *
-     * If this is not set, the following rules will be used to determine the keys of the data models:
+     * 如果未设置，将使用以下规则确定数据模型的键：
      *
-     * - If [[query]] is an [[\yii\db\ActiveQuery]] instance, the primary keys of [[\yii\db\ActiveQuery::modelClass]] will be used.
-     * - Otherwise, the keys of the [[models]] array will be used.
+     * - 如果 [[query]] 是一个 [[\yii\db\ActiveQuery]] 实例，则将使用 [[\yii\db\ActiveQuery::modelClass]] 的主键。
+     * - 否则，将使用 [[models]] 数组的键。
      *
      * @see getKeys()
      */
     public $key;
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
-     * If not set, the default DB connection will be used.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件 ID。
+     * 如果未设置，将使用默认的 DB 连接。
+     * 从 2.0.2 版开始，它也可以是用于创建对象的配置数组。
      */
     public $db;
 
 
     /**
-     * Initializes the DB connection component.
-     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-     * @throws InvalidConfigException if [[db]] is invalid.
+     * 初始化数据库连接组件
+     * 此方法将初始化 [[db]] 属性，以确保它引用有效的 db 连接。
+     * @throws InvalidConfigException 如果 [[db]] 不可用。
      */
     public function init()
     {

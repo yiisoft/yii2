@@ -19,104 +19,104 @@ use yii\base\StaticInstanceInterface;
 interface ActiveRecordInterface extends StaticInstanceInterface
 {
     /**
-     * Returns the primary key **name(s)** for this AR class.
+     * 返回此 AR 类的主键 **name(s)**。
      *
-     * Note that an array should be returned even when the record only has a single primary key.
+     * 注意，即使记录只有一个主键，也应该返回一个数组。
      *
-     * For the primary key **value** see [[getPrimaryKey()]] instead.
+     * 对于主键 **value** 请参阅 [[getPrimaryKey()]]。
      *
-     * @return string[] the primary key name(s) for this AR class.
+     * @return string[] 此 AR 类的主键名称。
      */
     public static function primaryKey();
 
     /**
-     * Returns the list of all attribute names of the record.
-     * @return array list of attribute names.
+     * 返回记录的所有属性列表名称。
+     * @return array 属性名称列表。
      */
     public function attributes();
 
     /**
-     * Returns the named attribute value.
-     * If this record is the result of a query and the attribute is not loaded,
-     * `null` will be returned.
-     * @param string $name the attribute name
-     * @return mixed the attribute value. `null` if the attribute is not set or does not exist.
+     * 返回指定的属性值。
+     * 如果此记录是查询的结果并且未加载该属性，
+     * 将会返回 `null`。
+     * @param string $name 属性名
+     * @return mixed 属性值。如果属性未设置或者不存在，返回 `null`。
      * @see hasAttribute()
      */
     public function getAttribute($name);
 
     /**
-     * Sets the named attribute value.
-     * @param string $name the attribute name.
-     * @param mixed $value the attribute value.
+     * 设置指定的属性值。
+     * @param string $name 属性名。
+     * @param mixed $value 属性值。
      * @see hasAttribute()
      */
     public function setAttribute($name, $value);
 
     /**
-     * Returns a value indicating whether the record has an attribute with the specified name.
-     * @param string $name the name of the attribute
-     * @return bool whether the record has an attribute with the specified name.
+     * 返回一个值，表示记录是否具有指定名称的属性。
+     * @param string $name 属性名
+     * @return bool 记录是否具有指定名称的属性。
      */
     public function hasAttribute($name);
 
     /**
-     * Returns the primary key value(s).
-     * @param bool $asArray whether to return the primary key value as an array. If true,
-     * the return value will be an array with attribute names as keys and attribute values as values.
-     * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-     * @return mixed the primary key value. An array (attribute name => attribute value) is returned if the primary key
-     * is composite or `$asArray` is true. A string is returned otherwise (`null` will be returned if
-     * the key value is `null`).
+     * 返回主键的值。
+     * @param bool $asArray 是否将主键值作为数组返回。
+     * 如果为 true，返回值将是一个数组，属性名称为键，属性值为值。
+     * 请注意，对于复合主键，无论此参数值如何，都将始终返回一个数组。
+     * @return mixed 主键值。如果主键是复合键或 `$asArray` 为 true，
+     * 则返回数组（attribute name => attribute value）。
+     * 否则返回一个字符串（如果键值为 `null`，则返回 `null`）。
      */
     public function getPrimaryKey($asArray = false);
 
     /**
-     * Returns the old primary key value(s).
-     * This refers to the primary key value that is populated into the record
-     * after executing a find method (e.g. find(), findOne()).
-     * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
-     * @param bool $asArray whether to return the primary key value as an array. If true,
-     * the return value will be an array with column name as key and column value as value.
-     * If this is `false` (default), a scalar value will be returned for non-composite primary key.
-     * @property mixed The old primary key value. An array (column name => column value) is
-     * returned if the primary key is composite. A string is returned otherwise (`null` will be
-     * returned if the key value is `null`).
-     * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
-     * is composite or `$asArray` is true. A string is returned otherwise (`null` will be returned if
-     * the key value is `null`).
+     * 返回旧的主键值。
+     * 这是指在执行 find 方法，
+     * （例如 find()，findOne()）后填充到记录中的主键值。
+     * 即使主键属性是手动指定的不同的值，该值仍然保持不变。
+     * @param bool $asArray 是否将主键值作为一个数组返回。
+     * 如果为 true，返回值将是一个数组，属性名称为键，属性值为值。
+     * 如果为 `false`（默认值），将为非复合主键返回标量值。
+     * @property mixed 旧的主键值。
+     * 如果主键是复合键，则返回一个数组（column name => column value）。
+     * 否则返回一个字符串（如果键值为 `null`，则返回 `null`）。
+     * @return mixed 旧的主键值。
+     * 如果主键是复合键或 `$asArray` 为 true，则返回数组（column name => column value）。
+     * 否则将返回一个字符串（如果键值为 `null`，则返回 `null`）。
      */
     public function getOldPrimaryKey($asArray = false);
 
     /**
-     * Returns a value indicating whether the given set of attributes represents the primary key for this model.
-     * @param array $keys the set of attributes to check
-     * @return bool whether the given set of attributes represents the primary key for this model
+     * 返回一个表明给定的属性集是否是该模型的主键的值。
+     * @param array $keys 要检查的属性集
+     * @return bool 给定的属性集是否是此模型的主键
      */
     public static function isPrimaryKey($keys);
 
     /**
-     * Creates an [[ActiveQueryInterface]] instance for query purpose.
+     * 创建用来查询的 [[ActiveQueryInterface]] 实例。
      *
-     * The returned [[ActiveQueryInterface]] instance can be further customized by calling
-     * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
-     * populated ActiveRecord instances. For example,
+     * 返回的 [[ActiveQueryInterface]] 实例可以通过调用 `one()` 或 `all()` 之前调用
+     * [[ActiveQueryInterface]] 方法来进一步自定义，
+     * 以返回填充的 ActiveRecord 实例。例如，
      *
      * ```php
-     * // find the customer whose ID is 1
+     * // 找到 ID 为 1 的客户
      * $customer = Customer::find()->where(['id' => 1])->one();
      *
-     * // find all active customers and order them by their age:
+     * // 查找所有活跃客户并按其年龄排序
      * $customers = Customer::find()
      *     ->where(['status' => 1])
      *     ->orderBy('age')
      *     ->all();
      * ```
      *
-     * This method is also called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
-     * create a relational query.
+     * [[BaseActiveRecord::hasOne()]] 和 [[BaseActiveRecord::hasMany()]]
+     * 也调用此方法来创建关系查询。
      *
-     * You may override this method to return a customized query. For example,
+     * 你可以覆盖此方法以返回自定义查询。例如，
      *
      * ```php
      * class Customer extends ActiveRecord
@@ -129,7 +129,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * }
      * ```
      *
-     * The following code shows how to apply a default condition for all queries:
+     * 以下代码显示如何为所有查询应用默认条件：
      *
      * ```php
      * class Customer extends ActiveRecord
@@ -140,61 +140,61 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *     }
      * }
      *
-     * // Use andWhere()/orWhere() to apply the default condition
+     * // 使用 andWhere()/orWhere() 应用默认条件
      * // SELECT FROM customer WHERE `deleted`=:deleted AND age>30
      * $customers = Customer::find()->andWhere('age>30')->all();
      *
-     * // Use where() to ignore the default condition
+     * // 使用 where() 忽略默认条件
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface]] instance.
+     * @return ActiveQueryInterface 新创建的 [[ActiveQueryInterface]] 实例。
      */
     public static function find();
 
     /**
-     * Returns a single active record model instance by a primary key or an array of column values.
+     * 通过主键或列值数组返回单个活动记录模型实例。
      *
-     * The method accepts:
+     * 该方法接受：
      *
-     *  - a scalar value (integer or string): query by a single primary key value and return the
-     *    corresponding record (or `null` if not found).
-     *  - a non-associative array: query by a list of primary key values and return the
-     *    first record (or `null` if not found).
-     *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
-     *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limited to simple filter conditions.
+     *  - 标量值（integer 或 string）：按单个主键值查询并返回记录
+     *    （如果未找到就返回 `null`）。
+     *  - 一个非关联数组：按主键值列表查询并返回第一条记录
+     *    （如果未找到就返回 `null`）。
+     *  - 一个键值对：通过一组属性值进行查询，并返回匹配所有属性值的单个记录（如果未找到就返回 `null`）。
+     *    注意，`['id' => 1, 2]` 被视为非关联数组。
+     *    列名仅限于 SQL DBMS 的当前记录列表，或者过滤为限制为简单的过滤条件。
      *
-     * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
-     * instance.
+     * 该方法将自动调用 `one()` 方法并且返回 [[ActiveRecordInterface|ActiveRecord]]
+     * 实例。
      *
-     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
-     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     * > Note: 因为只是一种简单的方法，所以使用更复杂的条件，比如 ['!=', 'id', 1] 将不起作用。
+     * > 如果需要指定更复杂的条件，请将 [[find()]] 与 [[ActiveQuery::where()|where()]] 组合使用。
      *
-     * See the following code for usage examples:
+     * 有关用法的示例，请参阅以下代码：
      *
      * ```php
-     * // find a single customer whose primary key value is 10
+     * // 找到主键值为 10 的单个客户
      * $customer = Customer::findOne(10);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customer = Customer::find()->where(['id' => 10])->one();
      *
-     * // find the customers whose primary key value is 10, 11 or 12.
+     * // 找到主键值为 10，11 或 12 的客户。
      * $customers = Customer::findOne([10, 11, 12]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['id' => [10, 11, 12]])->one();
      *
-     * // find the first customer whose age is 30 and whose status is 1
+     * // 找到第一个年龄为 30 岁且状态为 1 的客户
      * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
      * ```
      *
-     * If you need to pass user input to this method, make sure the input value is scalar or in case of
-     * array condition, make sure the array structure can not be changed from the outside:
+     * 如果需要将用户输入传递给此方法，在输入值是标量或在数组条件情况下，
+     * 确保无法从外部更改数组结构：
      *
      * ```php
      * // yii\web\Controller ensures that $id is scalar
@@ -204,64 +204,64 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *     // ...
      * }
      *
-     * // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+     * // 显示指定要搜索的列，在此处传递标量或数组将始终导致查询单个记录
      * $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
      *
-     * // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+     * // 不要使用以下代码！可以通过任意列值注入数组条件来过滤！
      * $model = Post::findOne(Yii::$app->request->get('id'));
      * ```
      *
-     * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     * @param mixed $condition 主键值或一组列值。
+     * @return static 与条件匹配的 ActiveRecord 实例，如果没有匹配则为 `null`。
      */
     public static function findOne($condition);
 
     /**
-     * Returns a list of active record models that match the specified primary key value(s) or a set of column values.
+     * 返回与指定的主键值或一组列值匹配的活动记录模型的列表。
      *
      * The method accepts:
      *
-     *  - a scalar value (integer or string): query by a single primary key value and return an array containing the
-     *    corresponding record (or an empty array if not found).
-     *  - a non-associative array: query by a list of primary key values and return the
-     *    corresponding records (or an empty array if none was found).
-     *    Note that an empty condition will result in an empty result as it will be interpreted as a search for
-     *    primary keys and not an empty `WHERE` condition.
-     *  - an associative array of name-value pairs: query by a set of attribute values and return an array of records
-     *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
-     *    a non-associative array.
-     *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limted to simple filter conditions.
+     *  - 标量值（integer 或 string）：通过单个主键值进行查询并返回包含相应记录的数组
+     *    （如果未找到则返回空数组）。
+     *  - 非关联数组：按主键值列表查询并返回相应记录
+     *    （如果没有找到则返回空数组）。
+     *    注意，空条件将导致空结果，
+     *    因为它将被解释为搜索结果主键而不是空的 `WHERE` 条件。
+     *  - 一个键值对关联数组：通过一组属性值进行查询，
+     *    并返回所有属性值匹配的记录数组（如果没有找到则返回空数组）
+     *    请注意，`['id' => 1, 2]` 被视为非关联数组。
+     *    列名仅限于 SQL DBMS 的当前记录表列，否则将过滤以限制为简单的过滤条件。
      *
-     * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
-     * instances.
+     * 此方法将自动调用 `all()` 方法并返回 [[ActiveRecordInterface|ActiveRecord]]
+     * 实例的数组。
      *
-     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
-     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     * > Note：因为只是一种简单的方法，所以使用更复杂的条件，比如 ['!=', 'id', 1] 将不起作用。
+     * > 如果需要指定更复杂的条件，请将 [[find()]] 与 [[ActiveQuery::where()|where()]] 组合使用。
      *
-     * See the following code for usage examples:
+     * 有关于用法示例，请参阅以下代码：
      *
      * ```php
-     * // find the customers whose primary key value is 10
+     * // 找到主键值为 10 的客户
      * $customers = Customer::findAll(10);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['id' => 10])->all();
      *
-     * // find the customers whose primary key value is 10, 11 or 12.
+     * // 找到主键值为 10，11 或 12 的客户。
      * $customers = Customer::findAll([10, 11, 12]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['id' => [10, 11, 12]])->all();
      *
-     * // find customers whose age is 30 and whose status is 1
+     * // 找到年龄为 30 岁且状态为 1 的客户
      * $customers = Customer::findAll(['age' => 30, 'status' => 1]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
      * ```
      *
-     * If you need to pass user input to this method, make sure the input value is scalar or in case of
-     * array condition, make sure the array structure can not be changed from the outside:
+     * 如果需要将用户输入传递给此方法，在输入值是标量或在数组条件情况下，
+     * 确保无法从外部更改数组数组结构：
      *
      * ```php
      * // yii\web\Controller ensures that $id is scalar
@@ -271,60 +271,60 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *     // ...
      * }
      *
-     * // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+     * // 显式指定要搜索的列，在此处传递标量或数组将始终导致查找单个记录
      * $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
      *
-     * // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+     * // 不要使用以下代码！可以通过任意列值注入数组条件来过滤！
      * $model = Post::findOne(Yii::$app->request->get('id'));
      * ```
      *
-     * @param mixed $condition primary key value or a set of column values
-     * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
+     * @param mixed $condition 主键值或一组列值
+     * @return array 一个 ActiveRecord 实例数组，如果没有匹配则为空数组。
      */
     public static function findAll($condition);
 
     /**
-     * Updates records using the provided attribute values and conditions.
+     * 使用提供的属性值和条件更新记录。
      *
-     * For example, to change the status to be 1 for all customers whose status is 2:
+     * 例如，要将状态为 2 的所有客户的状态更改为 1：
      *
      * ```php
      * Customer::updateAll(['status' => 1], ['status' => '2']);
      * ```
      *
-     * @param array $attributes attribute values (name-value pairs) to be saved for the record.
-     * Unlike [[update()]] these are not going to be validated.
-     * @param array $condition the condition that matches the records that should get updated.
-     * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
-     * An empty condition will match all records.
-     * @return int the number of rows updated
+     * @param array $attributes 要为记录保存的属性值（键值对）。
+     * 与 [[update()]] 不同，这些不会被验证。
+     * @param array $condition 与应更新的记录匹配的条件。
+     * 有关于如何指定此参数，请参阅 [[QueryInterface::where()]]。
+     * 空条件将匹配所有记录。
+     * @return int 更新的行数
      */
     public static function updateAll($attributes, $condition = null);
 
     /**
-     * Deletes records using the provided conditions.
-     * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
+     * 使用提供的条件删除记录。
+     * WARNING：如果未指定任何条件，则此方法将删除表中的所有行。
      *
-     * For example, to delete all customers whose status is 3:
+     * 例如，要删除状态为 3 的所有客户：
      *
      * ```php
      * Customer::deleteAll([status = 3]);
      * ```
      *
-     * @param array $condition the condition that matches the records that should get deleted.
-     * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
-     * An empty condition will match all records.
+     * @param array $condition 与应删除的记录匹配的条件。
+     * 有关于如果指定参数，请参阅 [[QueryInterface::where()]]。
+     * 空条件将匹配所有记录。
      * @return int the number of rows deleted
      */
     public static function deleteAll($condition = null);
 
     /**
-     * Saves the current record.
+     * 保存当前记录。
      *
-     * This method will call [[insert()]] when [[getIsNewRecord()|isNewRecord]] is true, or [[update()]]
-     * when [[getIsNewRecord()|isNewRecord]] is false.
+     * 当 [[getIsNewRecord()|isNewRecord]] 为 true 时，将调用 [[insert()]]，
+     * 当 [[getIsNewRecord()|isNewRecord]] 为 false 时，将调用 [[update()]]。
      *
-     * For example, to save a customer record:
+     * 例如，要保存客户记录：
      *
      * ```php
      * $customer = new Customer; // or $customer = Customer::findOne($id);
@@ -333,19 +333,19 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * $customer->save();
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attribute names that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return bool whether the saving succeeded (i.e. no validation errors occurred).
+     * @param bool $runValidation 在保存记录之前，
+     * 是否执行验证（调用 [[\yii\base\Model::validate()|validate()]]）。默认为 `true`。
+     * 如果验证失败，则记录将不会保存到数据库中，并且此方法将返回 `false`。
+     * @param array $attributeNames 需要保存的属性名称列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return bool 是否保存成功（即没有发生验证错误）。
      */
     public function save($runValidation = true, $attributeNames = null);
 
     /**
-     * Inserts the record into the database using the attribute values of this record.
+     * 使用此记录的属性值将记录插入数据库。
      *
-     * Usage example:
+     * 用法示例：
      *
      * ```php
      * $customer = new Customer;
@@ -354,19 +354,19 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * $customer->insert();
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return bool whether the attributes are valid and the record is inserted successfully.
+     * @param bool $runValidation 在保存记录之前，
+     * 是否执行验证（调用 [[\yii\base\Model::validate()|validate()]]）。默认为 `true`。
+     * 如果验证失败，则记录将不会保存到数据库中，并且此方法将返回 `false`。
+     * @param array $attributes 需要保存的属性名称列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return bool 属性是否有效并且记录是否已成功插入。
      */
     public function insert($runValidation = true, $attributes = null);
 
     /**
-     * Saves the changes to this active record into the database.
+     * 将对此活动记录的更改保存到数据库中。
      *
-     * Usage example:
+     * 用法示例：
      *
      * ```php
      * $customer = Customer::findOne($id);
@@ -375,97 +375,97 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * $customer->update();
      * ```
      *
-     * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
-     * before saving the record. Defaults to `true`. If the validation fails, the record
-     * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
-     * meaning all attributes that are loaded from DB will be saved.
-     * @return int|bool the number of rows affected, or `false` if validation fails
-     * or updating process is stopped for other reasons.
-     * Note that it is possible that the number of rows affected is 0, even though the
-     * update execution is successful.
+     * @param bool $runValidation 在保存记录之前，
+     * 是否执行验证（调用 [[\yii\base\Model::validate()|validate()]]）。默认为 `true`。
+     * 如果验证失败，则记录将不会保存到数据库中，并且此方法将返回 `false`。
+     * @param array $attributeNames 需要保存的属性列表。
+     * 默认为 `null`，表示将保存从 DB 加载的所有属性。
+     * @return int|bool 影响的行数，
+     * 如果验证失败或者由于其他原因停止更新过程，返回 `false`。
+     * 注意，即使更新成功，
+     * 受影响的行数也有可能为 0。
      */
     public function update($runValidation = true, $attributeNames = null);
 
     /**
-     * Deletes the record from the database.
+     * 从数据库删除记录。
      *
-     * @return int|bool the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
-     * Note that it is possible that the number of rows deleted is 0, even though the deletion execution is successful.
+     * @return int|bool 删除的行数，如果由于某种原因删除失败，则为 `false` 。
+     * 注意，即使删除执行成功，删除的行数也可能是 0。
      */
     public function delete();
 
     /**
-     * Returns a value indicating whether the current record is new (not saved in the database).
-     * @return bool whether the record is new and should be inserted when calling [[save()]].
+     * 返回一个表示当前记录是否为新纪录的值（未保存在数据库中）。
+     * @return bool 是否记录是新的，应在调用 [[save()]] 时插入。
      */
     public function getIsNewRecord();
 
     /**
-     * Returns a value indicating whether the given active record is the same as the current one.
-     * Two [[getIsNewRecord()|new]] records are considered to be not equal.
-     * @param static $record record to compare to
-     * @return bool whether the two active records refer to the same row in the same database table.
+     * 返回一个表示给定的记录是否与当前记录相同的值。
+     * 两个 [[getIsNewRecord()|new]] 记录被认为是不相等的。
+     * @param static $record 要比较的记录
+     * @return bool 两个活动记录是否引用同一个数据表中的同一行。
      */
     public function equals($record);
 
     /**
-     * Returns the relation object with the specified name.
-     * A relation is defined by a getter method which returns an object implementing the [[ActiveQueryInterface]]
-     * (normally this would be a relational [[ActiveQuery]] object).
-     * It can be declared in either the ActiveRecord class itself or one of its behaviors.
-     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
-     * @param bool $throwException whether to throw exception if the relation does not exist.
-     * @return ActiveQueryInterface the relational query object
+     * 返回具有指定名称的关系对象。
+     * 关系由 getter 方法定义，
+     * 该方法返回实现 [[ActiveQueryInterface]] 的对象（通常这将是 [[ActiveQuery]] 对象）。
+     * 它可以在 ActiveRecord 类本身或其行为之一中申明。
+     * @param string $name 关系名称，例如 `orders` 用于通过 `getOrders()` 方法定义的关系（区分大小写）。
+     * @param bool $throwException 如果关系不存在，是否抛出异常。
+     * @return ActiveQueryInterface 关系查询对象
      */
     public function getRelation($name, $throwException = true);
 
     /**
-     * Populates the named relation with the related records.
-     * Note that this method does not check if the relation exists or not.
-     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
-     * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
+     * 使用相关记录填充命名关系。
+     * 注意，此方法不会检查关系是否存在。
+     * @param string $name 关系名称，例如 `orders` 用于通过 `getOrders()` 方法定义的关系（区分大小写）。
+     * @param ActiveRecordInterface|array|null $records 要填充到关系中的相关记录。
      * @since 2.0.8
      */
     public function populateRelation($name, $records);
 
     /**
-     * Establishes the relationship between two records.
+     * 建立两条记录之间的关系。
      *
-     * The relationship is established by setting the foreign key value(s) in one record
-     * to be the corresponding primary key value(s) in the other record.
-     * The record with the foreign key will be saved into database without performing validation.
+     * 通过将一个记录中的外键值设置为另外一个记录中相应的主键值，
+     * 从而建立该关系。
+     * 具有外键的记录将被保存到数据库中而不进行验证。
      *
-     * If the relationship involves a junction table, a new row will be inserted into the
-     * junction table which contains the primary key values from both records.
+     * 如果这个关系涉及到一个连接表，
+     * 那么一个新的行将被插入到包含来自两个记录的主键值的连接表中。
      *
-     * This method requires that the primary key value is not `null`.
+     * 方法要求主键值不能为 `null`。
      *
-     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
-     * @param static $model the record to be linked with the current one.
-     * @param array $extraColumns additional column values to be saved into the junction table.
-     * This parameter is only meaningful for a relationship involving a junction table
-     * (i.e., a relation set with [[ActiveQueryInterface::via()]]).
+     * @param string $name 区分大小写的关系名称，例如 `orders` 用于通过 `getOrders()` 方法定义的关系。
+     * @param static $model 与当前记录链接的记录。
+     * @param array $extraColumns 要保存的连接表中的附加列值。
+     * 此参数仅对涉及连接表的关系（即，
+     * 使用 [[ActiveQueryInterface::via()]] 设置的关系）有意义。
      */
     public function link($name, $model, $extraColumns = []);
 
     /**
-     * Destroys the relationship between two records.
+     * 破坏两条记录之间的关系。
      *
-     * The record with the foreign key of the relationship will be deleted if `$delete` is true.
-     * Otherwise, the foreign key will be set `null` and the record will be saved without validation.
+     * 如果 `$delete` 为真，则删除具有关系外键的记录。
+     * 否则，外键将被设置为 `null`，并且将保存记录而不进行验证。
      *
-     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
-     * @param static $model the model to be unlinked from the current one.
-     * @param bool $delete whether to delete the model that contains the foreign key.
-     * If false, the model's foreign key will be set `null` and saved.
-     * If true, the model containing the foreign key will be deleted.
+     * @param string $name 区分大小写的关系名称，例如 `orders` 用于通过 `getOrders()` 方法定义的关系。
+     * @param static $model 该模型与当前模型无关。
+     * @param bool $delete 是否删除包含外键的模型。
+     * 如果为 false，模型的外键将设置为 `null` 并保存。
+     * 如果为 true，包含外键的模型将被删除。
      */
     public function unlink($name, $model, $delete = false);
 
     /**
-     * Returns the connection used by this AR class.
-     * @return mixed the database connection used by this AR class.
+     * 返回此 AR 类使用的连接。
+     * @return mixed 此 AR 类使用的数据库连接。
      */
     public static function getDb();
 }

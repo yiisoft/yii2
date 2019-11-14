@@ -15,9 +15,9 @@ use yii\web\UrlRule as WebUrlRule;
 use yii\web\UrlRuleInterface;
 
 /**
- * UrlRule is provided to simplify the creation of URL rules for RESTful API support.
+ * UrlRule 用来简化 RESTful API 支持的 URL 规则的创建。
  *
- * The simplest usage of UrlRule is to declare a rule like the following in the application configuration,
+ * UrlRule 最简单的用法是在应用程序配置中声明如下规则，
  *
  * ```php
  * [
@@ -26,20 +26,20 @@ use yii\web\UrlRuleInterface;
  * ]
  * ```
  *
- * The above code will create a whole set of URL rules supporting the following RESTful API endpoints:
+ * 上面的代码将创建一整套支持以下 RESTful API 端点的 URL 规则：
  *
- * - `'PUT,PATCH users/<id>' => 'user/update'`: update a user
- * - `'DELETE users/<id>' => 'user/delete'`: delete a user
- * - `'GET,HEAD users/<id>' => 'user/view'`: return the details/overview/options of a user
- * - `'POST users' => 'user/create'`: create a new user
- * - `'GET,HEAD users' => 'user/index'`: return a list/overview/options of users
- * - `'users/<id>' => 'user/options'`: process all unhandled verbs of a user
- * - `'users' => 'user/options'`: process all unhandled verbs of user collection
+ * - `'PUT,PATCH users/<id>' => 'user/update'`：更新用户
+ * - `'DELETE users/<id>' => 'user/delete'`：删除用户
+ * - `'GET,HEAD users/<id>' => 'user/view'`：返回用户的详细信息/概述/选项
+ * - `'POST users' => 'user/create'`：创建一个新用户
+ * - `'GET,HEAD users' => 'user/index'`：返回用户的列表/概述/选项
+ * - `'users/<id>' => 'user/options'`：响应用户的所有未处理动词
+ * - `'users' => 'user/options'`：响应所有未处理的用户集合动词
  *
- * You may configure [[only]] and/or [[except]] to disable some of the above rules.
- * You may configure [[patterns]] to completely redefine your own list of rules.
- * You may configure [[controller]] with multiple controller IDs to generate rules for all these controllers.
- * For example, the following code will disable the `delete` rule and generate rules for both `user` and `post` controllers:
+ * 您可以配置 [[only]] 或者 [[except]] 以禁用上述某些规则。
+ * 您可以配置 [[patterns]] 以完全重新定义自己的规则列表。
+ * 您可以配置 [[controller]] 以多个控制器 ID，来生成所有这些控制器的规则。
+ * 例如，以下代码将禁用 `delete` 规则并为 `user` 和 `post` 控制器生成规则：
  *
  * ```php
  * [
@@ -49,12 +49,12 @@ use yii\web\UrlRuleInterface;
  * ]
  * ```
  *
- * The property [[controller]] is required and should represent one or multiple controller IDs.
- * Each controller ID should be prefixed with the module ID if the controller is within a module.
- * The controller ID used in the pattern will be automatically pluralized (e.g. `user` becomes `users`
- * as shown in the above examples).
+ * [[controller]]  属性是必需的，应代表一个或多个控制器ID。
+ * 如果控制器位于模块内，则每个控制器ID都应以模块ID为前缀。
+ * 使用的控制器ID将自动复数（例如 `user` 变为 `users`
+ * 如上例所示）。
  *
- * For more details and usage information on UrlRule, see the [guide article on rest routing](guide:rest-routing).
+ * 关于 UrlRule 的更多使用参考，请查看 [Rest 路由指南](guide:rest-routing)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -62,59 +62,59 @@ use yii\web\UrlRuleInterface;
 class UrlRule extends CompositeUrlRule
 {
     /**
-     * @var string the common prefix string shared by all patterns.
+     * @var string 每一个模式的公共前缀。
      */
     public $prefix;
     /**
-     * @var string the suffix that will be assigned to [[\yii\web\UrlRule::suffix]] for every generated rule.
+     * @var string 后缀，将被赋值给 [[\yii\web\UrlRule::suffix]] 以生成的每个规则
      */
     public $suffix;
     /**
-     * @var string|array the controller ID (e.g. `user`, `post-comment`) that the rules in this composite rule
-     * are dealing with. It should be prefixed with the module ID if the controller is within a module (e.g. `admin/user`).
+     * @var string|array 控制器ID（例如 `user`，`post-comment`）表示这些规则在此复合规则将被处理
+     * 如果控制器在模块内（例如 `admin/user`），它应该以模块 ID 为前缀。
      *
-     * By default, the controller ID will be pluralized automatically when it is put in the patterns of the
-     * generated rules. If you want to explicitly specify how the controller ID should appear in the patterns,
-     * you may use an array with the array key being as the controller ID in the pattern, and the array value
-     * the actual controller ID. For example, `['u' => 'user']`.
+     * 默认情况下，控制器ID在放入模式时会自动复数以生产规则
+     * 如果要明确指定控制器 ID 在模式中的显示方式，
+     * 你可以在模式中使用数组，键为模式名，值为控制器实际的 ID，
+     * 例如 `['u' => 'user']`。
      *
-     * You may also pass multiple controller IDs as an array. If this is the case, this composite rule will
-     * generate applicable URL rules for EVERY specified controller. For example, `['user', 'post']`.
+     * 你还可以传递多个控制器 ID 的数组。此时，复合规则将
+     * 为每个指定的控制器生成适用的URL规则。例如 `['user', 'post']`。
      */
     public $controller;
     /**
-     * @var array list of acceptable actions. If not empty, only the actions within this array
-     * will have the corresponding URL rules created.
+     * @var array 接受的动作（Action）列表，如果不为空，仅仅是这数组中的动作
+     * 会创建相应的 URL 规则。
      * @see patterns
      */
     public $only = [];
     /**
-     * @var array list of actions that should be excluded. Any action found in this array
-     * will NOT have its URL rules created.
+     * @var array 除外的动作（Action）列表，这里的动作都不会创建 URL 规则
+     *
      * @see patterns
      */
     public $except = [];
     /**
-     * @var array patterns for supporting extra actions in addition to those listed in [[patterns]].
-     * The keys are the patterns and the values are the corresponding action IDs.
-     * These extra patterns will take precedence over [[patterns]].
+     * @var array 额外增加的模式，会被加入 [[patterns]] 中，
+     * 键为模式名称，值为相应的动作 ID。
+     * 这些额外的模式将优先于 [[patterns]] 生效。
      */
     public $extraPatterns = [];
     /**
-     * @var array list of tokens that should be replaced for each pattern. The keys are the token names,
-     * and the values are the corresponding replacements.
+     * @var array 每个模式替换的标记列表。键为标记名称，
+     * 值为相应的替换
      * @see patterns
      */
     public $tokens = [
         '{id}' => '<id:\\d[\\d,]*>',
     ];
     /**
-     * @var array list of possible patterns and the corresponding actions for creating the URL rules.
-     * The keys are the patterns and the values are the corresponding actions.
-     * The format of patterns is `Verbs Pattern`, where `Verbs` stands for a list of HTTP verbs separated
-     * by comma (without space). If `Verbs` is not specified, it means all verbs are allowed.
-     * `Pattern` is optional. It will be prefixed with [[prefix]]/[[controller]]/,
-     * and tokens in it will be replaced by [[tokens]].
+     * @var array 可用的模式对应相应动作的列表，用以创建 URL 规则。
+     * 键为模式，值为相应的动作。
+     * 模式的格式是 `Verbs Pattern`, 其中 `Verbs` 代表逗号分隔的 HTTP 动词列表（没有空格）。
+     * 如果 `Verbs` 指定，意味着所有动词都被允许。
+     * `Pattern` 是可选的，它将以 [[prefix]]/[[controller]]/ 为前缀，
+     * 其中的标记会被 [[tokens]] 替换。
      */
     public $patterns = [
         'PUT,PATCH {id}' => 'update',
@@ -126,15 +126,15 @@ class UrlRule extends CompositeUrlRule
         '' => 'options',
     ];
     /**
-     * @var array the default configuration for creating each URL rule contained by this rule.
+     * @var array 用于创建此规则包含的每个 URL 规则的默认配置。
      */
     public $ruleConfig = [
         'class' => 'yii\web\UrlRule',
     ];
     /**
-     * @var bool whether to automatically pluralize the URL names for controllers.
-     * If true, a controller ID will appear in plural form in URLs. For example, `user` controller
-     * will appear as `users` in URLs.
+     * @var bool 是否自动复数控制器的 URL名 称。
+     * 如果为 true, 则控制器 ID 将以复数形式显示在 URL 中。例如 `user` 控制器
+     * 将在URL中显示为 `users` 。
      * @see controller
      */
     public $pluralize = true;
@@ -185,7 +185,7 @@ class UrlRule extends CompositeUrlRule
     }
 
     /**
-     * Creates a URL rule using the given pattern and action.
+     * 使用给定的模式和操作创建URL规则。
      * @param string $pattern
      * @param string $prefix
      * @param string $action

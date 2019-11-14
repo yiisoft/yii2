@@ -8,9 +8,9 @@
 namespace yii\base;
 
 /**
- * ActionEvent represents the event parameter used for an action event.
+ * ActionEvent 表示用于动作事件的事件参数。
  *
- * By setting the [[isValid]] property, one may control whether to continue running the action.
+ * 通过设置 [[isValid]] 属性，可以控制是否继续运行此动作。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,25 +18,25 @@ namespace yii\base;
 class ActionEvent extends Event
 {
     /**
-     * @var Action the action currently being executed
+     * @var Action 目前正在执行的动作
      */
     public $action;
     /**
-     * @var mixed the action result. Event handlers may modify this property to change the action result.
+     * @var mixed 动作结果。事件处理程序可以修改此属性以更改动作结果。
      */
     public $result;
     /**
-     * @var bool whether to continue running the action. Event handlers of
-     * [[Controller::EVENT_BEFORE_ACTION]] may set this property to decide whether
-     * to continue running the current action.
+     * @var bool 是否继续运行该动作。
+     * [[Controller::EVENT_BEFORE_ACTION]]
+     * 的事件处理程序可以设置此属性以决定是否继续运行当前动作。
      */
     public $isValid = true;
 
 
     /**
-     * Constructor.
-     * @param Action $action the action associated with this action event.
-     * @param array $config name-value pairs that will be used to initialize the object properties
+     * 构造函数
+     * @param Action $action 与此动作事件关联的动作。
+     * @param array $config 将用于初始化对象属性的键值对
      */
     public function __construct($action, $config = [])
     {

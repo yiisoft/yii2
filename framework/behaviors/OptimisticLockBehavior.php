@@ -14,18 +14,18 @@ use yii\validators\NumberValidator;
 use yii\helpers\ArrayHelper;
 
 /**
- * OptimisticLockBehavior automatically upgrades a model's lock version using the column name 
- * returned by [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]].
+ * OptimisticLockBehavior 自动地根据列名更新模型的锁版本（译者注：请读者自行查阅乐观锁的知识体系），
+ * 列名是通过 [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] 读取的。
  *
- * Optimistic locking allows multiple users to access the same record for edits and avoids
- * potential conflicts. In case when a user attempts to save the record upon some staled data
- * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
- * and the update or deletion is skipped.
+ * 乐观锁机制允许多个用户对同一条记录进行更新并避免潜在的冲突。
+ * 比如当用户试图保存含有脏数据的记录（因为另一个用户已经更新过该条记录）时，
+ * 将会抛出 [[StaleObjectException]] 异常，
+ * 这样更新或者删除操作就会跳过。
  * 
- * To use this behavior, first enable optimistic lock by following the steps listed in 
- * [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]], remove the column name 
- * holding the lock version from the [[\yii\base\Model::rules()|rules()]] method of your 
- * ActiveRecord class, then add the following code to it:
+ * 要使用该行为，首先通过列在 [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] 
+ * 方法注释里的几步来开启乐观锁验证机制，然后从你的 [[\yii\base\Model::rules()|rules()]]
+ * 方法里清除掉存有锁版本的列，
+ * 最后给你的 ActiveRecord 类添加下面的代码：
  *
  * ```php
  * use yii\behaviors\OptimisticLockBehavior;
@@ -38,21 +38,21 @@ use yii\helpers\ArrayHelper;
  * }
  * ```
  *
- * By default, OptimisticLockBehavior will use [[\yii\web\Request::getBodyParam()|getBodyParam()]] to parse
- * the submitted value or set it to 0 on any fail. That means a request not holding the version attribute
- * may achieve a first successful update to entity, but starting from there any further try should fail
- * unless the request is holding the expected version number. 
+ * 默认情况下，OptimisticLockBehavior 会从 [[\yii\web\Request::getBodyParam()|getBodyParam()]] 中解析
+ * 提交过来的版本值或者在失败时设置为0。这意味着一个没有携带表示乐观锁版本值的请求也许可以在第一次成功更新该实体，
+ * 但自那以后任何更多地请求都应该失败，直到这个请求携带了期望的版本号，
+ * 才可以最终更新成功。
 
- * Once attached, internal use of the model class should also fail to save the record if the version number 
- * isn't held by [[\yii\web\Request::getBodyParam()|getBodyParam()]]. It may be useful to extend your model class, 
- * enable optimistic lock in parent class by overriding [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]], 
- * then attach the behavior to the child class so you can tie the parent model to internal use while linking the child model 
- * holding this behavior to the controllers responsible of receiving end user inputs.
- * Alternatively, you can also configure the [[value]] property with a PHP callable to implement a different logic.
+ * 该行为一旦附加到模型类中，如果 [[\yii\web\Request::getBodyParam()|getBodyParam()]] 中没有携带版本值，
+ * 那么模型类的内部操作比如在保存记录时就会失败。它在扩展模型类上非常有用，
+ * 通过覆盖父类的 [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] 方法来开启乐观锁，
+ * 然后附加行为到子类中，这样可以把携带行为的子类关联到接收并处理终端用户输入数据的控制器的同时，
+ * 也可以把子类绑定到父类的内部逻辑处理中，
+ * 或者你也可以把 [[value]] 属性配置为 PHP 回调函数来实现不同的逻辑。
  * 
- * OptimisticLockBehavior also provides a method named [[upgrade()]] that increases a model's 
- * version by one, that may be useful when you need to mark an entity as stale among connected clients
- * and avoid any change to it until they load it again:
+ * OptimisticLockBehavior 也提供了一个名为 [[upgrade()]] 的方法来给模型的版本值加一，
+ * 当多个客户端连接出现的情况下，你需要主动标记某实体为脏数据时该方法将非常有用。
+ * 这样可以在客户端最终加载该实体之前避免任何更新：
  *
  * ```php
  * $model->upgrade();
@@ -60,14 +60,14 @@ use yii\helpers\ArrayHelper;
  *
  * @author Salem Ouerdani <tunecino@gmail.com>
  * @since 2.0.16
- * @see \yii\db\BaseActiveRecord::optimisticLock() for details on how to enable optimistic lock.
+ * @see \yii\db\BaseActiveRecord::optimisticLock() 详情来参考如何开启乐观锁。
  */
 class OptimisticLockBehavior extends AttributeBehavior
 {
     /**
      * {@inheritdoc}
      *
-     * In case of `null` value it will be directly parsed from [[\yii\web\Request::getBodyParam()|getBodyParam()]] or set to 0.
+     * 如果是 `null` 它将直接从 [[\yii\web\Request::getBodyParam()|getBodyParam()]] 中解析或者解析失败时设置为 0。
      */
     public $value;
     /**
@@ -75,7 +75,7 @@ class OptimisticLockBehavior extends AttributeBehavior
      */
     public $skipUpdateOnClean = false;
     /**
-     * @var string the attribute name holding the version value.
+     * @var string 保存版本值的属性名。
      */
     private $_lockAttribute;
 
@@ -106,9 +106,9 @@ class OptimisticLockBehavior extends AttributeBehavior
     }
 
     /**
-     * Returns the column name to hold the version value as defined in [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]].
-     * @return string the property name.
-     * @throws InvalidCallException if [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] is not properly configured.
+     * 返回保存版本值的列名，该列名在 [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] 中定义。
+     * @return string 属性名。
+     * @throws InvalidCallException 如果 [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] 配置有误时。
      * @since 2.0.16
      */
     protected function getLockAttribute()
@@ -130,7 +130,7 @@ class OptimisticLockBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case of `null`, value will be parsed from [[\yii\web\Request::getBodyParam()|getBodyParam()]] or set to 0.
+     * 如果是 `null`，版本值将直接从 [[\yii\web\Request::getBodyParam()|getBodyParam()]] 中解析或者解析失败时设置为 0。
      */
     protected function getValue($event)
     {
@@ -148,12 +148,12 @@ class OptimisticLockBehavior extends AttributeBehavior
     }
 
     /**
-     * Upgrades the version value by one and stores it to database.
+     * 主动更新版本值进行加一操作，然后存入数据库中。
      *
      * ```php
      * $model->upgrade();
      * ```
-     * @throws InvalidCallException if owner is a new record.
+     * @throws InvalidCallException 如果属主是一条新记录时。
      * @since 2.0.16
      */
     public function upgrade()

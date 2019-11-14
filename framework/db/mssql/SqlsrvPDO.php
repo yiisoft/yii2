@@ -8,8 +8,8 @@
 namespace yii\db\mssql;
 
 /**
- * This is an extension of the default PDO class of SQLSRV driver.
- * It provides workarounds for improperly implemented functionalities of the SQLSRV driver.
+ * SQLSRV 驱动的默认 PDO 类扩展。
+ * 为 SQLSRV 驱动不能正确实现的功能提供了变通方法。
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -17,14 +17,14 @@ namespace yii\db\mssql;
 class SqlsrvPDO extends \PDO
 {
     /**
-     * Returns value of the last inserted ID.
+     * 返回最后插入的 ID 的值。
      *
-     * SQLSRV driver implements [[PDO::lastInsertId()]] method but with a single peculiarity:
-     * when `$sequence` value is a null or an empty string it returns an empty string.
-     * But when parameter is not specified it works as expected and returns actual
-     * last inserted ID (like the other PDO drivers).
-     * @param string|null $sequence the sequence name. Defaults to null.
-     * @return int last inserted ID value.
+     * SQLSRV 驱动实现了 [[PDO::lastInsertId()]] 方法，但具有单一的特性：
+     * 当 `$sequence` 值为 null 或空字符串时，返回一个空字符串。
+     * 但是，当没有指定参数时，它将按预期工作，
+     * 并返回实际的最后插入的 ID（与其他 PDO 驱动程序一样）。
+     * @param string|null $sequence 序列名称。默认为空。
+     * @return int 最后插入的 ID 的值。
      */
     public function lastInsertId($sequence = null)
     {

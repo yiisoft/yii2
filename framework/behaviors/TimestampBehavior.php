@@ -11,9 +11,9 @@ use yii\base\InvalidCallException;
 use yii\db\BaseActiveRecord;
 
 /**
- * TimestampBehavior automatically fills the specified attributes with the current timestamp.
+ * TimestampBehavior 用来自动给指定的属性填充当前时间戳。 
  *
- * To use TimestampBehavior, insert the following code to your ActiveRecord class:
+ * 要使用 TimestampBehavior，把下面的代码加到你的 ActiveRecord 类中：
  *
  * ```php
  * use yii\behaviors\TimestampBehavior;
@@ -26,17 +26,17 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
- * By default, TimestampBehavior will fill the `created_at` and `updated_at` attributes with the current timestamp
- * when the associated AR object is being inserted; it will fill the `updated_at` attribute
- * with the timestamp when the AR object is being updated. The timestamp value is obtained by `time()`.
+ * 默认情况下，当关联的 AR 对象执行插入操作时，TimestampBehavior 将会给 `created_at` 和 `updated_at`
+ * 两个属性赋值为当前时间戳；而当 AR 对象执行更新操作时，
+ * 它只给 `updated_at` 属性赋值为当前时间戳。时间戳的值来自于 `time()`。
  *
- * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
- * not be validated, i.e. `created_at` and `updated_at` should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ * 由于属性值是被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
+ * 因此，`created_at` 和 `updated_at` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
- * For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+ * 对于应用在 MySQL 数据库的上述实现，请声明 columns(`created_at`, `updated_at`) 为整型来存储时间戳。
  *
- * If your attribute names are different or you want to use a different way of calculating the timestamp,
- * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:
+ * 如果你的属性名不一样或者你想用不同的方式计算时间戳，
+ * 那么你可以像下面这样配置 [[createdAtAttribute]]，[[updatedAtAttribute]] 和 [[value]] 来达到目的。
  *
  * ```php
  * use yii\db\Expression;
@@ -54,12 +54,12 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
- * In case you use an [[\yii\db\Expression]] object as in the example above, the attribute will not hold the timestamp value, but
- * the Expression object itself after the record has been saved. If you need the value from DB afterwards you should call
- * the [[\yii\db\ActiveRecord::refresh()|refresh()]] method of the record.
+ * 如果你像上述例子那样使用了 [[\yii\db\Expression]] 对象，那么当记录保存后
+ * 属性的值将不是时间戳而是这个 Expression 对象本身。
+ * 如果你随后需要这个值的话，应该先调用这个记录的 [[\yii\db\ActiveRecord::refresh()|refresh()]] 方法。
  *
- * TimestampBehavior also provides a method named [[touch()]] that allows you to assign the current
- * timestamp to the specified attribute(s) and save them to the database. For example,
+ * TimestampBehavior 也提供了一个 [[touch()]] 方法，
+ * 它可以给指定的一个或多个属性设置为当前时间戳然后保存入库。比如，
  *
  * ```php
  * $model->touch('creation_time');
@@ -72,20 +72,20 @@ use yii\db\BaseActiveRecord;
 class TimestampBehavior extends AttributeBehavior
 {
     /**
-     * @var string the attribute that will receive timestamp value
-     * Set this property to false if you do not want to record the creation time.
+     * @var string 接收时间戳的属性名。
+     * 如果你不想记录生成时间的话把它设置为false。
      */
     public $createdAtAttribute = 'created_at';
     /**
-     * @var string the attribute that will receive timestamp value.
-     * Set this property to false if you do not want to record the update time.
+     * @var string 接收时间戳的属性名。
+     * 如果你不想记录更新时间的话把它设置为false。
      */
     public $updatedAtAttribute = 'updated_at';
     /**
      * {@inheritdoc}
      *
-     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
-     * will be used as value.
+     * 如果这个值是 `null`，
+     * 那么它将用 PHP 函数 [time()](http://php.net/manual/en/function.time.php) 作为 $value 的值。
      */
     public $value;
 
@@ -108,8 +108,8 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
-     * will be used as value.
+     * 如果这个值是 `null`，
+     * 那么它将用 PHP 函数 [time()](http://php.net/manual/en/function.time.php) 作为 $value 的值。
      */
     protected function getValue($event)
     {
@@ -121,13 +121,13 @@ class TimestampBehavior extends AttributeBehavior
     }
 
     /**
-     * Updates a timestamp attribute to the current timestamp.
+     * 把指定的属性更新为当前时间戳。
      *
      * ```php
      * $model->touch('lastVisit');
      * ```
-     * @param string $attribute the name of the attribute to update.
-     * @throws InvalidCallException if owner is a new record (since version 2.0.6).
+     * @param string $attribute 要更新的属性名。
+     * @throws InvalidCallException 如果行为的拥有者（ AR 对象）是一个未更新过的对象 (since version 2.0.6)。
      */
     public function touch($attribute)
     {

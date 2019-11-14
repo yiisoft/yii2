@@ -8,13 +8,13 @@
 namespace yii\db;
 
 /**
- * Interface ExpressionInterface should be used to mark classes, that should be built
- * in a special way.
+ * 接口 ExpressionInterface 应用于标记类，
+ * 这些类应以特殊方式构建。
  *
- * The database abstraction layer of Yii framework supports objects that implement this
- * interface and will use [[ExpressionBuilderInterface]] to build them.
+ * Yii 框架的数据库抽象层支持实现此接口的对象，
+ * 并将使用 [[ExpressionBuilderInterface]] 来构建它们。
  *
- * The default implementation is a class [[Expression]].
+ * 默认实现是一个类 [[Expression]]。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

@@ -8,12 +8,12 @@
 namespace yii\caching;
 
 /**
- * Dependency is the base class for cache dependency classes.
+ * Dependency 是缓存依赖类的基类。
  *
- * Child classes should override its [[generateDependencyData()]] for generating
- * the actual dependency data.
+ * 子类应该覆盖它的 [[generateDependencyData()]] 方法，
+ * 用来产生实际具体的依赖数据。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,28 +21,28 @@ namespace yii\caching;
 abstract class Dependency extends \yii\base\BaseObject
 {
     /**
-     * @var mixed the dependency data that is saved in cache and later is compared with the
-     * latest dependency data.
+     * @var mixed 存储在缓存中的依赖数据，
+     * 将来会取出来和最新的依赖数据进行比较。
      */
     public $data;
     /**
-     * @var bool whether this dependency is reusable or not. True value means that dependent
-     * data for this cache dependency will be generated only once per request. This allows you
-     * to use the same cache dependency for multiple separate cache calls while generating the same
-     * page without an overhead of re-evaluating dependency data each time. Defaults to false.
+     * @var bool 依赖是否重用。True 表示当前依赖对象的依赖数据只在每个请求里生成一次。
+     * 这允许你在多个单独的缓存调用中使用相同的缓存依赖对象，
+     * 这样就会生成相同的数据页但是减少了每次生成缓存数据的开销。
+     * 默认是 false。
      */
     public $reusable = false;
 
     /**
-     * @var array static storage of cached data for reusable dependencies.
+     * @var array static 为重用依赖配置的缓存数组。
      */
     private static $_reusableData = [];
 
 
     /**
-     * Evaluates the dependency by generating and saving the data related with dependency.
-     * This method is invoked by cache before writing data into it.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
+     * 通过生成和保存依赖相关的数据来计算依赖。
+     * 该方法会在缓存对象把要缓存的数据写入缓存之前调用。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件
      */
     public function evaluateDependency($cache)
     {
@@ -58,10 +58,10 @@ abstract class Dependency extends \yii\base\BaseObject
     }
 
     /**
-     * Returns a value indicating whether the dependency has changed.
-     * @deprecated since version 2.0.11. Will be removed in version 2.1. Use [[isChanged()]] instead.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return bool whether the dependency has changed.
+     * 返回表明依赖是否发生变化的值。
+     * @deprecated 从 2.0.11 版本可用，将要从 2.1 版本移除。请用 [[isChanged()]] 方法代替。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return bool 当前依赖是否发生了变化。
      */
     public function getHasChanged($cache)
     {
@@ -69,9 +69,9 @@ abstract class Dependency extends \yii\base\BaseObject
     }
 
     /**
-     * Checks whether the dependency is changed.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return bool whether the dependency has changed.
+     * 检测依赖是否发生了变化。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return bool 当前依赖是否发生了变化。
      * @since 2.0.11
      */
     public function isChanged($cache)
@@ -90,7 +90,7 @@ abstract class Dependency extends \yii\base\BaseObject
     }
 
     /**
-     * Resets all cached data for reusable dependencies.
+     * 重置所有重用依赖的缓存数据。
      */
     public static function resetReusableData()
     {
@@ -98,8 +98,8 @@ abstract class Dependency extends \yii\base\BaseObject
     }
 
     /**
-     * Generates a unique hash that can be used for retrieving reusable dependency data.
-     * @return string a unique hash value for this cache dependency.
+     * 生成一个唯一的散列，它可以用来接收可重用的缓存数据。
+     * @return string 与缓存数据对应的唯一散列值。
      * @see reusable
      */
     protected function generateReusableHash()
@@ -112,10 +112,10 @@ abstract class Dependency extends \yii\base\BaseObject
     }
 
     /**
-     * Generates the data needed to determine if dependency is changed.
-     * Derived classes should override this method to generate the actual dependency data.
-     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
-     * @return mixed the data needed to determine if dependency has been changed.
+     * 生成在判断依赖是否发生变化时用到的依赖数据。
+     * 依赖驱动类应该覆盖该方法生成实际的依赖数据。
+     * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
+     * @return mixed 判断依赖是否发生变化时用到的依赖数据。
      */
     abstract protected function generateDependencyData($cache);
 }

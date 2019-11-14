@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * Exception represents an exception that is caused by some DB-related operations.
+ * Exception 表示由某些与 DB 相关操作引起的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,18 +16,18 @@ namespace yii\db;
 class Exception extends \yii\base\Exception
 {
     /**
-     * @var array the error info provided by a PDO exception. This is the same as returned
-     * by [PDO::errorInfo](http://www.php.net/manual/en/pdo.errorinfo.php).
+     * @var array PDO 异常提供的错误信息。
+     * 这与 [PDO::errorInfo](http://www.php.net/manual/en/pdo.errorinfo.php) 返回的相同。
      */
     public $errorInfo = [];
 
 
     /**
-     * Constructor.
-     * @param string $message PDO error message
-     * @param array $errorInfo PDO error info
-     * @param int $code PDO error code
-     * @param \Exception $previous The previous exception used for the exception chaining.
+     * 构造函数。
+     * @param string $message PDO 错误消息
+     * @param array $errorInfo PDO 错误信息
+     * @param int $code PDO 错误代码
+     * @param \Exception $previous 用于异常链接的先前异常。
      */
     public function __construct($message, $errorInfo = [], $code = 0, \Exception $previous = null)
     {
@@ -36,7 +36,7 @@ class Exception extends \yii\base\Exception
     }
 
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好的名称
      */
     public function getName()
     {
@@ -44,7 +44,7 @@ class Exception extends \yii\base\Exception
     }
 
     /**
-     * @return string readable representation of exception
+     * @return string 可读的异常表示
      */
     public function __toString()
     {
