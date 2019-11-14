@@ -191,11 +191,11 @@ Yii 2.0 也兼容 Facebook 公司的 [HHVM](http://hhvm.com/)，
 
 在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过
 URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。
-这种配置需要将 Web 服务器的文档根目录(document root)指向 `basic/web` 目录。
-可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md)一章中有介绍，
+这种配置需要将 Web 服务器的文档根目录（document root）指向 `basic/web` 目录。
+可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-routing.md)一章中有介绍，
 你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
-> Info: 将 `basic/web` 设置为文档根目录(document root)，可以防止终端用户访问 `basic/web` 相邻目录中
+> Info: 将 `basic/web` 设置为文档根目录（document root），可以防止终端用户访问 `basic/web` 相邻目录中
 的私有应用代码和敏感数据文件。
 禁止对其他目录的访问是一个不错的安全改进。
 
