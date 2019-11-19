@@ -258,7 +258,7 @@ abstract class Application extends Module
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
                 $config['components'][$id] = $component;
-            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class']) && !isset($config['components'][$id]['__class'])) {
                 $config['components'][$id]['class'] = $component['class'];
             }
         }
