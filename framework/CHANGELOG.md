@@ -1,14 +1,15 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.30 under development
+2.0.30 November 19, 2019
 ------------------------
 
+- Bug #17434: IE Ajax redirect fix for non 11.0 versions (kamarton)
 - Bug #17632: Unicode file name was not correctly parsed in multipart forms (AlexRas007, samdark)
 - Bug #17648: Handle empty column arrays in console `Table` widget (alex-code)
 - Bug #17657: Fix migration errors from missing `$schema` in RBAC init file when using MSSQL (PoohOka)
-- Bug #17434: IE Ajax redirect fix for non 11.0 versions (kamarton)
 - Bug #17670: Fix overriding core component class using `__class` (sup-ham, samdark)
+
 
 2.0.29 October 22, 2019
 -----------------------
