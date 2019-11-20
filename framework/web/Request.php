@@ -226,6 +226,9 @@ class Request extends \yii\base\Request
         // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
+
+        // RFC 7239:
+        'Forwarded',
     ];
     /**
      * @var string[] List of headers where proxies store the real client IP.
@@ -725,7 +728,9 @@ class Request extends \yii\base\Request
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
 
-            if ($this->headers->has('X-Forwarded-Host')) {
+            if ($this->getForwardedHeaderPart('host')) {
+                $this->_hostInfo = $http . '://' . $this->getForwardedHeaderPart('host');
+            } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
@@ -1066,6 +1071,11 @@ class Request extends \yii\base\Request
         if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
             return true;
         }
+
+        if (($proto = $this->getForwardedHeaderPart('proto')) !== null) {
+            return strcasecmp($proto, 'https') === 0;
+        }
+
         foreach ($this->secureProtocolHeaders as $header => $values) {
             if (($headerValue = $this->headers->get($header, null)) !== null) {
                 foreach ($values as $value) {
@@ -1142,6 +1152,16 @@ class Request extends \yii\base\Request
      * @since 2.0.28
      */
     protected function getUserIpFromIpHeaders() {
+        if (($ip = $this->getForwardedHeaderPart('for')) !== null) {
+            if (preg_match('/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/', $ip, $matches)) {
+                $ip = $this->getUserIpFromIpHeader(implode(',', $matches['ip']));
+                if ($ip !== null) {
+                    return $ip;
+                }
+            }
+        }
+
+
         foreach($this->ipHeaders as $ipHeader) {
             if ($this->headers->has($ipHeader)) {
                 $ip = $this->getUserIpFromIpHeader($this->headers->get($ipHeader));
@@ -1808,5 +1828,74 @@ class Request extends \yii\base\Request
         $security = Yii::$app->security;
 
         return $security->compareString($security->unmaskToken($clientSuppliedToken), $security->unmaskToken($trueToken));
+    }
+
+    /**
+     * Gets first `Forwarded` header value for token
+     *
+     * @param string $token Header token
+     *
+     * @return array
+     */
+    protected function getForwardedHeaderPart($token)
+    {
+        if ($decodedHeader = $this->getForwardedHeaderParts($token)) {
+            /**
+             * First one is always correct, because proxy CAN append to last
+             * existing header field
+             * keep in mind that it is NOT enforced, therefore we cannot be
+             * sure that this value is always correct.
+             */
+            return $decodedHeader[0];
+        }
+    }
+
+    /**
+     * Gets all `Forwarded` header values for token
+     *
+     * @param string $token Header token
+     *
+     * @return array
+     */
+    protected function getForwardedHeaderParts($token)
+    {
+        $token = strtolower($token);
+        if ($this->headers->has('Forwarded')) {
+            $decodedHeader = $this->decodedForwardedHeader();
+            if (isset($decodedHeader[$token])) {
+                return $decodedHeader[$token];
+            }
+        }
+    }
+
+    private $_decodedForwardedHeader;
+
+    /**
+     * Returns decoded forwarded header
+     *
+     * @return array
+     */
+    protected function decodedForwardedHeader()
+    {
+        if ($this->_decodedForwardedHeader === null) {
+            $this->_decodedForwardedHeader = [];
+
+            $forwarded = $this->headers->get('Forwarded', '');
+
+            $forwardedElements = explode(';', $forwarded);
+
+            foreach ($forwardedElements as $forwardedPairs) {
+                list($key) = explode('=', $forwardedPairs);
+
+                $this->_decodedForwardedHeader[strtolower($key)] = array_map(
+                    function ($forwardedPairs) {
+                        list(, $value) = explode('=', $forwardedPairs);
+                        return trim($value, " \t\n\r\0\x0B\"");
+                    },
+                    explode(',', $forwardedPairs)
+                );
+            }
+        }
+        return $this->_decodedForwardedHeader;
     }
 }

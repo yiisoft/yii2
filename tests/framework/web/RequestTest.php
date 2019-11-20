@@ -333,6 +333,44 @@ class RequestTest extends TestCase
                     'example3.com',
                 ]
             ],
+            // RFC 7239 forwarded from untrusted server
+            [
+                [
+                    'HTTP_FORWARDED' => 'host=example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // RFC 7239 forwarded from trusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'host=example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+            // RFC 7239 forwarded from trusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'host=example3.com,host=example2.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
         ];
     }
 
@@ -458,6 +496,44 @@ class RequestTest extends TestCase
                 'HTTP_FRONT_END_HTTPS' => 'on',
                 'REMOTE_ADDR' => '192.169.0.1',
             ], false],
+            // RFC 7239 forwarded from untrusted proxy
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+            ], false],
+            // RFC 7239 forwarded from two untrusted proxies
+            [[
+                'HTTP_FORWARDED' => 'proto=https,proto=http',
+            ], false],
+            // RFC 7239 forwarded from trusted proxy
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], true],
+            // RFC 7239 forwarded from trusted proxy, second proxy not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=https,proto=http',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], true],
+            // RFC 7239 forwarded from trusted proxy, second proxy encrypted, while client request not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=http,proto=https',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], false],
+            // RFC 7239 forwarded from untrusted proxy
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
+            // RFC 7239 forwarded from untrusted proxy, second proxy not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=https,proto=http',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
+            // RFC 7239 forwarded from untrusted proxy, second proxy encrypted, while client request not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=http,proto=https',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
         ];
     }
 
@@ -513,6 +589,102 @@ class RequestTest extends TestCase
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '192.169.1.1',
                     'REMOTE_HOST' => 'untrusted.com',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from trusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            // RFC 7239 forwarded from trusted proxy with optinal port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123:2222',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123,for=122.122.122.122',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy, client IP with optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123:2222,for=122.122.122.122:2222',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            // RFC 7239 forwarded from untrusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from trusted proxy with optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123:2222',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from trusted proxy with client IPv6
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="2001:0db8:85a3:0000:0000:8a2e:0370:7334"',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from trusted proxy with client IPv6 and optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222"',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy with client IPv6
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="2001:0db8:85a3:0000:0000:8a2e:0370:7334",for=122.122.122.122',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy with client IPv6 and optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222",for=122.122.122.122:2222',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from untrusted proxy with client IPv6
+            [
+                [
+                    'HTTP_FORWARDED' => 'for"=2001:0db8:85a3:0000:0000:8a2e:0370:7334"',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from untrusted proxy, through another proxy with client IPv6 and optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222"',
                     'REMOTE_ADDR' => '192.169.1.1',
                 ],
                 '192.169.1.1',
