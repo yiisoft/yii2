@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.31 under development
 ------------------------
 
-- Feature #17665: Implement RFC 7239 `Forwarded` header parsing (mikk150)
+- New #17665: Implement RFC 7239 `Forwarded` header parsing (mikk150)
 
 
 2.0.30 November 19, 2019
