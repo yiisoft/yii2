@@ -1154,7 +1154,7 @@ class Request extends \yii\base\Request
     protected function getUserIpFromIpHeaders() {
         if (($ip = $this->getForwardedHeaderPart('for')) !== null) {
             if (preg_match('/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/', $ip, $matches)) {
-                $ip = $this->getUserIpFromIpHeader(implode(',', $matches['ip']));
+                $ip = $this->getUserIpFromIpHeader($matches['ip']);
                 if ($ip !== null) {
                     return $ip;
                 }
