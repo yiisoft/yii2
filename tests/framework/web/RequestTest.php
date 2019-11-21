@@ -991,4 +991,64 @@ class RequestTest extends TestCase
         $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
         $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
     }
+
+    public function parseForwardedHeaderDataProvider() {
+        return [
+            [
+                '192.168.10.10',
+                'for=10.0.0.2;host=yiiframework.com;proto=https',
+                'https://yiiframework.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.10.10',
+                'for=10.0.0.2;proto=https',
+                'https://example.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.10.10',
+                'host=yiiframework.com;proto=https',
+                'https://yiiframework.com',
+                '192.168.10.10'
+            ],
+            [
+                '192.168.10.10',
+                'host=yiiframework.com;for=10.0.0.2',
+                'http://yiiframework.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.20.10',
+                'host=yiiframework.com;for=10.0.0.2;proto=https',
+                'http://example.com',
+                '192.168.20.10'
+            ],
+            [
+                '192.168.10.10',
+                'for=10.0.0.1;host=yiiframework.com;proto=https, for=20.30.40.50;host=awesome.proxy.com;proto=http', // since PHP does not support fetching multiple headers with same name, then it sometimes(yes, sometimes) appends them together
+                'https://yiiframework.com',
+                '10.0.0.1'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider parseForwardedHeaderDataProvider
+     */
+    public function testParseForwardedHeaderParts($remoteAddress, $forwardedHeader, $expectedHostInfo, $expectedUserIp)
+    {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTP_FORWARDED'] = $forwardedHeader;
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.10.0/24'
+            ],
+        ]);
+
+        $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
+        $this->assertSame($expectedHostInfo, $request->hostInfo, 'Host info fail!');
+    }
 }

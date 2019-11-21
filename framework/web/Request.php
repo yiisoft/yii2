@@ -1839,31 +1839,16 @@ class Request extends \yii\base\Request
      */
     protected function getForwardedHeaderPart($token)
     {
-        if ($decodedHeader = $this->getForwardedHeaderParts($token)) {
+        $token = strtolower($token);
+        if ($decodedHeader = $this->decodedForwardedHeader()) {
             /**
              * First one is always correct, because proxy CAN append to last
-             * existing header field
-             * keep in mind that it is NOT enforced, therefore we cannot be
+             * existing header field.
+             * Keep in mind that it is NOT enforced, therefore we cannot be
              * sure that this value is always correct.
              */
-            return $decodedHeader[0];
-        }
-    }
-
-    /**
-     * Gets all `Forwarded` header values for token
-     *
-     * @param string $token Header token
-     *
-     * @return array
-     */
-    protected function getForwardedHeaderParts($token)
-    {
-        $token = strtolower($token);
-        if ($this->headers->has('Forwarded')) {
-            $decodedHeader = $this->decodedForwardedHeader();
-            if (isset($decodedHeader[$token])) {
-                return $decodedHeader[$token];
+            if (isset($decodedHeader[0]) && isset($decodedHeader[0][$token])) {
+                return $decodedHeader[0][$token];
             }
         }
     }
@@ -1880,20 +1865,23 @@ class Request extends \yii\base\Request
         if ($this->_decodedForwardedHeader === null) {
             $this->_decodedForwardedHeader = [];
 
+            /**
+             * First one is always correct, because proxy CAN add headers
+             * after last one found.
+             * Keep in mind that it is NOT enforced, therefore we cannot be
+             * sure, that this is really first one
+             */
             $forwarded = $this->headers->get('Forwarded', '');
 
-            $forwardedElements = explode(';', $forwarded);
+            preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
-            foreach ($forwardedElements as $forwardedPairs) {
-                list($key) = explode('=', $forwardedPairs);
 
-                $this->_decodedForwardedHeader[strtolower($key)] = array_map(
-                    function ($forwardedPairs) {
-                        list(, $value) = explode('=', $forwardedPairs);
-                        return trim($value, " \t\n\r\0\x0B\"");
-                    },
-                    explode(',', $forwardedPairs)
-                );
+            foreach ($forwardedElements[0] as $forwardedPairs) {
+                preg_match_all('/(?P<key>\w+)\s*=\s*(?|(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
+                $this->_decodedForwardedHeader[] = array_reduce($matches, function ($carry, $item) {
+                    $carry[strtolower($item['key'])] = $item['value'];
+                    return $carry;
+                }, []);
             }
         }
         return $this->_decodedForwardedHeader;
