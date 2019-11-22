@@ -1835,7 +1835,7 @@ class Request extends \yii\base\Request
      *
      * @param string $token Header token
      *
-     * @return array
+     * @return string
      */
     protected function getForwardedHeaderPart($token)
     {
@@ -1870,6 +1870,10 @@ class Request extends \yii\base\Request
              * after last one found.
              * Keep in mind that it is NOT enforced, therefore we cannot be
              * sure, that this is really first one
+             *
+             * FPM keeps last header sent which is a bug, you need to merge
+             * headers together on your web server before letting FPM handle it
+             * @see https://bugs.php.net/bug.php?id=78844
              */
             $forwarded = $this->headers->get('Forwarded', '');
 
