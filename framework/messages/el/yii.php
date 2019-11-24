@@ -71,7 +71,7 @@ return [
     'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Δεν επιτρέπεται να εκτελέσετε αυτή την ενέργεια.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Μπορείτε να ανεβάσετε το πολύ {limit, number} {limit, plural, one{αρχείο} few{αρχεία} many{αρχεία} other{αρχεία}}.',
-    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Θα πρέπει να ανεβάσετε τουλάχιστον {limit, number} {limit, plural, one{file} other{files}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Θα πρέπει να ανεβάσετε τουλάχιστον {limit, number} {limit, plural, one{αρχείο} other{αρχεία}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'σε {delta, plural, =1{μία ημέρα} other{# ημέρες}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'σε {delta, plural, =1{ένα λεπτό} other{# λεπτά}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'σε {delta, plural, =1{ένα μήνα} other{# μήνες}}',
