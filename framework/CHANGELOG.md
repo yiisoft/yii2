@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.31 under development
 ------------------------
 
-- no changes in this release.
+- Enh #17687: `Query::indexBy` can now include a table alias (brandonkelly)
 
 
 2.0.30 November 19, 2019
