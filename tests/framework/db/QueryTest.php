@@ -391,6 +391,14 @@ abstract class QueryTest extends DatabaseTestCase
             ->column($db);
         $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
 
+        // https://github.com/yiisoft/yii2/issues/17687
+        $result = (new Query())->from('customer')
+            ->select('name')
+            ->orderBy(['id' => SORT_DESC])
+            ->indexBy('customer.id')
+            ->column($db);
+        $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
+
         // https://github.com/yiisoft/yii2/issues/12649
         $result = (new Query())->from('customer')
             ->select(['name', 'id'])
