@@ -336,7 +336,7 @@ class Sort extends BaseObject
     /**
      * Returns the sort direction of the specified attribute in the current request.
      * @param string $attribute the attribute name
-     * @return bool|null Sort direction of the attribute. Can be either `SORT_ASC`
+     * @return int|null Sort direction of the attribute. Can be either `SORT_ASC`
      * for ascending order or `SORT_DESC` for descending order. Null is returned
      * if the attribute is invalid or does not need to be sorted.
      */

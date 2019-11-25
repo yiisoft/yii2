@@ -19,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Get a version overview:
  *
- *     ./build release/info
+ *     ./build/build release/info
  *
  * run it with `--update` to fetch tags for all repos:
  *
@@ -27,13 +27,13 @@ use yii\helpers\FileHelper;
  *
  * Make a framework release (apps are always in line with framework):
  *
- *     ./build release framework
- *     ./build release app-basic
- *     ./build release app-advanced
+ *     ./build/build release framework
+ *     ./build/build release app-basic
+ *     ./build/build release app-advanced
  *
  * Make an extension release (e.g. for redis):
  *
- *     ./build release redis
+ *     ./build/build release redis
  *
  * Be sure to check the help info for individual sub-commands:
  *
@@ -535,7 +535,9 @@ class ReleaseController extends Controller
         $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
         $this->stdout("    git clone git@github.com:yiisoft/yii2-framework.git\n");
         $this->stdout("    cd yii2-framework/\n");
-        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep $version |grep -Po \"^[0-9a-f]+\")\n");
+
+        $grepVersion = preg_quote($version, '~');
+        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep \"$grepVersion\" | grep -Po \"^[0-9a-f]+\")\n");
         $this->stdout("    git tag -s $version -m \"version $version\" \$RELEASECOMMIT\n");
         $this->stdout("    git tag --verify $version\n");
         $this->stdout("    git push --tags\n\n");
@@ -627,7 +629,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build/build release/package app-$name\n");
 
         $this->stdout("\n");
     }

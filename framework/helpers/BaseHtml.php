@@ -301,7 +301,7 @@ class BaseHtml
     {
         $request = Yii::$app->getRequest();
         if ($request instanceof Request && $request->enableCsrfValidation) {
-            return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
+            return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n"
                 . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
         }
 
@@ -1955,6 +1955,10 @@ class BaseHtml
                     foreach ($value as $n => $v) {
                         if (is_array($v)) {
                             $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
+                        } elseif (is_bool($v)) {
+                            if ($v) {
+                                $html .= " $name-$n";
+                            }
                         } else {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }

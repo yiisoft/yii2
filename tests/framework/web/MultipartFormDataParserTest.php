@@ -180,4 +180,21 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertNotEmpty($_FILES['someFile']);
         $this->assertFalse(isset($_FILES['existingFile']));
     }
+    
+    public function testParseUnicodeInFileName()
+    {
+        $unicodeName = 'х.jpg'; // this is Russian "х"
+
+        $parser = new MultipartFormDataParser();
+
+        $boundary = '---------------------------703835582829016869506105';
+        $contentType = 'multipart/form-data; boundary=' . $boundary;
+        $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"someFile\"; filename=\"$unicodeName\";\nContent-Type: image/jpeg\r\n\r\nsome file content";
+        $rawBody .= "\r\n--{$boundary}--";
+
+        $parser->parse($rawBody, $contentType);
+
+        $this->assertNotEmpty($_FILES['someFile']);
+        $this->assertSame($unicodeName, $_FILES['someFile']['name']);
+    }
 }

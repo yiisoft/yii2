@@ -164,7 +164,11 @@ class DevController extends Controller
             }
 
             $this->stdout("cloning application repo '$app' from '$repo'...\n", Console::BOLD);
-            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir);
+            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir, $returnVar);
+            if ($returnVar !== 0) {
+                $this->stdout("Error occurred while cloning repository.\n", Console::BOLD, Console::FG_RED);
+                return 1;
+            }
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
 

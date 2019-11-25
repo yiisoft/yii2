@@ -335,6 +335,7 @@ GridView に CheckboxColumn を追加するためには、以下のようにし�
 
 ```php
 echo GridView::widget([
+    'id' => 'grid',
     'dataProvider' => $dataProvider,
     'columns' => [
         // ...

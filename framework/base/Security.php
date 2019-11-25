@@ -104,7 +104,7 @@ class Security extends Component
      * poor-quality or compromised passwords.
      * @param string $data the data to encrypt
      * @param string $password the password to use for encryption
-     * @return string the encrypted data
+     * @return string the encrypted data as byte string
      * @see decryptByPassword()
      * @see encryptByKey()
      */
@@ -123,7 +123,7 @@ class Security extends Component
      * @param string $data the data to encrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
-     * @return string the encrypted data
+     * @return string the encrypted data as byte string
      * @see decryptByKey()
      * @see encryptByPassword()
      */
@@ -166,7 +166,7 @@ class Security extends Component
      * @param string|null $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      *
-     * @return string the encrypted data
+     * @return string the encrypted data as byte string
      * @throws InvalidConfigException on OpenSSL not loaded
      * @throws Exception on OpenSSL error
      * @see decrypt()
