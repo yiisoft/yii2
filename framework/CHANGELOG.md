@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.31 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17661: Fix querybuilder incorrect IN/NOT IN condition handling for null values
 
 
 2.0.30 November 19, 2019
