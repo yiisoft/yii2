@@ -350,7 +350,6 @@ class RequestTest extends TestCase
                 [
                     'HTTP_FORWARDED' => 'host=example3.com',
                     'HTTP_HOST' => 'example1.com',
-                    'SERVER_NAME' => 'example2.com',
                     'REMOTE_ADDR' => '192.168.0.1',
                 ],
                 [
@@ -363,12 +362,11 @@ class RequestTest extends TestCase
                 [
                     'HTTP_FORWARDED' => 'host=example3.com,host=example2.com',
                     'HTTP_HOST' => 'example1.com',
-                    'SERVER_NAME' => 'example2.com',
                     'REMOTE_ADDR' => '192.168.0.1',
                 ],
                 [
-                    'http://example3.com',
-                    'example3.com',
+                    'http://example2.com',
+                    'example2.com',
                 ]
             ],
         ];
@@ -513,12 +511,12 @@ class RequestTest extends TestCase
             [[
                 'HTTP_FORWARDED' => 'proto=https,proto=http',
                 'REMOTE_ADDR' => '192.168.0.1',
-            ], true],
+            ], false],
             // RFC 7239 forwarded from trusted proxy, second proxy encrypted, while client request not encrypted
             [[
                 'HTTP_FORWARDED' => 'proto=http,proto=https',
                 'REMOTE_ADDR' => '192.168.0.1',
-            ], false],
+            ], true],
             // RFC 7239 forwarded from untrusted proxy
             [[
                 'HTTP_FORWARDED' => 'proto=https',
@@ -615,7 +613,7 @@ class RequestTest extends TestCase
                     'HTTP_FORWARDED' => 'for=123.123.123.123,for=122.122.122.122',
                     'REMOTE_ADDR' => '192.168.0.1',
                 ],
-                '123.123.123.123',
+                '122.122.122.122',
             ],
             // RFC 7239 forwarded from trusted proxy, through another proxy, client IP with optional port
             [
@@ -623,7 +621,7 @@ class RequestTest extends TestCase
                     'HTTP_FORWARDED' => 'for=123.123.123.123:2222,for=122.122.122.122:2222',
                     'REMOTE_ADDR' => '192.168.0.1',
                 ],
-                '123.123.123.123',
+                '122.122.122.122',
             ],
             // RFC 7239 forwarded from untrusted proxy
             [
@@ -660,7 +658,7 @@ class RequestTest extends TestCase
             // RFC 7239 forwarded from trusted proxy, through another proxy with client IPv6
             [
                 [
-                    'HTTP_FORWARDED' => 'for="2001:0db8:85a3:0000:0000:8a2e:0370:7334",for=122.122.122.122',
+                    'HTTP_FORWARDED' => 'for=122.122.122.122,for="2001:0db8:85a3:0000:0000:8a2e:0370:7334"',
                     'REMOTE_ADDR' => '192.168.0.1',
                 ],
                 '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
@@ -668,7 +666,7 @@ class RequestTest extends TestCase
             // RFC 7239 forwarded from trusted proxy, through another proxy with client IPv6 and optional port
             [
                 [
-                    'HTTP_FORWARDED' => 'for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222",for=122.122.122.122:2222',
+                    'HTTP_FORWARDED' => 'for=122.122.122.122:2222,for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222"',
                     'REMOTE_ADDR' => '192.168.0.1',
                 ],
                 '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
@@ -1021,15 +1019,21 @@ class RequestTest extends TestCase
             [
                 '192.168.20.10',
                 'host=yiiframework.com;for=10.0.0.2;proto=https',
-                'http://example.com',
-                '192.168.20.10'
+                'https://yiiframework.com',
+                '10.0.0.2'
             ],
             [
                 '192.168.10.10',
-                'for=10.0.0.1;host=yiiframework.com;proto=https, for=20.30.40.50;host=awesome.proxy.com;proto=http', // since PHP does not support fetching multiple headers with same name, then it sometimes(yes, sometimes) appends them together
+                'for=10.0.0.1;host=yiiframework.com;proto=https, for=192.168.20.20;host=awesome.proxy.com;proto=http',
                 'https://yiiframework.com',
                 '10.0.0.1'
             ],
+            [
+                '192.168.10.10',
+                'for=8.8.8.8;host=spoofed.host;proto=https, for=10.0.0.1;host=yiiframework.com;proto=https, for=192.168.20.20;host=trusted.proxy;proto=http',
+                'https://yiiframework.com',
+                '10.0.0.1'
+            ]
         ];
     }
 
@@ -1044,7 +1048,8 @@ class RequestTest extends TestCase
 
         $request = new Request([
             'trustedHosts' => [
-                '192.168.10.0/24'
+                '192.168.10.0/24',
+                '192.168.20.0/24'
             ],
         ]);
 

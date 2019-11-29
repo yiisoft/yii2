@@ -728,8 +728,8 @@ class Request extends \yii\base\Request
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
 
-            if ($this->getForwardedHeaderPart('host')) {
-                $this->_hostInfo = $http . '://' . $this->getForwardedHeaderPart('host');
+            if ($this->getSecureForwardedHeaderPart('host')) {
+                $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderPart('host');
             } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('Host')) {
@@ -1072,7 +1072,7 @@ class Request extends \yii\base\Request
             return true;
         }
 
-        if (($proto = $this->getForwardedHeaderPart('proto')) !== null) {
+        if (($proto = $this->getSecureForwardedHeaderPart('proto')) !== null) {
             return strcasecmp($proto, 'https') === 0;
         }
 
@@ -1152,7 +1152,7 @@ class Request extends \yii\base\Request
      * @since 2.0.28
      */
     protected function getUserIpFromIpHeaders() {
-        if (($ip = $this->getForwardedHeaderPart('for')) !== null) {
+        if (($ip = $this->getSecureForwardedHeaderPart('for')) !== null) {
             if (preg_match('/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/', $ip, $matches)) {
                 $ip = $this->getUserIpFromIpHeader($matches['ip']);
                 if ($ip !== null) {
@@ -1837,20 +1837,26 @@ class Request extends \yii\base\Request
      *
      * @return string
      */
-    protected function getForwardedHeaderPart($token)
+    protected function getSecureForwardedHeaderPart($token)
     {
         $token = strtolower($token);
-        if ($decodedHeader = $this->decodedForwardedHeader()) {
-            /**
-             * First one is always correct, because proxy CAN append to last
-             * existing header field.
-             * Keep in mind that it is NOT enforced, therefore we cannot be
-             * sure that this value is always correct.
-             */
-            if (isset($decodedHeader[0]) && isset($decodedHeader[0][$token])) {
-                return $decodedHeader[0][$token];
+
+        if ($decodedHeader = $this->getSecureDecodedForwardedHeader()) {
+            $lastElement = array_pop($decodedHeader);
+            if ($lastElement && isset($lastElement[$token])) {
+                return $lastElement[$token];
             }
         }
+    }
+
+    public function getSecureDecodedForwardedHeader()
+    {
+        $validator = $this->getIpValidator();
+
+        $validator->setRanges($this->trustedHosts);
+        return array_filter($this->decodedForwardedHeader(), function ($headerPart) use ($validator) {
+            return isset($headerPart['for']) ? !$validator->validate($headerPart['for']) : true;
+        });
     }
 
     private $_decodedForwardedHeader;
@@ -1878,7 +1884,6 @@ class Request extends \yii\base\Request
             $forwarded = $this->headers->get('Forwarded', '');
 
             preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
-
 
             foreach ($forwardedElements[0] as $forwardedPairs) {
                 preg_match_all('/(?P<key>\w+)\s*=\s*(?|(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
