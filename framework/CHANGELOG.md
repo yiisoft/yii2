@@ -4,13 +4,12 @@ Yii Framework 2 Change Log
 2.0.31 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17865: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 
 
 2.0.30 November 19, 2019
 ------------------------
 
-- Bug #17865: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17434: IE Ajax redirect fix for non 11.0 versions (kamarton)
 - Bug #17632: Unicode file name was not correctly parsed in multipart forms (AlexRas007, samdark)
 - Bug #17648: Handle empty column arrays in console `Table` widget (alex-code)
