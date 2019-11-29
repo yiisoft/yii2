@@ -68,21 +68,29 @@ class InConditionBuilder implements ExpressionBuilderInterface
             }
         }
 
+        if (in_array(null, $values, true)) {
+            $nullCondition = $this->getNullCondition($operator, $column);
+        }
+
         $sqlValues = $this->buildValues($expression, $values, $params);
         if (empty($sqlValues)) {
-            return $operator === 'IN' ? '0=1' : '';
+            if (!isset($nullCondition)) {
+                return $operator === 'IN' ? '0=1' : '';
+            }
+            return $nullCondition;
         }
 
         if (strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
         if (count($sqlValues) > 1) {
-            return "$column $operator (" . implode(', ', $sqlValues) . ')';
+            $sql = "$column $operator (" . implode(', ', $sqlValues) . ')';
+        } else {
+            $operator = $operator === 'IN' ? '=' : '<>';
+            $sql = $column . $operator . reset($sqlValues);
         }
 
-        $operator = $operator === 'IN' ? '=' : '<>';
-
-        return $column . $operator . reset($sqlValues);
+        return isset($nullCondition) ? sprintf('%s AND %s', $sql, $nullCondition) : $sql;
     }
 
     /**
@@ -112,7 +120,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
                 $value = isset($value[$column]) ? $value[$column] : null;
             }
             if ($value === null) {
-                $sqlValues[$i] = 'NULL';
+                unset($values[$i]);
             } elseif ($value instanceof ExpressionInterface) {
                 $sqlValues[$i] = $this->queryBuilder->buildExpression($value, $params);
             } else {
@@ -187,5 +195,19 @@ class InConditionBuilder implements ExpressionBuilderInterface
         }
 
         return '(' . implode(', ', $sqlColumns) . ") $operator (" . implode(', ', $vss) . ')';
+    }
+
+    /**
+     * Builds is null/is not null condition for column based on operator
+     *
+     * @param string $operator
+     * @param string $column
+     * @return string
+     */
+    protected function getNullCondition($operator, $column) {
+        if ($operator === 'IN') {
+            return sprintf('%s IS NULL', $column);
+        }
+        return sprintf('%s IS NOT NULL', $column);
     }
 }
