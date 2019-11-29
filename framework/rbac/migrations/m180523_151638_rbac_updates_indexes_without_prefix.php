@@ -39,6 +39,7 @@ class m180523_151638_rbac_updates_indexes_without_prefix extends Migration
     public function up()
     {
         $authManager = $this->getAuthManager();
+        $this->db = $authManager->db;
 
         $this->dropIndex('auth_assignment_user_id_idx', $authManager->assignmentTable);
         $this->createIndex('{{%idx-auth_assignment-user_id}}', $authManager->assignmentTable, 'user_id');
@@ -53,6 +54,7 @@ class m180523_151638_rbac_updates_indexes_without_prefix extends Migration
     public function down()
     {
         $authManager = $this->getAuthManager();
+        $this->db = $authManager->db;
 
         $this->dropIndex('{{%idx-auth_assignment-user_id}}', $authManager->assignmentTable);
         $this->createIndex('auth_assignment_user_id_idx', $authManager->assignmentTable, 'user_id');
