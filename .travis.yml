@@ -52,6 +52,9 @@ addons:
 matrix:
   fast_finish: true
   include:
+    - php: "7.4snapshot"
+      env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
+  
     - php: "7.3"
       env: PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
@@ -195,7 +198,7 @@ before_script:
   # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
   # For Yii2 tests, messages will be enabled by tests/bootstrap.php
   - |
-    if [[ $TRAVIS_PHP_VERSION == 7.2 || $TRAVIS_PHP_VERSION == 7.3 || $TRAVIS_PHP_VERSION = nightly ]]; then
+    if [[ $TRAVIS_PHP_VERSION == 7.2 || $TRAVIS_PHP_VERSION == 7.3 || $TRAVIS_PHP_VERSION == 7.4snapshot || $TRAVIS_PHP_VERSION = nightly ]]; then
       echo 'Disabled DEPRECATED notifications for PHP >= 7.2';
       echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
       phpenv config-add /tmp/php-config.ini;
