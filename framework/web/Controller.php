@@ -133,24 +133,22 @@ class Controller extends \yii\base\Controller
                     $params[$name] = (array)$params[$name];
                 } elseif (is_array($params[$name])) {
                     $isValid = false;
-                } elseif (PHP_VERSION_ID >= 70000 && ($type = $param->getType()) !== null) {
-                    if ($type->allowsNull() && ($params[$name] === null || $params[$name] === '')) {
-                        $params[$name] = null;
-                    } elseif ($type->isBuiltin()) {
-                        switch ((string)$type) {
-                            case 'bool':
-                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                                break;
-                            case 'float':
-                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
-                                break;
-                            case 'int':
-                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                                break;
-                        }
-                        if ($params[$name] === null) {
-                            $isValid = false;
-                        }
+                } elseif (
+                    PHP_VERSION_ID >= 70000 &&
+                    ($type = $param->getType()) !== null &&
+                    $type->isBuiltin() &&
+                    ($params[$name] !== null || !$type->allowsNull())
+                ) {
+                    switch ((string)$type) {
+                        case 'int':
+                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                            break;
+                        case 'float':
+                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
+                            break;
+                    }
+                    if ($params[$name] === null) {
+                        $isValid = false;
                     }
                 }
                 if (!$isValid) {
