@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17865: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
-- Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `bool`, `int`, and `float` controller action arguments (brandonkelly)
+- Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
 
 
 2.0.30 November 19, 2019
