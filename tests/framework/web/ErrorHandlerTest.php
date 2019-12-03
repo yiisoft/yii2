@@ -9,6 +9,7 @@ namespace yiiunit\framework\web;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\View;
 use yiiunit\TestCase;
 
 class ErrorHandlerTest extends TestCase
@@ -17,6 +18,7 @@ class ErrorHandlerTest extends TestCase
     {
         parent::setUp();
         $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
             'components' => [
                 'errorHandler' => [
                     'class' => 'yiiunit\framework\web\ErrorHandler',
@@ -51,6 +53,20 @@ Exception: yii\web\NotFoundHttpException', $out);
         $out = Yii::$app->response->data;
         $this->assertEquals('Exception View
 ', $out);
+    }
+
+    public function testClearAssetFilesInErrorActionView()
+    {
+        Yii::$app->getErrorHandler()->errorAction = 'test/error';
+        Yii::$app->getView()->registerJs("alert('hide me')", View::POS_END);
+
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new NotFoundHttpException()]);
+        ob_get_clean();
+        $out = Yii::$app->response->data;
+        $this->assertNotContains('<script', $out);
     }
 
     public function testRenderCallStackItem()
