@@ -14,6 +14,8 @@ use Doctrine\Instantiator\Exception\InvalidArgumentException as InstantiatorInva
 use Doctrine\Instantiator\Exception\UnexpectedValueException as InstantiatorUnexpectedValueException;
 use Doctrine\Instantiator\Instantiator;
 
+define('PHPUNIT_VENDOR_DIR', realpath(__DIR__ . '/../../vendor/phpunit/phpunit-mock-objects/src/Framework/MockObject'));
+
 /**
  * Mock Object Code Generator.
  *
@@ -385,7 +387,7 @@ class PHPUnit_Framework_MockObject_Generator
             'Trait_'
         );
 
-        $templateDir = __DIR__ . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
+        $templateDir = PHPUNIT_VENDOR_DIR . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
         $classTemplate = $this->getTemplate($templateDir . 'trait_class.tpl');
 
         $classTemplate->setVar(
@@ -446,7 +448,7 @@ class PHPUnit_Framework_MockObject_Generator
             'Trait_'
         );
 
-        $templateDir = __DIR__ . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
+        $templateDir = PHPUNIT_VENDOR_DIR . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
         $classTemplate = $this->getTemplate($templateDir . 'trait_class.tpl');
 
         $classTemplate->setVar(
@@ -536,7 +538,7 @@ class PHPUnit_Framework_MockObject_Generator
 
         sort($_methods);
 
-        $templateDir = __DIR__ . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
+        $templateDir = PHPUNIT_VENDOR_DIR . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
         $methodTemplate = $this->getTemplate($templateDir . 'wsdl_method.tpl');
         $methodsBuffer = '';
 
@@ -709,7 +711,7 @@ class PHPUnit_Framework_MockObject_Generator
     private function generateMock($type, $methods, $mockClassName, $callOriginalClone, $callAutoload, $cloneArguments, $callOriginalMethods)
     {
         $methodReflections = [];
-        $templateDir = __DIR__ . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
+        $templateDir = PHPUNIT_VENDOR_DIR . DIRECTORY_SEPARATOR . 'Generator' . DIRECTORY_SEPARATOR;
         $classTemplate = $this->getTemplate($templateDir . 'mocked_class.tpl');
 
         $additionalInterfaces = [];
