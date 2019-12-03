@@ -32,6 +32,44 @@ class ControllerTest extends TestCase
         $this->assertEquals('avaliable', $other);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17701
+     */
+    public function testBindTypedActionParams()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        // Use the PHP7 controller for this test
+        $this->controller = new FakePhp7Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
+
+        $params = ['foo' => '100', 'bar' => null];
+        list($foo, $bar) = $this->controller->bindActionParams($aksi1, $params);
+        $this->assertSame(100, $foo);
+        $this->assertSame(null, $bar);
+
+        $params = ['foo' => 'oops', 'bar' => null];
+        $this->expectException('yii\web\BadRequestHttpException');
+        $this->expectExceptionMessage('Invalid data received for parameter "foo".');
+        $this->controller->bindActionParams($aksi1, $params);
+    }
+
     public function testAsJson()
     {
         $data = [
