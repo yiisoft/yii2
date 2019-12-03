@@ -73,3 +73,9 @@ namespace PHPUnit\Framework {
         }
     }
 }
+
+namespace {
+    if (PHP_VERSION_ID >= 70100) {
+        require 'phpunit/Generator.php';
+    }
+}
