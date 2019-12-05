@@ -70,8 +70,8 @@ class LinkPagerTest extends \yiiunit\TestCase
             'lastPageLabel' => false,
         ]);
 
-        $this->assertStringContainsString('<li class="first">', $output);
-        $this->assertStringContainsString('<li class="last">', $output);
+        $this->assertStringNotContainsString('<li class="first">', $output);
+        $this->assertStringNotContainsString('<li class="last">', $output);
     }
 
     public function testDisabledPageElementOptions()
