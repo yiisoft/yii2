@@ -68,7 +68,13 @@ class InConditionBuilder implements ExpressionBuilderInterface
             }
         }
 
-        if (in_array(null, $values, true)) {
+        if (is_array($values)) {
+            $rawValues = $values;
+        } else if ($values instanceof \Traversable) {
+            $rawValues = $this->getRawValuesFromTraversableObject($values);
+        }
+
+        if (isset($rawValues) && in_array(null, $rawValues, true)) {
             $nullCondition = $this->getNullCondition($operator, $column);
         }
 
@@ -120,7 +126,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
                 $value = isset($value[$column]) ? $value[$column] : null;
             }
             if ($value === null) {
-                unset($values[$i]);
+                continue;
             } elseif ($value instanceof ExpressionInterface) {
                 $sqlValues[$i] = $this->queryBuilder->buildExpression($value, $params);
             } else {
@@ -202,12 +208,31 @@ class InConditionBuilder implements ExpressionBuilderInterface
      *
      * @param string $operator
      * @param string $column
-     * @return string
+     * @return string is null or is not null condition
      */
     protected function getNullCondition($operator, $column) {
+        $column = $this->queryBuilder->db->quoteColumnName($column);
         if ($operator === 'IN') {
             return sprintf('%s IS NULL', $column);
         }
         return sprintf('%s IS NOT NULL', $column);
+    }
+
+    /**
+     * @param \Traversable $traversableObject
+     * @return array raw values
+     */
+    protected function getRawValuesFromTraversableObject(\Traversable $traversableObject)
+    {
+        $rawValues = [];
+        foreach ($traversableObject as $value) {
+            if (is_array($value)) {
+                $values = array_values($value);
+                $rawValues = array_merge($rawValues, $values);
+            } else {
+                $rawValues[] = $value;
+            }
+        }
+        return $rawValues;
     }
 }
