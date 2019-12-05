@@ -81,7 +81,7 @@ class GroupUrlRuleTest extends TestCase
         ];
         $rules = new GroupUrlRule($config);
         $this->assertCount(1, $rules->rules[0]->verb);
-        $this->assertStringContainsString('POST', $rules->rules[0]->verb);
+        $this->assertContains('POST', $rules->rules[0]->verb);
         $this->assertEquals('admin/user/login', $rules->rules[0]->route);
 
         $config = [

@@ -58,7 +58,7 @@ class ContentNegotiatorTest extends TestCase
     public function testWhenFormatGETParamIsArray()
     {
         $this->expectException(yii\web\BadRequestHttpException::class);
-        $this->expectExceptionMessageRegExp('|Invalid data received for GET parameter '.+'|');
+        $this->expectExceptionMessageRegExp("|Invalid data received for GET parameter '.+'|");
 
         list($action, $filter) = $this->mockActionAndFilter();
 
@@ -97,7 +97,7 @@ class ContentNegotiatorTest extends TestCase
         ];
         $filter->languages = [];
         $filter->beforeAction($action);
-        $this->assertStringContainsString('Accept', $filter->response->getHeaders()->get('Vary', [], false));
+        $this->assertContains('Accept', $filter->response->getHeaders()->get('Vary', [], false));
 
         list($action, $filter) = $this->mockActionAndFilter();
         $filter->formats = [];
