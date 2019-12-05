@@ -40,7 +40,7 @@ class ErrorException extends \ErrorException
      * @param $lineno [optional]
      * @param $previous [optional]
      */
-    public function __construct($message = '', $code = 0, $severity = 1, $filename = __FILE__, $lineno = __LINE__, \Exception $previous = null)
+    public function __construct($message = '', $code = 200, $severity = 200, $filename = __FILE__, $lineno = __LINE__, \Exception $previous = null)
     {
         parent::__construct($message, $code, $severity, $filename, $lineno, $previous);
 
