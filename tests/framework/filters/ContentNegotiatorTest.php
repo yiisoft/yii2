@@ -103,7 +103,7 @@ class ContentNegotiatorTest extends TestCase
         $filter->formats = [];
         $filter->languages = ['en', 'de'];
         $filter->beforeAction($action);
-        $this->assertStringContainsString('Accept-Language', $filter->response->getHeaders()->get('Vary', [], false));
+        $this->assertContains('Accept-Language', $filter->response->getHeaders()->get('Vary', [], false));
 
         list($action, $filter) = $this->mockActionAndFilter();
         $filter->formats = [
@@ -113,7 +113,7 @@ class ContentNegotiatorTest extends TestCase
         $filter->languages = ['en', 'de'];
         $filter->beforeAction($action);
         $varyHeader = $filter->response->getHeaders()->get('Vary', [], false);
-        $this->assertStringContainsString('Accept', $varyHeader);
-        $this->assertStringContainsString('Accept-Language', $varyHeader);
+        $this->assertContains('Accept', $varyHeader);
+        $this->assertContains('Accept-Language', $varyHeader);
     }
 }
