@@ -42,7 +42,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schemas = $schema->getSchemaNames();
         $this->assertNotEmpty($schemas);
         foreach ($this->expectedSchemas as $schema) {
-            $this->assertContains($schema, $schemas);
+            $this->assertStringContainsString($schema, $schemas);
         }
     }
 
@@ -69,14 +69,14 @@ abstract class SchemaTest extends DatabaseTestCase
                 return trim($item, '[]');
             }, $tables);
         }
-        $this->assertContains('customer', $tables);
-        $this->assertContains('category', $tables);
-        $this->assertContains('item', $tables);
-        $this->assertContains('order', $tables);
-        $this->assertContains('order_item', $tables);
-        $this->assertContains('type', $tables);
-        $this->assertContains('animal', $tables);
-        $this->assertContains('animal_view', $tables);
+        $this->assertStringContainsString('customer', $tables);
+        $this->assertStringContainsString('category', $tables);
+        $this->assertStringContainsString('item', $tables);
+        $this->assertStringContainsString('order', $tables);
+        $this->assertStringContainsString('order_item', $tables);
+        $this->assertStringContainsString('type', $tables);
+        $this->assertStringContainsString('animal', $tables);
+        $this->assertStringContainsString('animal_view', $tables);
     }
 
     /**
@@ -528,7 +528,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (\is_object($expected['defaultValue'])) {
-                $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
+                $this->assertIsObject($column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string)$expected['defaultValue'], (string)$column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");

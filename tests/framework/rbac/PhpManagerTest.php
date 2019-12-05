@@ -136,11 +136,9 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertTrue($this->auth->update($name, $permission), 'You should be able to save w/o changing name.');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testOverwriteName()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
         $this->prepareData();
         $name = 'readPost';
         $permission = $this->auth->getPermission($name);
@@ -154,11 +152,11 @@ class PhpManagerTest extends ManagerTestCase
         $role = $this->auth->createRole('Admin');
         $this->auth->add($role);
         $this->auth->assign($role, 13);
-        $this->assertContains('Admin', file_get_contents($this->getAssignmentFile()));
+        $this->assertStringContainsString('Admin', file_get_contents($this->getAssignmentFile()));
         $role->name = 'NewAdmin';
         $this->auth->update('Admin', $role);
-        $this->assertContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
+        $this->assertStringContainsString('NewAdmin', file_get_contents($this->getAssignmentFile()));
         $this->auth->remove($role);
-        $this->assertNotContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
+        $this->assertStringNotContainsString('NewAdmin', file_get_contents($this->getAssignmentFile()));
     }
 }

@@ -134,7 +134,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $needle = str_replace("\r\n", "\n", $needle);
         $haystack = str_replace("\r\n", "\n", $haystack);
 
-        $this->assertContains($needle, $haystack, $message);
+        $this->assertStringContainsString($needle, $haystack, $message);
     }
 
     /**

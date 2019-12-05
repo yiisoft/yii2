@@ -55,12 +55,11 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals($targetLanguage, Yii::$app->language);
     }
 
-    /**
-     * @expectedException yii\web\BadRequestHttpException
-     * @expectedExceptionMessageRegExp |Invalid data received for GET parameter '.+'|
-     */
     public function testWhenFormatGETParamIsArray()
     {
+        $this->expectException(yii\web\BadRequestHttpException::class);
+        $this->expectExceptionMessageRegExp('|Invalid data received for GET parameter '.+'|');
+
         list($action, $filter) = $this->mockActionAndFilter();
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -98,13 +97,13 @@ class ContentNegotiatorTest extends TestCase
         ];
         $filter->languages = [];
         $filter->beforeAction($action);
-        $this->assertContains('Accept', $filter->response->getHeaders()->get('Vary', [], false));
+        $this->assertStringContainsString('Accept', $filter->response->getHeaders()->get('Vary', [], false));
 
         list($action, $filter) = $this->mockActionAndFilter();
         $filter->formats = [];
         $filter->languages = ['en', 'de'];
         $filter->beforeAction($action);
-        $this->assertContains('Accept-Language', $filter->response->getHeaders()->get('Vary', [], false));
+        $this->assertStringContainsString('Accept-Language', $filter->response->getHeaders()->get('Vary', [], false));
 
         list($action, $filter) = $this->mockActionAndFilter();
         $filter->formats = [
@@ -114,7 +113,7 @@ class ContentNegotiatorTest extends TestCase
         $filter->languages = ['en', 'de'];
         $filter->beforeAction($action);
         $varyHeader = $filter->response->getHeaders()->get('Vary', [], false);
-        $this->assertContains('Accept', $varyHeader);
-        $this->assertContains('Accept-Language', $varyHeader);
+        $this->assertStringContainsString('Accept', $varyHeader);
+        $this->assertStringContainsString('Accept-Language', $varyHeader);
     }
 }

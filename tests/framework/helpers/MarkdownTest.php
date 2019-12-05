@@ -43,12 +43,10 @@ TEXT;
         $this->assertEquals(Markdown::process($text), Markdown::process($text, 'gfm-comment'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Markdown flavor 'undefined' is not defined.
-     */
     public function testProcessInvalidParamException()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+        $this->expectExceptionMessage('Markdown flavor \'undefined\' is not defined.');
         Markdown::process('foo', 'undefined');
     }
 

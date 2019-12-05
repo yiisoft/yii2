@@ -132,7 +132,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]);
+        $this->assertIsArray($orders[0]);
         $this->assertEquals([0, 1, 2], $provider->getKeys());
 
         $query = new Query();

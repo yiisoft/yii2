@@ -52,8 +52,8 @@ class LinkPagerTest extends \yiiunit\TestCase
             'lastPageLabel' => true,
         ]);
 
-        static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>', $output);
-        static::assertContains('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">25</a></li>', $output);
+        $this->assertStringContainsString('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>', $output);
+        $this->assertStringContainsString('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">25</a></li>', $output);
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
@@ -61,8 +61,8 @@ class LinkPagerTest extends \yiiunit\TestCase
             'lastPageLabel' => 'Last',
         ]);
 
-        static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">First</a></li>', $output);
-        static::assertContains('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">Last</a></li>', $output);
+        $this->assertStringContainsString('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">First</a></li>', $output);
+        $this->assertStringContainsString('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">Last</a></li>', $output);
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
@@ -70,8 +70,8 @@ class LinkPagerTest extends \yiiunit\TestCase
             'lastPageLabel' => false,
         ]);
 
-        static::assertNotContains('<li class="first">', $output);
-        static::assertNotContains('<li class="last">', $output);
+        $this->assertStringContainsString('<li class="first">', $output);
+        $this->assertStringContainsString('<li class="last">', $output);
     }
 
     public function testDisabledPageElementOptions()
@@ -81,7 +81,7 @@ class LinkPagerTest extends \yiiunit\TestCase
             'disabledListItemSubTagOptions' => ['class' => 'foo-bar'],
         ]);
 
-        static::assertContains('<span class="foo-bar">&laquo;</span>', $output);
+        $this->assertStringContainsString('<span class="foo-bar">&laquo;</span>', $output);
     }
 
     public function testDisabledPageElementOptionsWithTagOption()
@@ -91,7 +91,7 @@ class LinkPagerTest extends \yiiunit\TestCase
             'disabledListItemSubTagOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
         ]);
 
-        static::assertContains('<div class="foo-bar">&laquo;</div>', $output);
+        $this->assertStringContainsString('<div class="foo-bar">&laquo;</div>', $output);
     }
 
     public function testDisableCurrentPageButton()
@@ -102,14 +102,14 @@ class LinkPagerTest extends \yiiunit\TestCase
             'disableCurrentPageButton' => false,
         ]);
 
-        static::assertContains('<li class="active"><a href="/?r=test&amp;page=6" data-page="5">6</a></li>', $output);
+        $this->assertStringContainsString('<li class="active"><a href="/?r=test&amp;page=6" data-page="5">6</a></li>', $output);
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
             'disableCurrentPageButton' => true,
         ]);
 
-        static::assertContains('<li class="active disabled"><span>6</span></li>', $output);
+        $this->assertStringContainsString('<li class="active disabled"><span>6</span></li>', $output);
     }
 
     public function testOptionsWithTagOption()
@@ -135,11 +135,11 @@ class LinkPagerTest extends \yiiunit\TestCase
             ],
         ]);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<div class="my-class"><a href="/?r=test&amp;page=3" data-page="2">3</a></div>',
             $output
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<div class="my-class active"><a href="/?r=test&amp;page=2" data-page="1">2</a></div>',
             $output
         );

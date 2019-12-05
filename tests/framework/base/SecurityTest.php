@@ -880,11 +880,11 @@ TEXT;
 
     /**
      * @dataProvider randomKeyInvalidInputs
-     * @expectedException \yii\base\InvalidParamException
      * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
         $key1 = $this->security->generateRandomKey($input);
     }
 
@@ -957,10 +957,10 @@ TEXT;
         // test various string lengths
         for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key1);
+            $this->assertIsString($key1);
             $this->assertEquals($length, strlen($key1));
             $key2 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key2);
+            $this->assertIsString($key2);
             $this->assertEquals($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
                 $this->assertNotEquals($key1, $key2);
@@ -970,10 +970,10 @@ TEXT;
         // test for /dev/urandom, reading larger data to see if loop works properly
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
+        $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
         $key2 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key2);
+        $this->assertIsString($key2);
         $this->assertEquals($length, strlen($key2));
         $this->assertNotEquals($key1, $key2);
 
@@ -984,7 +984,7 @@ TEXT;
         static::$fopen = fopen('php://memory', 'rwb');
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
+        $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
     }
 
@@ -1275,11 +1275,9 @@ TEXT;
         $this->assertEquals('', $this->security->unmaskToken('1'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMaskingInvalidStrings()
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
         $this->security->maskToken('');
     }
 
