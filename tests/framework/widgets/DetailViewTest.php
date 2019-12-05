@@ -20,7 +20,7 @@ class DetailViewTest extends \yiiunit\TestCase
     /** @var DetailView */
     public $detailView;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -30,7 +30,7 @@ use yiiunit\TestCase;
  */
 class ContainerTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();

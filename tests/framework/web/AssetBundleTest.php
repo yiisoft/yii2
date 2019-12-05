@@ -18,7 +18,7 @@ use yii\web\View;
  */
 class AssetBundleTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

@@ -12,7 +12,7 @@ class ArrayParserTest extends TestCase
      */
     protected $arrayParser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

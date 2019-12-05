@@ -52,7 +52,7 @@ namespace yiiunit\framework\log {
         /**
          * Set up syslogTarget as the mock object.
          */
-        protected function setUp()
+        protected function setUp(): void
         {
             $this->syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
                 ->setMethods(['getMessagePrefix'])

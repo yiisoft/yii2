@@ -25,7 +25,7 @@ use yiiunit\framework\filters\stubs\UserIdentity;
  */
 class AuthTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -15,7 +15,7 @@ use yiiunit\TestCase;
  */
 class TableTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -285,7 +285,7 @@ EXPECTED;
             ->setRows([])->setScreenWidth(200)->run()
         );
     }
-    
+
     public function testEmptyTableCell()
     {
         $table = new Table();

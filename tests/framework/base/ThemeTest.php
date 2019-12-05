@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class ThemeTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $config = ['aliases' => ['@web' => '']];
         $this->mockWebApplication($config);

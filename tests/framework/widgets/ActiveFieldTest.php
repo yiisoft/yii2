@@ -37,7 +37,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     private $helperForm;
     private $attributeName = 'attributeName';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()

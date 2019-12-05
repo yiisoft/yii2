@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class VarDumperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

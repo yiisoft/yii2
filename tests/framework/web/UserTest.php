@@ -38,7 +38,7 @@ class UserTest extends TestCase
      */
     public static $time;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->session->removeAll();
         static::$time = null;

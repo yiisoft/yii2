@@ -14,7 +14,7 @@ use yii\widgets\Block;
  */
 class BlockTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -23,7 +23,7 @@ abstract class BaseMessageControllerTest extends TestCase
     protected $configFileName = '';
     protected $language = 'en';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication();
         $this->sourcePath = Yii::getAlias('@yiiunit/runtime/test_source');
@@ -47,7 +47,7 @@ abstract class BaseMessageControllerTest extends TestCase
         return $this->configFileName;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         FileHelper::removeDirectory($this->sourcePath);
         if (file_exists($this->configFileName)) {
@@ -606,12 +606,12 @@ abstract class BaseMessageControllerTest extends TestCase
             echo PHP_EOL, Yii::t('app', '3. Message with param from function call {val}', [
                 'val' => date('Y-m-d'),
             ]);
-            
+
             // the next call creates the bug:
             echo PHP_EOL, Yii::t('app', '4. Message with param from method call {val}', [
                 'val' => \Yii::\$app->formatter->asDecimal(23, 4),
             ]);
-            
+
             // after the bug:
             echo PHP_EOL, Yii::t('app', '5. Simple message');
             echo PHP_EOL, Yii::t('app', '6. Message with simple param {val}', [

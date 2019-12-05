@@ -24,7 +24,7 @@ class EmailTargetTest extends TestCase
     /**
      * Set up mailer.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mailer = $this->getMockBuilder('yii\\mail\\BaseMailer')

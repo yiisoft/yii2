@@ -24,7 +24,7 @@ class ViewTest extends TestCase
      */
     protected $testViewPath = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -33,7 +33,7 @@ class ViewTest extends TestCase
         FileHelper::createDirectory($this->testViewPath);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         FileHelper::removeDirectory($this->testViewPath);
         parent::tearDown();
@@ -79,8 +79,8 @@ PHP
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
         file_put_contents($baseView, <<<'PHP'
-<?php 
-    echo $this->render("sub"); 
+<?php
+    echo $this->render("sub");
 ?>
 PHP
         );

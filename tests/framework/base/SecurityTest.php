@@ -78,7 +78,7 @@ class SecurityTest extends TestCase
      */
     protected $security;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::$functions = [];
         static::$fopen = null;
@@ -88,7 +88,7 @@ class SecurityTest extends TestCase
         $this->security->derivationIterations = 1000; // speed up test running
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         static::$functions = [];
         static::$fopen = null;

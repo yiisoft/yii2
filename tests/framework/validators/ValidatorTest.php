@@ -24,7 +24,7 @@ use yii\validators\SafeValidator;
  */
 class ValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -317,7 +317,7 @@ class ValidatorTest extends TestCase
         $model = new DynamicModel();
         $model->defineAttribute(1);
         $model->addRule([1], SafeValidator::className());
-    
+
         $this->assertNull($model->{1});
         $this->assertTrue($model->validate([1]));
 

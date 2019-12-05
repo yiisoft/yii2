@@ -74,7 +74,7 @@ class PhpManagerTest extends ManagerTestCase
         ]);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::$filemtime = null;
         static::$time = null;
@@ -89,7 +89,7 @@ class PhpManagerTest extends ManagerTestCase
         $this->auth = $this->createManager();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->removeDataFiles();
         static::$filemtime = null;

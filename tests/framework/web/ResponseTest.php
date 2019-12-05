@@ -27,7 +27,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public $response;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([

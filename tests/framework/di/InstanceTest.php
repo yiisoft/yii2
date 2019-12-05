@@ -21,7 +21,7 @@ use yiiunit\TestCase;
  */
 class InstanceTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
