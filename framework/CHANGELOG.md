@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
 - Bug #17708: Explicitly define precision to be 15 for FormatterNumberTest::testIntlAsScientific (My6UoT9)
 
+
 2.0.30 November 19, 2019
 ------------------------
 
