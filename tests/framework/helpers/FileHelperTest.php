@@ -139,7 +139,7 @@ class FileHelperTest extends TestCase
      */
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
-        $expectedMode = sprintf('%o', $expectedMode);
+        $expectedMode = sprintf('0%o', $expectedMode);
         $this->assertEquals($expectedMode, $this->getMode($fileName), $message);
     }
 
