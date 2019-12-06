@@ -8,6 +8,8 @@
 namespace yiiunit\framework\db;
 
 use PDO;
+use PHPUnit\Framework\Constraint\IsType;
+use PHPUnit\Util\InvalidArgumentHelper;
 use yii\caching\ArrayCache;
 use yii\caching\FileCache;
 use yii\db\CheckConstraint;
@@ -782,7 +784,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     private function assertMetadataEquals($expected, $actual)
     {
-        $this->assertInternalType(strtolower(\gettype($expected)), $actual);
+        self::assertInternalType(strtolower(\gettype($expected)), $actual);
         if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, false);
             $this->normalizeArrayKeys($actual, false);
@@ -793,6 +795,28 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->normalizeArrayKeys($actual, true);
         }
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Original method is deprecated in PHPUnit 8 but for this exact case
+     * we can not use separate methods since it would result in useless
+     * switch()
+     *
+     * @param string $expected
+     * @param mixed $actual
+     * @param string $message
+     */
+    public static function assertInternalType($expected, $actual, $message = ''): void
+    {
+        if (!\is_string($expected)) {
+            throw InvalidArgumentHelper::factory(1, 'string');
+        }
+
+        $constraint = new IsType(
+            $expected
+        );
+
+        static::assertThat($actual, $constraint, $message);
     }
 
     private function normalizeArrayKeys(array &$array, $caseSensitive)
