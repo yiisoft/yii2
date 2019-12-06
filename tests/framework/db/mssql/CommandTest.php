@@ -69,7 +69,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, trim($row['char_col']));
-        $this->assertEquals($floatCol, $row['float_col']);
+        $this->assertContains($row['float_col'], [$floatCol, sprintf('%.3f', $floatCol)]);
         $this->assertEquals($blobCol, $row['blob_col']);
         $this->assertEquals($numericCol, $row['numeric_col']);
 
