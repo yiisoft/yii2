@@ -528,7 +528,7 @@ class FormatterNumberTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
 
-        $this->assertSame('8.76543210987654E16', $this->formatter->asScientific('87654321098765436'));
+        $this->assertSame('8.76543210987654E16', $this->formatter->asScientific('87654321098765436', 15));
     }
 
     public function testAsScientific()
