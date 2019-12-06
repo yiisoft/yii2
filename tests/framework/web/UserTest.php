@@ -367,7 +367,7 @@ class UserTest extends TestCase
 
     public function testGetIdentityException()
     {
-        $session = $this->getMock('yii\web\Session');
+        $session = $this->createMock('yii\web\Session');
         $session->method('getHasSessionId')->willReturn(true);
         $session->method('get')->with($this->equalTo('__id'))->willReturn('1');
 

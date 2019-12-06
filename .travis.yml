@@ -67,39 +67,6 @@ matrix:
         - TASK_TESTS_COVERAGE=1
         - PHPUNIT_EXCLUDE_GROUP=oci,wincache,xcache,zenddata,cubrid
 
-    - php: "7.0"
-
-    - php: "5.6"
-
-    - php: "5.5"
-      dist: trusty
-
-    - php: "5.4"
-      dist: trusty
-
-    # Test against HHVM 3.21 LTS version by using trusty
-    - php: hhvm-3.21
-      sudo: true
-      addons:
-        code_climate:
-          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        postgresql: "9.6"
-      services:
-        - mysql
-        - postgresql
-
-    # test against the latest pre 3.26 HHVM version by using a newer image.
-    # @see https://github.com/facebook/hhvm/issues/8192
-    - php: hhvm-3.24
-      sudo: true
-      addons:
-        code_climate:
-          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        postgresql: "9.6"
-      services:
-        - mysql
-        - postgresql
-
     - php: nightly
       services:
         - mysql
@@ -114,13 +81,11 @@ matrix:
 
   allow_failures:
     - php: nightly
-    - php: hhvm-3.21
-    - php: hhvm-3.24
 
 install:
   - |
-    if [[ $TASK_TESTS_COVERAGE != 1 && $TRAVIS_PHP_VERSION != hhv* ]]; then
-      # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
+    if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
+      # disable xdebug for performance reasons when code coverage is not needed
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
 
@@ -149,19 +114,6 @@ install:
   - sudo useradd $TRAVIS_SECOND_USER --gid $(id -g) -M
 
 before_script:
-  #
-  # Disable:
-  # 1) the HHVM JIT for faster testing;
-  # 2) the session GC for testing stability.
-  #
-  # The second allows to avoid accidental unpredictable failings with message:
-  # `ps_files_cleanup_dir: opendir(/var/lib/hhvm/sessions) failed: Permission denied (13)`
-  #
-  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-    echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
-    echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
-    fi
-
   # show some versions and env information
   - php --version
   - composer --version
@@ -194,16 +146,6 @@ before_script:
     if [ $TASK_TESTS_COVERAGE == 1 ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
-
-  # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
-  # For Yii2 tests, messages will be enabled by tests/bootstrap.php
-  - |
-    if [[ $TRAVIS_PHP_VERSION == 7.2 || $TRAVIS_PHP_VERSION == 7.3 || $TRAVIS_PHP_VERSION == 7.4snapshot || $TRAVIS_PHP_VERSION = nightly ]]; then
-      echo 'Disabled DEPRECATED notifications for PHP >= 7.2';
-      echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
-      phpenv config-add /tmp/php-config.ini;
-    fi
-
 
 script:
   # PHP tests
