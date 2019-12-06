@@ -14,6 +14,7 @@ use IteratorAggregate;
 use ReflectionClass;
 use Yii;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -819,7 +820,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         }
         $attributes = array_keys(array_flip($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
-            if ($attribute[0] === '!') {
+            if (is_string($attribute) && strpos($attribute, '!') === 0) {
                 $attributes[$i] = substr($attribute, 1);
             }
         }
