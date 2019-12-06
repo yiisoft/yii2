@@ -42,7 +42,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schemas = $schema->getSchemaNames();
         $this->assertNotEmpty($schemas);
         foreach ($this->expectedSchemas as $schema) {
-            $this->assertStringContainsString($schema, $schemas);
+            $this->assertContains($schema, $schemas);
         }
     }
 
@@ -69,14 +69,14 @@ abstract class SchemaTest extends DatabaseTestCase
                 return trim($item, '[]');
             }, $tables);
         }
-        $this->assertStringContainsString('customer', $tables);
-        $this->assertStringContainsString('category', $tables);
-        $this->assertStringContainsString('item', $tables);
-        $this->assertStringContainsString('order', $tables);
-        $this->assertStringContainsString('order_item', $tables);
-        $this->assertStringContainsString('type', $tables);
-        $this->assertStringContainsString('animal', $tables);
-        $this->assertStringContainsString('animal_view', $tables);
+        $this->assertContains('customer', $tables);
+        $this->assertContains('category', $tables);
+        $this->assertContains('item', $tables);
+        $this->assertContains('order', $tables);
+        $this->assertContains('order_item', $tables);
+        $this->assertContains('type', $tables);
+        $this->assertContains('animal', $tables);
+        $this->assertContains('animal_view', $tables);
     }
 
     /**

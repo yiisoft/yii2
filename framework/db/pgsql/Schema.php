@@ -552,6 +552,8 @@ SQL;
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
                     $column->defaultValue = ($column->defaultValue === 'true');
+                } elseif (preg_match("/^B'(.*?)'::/", $column->defaultValue, $matches)) {
+                    $column->defaultValue = bindec($matches[1]);
                 } elseif (strncasecmp($column->dbType, 'bit', 3) === 0 || strncasecmp($column->dbType, 'varbit', 6) === 0) {
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {

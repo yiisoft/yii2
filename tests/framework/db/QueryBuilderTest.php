@@ -2204,7 +2204,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         if (is_string($expectedSQL)) {
             $this->assertSame($expectedSQL, $actualSQL);
         } else {
-            $this->assertStringContainsString($actualSQL, $expectedSQL);
+            $this->assertContains($actualSQL, $expectedSQL);
         }
         if (ArrayHelper::isAssociative($expectedParams)) {
             $this->assertSame($expectedParams, $actualParams);
