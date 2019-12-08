@@ -10,6 +10,7 @@ namespace yiiunit\framework\mail;
 use Yii;
 use yii\base\View;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
 use yiiunit\TestCase;
@@ -45,7 +46,7 @@ class BaseMailerTest extends TestCase
      */
     protected function getTestFilePath()
     {
-        return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(get_class($this)) . '_' . getmypid();
+        return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . StringHelper::basename(get_class($this)) . '_' . getmypid();
     }
 
     /**
