@@ -11,6 +11,8 @@ use Yii;
 use yii\BaseYii;
 use yii\di\Container;
 use yii\log\Logger;
+use yii\base\View;
+use yii\base\Theme;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 use yiiunit\data\base\CallableClass;
@@ -124,6 +126,17 @@ class BaseYiiTest extends TestCase
         $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
 
         Yii::createObject(null);
+    }
+
+    public function testDi3CompatibilityCreateObject()
+    {
+        $objek = Yii::createObject([
+            '__class' => View::className(),
+            'theme' => ['__class' => Theme::className()],
+        ]);
+
+        $this->assertInstanceOf(View::className(), $objek);
+        $this->assertInstanceOf(Theme::className(), $objek->theme);
     }
 
     /**
