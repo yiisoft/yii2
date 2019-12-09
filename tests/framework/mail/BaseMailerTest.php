@@ -10,7 +10,6 @@ namespace yiiunit\framework\mail;
 use Yii;
 use yii\base\View;
 use yii\helpers\FileHelper;
-use yii\helpers\StringHelper;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
 use yiiunit\TestCase;
