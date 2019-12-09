@@ -132,11 +132,11 @@ class BaseYiiTest extends TestCase
     {
         $object = Yii::createObject([
             '__class' => View::className(),
-            'theme' => ['__class' => Theme::className()],
+            'theme' => ['__class' => MyTheme::className()],
         ]);
 
         $this->assertInstanceOf(View::className(), $object);
-        $this->assertInstanceOf(Theme::className(), $object->theme);
+        $this->assertInstanceOf(MyTheme::className(), $object->theme);
     }
 
     /**
@@ -202,4 +202,8 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
     }
+}
+
+class MyTheme extends Theme
+{
 }
