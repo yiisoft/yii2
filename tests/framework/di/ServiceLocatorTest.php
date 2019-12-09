@@ -73,12 +73,19 @@ class ServiceLocatorTest extends TestCase
 
     public function testDi3Compatibility()
     {
-        $object = new TestSubclass();
-        $configUsedByYii = ['class' => TestClass::className()];
-        $Di3ConfigByUserMaybe = ['__class' => TestSubclass::className()];
-        $container = new ServiceLocator();
-        $container->set('test', array_merge($configUsedByYii, $Di3ConfigByUserMaybe));
-        $this->assertInstanceOf(TestSubclass::className(), $container->get('test'));
+        $config = [
+            'components' => [
+                'test' => [
+                    'class' => TestClass::className(),
+                ],
+            ],
+        ];
+
+        // User Defined Config
+        $config['components']['test']['__class'] = TestSubclass::className();
+
+        $app = new ServiceLocator($config);
+        $this->assertInstanceOf(TestSubclass::className(), $app->get('test'));
     }
 
 
