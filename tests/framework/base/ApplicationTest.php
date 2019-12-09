@@ -11,7 +11,6 @@ use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\Module;
-use yii\base\View;
 use yii\log\Dispatcher;
 use yiiunit\TestCase;
 
@@ -67,19 +66,6 @@ class ApplicationTest extends TestCase
         $this->assertSame('Bootstrap with yii\base\Module', Yii::getLogger()->messages[3][0]);
         $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
     }
-
-    public function testDi3CompatibilityAppCoreComponent()
-    {
-        $this->mockApplication([
-            'components' => [
-                'view' => [
-                    '__class' => ViewMock::className(),
-                ],
-            ],
-        ]);
-
-        $this->assertInstanceOf(ViewMock::className(), Yii::$app->view);
-    }
 }
 
 class DispatcherMock extends Dispatcher
@@ -91,8 +77,4 @@ class BootstrapComponentMock extends Component implements BootstrapInterface
     public function bootstrap($app)
     {
     }
-}
-
-class ViewMock extends View
-{
 }
