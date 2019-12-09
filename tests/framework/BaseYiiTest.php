@@ -131,12 +131,12 @@ class BaseYiiTest extends TestCase
     public function testDi3CompatibilityCreateObject()
     {
         $object = Yii::createObject([
-            '__class' => View::className(),
-            'theme' => ['__class' => MyTheme::className()],
+            '__class' => ViewMock::className(),
+            'theme' => ['__class' => ThemeMock::className()],
         ]);
 
-        $this->assertInstanceOf(View::className(), $object);
-        $this->assertInstanceOf(MyTheme::className(), $object->theme);
+        $this->assertInstanceOf(ViewMock::className(), $object);
+        $this->assertInstanceOf(ThemeMock::className(), $object->theme);
     }
 
     /**
@@ -204,6 +204,10 @@ class BaseYiiTest extends TestCase
     }
 }
 
-class MyTheme extends Theme
+class ThemeMock extends Theme
+{
+}
+
+class ViewMock extends View
 {
 }
