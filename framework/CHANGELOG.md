@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
 - Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
 - Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of type int (samdark)
-
+- Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
 
 2.0.30 November 19, 2019
 ------------------------
