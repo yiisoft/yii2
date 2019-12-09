@@ -4,10 +4,10 @@ Yii Framework 2 Change Log
 2.0.31 under development
 ------------------------
 
-- Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
 - Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
 - Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
+- Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
 
 
 2.0.30 November 19, 2019
