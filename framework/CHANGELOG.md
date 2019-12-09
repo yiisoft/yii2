@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
 - Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of type int (samdark)
 - Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
+- Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
 
 2.0.30 November 19, 2019
 ------------------------
