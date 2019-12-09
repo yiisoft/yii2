@@ -130,7 +130,7 @@ class BaseYiiTest extends TestCase
 
     public function testDi3CompatibilityCreateObject()
     {
-        $objek = Yii::createObject([
+        $object = Yii::createObject([
             '__class' => View::className(),
             'theme' => ['__class' => Theme::className()],
         ]);
