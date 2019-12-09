@@ -69,7 +69,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, trim($row['char_col']));
-        $this->assertEqualsWithDelta($floatCol, (float)$row['float_col'], PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta($floatCol, (float)$row['float_col'], PHP_VERSION_ID >= 70200 ? PHP_FLOAT_EPSILON : 0.000000001);
         $this->assertEquals($blobCol, $row['blob_col']);
         $this->assertEquals($numericCol, $row['numeric_col']);
 
