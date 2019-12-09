@@ -136,7 +136,7 @@ class BaseYiiTest extends TestCase
         ]);
 
         $this->assertInstanceOf(View::className(), $objek);
-        $this->assertInstanceOf(Theme::className(), $objek->theme);
+        $this->assertInstanceOf(Theme::className(), $object->theme);
     }
 
     /**
