@@ -11,11 +11,11 @@ use Yii;
 use yii\BaseYii;
 use yii\di\Container;
 use yii\log\Logger;
-use yii\base\View;
-use yii\base\Theme;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 use yiiunit\data\base\CallableClass;
+use yiiunit\framework\di\stubs\FooBaz;
+use yiiunit\framework\di\stubs\FooDependentSubclass;
 use yiiunit\framework\di\stubs\Qux;
 
 /**
@@ -128,15 +128,15 @@ class BaseYiiTest extends TestCase
         Yii::createObject(null);
     }
 
-    public function testDi3CompatibilityCreateObject()
+    public function testDi3CompatibilityCreateDependentObject()
     {
         $object = Yii::createObject([
-            '__class' => ViewMock::className(),
-            'theme' => ['__class' => ThemeMock::className()],
+            '__class' => FooBaz::className(),
+            'fooDependent' => ['__class' => FooDependentSubclass::className()],
         ]);
 
-        $this->assertInstanceOf(ViewMock::className(), $object);
-        $this->assertInstanceOf(ThemeMock::className(), $object->theme);
+        $this->assertInstanceOf(FooBaz::className(), $object);
+        $this->assertInstanceOf(FooDependentSubclass::className(), $object->fooDependent);
     }
 
     /**
@@ -202,12 +202,4 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
     }
-}
-
-class ThemeMock extends Theme
-{
-}
-
-class ViewMock extends View
-{
 }
