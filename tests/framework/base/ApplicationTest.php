@@ -73,12 +73,12 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'view' => [
-                    '__class' => View::className(),
+                    '__class' => ViewMock::className(),
                 ],
             ],
         ]);
 
-        $this->assertInstanceOf(View::className(), Yii::$app->view);
+        $this->assertInstanceOf(ViewMock::className(), Yii::$app->view);
     }
 }
 
@@ -91,4 +91,8 @@ class BootstrapComponentMock extends Component implements BootstrapInterface
     public function bootstrap($app)
     {
     }
+}
+
+class ViewMock extends View
+{
 }
