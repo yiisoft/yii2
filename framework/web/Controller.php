@@ -139,7 +139,8 @@ class Controller extends \yii\base\Controller
                     $type->isBuiltin() &&
                     ($params[$name] !== null || !$type->allowsNull())
                 ) {
-                    switch ($type->getName()) {
+                    $typeName = PHP_VERSION_ID >= 74000 ? $type->getName() : (string)$type;
+                    switch ($typeName) {
                         case 'int':
                             $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
                             break;
