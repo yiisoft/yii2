@@ -73,3 +73,11 @@ namespace PHPUnit\Framework {
         }
     }
 }
+
+namespace PHPUnit\Framework {
+    if (!class_exists('PHPUnit\Framework\TestListener') && class_exists('PHPUnit_Framework_TestListener')) {
+        class TestListener extends \PHPUnit_Framework_TestListener
+        {
+        }
+    }
+}
