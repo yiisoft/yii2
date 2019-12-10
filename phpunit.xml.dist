@@ -8,7 +8,7 @@
          stopOnFailure="false"
          printerClass="yiiunit\ResultPrinter">
     <testsuites>
-        <testsuite name="Bii Test Suite">
+        <testsuite name="Yii Test Suite">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
