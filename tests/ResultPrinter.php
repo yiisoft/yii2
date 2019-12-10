@@ -5,8 +5,6 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit;
-
 if (PHP_VERSION_ID >= 70100) {
     require 'ResultPrinter7.php';
 } else {
