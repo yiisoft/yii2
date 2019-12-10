@@ -14,7 +14,6 @@ use IteratorAggregate;
 use ReflectionClass;
 use Yii;
 use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
