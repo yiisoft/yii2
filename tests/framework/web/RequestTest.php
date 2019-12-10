@@ -1056,4 +1056,29 @@ class RequestTest extends TestCase
         $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
         $this->assertSame($expectedHostInfo, $request->hostInfo, 'Host info fail!');
     }
+
+    public function testForwardedNotTrusted()
+    {
+        $_SERVER['REMOTE_ADDR'] = '192.168.10.10';
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTP_FORWARDED'] = 'for=8.8.8.8;host=spoofed.host;proto=https';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_HOST'] = 'yiiframework.com';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.10.0/24',
+                '192.168.20.0/24'
+            ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+            ]
+        ]);
+
+        $this->assertSame('10.0.0.1', $request->userIP, 'User IP fail!');
+        $this->assertSame('http://yiiframework.com', $request->hostInfo, 'Host info fail!');
+    }
 }

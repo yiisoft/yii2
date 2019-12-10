@@ -1849,7 +1849,12 @@ class Request extends \yii\base\Request
         }
     }
 
-    public function getSecureDecodedForwardedHeader()
+    /**
+     * Gets only trusted forwarded header parts
+     * 
+     * @return array
+     */
+    protected function getSecureDecodedForwardedHeader()
     {
         $validator = $this->getIpValidator();
 
@@ -1868,9 +1873,11 @@ class Request extends \yii\base\Request
      */
     protected function decodedForwardedHeader()
     {
+        if (!in_array('Forwarded', $this->secureHeaders)) {
+            return [];
+        }
         if ($this->_decodedForwardedHeader === null) {
             $this->_decodedForwardedHeader = [];
-
             /**
              * First one is always correct, because proxy CAN add headers
              * after last one found.
