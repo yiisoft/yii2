@@ -224,7 +224,7 @@ git push origin --delete 999-nazwa-twojej-galezi-w-tym-miejscu
 ### Note:
 
 W celu wczesnego wykrycia ewentualnych problemów z integracją, każde żądanie scalenia głównego kodu Yii na GitHubie jest 
-weryfikowane przez automatyczne testy [Travis CI](http://travis-ci.org). Ponieważ ekipa głównych programistów stara się nie 
+weryfikowane przez automatyczne testy [Travis CI](http://travis-ci.com). Ponieważ ekipa głównych programistów stara się nie 
 nadużywać tej usługi, [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) jest dodawane przy komentarzu 
 scalenia kodu, jeśli żądanie:
 
