@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of non-string (samdark)
 - Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
 - Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
+- Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
 
 2.0.30 November 19, 2019
 ------------------------
