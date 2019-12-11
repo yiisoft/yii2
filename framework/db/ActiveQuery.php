@@ -301,6 +301,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function one($db = null)
     {
+        $this->limit = 1;
         $row = parent::one($db);
         if ($row !== false) {
             $models = $this->populate([$row]);
