@@ -327,18 +327,18 @@ echo Html::getAttributeName('dates[0]');
 There are two methods to generate tags wrapping embedded styles and scripts:
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 Gives you
 
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Hello!");', ['defer' => true]) ?>
+<?= Html::script('alert("Hello!");') ?>
 
 Gives you
 
-<script defer>alert("Hello!");</script>
+<script media="print">alert("Hello!");</script>
 ```
 
 If you want to use an external style in a CSS file:
