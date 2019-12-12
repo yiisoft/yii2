@@ -1151,18 +1151,22 @@ class Request extends \yii\base\Request
      * @see $ipHeaders
      * @since 2.0.28
      */
-    protected function getUserIpFromIpHeaders() {
-        if (($ip = $this->getSecureForwardedHeaderPart('for')) !== null) {
-            if (preg_match('/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/', $ip, $matches)) {
-                $ip = $this->getUserIpFromIpHeader($matches['ip']);
-                if ($ip !== null) {
-                    return $ip;
-                }
+    protected function getUserIpFromIpHeaders()
+    {
+        $ip = $this->getSecureForwardedHeaderPart('for');
+        if ($ip !== null && preg_match(
+            '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/',
+            $ip,
+            $matches
+        )) {
+            $ip = $this->getUserIpFromIpHeader($matches['ip']);
+            if ($ip !== null) {
+                return $ip;
             }
         }
 
 
-        foreach($this->ipHeaders as $ipHeader) {
+        foreach ($this->ipHeaders as $ipHeader) {
             if ($this->headers->has($ipHeader)) {
                 $ip = $this->getUserIpFromIpHeader($this->headers->get($ipHeader));
                 if ($ip !== null) {
@@ -1836,6 +1840,8 @@ class Request extends \yii\base\Request
      * @param string $token Header token
      *
      * @return string
+     *
+     * @since 2.0.31
      */
     protected function getSecureForwardedHeaderPart($token)
     {
@@ -1851,8 +1857,10 @@ class Request extends \yii\base\Request
 
     /**
      * Gets only trusted forwarded header parts
-     * 
+     *
      * @return array
+     *
+     * @since 2.0.31
      */
     protected function getSecureDecodedForwardedHeader()
     {
@@ -1870,15 +1878,17 @@ class Request extends \yii\base\Request
      * Returns decoded forwarded header
      *
      * @return array
+     *
+     * @since 2.0.31
      */
     protected function decodedForwardedHeader()
     {
-        if (!in_array('Forwarded', $this->secureHeaders)) {
+        if (!in_array('Forwarded', $this->secureHeaders, true)) {
             return [];
         }
         if ($this->_decodedForwardedHeader === null) {
             $this->_decodedForwardedHeader = [];
-            /**
+            /*
              * First one is always correct, because proxy CAN add headers
              * after last one found.
              * Keep in mind that it is NOT enforced, therefore we cannot be

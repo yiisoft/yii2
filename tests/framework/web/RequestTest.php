@@ -990,7 +990,8 @@ class RequestTest extends TestCase
         $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
     }
 
-    public function parseForwardedHeaderDataProvider() {
+    public function parseForwardedHeaderDataProvider()
+    {
         return [
             [
                 '192.168.10.10',
