@@ -89,7 +89,7 @@ class UploadedFileTest extends TestCase
     public function testSaveAs()
     {
         $tmpImage = UploadedFile::getInstance(new ModelStub(), 'temp_image');
-        $targetFile = '@runtime'. DIRECTORY_SEPARATOR .'test_saved_uploaded_file_' . time();
+        $targetFile = '@runtime/test_saved_uploaded_file_' . time();
 
         $this->assertEquals(true, $tmpImage->saveAs($targetFile, $deleteTempFile = false));
         $this->assertEquals(true, $tmpImage->saveAs($targetFile, $deleteTempFile = true));
@@ -103,7 +103,7 @@ class UploadedFileTest extends TestCase
         $_FILES = [];
         UploadedFile::reset();
         $model = new ModelStub();
-        $targetFile = '@runtime'. DIRECTORY_SEPARATOR .'test_saved_uploaded_file_' . time();
+        $targetFile = '@runtime/test_saved_uploaded_file_' . time();
 
         (new MultipartFormDataParserTest)->testParse();
         $_FILES['ModelStub'] = $_FILES['Item']; // $_FILES[Item] here from testParse() above
