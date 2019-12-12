@@ -58,14 +58,17 @@ class UploadedFile extends BaseObject
      */
     public $error;
 
-    private $tempResource;
+    /**
+     * @var resource a temporary uploaded stream resource used within PUT and PATCH request.
+     */
+    private $_tempResource;
 
     private static $_files;
 
 
     public function __construct($config = [])
     {
-        $this->tempResource = ArrayHelper::remove($config, 'tempResource');
+        $this->_tempResource = ArrayHelper::remove($config, 'tempResource');
         parent::__construct($config);
     }
 
@@ -177,19 +180,19 @@ class UploadedFile extends BaseObject
         if (!$deleteTempFile) {
             return true;
         }
-        if (is_resource($this->tempResource)) {
-            return @fclose($this->tempResource);
+        if (is_resource($this->_tempResource)) {
+            return @fclose($this->_tempResource);
         }
         return is_file($this->tempName) && @unlink($this->tempName);
     }
 
     private function copyTempFile($file)
     {
-        if (!is_resource($this->tempResource)) {
+        if (!is_resource($this->_tempResource)) {
             return is_file($this->tempName) && copy($this->tempName, $file);
         }
         $target = fopen($file, 'w');
-        $result = stream_copy_to_stream($this->tempResource, $target);
+        $result = stream_copy_to_stream($this->_tempResource, $target);
         @fclose($target);
 
         return $result;
