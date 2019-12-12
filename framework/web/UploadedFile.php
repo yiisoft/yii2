@@ -7,6 +7,7 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\BaseObject;
 use yii\helpers\Html;
 
@@ -149,9 +150,8 @@ class UploadedFile extends BaseObject
 
     /**
      * Saves the uploaded file.
-     * Note that this method uses php's move_uploaded_file() method. If the target file `$file`
-     * already exists, it will be overwritten.
-     * @param string $file the file path used to save the uploaded file
+     * If the target file `$file` already exists, it will be overwritten.
+     * @param string $file the file path or a path alias used to save the uploaded file.
      * @param bool $deleteTempFile whether to delete the temporary file after saving.
      * If true, you will not be able to save the uploaded file again in the current request.
      * @return bool true whether the file is saved successfully
@@ -159,14 +159,16 @@ class UploadedFile extends BaseObject
      */
     public function saveAs($file, $deleteTempFile = true)
     {
-        if ($this->error == UPLOAD_ERR_OK) {
-            if ($deleteTempFile) {
-                return move_uploaded_file($this->tempName, $file);
-            } elseif (is_uploaded_file($this->tempName)) {
-                return copy($this->tempName, $file);
-            }
+        if ($this->error !== UPLOAD_ERR_OK) {
+            return false;
         }
-
+        $file = Yii::getAlias($file);
+        if ($deleteTempFile) {
+            return rename($this->tempName, $file);
+        }
+        if (is_file($this->tempName)) {
+            return copy($this->tempName, $file);
+        }
         return false;
     }
 
