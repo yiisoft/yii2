@@ -177,15 +177,12 @@ class UploadedFile extends BaseObject
         if (false === $this->copyTempFile(Yii::getAlias($file))) {
             return false;
         }
-        if (!$deleteTempFile) {
-            return true;
-        }
-        if (is_resource($this->_tempResource)) {
-            return @fclose($this->_tempResource);
-        }
-        return is_file($this->tempName) && @unlink($this->tempName);
+        return !$deleteTempFile || $this->deleteTempFile();
     }
 
+    /**
+     * @return bool|int
+     */
     private function copyTempFile($file)
     {
         if (!is_resource($this->_tempResource)) {
@@ -196,6 +193,17 @@ class UploadedFile extends BaseObject
         @fclose($target);
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    private function deleteTempFile()
+    {
+        if (is_resource($this->_tempResource)) {
+            return @fclose($this->_tempResource);
+        }
+        return is_file($this->tempName) && @unlink($this->tempName);
     }
 
     /**
