@@ -70,7 +70,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         if (is_array($values)) {
             $rawValues = $values;
-        } else if ($values instanceof \Traversable) {
+        } elseif ($values instanceof \Traversable) {
             $rawValues = $this->getRawValuesFromTraversableObject($values);
         }
 
