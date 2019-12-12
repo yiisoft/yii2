@@ -210,6 +210,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
      * @param string $operator
      * @param string $column
      * @return string is null or is not null condition
+     * @since 2.0.31
      */
     protected function getNullCondition($operator, $column) {
         $column = $this->queryBuilder->db->quoteColumnName($column);
@@ -222,6 +223,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
     /**
      * @param \Traversable $traversableObject
      * @return array raw values
+     * @since 2.0.31
      */
     protected function getRawValuesFromTraversableObject(\Traversable $traversableObject)
     {
