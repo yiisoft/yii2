@@ -131,7 +131,7 @@ return [
     'Operator "{operator}" requires multiple operands.' => 'Operātoram "{operator}" nepieciešami vairāki operandi',
     'Options available: {options}' => 'Pieejamas opvijas: {options}',
     'Powered by {yii}' => 'Darbojas ar {Yii}',
-    'The combination {values} of {attributes} has already been taken.' => 'Kombinācija {values} priekš {attributes} ir jau aizņēmta.',
+    'The combination {values} of {attributes} has already been taken.' => 'Kombinācija {values} priekš {attributes} ir jau aizņemta.',
     'The format of {filter} is invalid.' => '{filter} formāts ir kļūdains',
     'Unknown alias: -{name}' => 'Neatpazīts preidonīms {name}',
     'Unknown filter attribute "{attribute}"' => 'Neatpazīts filtra attribūts "{attribute}"',
