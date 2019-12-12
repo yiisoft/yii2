@@ -365,6 +365,10 @@ class MemCache extends Cache
      */
     protected function normalizeDuration($duration)
     {
+        if ($duration < 0) {
+            return 0;
+        }
+
         if ($duration < 2592001) {
             return $duration;
         }
