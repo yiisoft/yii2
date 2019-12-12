@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
 - Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
 - Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
+- Enh #17729: Path alias support was added to `yii\web\UploadFile::saveAs()` (sup-ham)
 
 
 2.0.30 November 19, 2019
