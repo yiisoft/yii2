@@ -728,8 +728,8 @@ class Request extends \yii\base\Request
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
 
-            if ($this->getSecureForwardedHeaderPart('host')) {
-                $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderPart('host');
+            if ($this->getSecureForwardedHeaderTrustedPart('host')) {
+                $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderTrustedPart('host');
             } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('Host')) {
@@ -1072,7 +1072,7 @@ class Request extends \yii\base\Request
             return true;
         }
 
-        if (($proto = $this->getSecureForwardedHeaderPart('proto')) !== null) {
+        if (($proto = $this->getSecureForwardedHeaderTrustedPart('proto')) !== null) {
             return strcasecmp($proto, 'https') === 0;
         }
 
@@ -1153,7 +1153,7 @@ class Request extends \yii\base\Request
      */
     protected function getUserIpFromIpHeaders()
     {
-        $ip = $this->getSecureForwardedHeaderPart('for');
+        $ip = $this->getSecureForwardedHeaderTrustedPart('for');
         if ($ip !== null && preg_match(
             '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/',
             $ip,
@@ -1843,12 +1843,12 @@ class Request extends \yii\base\Request
      *
      * @since 2.0.31
      */
-    protected function getSecureForwardedHeaderPart($token)
+    protected function getSecureForwardedHeaderTrustedPart($token)
     {
         $token = strtolower($token);
 
-        if ($decodedHeader = $this->getSecureDecodedForwardedHeader()) {
-            $lastElement = array_pop($decodedHeader);
+        if ($parts = $this->getSecureForwardedHeaderTrustedParts()) {
+            $lastElement = array_pop($parts);
             if ($lastElement && isset($lastElement[$token])) {
                 return $lastElement[$token];
             }
@@ -1856,23 +1856,23 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Gets only trusted forwarded header parts
+     * Gets only trusted `Forwarded` header parts
      *
      * @return array
      *
      * @since 2.0.31
      */
-    protected function getSecureDecodedForwardedHeader()
+    protected function getSecureForwardedHeaderTrustedParts()
     {
         $validator = $this->getIpValidator();
 
         $validator->setRanges($this->trustedHosts);
-        return array_filter($this->decodedForwardedHeader(), function ($headerPart) use ($validator) {
+        return array_filter($this->getSecureForwardedHeaderParts(), function ($headerPart) use ($validator) {
             return isset($headerPart['for']) ? !$validator->validate($headerPart['for']) : true;
         });
     }
 
-    private $_decodedForwardedHeader;
+    private $_secureForwardedHeaderParts;
 
     /**
      * Returns decoded forwarded header
@@ -1881,13 +1881,13 @@ class Request extends \yii\base\Request
      *
      * @since 2.0.31
      */
-    protected function decodedForwardedHeader()
+    protected function getSecureForwardedHeaderParts()
     {
         if (!in_array('Forwarded', $this->secureHeaders, true)) {
             return [];
         }
-        if ($this->_decodedForwardedHeader === null) {
-            $this->_decodedForwardedHeader = [];
+        if ($this->_secureForwardedHeaderParts === null) {
+            $this->_secureForwardedHeaderParts = [];
             /*
              * First one is always correct, because proxy CAN add headers
              * after last one found.
@@ -1904,12 +1904,12 @@ class Request extends \yii\base\Request
 
             foreach ($forwardedElements[0] as $forwardedPairs) {
                 preg_match_all('/(?P<key>\w+)\s*=\s*(?|(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
-                $this->_decodedForwardedHeader[] = array_reduce($matches, function ($carry, $item) {
+                $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
                     $carry[strtolower($item['key'])] = $item['value'];
                     return $carry;
                 }, []);
             }
         }
-        return $this->_decodedForwardedHeader;
+        return $this->_secureForwardedHeaderParts;
     }
 }
