@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -57,8 +58,16 @@ class UploadedFile extends BaseObject
      */
     public $error;
 
+    private $tempResource;
+
     private static $_files;
 
+
+    public function __construct($config = [])
+    {
+        $this->tempResource = ArrayHelper::remove($config, 'tempResource');
+        parent::__construct($config);
+    }
 
     /**
      * String output.
@@ -162,14 +171,28 @@ class UploadedFile extends BaseObject
         if ($this->error !== UPLOAD_ERR_OK) {
             return false;
         }
-        $file = Yii::getAlias($file);
-        if ($deleteTempFile) {
-            return rename($this->tempName, $file);
+        if (false === $this->copyTempFile(Yii::getAlias($file))) {
+            return false;
         }
-        if (is_file($this->tempName)) {
-            return copy($this->tempName, $file);
+        if (!$deleteTempFile) {
+            return true;
         }
-        return false;
+        if (is_resource($this->tempResource)) {
+            return @fclose($this->tempResource);
+        }
+        return is_file($this->tempName) && @unlink($this->tempName);
+    }
+
+    private function copyTempFile($file)
+    {
+        if (!is_resource($this->tempResource)) {
+            return is_file($this->tempName) && copy($this->tempName, $file);
+        }
+        $target = fopen($file, 'w');
+        $result = stream_copy_to_stream($this->tempResource, $target);
+        @fclose($target);
+
+        return $result;
     }
 
     /**
@@ -209,7 +232,8 @@ class UploadedFile extends BaseObject
             self::$_files = [];
             if (isset($_FILES) && is_array($_FILES)) {
                 foreach ($_FILES as $class => $info) {
-                    self::loadFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
+                    $resource = isset($info['tmp_resource']) ? $info['tmp_resource'] : [];
+                    self::loadFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error'], $resource);
                 }
             }
         }
@@ -226,16 +250,18 @@ class UploadedFile extends BaseObject
      * @param mixed $sizes file sizes provided by PHP
      * @param mixed $errors uploading issues provided by PHP
      */
-    private static function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors)
+    private static function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors, $tempResources)
     {
         if (is_array($names)) {
             foreach ($names as $i => $name) {
-                self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
+                $resource = isset($tempResources[$i]) ? $tempResources[$i] : [];
+                self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i], $resource);
             }
         } elseif ((int) $errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = [
                 'name' => $names,
                 'tempName' => $tempNames,
+                'tempResource' => $tempResources,
                 'type' => $types,
                 'size' => $sizes,
                 'error' => $errors,

@@ -190,6 +190,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                             @fclose($tmpResource);
                         } else {
                             fwrite($tmpResource, $value);
+                            rewind($tmpResource);
                             $fileInfo['tmp_name'] = $tmpFileName;
                             $fileInfo['tmp_resource'] = $tmpResource; // save file resource, otherwise it will be deleted
                         }
