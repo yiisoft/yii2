@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.31 under development
 ------------------------
 
+- Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150)
 - Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
 - Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
