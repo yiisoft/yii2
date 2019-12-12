@@ -5,7 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17661: Fix querybuilder incorrect IN/NOT IN condition handling for null values (strychu)
-- Bug #17865: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
 - Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
