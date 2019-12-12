@@ -76,6 +76,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         if (isset($rawValues) && in_array(null, $rawValues, true)) {
             $nullCondition = $this->getNullCondition($operator, $column);
+            $nullConditionOperator = $operator === 'IN' ? 'OR' : 'AND';
         }
 
         $sqlValues = $this->buildValues($expression, $values, $params);
@@ -96,7 +97,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
             $sql = $column . $operator . reset($sqlValues);
         }
 
-        return isset($nullCondition) ? sprintf('%s AND %s', $sql, $nullCondition) : $sql;
+        return isset($nullCondition) ? sprintf('%s %s %s', $sql, $nullConditionOperator, $nullCondition) : $sql;
     }
 
     /**
