@@ -54,8 +54,7 @@ use yii\helpers\StringHelper;
  *
  * > Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
  * files, which are available via `tmp_name` key, will not be recognized by PHP as uploaded ones.
- * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
- * means [[UploadedFile::saveAs()]] will fail as well.
+ * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them.
  *
  * @property int $uploadFileMaxCount Maximum upload files count.
  * @property int $uploadFileMaxSize Upload file max size in bytes.
