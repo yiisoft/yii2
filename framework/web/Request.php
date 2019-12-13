@@ -725,7 +725,7 @@ class Request extends \yii\base\Request
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
 
-            if ($this->getSecureForwardedHeaderTrustedPart('host')) {
+            if ($this->getSecureForwardedHeaderTrustedPart('host') !== null) {
                 $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderTrustedPart('host');
             } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
@@ -1836,7 +1836,7 @@ class Request extends \yii\base\Request
      *
      * @param string $token Header token
      *
-     * @return string
+     * @return string|null
      *
      * @since 2.0.31
      */
@@ -1850,6 +1850,7 @@ class Request extends \yii\base\Request
                 return $lastElement[$token];
             }
         }
+        return null;
     }
 
     /**
@@ -1900,7 +1901,7 @@ class Request extends \yii\base\Request
             preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
             foreach ($forwardedElements[0] as $forwardedPairs) {
-                preg_match_all('/(?P<key>\w+)\s*=\s*(?|(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
+                preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
                 $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
                     $carry[strtolower($item['key'])] = $item['value'];
                     return $carry;
