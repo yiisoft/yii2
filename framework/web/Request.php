@@ -226,9 +226,6 @@ class Request extends \yii\base\Request
         // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
-
-        // RFC 7239:
-        'Forwarded',
     ];
     /**
      * @var string[] List of headers where proxies store the real client IP.
