@@ -331,14 +331,14 @@ There are two methods to generate tags wrapping embedded styles and scripts:
 
 Gives you
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
 <?= Html::script('alert("Hello!");') ?>
 
 Gives you
 
-<script media="print">alert("Hello!");</script>
+<script>alert("Hello!");</script>
 ```
 
 If you want to use an external style in a CSS file:
