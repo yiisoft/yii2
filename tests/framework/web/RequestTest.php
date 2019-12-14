@@ -385,6 +385,12 @@ class RequestTest extends TestCase
             'trustedHosts' => [
                 '192.168.0.0/24',
             ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
         ]);
 
         $this->assertEquals($expected[0], $request->getHostInfo());
@@ -547,6 +553,12 @@ class RequestTest extends TestCase
             'trustedHosts' => [
                 '192.168.0.0/24',
             ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
         ]);
         $_SERVER = $server;
 
@@ -702,6 +714,12 @@ class RequestTest extends TestCase
         $request = new Request([
             'trustedHosts' => [
                 '192.168.0.0/24',
+            ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
             ],
         ]);
 

@@ -1897,6 +1897,9 @@ class Request extends \yii\base\Request
              * @see https://bugs.php.net/bug.php?id=78844
              */
             $forwarded = $this->headers->get('Forwarded', '');
+            if($forwarded === '') {
+                return $this->_secureForwardedHeaderParts;
+            }
 
             preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
