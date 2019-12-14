@@ -1052,6 +1052,12 @@ class RequestTest extends TestCase
                 '192.168.10.0/24',
                 '192.168.20.0/24'
             ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
         ]);
 
         $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
@@ -1076,7 +1082,7 @@ class RequestTest extends TestCase
                 'X-Forwarded-For',
                 'X-Forwarded-Host',
                 'X-Forwarded-Proto',
-            ]
+            ],
         ]);
 
         $this->assertSame('10.0.0.1', $request->userIP, 'User IP fail!');

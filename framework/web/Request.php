@@ -1881,7 +1881,7 @@ class Request extends \yii\base\Request
      */
     protected function getSecureForwardedHeaderParts()
     {
-        if (!in_array('Forwarded', $this->secureHeaders, true)) {
+        if (count(preg_grep('/^forwarded$/i', $this->secureHeaders)) === 0) {
             return [];
         }
         if ($this->_secureForwardedHeaderParts === null) {
@@ -1901,9 +1901,13 @@ class Request extends \yii\base\Request
             preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
             foreach ($forwardedElements[0] as $forwardedPairs) {
-                preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
+                preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
                 $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
-                    $carry[strtolower($item['key'])] = $item['value'];
+                    $value = $item['value'];
+                    if(isset($item['value2']) && $item['value2'] !== '') {
+                        $value = $item['value2'];
+                    }
+                    $carry[strtolower($item['key'])] = $value;
                     return $carry;
                 }, []);
             }
