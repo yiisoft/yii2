@@ -554,6 +554,8 @@ class RequestTest extends TestCase
                 '192.168.0.0/24',
             ],
             'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
                 'X-Forwarded-For',
                 'X-Forwarded-Host',
                 'X-Forwarded-Proto',
@@ -716,6 +718,8 @@ class RequestTest extends TestCase
                 '192.168.0.0/24',
             ],
             'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
                 'X-Forwarded-For',
                 'X-Forwarded-Host',
                 'X-Forwarded-Proto',
