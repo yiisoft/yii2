@@ -1881,39 +1881,40 @@ class Request extends \yii\base\Request
      */
     protected function getSecureForwardedHeaderParts()
     {
-        if (count(preg_grep('/^forwarded$/i', $this->secureHeaders)) === 0) {
-            return [];
+        if ($this->_secureForwardedHeaderParts !== null) {
+            return $this->_secureForwardedHeaderParts;
         }
-        if ($this->_secureForwardedHeaderParts === null) {
-            $this->_secureForwardedHeaderParts = [];
-            /*
-             * First one is always correct, because proxy CAN add headers
-             * after last one found.
-             * Keep in mind that it is NOT enforced, therefore we cannot be
-             * sure, that this is really first one
-             *
-             * FPM keeps last header sent which is a bug, you need to merge
-             * headers together on your web server before letting FPM handle it
-             * @see https://bugs.php.net/bug.php?id=78844
-             */
-            $forwarded = $this->headers->get('Forwarded', '');
-            if($forwarded === '') {
-                return $this->_secureForwardedHeaderParts;
-            }
+        if (count(preg_grep('/^forwarded$/i', $this->secureHeaders)) === 0) {
+            return $this->_secureForwardedHeaderParts = [];
+        }
+        /*
+         * First one is always correct, because proxy CAN add headers
+         * after last one found.
+         * Keep in mind that it is NOT enforced, therefore we cannot be
+         * sure, that this is really first one
+         *
+         * FPM keeps last header sent which is a bug, you need to merge
+         * headers together on your web server before letting FPM handle it
+         * @see https://bugs.php.net/bug.php?id=78844
+         */
+        $forwarded = $this->headers->get('Forwarded', '');
+        if ($forwarded === '') {
+            return $this->_secureForwardedHeaderParts = [];
+        }
 
-            preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
+        preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
-            foreach ($forwardedElements[0] as $forwardedPairs) {
-                preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
-                $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
-                    $value = $item['value'];
-                    if(isset($item['value2']) && $item['value2'] !== '') {
-                        $value = $item['value2'];
-                    }
-                    $carry[strtolower($item['key'])] = $value;
-                    return $carry;
-                }, []);
-            }
+        foreach ($forwardedElements[0] as $forwardedPairs) {
+            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs,
+                $matches, PREG_SET_ORDER);
+            $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
+                $value = $item['value'];
+                if (isset($item['value2']) && $item['value2'] !== '') {
+                    $value = $item['value2'];
+                }
+                $carry[strtolower($item['key'])] = $value;
+                return $carry;
+            }, []);
         }
         return $this->_secureForwardedHeaderParts;
     }
