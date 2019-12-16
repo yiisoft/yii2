@@ -357,15 +357,13 @@ class DbManager extends BaseManager
         if ($rule->updatedAt === null) {
             $rule->updatedAt = $time;
         }
-        $command = $this->db->createCommand()
+        $this->db->createCommand()
             ->insert($this->ruleTable, [
                 'name' => $rule->name,
                 'data' => serialize($rule),
                 'created_at' => $rule->createdAt,
                 'updated_at' => $rule->updatedAt,
-            ]);
-        // @see https://github.com/yiisoft/yii2/issues/12599
-        $this->db->pdo->exec($command->rawSql);
+            ])->execute();
 
         $this->invalidateCache();
 
@@ -385,16 +383,14 @@ class DbManager extends BaseManager
 
         $rule->updatedAt = time();
 
-        $command = $this->db->createCommand()
+        $this->db->createCommand()
             ->update($this->ruleTable, [
                 'name' => $rule->name,
                 'data' => serialize($rule),
                 'updated_at' => $rule->updatedAt,
             ], [
                 'name' => $name,
-            ]);
-        // @see https://github.com/yiisoft/yii2/issues/12599
-        $this->db->pdo->exec($command->rawSql);
+            ])->execute();
 
         $this->invalidateCache();
 
