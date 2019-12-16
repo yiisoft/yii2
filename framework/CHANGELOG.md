@@ -9,11 +9,13 @@ Yii Framework 2 Change Log
 - Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
 - Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
-- Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
 - Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of non-string (samdark)
 - Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
 - Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
 - Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
+- Bug #17710: Fix MemCache duration normalization to avoid memcached/system timestamp mismatch (samdark)
+- Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150)
+- Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
 - Enh #17729: Path alias support was added to `yii\web\UploadFile::saveAs()` (sup-ham)
 
 

@@ -333,6 +333,42 @@ class RequestTest extends TestCase
                     'example3.com',
                 ]
             ],
+            // RFC 7239 forwarded from untrusted server
+            [
+                [
+                    'HTTP_FORWARDED' => 'host=example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // RFC 7239 forwarded from trusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'host=example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+            // RFC 7239 forwarded from trusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'host=example3.com,host=example2.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example2.com',
+                    'example2.com',
+                ]
+            ],
         ];
     }
 
@@ -458,6 +494,44 @@ class RequestTest extends TestCase
                 'HTTP_FRONT_END_HTTPS' => 'on',
                 'REMOTE_ADDR' => '192.169.0.1',
             ], false],
+            // RFC 7239 forwarded from untrusted proxy
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+            ], false],
+            // RFC 7239 forwarded from two untrusted proxies
+            [[
+                'HTTP_FORWARDED' => 'proto=https,proto=http',
+            ], false],
+            // RFC 7239 forwarded from trusted proxy
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], true],
+            // RFC 7239 forwarded from trusted proxy, second proxy not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=https,proto=http',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], false],
+            // RFC 7239 forwarded from trusted proxy, second proxy encrypted, while client request not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=http,proto=https',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], true],
+            // RFC 7239 forwarded from untrusted proxy
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
+            // RFC 7239 forwarded from untrusted proxy, second proxy not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=https,proto=http',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
+            // RFC 7239 forwarded from untrusted proxy, second proxy encrypted, while client request not encrypted
+            [[
+                'HTTP_FORWARDED' => 'proto=http,proto=https',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
         ];
     }
 
@@ -513,6 +587,102 @@ class RequestTest extends TestCase
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '192.169.1.1',
                     'REMOTE_HOST' => 'untrusted.com',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from trusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            // RFC 7239 forwarded from trusted proxy with optinal port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123:2222',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123,for=122.122.122.122',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '122.122.122.122',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy, client IP with optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123:2222,for=122.122.122.122:2222',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '122.122.122.122',
+            ],
+            // RFC 7239 forwarded from untrusted proxy
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from trusted proxy with optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123:2222',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from trusted proxy with client IPv6
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="2001:0db8:85a3:0000:0000:8a2e:0370:7334"',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from trusted proxy with client IPv6 and optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222"',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy with client IPv6
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=122.122.122.122,for="2001:0db8:85a3:0000:0000:8a2e:0370:7334"',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from trusted proxy, through another proxy with client IPv6 and optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=122.122.122.122:2222,for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222"',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+            ],
+            // RFC 7239 forwarded from untrusted proxy with client IPv6
+            [
+                [
+                    'HTTP_FORWARDED' => 'for"=2001:0db8:85a3:0000:0000:8a2e:0370:7334"',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            // RFC 7239 forwarded from untrusted proxy, through another proxy with client IPv6 and optional port
+            [
+                [
+                    'HTTP_FORWARDED' => 'for="[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:2222"',
                     'REMOTE_ADDR' => '192.169.1.1',
                 ],
                 '192.169.1.1',
@@ -818,5 +988,98 @@ class RequestTest extends TestCase
         $this->assertSame($expectedRemoteAddress, $request->remoteIP, 'Remote IP fail!');
         $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
         $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
+    }
+
+    public function parseForwardedHeaderDataProvider()
+    {
+        return [
+            [
+                '192.168.10.10',
+                'for=10.0.0.2;host=yiiframework.com;proto=https',
+                'https://yiiframework.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.10.10',
+                'for=10.0.0.2;proto=https',
+                'https://example.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.10.10',
+                'host=yiiframework.com;proto=https',
+                'https://yiiframework.com',
+                '192.168.10.10'
+            ],
+            [
+                '192.168.10.10',
+                'host=yiiframework.com;for=10.0.0.2',
+                'http://yiiframework.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.20.10',
+                'host=yiiframework.com;for=10.0.0.2;proto=https',
+                'https://yiiframework.com',
+                '10.0.0.2'
+            ],
+            [
+                '192.168.10.10',
+                'for=10.0.0.1;host=yiiframework.com;proto=https, for=192.168.20.20;host=awesome.proxy.com;proto=http',
+                'https://yiiframework.com',
+                '10.0.0.1'
+            ],
+            [
+                '192.168.10.10',
+                'for=8.8.8.8;host=spoofed.host;proto=https, for=10.0.0.1;host=yiiframework.com;proto=https, for=192.168.20.20;host=trusted.proxy;proto=http',
+                'https://yiiframework.com',
+                '10.0.0.1'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider parseForwardedHeaderDataProvider
+     */
+    public function testParseForwardedHeaderParts($remoteAddress, $forwardedHeader, $expectedHostInfo, $expectedUserIp)
+    {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTP_FORWARDED'] = $forwardedHeader;
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.10.0/24',
+                '192.168.20.0/24'
+            ],
+        ]);
+
+        $this->assertSame($expectedUserIp, $request->userIP, 'User IP fail!');
+        $this->assertSame($expectedHostInfo, $request->hostInfo, 'Host info fail!');
+    }
+
+    public function testForwardedNotTrusted()
+    {
+        $_SERVER['REMOTE_ADDR'] = '192.168.10.10';
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTP_FORWARDED'] = 'for=8.8.8.8;host=spoofed.host;proto=https';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_HOST'] = 'yiiframework.com';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.10.0/24',
+                '192.168.20.0/24'
+            ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+            ]
+        ]);
+
+        $this->assertSame('10.0.0.1', $request->userIP, 'User IP fail!');
+        $this->assertSame('http://yiiframework.com', $request->hostInfo, 'Host info fail!');
     }
 }
