@@ -212,7 +212,7 @@ class Request extends \yii\base\Request
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
      * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
-     * If contains the `forwarded` header, then processing will be done according by RFC7239.
+     * If the list contains the `forwarded` header, processing will be done according to RFC 7239.
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
      * @see https://tools.ietf.org/html/rfc7239
