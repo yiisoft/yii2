@@ -16,7 +16,7 @@ Yii Framework 2 Change Log
 - Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
 - Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
 - Bug #17710: Fix MemCache duration normalization to avoid memcached/system timestamp mismatch (samdark)
-
+- Bug #17740: `yii\helpers\BaseInflector::slug()` doesn't replace multiple replacement string occurrences to single one (batyrmastyr)
 
 2.0.30 November 19, 2019
 ------------------------
