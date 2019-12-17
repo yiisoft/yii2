@@ -212,8 +212,10 @@ class Request extends \yii\base\Request
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
      * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
+     * If contains the `forwarded` header, then processing will be done according by RFC7239.
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+     * @see https://tools.ietf.org/html/rfc7239
      * @see $trustedHosts
      * @since 2.0.13
      */
@@ -230,6 +232,7 @@ class Request extends \yii\base\Request
     /**
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
+     * To use a `forwarded` header according to RFC7239, must be add the header in the [[secureHeaders]] list.
      * The match of header names is case-insensitive.
      * @see $trustedHosts
      * @see $secureHeaders
