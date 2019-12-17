@@ -126,7 +126,35 @@ class ActionColumn extends Column
      * @since 2.0.4
      */
     public $buttonOptions = [];
-
+    /**
+     * @var string Name of parameter that will passed to url
+     *
+     * For example:
+     * If you want to create URL to view/edit/delete action with name of param not equal to `id`
+     * you should define it like following:
+     *
+     * ```php
+     * [
+     *     'class' => 'yii\grid\ActionColumn',
+     *     'urlParam' => 'name'
+     * ],
+     * ```
+     *
+     * Now url generator will generate URLs as follows: 'view?name=$key', 'edit?name=$key', 'delete?name=$key'.
+     * And in controller you need to rename parameter from `id` to `name`:
+     *
+     * ```php
+     * class UserController extends Controller
+     * {
+     * ...
+     * public function actionView($name) { ... }
+     * public function actionUpdate($name) { ... }
+     * public function actionDelete($name) { ... }
+     * ...
+     * }
+     * ```
+     */
+    public $urlParam = 'id';
 
     /**
      * {@inheritdoc}
@@ -200,7 +228,7 @@ class ActionColumn extends Column
             return call_user_func($this->urlCreator, $action, $model, $key, $index, $this);
         }
 
-        $params = is_array($key) ? $key : ['id' => (string) $key];
+        $params = is_array($key) ? $key : [$this->urlParam => (string) $key];
         $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
 
         return Url::toRoute($params);
