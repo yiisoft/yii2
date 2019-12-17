@@ -232,7 +232,7 @@ class Request extends \yii\base\Request
     /**
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
-     * To use the `forwarded` header according to RFC7239, must be add the header in the [[secureHeaders]] list.
+     * To use the `Forwarded` header according to RFC 7239, the header must be added to [[secureHeaders]] list.
      * The match of header names is case-insensitive.
      * @see $trustedHosts
      * @see $secureHeaders
@@ -1891,12 +1891,12 @@ class Request extends \yii\base\Request
             return $this->_secureForwardedHeaderParts = [];
         }
         /*
-         * First one is always correct, because proxy CAN add headers
-         * after last one found.
+         * First header is always correct, because proxy CAN add headers
+         * after last one is found.
          * Keep in mind that it is NOT enforced, therefore we cannot be
-         * sure, that this is really first one
+         * sure, that this is really a first one.
          *
-         * FPM keeps last header sent which is a bug, you need to merge
+         * FPM keeps last header sent which is a bug. You need to merge
          * headers together on your web server before letting FPM handle it
          * @see https://bugs.php.net/bug.php?id=78844
          */
