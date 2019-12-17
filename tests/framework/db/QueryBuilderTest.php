@@ -1178,6 +1178,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
             [['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
 
+            //in using array objects containing null value
+            [['in', 'id', new TraversableObject([1, null])], '[[id]]=:qp0 OR [[id]] IS NULL', [':qp0' => 1]],
+            [['in', 'id', new TraversableObject([1, 2, null])], '[[id]] IN (:qp0, :qp1) OR [[id]] IS NULL', [':qp0' => 1, ':qp1' => 2]],
+
+            //not in using array object containing null value
+            [['not in', 'id', new TraversableObject([1, null])], '[[id]]<>:qp0 AND [[id]] IS NOT NULL', [':qp0' => 1]],
+            [['not in', 'id', new TraversableObject([1, 2, null])], '[[id]] NOT IN (:qp0, :qp1) AND [[id]] IS NOT NULL', [':qp0' => 1, ':qp1' => 2]],
+
+            //in using array object containing only null value
+            [['in', 'id', new TraversableObject([null])], '[[id]] IS NULL', []],
+            [['not in', 'id', new TraversableObject([null])], '[[id]] IS NOT NULL', []],
+
             'composite in using array objects' => [
                 ['in', new TraversableObject(['id', 'name']), new TraversableObject([
                     ['id' => 1, 'name' => 'oy'],
