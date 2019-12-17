@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17661: Fix query builder incorrect IN/NOT IN condition handling for null values (strychu)
-- Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150)
+- Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150, kamarton)
 - Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
 - Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
