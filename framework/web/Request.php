@@ -232,7 +232,7 @@ class Request extends \yii\base\Request
     /**
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
-     * To use a `forwarded` header according to RFC7239, must be add the header in the [[secureHeaders]] list.
+     * To use the `forwarded` header according to RFC7239, must be add the header in the [[secureHeaders]] list.
      * The match of header names is case-insensitive.
      * @see $trustedHosts
      * @see $secureHeaders
