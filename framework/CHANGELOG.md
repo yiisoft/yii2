@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.31 under development
 ------------------------
-
+- Bug #17745: Fix pgsql query builder drop default value when it empty
 - Bug #17661: Fix query builder incorrect IN/NOT IN condition handling for null values (strychu)
 - Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150, kamarton)
 - Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
