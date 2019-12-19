@@ -212,8 +212,10 @@ class Request extends \yii\base\Request
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
      * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
+     * If the list contains the `Forwarded` header, processing will be done according to RFC 7239.
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+     * @see https://tools.ietf.org/html/rfc7239
      * @see $trustedHosts
      * @since 2.0.13
      */
@@ -226,13 +228,11 @@ class Request extends \yii\base\Request
         // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
-
-        // RFC 7239:
-        'Forwarded',
     ];
     /**
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
+     * To use the `Forwarded` header according to RFC 7239, the header must be added to [[secureHeaders]] list.
      * The match of header names is case-insensitive.
      * @see $trustedHosts
      * @see $secureHeaders
@@ -728,7 +728,7 @@ class Request extends \yii\base\Request
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
 
-            if ($this->getSecureForwardedHeaderTrustedPart('host')) {
+            if ($this->getSecureForwardedHeaderTrustedPart('host') !== null) {
                 $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderTrustedPart('host');
             } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
@@ -1839,7 +1839,7 @@ class Request extends \yii\base\Request
      *
      * @param string $token Header token
      *
-     * @return string
+     * @return string|null
      *
      * @since 2.0.31
      */
@@ -1853,6 +1853,7 @@ class Request extends \yii\base\Request
                 return $lastElement[$token];
             }
         }
+        return null;
     }
 
     /**
@@ -1883,32 +1884,40 @@ class Request extends \yii\base\Request
      */
     protected function getSecureForwardedHeaderParts()
     {
-        if (!in_array('Forwarded', $this->secureHeaders, true)) {
-            return [];
+        if ($this->_secureForwardedHeaderParts !== null) {
+            return $this->_secureForwardedHeaderParts;
         }
-        if ($this->_secureForwardedHeaderParts === null) {
-            $this->_secureForwardedHeaderParts = [];
-            /*
-             * First one is always correct, because proxy CAN add headers
-             * after last one found.
-             * Keep in mind that it is NOT enforced, therefore we cannot be
-             * sure, that this is really first one
-             *
-             * FPM keeps last header sent which is a bug, you need to merge
-             * headers together on your web server before letting FPM handle it
-             * @see https://bugs.php.net/bug.php?id=78844
-             */
-            $forwarded = $this->headers->get('Forwarded', '');
+        if (count(preg_grep('/^forwarded$/i', $this->secureHeaders)) === 0) {
+            return $this->_secureForwardedHeaderParts = [];
+        }
+        /*
+         * First header is always correct, because proxy CAN add headers
+         * after last one is found.
+         * Keep in mind that it is NOT enforced, therefore we cannot be
+         * sure, that this is really a first one.
+         *
+         * FPM keeps last header sent which is a bug. You need to merge
+         * headers together on your web server before letting FPM handle it
+         * @see https://bugs.php.net/bug.php?id=78844
+         */
+        $forwarded = $this->headers->get('Forwarded', '');
+        if ($forwarded === '') {
+            return $this->_secureForwardedHeaderParts = [];
+        }
 
-            preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
+        preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
-            foreach ($forwardedElements[0] as $forwardedPairs) {
-                preg_match_all('/(?P<key>\w+)\s*=\s*(?|(?P<value>[^",;]*[^",;\s])|"(?P<value>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
-                $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
-                    $carry[strtolower($item['key'])] = $item['value'];
-                    return $carry;
-                }, []);
-            }
+        foreach ($forwardedElements[0] as $forwardedPairs) {
+            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs,
+                $matches, PREG_SET_ORDER);
+            $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
+                $value = $item['value'];
+                if (isset($item['value2']) && $item['value2'] !== '') {
+                    $value = $item['value2'];
+                }
+                $carry[strtolower($item['key'])] = $value;
+                return $carry;
+            }, []);
         }
         return $this->_secureForwardedHeaderParts;
     }
