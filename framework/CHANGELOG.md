@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.32 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17744: Fix bug with setting incorrect value for column with `CURRENT_TIMESTAMP(x)` expression for MySQL >= 5.6.4 (bizley)
 
 
 2.0.31 December 18, 2019
