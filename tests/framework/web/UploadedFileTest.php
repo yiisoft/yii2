@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\UploadedFile;
+use yiiunit\framework\web\mocks\UploadedFileMock;
 use yiiunit\framework\web\stubs\ModelStub;
 use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;
@@ -88,7 +89,7 @@ class UploadedFileTest extends TestCase
 
     public function testSaveAs()
     {
-        $tmpImage = UploadedFile::getInstance(new ModelStub(), 'temp_image');
+        $tmpImage = UploadedFileMock::getInstance(new ModelStub(), 'temp_image');
         $targetFile = '@runtime/test_saved_uploaded_file_' . time();
 
         $this->assertEquals(true, $tmpImage->saveAs($targetFile, $deleteTempFile = false));

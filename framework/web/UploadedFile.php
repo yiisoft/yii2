@@ -186,7 +186,7 @@ class UploadedFile extends BaseObject
     private function copyTempFile($file)
     {
         if (!is_resource($this->_tempResource)) {
-            return is_file($this->tempName) && copy($this->tempName, $file);
+            return $this->isUploadedFile($this->tempName) && copy($this->tempName, $file);
         }
         $target = fopen($file, 'w');
         $result = stream_copy_to_stream($this->_tempResource, $target);
@@ -203,7 +203,15 @@ class UploadedFile extends BaseObject
         if (is_resource($this->_tempResource)) {
             return @fclose($this->_tempResource);
         }
-        return is_file($this->tempName) && @unlink($this->tempName);
+        return $this->isUploadedFile($this->tempName) && @unlink($this->tempName);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isUploadedFile($file)
+    {
+        return is_uploaded_file($file);
     }
 
     /**
