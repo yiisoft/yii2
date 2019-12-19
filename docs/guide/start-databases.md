@@ -178,7 +178,7 @@ class CountryController extends Controller
 
 Save the above code in the file `controllers/CountryController.php`.
 
-First, The `index` action calls `Country::find()`. This [find()](https://www.yiiframework.com/doc/api/2.0/yii-db-activerecord#find()-detail) method creates a [ActiveQuery](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery) query object  which provides many methods to query data from the `country` table.
+First, The `index` action calls `Country::find()`. This [find()](https://www.yiiframework.com/doc/api/2.0/yii-db-activerecord#find()-detail) method creates a [ActiveQuery](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery) query object, which provides methods to access data from the `country` table.
 
 To limit the number of countries returned in each request, the query object is paginated with the help of a
 [[yii\data\Pagination]] object. The `Pagination` object serves two purposes:
