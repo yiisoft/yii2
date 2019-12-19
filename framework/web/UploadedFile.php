@@ -183,7 +183,7 @@ class UploadedFile extends BaseObject
     /**
      * @return bool|int
      */
-    private function copyTempFile($file)
+    protected function copyTempFile($file)
     {
         if (!is_resource($this->_tempResource)) {
             return $this->isUploadedFile($this->tempName) && copy($this->tempName, $file);
@@ -198,7 +198,7 @@ class UploadedFile extends BaseObject
     /**
      * @return bool
      */
-    private function deleteTempFile()
+    protected function deleteTempFile()
     {
         if (is_resource($this->_tempResource)) {
             return @fclose($this->_tempResource);
