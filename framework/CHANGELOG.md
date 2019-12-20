@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.32 under development
 ------------------------
-
+- Bug #17717: Unable to check if ActiveRecord own properties isset or empty using array access notation (jwlewisiii)
 - Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
 
 
