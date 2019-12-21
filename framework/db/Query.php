@@ -110,6 +110,8 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * - `all`: boolean, whether it should be `UNION ALL` or `UNION`
      */
     public $union;
+
+    public $with;
     /**
      * @var array list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
@@ -451,6 +453,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             && empty($this->groupBy)
             && empty($this->having)
             && empty($this->union)
+            && empty($this->with)
         ) {
             $select = $this->select;
             $order = $this->orderBy;
@@ -1227,6 +1230,12 @@ PATTERN;
     public function union($sql, $all = false)
     {
         $this->union[] = ['query' => $sql, 'all' => $all];
+        return $this;
+    }
+
+    public function with($query, $alias, $recursive = false)
+    {
+        $this->with[] = ['query' => $query, 'alias' => $alias, 'recursive' => $recursive];
         return $this;
     }
 

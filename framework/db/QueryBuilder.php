@@ -260,6 +260,11 @@ class QueryBuilder extends \yii\base\BaseObject
             $sql = "($sql){$this->separator}$union";
         }
 
+        $with = $this->buildWith($query->with, $params);
+        if ($with !== '') {
+            $sql = "$with{$this->separator}$sql";
+        }
+
         return [$sql, $params];
     }
 
@@ -1490,6 +1495,31 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return trim($result);
+    }
+
+    public function buildWith($withs, &$params)
+    {
+        if (empty($withs)) {
+            return '';
+        }
+
+        $recursive = false;
+        $result = [];
+
+        foreach ($withs as $i => $with) {
+            if ($with['recursive']) {
+                $recursive = true;
+            }
+
+            $query = $with['query'];
+            if ($query instanceof Query) {
+                list($with['query'], $params) = $this->build($query, $params);
+            }
+
+            $result[] = $with['alias'] . ' AS (' . $with['query'] . ')';
+        }
+
+        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode (', ', $result);
     }
 
     /**
