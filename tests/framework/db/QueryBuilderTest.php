@@ -1708,7 +1708,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
+    }
 
+    public function testBuildWithRecursive()
+    {
         $expectedQuerySql = $this->replaceQuotes(
             'WITH RECURSIVE a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1) SELECT * FROM [[a1]]'
         );
