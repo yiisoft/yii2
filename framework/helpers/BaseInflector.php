@@ -485,7 +485,7 @@ class BaseInflector
         }, $parts);
 
         $string = trim(implode($replacement, $replaced), $replacement);
-        $string = preg_replace('#'.preg_quote($replacement).'+#', $replacement, $string);
+        $string = preg_replace('#' . preg_quote($replacement) . '+#', $replacement, $string);
 
         return $lowercase ? strtolower($string) : $string;
     }
