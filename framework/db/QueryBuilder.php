@@ -260,7 +260,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $sql = "($sql){$this->separator}$union";
         }
 
-        $with = $this->buildWith($query->with, $params);
+        $with = $this->buildWithQueries($query->withQueries, $params);
         if ($with !== '') {
             $sql = "$with{$this->separator}$sql";
         }
@@ -1497,7 +1497,7 @@ class QueryBuilder extends \yii\base\BaseObject
         return trim($result);
     }
 
-    public function buildWith($withs, &$params)
+    public function buildWithQueries($withs, &$params)
     {
         if (empty($withs)) {
             return '';

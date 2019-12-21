@@ -111,7 +111,15 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $union;
 
-    public $with;
+    /**
+     * @var array this is used to construct the WITH section in a SQL query.
+     * Each array element is an array of the following structure:
+     *
+     * - `query`: either a string or a [[Query]] object representing a query
+     * - `alias`: string, alias of query for further usage
+     * - `recursive`: boolean, whether it should be `WITH RECURSIVE` or `WITH`
+     */
+    public $withQueries;
     /**
      * @var array list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
@@ -1233,9 +1241,16 @@ PATTERN;
         return $this;
     }
 
-    public function with($query, $alias, $recursive = false)
+    /**
+     * Prepends a SQL statement using WITH syntax.
+     * @param string|Query $query the SQL statement to be appended using UNION
+     * @param string $alias query alias in WITH construction
+     * @param bool $recursive TRUE if using WITH RECURSIVE and FALSE if using WITH
+     * @return $this the query object itself
+     */
+    public function withQuery($query, $alias, $recursive = false)
     {
-        $this->with[] = ['query' => $query, 'alias' => $alias, 'recursive' => $recursive];
+        $this->withQueries[] = ['query' => $query, 'alias' => $alias, 'recursive' => $recursive];
         return $this;
     }
 

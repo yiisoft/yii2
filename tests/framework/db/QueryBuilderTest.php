@@ -1701,8 +1701,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where('expr = 3');
 
         $query = (new Query())
-            ->with($with1Query, 'a1')
-            ->with($with2Query->union($with3Query), 'a2')
+            ->withQuery($with1Query, 'a1')
+            ->withQuery($with2Query->union($with3Query), 'a2')
             ->from('a2');
 
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
@@ -1718,7 +1718,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where('expr = 1');
 
         $query = (new Query())
-            ->with($with1Query, 'a1', true)
+            ->withQuery($with1Query, 'a1', true)
             ->from('a1');
 
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
