@@ -1679,7 +1679,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([], $queryParams);
     }
 
-    public function testBuildWith()
+    public function testBuildWithQuery()
     {
         $expectedQuerySql = $this->replaceQuotes(
             'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS ((SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2) UNION ( SELECT [[id]] FROM [[t3]] WHERE expr = 3 )) SELECT * FROM [[a2]]'
@@ -1710,7 +1710,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([], $queryParams);
     }
 
-    public function testBuildWithRecursive()
+    public function testBuildWithQueryRecursive()
     {
         $expectedQuerySql = $this->replaceQuotes(
             'WITH RECURSIVE a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1) SELECT * FROM [[a1]]'
