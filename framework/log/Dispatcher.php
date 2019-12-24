@@ -184,24 +184,39 @@ class Dispatcher extends Component
     {
         $targetErrors = [];
         foreach ($this->targets as $target) {
-            if ($target->enabled) {
-                try {
-                    $target->collect($messages, $final);
-                } catch (\Exception $e) {
-                    $target->enabled = false;
-                    $targetErrors[] = [
-                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($e),
-                        Logger::LEVEL_WARNING,
-                        __METHOD__,
-                        microtime(true),
-                        [],
-                    ];
-                }
+            if (!$target->enabled) {
+                continue;
+            }
+            try {
+                $target->collect($messages, $final);
+            } catch (\Throwable $t) {
+                $target->enabled = false;
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $t);
+            } catch (\Exception $e) {
+                $target->enabled = false;
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $e);
             }
         }
 
         if (!empty($targetErrors)) {
             $this->dispatch($targetErrors, true);
         }
+    }
+
+    /**
+     * Generate target error message
+     *
+     * @param Target $target
+     * @param \Throwable|\Exception $throwable
+     * @return array
+     */
+    protected function generateTargetFailErrorMessage($target, $throwable) {
+        return [
+            'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($throwable),
+            Logger::LEVEL_WARNING,
+            __METHOD__,
+            microtime(true),
+            [],
+        ];
     }
 }
