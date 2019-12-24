@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
-
+- Bug #17749: Dispatcher fix if target crashed in PHP 7.0+ (kamarton)
 
 2.0.31 December 18, 2019
 ------------------------
