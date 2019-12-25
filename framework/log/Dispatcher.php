@@ -191,10 +191,10 @@ class Dispatcher extends Component
                 $target->collect($messages, $final);
             } catch (\Throwable $t) {
                 $target->enabled = false;
-                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $t);
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $t, __METHOD__);
             } catch (\Exception $e) {
                 $target->enabled = false;
-                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $e);
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $e, __METHOD__);
             }
         }
 
@@ -206,15 +206,17 @@ class Dispatcher extends Component
     /**
      * Generate target error message
      *
-     * @param Target $target
+     * @param Target                $target
      * @param \Throwable|\Exception $throwable
+     * @param string                $method
      * @return array
      */
-    protected function generateTargetFailErrorMessage($target, $throwable) {
+    protected function generateTargetFailErrorMessage($target, $throwable, $method)
+    {
         return [
             'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($throwable),
             Logger::LEVEL_WARNING,
-            __METHOD__,
+            $method,
             microtime(true),
             [],
         ];
