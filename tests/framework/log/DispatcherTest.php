@@ -284,12 +284,16 @@ namespace yiiunit\framework\log {
             static::fail("Function '$name' has not implemented yet!");
         }
 
-        private $targetThrowVariable = null;
+        private $targetThrowFirstCount;
+        private $targetThrowSecondOutputs;
 
         public function testTargetThrow()
         {
+            $this->targetThrowFirstCount = 0;
+            $this->targetThrowSecondOutputs = [];
             $targetFirst = new TargetMock([
                 'collectOverride' => function () {
+                    $this->targetThrowFirstCount++;
                     if (PHP_MAJOR_VERSION < 7) {
                         throw new \RuntimeException('test');
                     }
@@ -299,16 +303,19 @@ namespace yiiunit\framework\log {
             ]);
             $targetSecond = new TargetMock([
                 'collectOverride' => function ($message, $final) {
-                    $this->targetThrowVariable = array_pop($message);
+                    $this->targetThrowSecondOutputs[] = array_pop($message);
                 }
             ]);
             $dispatcher = new Dispatcher([
                 'logger' => new Logger(),
                 'targets' => [$targetFirst, $targetSecond],
             ]);
-            $dispatcher->dispatch(['test' . time()], false);
-            $this->assertTrue(is_array($this->targetThrowVariable));
-            $this->assertStringStartsWith('Unable to send log via', $this->targetThrowVariable[0]);
+            $message = 'test' . time();
+            $dispatcher->dispatch([$message], false);
+            $this->assertSame(1, $this->targetThrowFirstCount);
+            $this->assertSame(2, count($this->targetThrowSecondOutputs));
+            $this->assertSame($message, array_shift($this->targetThrowSecondOutputs));
+            $this->assertStringStartsWith('Unable to send log via', array_shift($this->targetThrowSecondOutputs)[0]);
         }
     }
 }
