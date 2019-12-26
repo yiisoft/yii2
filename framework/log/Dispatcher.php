@@ -206,10 +206,10 @@ class Dispatcher extends Component
     /**
      * Generate target error message
      *
-     * @param Target                $target
-     * @param \Throwable|\Exception $throwable
-     * @param string                $method
-     * @return array
+     * @param Target $target log target object
+     * @param \Throwable|\Exception $throwable catched exception
+     * @param string $method full method path
+     * @return array generated error message data
      */
     protected function generateTargetFailErrorMessage($target, $throwable, $method)
     {
