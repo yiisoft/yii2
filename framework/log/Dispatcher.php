@@ -210,6 +210,7 @@ class Dispatcher extends Component
      * @param \Throwable|\Exception $throwable catched exception
      * @param string $method full method path
      * @return array generated error message data
+     * @since 2.0.32
      */
     protected function generateTargetFailErrorMessage($target, $throwable, $method)
     {
