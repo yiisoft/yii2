@@ -1657,7 +1657,7 @@ class Formatter extends Component
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      */
-    private function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
+    protected function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
     {
         $value = $this->normalizeNumericValue($value);
 
