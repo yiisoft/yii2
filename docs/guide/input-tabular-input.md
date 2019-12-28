@@ -91,7 +91,7 @@ public function actionCreate()
     $count = count(Yii::$app->request->post('Setting', []));
     $settings = [new Setting()];
     for($i = 1; $i < $count; $i++) {
-        $settings[] = new Setting();
+        $settings[$i] = new Setting();
     }
 
     // ...
