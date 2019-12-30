@@ -45,7 +45,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 });
 ```
 
-> Note: В [[yii\caching\Cache::getOrSet()|getOrSet()]] можно передать срока действия и зависимости кэша.
+> Note: В [[yii\caching\Cache::getOrSet()|getOrSet()]] можно передать срок действия и зависимости кэша.
   Прочтите [Срок действия кэша](#cache-expiration) и [Зависимости кеша](#cache-dependencies) чтобы узнать больше.
 
 

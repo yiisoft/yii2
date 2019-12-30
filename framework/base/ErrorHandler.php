@@ -212,16 +212,18 @@ abstract class ErrorHandler extends Component
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
-            // in case error appeared in __toString method we can't throw any exception
-            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            array_shift($trace);
-            foreach ($trace as $frame) {
-                if ($frame['function'] === '__toString') {
-                    $this->handleException($exception);
-                    if (defined('HHVM_VERSION')) {
-                        flush();
+            if (PHP_VERSION_ID < 70400) {
+                // prior to PHP 7.4 we can't throw exceptions inside of __toString() - it will result a fatal error
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+                array_shift($trace);
+                foreach ($trace as $frame) {
+                    if ($frame['function'] === '__toString') {
+                        $this->handleException($exception);
+                        if (defined('HHVM_VERSION')) {
+                            flush();
+                        }
+                        exit(1);
                     }
-                    exit(1);
                 }
             }
 
