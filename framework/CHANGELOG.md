@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
+- Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
+- Bug #17755: Fix a bug for web request with `trustedHosts` set to format `['10.0.0.1' => ['X-Forwarded-For']]` (shushenghong)
 
 
 2.0.31 December 18, 2019

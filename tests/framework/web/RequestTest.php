@@ -393,6 +393,23 @@ class RequestTest extends TestCase
             ],
         ]);
 
+
+        $this->assertEquals($expected[0], $request->getHostInfo());
+        $this->assertEquals($expected[1], $request->getHostName());
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['X-Forwarded-Host', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+
+
         $this->assertEquals($expected[0], $request->getHostInfo());
         $this->assertEquals($expected[1], $request->getHostName());
         $_SERVER = $original;
@@ -549,6 +566,8 @@ class RequestTest extends TestCase
     public function testGetIsSecureConnection($server, $expected)
     {
         $original = $_SERVER;
+        $_SERVER = $server;
+
         $request = new Request([
             'trustedHosts' => [
                 '192.168.0.0/24',
@@ -562,9 +581,23 @@ class RequestTest extends TestCase
                 'forwarded',
             ],
         ]);
-        $_SERVER = $server;
-
         $this->assertEquals($expected, $request->getIsSecureConnection());
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['Front-End-Https', 'X-Forwarded-Proto', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getIsSecureConnection());
+
         $_SERVER = $original;
     }
 
@@ -726,8 +759,23 @@ class RequestTest extends TestCase
                 'forwarded',
             ],
         ]);
-
         $this->assertEquals($expected, $request->getUserIP());
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['X-Forwarded-For', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getUserIP());
+
         $_SERVER = $original;
     }
 
