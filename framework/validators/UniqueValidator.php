@@ -28,6 +28,8 @@ use yii\helpers\Inflector;
  * ['a1', 'unique']
  * // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
  * ['a1', 'unique', 'targetAttribute' => 'a2']
+ * // email must be unique using the User model. In addition the case is ignored in the comparison: User@Domain is the same as user@domain
+ * ['email', 'unique', 'targetClass' => '\common\models\User', 'ignoreCase' => true, 'message' => 'This email address has already been taken.'],
  * // a1 and a2 need to be unique together, and they both will receive error message
  * [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']]
  * // a1 and a2 need to be unique together, only a1 will receive error message
@@ -55,6 +57,11 @@ class UniqueValidator extends Validator
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
      */
     public $targetAttribute;
+    /**
+     * @var boolean if set, the uniqueness will be determined in a case-insensitive fashion.
+     *
+     */
+    public $ignoreCase=false;
     /**
      * @var string|array|\Closure additional filter to be applied to the DB query used to check the uniqueness of the attribute value.
      * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
@@ -133,7 +140,14 @@ class UniqueValidator extends Validator
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
                 return;
             }
-            $conditions[] = [$key => $value];
+            if ($this->ignoreCase)
+            {
+                $newKey         = "lower(" . $key . ")";
+                $newValue       = "lower('" . $value . "')";
+                $conditions[] = $newKey . " = " . $newValue;
+            }
+            else
+                $conditions[] = [$key => $value];
         }
 
         $db = $targetClass::getDb();
