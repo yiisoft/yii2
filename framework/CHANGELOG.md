@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
 - Bug #17771: migrate/fresh was not returning exit code (samdark)
 - Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
+- Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
 
 
 2.0.31 December 18, 2019
