@@ -327,18 +327,18 @@ echo Html::getAttributeName('dates[0]');
 埋め込みのスタイルとスクリプトをラップするタグを生成するメソッドが二つあります。
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 これは次の HTML を生成します。
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("こんにちは!");', ['defer' => true]) ?>
+<?= Html::script('alert("こんにちは!");') ?>
 
 これは次の HTML を生成します。
 
-<script defer>alert("こんにちは!");</script>
+<script>alert("こんにちは!");</script>
 ```
 
 CSS ファイルの外部スタイルをリンクしたい場合は、次のようにします。
