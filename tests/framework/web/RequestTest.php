@@ -597,6 +597,21 @@ class RequestTest extends TestCase
             ],
         ]);
         $this->assertEquals($expected, $request->getIsSecureConnection());
+        
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['Front-End-Https', 'X-Forwarded-Proto'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getIsSecureConnection());
 
         $_SERVER = $original;
     }
@@ -764,6 +779,21 @@ class RequestTest extends TestCase
         $request = new Request([
             'trustedHosts' => [
                 '192.168.0.0/24' => ['X-Forwarded-For', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getUserIP());
+        
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['X-Forwarded-For'],
             ],
             'secureHeaders' => [
                 'Front-End-Https',
