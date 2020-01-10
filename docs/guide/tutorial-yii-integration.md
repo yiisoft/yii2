@@ -99,6 +99,10 @@ the `BasePath/vendor` directory.
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:
 
 ```php
+// comment out the following two lines when deployed to production
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
+
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 $yiiConfig = require __DIR__ . '/../config/yii/web.php';
@@ -113,6 +117,24 @@ which is not needed in this case and already handled by the existing application
 Like in a Yii application, you should configure the application instance based on the environment running
 the third-party system. For example, to use the [Active Record](db-active-record.md) feature, you need to configure
 the `db` [application component](structure-application-components.md) with the DB connection setting used by the third-party system.
+
+While registering the components (assume that we are using Yii in other non-Yii app which does not use [yii2-composer](https://github.com/yiisoft/yii2-composer)) return the object of that composnent instead of array or annonymous function as explained in [guide](https://www.yiiframework.com/doc/guide/2.0/en/structure-application-components). Example
+
+```php
+// web.php yii config file
+'components' => [
+    'radar' => require __DIR__.'/../../app/My/MyClass.php'
+    
+    
+// MyClass.php
+namespace App\Custom;
+
+use \some\class\Here;
+
+return new MyClass  extends \yii\base\BaseObject // <-- annonymous class is supported in PHP >= 7
+{
+    // ...
+```
 
 Now you can use most features provided by Yii. For example, you can create Active Record classes and use them
 to work with databases.
