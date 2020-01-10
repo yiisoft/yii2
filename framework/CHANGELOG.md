@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
 - Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
 - Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
+- Enh #17792: Added support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 
 
 2.0.31 December 18, 2019
