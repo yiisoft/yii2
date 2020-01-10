@@ -1959,7 +1959,7 @@ class BaseHtml
                             if ($v) {
                                 $html .= " $name-$n";
                             }
-                        } else {
+                        } elseif ($v !== null) {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
                     }
