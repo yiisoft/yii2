@@ -1028,6 +1028,14 @@ EOD;
             ],
         ];
         $this->assertEquals('', Html::renderTagAttributes($attributes));
+
+
+        $attributes = [
+            'data' => [
+                'foo' => null,
+            ],
+        ];
+        $this->assertEquals('', Html::renderTagAttributes($attributes));
     }
 
     public function testAddCssClass()
