@@ -131,7 +131,7 @@ namespace App\Custom;
 
 use \some\class\Here;
 
-return new MyClass  extends \yii\base\BaseObject // <-- annonymous class is supported in PHP >= 7
+return new class extends \yii\base\BaseObject // <-- annonymous class is supported in PHP >= 7
 {
     // ...
 ```
