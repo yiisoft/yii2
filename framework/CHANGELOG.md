@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Bug #17745: Fix PostgreSQL query builder drops default value when it is empty (xepozz)
 - Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150, kamarton)
 - Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
+- Bug #17766: Remove previous PJAX event binding before registering new one (samdark)
 
 
 2.0.30 November 19, 2019
