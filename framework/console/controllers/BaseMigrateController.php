@@ -464,10 +464,11 @@ abstract class BaseMigrateController extends Controller
         if ($this->confirm(
             "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
             $this->truncateDatabase();
-            $this->actionUp();
-        } else {
-            $this->stdout('Action was cancelled by user. Nothing has been performed.');
+            return $this->actionUp();
         }
+
+        $this->stdout('Action was cancelled by user. Nothing has been performed.');
+        return ExitCode::OK;
     }
 
     /**

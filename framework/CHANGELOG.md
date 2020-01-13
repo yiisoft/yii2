@@ -5,6 +5,14 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
+- Bug #17749: Dispatcher fix if target crashed in PHP 7.0+ (kamarton)
+- Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
+- Bug #17771: migrate/fresh was not returning exit code (samdark)
+- Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
+- Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
+- Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
+- Enh #17792: Added support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+- Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 
 
 2.0.31 December 18, 2019
@@ -14,7 +22,7 @@ Yii Framework 2 Change Log
 - Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
 - Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
 - Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
-- Bug #17701: Throw `BadRequetHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
+- Bug #17701: Throw `BadRequestHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
 - Bug #17710: Fix MemCache duration normalization to avoid memcached/system timestamp mismatch (samdark)
 - Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of non-string (samdark)
 - Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
@@ -24,6 +32,7 @@ Yii Framework 2 Change Log
 - Bug #17745: Fix PostgreSQL query builder drops default value when it is empty (xepozz)
 - Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150, kamarton)
 - Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
+- Bug #17766: Remove previous PJAX event binding before registering new one (samdark)
 
 
 2.0.30 November 19, 2019
