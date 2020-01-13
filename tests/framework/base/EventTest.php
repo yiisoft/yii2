@@ -125,7 +125,7 @@ class EventTest extends TestCase
 
         // class-level
         $this->assertFalse($triggered);
-        Event::trigger(SomeClass::class, 'super.test');
+        Event::trigger(SomeClass::className(), 'super.test');
         $this->assertTrue($triggered);
     }
 
