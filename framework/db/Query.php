@@ -316,13 +316,21 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
+        $column = null;
+        if (is_string($this->indexBy)) {
+            if (($dotPos = strpos($this->indexBy, '.')) === false) {
+                $column = $this->indexBy;
+            } else {
+                $column = substr($this->indexBy, $dotPos + 1);
+            }
+        }
         foreach ($rows as $row) {
             $value = reset($row);
 
             if ($this->indexBy instanceof \Closure) {
                 $results[call_user_func($this->indexBy, $row)] = $value;
             } else {
-                $results[$row[$this->indexBy]] = $value;
+                $results[$row[$column]] = $value;
             }
         }
 
@@ -605,15 +613,7 @@ PATTERN;
      */
     public function select($columns, $option = null)
     {
-        if ($columns instanceof ExpressionInterface) {
-            $columns = [$columns];
-        } elseif (!is_array($columns)) {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-        }
-        // this sequantial assignment is needed in order to make sure select is being reset
-        // before using getUniqueColumns() that checks it
-        $this->select = [];
-        $this->select = $this->getUniqueColumns($columns);
+        $this->select = $this->normalizeSelect($columns);
         $this->selectOption = $option;
         return $this;
     }
@@ -635,19 +635,58 @@ PATTERN;
      */
     public function addSelect($columns)
     {
+        if ($this->select === null) {
+            return $this->select($columns);
+        }
+        if (!is_array($this->select)) {
+            $this->select = $this->normalizeSelect($this->select);
+        }
+        $this->select = array_merge($this->select, $this->normalizeSelect($columns));
+
+        return $this;
+    }
+
+    /**
+     * Normalizes the SELECT columns passed to [[select()]] or [[addSelect()]].
+     *
+     * @param string|array|ExpressionInterface $columns
+     * @return array
+     * @since 2.0.21
+     */
+    protected function normalizeSelect($columns)
+    {
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
-        $columns = $this->getUniqueColumns($columns);
-        if ($this->select === null) {
-            $this->select = $columns;
-        } else {
-            $this->select = array_merge($this->select, $columns);
+        $select = [];
+        foreach ($columns as $columnAlias => $columnDefinition) {
+            if (is_string($columnAlias)) {
+                // Already in the normalized format, good for them
+                $select[$columnAlias] = $columnDefinition;
+                continue;
+            }
+            if (is_string($columnDefinition)) {
+                if (
+                    preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $columnDefinition, $matches) &&
+                    !preg_match('/^\d+$/', $matches[2]) &&
+                    strpos($matches[2], '.') === false
+                ) {
+                    // Using "columnName as alias" or "columnName alias" syntax
+                    $select[$matches[2]] = $matches[1];
+                    continue;
+                }
+                if (strpos($columnDefinition, '(') === false) {
+                    // Normal column name, just alias it to itself to ensure it's not selected twice
+                    $select[$columnDefinition] = $columnDefinition;
+                    continue;
+                }
+            }
+            // Either a string calling a function, DB expression, or sub-query
+            $select[] = $columnDefinition;
         }
-
-        return $this;
+        return $select;
     }
 
     /**
@@ -657,6 +696,7 @@ PATTERN;
      * - if column definition without alias already present in SELECT part without alias too
      * @param array $columns the columns to be merged to the select.
      * @since 2.0.14
+     * @deprecated in 2.0.21
      */
     protected function getUniqueColumns($columns)
     {
@@ -687,6 +727,7 @@ PATTERN;
     /**
      * @return array List of columns without aliases from SELECT statement.
      * @since 2.0.14
+     * @deprecated in 2.0.21
      */
     protected function getUnaliasedColumnsFromSelect()
     {

@@ -66,6 +66,11 @@ class BatchQueryResult extends BaseObject implements \Iterator
      * @var string|int the key for the current iteration
      */
     private $_key;
+    /**
+     * @var int MSSQL error code for exception that is thrown when last batch is size less than specified batch size
+     * @see https://github.com/yiisoft/yii2/issues/10023
+     */
+    private $mssqlNoMoreRowsErrorCode = -13;
 
 
     /**
@@ -131,6 +136,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
     /**
      * Fetches the next batch of data.
      * @return array the data fetched
+     * @throws Exception
      */
     protected function fetchData()
     {
@@ -138,13 +144,33 @@ class BatchQueryResult extends BaseObject implements \Iterator
             $this->_dataReader = $this->query->createCommand($this->db)->query();
         }
 
-        $rows = [];
-        $count = 0;
-        while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
-            $rows[] = $row;
-        }
+        $rows = $this->getRows();
 
         return $this->query->populate($rows);
+    }
+
+    /**
+     * Reads and collects rows for batch
+     * @return array
+     * @since 2.0.23
+     */
+    protected function getRows()
+    {
+        $rows = [];
+        $count = 0;
+
+        try {
+            while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
+                $rows[] = $row;
+            }
+        } catch (\PDOException $e) {
+            $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
+            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
+                throw $e;
+            }
+        }
+
+        return $rows;
     }
 
     /**
@@ -175,5 +201,26 @@ class BatchQueryResult extends BaseObject implements \Iterator
     public function valid()
     {
         return !empty($this->_batch);
+    }
+
+    /**
+     * Gets db driver name from the db connection that is passed to the `batch()`, if it is not passed it uses
+     * connection from the active record model
+     * @return string|null
+     */
+    private function getDbDriverName()
+    {
+        if (isset($this->db->driverName)) {
+            return $this->db->driverName;
+        }
+
+        if (!empty($this->_batch)) {
+            $key = array_keys($this->_batch)[0];
+            if (isset($this->_batch[$key]->db->driverName)) {
+                return $this->_batch[$key]->db->driverName;
+            }
+        }
+
+        return null;
     }
 }

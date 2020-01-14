@@ -411,7 +411,7 @@ $query->groupBy('id, status');
 > Note: Вы должны использовать массив для указания `GROUP BY` содержащих выражения БД.
  
 Вы можете вызывать [[yii\db\Query::addGroupBy()|addGroupBy()]] для добавления имён столбцов в фрагмент `GROUP BY`.
-For example,
+Например,
 
 ```php
 $query->groupBy(['id', 'status'])

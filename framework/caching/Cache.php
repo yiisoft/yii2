@@ -568,8 +568,8 @@ abstract class Cache extends Component implements CacheInterface
      * ```php
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
-     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
-     *         return Products::find()->mostPopular()->limit(10)->all();
+     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function () use ($count) {
+     *         return Products::find()->mostPopular()->limit($count)->all();
      *     }, 1000);
      * }
      * ```

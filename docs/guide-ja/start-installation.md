@@ -290,3 +290,30 @@ server {
 
 また、HTTPS サーバを走らせている場合には、安全な接続であることを Yii が正しく検知できるように、
 `fastcgi_param HTTPS on;` を追加しなければならないことにも注意を払ってください。
+
+### IIS の構成 <span id="iis-configuration"></span>
+
+ドキュメント・ルートが `path/to/app/web` フォルダを指すように構成された仮想ホストでアプリケーションをホストすることを推奨します。その `web` フォルダに `web.config` という名前のファイル、すなわち `path/to/app/web/web.config` を配置しなければなりません。ファイルの内容は以下の通りです。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<system.webServer>
+<directoryBrowse enabled="false" />
+  <rewrite>
+    <rules>
+      <rule name="Hide Yii Index" stopProcessing="true">
+        <match url="." ignoreCase="false" />
+        <conditions>
+        <add input="{REQUEST_FILENAME}" matchType="IsFile" 
+              ignoreCase="false" negate="true" />
+        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" 
+              ignoreCase="false" negate="true" />
+        </conditions>
+        <action type="Rewrite" url="index.php" appendQueryString="true" />
+      </rule> 
+    </rules>
+  </rewrite>
+</system.webServer>
+</configuration>
+```

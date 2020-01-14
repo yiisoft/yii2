@@ -36,8 +36,10 @@ Usage <span id="usage"></span>
 You execute a console controller action using the following syntax:
 
 ```
-yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
+yii <route> [--option1=value1 ... argument1 argument2 ... --option2=value2]
 ```
+
+Options could be specified in any position.
 
 In the above, `<route>` refers to the route to the controller action. The options will populate the class
 properties and arguments are the parameters of the action method.

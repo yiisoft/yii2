@@ -177,6 +177,9 @@ class ActiveField extends Component
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
             return '';
+        } catch (\Throwable $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
         }
     }
 
@@ -746,6 +749,9 @@ class ActiveField extends Component
      * If you want to use a widget that does not have `model` and `attribute` properties,
      * please use [[render()]] instead.
      *
+     * While widgets extending from [[Widget]] work with active field, it is preferred to use
+     * [[InputWidget]] as a base class.
+     *
      * For example to use the [[MaskedInput]] widget to get some date input, you can use
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
@@ -760,6 +766,7 @@ class ActiveField extends Component
      * @param string $class the widget class name.
      * @param array $config name-value pairs that will be used to initialize the widget.
      * @return $this the field object itself.
+     * @throws \Exception
      */
     public function widget($class, $config = [])
     {
@@ -768,15 +775,21 @@ class ActiveField extends Component
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
         if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
-            $config['field'] = $this;
-            if (isset($config['options'])) {
-                if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-                    $this->addErrorClassIfNeeded($config['options']);
+            foreach ($this->inputOptions as $key => $value) {
+                if (!isset($config['options'][$key])) {
+                    $config['options'][$key] = $value;
                 }
-
-                $this->addAriaAttributes($config['options']);
-                $this->adjustLabelFor($config['options']);
             }
+            $config['field'] = $this;
+            if (!isset($config['options'])) {
+                $config['options'] = [];
+            }
+            if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+                $this->addErrorClassIfNeeded($config['options']);
+            }
+
+            $this->addAriaAttributes($config['options']);
+            $this->adjustLabelFor($config['options']);
         }
 
         $this->parts['{input}'] = $class::widget($config);

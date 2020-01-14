@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -94,13 +95,9 @@ class EmailValidator extends Validator
                 // http://www.rfc-editor.org/errata_search.php?eid=1690
                 $valid = false;
             } else {
-                $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
+                $valid = preg_match($this->pattern, $value) || ($this->allowName && preg_match($this->fullPattern, $value));
                 if ($valid && $this->checkDNS) {
-                    // Fix for https://github.com/yiisoft/yii2/issues/17083
-                    $valid = (
-                        (checkdnsrr($matches['domain'] . '.', 'MX') && count(dns_get_record($matches['domain'] . '.', DNS_MX)) > 0) ||
-                        (checkdnsrr($matches['domain'] . '.', 'A') && count(dns_get_record($matches['domain'] . '.', DNS_A)) > 0)
-                    );
+                    $valid = $this->isDNSValid($matches['domain']);
                 }
             }
         }
@@ -108,6 +105,32 @@ class EmailValidator extends Validator
         return $valid ? null : [$this->message, []];
     }
 
+    /**
+     * @param string $domain
+     * @return bool if DNS records for domain are valid
+     * @see https://github.com/yiisoft/yii2/issues/17083
+     */
+    protected function isDNSValid($domain)
+    {
+        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false);
+    }
+
+    private function hasDNSRecord($domain, $isMX)
+    {
+        $normalizedDomain = $domain . '.';
+        if (!checkdnsrr($normalizedDomain, ($isMX ? 'MX' : 'A'))) {
+            return false;
+        }
+
+        try {
+            // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
+            $records = dns_get_record($normalizedDomain, ($isMX ? DNS_MX : DNS_A));
+        } catch (ErrorException $exception) {
+            return false;
+        }
+
+        return !empty($records);
+    }
 
     private function idnToAscii($idn)
     {

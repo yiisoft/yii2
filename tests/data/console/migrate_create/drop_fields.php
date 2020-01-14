@@ -8,7 +8,7 @@
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
  * Handles the dropping of table `{{%{table}}}`.

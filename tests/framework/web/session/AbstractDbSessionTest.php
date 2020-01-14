@@ -10,6 +10,7 @@ namespace yiiunit\framework\web\session;
 use Yii;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\db\Migration;
 use yii\web\DbSession;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
@@ -145,6 +146,33 @@ abstract class AbstractDbSessionTest extends TestCase
 
         $query = new Query();
         $this->assertSame('changed by callback data', $session->readSession('test'));
+    }
+
+    /**
+     * @depends testReadWrite
+     */
+    public function testWriteCustomFieldWithUserId()
+    {
+        $session = new DbSession();
+        $session->open();
+        $session->set('user_id', 12345);
+
+        // add mapped custom column
+        $migration = new Migration;
+        $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
+
+        $session->writeCallback = function ($session) {
+            return ['user_id' => $session['user_id']];
+        };
+
+        // here used to be error, fixed issue #9438
+        $session->close();
+
+        // reopen & read session from DB
+        $session->open();
+        $loadedUserId = empty($session['user_id']) ? null : $session['user_id'];
+        $this->assertSame($loadedUserId, 12345);
+        $session->close();
     }
 
     protected function buildObjectForSerialization()
