@@ -173,7 +173,7 @@ git push origin --delete 999-IME-VASE-GRANE
 
 ### Napomena:
 
-Kako bi rano otkrili regresije u Yii kodu prilikom svake integracije na GitHub-u pokreće se [Travis CI](http://travis-ci.org) kako bi se radilo testiranje. Pošto Yii tim ne želi da preoptereti ovaj servis,
+Kako bi rano otkrili regresije u Yii kodu prilikom svake integracije na GitHub-u pokreće se [Travis CI](http://travis-ci.com) kako bi se radilo testiranje. Pošto Yii tim ne želi da preoptereti ovaj servis,
 [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) će biti uključen prilikom svake integracije ako pull zahtev:
 
 * utiče samo na javascript, css i slike,

@@ -1,0 +1,14 @@
+diff --git a/src/Framework/MockObject/Generator.php b/src/Framework/MockObject/Generator.php
+index 3df3abb..8407182 100644
+--- a/src/Framework/MockObject/Generator.php
++++ b/src/Framework/MockObject/Generator.php
+@@ -1032,7 +1032,8 @@ protected function getMethodParameters(ReflectionMethod $method, $forCall = fals
+ 
+             if (!$forCall) {
+                 if ($this->hasType($parameter)) {
+-                    $typeDeclaration = (string) $parameter->getType() . ' ';
++                    $type = $parameter->getType();
++                    $typeDeclaration = (PHP_VERSION_ID >= 70100 ? $type->getName() : (string) $type) . ' ';
+                 } elseif ($parameter->isArray()) {
+                     $typeDeclaration = 'array ';
+                 } elseif ((defined('HHVM_VERSION') || version_compare(PHP_VERSION, '5.4.0', '>='))
