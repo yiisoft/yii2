@@ -66,6 +66,11 @@ class UploadedFile extends BaseObject
     private static $_files;
 
 
+    /**
+     * UploadedFile constructor.
+     *
+     * @param array $config name-value pairs that will be used to initialize the object properties
+     */
     public function __construct($config = [])
     {
         $this->_tempResource = ArrayHelper::remove($config, 'tempResource');
@@ -181,14 +186,21 @@ class UploadedFile extends BaseObject
     }
 
     /**
-     * @return bool|int
+     * Copy temporary file into file specified
+     *
+     * @param string $targetFile path of the file to copy to
+     * @return bool|int the total count of bytes copied, or false on failure
      */
-    protected function copyTempFile($file)
+    protected function copyTempFile($targetFile)
     {
         if (!is_resource($this->_tempResource)) {
-            return $this->isUploadedFile($this->tempName) && copy($this->tempName, $file);
+            return $this->isUploadedFile($this->tempName) && copy($this->tempName, $targetFile);
         }
-        $target = fopen($file, 'w');
+        $target = fopen($targetFile, 'wb');
+        if ($target === false) {
+            return false;
+        }
+
         $result = stream_copy_to_stream($this->_tempResource, $target);
         @fclose($target);
 
@@ -196,7 +208,9 @@ class UploadedFile extends BaseObject
     }
 
     /**
-     * @return bool
+     * Delete temporary file
+     *
+     * @return bool if file was deleted
      */
     protected function deleteTempFile()
     {
@@ -207,6 +221,9 @@ class UploadedFile extends BaseObject
     }
 
     /**
+     * Check if file is uploaded file
+     *
+     * @param string $file path to the file to check
      * @return bool
      */
     protected function isUploadedFile($file)
