@@ -200,3 +200,27 @@ Yii アプリケーションに渡されるからです。
 信頼できるプロキシからのリクエストである場合にのみ、`X-ProxyUser-Ip` と `Front-End-Https` ヘッダが受け入れられます。
 その場合、前者は `ipHeaders` で構成されているようにユーザの IP を読み出すために使用され、
 後者は [[yii\web\Request::getIsSecureConnection()]] の結果を決定するために使用されます。
+
+2.0.31 以降、[RFC 7239](https://tools.ietf.org/html/rfc7239) の `Forwarded` ヘッダがサポートされています。
+有効にするためには、ヘッダ名を `secureHeaders` に追加する必要があります。
+あなたのプロキシにそれを設定させることを忘れないで下さい。さもないと、エンド・ユーザが IP とプロトコルを盗み見ることが可能になります。
+
+### 解決済みのユーザ IP<span id="already-respolved-user-ip"></span>
+
+ユーザの IP アドレスが Yii アプリケーション以前に解決済みである場合(例えば、`ngx_http_realip_module` など) は、
+`request` コンポーネントは下記の構成で正しく動作します。
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '0.0.0.0/0',
+    ],
+    'ipHeaders' => [], 
+],
+```
+
+この場合、[[yii\web\Request::userIP|userIP]] の値は `$_SERVER['REMOTE_ADDR']` に等しくなります。
+同時に、HTTP ヘッダから解決されるプロパティも正しく動作します (例えば、[[yii\web\Request::getIsSecureConnection()]])。
+
+> 注意: `trustedHosts=['0.0.0.0/0']` の設定は、全ての IP が信頼できることを前提としています。
