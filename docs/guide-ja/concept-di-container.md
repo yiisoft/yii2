@@ -169,6 +169,9 @@ $container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
 // Connection のインスタンスを作成できます
 $container->set('foo', 'yii\db\Connection');
 
+// `Instance::of` を使ってエイリアスの登録。
+$container->set('bar', Instance::of('foo'));
+
 // 構成情報をともなうクラスの登録。クラスが get() でインスタンス化
 // されるとき構成情報が適用されます
 $container->set('yii\db\Connection', [
@@ -179,7 +182,7 @@ $container->set('yii\db\Connection', [
 ]);
 
 // クラスの構成情報をともなうエイリアス名の登録
-// この場合、クラスを指定する "class" 要素が必要です
+// この場合、クラスを指定する "class" または "__class" 要素が必要です
 $container->set('db', [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
@@ -188,11 +191,12 @@ $container->set('db', [
     'charset' => 'utf8',
 ]);
 
-// PHP コーラブルの登録
+// コーラブルなクロージャまたは配列の登録
 // このコーラブルは $container->get('db') が呼ばれるたびに実行されます
 $container->set('db', function ($container, $params, $config) {
     return new \yii\db\Connection($config);
 });
+$container->set('db', ['app\db\DbFactory', 'create']);
 
 // コンポーネント・インスタンスの登録
 // $container->get('pageCache') は呼ばれるたびに毎回同じインスタンスを返します
@@ -214,7 +218,6 @@ $container->setSingleton('yii\db\Connection', [
     'charset' => 'utf8',
 ]);
 ```
-
 
 依存を解決する <span id="resolving-dependencies"></span>
 --------------
@@ -440,28 +443,23 @@ $reader = $container->get('app\storage\DocumentsReader);
 
 [依存を解決する](#resolving-dependencies) のセクションで説明したように、[[yii\di\Container::set()|set()]] と [[yii\di\Container::setSingleton()|setSingleton()]] は、
 オプションで、第三の引数として依存のコンストラクタのパラメータを取ることが出来ます。
-コンストラクタのパラメータを設定するために、以下の構成情報配列の形式を使うことが出来ます。
-
- - `key`: クラス名、インタフェイス名、または、エイリアス名。
-  このキーが [[yii\di\Container::set()|set()]] メソッドの最初の引数 `$class` として渡されます。
- - `value`: 二つの要素を持つ配列。最初の要素は [[set()]] メソッドに二番目のパラメータ `$definition`
-    として渡され、第二の要素が `$params` として渡されます。
+コンストラクタのパラメータを設定するために、`__construct()` オプションを使うことが出来ます。
 
 では、私たちの例を修正しましょう。
 
 ```php
 $container->setDefinitions([
     'tempFileStorage' => [ // 便利なようにエイリアスを作りました
-        ['class' => 'app\storage\FileStorage'],
-        ['/var/tempfiles'] // 何らかの構成ファイルから抽出することも可能
+        'class' => 'app\storage\FileStorage',
+        '__construct()' => ['/var/tempfiles'], // 何らかの構成ファイルから抽出することも可能
     ],
     'app\storage\DocumentsReader' => [
-        ['class' => 'app\storage\DocumentsReader'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsReader',
+        '__construct()' => [Instance::of('tempFileStorage')],
     ],
     'app\storage\DocumentsWriter' => [
-        ['class' => 'app\storage\DocumentsWriter'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsWriter',
+        '__construct()' => [Instance::of('tempFileStorage')]
     ]
 ]);
 
@@ -488,19 +486,19 @@ $reader = $container->get('app\storage\DocumentsReader);
 ```php
 $container->setSingletons([
     'tempFileStorage' => [
-        ['class' => 'app\storage\FileStorage'],
-        ['/var/tempfiles']
+        'class' => 'app\storage\FileStorage',
+        '__construct()' => ['/var/tempfiles']
     ],
 ]);
 
 $container->setDefinitions([
     'app\storage\DocumentsReader' => [
-        ['class' => 'app\storage\DocumentsReader'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsReader',
+        '__construct()' => [Instance::of('tempFileStorage')],
     ],
     'app\storage\DocumentsWriter' => [
-        ['class' => 'app\storage\DocumentsWriter'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsWriter',
+        '__construct()' => [Instance::of('tempFileStorage')],
     ]
 ]);
 
