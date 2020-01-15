@@ -51,32 +51,44 @@ abstract class ErrorHandler extends Component
      */
     private $_hhvmException;
 
+    /**
+     * @var bool whether this instance has been registered using `register()`
+     */
+    private $_registered = false;
 
     /**
      * Register this error handler.
+     * @since 2.0.32 this will not do anything if the error handler was already registered
      */
     public function register()
     {
-        ini_set('display_errors', false);
-        set_exception_handler([$this, 'handleException']);
-        if (defined('HHVM_VERSION')) {
-            set_error_handler([$this, 'handleHhvmError']);
-        } else {
-            set_error_handler([$this, 'handleError']);
+        if (!$this->_registered) {
+            ini_set('display_errors', false);
+            set_exception_handler([$this, 'handleException']);
+            if (defined('HHVM_VERSION')) {
+                set_error_handler([$this, 'handleHhvmError']);
+            } else {
+                set_error_handler([$this, 'handleError']);
+            }
+            if ($this->memoryReserveSize > 0) {
+                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
+            }
+            register_shutdown_function([$this, 'handleFatalError']);
+            $this->_registered = true;
         }
-        if ($this->memoryReserveSize > 0) {
-            $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
-        }
-        register_shutdown_function([$this, 'handleFatalError']);
     }
 
     /**
      * Unregisters this error handler by restoring the PHP error and exception handlers.
+     * @since 2.0.32 this will not do anything if the error handler was not registered
      */
     public function unregister()
     {
-        restore_error_handler();
-        restore_exception_handler();
+        if ($this->_registered) {
+            restore_error_handler();
+            restore_exception_handler();
+            $this->_registered = false;
+        }
     }
 
     /**
