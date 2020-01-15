@@ -1866,8 +1866,15 @@ class Request extends \yii\base\Request
     protected function getSecureForwardedHeaderTrustedParts()
     {
         $validator = $this->getIpValidator();
+        $trustedHosts = [];
+        foreach ($this->trustedHosts as $trustedCidr => $trustedCidrOrHeaders) {
+            if (!is_array($trustedCidrOrHeaders)) {
+                $trustedCidr = $trustedCidrOrHeaders;
+            }
+            $trustedHosts[] = $trustedCidr;
+        }
+        $validator->setRanges($trustedHosts);
 
-        $validator->setRanges($this->trustedHosts);
         return array_filter($this->getSecureForwardedHeaderParts(), function ($headerPart) use ($validator) {
             return isset($headerPart['for']) ? !$validator->validate($headerPart['for']) : true;
         });
