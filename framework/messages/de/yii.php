@@ -26,7 +26,7 @@ return [
     ' and ' => ' und ',
     '(not set)' => '(nicht gesetzt)',
     'An internal server error occurred.' => 'Es ist ein interner Serverfehler aufgetreten.',
-    'Are you sure you want to delete this item?' => 'Wollen Sie diesen Artikel wirklich löschen?',
+    'Are you sure you want to delete this item?' => 'Wollen Sie diesen Eintrag wirklich löschen?',
     'Delete' => 'Löschen',
     'Error' => 'Fehler',
     'File upload failed.' => 'Das Hochladen der Datei ist fehlgeschlagen.',
