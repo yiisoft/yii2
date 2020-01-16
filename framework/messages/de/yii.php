@@ -56,7 +56,7 @@ return [
     'The requested view "{name}" was not found.' => 'Die View-Datei "{name}" konnte nicht gefunden werden.',
     'The verification code is incorrect.' => 'Der Prüfcode ist falsch.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Insgesamt <b>{count, number}</b> {count, plural, one{Eintrag} other{Einträge}}.',
-    'Unable to verify your data submission.' => 'Dateneingabe konnte nicht überprüft werden oder ist ungültig.',
+    'Unable to verify your data submission.' => 'Ihre Dateneingabe konnte nicht überprüft werden oder ist ungültig.',
     'Unknown alias: -{name}' => 'Unbekannter Alias: -{name}',
     'Unknown option: --{name}' => 'Unbekannte Option: --{name}',
     'Update' => 'Bearbeiten',
