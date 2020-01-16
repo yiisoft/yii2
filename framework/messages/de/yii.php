@@ -71,7 +71,7 @@ return [
     'in {delta, plural, =1{a second} other{# seconds}}' => 'in {delta, plural, =1{einer Sekunde} other{# Sekunden}}',
     'in {delta, plural, =1{a year} other{# years}}' => 'in {delta, plural, =1{einem Jahr} other{# Jahren}}',
     'in {delta, plural, =1{an hour} other{# hours}}' => 'in {delta, plural, =1{einer Stunde} other{# Stunden}}',
-    'just now' => 'jetzt',
+    'just now' => 'gerade jetzt',
     'the input value' => 'der eingegebene Wert',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" wird bereits verwendet.',
     '{attribute} cannot be blank.' => '{attribute} darf nicht leer sein.',
