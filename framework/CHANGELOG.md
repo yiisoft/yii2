@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Enh #17792: Added support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 - Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 - Bug #17300: Fix class-level Event handling with wildcards (Toma91)
+- Bug #17635: Fix varbinary data handling for MSSQL (toatall)
 
 
 2.0.31 December 18, 2019
