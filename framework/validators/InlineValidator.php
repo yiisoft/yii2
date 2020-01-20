@@ -69,7 +69,7 @@ class InlineValidator extends Validator
         if (is_string($method)) {
             $method = [$model, $method];
         }
-        call_user_func($method, $attribute, $this->params, $this);
+        \Yii::$container->invoke($method, [$attribute, $this->params, $this]);
     }
 
     /**
@@ -83,7 +83,7 @@ class InlineValidator extends Validator
                 $method = [$model, $method];
             }
 
-            return call_user_func($method, $attribute, $this->params, $this);
+            return \Yii::$container->invoke($method, [$attribute, $this->params, $this]);
         }
 
         return null;
