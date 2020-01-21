@@ -190,6 +190,7 @@ class UploadedFile extends BaseObject
      *
      * @param string $targetFile path of the file to copy to
      * @return bool|int the total count of bytes copied, or false on failure
+     * @since 2.0.32
      */
     protected function copyTempFile($targetFile)
     {
@@ -211,6 +212,7 @@ class UploadedFile extends BaseObject
      * Delete temporary file
      *
      * @return bool if file was deleted
+     * @since 2.0.32
      */
     protected function deleteTempFile()
     {
@@ -225,6 +227,7 @@ class UploadedFile extends BaseObject
      *
      * @param string $file path to the file to check
      * @return bool
+     * @since 2.0.32
      */
     protected function isUploadedFile($file)
     {
