@@ -62,7 +62,6 @@ class UploadedFile extends BaseObject
      * @var resource a temporary uploaded stream resource used within PUT and PATCH request.
      */
     private $_tempResource;
-
     private static $_files;
 
 

@@ -1,25 +1,25 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.32 under development
-------------------------
+2.0.32 January 21, 2020
+-----------------------
 
-- Bug #17037: Fix uploaded file saving method when data came from `MultipartFormDataParser` (sup-ham)
-- Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
-- Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
-- Bug #17755: Fix a bug for web request with `trustedHosts` set to format `['10.0.0.1' => ['X-Forwarded-For']]` (shushenghong)
-- Enh #17729: Path alias support was added to `yii\web\UploadFile::saveAs()` (sup-ham)
-- Bug #17749: Fix logger dispatcher behavior when target crashes in PHP 7.0+ (kamarton)
-- Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
-- Bug #17771: migrate/fresh was not returning exit code (samdark)
-- Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
 - Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
-- Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
-- Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
-- Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+- Bug #17037: Fix uploaded file saving method when data came from `MultipartFormDataParser` (sup-ham)
 - Bug #17300: Fix class-level event handling with wildcards (Toma91)
 - Bug #17635: Fix varbinary data handling for MSSQL (toatall)
+- Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
+- Bug #17749: Fix logger dispatcher behavior when target crashes in PHP 7.0+ (kamarton)
+- Bug #17755: Fix a bug for web request with `trustedHosts` set to format `['10.0.0.1' => ['X-Forwarded-For']]` (shushenghong)
+- Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
+- Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
 - Bug #17766: Remove previous PJAX event binding before registering new one (samdark)
+- Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
+- Bug #17771: migrate/fresh was not returning exit code (samdark)
+- Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+- Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
+- Enh #17729: Path alias support was added to `yii\web\UploadFile::saveAs()` (sup-ham)
+- Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 
 
 2.0.31 December 18, 2019
