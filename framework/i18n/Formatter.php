@@ -1219,9 +1219,14 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
+            // fix for https://github.com/yiisoft/yii2/issues/17708
+            if ($decimals !== null) {
+                $decimals++;
+            }
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidArgumentException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());

@@ -515,7 +515,7 @@ class FormatterNumberTest extends TestCase
     public function testIntlAsScientific()
     {
         $value = '123';
-        $this->assertSame('1.23E2', $this->formatter->asScientific($value));
+        $this->assertSame('1.23E2', $this->formatter->asScientific($value, 2));
         $value = '123456';
         $this->assertSame('1.23456E5', $this->formatter->asScientific($value));
         $value = '-123456.123';
@@ -528,7 +528,10 @@ class FormatterNumberTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
 
-        $this->assertSame('8.76543210987654E16', $this->formatter->asScientific('87654321098765436'));
+        // precision (see also https://github.com/yiisoft/yii2/issues/17708)
+        $this->assertSame('9E16', $this->formatter->asScientific('87654321098765436', 0));
+        $this->assertSame('8.8E16', $this->formatter->asScientific('87654321098765436', 1));
+        $this->assertSame('8.765432109877E16', $this->formatter->asScientific('87654321098765436', 12));
     }
 
     public function testAsScientific()
@@ -548,6 +551,11 @@ class FormatterNumberTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
 
         $this->assertSame('8.765432E+16', $this->formatter->asScientific('87654321098765436'));
+
+        // precision (see also https://github.com/yiisoft/yii2/issues/17708)
+        $this->assertSame('9E+16', $this->formatter->asScientific('87654321098765436', 0));
+        $this->assertSame('8.8E+16', $this->formatter->asScientific('87654321098765436', 1));
+        $this->assertSame('8.765432109877E+16', $this->formatter->asScientific('87654321098765436', 12));
     }
 
     public function testIntlAsSpellout()
