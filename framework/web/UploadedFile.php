@@ -175,7 +175,7 @@ class UploadedFile extends BaseObject
      */
     public function saveAs($file, $deleteTempFile = true)
     {
-        if ($this->error !== UPLOAD_ERR_OK) {
+        if ($this->hasError) {
             return false;
         }
         if (false === $this->copyTempFile(Yii::getAlias($file))) {
