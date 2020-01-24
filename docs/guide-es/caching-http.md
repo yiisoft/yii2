@@ -28,7 +28,7 @@ la página. El formato de la función de llamada de retorno debe ser el siguient
 /**
  * @param Action $action el objeto acción que se está controlando actualmente
  * @param array $params el valor de la propiedad "params"
- * @return integer un sello de tiempo UNIX que representa el tiempo de modificación de la página
+ * @return int un sello de tiempo UNIX que representa el tiempo de modificación de la página
  */
 function ($action, $params)
 ```
@@ -110,7 +110,7 @@ La generación de un ETag que requiera muchos recursos puede echar por tierra el
 introducir una sobrecarga innecesaria, ya que debe ser re-evaluada en cada solicitud (request). Trata de encontrar una
 expresión sencilla para invalidar la caché si la página ha sido modificada.
 
-> Nota: En cumplimiento con [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+> Note: En cumplimiento con [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
   `HttpCache` enviará ambas cabeceras `ETag` y `Last-Modified` si ambas están configuradas. Y si el clientes envía tanto la cabecera `If-None-Match` como la cabecera `If-Modified-Since`, solo la primera será respetada.
 
 ## La Cabecera `Cache-Control` <span id="cache-control"></span>
@@ -130,7 +130,7 @@ especifican en `session.cache_limiter` de la configuración INI de PHP. Estas ca
 el almacenamiento de caché que desees de `HttpCache`. Para evitar este problema, por defecto `HttpCache` deshabilitará
 automáticamente el envío de estas cabeceras. Si deseas modificar este comportamiento, tienes que configurar la propiedad
 [[yii\filters\HttpCache::sessionCacheLimiter]]. La propiedad puede tomar un valor de cadena, incluyendo `public`, `private`,
-`private_no_expire`, and `nocache`. Por favor, consulta el manual PHP acerca de [session_cache_limiter()](http://www.php.net/manual/es/function.session-cache-limiter.php)
+`private_no_expire`, and `nocache`. Por favor, consulta el manual PHP acerca de [session_cache_limiter()](https://secure.php.net/manual/es/function.session-cache-limiter.php)
 para una mejor explicación sobre esos valores.
 
 

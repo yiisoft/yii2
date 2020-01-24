@@ -27,17 +27,23 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $user = User::findOne($id);
-        $profile = Profile::findOne($id);
-        
-        if (!isset($user, $profile)) {
+        if (!$user) {
             throw new NotFoundHttpException("The user was not found.");
+        }
+        
+        $profile = Profile::findOne($user->profile_id);
+        
+        if (!$profile) {
+            throw new NotFoundHttpException("The user has no profile.");
         }
         
         $user->scenario = 'update';
         $profile->scenario = 'update';
         
-        if (Model::loadMultiple([$user, $profile], Yii::$app->request->post())) {
-            if ($user->validate() && $profile->validate()) {
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
                 $user->save(false);
                 $profile->save(false);
                 return $this->redirect(['user/view', 'id' => $id]);
@@ -53,8 +59,10 @@ class UserController extends Controller
 ```
 
 In the `update` action, we first load the `$user` and `$profile` models to be updated from the database. We then call 
-[[yii\base\Model::loadMultiple()]] to populate these two models with the user input. If successful we will validate
-the two models and save them. Otherwise we will render the `update` view which has the following content:
+[[yii\base\Model::load()]] to populate these two models with the user input. If loading is successful, we will validate
+the two models and then save them &mdash; please note that we use `save(false)` to skip over validations inside the models
+as the user input data have already been validated. If loading is not successful, we will render the `update` view which
+has the following content:
 
 ```php
 <?php

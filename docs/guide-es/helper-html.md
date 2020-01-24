@@ -3,11 +3,11 @@ Clase auxiliar Html (Html helper)
 
 Todas las aplicaciones web generan grandes cantidades de marcado HTML (HTML markup). Si el marcado es estático, se
 puede realizar de forma efectiva
-[mezclando PHP y HTML en un mismo archivo](http://php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
+[mezclando PHP y HTML en un mismo archivo](https://secure.php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
 generan dinámicamente empieza a complicarse su gestión sin ayuda extra. Yii ofrece esta ayuda en forma de una clase auxiliar Html
 que proporciona un conjunto de métodos estáticos para gestionar las etiquetas HTML más comúnmente usadas, sus opciones y contenidos.
 
-> Nota: Si el marcado es casi estático, es preferible usar HTML directamente. No es necesario encapsularlo todo con
+> Note: Si el marcado es casi estático, es preferible usar HTML directamente. No es necesario encapsularlo todo con
 llamadas a la clase auxiliar Html.
 
 ## Lo fundamental <span id="basics"></span>
@@ -96,8 +96,8 @@ eliminara una propiedad, se puede especificar como una cadena de texto.
 
 
 Para que el contenido se muestre correctamente y de forma segura con caracteres especiales HTML el contenido debe ser
-codificado. En PHP esto se hace con [htmlspecialchars](http://www.php.net/manual/es/function.htmlspecialchars.php) y
-[htmlspecialchars_decode](http://www.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
+codificado. En PHP esto se hace con [htmlspecialchars](https://secure.php.net/manual/es/function.htmlspecialchars.php) y
+[htmlspecialchars_decode](https://secure.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
 de estos métodos directamente es que se tiene que especificar la codificación y opciones extra cada vez. Ya que las
 opciones siempre son las mismas y la codificación debe coincidir con la de la aplicación para prevenir problemas de
 seguridad, Yii proporciona dos métodos simples y compactos:
@@ -115,7 +115,7 @@ $decodedUserName = Html::decode($userName);
 El trato con el marcado de formularios es una tarea repetitiva y propensa a errores. Por esto hay un grupo de métodos
 para ayudar a gestionarlos.
 
-> Nota: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso de que se gestionen
+> Note: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso de que se gestionen
 formularios que requieran validaciones.
 
 ### Creando formularios <span id="creating-forms"></span>

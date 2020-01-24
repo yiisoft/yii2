@@ -1,13 +1,13 @@
 Tratamento de Erros
 ===============
 
-Yii inclui um [[yii\web\ErrorHandler|error handler]] o que torna o tratamento de erros uma experiência muito mais agradável do que antes. Em particular, o manipulador de erro do Yii faz o seguinte para melhorar o tratamento de erros:
+O Yii inclui um próprio [[yii\web\ErrorHandler|tratamento de erro]] que o torna uma experiência muito mais agradável do que antes. Em particular, o manipulador de erro do Yii faz o seguinte para melhorar o tratamento de erros:
 
 * Todos os erros não-fatais do PHP (ex. advertências, avisos) são convertidas em exceções capturáveis.
 
 * Exceções e erros fatais do PHP são exibidos com detalhes de informação em uma pilha de chamadas (call stack) e linhas de código-fonte no modo de depuração.
 
-* Suporta o use de [ação](structure-controllers.md#actions) dedicado para exibir erros.
+* Suporta o uso de uma [ação do controller](structure-controllers.md#actions) dedicado para exibir erros.
 
 * Suporta diferentes formatos de resposta de erro.
 
@@ -46,7 +46,7 @@ try {
 // Continua a execução...
 ```
 
-Se você deseja mostrar uma página de erro dizendo ao usuário que a sua requisição é inválida ou inesperada, você pode simplesmente lançar uma [[yii\web\HttpException|HTTP exception]], tal como [[yii\web\NotFoundHttpException]]. O manipulador de erro irá definir corretamente o código de status HTTP da resposta e usar uma exibição de erro apropriada para exibir a mensagem de erro.
+Se você deseja mostrar uma página de erro dizendo ao usuário que a sua requisição é inválida ou inesperada, você pode simplesmente lançar uma [[yii\web\HttpException|exceção HTTP]], tal como [[yii\web\NotFoundHttpException]]. O manipulador de erro irá definir corretamente o código de status HTTP da resposta e usar uma exibição de erro apropriada para exibir a mensagem de erro.
 
 ```php
 use yii\web\NotFoundHttpException;
@@ -55,7 +55,7 @@ throw new NotFoundHttpException();
 ```
 
 
-## Personalizando a Exibição de Erro<span id="customizing-error-display"></span>
+## Personalizando a Exibição de Erro <span id="customizing-error-display"></span>
 
 O [[yii\web\ErrorHandler|manipulador de erro]] ajusta a exibição de erro de acordo com o valor da constante `YII_DEBUG`. Quando `YII_DEBUG` for `True` (significa modo de debug), o manipulador de erro irá exibir exceções com informações detalhadas da pilha de chamadas e linhas do código fonte para ajudar na depuração do erro. E quando `YII_DEBUG` for `false`, apenas a mensagem de erro será exibida para evitar revelar informações relevantes sobre a aplicação.
 
@@ -69,9 +69,9 @@ Por padrão, o [[yii\web\ErrorHandler|manipulador de erro]] mostra os erros util
 do manipulador de erros para usar suas próprias views personalizando  a exibição de erro.
 
 
-### Usando Ações de erros <span id="using-error-actions"></span>
+### Usando Ações de Erros <span id="using-error-actions"></span>
 
-A melhor maneira de personalizar a exibição de erro é usa uma [ação](structure-controllers.md) dedicada de erro. Para fazê-lo, primeiro configure a propriedade [[yii\web\ErrorHandler::errorAction|errorAction]] do componente `errorHandler`
+A melhor maneira de personalizar a exibição de erro é usar uma [ação](structure-controllers.md) dedicada para este fim. Para fazê-lo, primeiro configure a propriedade [[yii\web\ErrorHandler::errorAction|errorAction]] do componente `errorHandler`
 como a seguir:
 
 ```php
@@ -131,7 +131,7 @@ Agora você deve criar um arquivo de exibição localizado na `views/site/error.
 > Observação: Se você está utilizando o [template básico](start-installation.md) ou o [template avançado](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md), a ação e a view de erro já estão definidas para você.
 
 
-### Customizando o Formato da Resposta de Erro<span id="error-format"></span>
+### Customizando o Formato da Resposta de Erro <span id="error-format"></span>
 
 O manipulador de erro exibe erros de acordo com a definição do formato da [resposta](runtime-responses.md). Se o [[yii\web\Response::format|formato da resposta]] for `html`, ele usará a view de erro ou exceção para exibir os erros, como descrito na última subseção. Para outros formatos de resposta, o manipulador de erro irá atribuir o array de representação da exceção para a propriedade [[yii\web\Response::data]] que será então convertida para diferentes formatos de acordo com o que foi configurado. Por exemplo, se o formato de resposta for `json`, você pode visualizar a seguinte resposta:
 
@@ -192,5 +192,3 @@ Content-Type: application/json; charset=UTF-8
    }
 }
 ```
-
-

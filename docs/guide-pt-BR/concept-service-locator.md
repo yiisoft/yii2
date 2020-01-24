@@ -48,11 +48,10 @@ $cache = $locator->cache;
 Como mostrado acima, [[yii\di\ServiceLocator]] permite-lhe acessar um componente como uma propriedade usando o ID do componente. Quando você acessa um componente pela primeira vez, [[yii\di\ServiceLocator]] usará as informações de registro do componente para criar uma nova instância do componente e retorná-lo. Mais tarde, se o componente for acessado novamente, o service locator irá retornar a mesma instância.
 
 Você pode utilizar [[yii\di\ServiceLocator::has()]] para checar se um ID de componente já está registrado.
-Se você executar [[yii\di\ServiceLocator::get()]] Com um ID inválido, uma exceção será lançada.
+Se você executar [[yii\di\ServiceLocator::get()]] com um ID inválido, uma exceção será lançada.
 
 
-Uma vez que service locators geralmente são criados com [configurações](concept-configurations.md), uma propriedade chamada [[yii\di\ServiceLocator::setComponents()|components]] é fornecida. Isso permite que você
-possa configurar e registrar vários componentes de uma só vez. O código a seguir mostra um array de configuração que pode ser utilizado para configurar um service locator (Por exemplo. uma [aplicação](structure-applications.md)) com o "db", "cache" e "search" components:
+Uma vez que service locators geralmente são criados com [configurações](concept-configurations.md), uma propriedade chamada [[yii\di\ServiceLocator::setComponents()|components]] é fornecida. Isso permite que você possa configurar e registrar vários componentes de uma só vez. O código a seguir mostra um array de configuração que pode ser utilizado para configurar um service locator (por exemplo. uma [aplicação](structure-applications.md)) com o "db", "cache" e "search" components:
 
 ```php
 return [
@@ -74,7 +73,7 @@ return [
 ];
 ```
 
-No código acima, existe um caminho alternativo para configurar o componente "search". Em vez de escrever directamente um PHP callback que cria uma instância de `SolrService`, você pode usar um método estático de classe para retornar semelhante a um callback, como mostrado abaixo:
+No código acima, existe um caminho alternativo para configurar o componente "search". Em vez de escrever diretamente um PHP callback que cria uma instância de `SolrService`, você pode usar um método estático de classe para retornar semelhante a um callback, como mostrado abaixo:
 
 ```php
 class SolrServiceBuilder
@@ -97,5 +96,6 @@ return [
     ],
 ];
 ```
+
 Esta abordagem alternativa é mais preferível quando você disponibiliza um componente Yii que encapsula alguma biblioteca de terceiros. Você usa o método estático como mostrado acima para representar a lógica complexa da construção do objeto de terceiros e o usuário do seu componente só precisa chamar o método estático para configurar o componente.
 

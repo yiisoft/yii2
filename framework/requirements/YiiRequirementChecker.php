@@ -16,8 +16,8 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *
  * Example:
  *
- * ~~~php
- * require_once('path/to/YiiRequirementChecker.php');
+ * ```php
+ * require_once 'path/to/YiiRequirementChecker.php';
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
  *     array(
@@ -29,7 +29,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *     ),
  * );
  * $requirementsChecker->checkYii()->check($requirements)->render();
- * ~~~
+ * ```
  *
  * If you wish to render the report with your own representation, use [[getResult()]] instead of [[render()]]
  *
@@ -37,14 +37,14 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * In this case specified PHP expression will be evaluated in the context of this class instance.
  * For example:
  *
- * ~~~
+ * ```php
  * $requirements = array(
  *     array(
  *         'name' => 'Upload max file size',
  *         'condition' => 'eval:$this->checkUploadMaxFileSize("5M")',
  *     ),
  * );
- * ~~~
+ * ```
  *
  * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
  * and should not use features from newer PHP versions!
@@ -68,7 +68,7 @@ class YiiRequirementChecker
     function check($requirements)
     {
         if (is_string($requirements)) {
-            $requirements = require($requirements);
+            $requirements = require $requirements;
         }
         if (!is_array($requirements)) {
             $this->usageError('Requirements must be an array, "' . gettype($requirements) . '" has been given!');
@@ -169,7 +169,7 @@ class YiiRequirementChecker
      * @param string $extensionName PHP extension name.
      * @param string $version required PHP extension version.
      * @param string $compare comparison operator, by default '>='
-     * @return boolean if PHP extension version matches.
+     * @return bool if PHP extension version matches.
      */
     function checkPhpExtensionVersion($extensionName, $version, $compare = '>=')
     {
@@ -180,7 +180,7 @@ class YiiRequirementChecker
         if (empty($extensionVersion)) {
             return false;
         }
-        if (strncasecmp($extensionVersion, 'PECL-', 5) == 0) {
+        if (strncasecmp($extensionVersion, 'PECL-', 5) === 0) {
             $extensionVersion = substr($extensionVersion, 5);
         }
 
@@ -190,7 +190,7 @@ class YiiRequirementChecker
     /**
      * Checks if PHP configuration option (from php.ini) is on.
      * @param string $name configuration option name.
-     * @return boolean option is on.
+     * @return bool option is on.
      */
     function checkPhpIniOn($name)
     {
@@ -199,13 +199,13 @@ class YiiRequirementChecker
             return false;
         }
 
-        return ((int) $value == 1 || strtolower($value) == 'on');
+        return ((int) $value === 1 || strtolower($value) === 'on');
     }
 
     /**
      * Checks if PHP configuration option (from php.ini) is off.
      * @param string $name configuration option name.
-     * @return boolean option is off.
+     * @return bool option is off.
      */
     function checkPhpIniOff($name)
     {
@@ -214,7 +214,7 @@ class YiiRequirementChecker
             return true;
         }
 
-        return (strtolower($value) == 'off');
+        return (strtolower($value) === 'off');
     }
 
     /**
@@ -223,7 +223,7 @@ class YiiRequirementChecker
      * @param string $a first value.
      * @param string $b second value.
      * @param string $compare comparison operator, by default '>='.
-     * @return boolean comparison result.
+     * @return bool comparison result.
      */
     function compareByteSize($a, $b, $compare = '>=')
     {
@@ -236,7 +236,7 @@ class YiiRequirementChecker
      * Gets the size in bytes from verbose size representation.
      * For example: '5K' => 5*1024
      * @param string $verboseSize verbose size representation.
-     * @return integer actual size in bytes.
+     * @return int actual size in bytes.
      */
     function getByteSize($verboseSize)
     {
@@ -247,27 +247,22 @@ class YiiRequirementChecker
             return (int) $verboseSize;
         }
         $sizeUnit = trim($verboseSize, '0123456789');
-        $size = str_replace($sizeUnit, '', $verboseSize);
-        $size = trim($size);
+        $size = trim(str_replace($sizeUnit, '', $verboseSize));
         if (!is_numeric($size)) {
             return 0;
         }
         switch (strtolower($sizeUnit)) {
             case 'kb':
-            case 'k': {
+            case 'k':
                 return $size * 1024;
-            }
             case 'mb':
-            case 'm': {
+            case 'm':
                 return $size * 1024 * 1024;
-            }
             case 'gb':
-            case 'g': {
+            case 'g':
                 return $size * 1024 * 1024 * 1024;
-            }
-            default: {
+            default:
                 return 0;
-            }
         }
     }
 
@@ -275,7 +270,7 @@ class YiiRequirementChecker
      * Checks if upload max file size matches the given range.
      * @param string|null $min verbose file size minimum required value, pass null to skip minimum check.
      * @param string|null $max verbose file size maximum required value, pass null to skip maximum check.
-     * @return boolean success.
+     * @return bool success.
      */
     function checkUploadMaxFileSize($min = null, $max = null)
     {
@@ -301,7 +296,7 @@ class YiiRequirementChecker
      * and captures the display result if required.
      * @param string $_viewFile_ view file
      * @param array $_data_ data to be extracted and made available to the view file
-     * @param boolean $_return_ whether the rendering result should be returned as a string
+     * @param bool $_return_ whether the rendering result should be returned as a string
      * @return string the rendering result. Null if the rendering result is not required.
      */
     function renderViewFile($_viewFile_, $_data_ = null, $_return_ = false)
@@ -315,18 +310,18 @@ class YiiRequirementChecker
         if ($_return_) {
             ob_start();
             ob_implicit_flush(false);
-            require($_viewFile_);
+            require $_viewFile_;
 
             return ob_get_clean();
         } else {
-            require($_viewFile_);
+            require $_viewFile_;
         }
     }
 
     /**
      * Normalizes requirement ensuring it has correct format.
      * @param array $requirement raw requirement.
-     * @param integer $requirementKey requirement key in the list.
+     * @param int $requirementKey requirement key in the list.
      * @return array normalized requirement.
      */
     function normalizeRequirement($requirement, $requirementKey = 0)
@@ -390,9 +385,7 @@ class YiiRequirementChecker
      */
     function getServerInfo()
     {
-        $info = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
-
-        return $info;
+        return isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
     }
 
     /**
@@ -401,8 +394,6 @@ class YiiRequirementChecker
      */
     function getNowDate()
     {
-        $nowDate = @strftime('%Y-%m-%d %H:%M', time());
-
-        return $nowDate;
+        return @strftime('%Y-%m-%d %H:%M', time());
     }
 }

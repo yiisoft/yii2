@@ -1,7 +1,7 @@
 Модульные тесты
 ===============
 
-> Примечание: Данный раздел находится в разработке.
+> Note: Данный раздел находится в разработке.
 
 Модульный тест проверяет что отдельный модуль кода работает верно. В ООП самым базовым модулем является класс. То есть
 модульный тест проверяет все методы интерфейса класса. На вход подаются различные параметры и тест проверяет, что методы
@@ -10,7 +10,7 @@
 Модульное тестирование в Yii использует PHPUnit и, опционально, Codeception. Рекомендуется проверить его документацию:
 
 - [Документация PHPUnit начиная с главы 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
-- [Codeception Unit Tests](http://codeception.com/docs/06-UnitTests).
+- [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests).
 
 Запуск тестов шаблонов проектов basic и advanced
 ------------------------------------------------
@@ -21,4 +21,4 @@
 --------------------------
 
 Если вам необходимо запустить набор модульных тестов для самого Yii, прочитайте
-"[Подготовка к разработке Yii2](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/getting-started.md)".
+"[Подготовка к разработке Yii 2](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/getting-started.md)".

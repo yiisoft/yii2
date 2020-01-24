@@ -15,7 +15,9 @@ namespace yii\caching;
  * the same as the one evaluated when storing the data to cache.
  *
  * A PHP expression can be any PHP code that has a value. To learn more about what an expression is,
- * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
+ * please refer to the [php manual](https://secure.php.net/manual/en/language.expressions.php).
+ *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -25,7 +27,7 @@ class ExpressionDependency extends Dependency
     /**
      * @var string the string representation of a PHP expression whose result is used to determine the dependency.
      * A PHP expression can be any PHP code that evaluates to a value. To learn more about what an expression is,
-     * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
+     * please refer to the [php manual](https://secure.php.net/manual/en/language.expressions.php).
      */
     public $expression = 'true';
     /**
@@ -38,7 +40,7 @@ class ExpressionDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the result of the PHP expression.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      */
     protected function generateDependencyData($cache)

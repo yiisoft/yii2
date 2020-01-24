@@ -25,16 +25,16 @@ Yii 2.0 talqin Yii 1.1 talqinda qo'llanilgan PHP 5.2 ga nisbatan ancha yaxshilan
 Shu tufayli siz nazarda tutishingiz kerak bo'lgan tildagi ko'p o'zgarishlar mavjud. 
 Quyida PHP ning asosiy o'zgarishlari keltirilgan:
 
-- [Nomlar sohasi](http://php.net/manual/ru/language.namespaces.php);
-- [Anonim funksiyalar](http://php.net/manual/ru/functions.anonymous.php);
+- [Nomlar sohasi](https://secure.php.net/manual/ru/language.namespaces.php);
+- [Anonim funksiyalar](https://secure.php.net/manual/ru/functions.anonymous.php);
 - Massivlar uchun qisqa sintaksisni qo'llash: `[...elementlar...]` ni `array(...элементы...)` o'rniga;
 - Qisqartirilgan teglarni qo'llash `<?=` ko'rinish fayllarida chiqarish uchun.
   PHP 5.4 talqinida ushbu imkoniyatni hech qanday sozlashlarsiz qo'llash mumkin;
-- [SPL ning klaslari va interfeyslari](http://php.net/manual/ru/book.spl.php);
-- [Kechroq statik bog'lash (LSB)](http://php.net/manual/ru/language.oop5.late-static-bindings.php);
-- [Sana va vaqt uchun klaslar](http://php.net/manual/ru/book.datetime.php);
-- [Treytlar](http://php.net/manual/ru/language.oop5.traits.php);
-- [Xalqarolashtirish (Intl)](http://php.net/manual/ru/book.intl.php); Xalqarolashtirish imkoniyatlaridan foydalanish maqsadida Yii 2.0 PHP ning `intl` kengaytmasini ishlatadi.
+- [SPL ning klaslari va interfeyslari](https://secure.php.net/manual/ru/book.spl.php);
+- [Kechroq statik bog'lash (LSB)](https://secure.php.net/manual/ru/language.oop5.late-static-bindings.php);
+- [Sana va vaqt uchun klaslar](https://secure.php.net/manual/ru/book.datetime.php);
+- [Treytlar](https://secure.php.net/manual/ru/language.oop5.traits.php);
+- [Xalqarolashtirish (Intl)](https://secure.php.net/manual/ru/book.intl.php); Xalqarolashtirish imkoniyatlaridan foydalanish maqsadida Yii 2.0 PHP ning `intl` kengaytmasini ishlatadi.
 
 
 Nomlar sohasi
@@ -49,21 +49,21 @@ Klaslarni nomlash kelishuvi direktoriyalar strukturasiga asoslanilgan. Masalan, 
 Komponent va obekt
 ------------------
 
-Yii 2.0 da 1.1 dagi `CComponent` klas ikkita klasga ajratilgan: [[yii\base\Object]] va [[yii\base\Component]].
-[[yii\base\Object|Object]] klas oddiy asos klas bo'lib xususiyatlar uchun [getter va setter](concept-properties.md) larni ishlatishga imkon beradi. 
-[[yii\base\Component|Component]] klas [[yii\base\Object|Object]] klasdan voris bo'lib [xodisalar](concept-events.md) va 
+Yii 2.0 da 1.1 dagi `CComponent` klas ikkita klasga ajratilgan: [[yii\base\BaseObject]] va [[yii\base\Component]].
+[[yii\base\BaseObject|BaseObject]] klas oddiy asos klas bo'lib xususiyatlar uchun [getter va setter](concept-properties.md) larni ishlatishga imkon beradi. 
+[[yii\base\Component|Component]] klas [[yii\base\BaseObject|BaseObject]] klasdan voris bo'lib [xodisalar](concept-events.md) va 
 [o'zini tutish](concept-behaviors.md) larni qo'llab quvvatlaydi.
 
-Agar sizni klasingizga xodisalar funksiyalari yoki o'zini tutishlar kerak bo'lmasa asos klas sifatida [[yii\base\Object|Object]] ni qo'llashingiz mumkin. Ushbu holat asosan asos strukturali klaslar yaratilayotgan vaqtda yuz beradi.
+Agar sizni klasingizga xodisalar funksiyalari yoki o'zini tutishlar kerak bo'lmasa asos klas sifatida [[yii\base\BaseObject|BaseObject]] ni qo'llashingiz mumkin. Ushbu holat asosan asos strukturali klaslar yaratilayotgan vaqtda yuz beradi.
 
 
 Obekt sozlashlari
 -----------------
 
-[[yii\base\Object|Object]] klas obektlarni sozlashni yagona usulini tashkillashtiradi. Ixtiyoriy [[yii\base\Object|Object]] ga voris bo'lgan klas (agar kerak bo'lsa) o'zini sozlashi uchun quyidagi ko'rinishda o'ziga konstruktor yaratishi mumkin: 
+[[yii\base\BaseObject|BaseObject]] klas obektlarni sozlashni yagona usulini tashkillashtiradi. Ixtiyoriy [[yii\base\BaseObject|BaseObject]] ga voris bo'lgan klas (agar kerak bo'lsa) o'zini sozlashi uchun quyidagi ko'rinishda o'ziga konstruktor yaratishi mumkin: 
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -81,7 +81,7 @@ class MyClass extends \yii\base\Object
 }
 ```
 
-Yuqoridagi misolda oxirgi parametr obekt xususiyatlarini qiymatlovchi sozlashlar massivi ya'ni kalit-qiymat formatidagi juftlikdan iborat bo'lishi kerak. Siz sozlashlar qo'llanilganidan keyin initsializatsiya ishini amalga oshirish uchun oldindan [[yii\base\Object::init()|init()]] metod yaratib qo'yishingiz mumkin.
+Yuqoridagi misolda oxirgi parametr obekt xususiyatlarini qiymatlovchi sozlashlar massivi ya'ni kalit-qiymat formatidagi juftlikdan iborat bo'lishi kerak. Siz sozlashlar qo'llanilganidan keyin initsializatsiya ishini amalga oshirish uchun oldindan [[yii\base\BaseObject::init()|init()]] metod yaratib qo'yishingiz mumkin.
 
 Ushbu kelishuvga asoslanib siz sozlash massivi yordamida yangi obektlarni yaratishingiz va sozlashingiz mumkin:
 

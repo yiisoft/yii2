@@ -20,7 +20,7 @@ use Yii;
 class StringValidator extends Validator
 {
     /**
-     * @var integer|array specifies the length limit of the value to be validated.
+     * @var int|array specifies the length limit of the value to be validated.
      * This can be specified in one of the following forms:
      *
      * - an integer: the exact length that the value should be of;
@@ -34,12 +34,12 @@ class StringValidator extends Validator
      */
     public $length;
     /**
-     * @var integer maximum length. If not set, it means no maximum length limit.
+     * @var int maximum length. If not set, it means no maximum length limit.
      * @see tooLong for the customized message for a too long string.
      */
     public $max;
     /**
-     * @var integer minimum length. If not set, it means no minimum length limit.
+     * @var int minimum length. If not set, it means no minimum length limit.
      * @see tooShort for the customized message for a too short string.
      */
     public $min;
@@ -67,7 +67,7 @@ class StringValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -82,7 +82,7 @@ class StringValidator extends Validator
             $this->length = null;
         }
         if ($this->encoding === null) {
-            $this->encoding = Yii::$app->charset;
+            $this->encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a string.');
@@ -99,7 +99,7 @@ class StringValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -125,7 +125,7 @@ class StringValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -149,45 +149,54 @@ class StringValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);
 
         $options = [
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $label,
-            ], Yii::$app->language),
+            ]),
         ];
 
         if ($this->min !== null) {
             $options['min'] = $this->min;
-            $options['tooShort'] = Yii::$app->getI18n()->format($this->tooShort, [
+            $options['tooShort'] = $this->formatMessage($this->tooShort, [
                 'attribute' => $label,
                 'min' => $this->min,
-            ], Yii::$app->language);
+            ]);
         }
         if ($this->max !== null) {
             $options['max'] = $this->max;
-            $options['tooLong'] = Yii::$app->getI18n()->format($this->tooLong, [
+            $options['tooLong'] = $this->formatMessage($this->tooLong, [
                 'attribute' => $label,
                 'max' => $this->max,
-            ], Yii::$app->language);
+            ]);
         }
         if ($this->length !== null) {
             $options['is'] = $this->length;
-            $options['notEqual'] = Yii::$app->getI18n()->format($this->notEqual, [
+            $options['notEqual'] = $this->formatMessage($this->notEqual, [
                 'attribute' => $label,
                 'length' => $this->length,
-            ], Yii::$app->language);
+            ]);
         }
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

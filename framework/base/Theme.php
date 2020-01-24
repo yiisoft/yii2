@@ -33,14 +33,14 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ~~~
+ * ```php
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
  *         '@app/themes/basic',
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
  * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
@@ -48,23 +48,25 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ~~~
+ * ```php
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
  *         'baseUrl' => '@web/themes/basic',
  *     ],
  * ],
- * ~~~
+ * ```
  *
  * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder
  * that contains the entry script of the application. If your theme is designed to handle modules,
  * you may configure the [[pathMap]] property like described above.
  *
+ * For more details and usage information on Theme, see the [guide article on theming](guide:output-theming).
+ *
  * @property string $basePath The root path of this theme. All resources of this theme are located under this
  * directory.
  * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
- * are considered to be under this base URL. This property is read-only.
+ * are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -74,12 +76,13 @@ class Theme extends Component
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
      * This property is used by [[applyTo()]] when a view is trying to apply the theme.
-     * Path aliases can be used when specifying directories.
+     * [Path aliases](guide:concept-aliases) can be used when specifying directories.
      * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
     public $pathMap;
 
     private $_baseUrl;
+
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
@@ -91,12 +94,12 @@ class Theme extends Component
     }
 
     /**
-     * @param $url string the base URL or path alias for this theme. All resources of this theme are considered
+     * @param string $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function setBaseUrl($url)
     {
-        $this->_baseUrl = rtrim(Yii::getAlias($url), '/');
+        $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
     }
 
     private $_basePath;
@@ -111,7 +114,7 @@ class Theme extends Component
     }
 
     /**
-     * @param string $path the root path or path alias of this theme. All resources of this theme are located
+     * @param string $path the root path or [path alias](guide:concept-aliases) of this theme. All resources of this theme are located
      * under this directory.
      * @see pathMap
      */
@@ -136,9 +139,7 @@ class Theme extends Component
             }
             $pathMap = [Yii::$app->getBasePath() => [$basePath]];
         }
-
         $path = FileHelper::normalizePath($path);
-
         foreach ($pathMap as $from => $tos) {
             $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
@@ -166,23 +167,23 @@ class Theme extends Component
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
             return $baseUrl . '/' . ltrim($url, '/');
-        } else {
-            throw new InvalidConfigException('The "baseUrl" property must be set.');
         }
+
+        throw new InvalidConfigException('The "baseUrl" property must be set.');
     }
 
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
      * @param string $path the relative file path to be converted.
      * @return string the absolute file path
-     * @throws InvalidConfigException if [[baseUrl]] is not set
+     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function getPath($path)
     {
         if (($basePath = $this->getBasePath()) !== null) {
             return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
-        } else {
-            throw new InvalidConfigException('The "basePath" property must be set.');
         }
+
+        throw new InvalidConfigException('The "basePath" property must be set.');
     }
 }

@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * BatchQueryResult represents a batch query from which you can retrieve data in batches.
@@ -28,7 +28,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BatchQueryResult extends Object implements \Iterator
+class BatchQueryResult extends BaseObject implements \Iterator
 {
     /**
      * @var Connection the DB connection to be used when performing batch query.
@@ -41,11 +41,11 @@ class BatchQueryResult extends Object implements \Iterator
      */
     public $query;
     /**
-     * @var integer the number of rows to be returned in each batch.
+     * @var int the number of rows to be returned in each batch.
      */
     public $batchSize = 100;
     /**
-     * @var boolean whether to return a single row during each iteration.
+     * @var bool whether to return a single row during each iteration.
      * If false, a whole batch of rows will be returned in each iteration.
      */
     public $each = false;
@@ -63,9 +63,14 @@ class BatchQueryResult extends Object implements \Iterator
      */
     private $_value;
     /**
-     * @var string|integer the key for the current iteration
+     * @var string|int the key for the current iteration
      */
     private $_key;
+    /**
+     * @var int MSSQL error code for exception that is thrown when last batch is size less than specified batch size
+     * @see https://github.com/yiisoft/yii2/issues/10023
+     */
+    private $mssqlNoMoreRowsErrorCode = -13;
 
 
     /**
@@ -118,7 +123,7 @@ class BatchQueryResult extends Object implements \Iterator
             if ($this->query->indexBy !== null) {
                 $this->_key = key($this->_batch);
             } elseif (key($this->_batch) !== null) {
-                $this->_key++;
+                $this->_key = $this->_key === null ? 0 : $this->_key + 1;
             } else {
                 $this->_key = null;
             }
@@ -131,6 +136,7 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Fetches the next batch of data.
      * @return array the data fetched
+     * @throws Exception
      */
     protected function fetchData()
     {
@@ -138,19 +144,39 @@ class BatchQueryResult extends Object implements \Iterator
             $this->_dataReader = $this->query->createCommand($this->db)->query();
         }
 
-        $rows = [];
-        $count = 0;
-        while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
-            $rows[] = $row;
-        }
+        $rows = $this->getRows();
 
         return $this->query->populate($rows);
     }
 
     /**
+     * Reads and collects rows for batch
+     * @return array
+     * @since 2.0.23
+     */
+    protected function getRows()
+    {
+        $rows = [];
+        $count = 0;
+
+        try {
+            while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
+                $rows[] = $row;
+            }
+        } catch (\PDOException $e) {
+            $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
+            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
+                throw $e;
+            }
+        }
+
+        return $rows;
+    }
+
+    /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return integer the index of the current row.
+     * @return int the index of the current row.
      */
     public function key()
     {
@@ -170,10 +196,31 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns whether there is a valid dataset at the current position.
      * This method is required by the interface [[\Iterator]].
-     * @return boolean whether there is a valid dataset at the current position.
+     * @return bool whether there is a valid dataset at the current position.
      */
     public function valid()
     {
         return !empty($this->_batch);
+    }
+
+    /**
+     * Gets db driver name from the db connection that is passed to the `batch()`, if it is not passed it uses
+     * connection from the active record model
+     * @return string|null
+     */
+    private function getDbDriverName()
+    {
+        if (isset($this->db->driverName)) {
+            return $this->db->driverName;
+        }
+
+        if (!empty($this->_batch)) {
+            $key = array_keys($this->_batch)[0];
+            if (isset($this->_batch[$key]->db->driverName)) {
+                return $this->_batch[$key]->db->driverName;
+            }
+        }
+
+        return null;
     }
 }

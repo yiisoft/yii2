@@ -1,13 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
 /**
- * Class Order
+ * Class Order.
  *
- * @property integer $id
- * @property integer $customer_id
- * @property integer $created_at
+ * @property int $id
+ * @property int $customer_id
+ * @property int $created_at
  * @property string $total
  */
 class OrderWithNullFK extends ActiveRecord
@@ -16,6 +21,4 @@ class OrderWithNullFK extends ActiveRecord
     {
         return 'order_with_null_fk';
     }
-
-
 }

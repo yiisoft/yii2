@@ -21,7 +21,7 @@ echo $formatter->asEmail('cebe@example.com');
 echo $formatter->asBoolean(true); 
 // it also handles display of null values:
 
-// output: (Not set)
+// output: (not set)
 echo $formatter->asDate(null); 
 ```
 
@@ -40,6 +40,12 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
+> Note: The formatter component is designed to format values to be displayed for the end user. If you want
+> to convert user input into machine readable format, or just format a date in a machine readable format,
+> the formatter is not the right tool for that.
+> To convert user input for date and number values you may use [[yii\validators\DateValidator]] and [[yii\validators\NumberValidator]]
+> respectively. For simple conversion between machine readable date and time formats,
+> the PHP [date()](https://secure.php.net/manual/en/function.date.php)-function is enough.
 
 ## Configuring Formatter <span id="configuring-formatter"></span>
 
@@ -72,6 +78,7 @@ The formatter supports the following output formats that are related with date a
 - [[yii\i18n\Formatter::asTimestamp()|timestamp]]: the value is formatted as a [unix timestamp](http://en.wikipedia.org/wiki/Unix_time), e.g. `1412609982`.
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: the value is formatted as the time interval between a date
   and now in human readable form e.g. `1 hour ago`.
+- [[yii\i18n\Formatter::asDuration()|duration]]: the value is formatted as a duration in human readable format. e.g. `1 day, 2 minutes`.
 
 The default date and time formats used for the [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
 and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized globally by configuring  
@@ -79,7 +86,7 @@ and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized glob
 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
 You can specify date and time formats using the [ICU syntax](http://userguide.icu-project.org/formatparse/datetime).
-You can also use the [PHP date() syntax](http://php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
+You can also use the [PHP date() syntax](https://secure.php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
 it from ICU syntax. For example,
 
 ```php
@@ -90,6 +97,20 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
+> Info: Some letters of the PHP format syntax are not supported by ICU and thus the PHP intl extension and can not be used
+> in Yii formatter. Most of these (`w`, `t`, `L`, `B`, `u`, `I`, `Z`) are not really useful for formatting dates but rather
+> used when doing date math. `S` and `U` however may be useful. Their behavior can be achieved by doing the following:
+>
+> - for `S`, which is the English ordinal suffix for the day of the month (e.g. st, nd, rd or th.), the following replacement can be used:
+>
+>   ```php
+>   $f = Yii::$app->formatter;
+>   $d = $f->asOrdinal($f->asDate('2017-05-15', 'php:j'));
+>   echo "On the $d day of the month.";  // prints "On the 15th day of the month."
+>   ```
+>
+> - for `U`, the Unix Epoch, you can use the [[yii\i18n\Formatter::asTimestamp()|timestamp]] format.
+
 When working with applications that need to support multiple languages, you often need to specify different date
 and time formats for different locales. To simplify this task, you may use format shortcuts (e.g. `long`, `short`), instead.
 The formatter will turn a format shortcut into an appropriate format according to the currently active [[yii\i18n\Formatter::locale|locale]].
@@ -99,6 +120,9 @@ The following format shortcuts are supported (the examples assume `en_GB` is the
 - `medium`: will output `6 Oct 2014` and `15:58:42`;
 - `long`: will output `6 October 2014` and `15:58:42 GMT`;
 - `full`: will output `Monday, 6 October 2014` and `15:58:42 GMT`.
+
+Since version 2.0.7 it is also possible to format dates in different calendar systems.
+Please refer to the API documentation of the formatters [[yii\i18n\Formatter::$calendar|$calendar]]-property on how to set a different calendar.
 
 
 ### Time Zones <span id="time-zones"></span>
@@ -120,12 +144,15 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
+If the [[yii\i18n\Formatter::timeZone|time zone]] is not set explicitly on the formatter component, the 
+[[yii\base\Application::timeZone|time zone configured in the application]] is used, which is the same time zone
+as set in the PHP configuration.
+
 > Note: As time zones are subject to rules made by the governments around the world and may change frequently, it is
 > likely that you do not have the latest information in the time zone database installed on your system.
 > You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > for details on updating the time zone database. Please also read
-> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
-
+> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).  
 
 ## Formatting Numbers <span id="numbers"></span>
 
@@ -147,7 +174,7 @@ The format for number formatting can be adjusted using the [[yii\i18n\Formatter:
 active [[yii\i18n\Formatter::locale|locale]].
 
 For more advanced configuration, [[yii\i18n\Formatter::numberFormatterOptions]] and [[yii\i18n\Formatter::numberFormatterTextOptions]]
-can be used to configure the [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php) used internally
+can be used to configure the [NumberFormatter class](https://secure.php.net/manual/en/class.numberformatter.php) used internally
 to implement the formatter. For example, to adjust the maximum and minimum value of fraction digits, you can configure 
 the [[yii\i18n\Formatter::numberFormatterOptions]] property like the following:
 
@@ -208,7 +235,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 By default, the currently active [[yii\i18n\Formatter::locale|locale]] is determined by the value of 
 [[yii\base\Application::language]]. You may override it by setting the [[yii\i18n\Formatter::locale]] property explicitly.
 
-> Note: The Yii formatter relies on the [PHP intl extension](http://php.net/manual/en/book.intl.php) to support
+> Note: The Yii formatter relies on the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to support
 > localized data formatting. Because different versions of the ICU library compiled with PHP may cause different
 > formatting results, it is recommended that you use the same ICU version for all your environments. For more details,
 > please refer to [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).

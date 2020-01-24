@@ -1,7 +1,7 @@
 Helpers
 =======
 
-> Nota: Esta sección está en desarrollo.
+> Note: Esta sección está en desarrollo.
 
 Yii ofrece muchas clases que ayudan a simplificar las tareas comunes de codificación, como manipulación de string o array,
 generación de código HTML, y más. Estas clases helper están organizadas bajo el namespace `yii\helpers` y
@@ -15,7 +15,7 @@ use yii\helpers\Html;
 echo Html::encode('Test > test');
 ```
 
-> Nota: Para soportar la [personalización de clases helper](#customizing-helper-classes), Yii separa cada clase helper del núcleo
+> Note: Para soportar la [personalización de clases helper](#customizing-helper-classes), Yii separa cada clase helper del núcleo
   en dos clases: una clase base (ej. `BaseArrayHelper`) y una clase concreta (ej. `ArrayHelper`).
   Cuando uses un helper, deberías sólo usar la versión concreta y nunca usar la clase base.
 

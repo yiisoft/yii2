@@ -17,21 +17,21 @@ $composerAutoload = [
 $vendorPath = null;
 foreach ($composerAutoload as $autoload) {
     if (file_exists($autoload)) {
-        require($autoload);
+        require $autoload;
         $vendorPath = dirname($autoload);
         break;
     }
 }
 
 
-require(__DIR__ . '/Yii.php');
+require __DIR__ . '/Yii.php';
 
 $application = new yii\console\Application([
     'id' => 'yii-console',
     'basePath' => __DIR__ . '/console',
     'controllerNamespace' => 'yii\console\controllers',
 ]);
-if (isset($vendorPath)) {
+if ($vendorPath !== null) {
     $application->setVendorPath($vendorPath);
 }
 $exitCode = $application->run();

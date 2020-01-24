@@ -60,7 +60,7 @@ class ClassmapController extends Controller
             if (strpos($file, $root) !== 0) {
                 throw new Exception("Something wrong: $file\n");
             }
-            $path = str_replace('\\', '/', substr($file, strlen($root)));
+            $path = str_replace('\\', '/', substr($file, \strlen($root)));
             $map[$path] = "  'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII2_PATH . '$path',";
         }
         ksort($map);
