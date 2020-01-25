@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57627068914aee26c8205110ee14f928",
+    "content-hash": "07e999e48b11629d4ec220671ad4fbae",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -1258,7 +1258,7 @@
                     "dev-master": "4.8.x-dev"
                 },
                 "patches_applied": {
-                    "Fix PHP 7.2 compatibility": "./tests/phpunit_getopt.patch"
+                    "Fix PHP 7.2 compatibility": "./tests/phpunit_getopt_each.patch"
                 }
             },
             "autoload": {
