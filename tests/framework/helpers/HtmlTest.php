@@ -1864,8 +1864,8 @@ HTML;
         $actual = Html::activeCheckboxList($model, 'types', ['foo']);
         $this->assertEqualsWithoutLE($expected, $actual);
     }
-	
-	public function testActiveCheckboxList_options()
+
+    public function testActiveCheckboxList_options()
     {
         $model = new HtmlTestModel();
 
