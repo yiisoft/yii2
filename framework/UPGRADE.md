@@ -62,29 +62,34 @@ Upgrade from Yii 2.0.32
       'A' => 1,
       'B' => [
           'C' => 1,
-          'D' => 2,
+          'D' => [
+              'E' => 1,
+              'F' => 2,
+          ]
       ],
   ];
-  ArrayHelper::filter($myArray, ['A.B.C']);
+  ArrayHelper::filter($myArray, ['B.D.E']);
   ``` 
   Before Yii 2.0.33 this would return
   ```php
   [
-      'A' => 1,
       'B' => [
-          'C' => 1,
-          'D' => 2, //Please note the unexpected inclusion of other elements
+          'D' => [
+              'E' => 1,
+              'F' => 2, //Please note the unexpected inclusion of other elements
+          ],
       ],
   ]
   ```
   Since Yii 2.0.33 this returns
   ```php
   [
-      'A' => 1,
-      'B' => [
-          'C' => 1,
-      ],
-  ]
+        'B' => [
+            'D' => [
+                'E' => 1,
+            ],
+        ],
+    ]
   ```
   
   Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
