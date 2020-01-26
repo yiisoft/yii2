@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17797: Fix for `activeListInput` options (alex-code)
 
 
 2.0.32 January 21, 2020
