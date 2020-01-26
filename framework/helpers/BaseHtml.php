@@ -1823,7 +1823,7 @@ class BaseHtml
     protected static function activeListInput($type, $model, $attribute, $items, $options = [])
     {
         $name = ArrayHelper::remove($options, 'name', static::getInputName($model, $attribute));
-        $selection = ArrayHelper::remove($options, 'value', static::getInputName($model, $attribute));
+        $selection = ArrayHelper::remove($options, 'value', static::getAttributeValue($model, $attribute));
         if (!array_key_exists('unselect', $options)) {
             $options['unselect'] = '';
         }
