@@ -27,7 +27,7 @@ Gii をコード生成に使うと、ウェブ開発のプロセスの大部分�
 * コミュニティ
     - フォーラム: <http://www.yiiframework.com/forum/>
     - IRC チャット: freenode ネットワーク (<irc://irc.freenode.net/yii>) の #yii チャンネル
-    - Slack チャンネル: <https://yii.slack.com>
+    - Slack チャンネル:  <https://join.slack.com/t/yii/shared_invite/enQtMzQ4MDExMDcyNTk2LTc0NDQ2ZTZhNjkzZDgwYjE4YjZlNGQxZjFmZDBjZTU3NjViMDE4ZTMxNDRkZjVlNmM1ZTA1ODVmZGUwY2U3NDA>
     - Gitter チャット: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>

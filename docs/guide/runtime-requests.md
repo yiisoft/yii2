@@ -201,6 +201,10 @@ except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is
 In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
 will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].
 
+Since 2.0.31 [RFC 7239](https://tools.ietf.org/html/rfc7239) `Forwarded` header is supported. In order to enable
+it you need to add header name to `secureHeaders`. Make sure your proxy is setting it, otherwise end user would be
+able to spoof IP and protocol.
+
 ### Already resolved user IP <span id="already-respolved-user-ip"></span>
 
 If the user's IP address is resolved before the Yii application (e.g. `ngx_http_realip_module` or similar),
