@@ -954,15 +954,13 @@ class BaseArrayHelper
         foreach ($excludeFilters as $filter) {
             $excludeNode = &$result;
             $keys = explode('.', $filter);
-            $numKeys = count($keys);
-            for ($i = 0; $i < $numKeys; $i++) {
-                $key = $keys[$i];
-
+            $numNestedKeys = count($keys) - 1;
+            foreach ($keys as $i => $key) {
                 if (!array_key_exists($key, $excludeNode)) {
                     continue 2; //Jump to next filter
                 }
 
-                if ($i < $numKeys - 1) {
+                if ($i < $numNestedKeys) {
                     $excludeNode = &$excludeNode[$key];
                 } else {
                     unset($excludeNode[$key]);
