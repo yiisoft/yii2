@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
 
 
 2.0.32 January 21, 2020
