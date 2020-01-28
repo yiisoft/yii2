@@ -1322,6 +1322,12 @@ class ArrayHelperTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.D']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+        ]);
 
         //Non existing keys tests
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
