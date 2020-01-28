@@ -52,6 +52,7 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 Upgrade from Yii 2.0.32
+-----------------------
 
 * `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 "levels",
   e.g. `ArrayHelper::filter($myArray, ['A.B.C']`. Until Yii 2.0.32 all data after the 2nd level was returned,
@@ -69,8 +70,10 @@ Upgrade from Yii 2.0.32
       ],
   ];
   ArrayHelper::filter($myArray, ['B.D.E']);
-  ``` 
+  ```
+  
   Before Yii 2.0.33 this would return
+  
   ```php
   [
       'B' => [
@@ -81,15 +84,17 @@ Upgrade from Yii 2.0.32
       ],
   ]
   ```
+
   Since Yii 2.0.33 this returns
+
   ```php
   [
-        'B' => [
-            'D' => [
-                'E' => 1,
-            ],
-        ],
-    ]
+      'B' => [
+          'D' => [
+              'E' => 1,
+          ],
+      ],
+  ]
   ```
   
   Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
