@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
+- Enh #17802: Use GitHub actions instead of Travis (samdark, simialbi) 
 - Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
 
 
