@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
+- Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
 - Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
 
 
@@ -24,7 +25,7 @@ Yii Framework 2 Change Log
 - Bug #17771: migrate/fresh was not returning exit code (samdark)
 - Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 - Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
-- Enh #17729: Path alias support was added to `yii\web\UploadFile::saveAs()` (sup-ham)
+- Enh #17729: Path alias support was added to `yii\web\UploadedFile::saveAs()` (sup-ham)
 - Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 
 
