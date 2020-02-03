@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
+- Bug #17843: Fix `yii\web\Session::setCookieParamsInternal` check param "samesite" (schevgeny)
 - Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
 - Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
 
