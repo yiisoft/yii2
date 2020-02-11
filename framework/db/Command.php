@@ -91,7 +91,7 @@ class Command extends Component
     /**
      * @var array pending parameters to be bound to the current PDO statement.
      */
-    private $_pendingParams = [];
+    protected $_pendingParams = [];
     /**
      * @var string the SQL statement that this command represents
      */

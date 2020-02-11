@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\Schema;
 /**
  * @group db
  * @group oci
@@ -41,5 +42,37 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $data['wrongBehavior']['expected'] = 'INSERT INTO "type" ("type"."int_col", "float_col", "char_col") VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
 
         return $data;
+    }
+
+    /**
+     * Testing the "ORA-01461: can bind a LONG value only for insert into a LONG column"
+     *
+     * @return void
+     */
+    public function testCLOBStringInsertion()
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema('longstring') !== null) {
+            $db->createCommand()->dropTable('longstring')->execute();
+        }
+
+        $db->createCommand()->createTable('longstring', ['message' => Schema::TYPE_TEXT])->execute();
+        $long_data = str_pad('-', 4001, '-=', STR_PAD_LEFT);
+        try {
+            $db->createCommand()->insert('longstring', [
+                'message' => $long_data,
+            ])->execute();
+
+        } catch (\yii\db\Exception $exception) {
+            //We want a specific error message
+            $this->assertNotContains('ORA-01461', substr($exception->getMessage(),0,100));
+
+            throw $exception;
+
+        }
+
+        $this->assertEquals(1, $db->createCommand('SELECT count(*) FROM {{longstring}}')->queryScalar());
+
     }
 }
