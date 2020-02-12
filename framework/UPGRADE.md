@@ -51,6 +51,65 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.32
+-----------------------
+
+* `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 "levels",
+  e.g. `ArrayHelper::filter($myArray, ['A.B.C']`. Until Yii 2.0.32 all data after the 2nd level was returned,
+  please see the following example:
+  
+  ```php
+  $myArray = [
+      'A' => 1,
+      'B' => [
+          'C' => 1,
+          'D' => [
+              'E' => 1,
+              'F' => 2,
+          ]
+      ],
+  ];
+  ArrayHelper::filter($myArray, ['B.D.E']);
+  ```
+  
+  Before Yii 2.0.33 this would return
+  
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+              'F' => 2, //Please note the unexpected inclusion of other elements
+          ],
+      ],
+  ]
+  ```
+
+  Since Yii 2.0.33 this returns
+
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+          ],
+      ],
+  ]
+  ```
+  
+  Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
+
+Upgrade from Yii 2.0.31
+-----------------------
+
+* `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on
+  content-type negotiation fail.
+
+Upgrade from Yii 2.0.30
+-----------------------
+* `yii\helpers\BaseInflector::slug()` now ensures there is no repeating $replacement string occurrences.
+  In case you rely on Yii 2.0.16 - 2.0.30 behavior, consider replacing `Inflector` with your own implementation.
+
 Upgrade from Yii 2.0.20
 -----------------------
 

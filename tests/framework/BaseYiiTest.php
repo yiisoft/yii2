@@ -14,6 +14,9 @@ use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 use yiiunit\data\base\CallableClass;
+use yiiunit\framework\di\stubs\FooBaz;
+use yiiunit\framework\di\stubs\FooDependentSubclass;
+use yiiunit\framework\di\stubs\Qux;
 
 /**
  * BaseYiiTest.
@@ -72,6 +75,19 @@ class BaseYiiTest extends TestCase
         $this->assertInternalType('string', Yii::powered());
     }
 
+    public function testCreateObjectArray()
+    {
+        Yii::$container = new Container();
+
+        $qux = Yii::createObject([
+            '__class' => Qux::className(),
+            'a' => 42,
+        ]);
+
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
+    }
+
     public function testCreateObjectCallable()
     {
         Yii::$container = new Container();
@@ -99,7 +115,7 @@ class BaseYiiTest extends TestCase
     public function testCreateObjectEmptyArrayException()
     {
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('Object configuration must be an array containing a "class" element.');
+        $this->expectExceptionMessage('Object configuration must be an array containing a "class" or "__class" element.');
 
         Yii::createObject([]);
     }
@@ -110,6 +126,17 @@ class BaseYiiTest extends TestCase
         $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
 
         Yii::createObject(null);
+    }
+
+    public function testDi3CompatibilityCreateDependentObject()
+    {
+        $object = Yii::createObject([
+            '__class' => FooBaz::className(),
+            'fooDependent' => ['__class' => FooDependentSubclass::className()],
+        ]);
+
+        $this->assertInstanceOf(FooBaz::className(), $object);
+        $this->assertInstanceOf(FooDependentSubclass::className(), $object->fooDependent);
     }
 
     /**

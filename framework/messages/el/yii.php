@@ -23,7 +23,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Θα πρέπει να ανεβάσετε τουλάχιστον {limit, number} {limit, plural, one{file} other{files}}.',
     ' and ' => ' και ',
     '"{attribute}" does not support operator "{operator}".' => 'Το "{attribute}" δεν υποστηρίζει τον τελεστή "{operator}".',
     '(not set)' => '(μη ορισμένο)',
@@ -72,6 +71,7 @@ return [
     'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Δεν επιτρέπεται να εκτελέσετε αυτή την ενέργεια.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Μπορείτε να ανεβάσετε το πολύ {limit, number} {limit, plural, one{αρχείο} few{αρχεία} many{αρχεία} other{αρχεία}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Θα πρέπει να ανεβάσετε τουλάχιστον {limit, number} {limit, plural, one{αρχείο} other{αρχεία}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'σε {delta, plural, =1{μία ημέρα} other{# ημέρες}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'σε {delta, plural, =1{ένα λεπτό} other{# λεπτά}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'σε {delta, plural, =1{ένα μήνα} other{# μήνες}}',
@@ -123,7 +123,6 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
@@ -131,6 +130,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{byte} other{bytes}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}',
@@ -142,4 +142,7 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}',
+    'Action not found.' => 'Δε βρέθηκε η ενέργεια.',
+    'Aliases available: {aliases}' => 'Διαθέσιμα ψευδώνυμα: {aliases}',
+    'Options available: {options}' => 'Διαθέσιμες επιλογές: {options}',
 ];

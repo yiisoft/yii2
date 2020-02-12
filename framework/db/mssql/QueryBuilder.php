@@ -426,7 +426,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value) || $value === null)) {
                     $phName = $this->bindParam($value, $params);
-                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $params);
+                    // @see https://github.com/yiisoft/yii2/issues/12599                    
+                    $columns[$name] = new Expression("CONVERT(VARBINARY(MAX), $phName)", $params);
                 }
             }
         }

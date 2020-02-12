@@ -263,8 +263,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $multiAlterStatement = [];
         $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
 
-        if (preg_match('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', $type, $matches)) {
-            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', '', $type);
+        if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
+            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
             $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET DEFAULT {$matches[1]}";
         } else {
             // safe to drop default even if there was none in the first place

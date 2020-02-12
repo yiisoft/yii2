@@ -212,8 +212,10 @@ class Request extends \yii\base\Request
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
      * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
+     * If the list contains the `Forwarded` header, processing will be done according to RFC 7239.
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+     * @see https://tools.ietf.org/html/rfc7239
      * @see $trustedHosts
      * @since 2.0.13
      */
@@ -230,6 +232,7 @@ class Request extends \yii\base\Request
     /**
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
+     * To use the `Forwarded` header according to RFC 7239, the header must be added to [[secureHeaders]] list.
      * The match of header names is case-insensitive.
      * @see $trustedHosts
      * @see $secureHeaders
@@ -291,6 +294,23 @@ class Request extends \yii\base\Request
      */
     protected function filterHeaders(HeaderCollection $headerCollection)
     {
+        $trustedHeaders = $this->getTrustedHeaders();
+
+        // remove all secure headers unless they are trusted
+        foreach ($this->secureHeaders as $secureHeader) {
+            if (!in_array($secureHeader, $trustedHeaders)) {
+                $headerCollection->remove($secureHeader);
+            }
+        }
+    }
+
+    /**
+     * Trusted headers according to the [[trustedHosts]].
+     * @return array
+     * @since 2.0.28
+     */
+    protected function getTrustedHeaders()
+    {
         // do not trust any of the [[secureHeaders]] by default
         $trustedHeaders = [];
 
@@ -310,13 +330,7 @@ class Request extends \yii\base\Request
                 }
             }
         }
-
-        // filter all secure headers unless they are trusted
-        foreach ($this->secureHeaders as $secureHeader) {
-            if (!in_array($secureHeader, $trustedHeaders)) {
-                $headerCollection->remove($secureHeader);
-            }
-        }
+        return $trustedHeaders;
     }
 
     /**
@@ -714,7 +728,9 @@ class Request extends \yii\base\Request
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
 
-            if ($this->headers->has('X-Forwarded-Host')) {
+            if ($this->getSecureForwardedHeaderTrustedPart('host') !== null) {
+                $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderTrustedPart('host');
+            } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
@@ -1055,6 +1071,11 @@ class Request extends \yii\base\Request
         if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
             return true;
         }
+
+        if (($proto = $this->getSecureForwardedHeaderTrustedPart('proto')) !== null) {
+            return strcasecmp($proto, 'https') === 0;
+        }
+
         foreach ($this->secureProtocolHeaders as $header => $values) {
             if (($headerValue = $this->headers->get($header, null)) !== null) {
                 foreach ($values as $value) {
@@ -1125,19 +1146,90 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Returns the user IP address from [[ipHeaders]].
+     * @return string|null user IP address, null if not available
+     * @see $ipHeaders
+     * @since 2.0.28
+     */
+    protected function getUserIpFromIpHeaders()
+    {
+        $ip = $this->getSecureForwardedHeaderTrustedPart('for');
+        if ($ip !== null && preg_match(
+            '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/',
+            $ip,
+            $matches
+        )) {
+            $ip = $this->getUserIpFromIpHeader($matches['ip']);
+            if ($ip !== null) {
+                return $ip;
+            }
+        }
+
+
+        foreach ($this->ipHeaders as $ipHeader) {
+            if ($this->headers->has($ipHeader)) {
+                $ip = $this->getUserIpFromIpHeader($this->headers->get($ipHeader));
+                if ($ip !== null) {
+                    return $ip;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the user IP address.
      * The IP is determined using headers and / or `$_SERVER` variables.
      * @return string|null user IP address, null if not available
      */
     public function getUserIP()
     {
-        foreach ($this->ipHeaders as $ipHeader) {
-            if ($this->headers->has($ipHeader)) {
-                return trim(explode(',', $this->headers->get($ipHeader))[0]);
+        $ip = $this->getUserIpFromIpHeaders();
+        return $ip === null ? $this->getRemoteIP() : $ip;
+    }
+
+    /**
+     * Return user IP's from IP header.
+     *
+     * @param string $ips comma separated IP list
+     * @return string|null IP as string. Null is returned if IP can not be determined from header.
+     * @see $getUserHost
+     * @see $ipHeader
+     * @see $trustedHeaders
+     * @since 2.0.28
+     */
+    protected function getUserIpFromIpHeader($ips)
+    {
+        $ips = trim($ips);
+        if ($ips === '') {
+            return null;
+        }
+        $ips = preg_split('/\s*,\s*/', $ips, -1, PREG_SPLIT_NO_EMPTY);
+        krsort($ips);
+        $validator = $this->getIpValidator();
+        $resultIp = null;
+        foreach ($ips as $ip) {
+            $validator->setRanges('any');
+            if (!$validator->validate($ip) /* checking IP format */) {
+                break;
+            }
+            $resultIp = $ip;
+            $isTrusted = false;
+            foreach ($this->trustedHosts as $trustedCidr => $trustedCidrOrHeaders) {
+                if (!is_array($trustedCidrOrHeaders)) {
+                    $trustedCidr = $trustedCidrOrHeaders;
+                }
+                $validator->setRanges($trustedCidr);
+                if ($validator->validate($ip) /* checking trusted range */) {
+                    $isTrusted = true;
+                    break;
+                }
+            }
+            if (!$isTrusted) {
+                break;
             }
         }
-
-        return $this->getRemoteIP();
+        return $resultIp;
     }
 
     /**
@@ -1147,13 +1239,11 @@ class Request extends \yii\base\Request
      */
     public function getUserHost()
     {
-        foreach ($this->ipHeaders as $ipHeader) {
-            if ($this->headers->has($ipHeader)) {
-                return gethostbyaddr(trim(explode(',', $this->headers->get($ipHeader))[0]));
-            }
+        $userIp = $this->getUserIpFromIpHeaders();
+        if($userIp === null) {
+            return $this->getRemoteHost();
         }
-
-        return $this->getRemoteHost();
+        return gethostbyaddr($userIp);
     }
 
     /**
@@ -1742,5 +1832,100 @@ class Request extends \yii\base\Request
         $security = Yii::$app->security;
 
         return $security->compareString($security->unmaskToken($clientSuppliedToken), $security->unmaskToken($trueToken));
+    }
+
+    /**
+     * Gets first `Forwarded` header value for token
+     *
+     * @param string $token Header token
+     *
+     * @return string|null
+     *
+     * @since 2.0.31
+     */
+    protected function getSecureForwardedHeaderTrustedPart($token)
+    {
+        $token = strtolower($token);
+
+        if ($parts = $this->getSecureForwardedHeaderTrustedParts()) {
+            $lastElement = array_pop($parts);
+            if ($lastElement && isset($lastElement[$token])) {
+                return $lastElement[$token];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets only trusted `Forwarded` header parts
+     *
+     * @return array
+     *
+     * @since 2.0.31
+     */
+    protected function getSecureForwardedHeaderTrustedParts()
+    {
+        $validator = $this->getIpValidator();
+        $trustedHosts = [];
+        foreach ($this->trustedHosts as $trustedCidr => $trustedCidrOrHeaders) {
+            if (!is_array($trustedCidrOrHeaders)) {
+                $trustedCidr = $trustedCidrOrHeaders;
+            }
+            $trustedHosts[] = $trustedCidr;
+        }
+        $validator->setRanges($trustedHosts);
+
+        return array_filter($this->getSecureForwardedHeaderParts(), function ($headerPart) use ($validator) {
+            return isset($headerPart['for']) ? !$validator->validate($headerPart['for']) : true;
+        });
+    }
+
+    private $_secureForwardedHeaderParts;
+
+    /**
+     * Returns decoded forwarded header
+     *
+     * @return array
+     *
+     * @since 2.0.31
+     */
+    protected function getSecureForwardedHeaderParts()
+    {
+        if ($this->_secureForwardedHeaderParts !== null) {
+            return $this->_secureForwardedHeaderParts;
+        }
+        if (count(preg_grep('/^forwarded$/i', $this->secureHeaders)) === 0) {
+            return $this->_secureForwardedHeaderParts = [];
+        }
+        /*
+         * First header is always correct, because proxy CAN add headers
+         * after last one is found.
+         * Keep in mind that it is NOT enforced, therefore we cannot be
+         * sure, that this is really a first one.
+         *
+         * FPM keeps last header sent which is a bug. You need to merge
+         * headers together on your web server before letting FPM handle it
+         * @see https://bugs.php.net/bug.php?id=78844
+         */
+        $forwarded = $this->headers->get('Forwarded', '');
+        if ($forwarded === '') {
+            return $this->_secureForwardedHeaderParts = [];
+        }
+
+        preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
+
+        foreach ($forwardedElements[0] as $forwardedPairs) {
+            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs,
+                $matches, PREG_SET_ORDER);
+            $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
+                $value = $item['value'];
+                if (isset($item['value2']) && $item['value2'] !== '') {
+                    $value = $item['value2'];
+                }
+                $carry[strtolower($item['key'])] = $value;
+                return $carry;
+            }, []);
+        }
+        return $this->_secureForwardedHeaderParts;
     }
 }

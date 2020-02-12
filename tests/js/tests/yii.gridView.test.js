@@ -128,8 +128,7 @@ describe('yii.gridView', function () {
      * @param $el
      */
     function click($el) {
-        var e = $.Event('click');
-        $el.trigger(e);
+        $el.click();
     }
 
     /**

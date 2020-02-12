@@ -128,15 +128,36 @@ class Controller extends \yii\base\Controller
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
+                $isValid = true;
                 if ($param->isArray()) {
-                    $args[] = $actionParams[$name] = (array) $params[$name];
-                } elseif (!is_array($params[$name])) {
-                    $args[] = $actionParams[$name] = $params[$name];
-                } else {
+                    $params[$name] = (array)$params[$name];
+                } elseif (is_array($params[$name])) {
+                    $isValid = false;
+                } elseif (
+                    PHP_VERSION_ID >= 70000 &&
+                    ($type = $param->getType()) !== null &&
+                    $type->isBuiltin() &&
+                    ($params[$name] !== null || !$type->allowsNull())
+                ) {
+                    $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
+                    switch ($typeName) {
+                        case 'int':
+                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                            break;
+                        case 'float':
+                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
+                            break;
+                    }
+                    if ($params[$name] === null) {
+                        $isValid = false;
+                    }
+                }
+                if (!$isValid) {
                     throw new BadRequestHttpException(Yii::t('yii', 'Invalid data received for parameter "{param}".', [
                         'param' => $name,
                     ]));
                 }
+                $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();

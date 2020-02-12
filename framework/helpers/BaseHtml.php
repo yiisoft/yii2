@@ -93,7 +93,7 @@ class BaseHtml
      * will be generated instead of one: `data-name="xyz" data-age="13"`.
      * @since 2.0.3
      */
-    public static $dataAttributes = ['data', 'data-ng', 'ng'];
+    public static $dataAttributes = ['aria', 'data', 'data-ng', 'ng'];
 
 
     /**
@@ -1919,12 +1919,14 @@ class BaseHtml
      *
      * The values of attributes will be HTML-encoded using [[encode()]].
      *
-     * The "data" attribute is specially handled when it is receiving an array value. In this case,
-     * the array will be "expanded" and a list data attributes will be rendered. For example,
-     * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
-     * `data-id="1" data-name="yii"`.
-     * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` will be rendered as:
-     * `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
+     * `aria` and `data` attributes get special handling when they are set to an array value. In these cases,
+     * the array will be "expanded" and a list of ARIA/data attributes will be rendered. For example,
+     * `'aria' => ['role' => 'checkbox', 'value' => 'true']` would be rendered as
+     * `aria-role="checkbox" aria-value="true"`.
+     *
+     * If a nested `data` value is set to an array, it will be JSON-encoded. For example,
+     * `'data' => ['params' => ['id' => 1, 'name' => 'yii']]` would be rendered as
+     * `data-params='{"id":1,"name":"yii"}'`.
      *
      * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
@@ -1955,7 +1957,11 @@ class BaseHtml
                     foreach ($value as $n => $v) {
                         if (is_array($v)) {
                             $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
-                        } else {
+                        } elseif (is_bool($v)) {
+                            if ($v) {
+                                $html .= " $name-$n";
+                            }
+                        } elseif ($v !== null) {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
                     }

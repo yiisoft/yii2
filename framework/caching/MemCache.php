@@ -292,11 +292,7 @@ class MemCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
-        // Use UNIX timestamp since it doesn't have any limitation
-        // @see https://secure.php.net/manual/en/memcache.set.php
-        // @see https://secure.php.net/manual/en/memcached.expiration.php
-        $expire = $duration > 0 ? $duration + time() : 0;
-
+        $expire = $this->normalizeDuration($duration);
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
     }
 
@@ -309,10 +305,7 @@ class MemCache extends Cache
     protected function setValues($data, $duration)
     {
         if ($this->useMemcached) {
-            // Use UNIX timestamp since it doesn't have any limitation
-            // @see https://secure.php.net/manual/en/memcache.set.php
-            // @see https://secure.php.net/manual/en/memcached.expiration.php
-            $expire = $duration > 0 ? $duration + time() : 0;
+            $expire = $this->normalizeDuration($duration);
 
             // Memcached::setMulti() returns boolean
             // @see https://secure.php.net/manual/en/memcached.setmulti.php
@@ -334,11 +327,7 @@ class MemCache extends Cache
      */
     protected function addValue($key, $value, $duration)
     {
-        // Use UNIX timestamp since it doesn't have any limitation
-        // @see https://secure.php.net/manual/en/memcache.set.php
-        // @see https://secure.php.net/manual/en/memcached.expiration.php
-        $expire = $duration > 0 ? $duration + time() : 0;
-
+        $expire = $this->normalizeDuration($duration);
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
     }
 
@@ -361,5 +350,29 @@ class MemCache extends Cache
     protected function flushValues()
     {
         return $this->_cache->flush();
+    }
+
+    /**
+     * Normalizes duration value
+     *
+     * @see https://github.com/yiisoft/yii2/issues/17710
+     * @see https://secure.php.net/manual/en/memcache.set.php
+     * @see https://secure.php.net/manual/en/memcached.expiration.php
+     *
+     * @since 2.0.31
+     * @param int $duration
+     * @return int
+     */
+    protected function normalizeDuration($duration)
+    {
+        if ($duration < 0) {
+            return 0;
+        }
+
+        if ($duration < 2592001) {
+            return $duration;
+        }
+
+        return $duration + time();
     }
 }

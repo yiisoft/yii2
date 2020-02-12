@@ -649,7 +649,11 @@ class PhpDocController extends Controller
         $file = str_replace("\r", '', str_replace("\t", ' ', file_get_contents($fileName, true)));
         $ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
         $namespace = reset($ns);
-        $namespace = $namespace['name'];
+        if ($namespace === false) {
+            $namespace = '\\';
+        } else {
+            $namespace = $namespace['name'];
+        }
         $classes = $this->match('#\n(?:abstract )(?:final )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
 
         if (\count($classes) > 1) {
