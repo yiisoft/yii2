@@ -545,4 +545,31 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return trim($result);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        $sql = ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
+            . $this->db->quoteTableName($name) . ' ON '
+            . $this->db->quoteTableName($table)
+            . ' (' . $this->buildColumns($columns) . ')';
+        $sql = preg_replace_callback(
+            '/(`.*`) ON (\{\{(%?)([\w\-]+)\}\}\.\{\{((%?)[\w\-]+)\\}\\})|(`.*`) ON (\{\{(%?)([\w\-]+)\.([\w\-]+)\\}\\})/',
+            function ($matches) {
+                if (!empty($matches[1])) {
+                    return $matches[4] . '.' . $matches[1]
+                        . ' ON {{' . $matches[3] . $matches[5] . '}}';
+                }
+
+                if (!empty($matches[7])) {
+                    return $matches[10] . '.' . $matches[7]
+                        . ' ON {{' . $matches[9] . $matches[11] . '}}';
+                }
+            },
+            $sql
+        );
+        return $sql;
+    }
 }
