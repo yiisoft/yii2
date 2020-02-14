@@ -32,7 +32,7 @@ class UploadedFileTest extends TestCase
             'tmp_name' => md5(mt_rand()),
             'type' => 'image/jpeg',
             'size' => mt_rand(1000, 10000),
-            'error' => 0,
+            'error' => '0',
         ];
     }
 
@@ -43,7 +43,7 @@ class UploadedFileTest extends TestCase
             'tmp_name' => tempnam(sys_get_temp_dir(), ''),
             'type' => 'image/jpeg',
             'size' => mt_rand(1000, 10000),
-            'error' => 0,
+            'error' => '0',
         ];
     }
 
