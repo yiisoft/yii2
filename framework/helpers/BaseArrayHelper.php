@@ -923,41 +923,49 @@ class BaseArrayHelper
     public static function filter($array, $filters)
     {
         $result = [];
-        $forbiddenVars = [];
+        $excludeFilters = [];
 
-        foreach ($filters as $var) {
-            $keys = explode('.', $var);
-            $globalKey = $keys[0];
-            $localKey = isset($keys[1]) ? $keys[1] : null;
-
-            if ($globalKey[0] === '!') {
-                $forbiddenVars[] = [
-                    substr($globalKey, 1),
-                    $localKey,
-                ];
+        foreach ($filters as $filter) {
+            if ($filter[0] === '!') {
+                $excludeFilters[] = substr($filter, 1);
                 continue;
             }
 
-            if (!array_key_exists($globalKey, $array)) {
-                continue;
+            $nodeValue = $array; //set $array as root node
+            $keys = explode('.', $filter);
+            foreach ($keys as $key) {
+                if (!array_key_exists($key, $nodeValue)) {
+                    continue 2; //Jump to next filter
+                }
+                $nodeValue = $nodeValue[$key];
             }
-            if ($localKey === null) {
-                $result[$globalKey] = $array[$globalKey];
-                continue;
+
+            //We've found a value now let's insert it
+            $resultNode = &$result;
+            foreach ($keys as $key) {
+                if (!array_key_exists($key, $resultNode)) {
+                    $resultNode[$key] = [];
+                }
+                $resultNode = &$resultNode[$key];
             }
-            if (!isset($array[$globalKey][$localKey])) {
-                continue;
-            }
-            if (!array_key_exists($globalKey, $result)) {
-                $result[$globalKey] = [];
-            }
-            $result[$globalKey][$localKey] = $array[$globalKey][$localKey];
+            $resultNode = $nodeValue;
         }
 
-        foreach ($forbiddenVars as $var) {
-            list($globalKey, $localKey) = $var;
-            if (array_key_exists($globalKey, $result)) {
-                unset($result[$globalKey][$localKey]);
+        foreach ($excludeFilters as $filter) {
+            $excludeNode = &$result;
+            $keys = explode('.', $filter);
+            $numNestedKeys = count($keys) - 1;
+            foreach ($keys as $i => $key) {
+                if (!array_key_exists($key, $excludeNode)) {
+                    continue 2; //Jump to next filter
+                }
+
+                if ($i < $numNestedKeys) {
+                    $excludeNode = &$excludeNode[$key];
+                } else {
+                    unset($excludeNode[$key]);
+                    break;
+                }
             }
         }
 

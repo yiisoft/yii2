@@ -107,6 +107,18 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
 > ],
 > ```
 
+For MS SQL Server additional connection option is needed for proper binary data handling:
+
+```php
+'db' => [
+ 'class' => 'yii\db\Connection',
+    'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase',
+    'attributes' => [
+        \PDO::SQLSRV_ATTR_ENCODING => \PDO::SQLSRV_ENCODING_SYSTEM
+    ]
+],
+```
+
 
 ## Executing SQL Queries <span id="executing-sql-queries"></span>
 
