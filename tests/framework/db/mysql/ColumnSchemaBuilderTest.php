@@ -8,7 +8,7 @@
 namespace yiiunit\framework\db\mysql;
 
 use yii\db\mysql\ColumnSchemaBuilder;
-use yii\db\Schema;
+use yii\db\mysql\Schema;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MySQL.
