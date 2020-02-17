@@ -49,7 +49,7 @@ jobs:
       - name: Install Memcached
         uses: niden/actions-memcached@v7
       - name: Install Postgres
-        uses: harmon758/postgresql-action@v1
+        uses: nyaruka/postgis-action@v1
         with:
           postgresql version: 9.6
           postgresql db: yiitest
