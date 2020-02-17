@@ -44,6 +44,12 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
             ['integer(10) COMMENT \'test\'', Schema::TYPE_INTEGER, 10, [
                 ['comment', 'test'],
             ]],
+            // https://github.com/yiisoft/yii2/issues/11945
+            ['varchar(50) NOT NULL COMMENT \'Property name\' COLLATE ascii_general_ci', Schema::TYPE_STRING, 50, [
+                ['comment', 'Property name'],
+                ['append', 'COLLATE ascii_general_ci'],
+                ['notNull']
+            ]],
         ];
     }
 }
