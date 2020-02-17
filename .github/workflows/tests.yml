@@ -44,7 +44,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: apc, curl, mbstring, dom, intl, mysql, pgsql, memcached, pdo, pdo_sqlite, pdo_mysql, imagick
+          extensions: apc, curl, dom, mbstring, imagick, intl, memcached, mysql, pgsql, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite, sqlite3
           ini-values: date.timezone='UTC'
       - name: Install Memcached
         uses: niden/actions-memcached@v7
