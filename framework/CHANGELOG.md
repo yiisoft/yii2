@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
-- Enh #17802: Use GitHub actions instead of Travis (samdark, simialbi)
+- Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)  
 - Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
 - Bug #17843: Fix `yii\web\Session::setCookieParamsInternal` check param "samesite" (schevgeny)
 - Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
