@@ -477,7 +477,7 @@ class BaseInflector
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
-        if ($replacement) {
+        if ($replacement !== '') {
             $parts = explode($replacement, static::transliterate($string));
         } else {
             $parts = [static::transliterate($string)];
@@ -489,7 +489,7 @@ class BaseInflector
         }, $parts);
 
         $string = trim(implode($replacement, $replaced), $replacement);
-        if ($replacement) {
+        if ($replacement !== '') {
             $string = preg_replace('#' . preg_quote($replacement) . '+#', $replacement, $string);
         }
 
