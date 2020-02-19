@@ -31,7 +31,7 @@ Yii Framework 2 Change Log
 - Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
 - Enh #17729: Path alias support was added to `yii\web\UploadedFile::saveAs()` (sup-ham)
 - Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
-
+- Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
 
 2.0.31 December 18, 2019
 ------------------------
