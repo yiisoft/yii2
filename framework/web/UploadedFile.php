@@ -178,10 +178,14 @@ class UploadedFile extends BaseObject
         if ($this->hasError) {
             return false;
         }
-        if (false === $this->copyTempFile(Yii::getAlias($file))) {
-            return false;
+
+        $targetFile = Yii::getAlias($file);
+        if (is_resource($this->_tempResource)) {
+            $result = $this->copyTempFile($targetFile);
+            return $deleteTempFile ? @fclose($this->_tempResource) : (bool) $result;
         }
-        return !$deleteTempFile || $this->deleteTempFile();
+
+        return $deleteTempFile ? move_uploaded_file($this->tempName, $targetFile) : copy($this->tempName, $targetFile);
     }
 
     /**
@@ -193,9 +197,6 @@ class UploadedFile extends BaseObject
      */
     protected function copyTempFile($targetFile)
     {
-        if (!is_resource($this->_tempResource)) {
-            return $this->isUploadedFile($this->tempName) && copy($this->tempName, $targetFile);
-        }
         $target = fopen($targetFile, 'wb');
         if ($target === false) {
             return false;
@@ -212,6 +213,7 @@ class UploadedFile extends BaseObject
      *
      * @return bool if file was deleted
      * @since 2.0.32
+     * @deprecated since 2.0.33. `deleteTempFile()` and `isUploadedFile()` Never called by Yii.
      */
     protected function deleteTempFile()
     {
@@ -227,6 +229,7 @@ class UploadedFile extends BaseObject
      * @param string $file path to the file to check
      * @return bool
      * @since 2.0.32
+     * @deprecated since 2.0.33. `deleteTempFile()` and `isUploadedFile()` Never called by Yii.
      */
     protected function isUploadedFile($file)
     {
