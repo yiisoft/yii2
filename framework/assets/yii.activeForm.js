@@ -226,7 +226,11 @@
                 $form.on('reset.yiiActiveForm', methods.resetForm);
 
                 if (settings.validateOnSubmit) {
-                    $('[form=' + $form.attr('id') + ']:submit').add($form.filter(':submit')).on('mouseup.yiiActiveForm keyup.yiiActiveForm', function () {
+                    $form.on('mouseup.yiiActiveForm keyup.yiiActiveForm', ':submit', function () {
+                        $form.data('yiiActiveForm').submitObject = $(this);
+                    });
+
+                    $('[data-form=' + $form.attr('id') + ']:submit').on('mouseup.yiiActiveForm keyup.yiiActiveForm', function () {
                         $form.data('yiiActiveForm').submitObject = $(this);
                     });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
