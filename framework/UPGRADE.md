@@ -109,6 +109,14 @@ Upgrade from Yii 2.0.30
 -----------------------
 * `yii\helpers\BaseInflector::slug()` now ensures there is no repeating $replacement string occurrences.
   In case you rely on Yii 2.0.16 - 2.0.30 behavior, consider replacing `Inflector` with your own implementation.
+  
+  
+Upgrade from Yii 2.0.28
+-----------------------
+
+* `yii\helpers\Html::tag()` now generates boolean attributes
+  [according to HTML specification](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute).
+  For `true` value attribute is present, for `false` value it is absent.  
 
 Upgrade from Yii 2.0.20
 -----------------------
