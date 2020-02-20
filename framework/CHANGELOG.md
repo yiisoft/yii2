@@ -11,7 +11,7 @@ Yii Framework 2 Change Log
 - Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
 - Enh #7622: Allow `yii\data\ArrayDataProvider` to control the sort flags for `sortModels` through `yii\data\Sort::sortFlags` property (askobara)
 - Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
-- Bug #17875: Revert `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files when POST request (sup-ham)
+- Bug #17875: Use `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files in case of POST request (sup-ham)
 
 
 2.0.32 January 21, 2020
