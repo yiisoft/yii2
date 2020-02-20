@@ -209,34 +209,6 @@ class UploadedFile extends BaseObject
     }
 
     /**
-     * Delete temporary file
-     *
-     * @return bool if file was deleted
-     * @since 2.0.32
-     * @deprecated since 2.0.33. `deleteTempFile()` and `isUploadedFile()` Never called by Yii.
-     */
-    protected function deleteTempFile()
-    {
-        if (is_resource($this->_tempResource)) {
-            return @fclose($this->_tempResource);
-        }
-        return $this->isUploadedFile($this->tempName) && @unlink($this->tempName);
-    }
-
-    /**
-     * Check if file is uploaded file
-     *
-     * @param string $file path to the file to check
-     * @return bool
-     * @since 2.0.32
-     * @deprecated since 2.0.33. `deleteTempFile()` and `isUploadedFile()` Never called by Yii.
-     */
-    protected function isUploadedFile($file)
-    {
-        return is_uploaded_file($file);
-    }
-
-    /**
      * @return string original file base name
      */
     public function getBaseName()
