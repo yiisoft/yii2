@@ -474,6 +474,15 @@ class Request extends \yii\base\Request
      * Note that jQuery doesn't set the header in case of cross domain
      * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
      *
+     * In case you are using `fetch()`, pass header manually:
+     *
+     * ```
+     * fetch(url, {
+     *    method: 'GET',
+     *    headers: {'X-Requested-With': 'XMLHttpRequest'}
+     * })
+     * ```
+     *
      * @return bool whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()

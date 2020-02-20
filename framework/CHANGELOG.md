@@ -4,13 +4,14 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
-- Bug #17679: Fix oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string with oracle (vinpel)
+- Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
+- Bug #17798: Avoid creating folder for stream log targets in `FileTarget` (wapmorgan)
 - Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
 - Bug #17843: Fix `yii\web\Session::setCookieParamsInternal` check param "samesite" (schevgeny)
 - Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
 - Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
 - Enh #7622: Allow `yii\data\ArrayDataProvider` to control the sort flags for `sortModels` through `yii\data\Sort::sortFlags` property (askobara)
-
+- Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
 
 2.0.32 January 21, 2020
 -----------------------
@@ -31,7 +32,6 @@ Yii Framework 2 Change Log
 - Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
 - Enh #17729: Path alias support was added to `yii\web\UploadedFile::saveAs()` (sup-ham)
 - Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
-
 
 2.0.31 December 18, 2019
 ------------------------
