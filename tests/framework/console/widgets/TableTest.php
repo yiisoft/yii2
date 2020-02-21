@@ -295,12 +295,22 @@ EXPECTED;
 ║ test1 │ test2 ║
 ╟───────┼───────╢
 ║ 0     │       ║
+╟───────┼───────╢
+║ 0.0   │       ║
 ╚═══════╧═══════╝
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2'])
-            ->setRows([['0', []]])->setScreenWidth(200)->run()
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table
+                ->setHeaders(['test1', 'test2'])
+                ->setRows([
+                    ['0', []],
+                    ['0.0', []],
+                ])
+                ->setScreenWidth(200)
+                ->run()
         );
     }
 }
