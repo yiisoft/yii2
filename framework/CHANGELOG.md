@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
 - Bug #17881: `yii\db\Query::queryScalar()` wasn’t reverting the `select`, `orderBy`, `limit`, and `offset` params if an exception occurred (brandonkelly)
 - Bug #17875: Use `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files in case of POST request (sup-ham)
+- Bug #17884: Fix 0 values in console Table rendered as empty string (mikehaertl)
 
 
 2.0.32 January 21, 2020
