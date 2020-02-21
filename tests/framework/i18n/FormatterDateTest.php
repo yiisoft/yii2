@@ -196,7 +196,9 @@ class FormatterDateTest extends TestCase
             $value = new \DateTimeImmutable();
             $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
             $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
+        }
 
+        if (PHP_VERSION_ID >= 50600) {
             // DATE_ATOM
             $value = time();
             $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));

@@ -414,6 +414,17 @@ class SerializerTest extends TestCase
 
         $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/16334
+     */
+    public function testSerializeJsonSerializable()
+    {
+        $serializer = new Serializer();
+        $model = new TestModel3();
+
+        $this->assertEquals(['customField' => 'test3/test4'], $serializer->serialize($model));
+    }
 }
 
 class TestModel extends Model
@@ -455,5 +466,32 @@ class TestModel2 extends Model
     public function extraFields()
     {
         return static::$extraFields;
+    }
+}
+
+class TestModel3 extends Model implements \JsonSerializable
+{
+    public static $fields = ['field3', 'field4'];
+    public static $extraFields = [];
+
+    public $field3 = 'test3';
+    public $field4 = 'test4';
+    public $extraField4 = 'testExtra2';
+
+    public function fields()
+    {
+        return static::$fields;
+    }
+
+    public function extraFields()
+    {
+        return static::$extraFields;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'customField' => $this->field3.'/'.$this->field4,
+        ];
     }
 }
