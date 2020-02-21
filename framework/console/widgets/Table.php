@@ -133,7 +133,7 @@ class Table extends Widget
     {
         $this->rows = array_map(function($row) {
             return array_map(function($value) {
-                return $value ?: ' ';
+                return $value || $value === 0 || $value === '0' ? $value : ' ';
             }, array_values($row));
         }, $rows);
         return $this;
