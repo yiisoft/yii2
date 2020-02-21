@@ -137,7 +137,7 @@ class Serializer extends Component
      * Serializes the given data into a format that can be easily turned into other formats.
      * This method mainly converts the objects of recognized types into array representation.
      * It will not do conversion for unknown object types or non-object data.
-     * The default implementation will handle [[Model]], [[DataProviderInterface]] and [\JsonSerializable](https://www.php.net/manual/ru/class.jsonserializable.php).
+     * The default implementation will handle [[Model]], [[DataProviderInterface]] and [\JsonSerializable](https://www.php.net/manual/en/class.jsonserializable.php).
      * You may override this method to support more object types.
      * @param mixed $data the data to be serialized.
      * @return mixed the converted data.
