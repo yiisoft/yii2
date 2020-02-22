@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
+- Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)
 - Bug #16334: Serializer support `\JsonSerializable` (germanow)
 - Bug #17798: Avoid creating folder for stream log targets in `FileTarget` (wapmorgan)
 - Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
