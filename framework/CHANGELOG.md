@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #17859: Fix loading fixtures under Windows (samdark)
 - Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)
+- Bug #17886: yii\rest\Serializer serialize arrays (patacca)
 - Bug #16334: Serializer support `\JsonSerializable` (germanow)
 - Bug #17798: Avoid creating folder for stream log targets in `FileTarget` (wapmorgan)
 - Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
