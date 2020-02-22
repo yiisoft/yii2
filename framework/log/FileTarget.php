@@ -101,8 +101,10 @@ class FileTarget extends Target
      */
     public function export()
     {
-        $logPath = dirname($this->logFile);
-        FileHelper::createDirectory($logPath, $this->dirMode, true);
+        if (strpos($this->logFile, '://') === false || strncmp($this->logFile, 'file://', 7) === 0) {
+            $logPath = dirname($this->logFile);
+            FileHelper::createDirectory($logPath, $this->dirMode, true);
+        }
 
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {

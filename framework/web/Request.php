@@ -474,6 +474,15 @@ class Request extends \yii\base\Request
      * Note that jQuery doesn't set the header in case of cross domain
      * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
      *
+     * In case you are using `fetch()`, pass header manually:
+     *
+     * ```
+     * fetch(url, {
+     *    method: 'GET',
+     *    headers: {'X-Requested-With': 'XMLHttpRequest'}
+     * })
+     * ```
+     *
      * @return bool whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
@@ -1866,8 +1875,15 @@ class Request extends \yii\base\Request
     protected function getSecureForwardedHeaderTrustedParts()
     {
         $validator = $this->getIpValidator();
+        $trustedHosts = [];
+        foreach ($this->trustedHosts as $trustedCidr => $trustedCidrOrHeaders) {
+            if (!is_array($trustedCidrOrHeaders)) {
+                $trustedCidr = $trustedCidrOrHeaders;
+            }
+            $trustedHosts[] = $trustedCidr;
+        }
+        $validator->setRanges($trustedHosts);
 
-        $validator->setRanges($this->trustedHosts);
         return array_filter($this->getSecureForwardedHeaderParts(), function ($headerPart) use ($validator) {
             return isset($headerPart['for']) ? !$validator->validate($headerPart['for']) : true;
         });

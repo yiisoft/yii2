@@ -104,6 +104,32 @@ class EventTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/17300
+     */
+    public function testRunHandlersWithWildcard()
+    {
+        $triggered = false;
+
+        Event::on('\yiiunit\framework\base\*', 'super*', function ($event) use (&$triggered) {
+            $triggered = true;
+        });
+
+        // instance-level
+        $this->assertFalse($triggered);
+        $someClass = new SomeClass();
+        $someClass->emitEvent();
+        $this->assertTrue($triggered);
+
+        // reset
+        $triggered = false;
+
+        // class-level
+        $this->assertFalse($triggered);
+        Event::trigger(SomeClass::className(), 'super.test');
+        $this->assertTrue($triggered);
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/17377
      */
     public function testNoFalsePositivesWithHasHandlers()
