@@ -154,8 +154,9 @@ class Serializer extends Component
             return $this->serializeDataProvider($data);
         } elseif (is_array($data)) {
             $serializedArray = [];
-            foreach ($data as $key => $value)
+            foreach ($data as $key => $value) {
                 $serializedArray[$key] = $this->serialize($value);
+            }
             return $serializedArray;
         }
 
