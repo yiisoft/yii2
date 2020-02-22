@@ -467,7 +467,7 @@ class SerializerTest extends TestCase
                 'field2' => 2,
             ],
         ], $serializer->serialize([$model1, $model2, 'testKey' => $model3]));
-     }
+    }
 }
 
 class TestModel extends Model
