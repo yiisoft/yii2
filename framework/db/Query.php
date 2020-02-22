@@ -461,12 +461,24 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
-            $command = $this->createCommand($db);
+
+            $e = null;
+            try {
+                $command = $this->createCommand($db);
+            } catch (\Exception $e) {
+                // throw it later
+            } catch (\Throwable $e) {
+                // throw it later
+            }
 
             $this->select = $select;
             $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
+
+            if ($e !== null) {
+                throw $e;
+            }
 
             return $command->queryScalar();
         }

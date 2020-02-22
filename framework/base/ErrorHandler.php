@@ -50,11 +50,11 @@ abstract class ErrorHandler extends Component
      * @var \Exception from HHVM error that stores backtrace
      */
     private $_hhvmException;
-
     /**
      * @var bool whether this instance has been registered using `register()`
      */
     private $_registered = false;
+
 
     /**
      * Register this error handler.
