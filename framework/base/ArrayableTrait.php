@@ -11,6 +11,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Link;
 use yii\web\Linkable;
+use yii\rest\Serializer;
 
 /**
  * ArrayableTrait provides a common implementation of the [[Arrayable]] interface.
@@ -121,6 +122,8 @@ trait ArrayableTrait
      */
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
+        $serializer = new Serializer();
+        $serializer->preserveKeys = true;
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
             $attribute = is_string($definition) ? $this->$definition : $definition($this, $field);
@@ -140,10 +143,15 @@ trait ArrayableTrait
                             } elseif ($item instanceof Arrayable) {
                                 return $item->toArray($nestedFields, $nestedExpand);
                             }
-                            return $item;
+                            
+                            $serializer = new Serializer();
+                            $serializer->preserveKeys = true;
+                            return $serializer->serialize($item);
                         },
                         $attribute
                     );
+                } else {
+                    $attribute = $serializer->serialize($attribute);
                 }
             }
             $data[$field] = $attribute;

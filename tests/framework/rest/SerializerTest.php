@@ -442,6 +442,27 @@ class SerializerTest extends TestCase
         ],
         $serializer->serialize($model));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17889
+     */
+    public function testSerializeModelComplex()
+    {
+        $serializer = new Serializer();
+        $serializer->preserveKeys = true;
+        $model = new TestModel5();
+        
+        $this->assertEquals([
+            'field3' => 'test3',
+            'field4' => 'test4',
+            'testDataProvider' => [1 => ['id' => 2, 'username' => 'Tom']],
+            'testDataProviderArray' => [
+                [1 => ['id' => 2, 'username' => 'Tom']],
+                'testKey' => [1 => ['id' => 2, 'username' => 'Tom']]
+            ]
+        ],
+        $serializer->serialize($model));
+    }
 }
 
 class TestModel extends Model
@@ -542,5 +563,47 @@ class TestModel4 extends Model
     public function getTestModel3()
     {
         return new TestModel3();
+    }
+}
+
+class TestModel5 extends Model
+{
+    public static $fields = ['field3', 'field4'];
+    public static $extraFields = [];
+
+    public $field3 = 'test3';
+    public $field4 = 'test4';
+    public $extraField4 = 'testExtra2';
+
+    public function fields()
+    {
+        $fields = static::$fields;
+        $fields['testDataProvider'] = function() {
+            return $this->getTestDataProvider();
+        };
+        $fields['testDataProviderArray'] = function() {
+            return [$this->getTestDataProvider(), 'testKey' => $this->getTestDataProvider()];
+        };
+        return $fields;
+    }
+
+    public function extraFields()
+    {
+        return static::$extraFields;
+    }
+
+    public function getTestDataProvider()
+    {
+        return new ArrayDataProvider([
+            'allModels' => [
+                ['id' => 1, 'username' => 'Bob'],
+                ['id' => 2, 'username' => 'Tom'],
+            ],
+            'pagination' => [
+                'route' => '/',
+                'pageSize' => 1,
+                'page' => 1,
+            ],
+        ]);
     }
 }
