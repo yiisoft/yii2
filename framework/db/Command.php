@@ -1140,8 +1140,7 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $rawSql = $rawSql ?: $this->getRawSql();
-                $cacheKey = $this->getCacheKey($method, $fetchMode, $rawSql);
+                $cacheKey = $this->getCacheKey($method, $fetchMode);
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
@@ -1191,15 +1190,17 @@ class Command extends Component
      * @return array the cache key
      * @since 2.0.16
      */
-    protected function getCacheKey($method, $fetchMode, $rawSql)
+    protected function getCacheKey($method, $fetchMode)
     {
+        ksort($this->params);
         return [
             __CLASS__,
             $method,
             $fetchMode,
             $this->db->dsn,
             $this->db->username,
-            $rawSql,
+            $this->getSql(),
+            json_encode($this->params),
         ];
     }
 
