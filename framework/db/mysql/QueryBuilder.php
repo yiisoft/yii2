@@ -393,10 +393,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // use cache to prevent open mysql connection
         // https://github.com/yiisoft/yii2/issues/13749#issuecomment-481657224
         $key = [__METHOD__, $this->db->dsn];
-        $version = \Yii::$app->cache ? \Yii::$app->cache->get($key) : null;
+        $version = isset(\Yii::$app->cache) ? \Yii::$app->cache->get($key) : null;
         if( !$version ) {
             $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-            \Yii::$app->cache ? \Yii::$app->cache->set($key, $version) : null;
+            isset(\Yii::$app->cache) ? \Yii::$app->cache->set($key, $version) : null;
         }
         
         return version_compare($version, '5.6.4', '>=');
