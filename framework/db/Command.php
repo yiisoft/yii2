@@ -1140,7 +1140,7 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $cacheKey = $this->getCacheKey($method, $fetchMode);
+                $cacheKey = $this->getCacheKey($method, $fetchMode, $rawSql);
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
@@ -1148,6 +1148,7 @@ class Command extends Component
                 }
             }
         }
+        $rawSql = $rawSql ?: $this->getRawSql();
 
         $this->prepare(true);
 
@@ -1186,13 +1187,14 @@ class Command extends Component
      * @param string $method method of PDOStatement to be called
      * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes.
-     * @param string $rawSql the raw SQL with parameter values inserted into the corresponding placeholders
+     * @param string $rawSql Deprecated since 2.0.33, the raw SQL with parameter values inserted into the corresponding placeholders
      * @return array the cache key
      * @since 2.0.16
      */
-    protected function getCacheKey($method, $fetchMode)
+    protected function getCacheKey($method, $fetchMode, $rawSql)
     {
-        ksort($this->params);
+        $params = $this->params;
+        ksort($params);
         return [
             __CLASS__,
             $method,
@@ -1200,7 +1202,7 @@ class Command extends Component
             $this->db->dsn,
             $this->db->username,
             $this->getSql(),
-            json_encode($this->params),
+            json_encode($params),
         ];
     }
 
