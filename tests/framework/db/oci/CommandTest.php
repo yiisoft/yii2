@@ -59,20 +59,11 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $db->createCommand()->createTable('longstring', ['message' => Schema::TYPE_TEXT])->execute();
         $long_data = str_pad('-', 4001, '-=', STR_PAD_LEFT);
-        try {
-            $db->createCommand()->insert('longstring', [
-                'message' => $long_data,
-            ])->execute();
-
-        } catch (\yii\db\Exception $exception) {
-            //We want a specific error message
-            $this->assertNotContains('ORA-01461', substr($exception->getMessage(),0,100));
-
-            throw $exception;
-
-        }
+        $db->createCommand()->insert('longstring', [
+            'message' => $long_data,
+        ])->execute();
+        $db->createCommand()->dropTable('longstring')->execute();
 
         $this->assertEquals(1, $db->createCommand('SELECT count(*) FROM {{longstring}}')->queryScalar());
-
     }
 }
