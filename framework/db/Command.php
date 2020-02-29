@@ -1148,7 +1148,6 @@ class Command extends Component
                 }
             }
         }
-        $rawSql = $rawSql ?: $this->getRawSql();
 
         $this->prepare(true);
 
