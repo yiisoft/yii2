@@ -317,7 +317,7 @@ class Connection extends Component
         'sqlite' => 'yii\db\sqlite\Command', // sqlite 3
         'sqlite2' => 'yii\db\sqlite\Command', // sqlite 2
         'sqlsrv' => 'yii\db\Command', // newer MSSQL driver on MS Windows hosts
-        'oci' => 'yii\db\Command', // Oracle driver
+        'oci' => 'yii\db\oci\Command', // Oracle driver
         'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
         'cubrid' => 'yii\db\Command', // CUBRID

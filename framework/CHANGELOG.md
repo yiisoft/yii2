@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #16092: Fix duplicate joins in usage of `joinWith` (germanow)
+- Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
 - Bug #17859: Fix loading fixtures under Windows (samdark)
 - Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)
 - Bug #17886: yii\rest\Serializer serialize arrays (patacca)
