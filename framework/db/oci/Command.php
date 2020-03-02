@@ -1,7 +1,19 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\oci;
 
+/**
+ * Command represents an Oracle SQL statement to be executed against a database.
+ *
+ * {@inheritdoc}
+ *
+ * @since 2.0.33
+ */
 class Command extends \yii\db\Command
 {
     /**
@@ -19,5 +31,4 @@ class Command extends \yii\db\Command
         }
         $this->pendingParams = [];
     }
-
 }
