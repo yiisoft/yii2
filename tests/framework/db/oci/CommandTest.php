@@ -58,12 +58,14 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         }
 
         $db->createCommand()->createTable('longstring', ['message' => Schema::TYPE_TEXT])->execute();
+
         $longData = str_pad('-', 4001, '-=', STR_PAD_LEFT);
         $db->createCommand()->insert('longstring', [
             'message' => $longData,
         ])->execute();
-        $db->createCommand()->dropTable('longstring')->execute();
 
         $this->assertEquals(1, $db->createCommand('SELECT count(*) FROM {{longstring}}')->queryScalar());
+
+        $db->createCommand()->dropTable('longstring')->execute();
     }
 }
