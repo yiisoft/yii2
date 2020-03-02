@@ -98,6 +98,12 @@ Upgrade from Yii 2.0.32
   ```
   
   Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
+  
+* `UploadedFile` class `deleteTempFile()` and `isUploadedFile()` methods introduced in 2.0.32 were removed.
+
+* Exception will be thrown if `UrlManager::$cache` configuration is incorrect (previously misconfiguration was silently 
+  ignored and `UrlManager` continue to work without cache). Make sure that `UrlManager::$cache` is correctly configured 
+  or set it to `null` to explicitly disable cache.
 
 Upgrade from Yii 2.0.31
 -----------------------
