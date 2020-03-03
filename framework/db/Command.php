@@ -90,8 +90,9 @@ class Command extends Component
 
     /**
      * @var array pending parameters to be bound to the current PDO statement.
+     * @since 2.0.33
      */
-    private $_pendingParams = [];
+    protected $pendingParams = [];
     /**
      * @var string the SQL statement that this command represents
      */
@@ -312,10 +313,10 @@ class Command extends Component
      */
     protected function bindPendingParams()
     {
-        foreach ($this->_pendingParams as $name => $value) {
+        foreach ($this->pendingParams as $name => $value) {
             $this->pdoStatement->bindValue($name, $value[0], $value[1]);
         }
-        $this->_pendingParams = [];
+        $this->pendingParams = [];
     }
 
     /**
@@ -334,7 +335,7 @@ class Command extends Component
         if ($dataType === null) {
             $dataType = $this->db->getSchema()->getPdoType($value);
         }
-        $this->_pendingParams[$name] = [$value, $dataType];
+        $this->pendingParams[$name] = [$value, $dataType];
         $this->params[$name] = $value;
 
         return $this;
@@ -360,14 +361,14 @@ class Command extends Component
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
             if (is_array($value)) { // TODO: Drop in Yii 2.1
-                $this->_pendingParams[$name] = $value;
+                $this->pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
             } elseif ($value instanceof PdoValue) {
-                $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->pendingParams[$name] = [$value->getValue(), $value->getType()];
                 $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
-                $this->_pendingParams[$name] = [$value, $type];
+                $this->pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
             }
         }
@@ -1309,7 +1310,7 @@ class Command extends Component
     protected function reset()
     {
         $this->_sql = null;
-        $this->_pendingParams = [];
+        $this->pendingParams = [];
         $this->params = [];
         $this->_refreshTableName = null;
         $this->_isolationLevel = false;
