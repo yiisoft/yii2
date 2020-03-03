@@ -20,7 +20,7 @@ Yii Framework 2 Change Log
 - Bug #17881: `yii\db\Query::queryScalar()` wasn’t reverting the `select`, `orderBy`, `limit`, and `offset` params if an exception occurred (brandonkelly)
 - Bug #17875: Use `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files in case of POST request (sup-ham)
 - Bug #17884: Fix 0 values in console Table rendered as empty string (mikehaertl)
-
+- Bug #13749: Fix Yii opens db connection even when hits query cache (shushenghong)
 
 2.0.32 January 21, 2020
 -----------------------
