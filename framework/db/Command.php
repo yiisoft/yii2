@@ -1190,7 +1190,7 @@ class Command extends Component
      * @return array the cache key
      * @since 2.0.16
      */
-    protected function getCacheKey($method, $fetchMode)
+    protected function getCacheKey($method, $fetchMode, $rawSql)
     {
         $params = $this->params;
         ksort($params);

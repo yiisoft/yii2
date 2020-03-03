@@ -391,22 +391,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function supportsFractionalSeconds()
     {
-        // use cache to prevent open mysql connection
+        // use cache to prevent opening MySQL connection
         // https://github.com/yiisoft/yii2/issues/13749#issuecomment-481657224
         $key = [__METHOD__, $this->db->dsn];
         $cache = null;
-        $schemaCache = ( \Yii::$app && is_string($this->db->schemaCache) ) ? \Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-        if ( $this->db->enableSchemaCache && $schemaCache instanceof CacheInterface ) {
+        $schemaCache = (\Yii::$app && is_string($this->db->schemaCache) ? \Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $schemaCache instanceof CacheInterface) {
             $cache = $schemaCache;
         }
         $version = $cache ? $cache->get($key) : null;
-        if( !$version ) {
+        if (!$version) {
             $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-            if( $cache ) {
+            if ($cache) {
                 $cache->set($key, $version, $this->db->schemaCacheDuration);
             }
         }
-        
+
         return version_compare($version, '5.6.4', '>=');
     }
 
