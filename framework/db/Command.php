@@ -1141,7 +1141,7 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $cacheKey = $this->getCacheKey($method, $fetchMode);
+                $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
