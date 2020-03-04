@@ -564,7 +564,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     /**
      * @depends testJoinWith
      */
-    public function testJoinWithDuplicate()
+    public function testJoinWithDuplicateSimple()
     {
         // left join and eager loading
         $orders = Order::find()
@@ -579,7 +579,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
         $this->assertTrue($orders[1]->isRelationPopulated('customer'));
         $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateCallbackFiltering()
+    {
         // inner join filtering and eager loading
         $orders = Order::find()
             ->innerJoinWith('customer')
@@ -593,19 +599,31 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, $orders[1]->id);
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
         $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateCallbackFilteringConditionsOnPrimary()
+    {
         // inner join filtering, eager loading, conditions on both primary and relation
         $orders = Order::find()
             ->innerJoinWith('customer')
             ->joinWith([
                 'customer' => function ($query) {
-                    $query->where(['customer.id' => 2]);
+                    $query->where(['{{customer}}.[[id]]' => 2]);
                 },
             ])->where(['order.id' => [1, 2]])->orderBy('order.id')->all();
         $this->assertCount(1, $orders);
         $this->assertEquals(2, $orders[0]->id);
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateWithSubRelation()
+    {
         // join with sub-relation
         $orders = Order::find()
             ->innerJoinWith('items')
@@ -620,7 +638,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(3, $orders[0]->items);
         $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
         $this->assertEquals(2, $orders[0]->items[0]->category->id);
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateTableAlias1()
+    {
         // join with table alias
         $orders = Order::find()
             ->innerJoinWith('customer')
@@ -636,9 +660,19 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
         $this->assertTrue($orders[1]->isRelationPopulated('customer'));
         $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateTableAlias2()
+    {
         // join with table alias
-        $orders = Order::find()->innerJoinWith('customer')->joinWith('customer as c')->orderBy('c.id DESC, order.id')->all();
+        $orders = Order::find()
+            ->innerJoinWith('customer')
+            ->joinWith('customer as c')
+            ->orderBy('c.id DESC, order.id')
+            ->all();
         $this->assertCount(3, $orders);
         $this->assertEquals(2, $orders[0]->id);
         $this->assertEquals(3, $orders[1]->id);
@@ -646,7 +680,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
         $this->assertTrue($orders[1]->isRelationPopulated('customer'));
         $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateTableAliasSubRelation()
+    {
         // join with table alias sub-relation
         $orders = Order::find()
             ->innerJoinWith([
@@ -665,7 +705,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(3, $orders[0]->items);
         $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
         $this->assertEquals(2, $orders[0]->items[0]->category->id);
+    }
 
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateSubRelationCalledInsideClosure()
+    {
         // join with sub-relation called inside Closure
         $orders = Order::find()
             ->innerJoinWith('items')
