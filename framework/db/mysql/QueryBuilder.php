@@ -395,7 +395,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // https://github.com/yiisoft/yii2/issues/13749#issuecomment-481657224
         $key = [__METHOD__, $this->db->dsn];
         $cache = null;
-        $schemaCache = (\Yii::$app && is_string($this->db->schemaCache) ? \Yii::$app->get($this->db->schemaCache, false)) : $this->db->schemaCache;
+        $schemaCache = (\Yii::$app && is_string($this->db->schemaCache)) ? \Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $schemaCache instanceof CacheInterface) {
             $cache = $schemaCache;
         }
