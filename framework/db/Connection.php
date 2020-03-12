@@ -654,14 +654,16 @@ class Connection extends Component
         if ($this->pdo !== null) {
             Yii::debug('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
-            $this->_schema = null;
-            $this->_transaction = null;
         }
 
         if ($this->_slave) {
             $this->_slave->close();
             $this->_slave = false;
         }
+
+        $this->_schema = null;
+        $this->_transaction = null;
+        $this->_driverName = null;
     }
 
     /**
