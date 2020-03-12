@@ -116,6 +116,9 @@
         "patches": {
             "phpunit/phpunit-mock-objects": {
                 "Fix PHP 7 compatibility": "./tests/phpunit_mock_objects.patch"
+            },
+            "phpunit/phpunit": {
+                "Fix PHP 7.2 compatibility": "./tests/phpunit_getopt.patch"
             }
         }
     }

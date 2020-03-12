@@ -285,8 +285,8 @@ EXPECTED;
             ->setRows([])->setScreenWidth(200)->run()
         );
     }
-    
-    public function testEmptyTableCell()
+
+    public function testEmptyAndZeroTableCell()
     {
         $table = new Table();
 
@@ -294,13 +294,23 @@ EXPECTED;
 ╔═══════╤═══════╗
 ║ test1 │ test2 ║
 ╟───────┼───────╢
-║ test  │       ║
+║ 0     │       ║
+╟───────┼───────╢
+║ 0.0   │       ║
 ╚═══════╧═══════╝
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2'])
-            ->setRows([['test', []]])->setScreenWidth(200)->run()
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table
+                ->setHeaders(['test1', 'test2'])
+                ->setRows([
+                    ['0', []],
+                    ['0.0', []],
+                ])
+                ->setScreenWidth(200)
+                ->run()
         );
     }
 }
