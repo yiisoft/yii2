@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #17884: Fix 0 values in console Table rendered as empty string (mikehaertl)
 - Bug #13749: Fix Yii opens db connection even when hits query cache (shushenghong)
 - Bug #17909: Reset DB schema, transaction, and driver name when the connection is closed (brandonkelly)
+- Bug #17920: Fix for `Command::getRawSql` and `Expression` in params (alex-code)
 
 2.0.32 January 21, 2020
 -----------------------
