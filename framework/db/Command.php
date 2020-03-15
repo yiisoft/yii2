@@ -206,13 +206,13 @@ class Command extends Component
             if (is_string($name) && strncmp(':', $name, 1)) {
                 $name = ':' . $name;
             }
-            if (is_string($value)) {
-                $params[$name] = $this->db->quoteValue($value);
+            if (is_string($value) || $value instanceof Expression) {
+                $params[$name] = $this->db->quoteValue((string)$value);
             } elseif (is_bool($value)) {
                 $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
                 $params[$name] = 'NULL';
-            } elseif ((!is_object($value) && !is_resource($value)) || $value instanceof Expression) {
+            } elseif (!is_object($value) && !is_resource($value)) {
                 $params[$name] = $value;
             }
         }
