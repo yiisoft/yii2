@@ -10,16 +10,16 @@ jobs:
   phpunit:
     name: PHP ${{ matrix.php }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-#    services:
-#      mysql:
-#        image: mysql
-#        env:
-#          MYSQL_ALLOW_EMPTY_PASSWORD: false
-#          MYSQL_ROOT_PASSWORD: root
-#          MYSQL_DATABASE: yiitest
-#        ports:
-#          - 3306/tcp
-#        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: yiitest
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 #      postgres:
 #        image: postgres:9.6
 #        env:
