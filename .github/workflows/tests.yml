@@ -47,13 +47,6 @@ jobs:
           ini-values: date.timezone='UTC'
       - name: Install Memcached
         uses: niden/actions-memcached@v7
-#      - name: Install Postgres
-#        uses: nyaruka/postgis-action@v1
-#        with:
-#          postgresql version: 9.6
-#          postgresql db: yiitest
-#          postgresql user: postgres
-#          postgresql password: postgres
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
