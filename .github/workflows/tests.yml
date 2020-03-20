@@ -10,16 +10,16 @@ jobs:
   phpunit:
     name: PHP ${{ matrix.php }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: yiitest
-        ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+#    services:
+#      mysql:
+#        image: mysql:5.7
+#        env:
+#          MYSQL_ALLOW_EMPTY_PASSWORD: false
+#          MYSQL_ROOT_PASSWORD: root
+#          MYSQL_DATABASE: yiitest
+#        ports:
+#          - 3306/tcp
+#        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 #      postgres:
 #        image: postgres:9.6
 #        env:
@@ -56,7 +56,7 @@ jobs:
           postgresql user: postgres
           postgresql password: postgres
       - name: Create mysql db
-        run: mysql -uroot -proot -e 'CREATE DATABASE `yiitest`;'
+        run: mysql -u root -p root -e 'CREATE DATABASE `yiitest`;'
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
