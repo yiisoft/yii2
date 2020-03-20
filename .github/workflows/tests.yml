@@ -19,15 +19,15 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-#      postgres:
-#        image: postgres:9.6
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: yiitest
-#        ports:
-#          - 5432/tcp
-#        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: yiitest
+        ports:
+          - 5432:5432
+        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
@@ -47,13 +47,13 @@ jobs:
           ini-values: date.timezone='UTC'
       - name: Install Memcached
         uses: niden/actions-memcached@v7
-      - name: Install Postgres
-        uses: nyaruka/postgis-action@v1
-        with:
-          postgresql version: 9.6
-          postgresql db: yiitest
-          postgresql user: postgres
-          postgresql password: postgres
+#      - name: Install Postgres
+#        uses: nyaruka/postgis-action@v1
+#        with:
+#          postgresql version: 9.6
+#          postgresql db: yiitest
+#          postgresql user: postgres
+#          postgresql password: postgres
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
