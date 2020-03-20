@@ -47,7 +47,7 @@ jobs:
           ini-values: date.timezone='UTC'
       - name: Verify MySQL Connection
         run: |
-          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
+          mysql --host mysql --port 3306 -uroot -ppassword -e "SHOW DATABASES"
       - name: Install Memcached
         uses: niden/actions-memcached@v7
       - name: Install Postgres
