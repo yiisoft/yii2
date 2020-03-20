@@ -45,9 +45,6 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached, mysql, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, sqlite
           ini-values: date.timezone='UTC'
-      - name: Verify MySQL Connection
-        run: |
-          mysql --host 127.0.0.1 --port 3306 -uroot -proot -e "SHOW DATABASES"
       - name: Install Memcached
         uses: niden/actions-memcached@v7
       - name: Install Postgres
