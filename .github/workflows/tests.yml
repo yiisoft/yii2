@@ -17,7 +17,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: yiitest
         ports:
-          - 3306
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 #      postgres:
 #        image: postgres:9.6
@@ -47,7 +47,7 @@ jobs:
           ini-values: date.timezone='UTC'
       - name: Verify MySQL Connection
         run: |
-          mysql --host mysql --port 3306 -uroot -ppassword -e "SHOW DATABASES"
+          mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
       - name: Install Memcached
         uses: niden/actions-memcached@v7
       - name: Install Postgres
