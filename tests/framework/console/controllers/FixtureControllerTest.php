@@ -237,11 +237,9 @@ class FixtureControllerTest extends DatabaseTestCase
 
         $this->_fixtureController->actionLoad(['*']);
 
-        $this->assertEquals([
-            SecondIndependentActiveFixture::className(),
-            FirstIndependentActiveFixture::className(),
-            DependentActiveFixture::className(),
-        ], FixtureStorage::$activeFixtureSequence);
+        $lastFixture = end(FixtureStorage::$activeFixtureSequence);
+
+        $this->assertEquals(DependentActiveFixture::className(), $lastFixture);
     }
 }
 

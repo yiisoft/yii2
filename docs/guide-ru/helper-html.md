@@ -347,18 +347,18 @@ echo Html::getAttributeName('dates[0]');
 Для формирования встроенных скриптов и стилей есть два метода:
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 Результатом будет:
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Привет!");', ['defer' => true]) ?>
+<?= Html::script('alert("Привет!");') ?>
 
 Результатом будет:
 
-<script defer>alert("Привет!");</script>
+<script>alert("Привет!");</script>
 ```
 
 Если вы хотите подключить внешний CSS-файл:

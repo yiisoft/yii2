@@ -1843,7 +1843,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    public function testActiveCheckboxList()
+    public function testActiveRadioList()
     {
         $model = new HtmlTestModel();
 
@@ -1854,7 +1854,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    public function testActiveRadioList()
+    public function testActiveCheckboxList()
     {
         $model = new HtmlTestModel();
 
@@ -1862,6 +1862,17 @@ HTML;
 <input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="HtmlTestModel[types][]" value="0"> foo</label></div>
 HTML;
         $actual = Html::activeCheckboxList($model, 'types', ['foo']);
+        $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
+    public function testActiveCheckboxList_options()
+    {
+        $model = new HtmlTestModel();
+
+        $expected = <<<'HTML'
+<input type="hidden" name="foo" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="foo[]" value="0" checked> foo</label></div>
+HTML;
+        $actual = Html::activeCheckboxList($model, 'types', ['foo'], ['name' => 'foo', 'value' => 0]);
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
