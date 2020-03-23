@@ -442,6 +442,32 @@ class SerializerTest extends TestCase
         ],
         $serializer->serialize($model));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17886
+     */
+    public function testSerializeArray()
+    {
+        $serializer = new Serializer();
+        $model1 = new TestModel();
+        $model2 = new TestModel();
+        $model3 = new TestModel();
+
+        $this->assertSame([
+            [
+                'field1' => 'test',
+                'field2' => 2,
+            ],
+            [
+                'field1' => 'test',
+                'field2' => 2,
+            ],
+            'testKey' => [
+                'field1' => 'test',
+                'field2' => 2,
+            ],
+        ], $serializer->serialize([$model1, $model2, 'testKey' => $model3]));
+    }
 }
 
 class TestModel extends Model
