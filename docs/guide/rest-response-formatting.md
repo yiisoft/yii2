@@ -165,7 +165,7 @@ better readable responses, or [[yii\web\JsonResponseFormatter::$encodeOptions|$e
 of the JSON encoding.
 
 The formatter can be configured in the [[yii\web\Response::formatters|formatters]] property of the `response` application
-component in the application [configuration](concept-configuration.md) like the following:
+component in the application [configuration](concept-configurations.md) like the following:
 
 ```php
 'response' => [

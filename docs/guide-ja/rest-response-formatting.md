@@ -154,7 +154,7 @@ JSON 形式のレスポンスを生成する [[yii\web\JsonResponseFormatter|Jso
 例えば、[[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]] オプションは、より読みやすいレスポンスのためのもので、開発時に有用なオプションです。
 また、[[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] によって JSON エンコーディングの出力を制御することが出来ます。
 
-フォーマッタは、以下のように、アプリケーションの [構成情報](concept-configuration.md) の中で、`response` アプリケーション・コンポーネントの [[yii\web\Response::formatters|formatters]] プロパティの中で構成することが出来ます。
+フォーマッタは、以下のように、アプリケーションの [構成情報](concept-configurations.md) の中で、`response` アプリケーション・コンポーネントの [[yii\web\Response::formatters|formatters]] プロパティの中で構成することが出来ます。
 
 ```php
 'response' => [

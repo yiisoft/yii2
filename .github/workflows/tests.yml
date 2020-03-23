@@ -10,25 +10,24 @@ jobs:
   phpunit:
     name: PHP ${{ matrix.php }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-#    services:
-#      mysql:
-#        image: mysql
-#        env:
-#          MYSQL_ALLOW_EMPTY_PASSWORD: false
-#          MYSQL_ROOT_PASSWORD: root
-#          MYSQL_DATABASE: yiitest
-#        ports:
-#          - 3306/tcp
-#        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-#      postgres:
-#        image: postgres:9.6
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: yiitest
-#        ports:
-#          - 5432/tcp
-#        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: yiitest
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: yiitest
+        ports:
+          - 5432:5432
+        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
@@ -48,15 +47,6 @@ jobs:
           ini-values: date.timezone='UTC'
       - name: Install Memcached
         uses: niden/actions-memcached@v7
-      - name: Install Postgres
-        uses: nyaruka/postgis-action@v1
-        with:
-          postgresql version: 9.6
-          postgresql db: yiitest
-          postgresql user: postgres
-          postgresql password: postgres
-      - name: Create mysql db
-        run: mysql -uroot -proot -e 'CREATE DATABASE `yiitest`;'
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -68,15 +58,15 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
         run: composer update $DEFAULT_COMPOSER_FLAGS
-      - name: PHP Unit tests
+      - name: PHP Unit tests for PHP 7.1
         run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group oci,wincache,xcache,zenddata,cubrid
         if: matrix.php == '7.1'
-      - name: PHP Unit tests
+      - name: PHP Unit tests for PHP 7.2 - 7.4
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP
         env:
           PHPUNIT_EXCLUDE_GROUP: oci,wincache,xcache,zenddata,cubrid
         if: matrix.php == '7.4' || matrix.php == '7.3' || matrix.php == '7.2'
-      - name: PHP Unit tests
+      - name: PHP Unit tests for PHP 5.4 - 7.0
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP
         if: matrix.php == '7.0' || matrix.php == '5.6' || matrix.php == '5.5' || matrix.php == '5.4'
       - name: Code coverage

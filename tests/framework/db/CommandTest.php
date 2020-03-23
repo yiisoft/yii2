@@ -1357,8 +1357,13 @@ SQL;
             [
                 'SELECT * FROM customer WHERE id IN (:ids)',
                 [':ids' => new Expression(implode(', ', [1, 2]))],
-                'SELECT * FROM customer WHERE id IN (1, 2)',
+                'SELECT * FROM customer WHERE id IN (\'1, 2\')',
             ],
+            [
+                'SELECT NOW() = :now',
+                [':now' => new Expression('NOW()')],
+                'SELECT NOW() = \'NOW()\'',
+            ]
         ];
     }
 
