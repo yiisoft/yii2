@@ -71,6 +71,7 @@ class StringValidator extends Validator
      */
     public $strict = true;
 
+
     /**
      * {@inheritdoc}
      */

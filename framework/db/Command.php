@@ -93,6 +93,7 @@ class Command extends Component
      * @since 2.0.33
      */
     protected $pendingParams = [];
+
     /**
      * @var string the SQL statement that this command represents
      */
