@@ -1216,17 +1216,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * Returns whether there is an element at the specified offset.
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to check on
-     * @return bool whether there is an element at the specified offset.
-     */
-    public function offsetExists($offset)
-    {
-        return $this->__isset($offset);
-    }
-
-    /**
      * Returns the relation object with the specified name.
      * A relation is defined by a getter method which returns an [[ActiveQueryInterface]] object.
      * It can be declared in either the Active Record class itself or one of its behaviors.
