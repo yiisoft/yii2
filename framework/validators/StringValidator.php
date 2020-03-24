@@ -65,11 +65,12 @@ class StringValidator extends Validator
      */
     public $encoding;
     /**
-     * @var boolean whether to require the value to be a string data type
-     * If false any scalar value will be treated as it's string equivalent
+     * @var boolean whether to require the value to be a string data type.
+     * If false any scalar value will be treated as it's string equivalent.
+     * @since 2.0.33
      */
     public $strict = true;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -138,7 +139,7 @@ class StringValidator extends Validator
         if (!$this->strict && is_scalar($value) && !is_string($value)) {
             $value = (string)$value;
         }
-        
+
         if (!is_string($value)) {
             return [$this->message, []];
         }
