@@ -545,4 +545,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return trim($result);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        $tableParts = explode('.', $table);
+
+        $schema = null;
+        if (count($tableParts) === 2) {
+            list ($schema, $table) = $tableParts;
+        }
+
+        return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
+            . $this->db->quoteTableName(($schema ? $schema . '.' : '') . $name) . ' ON '
+            . $this->db->quoteTableName($table)
+            . ' (' . $this->buildColumns($columns) . ')';
+    }
 }
