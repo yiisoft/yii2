@@ -59,10 +59,12 @@ class ControllerTest extends TestCase
 
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
-        $params = ['foo' => '100', 'bar' => null];
-        list($foo, $bar) = $this->controller->bindActionParams($aksi1, $params);
+        $params = ['foo' => '100', 'bar' => null, 'true' => 'on', 'false' => 'false'];
+        list($foo, $bar, $true, $false) = $this->controller->bindActionParams($aksi1, $params);
         $this->assertSame(100, $foo);
         $this->assertSame(null, $bar);
+        $this->assertSame(true, $true);
+        $this->assertSame(false, $false);
 
         $params = ['foo' => 'oops', 'bar' => null];
         $this->expectException('yii\web\BadRequestHttpException');
