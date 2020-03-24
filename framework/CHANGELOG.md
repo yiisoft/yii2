@@ -7,7 +7,6 @@ Yii Framework 2 Change Log
 - Bug #17878: Detect CORS AJAX requests without `X-Requested-With` in `Request::getIsAjax()` (dicrtarasov, samdark)
 - Enh #17827: Add `StringValidator::$strict` that can be turned off to allow any scalars (adhayward, samdark)
 - Bug #16145: Fix `Html` helper `checkboxList()`, `radioList()`, `renderSelectOptions()`, `dropDownList()`, `listBox()` methods to work properly with traversable selection (samdark)
-- Bug #17878: Detect CORS AJAX requests without `X-Requested-With` in `Request::getIsAjax()` (dicrtarasov, samdark)
 - Bug #17797: Fix for `activeListInput` options (alex-code)
 - Bug #16092: Fix duplicate joins in usage of `joinWith` (germanow)
 - Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
