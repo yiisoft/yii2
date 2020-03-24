@@ -908,6 +908,24 @@ class RequestTest extends TestCase
                 ],
                 true,
             ],
+            [
+                [
+                    'HTTP_Sec-Fetch-Mode' => 'cors',
+                ],
+                true,
+            ],
+            [
+                [
+                    'HTTP_Sec-Fetch-Site' => 'cross-site',
+                ],
+                true,
+            ],
+            [
+                [
+                    'HTTP_Origin' => 'https://example.com/',
+                ],
+                true,
+            ],
         ];
     }
 

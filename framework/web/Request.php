@@ -471,8 +471,8 @@ class Request extends \yii\base\Request
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
      *
-     * Note that jQuery doesn't set the header in case of cross domain
-     * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
+     * Note that in case of cross domain requests, browser doesn't set the X-Requested-With header by default:
+     * https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
      *
      * In case you are using `fetch()`, pass header manually:
      *
@@ -487,7 +487,13 @@ class Request extends \yii\base\Request
      */
     public function getIsAjax()
     {
-        return $this->headers->get('X-Requested-With') === 'XMLHttpRequest';
+        $origin = $this->headers->get('Origin');
+
+        return
+            ($this->headers->get('X-Requested-With') === 'XMLHttpRequest') ||
+            ($this->headers->get('Sec-Fetch-Mode') === 'cors') ||
+            ($this->headers->get('Sec-Fetch-Site') === 'cross-site') ||
+            ($origin !== null && $origin !== $this->getHostInfo());
     }
 
     /**
