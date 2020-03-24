@@ -468,9 +468,6 @@ class Request extends \yii\base\Request
         return $this->getMethod() === 'PATCH';
     }
 
-    /** @var bool request by Ajax */
-    private $_isAjax;
-
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
      *
@@ -490,17 +487,13 @@ class Request extends \yii\base\Request
      */
     public function getIsAjax()
     {
-        if (! isset($this->_isAjax)) {
-            $origin = $this->headers->get('Origin');
+        $origin = $this->headers->get('Origin');
 
-            $this->_isAjax =
-                ($this->headers->get('X-Requested-With') === 'XMLHttpRequest') ||
-                ($this->headers->get('Sec-Fetch-Mode') === 'cors') ||
-                ($this->headers->get('Sec-Fetch-Site') === 'cross-site') ||
-                ($origin !== null && $origin !== $this->getHostInfo());
-        }
-
-        return $this->_isAjax;
+        return
+            ($this->headers->get('X-Requested-With') === 'XMLHttpRequest') ||
+            ($this->headers->get('Sec-Fetch-Mode') === 'cors') ||
+            ($this->headers->get('Sec-Fetch-Site') === 'cross-site') ||
+            ($origin !== null && $origin !== $this->getHostInfo());
     }
 
     /**
