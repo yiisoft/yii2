@@ -9,6 +9,7 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\base\DynamicModel;
+use yii\db\ArrayExpression;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yiiunit\TestCase;
@@ -767,6 +768,56 @@ EOD;
                 'label' => 'Test Label'
             ]
         ]));
+    }
+
+    public function testRadioListWithArrayExpression()
+    {
+        $selection = new ArrayExpression(['first']);
+
+        $output = Html::radioList(
+            'test',
+            $selection,
+            [
+                'first' => 'first',
+                'second' => 'second'
+            ]
+        );
+
+        $this->assertEqualsWithoutLE('<div><label><input type="radio" name="test" value="first" checked> first</label>
+<label><input type="radio" name="test" value="second"> second</label></div>', $output);
+    }
+
+    public function testCheckboxListWithArrayExpression()
+    {
+        $selection = new ArrayExpression(['first']);
+
+        $output = Html::checkboxList(
+            'test',
+            $selection,
+            [
+                'first' => 'first',
+                'second' => 'second'
+            ]
+        );
+
+        $this->assertEqualsWithoutLE('<div><label><input type="checkbox" name="test[]" value="first" checked> first</label>
+<label><input type="checkbox" name="test[]" value="second"> second</label></div>', $output);
+    }
+
+    public function testRenderSelectOptionsWithArrayExpression()
+    {
+        $selection = new ArrayExpression(['first']);
+
+        $output = Html::renderSelectOptions(
+            $selection,
+            [
+                'first' => 'first',
+                'second' => 'second'
+            ]
+        );
+
+        $this->assertEqualsWithoutLE('<option value="first" selected>first</option>
+<option value="second">second</option>', $output);
     }
 
     public function testRadioList()

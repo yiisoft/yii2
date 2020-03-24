@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.33 under development
 ------------------------
 
+- Bug #16145: Fix `Html` helper `checkboxList()`, `radioList()`, `renderSelectOptions()`, `dropDownList()`, `listBox()` methods to work properly with traversable selection (samdark)
 - Bug #17797: Fix for `activeListInput` options (alex-code)
 - Bug #16092: Fix duplicate joins in usage of `joinWith` (germanow)
 - Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
