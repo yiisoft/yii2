@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.34 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17935: Reset DB quoted table/column name caches when the connection is closed (brandonkelly)
 
 
 2.0.33 March 24, 2020
