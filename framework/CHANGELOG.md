@@ -4,8 +4,7 @@ Yii Framework 2 Change Log
 2.0.34 under development
 ------------------------
 
-- no changes in this release.
-
+- Bug #17930: client attribute id is same when multiple models on same form (shushenghong)
 
 2.0.33 March 24, 2020
 ---------------------
