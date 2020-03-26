@@ -664,6 +664,9 @@ class Connection extends Component
         $this->_schema = null;
         $this->_transaction = null;
         $this->_driverName = null;
+        $this->_queryCacheInfo = [];
+        $this->_quotedTableNames = null;
+        $this->_quotedColumnNames = null;
     }
 
     /**
