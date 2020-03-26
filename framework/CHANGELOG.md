@@ -7,7 +7,6 @@ Yii Framework 2 Change Log
 - Bug #17935: Reset DB quoted table/column name caches when the connection is closed (brandonkelly)
 - Bug #17932: Fix regression in detection of AJAX requests (samdark)
 - Bug #17934: Fix regression in Oracle when binding several string parameters (fen1xpv, samdark)
-- Bug #17939: Fix event class names for `yii\web\Response` (brandonkelly)
 
 
 2.0.33 March 24, 2020
