@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.34 under development
 ------------------------
 
+- Bug #17933: Log warning instead of erroring when URLManager is unable to initialize cache (samdark)
 - Bug #17935: Reset DB quoted table/column name caches when the connection is closed (brandonkelly)
 - Bug #17932: Fix regression in detection of AJAX requests (samdark)
 - Bug #17934: Fix regression in Oracle when binding several string parameters (fen1xpv, samdark)

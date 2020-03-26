@@ -186,7 +186,11 @@ class UrlManager extends Component
             return;
         }
         if ($this->cache !== false && $this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+            try {
+                $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+            } catch (InvalidConfigException $e) {
+                Yii::warning('Unable to use cache for URL manager: ' . $e->getMessage());
+            }
         }
         if (empty($this->rules)) {
             return;
