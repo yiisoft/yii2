@@ -487,13 +487,7 @@ class Request extends \yii\base\Request
      */
     public function getIsAjax()
     {
-        $origin = $this->headers->get('Origin');
-
-        return
-            ($this->headers->get('X-Requested-With') === 'XMLHttpRequest') ||
-            ($this->headers->get('Sec-Fetch-Mode') === 'cors') ||
-            ($this->headers->get('Sec-Fetch-Site') === 'cross-site') ||
-            ($origin !== null && $origin !== $this->getHostInfo());
+        return $this->headers->get('X-Requested-With') === 'XMLHttpRequest';
     }
 
     /**
