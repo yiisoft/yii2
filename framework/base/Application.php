@@ -632,6 +632,7 @@ abstract class Application extends Module
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
             'security' => ['class' => 'yii\base\Security'],
+            'cache' => ['class' => 'yii\caching\DummyCache'],
         ];
     }
 
