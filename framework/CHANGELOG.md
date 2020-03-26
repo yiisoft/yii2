@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17932: Fix regression in detection of AJAX requests (samdark)
-
+- Bug #17934: Fix regression in Oracle when binding several string parameters (fen1xpv, samdark)
 
 2.0.33 March 24, 2020
 ---------------------
