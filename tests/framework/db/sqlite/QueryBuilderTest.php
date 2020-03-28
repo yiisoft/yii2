@@ -9,6 +9,7 @@ namespace yiiunit\framework\db\sqlite;
 
 use yii\db\Query;
 use yii\db\Schema;
+use yii\db\sqlite\QueryBuilder;
 use yiiunit\data\base\TraversableObject;
 
 /**
@@ -65,6 +66,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+
+        $indexName = 'myindex';
+        $schemaName = 'myschema';
+        $tableName = 'mytable';
+
+        $result['with schema'] = [
+            "CREATE INDEX {{{$schemaName}}}.[[$indexName]] ON {{{$tableName}}} ([[C_index_1]])",
+            function (QueryBuilder $qb) use ($tableName, $indexName, $schemaName) {
+                return $qb->createIndex($indexName, $schemaName . '.' . $tableName, 'C_index_1');
+            },
+        ];
+
         return $result;
     }
 

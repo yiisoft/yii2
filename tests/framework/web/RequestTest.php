@@ -393,6 +393,23 @@ class RequestTest extends TestCase
             ],
         ]);
 
+
+        $this->assertEquals($expected[0], $request->getHostInfo());
+        $this->assertEquals($expected[1], $request->getHostName());
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['X-Forwarded-Host', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+
+
         $this->assertEquals($expected[0], $request->getHostInfo());
         $this->assertEquals($expected[1], $request->getHostName());
         $_SERVER = $original;
@@ -549,6 +566,8 @@ class RequestTest extends TestCase
     public function testGetIsSecureConnection($server, $expected)
     {
         $original = $_SERVER;
+        $_SERVER = $server;
+
         $request = new Request([
             'trustedHosts' => [
                 '192.168.0.0/24',
@@ -562,9 +581,62 @@ class RequestTest extends TestCase
                 'forwarded',
             ],
         ]);
+        $this->assertEquals($expected, $request->getIsSecureConnection());
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['Front-End-Https', 'X-Forwarded-Proto', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getIsSecureConnection());
+
+        $_SERVER = $original;
+    }
+
+    public function isSecureServerWithoutTrustedHostDataProvider()
+    {
+        return [
+            // RFC 7239 forwarded header is not enabled
+            [[
+                'HTTP_FORWARDED' => 'proto=https',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], false],
+        ];
+    }
+
+    /**
+     * @dataProvider isSecureServerWithoutTrustedHostDataProvider
+     * @param array $server
+     * @param bool $expected
+     */
+    public function testGetIsSecureConnectionWithoutTrustedHost($server, $expected)
+    {
+        $original = $_SERVER;
         $_SERVER = $server;
 
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['Front-End-Https', 'X-Forwarded-Proto'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
         $this->assertEquals($expected, $request->getIsSecureConnection());
+
         $_SERVER = $original;
     }
 
@@ -726,10 +798,67 @@ class RequestTest extends TestCase
                 'forwarded',
             ],
         ]);
-
         $this->assertEquals($expected, $request->getUserIP());
+
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['X-Forwarded-For', 'forwarded'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getUserIP());
+
         $_SERVER = $original;
     }
+
+    public function getUserIPWithoutTruestHostDataProvider()
+    {
+        return [
+            // RFC 7239 forwarded is not enabled
+            [
+                [
+                    'HTTP_FORWARDED' => 'for=123.123.123.123',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '192.168.0.1',
+            ],
+        ];
+    }
+
+    /**
+    * @dataProvider getUserIPWithoutTruestHostDataProvider
+    * @param array $server
+    * @param string $expected
+    */
+   public function testGetUserIPWithoutTrustedHost($server, $expected)
+   {
+       $original = $_SERVER;
+       $_SERVER = $server;
+
+       $request = new Request([
+           'trustedHosts' => [
+               '192.168.0.0/24' => ['X-Forwarded-For'],
+           ],
+           'secureHeaders' => [
+               'Front-End-Https',
+               'X-Rewrite-Url',
+               'X-Forwarded-For',
+               'X-Forwarded-Host',
+               'X-Forwarded-Proto',
+               'forwarded',
+           ],
+       ]);
+       $this->assertEquals($expected, $request->getUserIP());
+
+       $_SERVER = $original;
+   }
 
     public function getMethodDataProvider()
     {

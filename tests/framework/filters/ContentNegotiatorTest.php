@@ -117,4 +117,19 @@ class ContentNegotiatorTest extends TestCase
         $this->assertContains('Accept', $varyHeader);
         $this->assertContains('Accept-Language', $varyHeader);
     }
+
+    public function testNegotiateContentType()
+    {
+        $filter = new ContentNegotiator([
+            'formats' => [
+                'application/json' => Response::FORMAT_JSON,
+            ],
+        ]);
+        Yii::$app->request->setAcceptableContentTypes(['application/json' => ['q' => 1, 'version' => '1.0']]);
+        $filter->negotiate();
+        $this->assertSame('json', Yii::$app->response->format);
+        $this->expectException('\yii\web\NotAcceptableHttpException');
+        Yii::$app->request->setAcceptableContentTypes(['application/xml' => ['q' => 1, 'version' => '2.0']]);
+        $filter->negotiate();
+    }
 }

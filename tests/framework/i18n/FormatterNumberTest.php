@@ -514,12 +514,12 @@ class FormatterNumberTest extends TestCase
 
     public function testIntlAsScientific()
     {
-        $value = '123';
-        $this->assertSame('1.23E2', $this->formatter->asScientific($value));
-        $value = '123456';
-        $this->assertSame('1.23456E5', $this->formatter->asScientific($value));
-        $value = '-123456.123';
-        $this->assertSame('-1.23456123E5', $this->formatter->asScientific($value));
+        // see https://github.com/yiisoft/yii2/issues/17708
+        $this->markTestSkipped('The test is unreliable since output depends on ICU version');
+
+        $this->assertSame('1.23E2', $this->formatter->asScientific('123'));
+        $this->assertSame('1.23456E5', $this->formatter->asScientific('123456'));
+        $this->assertSame('-1.23456123E5', $this->formatter->asScientific('-123456.123'));
 
         // empty input
         $this->assertSame('0E0', $this->formatter->asScientific(false));
@@ -533,12 +533,9 @@ class FormatterNumberTest extends TestCase
 
     public function testAsScientific()
     {
-        $value = '123';
-        $this->assertSame('1.23E+2', $this->formatter->asScientific($value, 2));
-        $value = '123456';
-        $this->assertSame('1.234560E+5', $this->formatter->asScientific($value));
-        $value = '-123456.123';
-        $this->assertSame('-1.234561E+5', $this->formatter->asScientific($value));
+        $this->assertSame('1.23E+2', $this->formatter->asScientific('123', 2));
+        $this->assertSame('1.234560E+5', $this->formatter->asScientific('123456'));
+        $this->assertSame('-1.234561E+5', $this->formatter->asScientific('-123456.123'));
 
         // empty input
         $this->assertSame('0.000000E+0', $this->formatter->asScientific(false));

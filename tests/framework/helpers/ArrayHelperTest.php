@@ -1235,13 +1235,23 @@ class ArrayHelperTest extends TestCase
             'A' => [
                 'B' => 1,
                 'C' => 2,
+                'D' => [
+                    'E' => 1,
+                    'F' => 2,
+                ],
             ],
             'G' => 1,
         ];
+
+        //Include tests
         $this->assertEquals(ArrayHelper::filter($array, ['A']), [
             'A' => [
                 'B' => 1,
                 'C' => 2,
+                'D' => [
+                    'E' => 1,
+                    'F' => 2,
+                ],
             ],
         ]);
         $this->assertEquals(ArrayHelper::filter($array, ['A.B']), [
@@ -1249,27 +1259,83 @@ class ArrayHelperTest extends TestCase
                 'B' => 1,
             ],
         ]);
-        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.B']), [
+        $this->assertEquals(ArrayHelper::filter($array, ['A.D']), [
             'A' => [
-                'C' => 2,
+                'D' => [
+                    'E' => 1,
+                    'F' => 2,
+                ],
             ],
         ]);
-        $this->assertEquals(ArrayHelper::filter($array, ['!A.B', 'A']), [
+        $this->assertEquals(ArrayHelper::filter($array, ['A.D.E']), [
             'A' => [
-                'C' => 2,
+                'D' => [
+                    'E' => 1,
+                ],
             ],
         ]);
         $this->assertEquals(ArrayHelper::filter($array, ['A', 'G']), [
             'A' => [
                 'B' => 1,
                 'C' => 2,
+                'D' => [
+                    'E' => 1,
+                    'F' => 2,
+                ],
             ],
             'G' => 1,
         ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A.D.E', 'G']), [
+            'A' => [
+                'D' => [
+                    'E' => 1,
+                ],
+            ],
+            'G' => 1,
+        ]);
+
+        //Exclude (combined with include) tests
+        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.B']), [
+            'A' => [
+                'C' => 2,
+                'D' => [
+                    'E' => 1,
+                    'F' => 2,
+                ],
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['!A.B', 'A']), [
+            'A' => [
+                'C' => 2,
+                'D' => [
+                    'E' => 1,
+                    'F' => 2,
+                ],
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.D.E']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+                'D' => [
+                    'F' => 2,
+                ],
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.D']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+        ]);
+
+        //Non existing keys tests
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
+        $this->assertEquals(ArrayHelper::filter($array, ['X.Y.Z']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['A.X']), []);
 
+        //Values that evaluate to `true` with `empty()` tests
         $tmp = [
             'a' => 0,
             'b' => '',
