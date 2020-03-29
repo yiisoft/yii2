@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
-- no changes in this release.
+ - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
 
 
 2.0.34 March 26, 2020
