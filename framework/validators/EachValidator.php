@@ -129,7 +129,9 @@ class EachValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         // PHP 7.4 Typed properties not initialized
-        if(!isset($model->$attribute)) return;
+        if(property_exists($model, $attribute) && !isset($model->$attribute)) {
+            return;
+        }
 
         $value = $model->$attribute;
         if (!is_array($value) && !$value instanceof \ArrayAccess) {
