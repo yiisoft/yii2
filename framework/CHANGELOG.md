@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
 
 
 2.0.34 March 26, 2020
