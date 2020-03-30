@@ -21,7 +21,7 @@ use yii\db\BaseActiveRecord;
  * public function behaviors()
  * {
  *     return [
- *         TimestampBehavior::className(),
+ *         TimestampBehavior::class,
  *     ];
  * }
  * ```
@@ -39,13 +39,14 @@ use yii\db\BaseActiveRecord;
  * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:
  *
  * ```php
+ * use yii\behaviors\TimestampBehavior;
  * use yii\db\Expression;
  *
  * public function behaviors()
  * {
  *     return [
  *         [
- *             'class' => TimestampBehavior::className(),
+ *             'class' => TimestampBehavior::class,
  *             'createdAtAttribute' => 'create_time',
  *             'updatedAtAttribute' => 'update_time',
  *             'value' => new Expression('NOW()'),
