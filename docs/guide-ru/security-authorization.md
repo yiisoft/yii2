@@ -224,6 +224,10 @@ return [
 ];
 ```
 
+> Примечание: Если вы используете версию yii2-basic-app, кроме конфигурации веб приложения `config/web.php` подключение компонента
+> `authManager` нужно также указать в [конфигурации консольного приложения](tutorial-console.md#configuration) `config/console.php`.
+> В версии yii2-advanced-app класс `authManager` нужно подключить один раз в `common/config/main.php`.
+
 `DbManager` использует четыре таблицы для хранения данных:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: таблица для хранения авторизационных элементов. По умолчанию "auth_item".
