@@ -32,6 +32,7 @@ DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_1` CASCADE;
 DROP TABLE IF EXISTS `T_upsert` CASCADE;
+DROP TABLE IF EXISTS `T_upsert_1`;
 
 CREATE TABLE `constraints`
 (
@@ -396,3 +397,8 @@ CREATE TABLE `T_upsert`
     UNIQUE (`email`, `recovery_email`)
 )
 ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `T_upsert_1` (
+  `a` int(11) NOT NULL,
+  PRIMARY KEY (`a`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

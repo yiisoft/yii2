@@ -1178,6 +1178,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
             [['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
 
+            //in using array objects containing null value
+            [['in', 'id', new TraversableObject([1, null])], '[[id]]=:qp0 OR [[id]] IS NULL', [':qp0' => 1]],
+            [['in', 'id', new TraversableObject([1, 2, null])], '[[id]] IN (:qp0, :qp1) OR [[id]] IS NULL', [':qp0' => 1, ':qp1' => 2]],
+
+            //not in using array object containing null value
+            [['not in', 'id', new TraversableObject([1, null])], '[[id]]<>:qp0 AND [[id]] IS NOT NULL', [':qp0' => 1]],
+            [['not in', 'id', new TraversableObject([1, 2, null])], '[[id]] NOT IN (:qp0, :qp1) AND [[id]] IS NOT NULL', [':qp0' => 1, ':qp1' => 2]],
+
+            //in using array object containing only null value
+            [['in', 'id', new TraversableObject([null])], '[[id]] IS NULL', []],
+            [['not in', 'id', new TraversableObject([null])], '[[id]] IS NOT NULL', []],
+
             'composite in using array objects' => [
                 ['in', new TraversableObject(['id', 'name']), new TraversableObject([
                     ['id' => 1, 'name' => 'oy'],
@@ -1202,6 +1214,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '[[date]] >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2]],
             [['=', 'date', (new Query())->select('max(date)')->from('test')->where(['id' => 5])], '[[date]] = (SELECT max(date) FROM [[test]] WHERE [[id]]=:qp0)', [':qp0' => 5]],
             [['=', new Expression('date'), '2019-08-01'], 'date = :qp0', [':qp0' => '2019-08-01']], // operand1 is Expression
+            [['=', (new Query())->select('COUNT(*)')->from('test')->where(['id' => 6]), 0], '(SELECT COUNT(*) FROM [[test]] WHERE [[id]]=:qp0) = :qp1', [':qp0' => 6, ':qp1' => 0]],
 
             // hash condition
             [['a' => 1, 'b' => 2], '([[a]]=:qp0) AND ([[b]]=:qp1)', [':qp0' => 1, ':qp1' => 2]],
@@ -2171,6 +2184,17 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     ':qp1' => 0,
                 ],
             ],
+            'no columns to update' => [
+                'T_upsert_1',
+                [
+                    'a' => 1,
+                ],
+                true,
+                null,
+                [
+                    ':qp0' => 1,
+                ],
+            ],
         ];
     }
 
@@ -2182,6 +2206,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array|null $updateColumns
      * @param string|string[] $expectedSQL
      * @param array $expectedParams
+     * @throws \yii\base\NotSupportedException
+     * @throws \Exception
      */
     public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
     {

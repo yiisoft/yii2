@@ -316,13 +316,21 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
+        $column = null;
+        if (is_string($this->indexBy)) {
+            if (($dotPos = strpos($this->indexBy, '.')) === false) {
+                $column = $this->indexBy;
+            } else {
+                $column = substr($this->indexBy, $dotPos + 1);
+            }
+        }
         foreach ($rows as $row) {
             $value = reset($row);
 
             if ($this->indexBy instanceof \Closure) {
                 $results[call_user_func($this->indexBy, $row)] = $value;
             } else {
-                $results[$row[$this->indexBy]] = $value;
+                $results[$row[$column]] = $value;
             }
         }
 
@@ -453,12 +461,24 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
-            $command = $this->createCommand($db);
+
+            $e = null;
+            try {
+                $command = $this->createCommand($db);
+            } catch (\Exception $e) {
+                // throw it later
+            } catch (\Throwable $e) {
+                // throw it later
+            }
 
             $this->select = $select;
             $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
+
+            if ($e !== null) {
+                throw $e;
+            }
 
             return $command->queryScalar();
         }

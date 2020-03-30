@@ -36,7 +36,9 @@ class SimpleConditionBuilder implements ExpressionBuilderInterface
         $column = $expression->getColumn();
         $value = $expression->getValue();
 
-        if (is_string($column) && strpos($column, '(') === false) {
+        if ($column instanceof ExpressionInterface) {
+            $column = $this->queryBuilder->buildExpression($column, $params);
+        } elseif (is_string($column) && strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
 

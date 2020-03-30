@@ -263,8 +263,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $multiAlterStatement = [];
         $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
 
-        if (preg_match('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', $type, $matches)) {
-            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w+["\']?)/i', '', $type);
+        if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
+            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
             $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET DEFAULT {$matches[1]}";
         } else {
             // safe to drop default even if there was none in the first place
@@ -338,6 +338,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $insertSql;
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         if ($updateColumns === false) {
             return "$insertSql ON CONFLICT DO NOTHING";
@@ -367,6 +371,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
+        }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
         }
 
         /** @var Schema $schema */

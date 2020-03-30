@@ -8,7 +8,7 @@
 namespace yiiunit\framework\db;
 
 use ArrayObject;
-use yii\caching\FileCache;
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
@@ -1252,7 +1252,7 @@ SQL;
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $db->queryCache = new ArrayCache();
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
@@ -1357,8 +1357,13 @@ SQL;
             [
                 'SELECT * FROM customer WHERE id IN (:ids)',
                 [':ids' => new Expression(implode(', ', [1, 2]))],
-                'SELECT * FROM customer WHERE id IN (1, 2)',
+                'SELECT * FROM customer WHERE id IN (\'1, 2\')',
             ],
+            [
+                'SELECT NOW() = :now',
+                [':now' => new Expression('NOW()')],
+                'SELECT NOW() = \'NOW()\'',
+            ]
         ];
     }
 

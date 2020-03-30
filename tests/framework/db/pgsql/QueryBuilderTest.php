@@ -185,6 +185,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" DROP NOT NULL, ADD CONSTRAINT foo1_bar_check CHECK (char_length(bar) > 5)';
         $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->check('char_length(bar) > 5'));
         $this->assertEquals($expected, $sql);
+        
+        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT \'\', ALTER COLUMN "bar" DROP NOT NULL';
+        $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue(''));
+        $this->assertEquals($expected, $sql);
 
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT \'AbCdE\', ALTER COLUMN "bar" DROP NOT NULL';
         $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue('AbCdE'));
@@ -258,6 +262,27 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "SELECT SETVAL('\"item_id_seq\"',4,false)";
         $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
+    }
+
+    public function testResetSequencePostgres12()
+    {
+        if (version_compare($this->getConnection(false)->getServerVersion(), '12.0', '<')) {
+            $this->markTestSkipped('PostgreSQL < 12.0 does not support GENERATED AS IDENTITY columns.');
+        }
+
+        $config = $this->database;
+        unset($config['fixture']);
+        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres12.sql');
+
+        $qb = $this->getQueryBuilder(false);
+
+        $expected = "SELECT SETVAL('\"item_12_id_seq\"',(SELECT COALESCE(MAX(\"id\"),0) FROM \"item_12\")+1,false)";
+        $sql = $qb->resetSequence('item_12');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "SELECT SETVAL('\"item_12_id_seq\"',4,false)";
+        $sql = $qb->resetSequence('item_12', 4);
         $this->assertEquals($expected, $sql);
     }
 
@@ -345,6 +370,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 3 => [
                     'WITH "EXCLUDED" ("email", [[time]]) AS (SELECT :phEmail AS "email", now() AS [[time]]), "upsert" AS (UPDATE {{%T_upsert}} SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 FROM "EXCLUDED" WHERE (({{%T_upsert}}."email"="EXCLUDED"."email")) RETURNING {{%T_upsert}}.*) INSERT INTO {{%T_upsert}} ("email", [[time]]) SELECT "email", [[time]] FROM "EXCLUDED" WHERE NOT EXISTS (SELECT 1 FROM "upsert" WHERE (("upsert"."email"="EXCLUDED"."email")))',
                     'INSERT INTO {{%T_upsert}} ("email", [[time]]) SELECT :phEmail AS "email", now() AS [[time]] ON CONFLICT ("email") DO UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1',
+                ],
+            ],
+            'no columns to update' => [
+                3 => [
+                    'WITH "EXCLUDED" ("a") AS (VALUES (CAST(:qp0 AS int2))) INSERT INTO "T_upsert_1" ("a") SELECT "a" FROM "EXCLUDED" WHERE NOT EXISTS (SELECT 1 FROM "T_upsert_1" WHERE (("T_upsert_1"."a"="EXCLUDED"."a")))',
+                    'INSERT INTO "T_upsert_1" ("a") VALUES (:qp0) ON CONFLICT DO NOTHING',
                 ],
             ],
         ];

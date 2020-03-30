@@ -312,6 +312,7 @@ ArrayHelper::multisort($data, ['age', 'name'], [SORT_ASC, SORT_DESC]);
 
 ```php
 ArrayHelper::multisort($data, function($item) {
+    // 存在していれば 'age' で、さもなくば 'name' でソート
     return isset($item['age']) ? ['age', 'name'] : 'name';
 });
 ```

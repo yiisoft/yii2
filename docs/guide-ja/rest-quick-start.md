@@ -162,7 +162,9 @@ Content-Type: application/xml
 次のコマンドは、JSON 形式でユーザのデータを持つ POST リクエストを送信して、新しいユーザを作成します。
 
 ```
-$ curl -i -H "Accept:application/json" -H "Content-Type:application/json" -XPOST "http://localhost/users" -d '{"username": "example", "email": "user@example.com"}'
+$ curl -i -H "Accept:application/json" -H "Content-Type:application/json" \
+    -XPOST "http://localhost/users" \
+    -d '{"username": "example", "email": "user@example.com"}'
 
 HTTP/1.1 201 Created
 ...

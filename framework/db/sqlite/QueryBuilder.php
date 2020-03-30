@@ -74,6 +74,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
         $insertSql = 'INSERT OR IGNORE INTO ' . $this->db->quoteTableName($table)
@@ -540,5 +544,23 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return trim($result);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        $tableParts = explode('.', $table);
+
+        $schema = null;
+        if (count($tableParts) === 2) {
+            list ($schema, $table) = $tableParts;
+        }
+
+        return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
+            . $this->db->quoteTableName(($schema ? $schema . '.' : '') . $name) . ' ON '
+            . $this->db->quoteTableName($table)
+            . ' (' . $this->buildColumns($columns) . ')';
     }
 }

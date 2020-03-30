@@ -9,6 +9,7 @@ namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\caching\CacheInterface;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
@@ -278,6 +279,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (empty($uniqueNames)) {
             return $insertSql;
         }
+        if ($updateNames === []) {
+            // there are no columns to update
+            $updateColumns = false;
+        }
 
         if ($updateColumns === true) {
             $updateColumns = [];
@@ -302,11 +307,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
             $this->getColumnDefinition($table, $column)));
 
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+        $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
+        $check = preg_match($checkRegex, $definition, $checkMatches);
+        if ($check === 1) {
+            $definition = preg_replace($checkRegex, '', $definition);
+        }
+        $alterSql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' CHANGE ' . $this->db->quoteColumnName($column)
             . ' ' . $this->db->quoteColumnName($column)
             . (empty($definition) ? '' : ' ' . $definition)
             . ' COMMENT ' . $this->db->quoteValue($comment);
+        if ($check === 1) {
+            $alterSql .= ' ' . $checkMatches[0];
+        }
+        return $alterSql;
     }
 
     /**
@@ -377,7 +391,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function supportsFractionalSeconds()
     {
-        $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        // use cache to prevent opening MySQL connection
+        // https://github.com/yiisoft/yii2/issues/13749#issuecomment-481657224
+        $key = [__METHOD__, $this->db->dsn];
+        $cache = null;
+        $schemaCache = (\Yii::$app && is_string($this->db->schemaCache)) ? \Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $schemaCache instanceof CacheInterface) {
+            $cache = $schemaCache;
+        }
+        $version = $cache ? $cache->get($key) : null;
+        if (!$version) {
+            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            if ($cache) {
+                $cache->set($key, $version, $this->db->schemaCacheDuration);
+            }
+        }
+
         return version_compare($version, '5.6.4', '>=');
     }
 

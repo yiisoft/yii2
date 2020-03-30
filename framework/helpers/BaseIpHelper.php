@@ -119,7 +119,7 @@ class BaseIpHelper
         }
 
         $result = '';
-        for ($i = 0; $i < strlen($ipBinary); $i += 4) {
+        for ($i = 0, $iMax = strlen($ipBinary); $i < $iMax; $i += 4) {
             $result .= str_pad(decbin(unpack('N', substr($ipBinary, $i, 4))[1]), 32, '0', STR_PAD_LEFT);
         }
         return $result;

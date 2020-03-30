@@ -7,6 +7,7 @@
 DROP TABLE IF EXISTS "composite_fk" CASCADE;
 DROP TABLE IF EXISTS "order_item" CASCADE;
 DROP TABLE IF EXISTS "item" CASCADE;
+DROP SEQUENCE IF EXISTS "item_id_seq_2" CASCADE;
 DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
 DROP TABLE IF EXISTS "order_with_null_fk" CASCADE;
@@ -33,6 +34,7 @@ DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
 DROP TABLE IF EXISTS "T_upsert";
+DROP TABLE IF EXISTS "T_upsert_1";
 
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -78,6 +80,7 @@ CREATE TABLE "item" (
   name varchar(128) NOT NULL,
   category_id integer NOT NULL references "category"(id) on UPDATE CASCADE on DELETE CASCADE
 );
+CREATE SEQUENCE "item_id_seq_2";
 
 CREATE TABLE "order" (
   id serial not null primary key,
@@ -415,4 +418,9 @@ CREATE TABLE "T_upsert"
     "orders" INT NOT NULL DEFAULT 0,
     "profile_id" INT NULL,
     UNIQUE ("email", "recovery_email")
+);
+
+CREATE TABLE "T_upsert_1"
+(
+    "a" INT NOT NULL PRIMARY KEY
 );

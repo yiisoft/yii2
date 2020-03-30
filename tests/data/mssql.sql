@@ -22,6 +22,7 @@ IF OBJECT_ID('[T_constraints_3]', 'U') IS NOT NULL DROP TABLE [T_constraints_3];
 IF OBJECT_ID('[T_constraints_2]', 'U') IS NOT NULL DROP TABLE [T_constraints_2];
 IF OBJECT_ID('[T_constraints_1]', 'U') IS NOT NULL DROP TABLE [T_constraints_1];
 IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
+IF OBJECT_ID('[T_upsert_1]', 'U') IS NOT NULL DROP TABLE [T_upsert_1];
 IF OBJECT_ID('[table.with.special.characters]', 'U') IS NOT NULL DROP TABLE [table.with.special.characters];
 IF OBJECT_ID('[stranger ''table]', 'U') IS NOT NULL DROP TABLE [stranger 'table];
 
@@ -327,6 +328,12 @@ CREATE TABLE [T_upsert]
     [orders] INT NOT NULL DEFAULT 0,
     [profile_id] INT NULL,
     UNIQUE ([email], [recovery_email])
+);
+
+CREATE TABLE [T_upsert_1]
+(
+    [a] INT NOT NULL,
+    UNIQUE ([a])
 );
 
 CREATE TABLE [dbo].[table.with.special.characters] (

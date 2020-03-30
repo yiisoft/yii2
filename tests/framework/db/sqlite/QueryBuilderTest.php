@@ -9,6 +9,7 @@ namespace yiiunit\framework\db\sqlite;
 
 use yii\db\Query;
 use yii\db\Schema;
+use yii\db\sqlite\QueryBuilder;
 use yiiunit\data\base\TraversableObject;
 
 /**
@@ -65,6 +66,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+
+        $indexName = 'myindex';
+        $schemaName = 'myschema';
+        $tableName = 'mytable';
+
+        $result['with schema'] = [
+            "CREATE INDEX {{{$schemaName}}}.[[$indexName]] ON {{{$tableName}}} ([[C_index_1]])",
+            function (QueryBuilder $qb) use ($tableName, $indexName, $schemaName) {
+                return $qb->createIndex($indexName, $schemaName . '.' . $tableName, 'C_index_1');
+            },
+        ];
+
         return $result;
     }
 
@@ -191,6 +204,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ],
             'query, values and expressions without update part' => [
                 3 => 'WITH "EXCLUDED" (`email`, [[time]]) AS (SELECT :phEmail AS `email`, now() AS [[time]]) UPDATE {{%T_upsert}} SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1 WHERE {{%T_upsert}}.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]];',
+            ],
+            'no columns to update' => [
+                3 => 'INSERT OR IGNORE INTO `T_upsert_1` (`a`) VALUES (:qp0)',
             ],
         ];
         $newData = parent::upsertProvider();

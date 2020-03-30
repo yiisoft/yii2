@@ -285,4 +285,32 @@ EXPECTED;
             ->setRows([])->setScreenWidth(200)->run()
         );
     }
+
+    public function testEmptyAndZeroTableCell()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═══════╤═══════╗
+║ test1 │ test2 ║
+╟───────┼───────╢
+║ 0     │       ║
+╟───────┼───────╢
+║ 0.0   │       ║
+╚═══════╧═══════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table
+                ->setHeaders(['test1', 'test2'])
+                ->setRows([
+                    ['0', []],
+                    ['0.0', []],
+                ])
+                ->setScreenWidth(200)
+                ->run()
+        );
+    }
 }

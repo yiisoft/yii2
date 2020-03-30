@@ -187,6 +187,7 @@ return [
   'yii\db\mysql\QueryBuilder' => YII2_PATH . '/db/mysql/QueryBuilder.php',
   'yii\db\mysql\Schema' => YII2_PATH . '/db/mysql/Schema.php',
   'yii\db\oci\ColumnSchemaBuilder' => YII2_PATH . '/db/oci/ColumnSchemaBuilder.php',
+  'yii\db\oci\Command' => YII2_PATH . '/db/oci/Command.php',
   'yii\db\oci\QueryBuilder' => YII2_PATH . '/db/oci/QueryBuilder.php',
   'yii\db\oci\Schema' => YII2_PATH . '/db/oci/Schema.php',
   'yii\db\oci\conditions\InConditionBuilder' => YII2_PATH . '/db/oci/conditions/InConditionBuilder.php',

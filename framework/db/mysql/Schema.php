@@ -293,9 +293,9 @@ SQL;
              *
              * See details here: https://mariadb.com/kb/en/library/now/#description
              */
-            if (($column->type === 'timestamp' || $column->type === 'datetime') &&
-                ($info['default'] === 'CURRENT_TIMESTAMP' || $info['default'] === 'current_timestamp()')) {
-                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
+            if (($column->type === 'timestamp' || $column->type === 'datetime')
+                && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
+                $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));
             } else {

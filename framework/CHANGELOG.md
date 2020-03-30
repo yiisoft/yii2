@@ -1,10 +1,145 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.26 under development
+2.0.35 under development
 ------------------------
 
-- Bug #17511: Fixed IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
+- no changes in this release.
+
+
+2.0.34 March 26, 2020
+---------------------
+
+- Bug #17932: Fix regression in detection of AJAX requests (samdark)
+- Bug #17933: Log warning instead of erroring when URLManager is unable to initialize cache (samdark)
+- Bug #17934: Fix regression in Oracle when binding several string parameters (fen1xpv, samdark)
+- Bug #17935: Reset DB quoted table/column name caches when the connection is closed (brandonkelly)
+
+
+2.0.33 March 24, 2020
+---------------------
+
+- Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)
+- Bug #13749: Fix Yii opens db connection even when hits query cache (shushenghong)
+- Bug #16092: Fix duplicate joins in usage of `joinWith` (germanow)
+- Bug #16145: Fix `Html` helper `checkboxList()`, `radioList()`, `renderSelectOptions()`, `dropDownList()`, `listBox()` methods to work properly with traversable selection (samdark)
+- Bug #16334: Add `\JsonSerializable` support to `ArrayableTrait` (germanow)
+- Bug #17667: Fix `CREATE INDEX` failure on SQLite when specifying schema (santilin, samdark)
+- Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
+- Bug #17797: Fix for `activeListInput` options (alex-code)
+- Bug #17798: Avoid creating directory for stream log targets in `FileTarget` (wapmorgan)
+- Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
+- Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
+- Bug #17843: Fix `yii\web\Session::setCookieParamsInternal` checked "samesite" parameter incorrectly (schevgeny)
+- Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
+- Bug #17859: Fix loading fixtures under Windows (samdark)
+- Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
+- Bug #17875: Use `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files in case of POST request (sup-ham)
+- Bug #17878: Detect CORS AJAX requests without `X-Requested-With` in `Request::getIsAjax()` (dicrtarasov, samdark)
+- Bug #17881: `yii\db\Query::queryScalar()` wasn’t reverting the `select`, `orderBy`, `limit`, and `offset` params if an exception occurred (brandonkelly)
+- Bug #17884: Fix 0 values in console Table rendered as empty string (mikehaertl)
+- Bug #17886: Fix `yii\rest\Serializer` to serialize arrays (patacca)
+- Bug #17909: Reset DB schema, transaction, and driver name when the connection is closed (brandonkelly)
+- Bug #17920: Fix quoting for `Command::getRawSql` having `Expression` in params (alex-code)
+- Enh #7622: Allow `yii\data\ArrayDataProvider` to control the sort flags for `sortModels` through `yii\data\Sort::sortFlags` property (askobara)
+- Enh #16721: Use `Instance::ensure()` to initialize `UrlManager::$cache` (rob006)
+- Enh #17827: Add `StringValidator::$strict` that can be turned off to allow any scalars (adhayward, samdark)
+- Enh #17929: Actions can now have bool typed params bound (alex-code)
+
+
+2.0.32 January 21, 2020
+-----------------------
+
+- Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
+- Bug #17037: Fix uploaded file saving method when data came from `MultipartFormDataParser` (sup-ham)
+- Bug #17300: Fix class-level event handling with wildcards (Toma91)
+- Bug #17635: Fix varbinary data handling for MSSQL (toatall)
+- Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
+- Bug #17749: Fix logger dispatcher behavior when target crashes in PHP 7.0+ (kamarton)
+- Bug #17755: Fix a bug for web request with `trustedHosts` set to format `['10.0.0.1' => ['X-Forwarded-For']]` (shushenghong)
+- Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
+- Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
+- Bug #17766: Remove previous PJAX event binding before registering new one (samdark)
+- Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
+- Bug #17771: migrate/fresh was not returning exit code (samdark)
+- Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+- Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
+- Enh #17729: Path alias support was added to `yii\web\UploadedFile::saveAs()` (sup-ham)
+- Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+
+2.0.31 December 18, 2019
+------------------------
+
+- Bug #17661: Fix query builder incorrect IN/NOT IN condition handling for null values (strychu)
+- Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
+- Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
+- Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
+- Bug #17701: Throw `BadRequestHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
+- Bug #17710: Fix MemCache duration normalization to avoid memcached/system timestamp mismatch (samdark)
+- Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of non-string (samdark)
+- Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
+- Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
+- Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
+- Bug #17740: `yii\helpers\BaseInflector::slug()` doesn't replace multiple replacement string occurrences to single one (batyrmastyr)
+- Bug #17745: Fix PostgreSQL query builder drops default value when it is empty (xepozz)
+- Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150, kamarton)
+- Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
+
+
+2.0.30 November 19, 2019
+------------------------
+
+- Bug #17434: IE Ajax redirect fix for non 11.0 versions (kamarton)
+- Bug #17632: Unicode file name was not correctly parsed in multipart forms (AlexRas007, samdark)
+- Bug #17648: Handle empty column arrays in console `Table` widget (alex-code)
+- Bug #17657: Fix migration errors from missing `$schema` in RBAC init file when using MSSQL (PoohOka)
+- Bug #17670: Fix overriding core component class using `__class` (sup-ham, samdark)
+
+
+2.0.29 October 22, 2019
+-----------------------
+
+- Bug #8225: Fixed AJAX validation with checkboxList was only triggered on first select (execut)
+- Bug #17597: PostgreSQL 12 and partitioned tables support (batyrmastyr)
+- Bug #17602: `EmailValidator` with `checkDNS=true` throws `ErrorException` on bad domains on Alpine (batyrmastyr)
+- Bug #17606: Fix error in `AssetBundle` when a disabled bundle with custom init() was still published (onmotion)
+- Bug #17625: Fix boolean `data` attributes from subkeys rendering in `Html::renderTagAttributes()` (brandonkelly)
+- Enh #17607: Added Yii version 3 DI config compatibility (hiqsol)
+
+
+2.0.28 October 08, 2019
+-----------------------
+
+- Bug #17573: `Request::getUserIP()` security fix for the case when `Request::$trustedHost` and `Request::$ipHeaders` are used (kamarton)
+- Bug #17585: Fix `yii\i18n\Formatter` including the `@calendar` locale param in `Yii::t()` calls (brandonkelly)
+- Bug #17853: Fix errors in ActiveField to be properly caught when PHP 7 is used (My6UoT9)
+
+
+2.0.27 September 18, 2019
+-------------------------
+
+- Bug #16610: ErrorException trace was cut when using XDebug (Izumi-kun)
+- Bug #16671: Logging in `Connection::open()` was not respecting `Connection::$enableLogging` (samdark)
+- Bug #16855: Ignore console commands that have no actions (alexeevdv)
+- Bug #17434: Fix regular expression illegal character; Repeated fix for Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #17539: Fixed error when using `batch()` with `indexBy()` with MSSQL (alexkart)
+- Bug #17549: Fix `yii\db\ExpressionInterface` not supported in `yii\db\conditions\SimpleConditionBuilder` (razvanphp)
+- Enh #15526: Show valid aliases and options on invalid input in console application (samdark)
+- Enh #16826: `appendTimestamp` support was added to `View` methods `registerCssFile()` and `registerJsFile()` (onmotion)
+
+
+2.0.26 September 03, 2019
+-------------------------
+
+- Bug #16305: Fix `FileValidator` mime-type validation failure because of case sensitivity (kamarton)
+- Bug #16531: Fix error in `Response::sendContent()` when `set_time_limit()` is disabled (brandonkelly)
+- Bug #17355: Fix incorrect sequence of `EVENT_AFTER_REQUEST` when using Pjax (kamarton)
+- Bug #17434: Fix Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #17449: Ensure `CHECK` statement goes after `COMMENT` in MySQL `QueryBuilder::addCommentOnColumn()` (Manu311)
+- Bug #17504: Fix upsert when `$updateColumns` is `true` but there are no columns to update in the table (alexkart)
+- Bug #17507: Fix regular expression escaping and simplify condition in `Controller::createAction()` (kamarton)
+- Bug #17511: Fix IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
+- Bug #17522: `DbManager::isEmptyUserId()` is now protected (samdark)
 
 
 2.0.25 August 13, 2019
