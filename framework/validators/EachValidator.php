@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 
@@ -128,43 +129,38 @@ class EachValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $value = $model->$attribute;
-        if (!is_array($value) && !$value instanceof \ArrayAccess) {
+        $arrayOfValues = $model->$attribute;
+        if (!is_array($arrayOfValues) && !$arrayOfValues instanceof \ArrayAccess) {
             $this->addError($model, $attribute, $this->message, []);
             return;
         }
 
-        $validator = $this->getValidator($model); // ensure model context while validator creation
+        $dynamicModel = new DynamicModel($model->getAttributes());
+        $dynamicModel->addRule($attribute, $this->getValidator($model));
 
-        $detectedErrors = $model->getErrors($attribute);
-        $filteredValue = $model->$attribute;
-        foreach ($value as $k => $v) {
-            $model->clearErrors($attribute);
-            $model->$attribute = $v;
-            if (!$validator->skipOnEmpty || !$validator->isEmpty($v)) {
-                $validator->validateAttribute($model, $attribute);
+        foreach ($arrayOfValues as $k => $v) {
+            $dynamicModel->defineAttribute($attribute, $v);
+            $dynamicModel->validate();
+
+            $arrayOfValues[$k] = $dynamicModel->$attribute; // filtered values like 'trim'
+
+            if (!$dynamicModel->hasErrors($attribute)) {
+                continue;
             }
-            $filteredValue[$k] = $model->$attribute;
-            if ($model->hasErrors($attribute)) {
-                if ($this->allowMessageFromRule) {
-                    $validationErrors = $model->getErrors($attribute);
-                    $detectedErrors = array_merge($detectedErrors, $validationErrors);
-                } else {
-                    $model->clearErrors($attribute);
-                    $this->addError($model, $attribute, $this->message, ['value' => $v]);
-                    $detectedErrors[] = $model->getFirstError($attribute);
-                }
-                $model->$attribute = $value;
 
-                if ($this->stopOnFirstError) {
-                    break;
-                }
+            if ($this->allowMessageFromRule) {
+                $validationErrors = $dynamicModel->getErrors($attribute);
+                $model->addErrors([$attribute => $validationErrors]);
+            } else {
+                $this->addError($model, $attribute, $this->message, ['value' => $v]);
+            }
+
+            if ($this->stopOnFirstError) {
+                break;
             }
         }
 
-        $model->$attribute = $filteredValue;
-        $model->clearErrors($attribute);
-        $model->addErrors([$attribute => $detectedErrors]);
+        $model->$attribute = $arrayOfValues;
     }
 
     /**

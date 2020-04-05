@@ -88,4 +88,9 @@ class FakedValidationModel extends Model
     {
         return $this->inlineValArgs;
     }
+
+    public function attributes()
+    {
+        return array_keys($this->attr);
+    }
 }
