@@ -430,9 +430,8 @@ class Response extends \yii\base\Response
             return;
         }
 
-        if (function_exists('set_time_limit')) {
-            set_time_limit(0); // Reset time limit for big files
-        } else {
+        // Try to reset time limit for big files
+        if (!function_exists('set_time_limit') || !@set_time_limit(0)) {
             Yii::warning('set_time_limit() is not available', __METHOD__);
         }
 
