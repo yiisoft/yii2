@@ -13,7 +13,7 @@ use yii\rbac\DbManager;
 /**
  * Fix MSSQL trigger.
  *
- * @see https://github.com/yiisoft/yii2/issues/16481
+ * @see https://github.com/yiisoft/yii2/pull/17966
  *
  * @author Aurelien Chretien <chretien.aurelien@gmail.com>
  * @since 2.0.35
@@ -71,7 +71,7 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             $schema = $this->db->getSchema()->defaultSchema;
 
             $this->execute("DROP TRIGGER {$schema}.trigger_auth_item_child;");
-            $this->execute("CREATE TRIGGER dbo.trigger_delete_auth_item_child
+            $this->execute("CREATE TRIGGER {$schema}.trigger_delete_auth_item_child
             ON {$schema}.{$authManager->itemTable}
             INSTEAD OF DELETE
             AS
@@ -83,7 +83,7 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
 
             $foreignKey = $this->findForeignKeyName($authManager->itemChildTable, 'child', $authManager->itemTable, 'name');
             $this->execute("CREATE TRIGGER {$schema}.trigger_update_auth_item_child
-            ON dbo.{$authManager->itemTable}
+            ON {$schema}.{$authManager->itemTable}
             INSTEAD OF UPDATE
             AS
                 DECLARE @old_name NVARCHAR(64) = (SELECT name FROM deleted)
@@ -122,8 +122,8 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             $this->db = $authManager->db;
             $schema = $this->db->getSchema()->defaultSchema;
 
-            $this->execute('DROP TRIGGER dbo.trigger_update_auth_item_child;');
-            $this->execute('DROP TRIGGER dbo.trigger_delete_auth_item_child;');
+            $this->execute("DROP TRIGGER {$schema}.trigger_update_auth_item_child;");
+            $this->execute("DROP TRIGGER {$schema}.trigger_delete_auth_item_child;");
 
             $this->execute("CREATE TRIGGER {$schema}.trigger_auth_item_child
             ON {$schema}.{$authManager->itemTable}
