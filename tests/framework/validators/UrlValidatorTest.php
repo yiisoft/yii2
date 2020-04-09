@@ -30,6 +30,7 @@ class UrlValidatorTest extends TestCase
         $this->assertFalse($val->validate('google.de'));
         $this->assertTrue($val->validate('http://google.de'));
         $this->assertTrue($val->validate('https://google.de'));
+        $this->assertTrue($val->validate('http://localhost'));
         $this->assertFalse($val->validate('htp://yiiframework.com'));
         $this->assertTrue($val->validate('https://www.google.de/search?q=yii+framework&ie=utf-8&oe=utf-8'
                                         . '&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
