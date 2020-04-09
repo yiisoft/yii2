@@ -69,9 +69,11 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             $authManager = $this->getAuthManager();
             $this->db = $authManager->db;
             $schema = $this->db->getSchema()->defaultSchema;
+            $triggerSuffix = $this->db->schema->getRawTableName($authManager->itemChildTable);
 
-            $this->execute("DROP TRIGGER {$schema}.trigger_auth_item_child;");
-            $this->execute("CREATE TRIGGER {$schema}.trigger_delete_auth_item_child
+            $this->execute("DROP TRIGGER {$schema}.trigger_{$triggerSuffix};");
+
+            $this->execute("CREATE TRIGGER {$schema}.trigger_delete_{$triggerSuffix}
             ON {$schema}.{$authManager->itemTable}
             INSTEAD OF DELETE
             AS
@@ -82,7 +84,7 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             );
 
             $foreignKey = $this->findForeignKeyName($authManager->itemChildTable, 'child', $authManager->itemTable, 'name');
-            $this->execute("CREATE TRIGGER {$schema}.trigger_update_auth_item_child
+            $this->execute("CREATE TRIGGER {$schema}.trigger_update_{$triggerSuffix}
             ON {$schema}.{$authManager->itemTable}
             INSTEAD OF UPDATE
             AS
@@ -121,9 +123,10 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             $authManager = $this->getAuthManager();
             $this->db = $authManager->db;
             $schema = $this->db->getSchema()->defaultSchema;
+            $triggerSuffix = $this->db->schema->getRawTableName($authManager->itemChildTable);
 
-            $this->execute("DROP TRIGGER {$schema}.trigger_update_auth_item_child;");
-            $this->execute("DROP TRIGGER {$schema}.trigger_delete_auth_item_child;");
+            $this->execute("DROP TRIGGER {$schema}.trigger_update_{$triggerSuffix};");
+            $this->execute("DROP TRIGGER {$schema}.trigger_delete_{$triggerSuffix};");
 
             $this->execute("CREATE TRIGGER {$schema}.trigger_auth_item_child
             ON {$schema}.{$authManager->itemTable}
