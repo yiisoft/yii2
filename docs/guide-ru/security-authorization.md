@@ -224,6 +224,10 @@ return [
 ];
 ```
 
+> Примечание: Если вы используете шаблон проекта basic, компонент `authManager` необходимо настроить как в `config/web.php`, так и в
+> [конфигурации консольного приложения](tutorial-console.md#configuration) `config/console.php`.
+> При использовании шаблона проекта advanced `authManager` достаточно настроить единожды в `common/config/main.php`.
+
 `DbManager` использует четыре таблицы для хранения данных:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: таблица для хранения авторизационных элементов. По умолчанию "auth_item".

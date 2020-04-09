@@ -10,6 +10,7 @@ namespace yii\db\mysql;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
+use yii\caching\DbCache;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
@@ -396,7 +397,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $key = [__METHOD__, $this->db->dsn];
         $cache = null;
         $schemaCache = (\Yii::$app && is_string($this->db->schemaCache)) ? \Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-        if ($this->db->enableSchemaCache && $schemaCache instanceof CacheInterface) {
+        // If the `$schemaCache` is an instance of `DbCache` we don't use it to avoid a loop
+        if ($this->db->enableSchemaCache && $schemaCache instanceof CacheInterface && !($schemaCache instanceof DbCache)) {
             $cache = $schemaCache;
         }
         $version = $cache ? $cache->get($key) : null;
