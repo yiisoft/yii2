@@ -523,4 +523,68 @@ class Controller extends Component implements ViewContextInterface
 
         return $path;
     }
+
+    /**
+     * Verifie if the actionId and args have a corresponding Controller method and parameters   
+     *
+     * @param string $actionId actionId to be validates
+     * @param array $args passed arguments
+     * @param bool $maxArgs verify that arguments should not be more than delared method parameters
+     * @return array|bool index being method parameter name and value being passed argument or false if method not found
+     */
+    public function validateActionId($actionId,$args,$maxArgs=false)
+    {
+        $actionId=$actionId?:$this->defaultAction;
+        $actionMap= $this->actions();
+        if (isset($actionMap[$actionId])) {
+            $actionClass=isset($actionMap[$actionId]['class'])?$actionMap[$actionId]['class']:$actionMap[$actionId];
+            $method = new \ReflectionMethod($actionClass, 'run');
+        }
+        if (preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $actionId)) {
+            $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $actionId)));
+            if (method_exists($this, $methodName)) {
+                $method = new \ReflectionMethod($this, $methodName);
+            }
+        }
+
+        if (isset($method) && $method->isPublic()) {
+            if ($method->getNumberOfRequiredParameters()<=count($args)) {
+                if ($maxArgs && count($args)>$method->getNumberOfParameters()) {
+                    return false;
+                }
+                return $this->routifyUrlParams($method,$args);
+
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Map and sort url or route Arguments in the way defined by the controller method
+     *
+     * This is called by [[validateActionId()]] when method corresponding to actionId is found
+     * @param \ReflectionMethod $method \ReflectionMethod instance of action method
+     * @param array $urlArgs arguments to be passed 
+     * @return array index being method parameter name and value being passed argument
+     */
+    public function routifyUrlParams($method,$urlArgs)
+    {
+        $actionParams = [];
+        foreach ($method->getParameters() as $index => $param) {
+            $name = $param->getName();
+            if (isset($urlArgs[$index])) {
+                $urlArgs[$name]=$urlArgs[$index];
+                unset($urlArgs[$index]);
+            }
+            if (array_key_exists($name, $urlArgs)) {
+                $actionParams[$name] = $urlArgs[$name];
+                unset($urlArgs[$name]);
+            } 
+        }
+
+        return $actionParams;
+
+    }
 }
