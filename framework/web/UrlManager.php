@@ -455,12 +455,10 @@ class UrlManager extends Component
                 $url = ltrim($url, '/');
                 return "$baseUrl/{$url}{$anchor}";
             }
-
-            if ($this->suffix !== null) {
-                $route .= $this->suffix;
-            }
             if (!empty($params)) {
                 $route =  $this->prettifyRouteArgs($route,$params,$cacheKey);
+            }elseif ($this->suffix !== null) {
+                $route .= $this->suffix;
             }
 
             $route = ltrim($route, '/');
@@ -495,7 +493,6 @@ class UrlManager extends Component
         }
         
         if (is_array($this->_ruleCache[$cacheKey])) {
-            $args = '';
             foreach ($this->_ruleCache[$cacheKey] as $name => $value) {
                 if (array_key_exists($name, $routeArgs)) {
                     $args .= '/'.$routeArgs[$name];
@@ -506,7 +503,7 @@ class UrlManager extends Component
 
         $route.=$args!==''?"/{$this->routeParam}{$args}":'';
         if ($this->suffix !== null) {
-            $route .= $this->suffix;
+            $route .= trim($this->suffix,'/');
         }
 
         if (!empty($routeArgs) && ($routeArgs = http_build_query($routeArgs)) !== '') {
