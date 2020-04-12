@@ -573,44 +573,44 @@ class Module extends ServiceLocator
 
         // module and controller map take precedence
         $routeInfo=pathinfo($route);
-        $controllerId =$routeInfo['dirname']!=='.'?$routeInfo['dirname']:$routeInfo['basename'];
-        $actionId = $routeInfo['dirname']!=='.'?$routeInfo['basename']:'';
-        if (isset($this->controllerMap[$controllerId.'/'.$actionId])) {
-            $controllerClass= $this->controllerMap[$controllerId.'/'.$actionId];
-            $controllerId=$controllerId.'/'.$actionId;
-            $actionId='';
+        $id =$routeInfo['dirname']!=='.'?$routeInfo['dirname']:$routeInfo['basename'];
+        $route = $routeInfo['dirname']!=='.'?$routeInfo['basename']:'';
+        if (isset($this->controllerMap[$id.'/'.$route])) {
+            $controllerClass= $this->controllerMap[$id.'/'.$route];
+            $id=$id.'/'.$route;
+            $route='';
             
-        }elseif (isset($this->controllerMap[$controllerId])) {
-            $controllerClass= $this->controllerMap[$controllerId];
+        }elseif (isset($this->controllerMap[$id])) {
+            $controllerClass= $this->controllerMap[$id];
         }
 
         if (isset($controllerClass)) {
-            $controller = Yii::createObject($controllerClass, [$controllerId, $this]);
-            return [$controller, $actionId];
+            $controller = Yii::createObject($controllerClass, [$id, $this]);
+            return [$controller, $route];
         }
 
-        if (strpos($controllerId, '/') !== false) {
-            list($moduleId, $route) = explode('/', $controllerId, 2);
-            $route.=$actionId!==''?'/'.$actionId:'';
+        if (strpos($id, '/') !== false) {
+            list($moduleId, $moduleRoute) = explode('/', $id, 2);
+            $moduleRoute.=$route!==''?'/'.$route:'';
         } else {
-            $moduleId = $controllerId;
-            $route = $actionId;
+            $moduleId = $id;
+            $moduleRoute = $route;
         }
 
         $module = $this->getModule($moduleId);
         if ($module !== null) {
-            return $module->createController($route);
+            return $module->createController($moduleRoute);
         }
 
-        $controller = $this->createControllerByID($controllerId . '/' . $actionId);
+        $controller = $this->createControllerByID($id . '/' . $route);
         if ($controller !== null ) {
-            $controllerId=$controllerId.'/'.$actionId;
-            $actionId='';
+            $id=$id.'/'.$route;
+            $route='';
         }else {            
-            $controller = $this->createControllerByID($controllerId);            
+            $controller = $this->createControllerByID($id);            
         }
 
-        return $controller === null ? false : [$controller, $actionId];
+        return $controller === null ? false : [$controller, $route];
     }
 
     /**
