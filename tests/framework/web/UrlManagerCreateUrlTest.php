@@ -51,6 +51,18 @@ use yiiunit\TestCase;
  */
 class UrlManagerCreateUrlTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockWebApplication([
+            'controllerMap' => [
+                'site/index' => 'yii\web\Controller',
+                'post/view' =>  'yii\web\Controller',
+                'post/index'=> 'yii\web\Controller',
+        
+            ],
+        ]);
+    }
     protected function getUrlManager($config = [], $showScriptName = true)
     {
         // in this test class, all tests have enablePrettyUrl enabled.
