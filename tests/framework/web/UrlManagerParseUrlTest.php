@@ -335,9 +335,6 @@ class UrlManagerParseUrlTest extends TestCase
 
         // createUrl should ignore REST rules
         $this->mockApplication([
-            'controllerMap' => [
-                'post/delete' => 'yii\web\Controller'
-            ],
             'components' => [
                 'request' => [
                     'hostInfo' => 'http://localhost/',
