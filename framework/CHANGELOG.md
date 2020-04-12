@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
 - Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
 - Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
-- Ehn #17941: Allow mapping a conntroller in module subdirectory #13433, and prettify route and params with no declared urlRule (Djibril)
+- Ehn #17941: Allow mapping a controller in module subdirectory #13433 (Djibril)
 
 2.0.34 March 26, 2020
 ---------------------
