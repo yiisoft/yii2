@@ -358,7 +358,17 @@ class UrlManager extends Component
                 return $this->normalizer->normalizeRoute([$pathInfo, []]);
             }
 
-            return [$pathInfo, []];
+            return $this->routifyPrettyUrl($pathInfo);
+        }
+        try {
+            if ($request->getPathInfo()!=='') {
+                return false;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }catch (\Exception $e)
+        {
+           // for PHP 5
         }
 
         Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
@@ -455,12 +465,10 @@ class UrlManager extends Component
                 $url = ltrim($url, '/');
                 return "$baseUrl/{$url}{$anchor}";
             }
-
-            if ($this->suffix !== null) {
+            if (!empty($params)) {
+                $route =  $this->prettifyRouteArgs($route,$params,$cacheKey);
+            }elseif ($this->suffix !== null) {
                 $route .= $this->suffix;
-            }
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
-                $route .= '?' . $query;
             }
 
             $route = ltrim($route, '/');
@@ -473,6 +481,83 @@ class UrlManager extends Component
         }
 
         return $url . $anchor;
+    }
+
+    /**
+     * Create pretty url from a given route and argument when no related urlRule defined.
+     * 
+     * this is mainly called by [[createUrl()]]
+     * @param string $route
+     * @param array $routeArgs
+     * @return string created pretty url, $route and $urlArgs separated by $this->routeParam
+     */
+    public function prettifyRouteArgs($route,$routeArgs,$cacheKey)
+    {
+        $args='';
+        $cacheKey.=$this->routeParam. '&';
+        if(!isset($this->_ruleCache[$cacheKey])){
+            if ($parts=Yii::$app->createController($route)) {
+                $this->_ruleCache[$cacheKey]=$parts[0]->validateActionId($parts[1],$routeArgs);
+
+            }
+        }
+        
+        if (is_array($this->_ruleCache[$cacheKey])) {
+            foreach ($this->_ruleCache[$cacheKey] as $name => $value) {
+                if (array_key_exists($name, $routeArgs)) {
+                    $args .= '/'.$routeArgs[$name];
+                    unset($routeArgs[$name]);
+                } 
+            }
+        } 
+
+        $route.=$args!==''?"/{$this->routeParam}{$args}":'';
+        if ($this->suffix !== null) {
+            $route .= $this->suffix;
+        }
+
+        if (!empty($routeArgs) && ($routeArgs = http_build_query($routeArgs)) !== '') {
+            $route .= '?' . $routeArgs;
+        }
+
+        return $route;
+    }
+
+    /**
+     * Create route and associated parametters from requested Url when no related URL rule defined
+     * 
+     * this is mainly called by [[parseRequest()]]
+     *
+     * @param string $pathInfo
+     * @return array the route and the associated parameters
+     */
+    public function routifyPrettyUrl($pathInfo)
+    {
+        $result=[$pathInfo, []];
+        $pathInfo=trim($pathInfo,'/');
+        if (strpos($pathInfo, "/{$this->routeParam}/") !== false) {
+            list($route,$urlArgs)=explode("/{$this->routeParam}/",$pathInfo);
+            $urlArgs=explode('/',$urlArgs);
+            if ($this->cache instanceof CacheInterface) {
+                $appRoutes=$this->cache->get([$this->cacheKey, __METHOD__]);
+            }
+            if (!isset($appRoutes[$route.count($urlArgs)])) {
+                if ($parts=Yii::$app->createController($route)) {
+                    if ($params=$parts[0]->validateActionId($parts[1],$urlArgs,true)) {
+                        $result=[$route,$params];
+                        if ($this->cache instanceof CacheInterface) {
+                            $appRoutes[$route.count($urlArgs)]=array_keys($params);
+                            $this->cache->set([$this->cacheKey, __METHOD__],$appRoutes);
+                        }
+                    }
+                }
+            }else{
+                $params=array_combine($appRoutes[$route.count($urlArgs)], $urlArgs);
+                $result=[$route,$params];
+            }
+        }
+
+        return $result;
     }
 
     /**

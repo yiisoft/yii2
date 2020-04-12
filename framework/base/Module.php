@@ -571,32 +571,43 @@ class Module extends ServiceLocator
             return false;
         }
 
-        if (strpos($route, '/') !== false) {
-            list($id, $route) = explode('/', $route, 2);
-        } else {
-            $id = $route;
-            $route = '';
+        // module and controller map take precedence
+        $routeInfo=pathinfo($route);
+        $id =$routeInfo['dirname']!=='.'?$routeInfo['dirname']:$routeInfo['basename'];
+        $route = $routeInfo['dirname']!=='.'?$routeInfo['basename']:'';
+        if (isset($this->controllerMap[$id.'/'.$route])) {
+            $controllerClass= $this->controllerMap[$id.'/'.$route];
+            $id=$id.'/'.$route;
+            $route='';
+            
+        }elseif (isset($this->controllerMap[$id])) {
+            $controllerClass= $this->controllerMap[$id];
         }
 
-        // module and controller map take precedence
-        if (isset($this->controllerMap[$id])) {
-            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
+        if (isset($controllerClass)) {
+            $controller = Yii::createObject($controllerClass, [$id, $this]);
             return [$controller, $route];
         }
-        $module = $this->getModule($id);
+
+        if (strpos($id, '/') !== false) {
+            list($moduleId, $moduleRoute) = explode('/', $id, 2);
+            $moduleRoute.=$route!==''?'/'.$route:'';
+        } else {
+            $moduleId = $id;
+            $moduleRoute = $route;
+        }
+
+        $module = $this->getModule($moduleId);
         if ($module !== null) {
-            return $module->createController($route);
+            return $module->createController($moduleRoute);
         }
 
-        if (($pos = strrpos($route, '/')) !== false) {
-            $id .= '/' . substr($route, 0, $pos);
-            $route = substr($route, $pos + 1);
-        }
-
-        $controller = $this->createControllerByID($id);
-        if ($controller === null && $route !== '') {
-            $controller = $this->createControllerByID($id . '/' . $route);
-            $route = '';
+        $controller = $this->createControllerByID($id . '/' . $route);
+        if ($controller !== null ) {
+            $id=$id.'/'.$route;
+            $route='';
+        }else {            
+            $controller = $this->createControllerByID($id);            
         }
 
         return $controller === null ? false : [$controller, $route];
