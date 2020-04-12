@@ -366,6 +366,9 @@ class UrlManager extends Component
             }
         } catch (\Throwable $th) {
             //throw $th;
+        }catch (\Exception $e)
+        {
+           // for PHP 5
         }
 
         Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
