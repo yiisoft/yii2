@@ -503,7 +503,7 @@ class UrlManager extends Component
 
         $route.=$args!==''?"/{$this->routeParam}{$args}":'';
         if ($this->suffix !== null) {
-            $route .= trim($this->suffix,'/');
+            $route .= $this->suffix;
         }
 
         if (!empty($routeArgs) && ($routeArgs = http_build_query($routeArgs)) !== '') {
