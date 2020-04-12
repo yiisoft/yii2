@@ -177,3 +177,5 @@ That's all! Now in any part of your code, you can use `Yii::$app` to access the 
 echo get_class(Yii::app()); // outputs 'CWebApplication'
 echo get_class(Yii::$app);  // outputs 'yii\web\Application'
 ```
+
+Here is a step by step instruction for upgrading from yii1 to yii2: https://github.com/ahmadasjad/yii1plusyii2 , https://github.com/ahmadasjad/yii2plusyii1
