@@ -575,12 +575,13 @@ class Module extends ServiceLocator
         $routeInfo=pathinfo($route);
         $controllerId =$routeInfo['dirname']!=='.'?$routeInfo['dirname']:$routeInfo['basename'];
         $actionId = $routeInfo['dirname']!=='.'?$routeInfo['basename']:'';
-        if (isset($this->controllerMap[$controllerId])) {
-            $controllerClass= $this->controllerMap[$controllerId];
-        }elseif (isset($this->controllerMap[$controllerId.'/'.$actionId])) {
+        if (isset($this->controllerMap[$controllerId.'/'.$actionId])) {
             $controllerClass= $this->controllerMap[$controllerId.'/'.$actionId];
             $controllerId=$controllerId.'/'.$actionId;
             $actionId='';
+            
+        }elseif (isset($this->controllerMap[$controllerId])) {
+            $controllerClass= $this->controllerMap[$controllerId];
         }
 
         if (isset($controllerClass)) {

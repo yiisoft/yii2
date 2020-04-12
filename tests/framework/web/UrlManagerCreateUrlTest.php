@@ -59,6 +59,7 @@ class UrlManagerCreateUrlTest extends TestCase
                 'site/index' => 'yii\web\Controller',
                 'post/view' =>  'yii\web\Controller',
                 'post/index'=> 'yii\web\Controller',
+                'post'=> 'yii\web\Controller',
         
             ],
         ]);
