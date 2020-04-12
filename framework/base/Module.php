@@ -602,10 +602,12 @@ class Module extends ServiceLocator
             return $module->createController($route);
         }
 
-        $controller = $this->createControllerByID($controllerId);
-        if ($controller === null && $actionId !== '') {
-            $controller = $this->createControllerByID($controllerId . '/' . $actionId);
-            $actionId = '';
+        $controller = $this->createControllerByID($controllerId . '/' . $actionId);
+        if ($controller !== null ) {
+            $controllerId=$controllerId.'/'.$actionId;
+            $actionId='';
+        }else {            
+            $controller = $this->createControllerByID($controllerId);            
         }
 
         return $controller === null ? false : [$controller, $actionId];
