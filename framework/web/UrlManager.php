@@ -360,9 +360,12 @@ class UrlManager extends Component
 
             return $this->routifyPrettyUrl($pathInfo);
         }
-
-        if ($request->getPathInfo()!=='') {
-            return false;
+        try {
+            if ($request->getPathInfo()!=='') {
+                return false;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
         }
 
         Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
