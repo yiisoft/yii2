@@ -118,6 +118,8 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * - `query`: either a string or a [[Query]] object representing a query
      * - `alias`: string, alias of query for further usage
      * - `recursive`: boolean, whether it should be `WITH RECURSIVE` or `WITH`
+     * @see withQuery()
+     * @since 2.0.35
      */
     public $withQueries;
     /**
@@ -1262,10 +1264,11 @@ PATTERN;
 
     /**
      * Prepends a SQL statement using WITH syntax.
-     * @param string|Query $query the SQL statement to be appended using UNION
+     * @param string|Query $query the SQL statement to be prepended using WITH
      * @param string $alias query alias in WITH construction
      * @param bool $recursive TRUE if using WITH RECURSIVE and FALSE if using WITH
      * @return $this the query object itself
+     * @since 2.0.35
      */
     public function withQuery($query, $alias, $recursive = false)
     {

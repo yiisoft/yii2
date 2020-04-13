@@ -1497,6 +1497,13 @@ class QueryBuilder extends \yii\base\BaseObject
         return trim($result);
     }
 
+    /**
+     * @param array $withs of configurations for each WITH query
+     * @param array $params the binding parameters to be populated
+     * @return string compiled WITH prefix of query including nested queries
+     * @see Query::withQuery()
+     * @since 2.0.35
+     */
     public function buildWithQueries($withs, &$params)
     {
         if (empty($withs)) {
