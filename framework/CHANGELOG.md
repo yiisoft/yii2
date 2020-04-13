@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
 - Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
 - Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
+- Enh #17758: `Query::withQuery()` can be used for CTE (sartor)
 
 
 2.0.34 March 26, 2020
