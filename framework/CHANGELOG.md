@@ -9,6 +9,8 @@ Yii Framework 2 Change Log
 - Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
 - Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
 - Ehn #17941: Allow mapping a controller in module subdirectory #13433 (Djibril)
+- Enh #17758: `Query::withQuery()` can be used for CTE (sartor)
+
 
 2.0.34 March 26, 2020
 ---------------------

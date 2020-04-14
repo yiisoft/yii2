@@ -520,6 +520,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sql = "$sql{$this->separator}$union";
         }
 
+        $with = $this->buildWithQueries($query->withQueries, $params);
+        if ($with !== '') {
+            $sql = "$with{$this->separator}$sql";
+        }
+
         return [$sql, $params];
     }
 
