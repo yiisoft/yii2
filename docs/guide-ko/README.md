@@ -99,10 +99,10 @@ Yii 2.0에 대한 결정적인 가이드
 데이터 표시
 ---------------
 
-* [데이터 형식](output-formatting.md)
+* [데이터 형식화(Formatting)](output-formatting.md)
 * [쪽수 매기기](output-pagination.md)
 * [정렬](output-sorting.md)
-* [데이터 제공 업체](output-data-providers.md)
+* [데이터 제공자](output-data-providers.md)
 * [데이터 위젯](output-data-widgets.md)
 * [클라이언트 스크립트 작업](output-client-scripts.md)
 * [테마](output-theming.md)
