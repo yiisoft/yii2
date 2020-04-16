@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
-- Bug #17975: Fix for deleting unused messages with console command if message tables were created manually (auerswald)
+- Bug #17975: Fix deleting unused messages with console command if message tables were created manually for MySQL (auerswald)
 - Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
 - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
 - Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
