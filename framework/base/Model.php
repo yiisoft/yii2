@@ -14,6 +14,7 @@ use IteratorAggregate;
 use ReflectionClass;
 use Yii;
 use yii\helpers\Inflector;
+use yii\validators\DefaultValueValidator;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -1047,5 +1048,25 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function offsetUnset($offset)
     {
         $this->$offset = null;
+    }
+
+    /**
+     * Loads default values from default validator rule
+     *
+     * You can set default values in rules and call this method to load default values after creating a new instance:
+     *
+     * ```php
+     * // class Customer extends \yii\db\ActiveRecord
+     * $customer = new Customer();
+     * $customer->loadDefaultValuesFromRules();
+     * ```
+     */
+    public function loadDefaultValuesFromRules()
+    {
+        foreach ($this->getActiveValidators() as $validator) {
+            if ($validator instanceof DefaultValueValidator) {
+                $validator->validateAttributes($this);
+            }
+        }
     }
 }
