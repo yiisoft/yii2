@@ -365,10 +365,10 @@ class UrlManager extends Component
                 return false;
             }
         } catch (\Throwable $th) {
-            return false;
+            
         }catch (\Exception $e)
         {
-            return false;
+            
         }
         Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
         $route = $request->getQueryParam($this->routeParam, '');
