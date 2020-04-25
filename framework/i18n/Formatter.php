@@ -216,6 +216,12 @@ class Formatter extends Component
      */
     public $decimalSeparator;
     /**
+     * @var string the character displayed as the decimal point when formatting a currency.
+     * If not set, the currency decimal separator corresponding to [[locale]] will be used.
+     * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     */
+    public $currencyDecimalSeparator;
+    /**
      * @var string the character displayed as the thousands separator (also called grouping separator) character when formatting a number.
      * If not set, the thousand separator corresponding to [[locale]] will be used.
      * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, the default value is ','.
@@ -1782,6 +1788,9 @@ class Formatter extends Component
         if ($this->decimalSeparator !== null) {
             $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
         }
+        if ($this->currencyDecimalSeparator !== null) {
+            $formatter->setSymbol(NumberFormatter::MONETARY_SEPARATOR_SYMBOL, $this->currencyDecimalSeparator);
+        }
         if ($this->thousandSeparator !== null) {
             $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
             $formatter->setSymbol(NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
@@ -1794,7 +1803,7 @@ class Formatter extends Component
     }
 
     /**
-     * Checks if string representations of given value and its normalized version are different.
+     * checks if string representations of given value and its normalized version are different.
      * @param string|float|int $value
      * @param float|int $normalizedValue
      * @return bool
