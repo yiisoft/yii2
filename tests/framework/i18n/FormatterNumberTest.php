@@ -415,11 +415,11 @@ class FormatterNumberTest extends TestCase
 
         // different currency decimal separator
         $this->formatter->locale = 'ru-RU';
-        $this->assertSame("123,00\xc2\xa0₽", $this->formatter->asCurrency('123'));
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
         $this->formatter->currencyDecimalSeparator = ',';
-        $this->assertSame("123,00\xc2\xa0₽", $this->formatter->asCurrency('123'));
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
         $this->formatter->currencyDecimalSeparator = '.';
-        $this->assertSame("123.00\xc2\xa0₽", $this->formatter->asCurrency('123'));
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123.00\xc2\xa0₽", "123.00\xc2\xa0руб."]);
     }
 
     /**
