@@ -253,6 +253,13 @@ class UrlManagerTest extends TestCase
         $result = $manager->parseRequest($request);
         $this->assertEquals(['site/index', []], $result);
         $this->assertEquals(5, $request->getQueryParam('id'));
+
+        // With path info not '';
+        $request->setPathInfo('pathInfo');
+        $request->setQueryParams([$routeParam => 'site/index', 'id' => 5]);
+        $result = $manager->parseRequest($request);
+        $this->assertFalse($result);
+        $this->assertEquals(5, $request->getQueryParam('id'));
     }
 
     public function testSetBaseUrl()
