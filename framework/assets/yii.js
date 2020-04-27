@@ -296,18 +296,20 @@ window.yii = (function ($) {
 
             for (var i = 0, len = pairs.length; i < len; i++) {
                 var pair = pairs[i].split('=');
-                var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
-                var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
-                if (!name.length) {
-                    continue;
-                }
-                if (params[name] === undefined) {
-                    params[name] = value || '';
-                } else {
-                    if (!$.isArray(params[name])) {
-                        params[name] = [params[name]];
+                if (pair.length >= 2) {
+                    var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
+                    var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
+                    if (!name.length) {
+                        continue;
                     }
-                    params[name].push(value || '');
+                    if (params[name] === undefined) {
+                        params[name] = value || '';
+                    } else {
+                        if (!$.isArray(params[name])) {
+                            params[name] = [params[name]];
+                        }
+                        params[name].push(value || '');
+                    }
                 }
             }
 
