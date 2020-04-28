@@ -1803,7 +1803,7 @@ class Formatter extends Component
     }
 
     /**
-     * checks if string representations of given value and its normalized version are different.
+     * Checks if string representations of given value and its normalized version are different.
      * @param string|float|int $value
      * @param float|int $normalizedValue
      * @return bool
