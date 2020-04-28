@@ -121,7 +121,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
         'uuid' => self::TYPE_STRING,
         'json' => self::TYPE_JSON,
-        'jsonb' => self::TYPE_JSON,
+        'jsonb' => self::TYPE_JSONB,
         'xml' => self::TYPE_STRING,
     ];
 

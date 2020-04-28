@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
 - Enh #17758: `Query::withQuery()` can be used for CTE (sartor)
 - Bug #17974: Fix ActiveRelationTrait compatibility with PHP 7.4 (Ximich)
+- Bug #18002: Fixed PostgreSQL mapping of a JSONB column (silverfire)
 
 
 2.0.34 March 26, 2020
