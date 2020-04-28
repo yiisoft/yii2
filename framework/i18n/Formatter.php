@@ -219,6 +219,7 @@ class Formatter extends Component
      * @var string the character displayed as the decimal point when formatting a currency.
      * If not set, the currency decimal separator corresponding to [[locale]] will be used.
      * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     * @since 2.0.35
      */
     public $currencyDecimalSeparator;
     /**
