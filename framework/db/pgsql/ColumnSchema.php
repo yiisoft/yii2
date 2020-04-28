@@ -133,6 +133,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 }
                 return (bool) $value;
             case Schema::TYPE_JSON:
+            case Schema::TYPE_JSONB:
                 return $this->disableJsonSupport ? $value : json_decode($value, true);
         }
 
