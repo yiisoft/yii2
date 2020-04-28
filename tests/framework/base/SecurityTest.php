@@ -74,7 +74,7 @@ class SecurityTest extends TestCase
     public static $fread;
 
     /**
-     * @var ExposedSecurity
+     * @var Security
      */
     protected $security;
 
@@ -84,7 +84,7 @@ class SecurityTest extends TestCase
         static::$fopen = null;
         static::$fread = null;
         parent::setUp();
-        $this->security = new ExposedSecurity();
+        $this->security = new Security();
         $this->security->derivationIterations = 1000; // speed up test running
     }
 
