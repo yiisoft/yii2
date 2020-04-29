@@ -57,6 +57,8 @@ class DynamicModel extends Model
 {
     private $_attributes = [];
 
+    private $_attributeLabels = [];
+
 
     /**
      * Constructors.
@@ -236,5 +238,36 @@ class DynamicModel extends Model
     public function attributes()
     {
         return array_keys($this->_attributes);
+    }
+
+    /**
+     * @param array $labels
+     * @return $this
+     */
+    public function setAttributeLabels(array $labels = [])
+    {
+        $this->_attributeLabels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * @param string $attibute
+     * @param string $label
+     * @return $this
+     */
+    public function setAttributeLabel($attibute, $label)
+    {
+        $this->_attributeLabels[$attibute] = $label;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), $this->_attributeLabels);
     }
 }
