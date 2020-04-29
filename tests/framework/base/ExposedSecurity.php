@@ -29,4 +29,20 @@ class ExposedSecurity extends Security
     {
         return parent::pbkdf2($algo, $password, $salt, $iterations, $length);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUseLibreSSL()
+    {
+        return parent::getUseLibreSSL();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function isWindows()
+    {
+        return parent::isWindows();
+    }
 }
