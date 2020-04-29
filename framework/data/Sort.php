@@ -185,13 +185,13 @@ class Sort extends BaseObject
      * the `urlManager` application component will be used.
      */
     public $urlManager;
-
     /**
      * @var int Allow to control a value of the fourth parameter which will be
      * passed to [[ArrayHelper::multisort()]]
      * @since 2.0.33
      */
     public $sortFlags = SORT_REGULAR;
+
 
     /**
      * Normalizes the [[attributes]] property.

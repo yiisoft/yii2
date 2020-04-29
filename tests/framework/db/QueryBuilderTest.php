@@ -942,7 +942,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
             [
@@ -951,7 +951,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
                     'postgres' => 'bigserial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
             [
@@ -1674,6 +1674,56 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
             ->union($thirdQuery, true);
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
+    public function testBuildWithQuery()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS ((SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2) UNION ( SELECT [[id]] FROM [[t3]] WHERE expr = 3 )) SELECT * FROM [[a2]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $with2Query = (new Query())
+            ->select('id')
+            ->from('t2')
+            ->innerJoin('a1', 't2.id = a1.id')
+            ->where('expr = 2');
+
+        $with3Query = (new Query())
+            ->select('id')
+            ->from('t3')
+            ->where('expr = 3');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1')
+            ->withQuery($with2Query->union($with3Query), 'a2')
+            ->from('a2');
+
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
+    public function testBuildWithQueryRecursive()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH RECURSIVE a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1) SELECT * FROM [[a1]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1', true)
+            ->from('a1');
+
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);

@@ -602,6 +602,28 @@ $query1->union($query2);
 
 You can call [[yii\db\Query::union()|union()]] multiple times to append more `UNION` fragments. 
 
+### [[yii\db\Query::withQuery()|withQuery()]] <span id="with-query"></span>
+
+The [[yii\db\Query::withQuery()|withQuery()]] method specifies the `WITH` prefix of a SQL query. You can use it instead of subquery for more readability and some unique features (recursive CTE). Read more at [modern-sql](https://modern-sql.com/feature/with). For example, this query will select all nested permissions of `admin` with their children recursively,
+
+```php
+$initialQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->where(['parent' => 'admin']);
+
+$recursiveQuery = (new \yii\db\Query())
+    ->select(['aic.parent', 'aic.child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->innerJoin('t1', 't1.child = aic.parent');
+
+$mainQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from('t1')
+    ->withQuery($initialQuery->union($recursiveQuery), 't1', true);
+```
+
+[[yii\db\Query::withQuery()|withQuery()]] can be called multiple times to prepend more CTE's to main query. Queries will be prepend in same order as they attached. If one of query is recursive then whole CTE become recursive.
 
 ## Query Methods <span id="query-methods"></span>
 
