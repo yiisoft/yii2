@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
+- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
 - Bug #17653: Fix `TypeError: pair[1] is undefined` when query param doesn't have = sign (baso10)
 - Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
 - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
