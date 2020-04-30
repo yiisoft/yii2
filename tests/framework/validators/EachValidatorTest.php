@@ -235,7 +235,6 @@ class EachValidatorTest extends TestCase
         $validator->validateAttribute($model, 'customLabel');
         $validator->validateAttribute($model, 'firstName');
 
-        $this->assertFalse($model->hasErrors('array'));
         $this->assertEquals('This is the custom label must be a valid IP address.', $model->getFirstError('customLabel'));
         $this->assertEquals('First Name is invalid.', $model->getFirstError('firstName'));
     }
