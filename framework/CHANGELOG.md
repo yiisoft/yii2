@@ -4,7 +4,8 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
-- Bug #18011: Validation bug of \yii\base\DynamicModel class
+- Bug #18011: Added attribute labels support for `DynamicModel` (storch)
+- Bug #18011: Fixed `EachValidator` to pass the attribute label to the underlying `DynamicModel` (storch)
 - Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
 - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
 - Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
