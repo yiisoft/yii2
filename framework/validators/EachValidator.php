@@ -137,6 +137,7 @@ class EachValidator extends Validator
 
         $dynamicModel = new DynamicModel($model->getAttributes());
         $dynamicModel->addRule($attribute, $this->getValidator($model));
+        $dynamicModel->setAttributeLabels($model->attributeLabels());
 
         foreach ($arrayOfValues as $k => $v) {
             $dynamicModel->defineAttribute($attribute, $v);
