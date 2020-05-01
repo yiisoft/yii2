@@ -4,6 +4,9 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
+- Bug #18011: Added attribute labels support for `DynamicModel`, fixed `EachValidator` to pass the attribute label to the underlying `DynamicModel` (storch)
+- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
+- Bug #17653: Fix `TypeError: pair[1] is undefined` when query param doesn't have = sign (baso10)
 - Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
 - Bug #17810: Fix EachValidator crashing with uninitialized typed properties (ricardomm85)
 - Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
@@ -11,6 +14,8 @@ Yii Framework 2 Change Log
 - Enh #17758: `Query::withQuery()` can be used for CTE (sartor)
 - Bug #17974: Fix ActiveRelationTrait compatibility with PHP 7.4 (Ximich)
 - Bug #17991: Improve `yii\db\Connection` master and slave failover, no connection attempt was made when all servers are marked as unavailable  (cebe)
+- Bug #18000: PK value of Oracle ActiveRecord is missing after save (mankwok)
+- Enh #18006: Allow SameSite cookie pre PHP 7.3 (scottix)
 
 
 2.0.34 March 26, 2020
