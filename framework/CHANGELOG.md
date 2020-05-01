@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
 - Enh #17758: `Query::withQuery()` can be used for CTE (sartor)
 - Bug #17974: Fix ActiveRelationTrait compatibility with PHP 7.4 (Ximich)
+- Enh #18006: Allow SameSite cookie pre PHP 7.3 (scottix)
 
 
 2.0.34 March 26, 2020
