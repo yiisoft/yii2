@@ -252,13 +252,13 @@ class DynamicModel extends Model
     }
 
     /**
-     * @param string $attibute
+     * @param string $attribute
      * @param string $label
      * @return $this
      */
-    public function setAttributeLabel($attibute, $label)
+    public function setAttributeLabel($attribute, $label)
     {
-        $this->_attributeLabels[$attibute] = $label;
+        $this->_attributeLabels[$attribute] = $label;
 
         return $this;
     }
