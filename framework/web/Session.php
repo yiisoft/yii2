@@ -399,7 +399,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                 session_set_cookie_params($data);
             } else {
                 if (!empty($data['samesite'])) {
-                    throw new InvalidConfigException('samesite cookie is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
+                    $data['path'] .= '; samesite=' . $data['samesite'];
                 }
                 session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
             }
