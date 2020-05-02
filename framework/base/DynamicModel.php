@@ -56,7 +56,6 @@ use yii\validators\Validator;
 class DynamicModel extends Model
 {
     private $_attributes = [];
-
     /**
      * Array of the dynamic attribute labels.
      * Used to as form field labels and in validation errors.
