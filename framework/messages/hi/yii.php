@@ -24,7 +24,7 @@
  */
 return [
     ' and ' => ' और ',
-    '(not set)' => '(सेट नहीं)',
+    '(not set)' => '(स्थापित नहीं)',
     'An internal server error occurred.' => 'सर्वर की एक आंतरिक खामी हुई।',
     'Are you sure you want to delete this item?' => 'क्या आप सुनिश्चित रूप से इस चीज को नष्ट करना चाहते हैं?',
     'Delete' => 'नष्ट',
