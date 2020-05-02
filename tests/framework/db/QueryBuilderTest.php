@@ -9,6 +9,8 @@ namespace yiiunit\framework\db;
 
 use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
+use yii\db\conditions\LikeCondition;
+use yii\db\conditions\InCondition;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
@@ -1198,6 +1200,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
                 [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
+            
+            // in object conditions
+            [new InCondition('id', 'in', 1), '[[id]]=:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'in', [1]), '[[id]]=:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'not in', 1), '[[id]]<>:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'not in', [1]), '[[id]]<>:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'in', [1, 2]), '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
+            [new InCondition('id', 'not in', [1, 2]), '[[id]] NOT IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
+            
             // exists
             [['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
@@ -2469,6 +2480,16 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '[[location]].[[title_ru]] LIKE :qp0',
                 [':qp0' => 'vi%'],
             ],
+            
+            // like object conditions
+            [new LikeCondition('name', 'like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'or like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'or not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") AND [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'or like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") OR [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'or not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
         ];
 
         // adjust dbms specific escaping
