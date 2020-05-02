@@ -523,5 +523,4 @@ class Controller extends Component implements ViewContextInterface
 
         return $path;
     }
-
 }
