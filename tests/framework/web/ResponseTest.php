@@ -311,4 +311,21 @@ class ResponseTest extends \yiiunit\TestCase
 
         $this->assertSame("attachment; filename=\"test_test.txt\"; filename*=utf-8''test%7Ftest.txt", $response->headers['content-disposition']);
     }
+
+    public function testSameSiteCookie()
+    {
+        $response = new Response();
+        $response->cookies->add(new \yii\web\Cookie([
+            'name'     => 'test',
+            'value'    => 'testValue',
+            'sameSite' => \yii\web\Cookie::SAME_SITE_STRICT,
+        ]));
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+
+        // Only way to test is that it doesn't create any errors
+        $this->assertEquals('', $content);
+    }
 }
