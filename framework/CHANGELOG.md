@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.35 under development
 ------------------------
 
+- Bug #17975: Fix deleting unused messages with console command if message tables were created manually (auerswald, cebe)
 - Bug #17961: Fix pagination `pageSizeLimit` ignore if set as array with more then 2 elements (tsvetiligo)
 - Bug #18011: Added attribute labels support for `DynamicModel`, fixed `EachValidator` to pass the attribute label to the underlying `DynamicModel` (storch)
 - Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
