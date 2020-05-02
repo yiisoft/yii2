@@ -412,6 +412,14 @@ class FormatterNumberTest extends TestCase
         $this->formatter->thousandSeparator = ' ';
         $this->formatter->decimalSeparator = ',';
         $this->assertSame('USD 95 836 208 451 783 051,86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
+
+        // different currency decimal separator
+        $this->formatter->locale = 'ru-RU';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
+        $this->formatter->currencyDecimalSeparator = ',';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
+        $this->formatter->currencyDecimalSeparator = '.';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123.00\xc2\xa0₽", "123.00\xc2\xa0руб."]);
     }
 
     /**
