@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #17758: `Query::withQuery()` can be used for CTE (sartor)
 - Bug #17974: Fix ActiveRelationTrait compatibility with PHP 7.4 (Ximich)
 - Enh #18006: Allow SameSite cookie pre PHP 7.3 (scottix)
+- Bug #18010: Allow upper or lower case operators in `InCondition` and `LikeCondition` (alex-code)
 
 
 2.0.34 March 26, 2020
