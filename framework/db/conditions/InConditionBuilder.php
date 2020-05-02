@@ -33,7 +33,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $expression->getOperator();
+        $operator = strtoupper($expression->getOperator());
         $column = $expression->getColumn();
         $values = $expression->getValues();
 

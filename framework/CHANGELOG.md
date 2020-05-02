@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Enh #17993: Added `yii\i18n\Formatter::$currencyDecimalSeparator` to allow setting custom symbols for currency decimal in IntlNumberFormatter (XPOHOC269)
 - Bug #18000: PK value of Oracle ActiveRecord is missing after save (mankwok)
 - Enh #18006: Allow SameSite cookie pre PHP 7.3 (scottix)
+- Bug #18010: Allow upper or lower case operators in `InCondition` and `LikeCondition` (alex-code)
 
 
 2.0.34 March 26, 2020
