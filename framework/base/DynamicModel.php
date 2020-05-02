@@ -59,7 +59,7 @@ class DynamicModel extends Model
 
     /**
      * Array of the dynamic attribute labels.
-     * Used to add a readable message in case attribute validation error and etc.
+     * Used to as form field labels and in validation errors.
      *
      * @see attributeLabels()
      * @see setAttributeLabels()
@@ -267,7 +267,7 @@ class DynamicModel extends Model
     }
 
     /**
-     * Sets the label for an attribute.
+     * Sets a label for an attribute.
      *
      * @see attributeLabels()
      * @see $_attributeLabels
