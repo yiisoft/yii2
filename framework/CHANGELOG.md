@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.36 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
 
 
 2.0.35 May 02, 2020
@@ -26,7 +26,6 @@ Yii Framework 2 Change Log
 - Enh #17758: `Query::withQuery()` can now be used for CTE (sartor)
 - Enh #17993: Add `yii\i18n\Formatter::$currencyDecimalSeparator` to allow setting custom symbols for currency decimal in `IntlNumberFormatter` (XPOHOC269)
 - Enh #18006: Allow `SameSite` cookie pre PHP 7.3 (scottix)
-- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
 
 
 2.0.34 March 26, 2020
