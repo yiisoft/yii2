@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
+- Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
 
 
 2.0.35 May 02, 2020

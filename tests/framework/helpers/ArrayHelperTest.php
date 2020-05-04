@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use ArrayAccess;
 use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -38,6 +39,44 @@ class Post3 extends BaseObject
     public function init()
     {
         $this->subObject = new Post2();
+    }
+}
+
+class ArrayAccessibleObject implements ArrayAccess
+{
+    private $container = [];
+
+    public function __construct()
+    {
+        $this->container = array(
+            'one'   => 1,
+            'two'   => 2,
+            'three' => 3,
+        );
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->container[$offset]);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->container[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 }
 
@@ -828,6 +867,20 @@ class ArrayHelperTest extends TestCase
         $this->expectException('PHPUnit\Framework\Error\Notice');
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
+    }
+
+    public function testGetValueFromArrayAccess()
+    {
+        $arrayAccessibleObject = new ArrayAccessibleObject();
+
+        $this->assertEquals(1, ArrayHelper::getValue($arrayAccessibleObject, 'one'));
+    }
+
+    public function testGetValueNonexistingArrayAccess()
+    {
+        $arrayAccessibleObject = new ArrayAccessibleObject();
+
+        $this->assertEquals(null, ArrayHelper::getValue($arrayAccessibleObject, 'four'));
     }
 
     /**
