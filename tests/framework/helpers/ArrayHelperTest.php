@@ -52,6 +52,7 @@ class ArrayAccessibleObject implements ArrayAccess
             'one'   => 1,
             'two'   => 2,
             'three' => 3,
+            'key.with.dot' => 'dot',
             'null'  => null,
         );
     }
@@ -875,6 +876,13 @@ class ArrayHelperTest extends TestCase
         $arrayAccessibleObject = new ArrayAccessibleObject();
 
         $this->assertEquals(1, ArrayHelper::getValue($arrayAccessibleObject, 'one'));
+    }
+
+    public function testGetValueWithDotsFromArrayAccess()
+    {
+        $arrayAccessibleObject = new ArrayAccessibleObject();
+
+        $this->assertEquals('dot', ArrayHelper::getValue($arrayAccessibleObject, 'key.with.dot'));
     }
 
     public function testGetValueNonexistingArrayAccess()
