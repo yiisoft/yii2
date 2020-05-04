@@ -52,6 +52,7 @@ class ArrayAccessibleObject implements ArrayAccess
             'one'   => 1,
             'two'   => 2,
             'three' => 3,
+            'null'  => null,
         );
     }
 
@@ -66,7 +67,7 @@ class ArrayAccessibleObject implements ArrayAccess
 
     public function offsetExists($offset)
     {
-        return isset($this->container[$offset]);
+        return array_key_exists($offset, $this->container);
     }
 
     public function offsetUnset($offset)
@@ -76,7 +77,7 @@ class ArrayAccessibleObject implements ArrayAccess
 
     public function offsetGet($offset)
     {
-        return isset($this->container[$offset]) ? $this->container[$offset] : null;
+        return $this->offsetExists($offset) ? $this->container[$offset] : null;
     }
 }
 

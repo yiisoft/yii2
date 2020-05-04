@@ -7,6 +7,7 @@
 
 namespace yii\helpers;
 
+use ArrayAccess;
 use Yii;
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
@@ -202,8 +203,10 @@ class BaseArrayHelper
             $array = static::getValue($array, substr($key, 0, $pos), $default);
             $key = substr($key, $pos + 1);
         }
-        if (static::isArrayAccess($array)) {
+        if (is_array($array)) {
             return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
+        } elseif ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key) ? $array->offsetGet($key) : $default;
         } elseif (is_object($array)) {
             // this is expected to fail if the property does not exist, or __get() is not implemented
             // it is not reliably possible to check whether a property is accessible beforehand
@@ -846,20 +849,6 @@ class BaseArrayHelper
     public static function isTraversable($var)
     {
         return is_array($var) || $var instanceof \Traversable;
-    }
-
-    /**
-     * Checks whether a variable is an array or [[\ArrayAccess]].
-     *
-     * This method does the same as the PHP function [is_array()](https://secure.php.net/manual/en/function.is-array.php)
-     * but additionally works on objects that implement the [[\ArrayAccess]] interface.
-     * @param mixed $var The variable being evaluated.
-     * @return bool whether $var can be accessed with array notations
-     * @see https://secure.php.net/manual/en/function.is-array.php
-     */
-    public static function isArrayAccess($var)
-    {
-        return is_array($var) || $var instanceof \ArrayAccess;
     }
 
     /**
