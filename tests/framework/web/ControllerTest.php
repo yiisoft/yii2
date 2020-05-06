@@ -57,7 +57,7 @@ class ControllerTest extends TestCase
         ]));
         $this->mockWebApplication(['controller' => $this->controller]);
 
-        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
         $params = [];
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals(\Yii::$app->request, $args[0]);
@@ -66,8 +66,8 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
             return;
         }
         // Use the PHP7 controller for this test

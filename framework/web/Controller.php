@@ -163,9 +163,9 @@ class Controller extends \yii\base\Controller
                 }
                 $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
-            } elseif (PHP_VERSION_ID >= 70000 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
                 // Since it is not a builtin type it must be DI injection.
-                $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string) $type;
+                $typeName = $type->getName();
                 if (($component = $this->module->get($name, false)) instanceof $typeName) {
                     $args[] = $component;
                     $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
