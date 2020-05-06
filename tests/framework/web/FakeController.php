@@ -8,6 +8,8 @@
 namespace yiiunit\framework\web;
 
 use yii\web\Controller;
+use yii\web\Request;
+use yii\web\Response;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -19,5 +21,10 @@ class FakeController extends Controller
 
     public function actionAksi1($fromGet, $other = 'default')
     {
+    }
+
+    public function actionInjection($before, Request $request, Post $post, $between, $after)
+    {
+
     }
 }

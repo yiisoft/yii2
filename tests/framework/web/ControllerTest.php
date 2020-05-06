@@ -17,6 +17,8 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
+    /** @var FakeController */
+    private $controller;
     public function testBindActionParams()
     {
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
@@ -32,6 +34,17 @@ class ControllerTest extends TestCase
         $this->assertEquals('avaliable', $other);
     }
 
+    public function testInjectedActionParams()
+    {
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals($params['before'], $args[0]);
+        $this->assertEquals(\Yii::$app->request, $args[1]);
+        $this->assertEquals($params['between'], $args[2]);
+        $this->assertInstanceOf(Post::class, $args[3]);
+        $this->assertEquals($params['after'], $args[4]);
+    }
     /**
      * @see https://github.com/yiisoft/yii2/issues/17701
      */
