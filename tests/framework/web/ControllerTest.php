@@ -42,8 +42,8 @@ class ControllerTest extends TestCase
             return;
         }
 
-        // Use the PHP7 controller for this test
-        $this->controller = new FakePhp7Controller('fake', new \yii\web\Application([
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
 
@@ -70,8 +70,8 @@ class ControllerTest extends TestCase
             $this->markTestSkipped('Can not be tested on PHP < 7.1');
             return;
         }
-        // Use the PHP7 controller for this test
-        $this->controller = new FakePhp7Controller('fake', new \yii\web\Application([
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
 
