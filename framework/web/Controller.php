@@ -169,7 +169,7 @@ class Controller extends \yii\base\Controller
                 if (($component = $this->module->get($name, false)) instanceof $typeName) {
                     $args[] = $component;
                     $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
-                } elseif (($service = \Yii::$container->get($typeName)) instanceof $typeName) {
+                } elseif (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName) {
                     $args[] = $service;
                     $requestedParams[$name] = "DI: $typeName \$$name";
                 } elseif ($type->allowsNull()) {
