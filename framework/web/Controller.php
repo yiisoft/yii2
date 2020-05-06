@@ -168,10 +168,10 @@ class Controller extends \yii\base\Controller
                 $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string) $type;
                 if (($component = $this->module->get($name, false)) instanceof $typeName) {
                     $args[] = $component;
-                    $requestedParams[$name] = "Component: $name";
+                    $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
                 } elseif (($service = \Yii::$container->get($typeName)) instanceof $typeName) {
                     $args[] = $service;
-                    $requestedParams[$name] = "DI: $typeName";
+                    $requestedParams[$name] = "DI: $typeName \$$name";
                 } elseif ($type->allowsNull()) {
                     $args[] = null;
                     $requestedParams[$name] = "Unavailable service: $name";

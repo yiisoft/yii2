@@ -23,7 +23,7 @@ class FakeController extends Controller
     {
     }
 
-    public function actionInjection($before, Request $request, VendorImage $vendorImage, $between, $after)
+    public function actionInjection($before, Request $request, $between, VendorImage $vendorImage, Post $post = null, $after)
     {
 
     }

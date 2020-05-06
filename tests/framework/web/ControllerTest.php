@@ -35,6 +35,35 @@ class ControllerTest extends TestCase
         $this->assertEquals('avaliable', $other);
     }
 
+    public function testNullableInjectedActionParams()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+
+        // Use the PHP7 controller for this test
+        $this->controller = new FakePhp7Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = [];
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals(\Yii::$app->request, $args[0]);
+        $this->assertNull($args[1]);
+    }
+
     public function testInjectedActionParams()
     {
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
@@ -42,9 +71,13 @@ class ControllerTest extends TestCase
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals($params['before'], $args[0]);
         $this->assertEquals(\Yii::$app->request, $args[1]);
+        $this->assertEquals('Component: yii\web\request $request', \Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
         $this->assertInstanceOf(VendorImage::className(), $args[3]);
-        $this->assertEquals($params['after'], $args[4]);
+        $this->assertEquals('DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
+        $this->assertNull($args[4]);
+        $this->assertEquals('Unavailable service: $post', \Yii::$app->requestedParams['post']);
+        $this->assertEquals($params['after'], $args[5]);
     }
     /**
      * @see https://github.com/yiisoft/yii2/issues/17701
