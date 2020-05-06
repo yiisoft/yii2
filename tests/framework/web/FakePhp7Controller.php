@@ -23,7 +23,12 @@ class FakePhp7Controller extends Controller
     {
     }
 
-    public function actionInjection(?Request $request, ?Post $post)
+    public function actionInjection($before, Request $request, $between, VendorImage $vendorImage, Post $post = null, $after)
+    {
+
+    }
+
+    public function actionNullableInjection(?Request $request, ?Post $post)
     {
     }
 }

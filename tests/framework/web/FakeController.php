@@ -22,9 +22,4 @@ class FakeController extends Controller
     public function actionAksi1($fromGet, $other = 'default')
     {
     }
-
-    public function actionInjection($before, Request $request, $between, VendorImage $vendorImage, Post $post = null, $after)
-    {
-
-    }
 }
