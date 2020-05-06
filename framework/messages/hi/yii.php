@@ -60,7 +60,7 @@ return [
     'Unknown alias: -{name}' => 'अज्ञात उपनाम: - {name}',
     'Unknown option: --{name}' => 'अज्ञात विकल्प: - {name}',
     'Update' => 'अपडेट करें',
-    'View' => 'अवलोकन',
+    'View' => 'देखें',
     'Yes' => 'हाँ',
     'Yii Framework' => 'Yii फ़्रेमवर्क',
     'You are not allowed to perform this action.' => 'आपको यह करने की अनुमति नहीं है।',
