@@ -90,7 +90,7 @@ class ControllerTest extends TestCase
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals($params['before'], $args[0]);
         $this->assertEquals(\Yii::$app->request, $args[1]);
-        $this->assertEquals('Component: yii\web\request $request', \Yii::$app->requestedParams['request']);
+        $this->assertEquals('Component: yii\web\Request $request', \Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
         $this->assertInstanceOf(VendorImage::className(), $args[3]);
         $this->assertEquals('DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
