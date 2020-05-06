@@ -10,6 +10,7 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\Response;
+use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;
 
 /**
@@ -42,7 +43,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($params['before'], $args[0]);
         $this->assertEquals(\Yii::$app->request, $args[1]);
         $this->assertEquals($params['between'], $args[2]);
-        $this->assertInstanceOf(Post::className(), $args[3]);
+        $this->assertInstanceOf(VendorImage::className(), $args[3]);
         $this->assertEquals($params['after'], $args[4]);
     }
     /**

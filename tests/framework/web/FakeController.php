@@ -9,7 +9,7 @@ namespace yiiunit\framework\web;
 
 use yii\web\Controller;
 use yii\web\Request;
-use yii\web\Response;
+use yiiunit\framework\web\stubs\VendorImage;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -23,7 +23,7 @@ class FakeController extends Controller
     {
     }
 
-    public function actionInjection($before, Request $request, Post $post, $between, $after)
+    public function actionInjection($before, Request $request, VendorImage $vendorImage, $between, $after)
     {
 
     }
