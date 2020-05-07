@@ -175,6 +175,8 @@ class Controller extends \yii\base\Controller
                 } elseif ($type->allowsNull()) {
                     $args[] = null;
                     $requestedParams[$name] = "Unavailable service: $name";
+                } else {
+                    throw new ServerErrorHttpException('Could not load required service: ' . $name);
                 }
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
