@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\Response;
@@ -90,7 +91,7 @@ class ControllerTest extends TestCase
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         \Yii::$container->set(VendorImage::className(), function() { throw new \RuntimeException('uh oh'); });
 
-        $this->expectException('\RuntimeException');
+        $this->expectException(get_class(new RuntimeException()));
         $this->expectExceptionMessage('uh oh');
         $this->controller->bindActionParams($injectionAction, $params);
     }
@@ -119,7 +120,7 @@ class ControllerTest extends TestCase
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         \Yii::$container->clear(VendorImage::className());
-        $this->expectException(ServerErrorHttpException::class);
+        $this->expectException(get_class(new ServerErrorHttpException()));
         $this->expectExceptionMessage('Could not load required service: vendorImage');
         $this->controller->bindActionParams($injectionAction, $params);
     }
