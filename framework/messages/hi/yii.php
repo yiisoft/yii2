@@ -42,7 +42,7 @@ return [
     'Page not found.' => 'पृष्ठ नहीं मिला।',
     'Please fix the following errors:' => 'कृपया निम्नलिखित खामीयां सुधारें:',
     'Please upload a file.' => 'कृपया एक फ़ाइल अपलोड करें।',
-    'Powered by {yii}' => '{Yii} द्वारा संचालित',
+    'Powered by {yii}' => '{yii} द्वारा संचालित',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'दिखाया गया है {totalCount, number} {totalCount, plural, one{चीज} other{चीज़े}} में से {begin, number}-{end, number} ।',
     'The combination {values} of {attributes} has already been taken.' => '{attributes} और {values} का संयोजन पहले से ही लिया जा चुका है।',
     'The file "{file}" is not an image.' => 'यह फ़ाइल "{file}" एक चित्र नहीं है।',
