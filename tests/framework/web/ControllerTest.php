@@ -156,7 +156,7 @@ class ControllerTest extends TestCase
         $this->assertInstanceOf(VendorImage::className(), $args[3]);
         $this->assertEquals('DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
         $this->assertNull($args[4]);
-        $this->assertEquals('Unavailable service: $post', \Yii::$app->requestedParams['post']);
+        $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
         $this->assertEquals($params['after'], $args[5]);
     }
     /**
