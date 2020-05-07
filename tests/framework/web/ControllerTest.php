@@ -90,7 +90,7 @@ class ControllerTest extends TestCase
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         \Yii::$container->set(VendorImage::className(), function() { throw new \RuntimeException('uh oh'); });
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException('\RuntimeException');
         $this->expectExceptionMessage('uh oh');
         $this->controller->bindActionParams($injectionAction, $params);
     }
