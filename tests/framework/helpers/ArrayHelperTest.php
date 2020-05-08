@@ -825,11 +825,20 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::keyExists('b', $array));
         $this->assertTrue(ArrayHelper::keyExists('B', $array));
         $this->assertFalse(ArrayHelper::keyExists('c', $array));
+    }
 
-        $this->assertTrue(ArrayHelper::keyExists('a', $array, false));
-        $this->assertTrue(ArrayHelper::keyExists('b', $array, false));
-        $this->assertTrue(ArrayHelper::keyExists('B', $array, false));
-        $this->assertFalse(ArrayHelper::keyExists('c', $array, false));
+    /**
+     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedExceptionMessage Second parameter($array) cannot be ArrayAccess in case sensitive mode
+     */
+    public function testKeyExistsArrayAccessCaseInsensitiveThrowsError()
+    {
+        $array = new TraversableArrayAccessibleObject([
+            'a' => 1,
+            'B' => 2,
+        ]);
+
+        ArrayHelper::keyExists('a', $array, false);
     }
 
     public function valueProvider()
