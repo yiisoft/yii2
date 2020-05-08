@@ -215,7 +215,7 @@ class BaseArrayHelper
         return $default;
     }
 
-    private static function arrayHasKey($array, $key)
+    public static function arrayHasKey($array, $key)
     {
         if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
             return true;
@@ -869,6 +869,7 @@ class BaseArrayHelper
      * @param mixed $var The variable being evaluated.
      * @return bool whether data on $var can be accessed as arrays
      * @see https://secure.php.net/manual/en/function.is-array.php
+     * @since 2.0.36
      */
     public static function isArrayAccess($var)
     {
