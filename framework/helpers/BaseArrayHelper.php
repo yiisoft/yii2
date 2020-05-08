@@ -595,7 +595,7 @@ class BaseArrayHelper
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.
      * @param string $key the key to check
-     * @param array|ArrayAccess|Traversible $array the array with keys to check
+     * @param array|ArrayAccess $array the array with keys to check
      * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return bool whether the array contains the specified key
      */
@@ -614,8 +614,8 @@ class BaseArrayHelper
             return false;
         }
 
-        if ($array instanceof Traversable) {
-            $array = iterator_to_array($array);
+        if ($array instanceof ArrayAccess) {
+            throw new InvalidArgumentException('Second parameter($array) cannot be ArrayAccess in case sensitive mode');
         }
 
         foreach (array_keys($array) as $k) {
