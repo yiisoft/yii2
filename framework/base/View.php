@@ -541,7 +541,7 @@ class View extends Component implements DynamicContentAwareInterface
      * }
      * ```
      *
-     * @param string $id a unique ID identifying the fragment to be cached.
+     * @param string|mixed $id a unique ID identifying the fragment to be cached.
      * @param array $properties initial property values for [[FragmentCache]]
      * @return bool whether you should generate the content for caching.
      * False if the cached version is available.
