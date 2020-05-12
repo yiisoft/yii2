@@ -829,7 +829,7 @@ class ArrayHelperTest extends TestCase
 
     /**
      * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Second parameter($array) cannot be ArrayAccess in case sensitive mode
+     * @expectedExceptionMessage Second parameter($array) cannot be ArrayAccess in case insensitive mode
      */
     public function testKeyExistsArrayAccessCaseInsensitiveThrowsError()
     {

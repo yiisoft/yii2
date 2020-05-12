@@ -615,7 +615,7 @@ class BaseArrayHelper
         }
 
         if ($array instanceof ArrayAccess) {
-            throw new InvalidArgumentException('Second parameter($array) cannot be ArrayAccess in case sensitive mode');
+            throw new InvalidArgumentException('Second parameter($array) cannot be ArrayAccess in case insensitive mode');
         }
 
         foreach (array_keys($array) as $k) {
