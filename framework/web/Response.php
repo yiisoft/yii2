@@ -411,8 +411,10 @@ class Response extends \yii\base\Response
                     'sameSite' => !empty($cookie->sameSite) ? $cookie->sameSite : null,
                 ]);
             } else {
+                // Work around for setting sameSite cookie prior PHP 7.3
+                // https://stackoverflow.com/questions/39750906/php-setcookie-samesite-strict/46971326#46971326
                 if (!is_null($cookie->sameSite)) {
-                    throw new InvalidConfigException(get_class($cookie) . '::sameSite is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
+                    $cookie->path .= '; samesite=' . $cookie->sameSite;
                 }
                 setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }

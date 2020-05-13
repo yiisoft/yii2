@@ -56,6 +56,16 @@ use yii\validators\Validator;
 class DynamicModel extends Model
 {
     private $_attributes = [];
+    /**
+     * Array of the dynamic attribute labels.
+     * Used to as form field labels and in validation errors.
+     *
+     * @see attributeLabels()
+     * @see setAttributeLabels()
+     * @see setAttributeLabel()
+     * @since 2.0.35
+     */
+    private $_attributeLabels = [];
 
 
     /**
@@ -236,5 +246,48 @@ class DynamicModel extends Model
     public function attributes()
     {
         return array_keys($this->_attributes);
+    }
+
+    /**
+     * Sets the attribute labels in a massive way.
+     *
+     * @see attributeLabels()
+     * @see $_attributeLabels
+     * @since 2.0.35
+     *
+     * @param array $labels Array of attribute labels
+     * @return $this
+     */
+    public function setAttributeLabels(array $labels = [])
+    {
+        $this->_attributeLabels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * Sets a label for an attribute.
+     *
+     * @see attributeLabels()
+     * @see $_attributeLabels
+     * @since 2.0.35
+     *
+     * @param string $attribute Attribute name
+     * @param string $label Attribute label value
+     * @return $this
+     */
+    public function setAttributeLabel($attribute, $label)
+    {
+        $this->_attributeLabels[$attribute] = $label;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), $this->_attributeLabels);
     }
 }
