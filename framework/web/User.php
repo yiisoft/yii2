@@ -190,9 +190,6 @@ class User extends Component
                 try {
                     $this->_identity = null;
                     $this->renewAuthStatus();
-                } catch (\Exception $e) {
-                    $this->_identity = false;
-                    throw $e;
                 } catch (\Throwable $e) {
                     $this->_identity = false;
                     throw $e;
