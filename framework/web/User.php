@@ -190,10 +190,15 @@ class User extends Component
                 try {
                     $this->_identity = null;
                     $this->renewAuthStatus();
+                } catch (\Exception $e) {
+                    $this->_identity = false;
+                    throw $e;
                 } catch (\Throwable $e) {
                     $this->_identity = false;
                     throw $e;
                 }
+                // As Exception class implements Throwable interface catching exceptions of both is not necessary
+                // But here \Exception and \Throwable both are catched because Throwable is not available in PHP 5.
             } else {
                 return null;
             }
