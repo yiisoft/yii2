@@ -608,10 +608,7 @@ class BaseArrayHelper
                 return true;
             }
             // Cannot use `array_has_key` on Objects for PHP 7.4+, therefore we need to check using [[ArrayAccess::offsetExists()]]
-            if ($array instanceof ArrayAccess && $array->offsetExists($key)) {
-                return true;
-            }
-            return false;
+            return $array instanceof ArrayAccess && $array->offsetExists($key);
         }
 
         if ($array instanceof ArrayAccess) {
