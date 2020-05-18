@@ -313,4 +313,19 @@ EXPECTED;
                 ->run()
         );
     }
+
+    public function testCalculateRowHeightShouldNotThrowDivisionByZeroException()
+    {
+        $rows = [
+            ['XXXXXX', 'XXXXXXXXXXXXXXXXXXXX', '', '', 'XXXXXXXXXXXXXXXXXX', 'X', 'XXX'],
+            ['XXXXXX', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', '', '', ''],
+            ['XXXXXX', 'XXXXXXXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', '', '', '', ''],
+        ];
+
+        $table = Table::widget([
+            'headers' => ['XX', 'XXXX'],
+            'rows' => $rows
+        ]);
+        $this->assertEqualsWithoutLE($table, $table);
+    }
 }
