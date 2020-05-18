@@ -168,7 +168,7 @@ class User extends Component
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
         if ($this->accessChecker !== null) {
-            $this->accessChecker = Instance::ensure($this->accessChecker, CheckAccessInterface::class);
+            $this->accessChecker = Instance::ensure($this->accessChecker, '\yii\rbac\CheckAccessInterface');
         }
     }
 
