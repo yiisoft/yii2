@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\helpers;
 
+use ArrayAccess;
+use Iterator;
 use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -38,6 +40,84 @@ class Post3 extends BaseObject
     public function init()
     {
         $this->subObject = new Post2();
+    }
+}
+
+class ArrayAccessibleObject implements ArrayAccess
+{
+    protected $container = [];
+
+    public function __construct($container)
+    {
+        $this->container = $container;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->container);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->container[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->offsetExists($offset) ? $this->container[$offset] : null;
+    }
+}
+
+class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements Iterator
+{
+    private $position = 0;
+
+    public function __construct($container)
+    {
+        $this->position = 0;
+
+        parent::__construct($container);
+    }
+
+    protected function getContainerKey($keyIndex)
+    {
+        $keys = array_keys($this->container);
+        return array_key_exists($keyIndex, $keys) ? $keys[$keyIndex] : false;
+    }
+
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    public function current()
+    {
+        return $this->offsetGet($this->getContainerKey($this->position));
+    }
+
+    public function key()
+    {
+        return $this->getContainerKey($this->position);
+    }
+
+    public function next()
+    {
+        ++$this->position;
+    }
+
+    public function valid()
+    {
+        $key = $this->getContainerKey($this->position);
+        return !(!$key || !$this->offsetExists($key));
     }
 }
 
@@ -734,6 +814,33 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::keyExists('c', $array, false));
     }
 
+    public function testKeyExistsArrayAccess()
+    {
+        $array = new TraversableArrayAccessibleObject([
+            'a' => 1,
+            'B' => 2,
+        ]);
+
+        $this->assertTrue(ArrayHelper::keyExists('a', $array));
+        $this->assertFalse(ArrayHelper::keyExists('b', $array));
+        $this->assertTrue(ArrayHelper::keyExists('B', $array));
+        $this->assertFalse(ArrayHelper::keyExists('c', $array));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedExceptionMessage Second parameter($array) cannot be ArrayAccess in case insensitive mode
+     */
+    public function testKeyExistsArrayAccessCaseInsensitiveThrowsError()
+    {
+        $array = new TraversableArrayAccessibleObject([
+            'a' => 1,
+            'B' => 2,
+        ]);
+
+        ArrayHelper::keyExists('a', $array, false);
+    }
+
     public function valueProvider()
     {
         return [
@@ -828,6 +935,45 @@ class ArrayHelperTest extends TestCase
         $this->expectException('PHPUnit\Framework\Error\Notice');
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
+    }
+
+    public function testGetValueFromArrayAccess()
+    {
+        $arrayAccessibleObject = new ArrayAccessibleObject([
+            'one'   => 1,
+            'two'   => 2,
+            'three' => 3,
+            'key.with.dot' => 'dot',
+            'null'  => null,
+        ]);
+
+        $this->assertEquals(1, ArrayHelper::getValue($arrayAccessibleObject, 'one'));
+    }
+
+    public function testGetValueWithDotsFromArrayAccess()
+    {
+        $arrayAccessibleObject = new ArrayAccessibleObject([
+            'one'   => 1,
+            'two'   => 2,
+            'three' => 3,
+            'key.with.dot' => 'dot',
+            'null'  => null,
+        ]);
+
+        $this->assertEquals('dot', ArrayHelper::getValue($arrayAccessibleObject, 'key.with.dot'));
+    }
+
+    public function testGetValueNonexistingArrayAccess()
+    {
+        $arrayAccessibleObject = new ArrayAccessibleObject([
+            'one'   => 1,
+            'two'   => 2,
+            'three' => 3,
+            'key.with.dot' => 'dot',
+            'null'  => null,
+        ]);
+
+        $this->assertEquals(null, ArrayHelper::getValue($arrayAccessibleObject, 'four'));
     }
 
     /**
