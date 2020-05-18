@@ -207,7 +207,8 @@ class BaseArrayHelper
 
         if (static::isArrayAccess($array)) {
             return static::keyExists($key, $array) ? $array[$key] : $default;
-        } elseif (is_object($array)) {
+        }
+        if (is_object($array)) {
             // this is expected to fail if the property does not exist, or __get() is not implemented
             // it is not reliably possible to check whether a property is accessible beforehand
             return $array->$key;
