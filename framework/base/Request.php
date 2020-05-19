@@ -79,7 +79,7 @@ abstract class Request extends Component
     public function setScriptFile($value)
     {
         $scriptFile = realpath(Yii::getAlias($value));
-        if ($scriptFile !== false && is_file($scriptFile)) {
+        if ($scriptFile !== false) {
             $this->_scriptFile = $scriptFile;
         } else {
             throw new InvalidConfigException('Unable to determine the entry script file path.');
