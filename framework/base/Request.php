@@ -74,15 +74,10 @@ abstract class Request extends Component
      * However, for some server configurations, this may not be correct or feasible.
      * This setter is provided so that the entry script file path can be manually specified.
      * @param string $value the entry script file path. This can be either a file path or a [path alias](guide:concept-aliases).
-     * @throws InvalidConfigException if the provided entry script file path is invalid.
      */
     public function setScriptFile($value)
     {
-        $scriptFile = realpath(Yii::getAlias($value));
-        if ($scriptFile !== false) {
-            $this->_scriptFile = $scriptFile;
-        } else {
-            throw new InvalidConfigException('Unable to determine the entry script file path.');
-        }
+        $scriptFile = Yii::getAlias($value);
+        $this->_scriptFile = realpath($scriptFile) ?: $scriptFile;
     }
 }
