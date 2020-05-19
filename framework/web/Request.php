@@ -859,39 +859,6 @@ class Request extends \yii\base\Request
         $this->_scriptUrl = $value === null ? null : '/' . trim($value, '/');
     }
 
-    private $_scriptFile;
-
-    /**
-     * Returns the entry script file path.
-     * The default implementation will simply return `$_SERVER['SCRIPT_FILENAME']`.
-     * @return string the entry script file path
-     * @throws InvalidConfigException
-     */
-    public function getScriptFile()
-    {
-        if (isset($this->_scriptFile)) {
-            return $this->_scriptFile;
-        }
-
-        if (isset($_SERVER['SCRIPT_FILENAME'])) {
-            return $_SERVER['SCRIPT_FILENAME'];
-        }
-
-        throw new InvalidConfigException('Unable to determine the entry script file path.');
-    }
-
-    /**
-     * Sets the entry script file path.
-     * The entry script file path normally can be obtained from `$_SERVER['SCRIPT_FILENAME']`.
-     * If your server configuration does not return the correct value, you may configure
-     * this property to make it right.
-     * @param string $value the entry script file path.
-     */
-    public function setScriptFile($value)
-    {
-        $this->_scriptFile = $value;
-    }
-
     private $_pathInfo;
 
     /**
