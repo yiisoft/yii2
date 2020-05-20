@@ -493,6 +493,17 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testMergeWithNumericKeys()
+    {
+        $a = [10 => [1]];
+        $b = [10 => [2]];
+
+        $result = ArrayHelper::merge($a, $b);
+
+        $expected = [10 => [1], 11 => [2]];
+        $this->assertEquals($expected, $result);
+    }
+
     public function testMergeWithUnset()
     {
         $a = [
