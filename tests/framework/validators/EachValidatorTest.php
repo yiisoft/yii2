@@ -238,4 +238,15 @@ class EachValidatorTest extends TestCase
         $this->assertEquals('This is the custom label must be a valid IP address.', $model->getFirstError('customLabel'));
         $this->assertEquals('First Name is invalid.', $model->getFirstError('firstName'));
     }
+
+    public function testCustomMethod()
+    {
+        $model = new Speaker();
+        $model->firstName = ['a', 'b'];
+
+        $validator = new EachValidator(['rule' => ['customValidatingMethod']]);
+        $validator->validateAttribute($model, 'firstName');
+
+        $this->assertEquals('Custom method error', $model->getFirstError('firstName'));
+    }
 }
