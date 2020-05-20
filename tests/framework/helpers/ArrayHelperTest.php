@@ -413,6 +413,21 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18046
+     */
+    public function testMergeWithNumericKeys()
+    {
+        $a = [10 => [2]];
+        $b = [10 => [20]];
+
+        $expected = [
+            10 => [2, 20]
+        ];
+
+        $this->assertEquals($expected, \yii\helpers\ArrayHelper::merge($a, $b));
+    }
+
     public function testMergeWithUnset()
     {
         $a = [
