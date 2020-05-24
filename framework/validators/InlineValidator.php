@@ -58,6 +58,11 @@ class InlineValidator extends Validator
      * Please refer to [[clientValidateAttribute()]] for details on how to return client validation code.
      */
     public $clientValidate;
+    /**
+     * @var mixed the value of attribute being currently validated
+     * @since 2.0.36
+     */
+    public $current;
 
 
     /**
@@ -69,7 +74,11 @@ class InlineValidator extends Validator
         if (is_string($method)) {
             $method = [$model, $method];
         }
-        call_user_func($method, $attribute, $this->params, $this);
+        $current = $this->current;
+        if ($current === null) {
+            $current = $model->$attribute;
+        }
+        call_user_func($method, $attribute, $this->params, $this, $current);
     }
 
     /**
@@ -82,8 +91,11 @@ class InlineValidator extends Validator
             if (is_string($method)) {
                 $method = [$model, $method];
             }
-
-            return call_user_func($method, $attribute, $this->params, $this);
+            $current = $this->current;
+            if ($current === null) {
+                $current = $model->$attribute;
+            }
+            return call_user_func($method, $attribute, $this->params, $this, $current);
         }
 
         return null;
