@@ -251,7 +251,7 @@ class EachValidatorTest extends TestCase
         $validator->validateAttribute($model, 'firstName');
 
         $this->assertEquals('Custom method error', $model->getFirstError('firstName'));
-        // make sure each attribute is checked separately
+        // make sure each value of attribute array is checked separately
         $this->assertEquals(['a', 'b'], $model->getCheckedValues());
         // make sure original array is restored at the end
         $this->assertEquals(['a', 'b'], $model->firstName);
