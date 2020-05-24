@@ -369,23 +369,18 @@ class Table extends Widget
             if (is_array($columnWidth)) {
                 $rows = 0;
                 foreach ($columnWidth as $width) {
-                    $rows += ceil($width / ($size - 2));
+                    $rows +=  $size == 2 ? 0 : ceil($width / ($size - 2));
                 }
-
                 return $rows;
             }
-
-            return ceil($columnWidth / ($size - 2));
+            return $size == 2 || $columnWidth == 0 ? 0 : ceil($columnWidth / ($size - 2));
         }, $this->columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 $encodings = array_fill(0, count($val), Yii::$app->charset);
                 return array_map('mb_strwidth', $val, $encodings);
             }
-
             return mb_strwidth($val, Yii::$app->charset);
-        }, $row)
-        );
-
+        }, $row));
         return max($rowsPerCell);
     }
 
