@@ -140,6 +140,8 @@ class EachValidator extends Validator
         $dynamicModel->setAttributeLabels($model->attributeLabels());
 
         foreach ($arrayOfValues as $k => $v) {
+            $model->clearErrors($attribute);
+            $model->$attribute = $v;
             $dynamicModel->defineAttribute($attribute, $v);
             $dynamicModel->validate();
 
