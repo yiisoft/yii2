@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.36 under development
 ------------------------
 
+- Bug #17147: Fix form attribute validations for empty select inputs (kartik-v)
 - Bug #18028: Fix division by zero exception in Table.php::calculateRowHeight (fourhundredfour)
 - Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
 - Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
