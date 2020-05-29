@@ -479,7 +479,6 @@ class View extends \yii\base\View
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
         $depends = ArrayHelper::remove($options, 'depends', []);
-        $position = ArrayHelper::remove($options, 'position', self::POS_END);
 
         try {
             $asssetManagerAppendTimestamp = $this->getAssetManager()->appendTimestamp;
@@ -487,10 +486,12 @@ class View extends \yii\base\View
             $depends = null; // the AssetManager is not available
             $asssetManagerAppendTimestamp = false;
         }
-        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $asssetManagerAppendTimestamp);
+        
 
         if (empty($depends)) {
             // register directly without AssetManager
+            $position = ArrayHelper::remove($options, 'position', self::POS_END);
+            $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $asssetManagerAppendTimestamp);
             if ($appendTimestamp && Url::isRelative($url) && ($timestamp = @filemtime(Yii::getAlias('@webroot/' . ltrim($url, '/'), false))) > 0) {
                 $url = $timestamp ? "$url?v=$timestamp" : $url;
             }
