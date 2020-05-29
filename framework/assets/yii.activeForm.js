@@ -733,16 +733,10 @@
             updateSummary($form, messages);
             if (errorAttributes.length) {
                 if (data.settings.scrollToError) {
-                    var top = $form.find($.map(errorAttributes, function (attribute) {
+                    var h = $(document).height(), top = $form.find($.map(errorAttributes, function (attribute) {
                         return attribute.input;
                     }).join(',')).first().closest(':visible').offset().top - data.settings.scrollToErrorOffset;
-                    if (top < 0) {
-                        top = 0;
-                    } else {
-                        if (top > $(document).height()) {
-                            top = $(document).height();
-                        }
-                    }
+                    top = top < 0 ? 0 : (top > h ? h : top);
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
