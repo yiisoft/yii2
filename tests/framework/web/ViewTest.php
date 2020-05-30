@@ -174,7 +174,7 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/assetSources\/js\/jquery\.js\?v\=\d+"/';
+        $pattern = '\/assetSources\/js\/jquery\.js\?v\=\d+"/';
 
         \Yii::$app->assetManager->appendTimestamp = true;
 
@@ -320,7 +320,7 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/assetSources\/css\/stub\.css\?v\=\d+"/';
+        $pattern = '\/assetSources\/css\/stub\.css\?v\=\d+"/';
 
         \Yii::$app->assetManager->appendTimestamp = true;
 
