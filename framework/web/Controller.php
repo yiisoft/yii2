@@ -104,12 +104,13 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * @param \ReflectionType $type The reflected type of the action parameter
-     * @param string $name The name of the parameter
-     * @param array &$args The array of arguments for the action, this function may append items to it
-     * @param array &$requestedParams The array with reqested params, this function may write specific keys to it
-     * @throws ServerErrorHttpException Thrown when we cannot load a required service
-     * @throws \yii\base\InvalidConfigException Thrown when there is an error in the DI configuration
+     * Fills parameters based on types and names in action method signature.
+     * @param \ReflectionType $type The reflected type of the action parameter.
+     * @param string $name The name of the parameter.
+     * @param array &$args The array of arguments for the action, this function may append items to it.
+     * @param array &$requestedParams The array with requested params, this function may write specific keys to it.
+     * @throws ServerErrorHttpException Thrown when we cannot load a required service.
+     * @throws \yii\base\InvalidConfigException Thrown when there is an error in the DI configuration.
      * @throws \yii\di\NotInstantiableException Thrown when a definition cannot be resolved to a concrete class
      * (for example an interface type hint) without a proper definition in the container.
      * @since 2.0.36
