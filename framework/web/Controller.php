@@ -112,7 +112,7 @@ class Controller extends \yii\base\Controller
      * @throws \yii\base\InvalidConfigException Thrown when there is an error in the DI configuration
      * @throws \yii\di\NotInstantiableException Thrown when a definition cannot be resolved to a concrete class
      * (for example an interface type hint) without a proper definition in the container.
-     * @since 2.0.35
+     * @since 2.0.36
      */
     private function bindInjectedParams(\ReflectionType $type, $name, &$args, &$requestedParams)
     {

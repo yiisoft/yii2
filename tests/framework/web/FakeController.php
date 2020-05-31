@@ -8,8 +8,6 @@
 namespace yiiunit\framework\web;
 
 use yii\web\Controller;
-use yii\web\Request;
-use yiiunit\framework\web\stubs\VendorImage;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
