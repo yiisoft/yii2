@@ -291,6 +291,66 @@ in order to avoid many unnecessary system `stat()` calls.
 Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
 can properly detect if a connection is secure.
 
+### Recommended NGINX Unit Configuration <span id="recommended-nginx-unit-configuration"></span>
+
+You can run Yii-based apps using [NGINX Unit](https://unit.nginx.org/) with a PHP language module.
+Here is a sample configuration.
+
+```json
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes/yii"
+        }
+    },
+
+    "routes": {
+        "yii": [
+            {
+                "match": {
+                    "uri": [
+                        "!/assets/*",
+                        "*.php",
+                        "*.php/*"
+                    ]
+                },
+
+                "action": {
+                    "pass": "applications/yii/direct"
+                }
+            },
+            {
+                "action": {
+                    "share": "/path/to/app/web/",
+                    "fallback": {
+                        "pass": "applications/yii/index"
+                    }
+                }
+            }
+        ]
+    },
+
+    "applications": {
+        "yii": {
+            "type": "php",
+            "user": "www-data",
+            "targets": {
+                "direct": {
+                    "root": "/path/to/app/web/"
+                },
+
+                "index": {
+                    "root": "/path/to/app/web/",
+                    "script": "index.php"
+                }
+            }
+        }
+    }
+}
+```
+
+You can also [set up](https://unit.nginx.org/configuration/#php) your PHP environment or supply a custom `php.ini` in the same configuration.
+
 ### IIS Configuration <span id="iis-configuration"></span>
 
 It's recommended to host the application in a virtual host where document root points to `path/to/app/web` folder. In that `web` folder you have to place a file named `web.config` i.e. `path/to/app/web/web.config`. Content of the file should be the following:
