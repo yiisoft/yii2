@@ -29,7 +29,7 @@ CREATE TABLE "message"
 );
 
 ALTER TABLE "message" ADD CONSTRAINT "pk_message_id_language" PRIMARY KEY ("id", "language");
-ALTER TABLE "message" ADD CONSTRAINT "fk_message_source_message" FOREIGN KEY ("id") REFERENCES "source_message" ("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE "message" ADD CONSTRAINT "fk_message_source_message" FOREIGN KEY ("id") REFERENCES "source_message" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;
 
 CREATE INDEX "idx_message_language" ON "message" USING btree (language);
 ALTER TABLE "message" CLUSTER ON "idx_message_language";
