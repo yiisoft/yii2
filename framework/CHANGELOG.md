@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
 - Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
 - Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
+- Bug #18041: Fix RBAC migration for MSSQL (darkdef)
 
 
 2.0.35 May 02, 2020
