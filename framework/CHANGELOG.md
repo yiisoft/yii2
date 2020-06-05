@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
 - Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
 - Bug #18041: Fix RBAC migration for MSSQL (darkdef)
+- Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag ANSI_NULL_DFLT_ON to ON for current connect to DB (darkdef)
 
 
 2.0.35 May 02, 2020
