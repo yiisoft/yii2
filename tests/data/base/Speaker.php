@@ -49,4 +49,9 @@ class Speaker extends Model
             'duplicates' => ['firstName', 'firstName', '!underscore_style', '!underscore_style'],
         ];
     }
+
+    public function customValidatingMethod($attribute, $params, $validator)
+    {
+        $this->addError($attribute, 'Custom method error');
+    }
 }

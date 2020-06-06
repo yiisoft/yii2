@@ -41,15 +41,11 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             ->from(['fkc' => 'sys.foreign_key_columns'])
             ->innerJoin(['c' => 'sys.columns'], 'fkc.parent_object_id = c.object_id AND fkc.parent_column_id = c.column_id')
             ->innerJoin(['r' => 'sys.columns'], 'fkc.referenced_object_id = r.object_id AND fkc.referenced_column_id = r.column_id')
-            ->where(
-                [
-                    'AND',
-                    ['fkc.parent_object_id' => $this->db->schema->getRawTableName($table)],
-                    ['fkc.referenced_object_id' => $this->db->schema->getRawTableName($referenceTable)],
-                    ['c.name' => $column],
-                    ['r.name' => $referenceColumn],
-                ]
-            )->scalar($this->db);
+            ->andWhere('fkc.parent_object_id=OBJECT_ID(:fkc_parent_object_id)',[':fkc_parent_object_id' => $this->db->schema->getRawTableName($table)])
+            ->andWhere('fkc.referenced_object_id=OBJECT_ID(:fkc_referenced_object_id)',[':fkc_referenced_object_id' => $this->db->schema->getRawTableName($referenceTable)])
+            ->andWhere(['c.name' => $column])
+            ->andWhere(['r.name' => $referenceColumn])
+            ->scalar($this->db);
     }
 
     /**
