@@ -751,4 +751,35 @@ SQL;
 
         return parent::quoteColumnName($name);
     }
+
+    /**
+     * Retrieving inserted data from a primary key request of type uniqueidentifier (for SQL Server 2005 or later)
+     * {@inheritdoc}
+     */
+    public function insert($table, $columns)
+    {
+        $command = $this->db->createCommand()->insert($table, $columns);
+        if (!$command->execute()) {
+            return false;
+        }
+
+        $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
+        $inserted = $version2005orLater ? $command->pdoStatement->fetch() : [];
+
+        $tableSchema = $this->getTableSchema($table);
+        $result = [];
+        foreach ($tableSchema->primaryKey as $name) {
+            if ($tableSchema->columns[$name]->autoIncrement) {
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
+                break;
+            }
+            if ($tableSchema->columns[$name]->dbType === 'uniqueidentifier' and isset($inserted[$name])) {
+                $result[$name] = $inserted[$name];
+                break;
+            }
+            $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+        }
+
+        return $result;
+    }
 }
