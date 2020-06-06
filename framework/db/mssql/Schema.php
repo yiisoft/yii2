@@ -773,11 +773,9 @@ SQL;
                 $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
                 break;
             }
-            if ($tableSchema->columns[$name]->dbType === 'uniqueidentifier' and isset($inserted[$name])) {
-                $result[$name] = $inserted[$name];
-                break;
-            }
-            $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+            // @see https://github.com/yiisoft/yii2/issues/13828 & https://github.com/yiisoft/yii2/issues/17474
+            $result[$name] = isset($inserted[$name]) ? $inserted[$name] :
+                (isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue);
         }
 
         return $result;
