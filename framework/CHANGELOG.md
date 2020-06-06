@@ -11,6 +11,8 @@ Yii Framework 2 Change Log
 - Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
 - Bug #18041: Fix RBAC migration for MSSQL (darkdef)
 - Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag ANSI_NULL_DFLT_ON to ON for current connect to DB (darkdef)
+- Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
+- Bug #17474: Fix retrieving inserted data for a primary key of type trigger for SQL Server 2005 or later (darkdef)
 
 
 2.0.35 May 02, 2020
