@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\di\Instance;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -63,6 +64,16 @@ class Controller extends Component implements ViewContextInterface
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
+    /**
+     * @var Request|array|string The request
+     * @since 2.0.36
+     */
+    public $request = 'request';
+    /**
+     * @var Response|array|string
+     * @since 2.0.36
+     */
+    public $response = 'response';
 
     /**
      * @var View the view object that can be used to render views or view files.
@@ -84,6 +95,17 @@ class Controller extends Component implements ViewContextInterface
         $this->id = $id;
         $this->module = $module;
         parent::__construct($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.36
+     */
+    public function init()
+    {
+        parent::init();
+        $this->request = Instance::ensure($this->request, Request::className());
+        $this->response = Instance::ensure($this->response, Response::className());
     }
 
     /**

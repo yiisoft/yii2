@@ -34,6 +34,8 @@ use yii\helpers\Inflector;
  * read-only.
  * @property array $passedOptions The names of the options passed during execution. This property is
  * read-only.
+ * @property Request $request
+ * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
