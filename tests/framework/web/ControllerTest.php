@@ -118,6 +118,7 @@ class ControllerTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        $this->mockWebApplication();
         $this->controller = new FakeController('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
@@ -130,6 +131,6 @@ class ControllerTest extends TestCase
                 ],
             ],
         ]));
-        $this->mockWebApplication(['controller' => $this->controller]);
+        Yii::$app->controller = $this->controller;
     }
 }
