@@ -1,6 +1,20 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.36 under development
+------------------------
+
+- Bug #18028: Fix division by zero exception in Table.php::calculateRowHeight (fourhundredfour)
+- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
+- Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
+- Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
+- Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
+- Bug #18041: Fix RBAC migration for MSSQL (darkdef)
+- Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag ANSI_NULL_DFLT_ON to ON for current connect to DB (darkdef)
+- Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
+- Bug #17474: Fix retrieving inserted data for a primary key of type trigger for SQL Server 2005 or later (darkdef)
+
+
 2.0.35 May 02, 2020
 -------------------
 
@@ -20,7 +34,6 @@ Yii Framework 2 Change Log
 - Enh #17758: `Query::withQuery()` can now be used for CTE (sartor)
 - Enh #17993: Add `yii\i18n\Formatter::$currencyDecimalSeparator` to allow setting custom symbols for currency decimal in `IntlNumberFormatter` (XPOHOC269)
 - Enh #18006: Allow `SameSite` cookie pre PHP 7.3 (scottix)
-- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
 
 
 2.0.34 March 26, 2020

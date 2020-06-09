@@ -7,6 +7,8 @@
 
 namespace yii\helpers;
 
+use ArrayAccess;
+use Traversable;
 use Yii;
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
@@ -194,7 +196,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+        if (static::keyExists($key, $array)) {
             return $array[$key];
         }
 
@@ -203,12 +205,13 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
+        if (static::isArrayAccess($array)) {
+            return static::keyExists($key, $array) ? $array[$key] : $default;
+        }
         if (is_object($array)) {
             // this is expected to fail if the property does not exist, or __get() is not implemented
             // it is not reliably possible to check whether a property is accessible beforehand
             return $array->$key;
-        } elseif (is_array($array)) {
-            return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
         }
 
         return $default;
@@ -593,7 +596,7 @@ class BaseArrayHelper
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.
      * @param string $key the key to check
-     * @param array $array the array with keys to check
+     * @param array|ArrayAccess $array the array with keys to check
      * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return bool whether the array contains the specified key
      */
@@ -602,7 +605,15 @@ class BaseArrayHelper
         if ($caseSensitive) {
             // Function `isset` checks key faster but skips `null`, `array_key_exists` handles this case
             // https://secure.php.net/manual/en/function.array-key-exists.php#107786
-            return isset($array[$key]) || array_key_exists($key, $array);
+            if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+                return true;
+            }
+            // Cannot use `array_has_key` on Objects for PHP 7.4+, therefore we need to check using [[ArrayAccess::offsetExists()]]
+            return $array instanceof ArrayAccess && $array->offsetExists($key);
+        }
+
+        if ($array instanceof ArrayAccess) {
+            throw new InvalidArgumentException('Second parameter($array) cannot be ArrayAccess in case insensitive mode');
         }
 
         foreach (array_keys($array) as $k) {
@@ -805,12 +816,12 @@ class BaseArrayHelper
     }
 
     /**
-     * Check whether an array or [[\Traversable]] contains an element.
+     * Check whether an array or [[Traversable]] contains an element.
      *
      * This method does the same as the PHP function [in_array()](https://secure.php.net/manual/en/function.in-array.php)
-     * but additionally works for objects that implement the [[\Traversable]] interface.
+     * but additionally works for objects that implement the [[Traversable]] interface.
      * @param mixed $needle The value to look for.
-     * @param array|\Traversable $haystack The set of values to search.
+     * @param array|Traversable $haystack The set of values to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
      * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
      * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
@@ -819,7 +830,7 @@ class BaseArrayHelper
      */
     public static function isIn($needle, $haystack, $strict = false)
     {
-        if ($haystack instanceof \Traversable) {
+        if ($haystack instanceof Traversable) {
             foreach ($haystack as $value) {
                 if ($needle == $value && (!$strict || $needle === $value)) {
                     return true;
@@ -835,27 +846,43 @@ class BaseArrayHelper
     }
 
     /**
-     * Checks whether a variable is an array or [[\Traversable]].
+     * Checks whether a variable is an array or [[Traversable]].
      *
      * This method does the same as the PHP function [is_array()](https://secure.php.net/manual/en/function.is-array.php)
-     * but additionally works on objects that implement the [[\Traversable]] interface.
+     * but additionally works on objects that implement the [[Traversable]] interface.
      * @param mixed $var The variable being evaluated.
-     * @return bool whether $var is array-like
+     * @return bool whether $var can be traversed via foreach
      * @see https://secure.php.net/manual/en/function.is-array.php
      * @since 2.0.8
      */
     public static function isTraversable($var)
     {
-        return is_array($var) || $var instanceof \Traversable;
+        return is_array($var) || $var instanceof Traversable;
     }
 
     /**
-     * Checks whether an array or [[\Traversable]] is a subset of another array or [[\Traversable]].
+     * Checks whether a variable is an array or [[\ArrayAccess]].
+     *
+     * This method does the same as the PHP function [is_array()](https://secure.php.net/manual/en/function.is-array.php)
+     * but additionally works on objects that implement the [[\ArrayAccess]] interface.
+     * @param mixed $var The variable being evaluated.
+     * @return bool whether data on $var can be accessed as arrays
+     * @see https://secure.php.net/manual/en/function.is-array.php
+     * @since 2.0.36
+     */
+    public static function isArrayAccess($var)
+    {
+        return is_array($var) || $var instanceof \ArrayAccess;
+    }
+
+
+    /**
+     * Checks whether an array or [[Traversable]] is a subset of another array or [[Traversable]].
      *
      * This method will return `true`, if all elements of `$needles` are contained in
      * `$haystack`. If at least one element is missing, `false` will be returned.
-     * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
-     * @param array|\Traversable $haystack The set of value to search.
+     * @param array|Traversable $needles The values that must **all** be in `$haystack`.
+     * @param array|Traversable $haystack The set of value to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
      * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
@@ -863,7 +890,7 @@ class BaseArrayHelper
      */
     public static function isSubset($needles, $haystack, $strict = false)
     {
-        if (is_array($needles) || $needles instanceof \Traversable) {
+        if (is_array($needles) || $needles instanceof Traversable) {
             foreach ($needles as $needle) {
                 if (!static::isIn($needle, $haystack, $strict)) {
                     return false;
