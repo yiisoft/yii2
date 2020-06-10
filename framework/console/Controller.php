@@ -188,12 +188,19 @@ class Controller extends \yii\base\Controller
         $requestedParams = [];
         foreach ($method->getParameters() as $i => $param) {
             $name = $param->getName();
+            $key = null;
             if (array_key_exists($i, $params)) {
+                $key = $i;
+            } elseif (array_key_exists($name, $params)) {
+                $key = $name;
+            }
+
+            if ($key !== null) {
                 if ($param->isArray()) {
-                    $params[$i] = $params[$i] === '' ? [] : preg_split('/\s*,\s*/', $params[$i]);
+                    $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
                 }
-                $args[] = $actionParams[$i] = $params[$i];
-                unset($params[$i]);
+                $args[] = $actionParams[$key] = $params[$key];
+                unset($params[$key]);
             } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
                 try {
                     $this->bindInjectedParams($type, $name, $args, $requestedParams);
