@@ -8,6 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 
@@ -104,36 +106,6 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Fills parameters based on types and names in action method signature.
-     * @param \ReflectionType $type The reflected type of the action parameter.
-     * @param string $name The name of the parameter.
-     * @param array &$args The array of arguments for the action, this function may append items to it.
-     * @param array &$requestedParams The array with requested params, this function may write specific keys to it.
-     * @throws ServerErrorHttpException Thrown when we cannot load a required service.
-     * @throws \yii\base\InvalidConfigException Thrown when there is an error in the DI configuration.
-     * @throws \yii\di\NotInstantiableException Thrown when a definition cannot be resolved to a concrete class
-     * (for example an interface type hint) without a proper definition in the container.
-     * @since 2.0.36
-     */
-    private function bindInjectedParams(\ReflectionType $type, $name, &$args, &$requestedParams)
-    {
-        // Since it is not a builtin type it must be DI injection.
-        $typeName = $type->getName();
-        if (($component = $this->module->get($name, false)) instanceof $typeName) {
-            $args[] = $component;
-            $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
-        } elseif (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName) {
-            $args[] = $service;
-            $requestedParams[$name] = "DI: $typeName \$$name";
-        } elseif ($type->allowsNull()) {
-            $args[] = null;
-            $requestedParams[$name] = "Unavailable service: $name";
-        } else {
-            throw new ServerErrorHttpException('Could not load required service: ' . $name);
-        }
-    }
-
-    /**
      * Binds the parameters to the action.
      * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
      * This method will check the parameter names that the action requires and return
@@ -194,7 +166,11 @@ class Controller extends \yii\base\Controller
                 $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
             } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
-                $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (Exception $e) {
+                    throw new ServerErrorHttpException($e->getMessage(), 0, $e);
+                }
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
             } else {

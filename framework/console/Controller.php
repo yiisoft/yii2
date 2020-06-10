@@ -182,24 +182,38 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $args = array_values($params);
-
+        $args = [];
         $missing = [];
+        $actionParams = [];
+        $requestedParams = [];
         foreach ($method->getParameters() as $i => $param) {
-            if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = $args[$i] === '' ? [] : preg_split('/\s*,\s*/', $args[$i]);
-            }
-            if (!isset($args[$i])) {
-                if ($param->isDefaultValueAvailable()) {
-                    $args[$i] = $param->getDefaultValue();
-                } else {
-                    $missing[] = $param->getName();
+            $name = $param->getName();
+            if (array_key_exists($i, $params)) {
+                if ($param->isArray()) {
+                    $params[$i] = $params[$i] === '' ? [] : preg_split('/\s*,\s*/', $params[$i]);
                 }
+                $args[] = $actionParams[$i] = $params[$i];
+                unset($params[$i]);
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (\yii\base\Exception $e) {
+                    throw new Exception($e->getMessage());
+                }
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $actionParams[$i] = $param->getDefaultValue();
+            } else {
+                $missing[] = $name;
             }
         }
 
         if (!empty($missing)) {
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
+        }
+
+        // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
+        if (\Yii::$app->requestedParams === null) {
+            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
         }
 
         return $args;
