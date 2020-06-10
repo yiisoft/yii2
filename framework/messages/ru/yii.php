@@ -141,5 +141,5 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, one{петабайт} few{петабайта} many{петабайтов} other{петабайта}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, one{тебибайт} few{тебибайта} many{тебибайтов} other{тебибайта}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, one{терабайт} few{терабайта} many{терабайтов} other{терабайта}}',
-    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы должны загрузить как минимум {limit, number} {one{файл} few{файла} many{файлов} other{файла}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы должны загрузить как минимум {limit, number} {limit, plural, one{файл} few{файла} many{файлов} other{файла}}.',
 ];
