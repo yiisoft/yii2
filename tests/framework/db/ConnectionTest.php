@@ -85,6 +85,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('`schema`.`table`'));
         $this->assertEquals('{{table}}', $connection->quoteTableName('{{table}}'));
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
+        $this->assertEquals('`table(0)`', $connection->quoteTableName('table(0)'));
     }
 
     public function testQuoteColumnName()
