@@ -88,4 +88,20 @@ class SessionTest extends TestCase
 
         $session->destroy();
     }
+
+    /**
+     * This test ensures that regnerate ID will actually generate a new ID.
+     */
+    public function testRegenerateId()
+    {
+        $session = new Session();
+
+        $before = $session->getId();
+
+        $session->regenerateID();
+
+        $after = $session->getId();
+
+        $this->assertNotEquals($before, $after);
+    }
 }
