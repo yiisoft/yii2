@@ -11,7 +11,7 @@ use yii\base\Model;
 
 class ValidatorTestEachAndInlineMethodModel extends Model
 {
-    public array $arrayProperty = [true, false];
+    public $arrayProperty = [true, false];
 
     public function rules()
     {
