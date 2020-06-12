@@ -7,9 +7,12 @@
 
 namespace yiiunit\framework\web;
 
+use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
+use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;
 
 /**
@@ -17,6 +20,8 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
+    /** @var FakeController */
+    private $controller;
     public function testBindActionParams()
     {
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
@@ -32,6 +37,129 @@ class ControllerTest extends TestCase
         $this->assertEquals('avaliable', $other);
     }
 
+    public function testNullableInjectedActionParams()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
+        $params = [];
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals(\Yii::$app->request, $args[0]);
+        $this->assertNull($args[1]);
+    }
+
+    public function testInjectionContainerException()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        \Yii::$container->set(VendorImage::className(), function() { throw new \RuntimeException('uh oh'); });
+
+        $this->expectException(get_class(new RuntimeException()));
+        $this->expectExceptionMessage('uh oh');
+        $this->controller->bindActionParams($injectionAction, $params);
+    }
+
+    public function testUnknownInjection()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        \Yii::$container->clear(VendorImage::className());
+        $this->expectException(get_class(new ServerErrorHttpException()));
+        $this->expectExceptionMessage('Could not load required service: vendorImage');
+        $this->controller->bindActionParams($injectionAction, $params);
+    }
+
+    public function testInjectedActionParams()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        \Yii::$container->set(VendorImage::className(), VendorImage::className());
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals($params['before'], $args[0]);
+        $this->assertEquals(\Yii::$app->request, $args[1]);
+        $this->assertEquals('Component: yii\web\Request $request', \Yii::$app->requestedParams['request']);
+        $this->assertEquals($params['between'], $args[2]);
+        $this->assertInstanceOf(VendorImage::className(), $args[3]);
+        $this->assertEquals('DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
+        $this->assertNull($args[4]);
+        $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
+        $this->assertEquals($params['after'], $args[5]);
+    }
     /**
      * @see https://github.com/yiisoft/yii2/issues/17701
      */

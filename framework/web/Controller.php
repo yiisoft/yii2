@@ -8,6 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 
@@ -125,6 +127,7 @@ class Controller extends \yii\base\Controller
         $args = [];
         $missing = [];
         $actionParams = [];
+        $requestedParams = [];
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
@@ -162,6 +165,12 @@ class Controller extends \yii\base\Controller
                 }
                 $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (Exception $e) {
+                    throw new ServerErrorHttpException($e->getMessage(), 0, $e);
+                }
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
             } else {
@@ -176,6 +185,11 @@ class Controller extends \yii\base\Controller
         }
 
         $this->actionParams = $actionParams;
+
+        // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
+        if (\Yii::$app->requestedParams === null) {
+            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
+        }
 
         return $args;
     }
