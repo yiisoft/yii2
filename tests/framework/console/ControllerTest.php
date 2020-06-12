@@ -7,8 +7,13 @@
 
 namespace yiiunit\framework\console;
 
+use RuntimeException;
+use yii\console\Exception;
+use yiiunit\framework\console\stubs\DummyService;
 use Yii;
+use yii\base\InlineAction;
 use yii\base\Module;
+use yii\console\Application;
 use yii\console\Request;
 use yii\helpers\Console;
 use yiiunit\TestCase;
@@ -18,6 +23,9 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
+    /** @var FakeController */
+    private $controller;
+
     protected function setUp()
     {
         parent::setUp();
@@ -74,6 +82,98 @@ class ControllerTest extends TestCase
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
+    }
+
+    public function testNullableInjectedActionParams()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+        ]));
+        $this->mockApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
+        $params = [];
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals(\Yii::$app->request, $args[0]);
+        $this->assertNull($args[1]);
+    }
+
+    public function testInjectionContainerException()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+        ]));
+        $this->mockApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        \Yii::$container->set(DummyService::className(), function() { throw new \RuntimeException('uh oh'); });
+
+        $this->expectException(get_class(new RuntimeException()));
+        $this->expectExceptionMessage('uh oh');
+        $this->controller->bindActionParams($injectionAction, $params);
+    }
+
+    public function testUnknownInjection()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+        ]));
+        $this->mockApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        \Yii::$container->clear(DummyService::className());
+        $this->expectException(get_class(new Exception()));
+        $this->expectExceptionMessage('Could not load required service: dummyService');
+        $this->controller->bindActionParams($injectionAction, $params);
+    }
+
+    public function testInjectedActionParams()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+        ]));
+        $this->mockApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        \Yii::$container->set(DummyService::className(), DummyService::className());
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals($params['before'], $args[0]);
+        $this->assertEquals(\Yii::$app->request, $args[1]);
+        $this->assertEquals('Component: yii\console\Request $request', \Yii::$app->requestedParams['request']);
+        $this->assertEquals($params['between'], $args[2]);
+        $this->assertInstanceOf(DummyService::className(), $args[3]);
+        $this->assertEquals('DI: yiiunit\framework\console\stubs\DummyService $dummyService', \Yii::$app->requestedParams['dummyService']);
+        $this->assertNull($args[4]);
+        $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
+        $this->assertEquals($params['after'], $args[5]);
     }
 
     public function assertResponseStatus($status, $response)
