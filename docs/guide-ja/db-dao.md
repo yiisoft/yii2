@@ -107,6 +107,18 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 > ]
 > ```
 
+MS SQL Server でバイナリ・データを正しく処理するためには追加の接続オプションが必要になります。
+
+```php
+'db' => [
+ 'class' => 'yii\db\Connection',
+    'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase',
+    'attributes' => [
+        \PDO::SQLSRV_ATTR_ENCODING => \PDO::SQLSRV_ENCODING_SYSTEM
+    ]
+],
+```
+
 
 ## SQL クエリを実行する <span id="executing-sql-queries"></span>
 
