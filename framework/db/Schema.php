@@ -459,7 +459,7 @@ abstract class Schema extends BaseObject
             return $str;
         }
 
-        if (($value = $this->db->getSlavePdo()->quote($str)) !== false) {
+        if (($value = $this->db->getReplicaPdo()->quote($str)) !== false) {
             return $value;
         }
 
@@ -696,7 +696,7 @@ abstract class Schema extends BaseObject
     public function getServerVersion()
     {
         if ($this->_serverVersion === null) {
-            $this->_serverVersion = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $this->_serverVersion = $this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
         }
         return $this->_serverVersion;
     }
@@ -810,7 +810,7 @@ abstract class Schema extends BaseObject
      */
     protected function normalizePdoRowKeyCase(array $row, $multiple)
     {
-        if ($this->db->getSlavePdo()->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_UPPER) {
+        if ($this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_UPPER) {
             return $row;
         }
 

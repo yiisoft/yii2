@@ -89,7 +89,7 @@ class Migration extends Component implements MigrationInterface
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
         $this->db->getSchema()->refresh();
-        $this->db->enableSlaves = false;
+        $this->db->enableReplicas = false;
     }
 
     /**
