@@ -409,29 +409,29 @@ abstract class ConnectionTest extends DatabaseTestCase
 
 
     /**
-     * Test whether slave connection is recovered when call getSlavePdo() after close().
+     * Test whether replica connection is recovered when getReplicaPdo() is called after close().
      *
      * @see https://github.com/yiisoft/yii2/issues/14165
      */
     public function testGetPdoAfterClose()
     {
         $connection = $this->getConnection();
-        $connection->slaves[] = [
+        $connection->replicas[] = [
             'dsn' => $connection->dsn,
             'username' => $connection->username,
             'password' => $connection->password,
         ];
-        $this->assertNotNull($connection->getSlavePdo(false));
+        $this->assertNotNull($connection->getReplicaPdo(false));
         $connection->close();
 
-        $masterPdo = $connection->getMasterPdo();
-        $this->assertNotFalse($masterPdo);
-        $this->assertNotNull($masterPdo);
+        $primaryPdo = $connection->getPrimaryPdo();
+        $this->assertNotFalse($primaryPdo);
+        $this->assertNotNull($primaryPdo);
 
-        $slavePdo = $connection->getSlavePdo(false);
-        $this->assertNotFalse($slavePdo);
-        $this->assertNotNull($slavePdo);
-        $this->assertNotSame($masterPdo, $slavePdo);
+        $replicaPdo = $connection->getReplicaPdo(false);
+        $this->assertNotFalse($replicaPdo);
+        $this->assertNotNull($replicaPdo);
+        $this->assertNotSame($primaryPdo, $replicaPdo);
     }
 
     public function testServerStatusCacheWorks()
@@ -440,12 +440,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         Yii::$app->set('cache', $cache);
 
         $connection = $this->getConnection(true, false);
-        $connection->masters[] = [
+        $connection->primaries[] = [
             'dsn' => $connection->dsn,
             'username' => $connection->username,
             'password' => $connection->password,
         ];
-        $connection->shuffleMasters = false;
+        $connection->shufflePrimaries = false;
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
 
@@ -455,7 +455,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->close();
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
-        $connection->masters[0]['dsn'] = 'host:invalid';
+        $connection->primaries[0]['dsn'] = 'host:invalid';
         try {
             $connection->open();
         } catch (InvalidConfigException $e) {
@@ -470,12 +470,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         Yii::$app->set('cache', $cache);
 
         $connection = $this->getConnection(true, false);
-        $connection->masters[] = [
+        $connection->primaries[] = [
             'dsn' => $connection->dsn,
             'username' => $connection->username,
             'password' => $connection->password,
         ];
-        $connection->shuffleMasters = false;
+        $connection->shufflePrimaries = false;
         $connection->serverStatusCache = false;
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
@@ -486,7 +486,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->close();
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
-        $connection->masters[0]['dsn'] = 'host:invalid';
+        $connection->primaries[0]['dsn'] = 'host:invalid';
         try {
             $connection->open();
         } catch (InvalidConfigException $e) {

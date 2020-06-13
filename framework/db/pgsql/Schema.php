@@ -368,7 +368,7 @@ SQL;
 
         $constraints = [];
         foreach ($this->db->createCommand($sql)->queryAll() as $constraint) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $constraint = array_change_key_case($constraint, CASE_LOWER);
             }
             if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
@@ -439,7 +439,7 @@ SQL;
         $uniqueIndexes = [];
 
         foreach ($this->getUniqueIndexInformation($table) as $row) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $row = array_change_key_case($row, CASE_LOWER);
             }
             $column = $row['columnname'];
@@ -536,7 +536,7 @@ SQL;
             return false;
         }
         foreach ($columns as $column) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $column = array_change_key_case($column, CASE_LOWER);
             }
             $column = $this->loadColumnSchema($column);
