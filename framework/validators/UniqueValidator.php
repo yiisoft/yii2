@@ -13,6 +13,7 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
+use yii\db\Connection;
 use yii\helpers\Inflector;
 
 /**
@@ -35,6 +36,8 @@ use yii\helpers\Inflector;
  * // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
  * ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']]
  * ```
+ *
+ * @mixin ForceMasterDbTrait
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -90,10 +93,28 @@ class UniqueValidator extends Validator
      */
     public $targetAttributeJunction = 'and';
     /**
-     * @var bool whether this validator is forced to always use master DB
-     * @since 2.0.14
+     * @var bool whether this validator is forced to always use the primary DB connection
+     * @since 2.0.26
      */
-    public $forceMasterDb =  true;
+    public $forcePrimaryDb =  true;
+    /**
+     * Returns the value of [[forcePrimaryDb]].
+     * @return bool
+     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
+     */
+    public function getForceMasterDb()
+    {
+        return $this->forcePrimaryDb;
+    }
+    /**
+     * Sets the value of [[forcePrimaryDb]].
+     * @param bool $value
+     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
+     */
+    public function setForceMasterDb($value)
+    {
+        $this->forcePrimaryDb = $value;
+    }
 
 
     /**
@@ -136,12 +157,13 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
+        /** @var Connection|mixed $db */
         $db = $targetClass::getDb();
 
         $modelExists = false;
 
-        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
-            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
+        if ($this->forcePrimaryDb && method_exists($db, 'usePrimary')) {
+            $db->usePrimary(function () use ($targetClass, $conditions, $model, &$modelExists) {
                 $modelExists = $this->modelExists($targetClass, $conditions, $model);
             });
         } else {
@@ -191,10 +213,10 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
-                
+
                 // any with relation can't be loaded because related fields are not selected
                 $query->with = null;
-    
+
                 if (is_array($query->joinWith)) {
                     // any joinWiths need to have eagerLoading turned off to prevent related fields being loaded
                     foreach ($query->joinWith as &$joinWith) {

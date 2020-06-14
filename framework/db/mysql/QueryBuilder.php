@@ -403,7 +403,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $version = $cache ? $cache->get($key) : null;
         if (!$version) {
-            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $version = $this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             if ($cache) {
                 $cache->set($key, $version, $this->db->schemaCacheDuration);
             }
