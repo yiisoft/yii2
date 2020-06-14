@@ -14,7 +14,7 @@
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
-                return methods.init.apply(this, arguments);
+            return methods.init.apply(this, arguments);
         } else {
             $.error('Method ' + method + ' does not exist in jQuery.yiiGridView');
             return false;
@@ -253,6 +253,7 @@
             gridEventHandlers[id] = {};
         }
         $(document).on(event, selector, callback);
-        gridEventHandlers[id][type] = {event: event, selector: selector};
+        var typeKey = (type === 'filter') ? type : type + selector;
+        gridEventHandlers[id][typeKey] = {event: event, selector: selector};
     }
 })(window.jQuery);
