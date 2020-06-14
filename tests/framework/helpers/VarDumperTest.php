@@ -177,13 +177,13 @@ RESULT;
         $exportResult = VarDumper::export($var);
         $this->assertNotEmpty($exportResult);
 
-        $master = new \StdClass();
-        $slave = new \StdClass();
-        $master->slave = $slave;
-        $slave->master = $master;
-        $master->function = function () {return true;};
+        $foo = new \StdClass();
+        $bar = new \StdClass();
+        $foo->bar = $bar;
+        $bar->foo = $foo;
+        $foo->function = function () {return true;};
 
-        $exportResult = VarDumper::export($master);
+        $exportResult = VarDumper::export($foo);
         $this->assertNotEmpty($exportResult);
     }
 

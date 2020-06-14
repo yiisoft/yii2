@@ -437,7 +437,7 @@ try {
 
 Многие СУБД поддерживают [репликацию баз данных](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 для лучшей доступности базы данных и уменьшения времени ответа сервера. С репликацией базы данных, данные копируются
-из *master servers* на *slave servers*. Все вставки и обновления должны происходить на основном сервере, хотя чтение
+из *primary servers* на *replica servers*. Все вставки и обновления должны происходить на основном сервере, хотя чтение
 может производится и с подчинённых серверов.
 
 Чтоб воспользоваться преимуществами репликации и достичь разделения чтения и записи, вам необходимо настроить компонент
@@ -448,13 +448,13 @@ try {
     'class' => 'yii\db\Connection',
 
     // настройки для мастера
-    'dsn' => 'dsn for master server',
-    'username' => 'master',
+    'dsn' => 'dsn for primary server',
+    'username' => 'primary',
     'password' => '',
 
     // общие настройки для подчинённых
-    'slaveConfig' => [
-        'username' => 'slave',
+    'replicaConfig' => [
+        'username' => 'replica',
         'password' => '',
         'attributes' => [
             // используем небольшой таймаут для соединения
@@ -463,11 +463,11 @@ try {
     ],
 
     // список настроек для подчинённых серверов
-    'slaves' => [
-        ['dsn' => 'dsn for slave server 1'],
-        ['dsn' => 'dsn for slave server 2'],
-        ['dsn' => 'dsn for slave server 3'],
-        ['dsn' => 'dsn for slave server 4'],
+    'replicas' => [
+        ['dsn' => 'dsn for replica server 1'],
+        ['dsn' => 'dsn for replica server 2'],
+        ['dsn' => 'dsn for replica server 3'],
+        ['dsn' => 'dsn for replica server 4'],
     ],
 ]
 ```
@@ -489,7 +489,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 
 > Info: Запросы выполненные через [[yii\db\Command::execute()]] определяются как запросы на запись, а все
   остальные запросы через один из "query" методов [[yii\db\Command]] воспринимаются как запросы на чтение.
-  Вы можете получить текущий статус соединения к подчинённому серверу через `$db->slave`.
+  Вы можете получить текущий статус соединения к подчинённому серверу через `$db->replica`.
 
 Компонент `Connection` поддерживает балансировку нагрузки и переключение при сбое для подчинённых серверов.
 При выполнении первого запроса на чтение, компонент `Connection` будет случайным образом выбирать подчинённый сервер
@@ -509,8 +509,8 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     'class' => 'yii\db\Connection',
 
     // общая конфигурация для основных серверов
-    'masterConfig' => [
-        'username' => 'master',
+    'primaryConfig' => [
+        'username' => 'primary',
         'password' => '',
         'attributes' => [
             // используем небольшой таймаут для соединения
@@ -519,14 +519,14 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     ],
 
     // список настроек для основных серверов
-    'masters' => [
-        ['dsn' => 'dsn for master server 1'],
-        ['dsn' => 'dsn for master server 2'],
+    'primaries' => [
+        ['dsn' => 'dsn for primary server 1'],
+        ['dsn' => 'dsn for primary server 2'],
     ],
 
     // общие настройки для подчинённых
-    'slaveConfig' => [
-        'username' => 'slave',
+    'replicaConfig' => [
+        'username' => 'replica',
         'password' => '',
         'attributes' => [
             // используем небольшой таймаут для соединения
@@ -535,11 +535,11 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     ],
 
     // список настроек для подчинённых серверов
-    'slaves' => [
-        ['dsn' => 'dsn for slave server 1'],
-        ['dsn' => 'dsn for slave server 2'],
-        ['dsn' => 'dsn for slave server 3'],
-        ['dsn' => 'dsn for slave server 4'],
+    'replicas' => [
+        ['dsn' => 'dsn for replica server 1'],
+        ['dsn' => 'dsn for replica server 2'],
+        ['dsn' => 'dsn for replica server 3'],
+        ['dsn' => 'dsn for replica server 4'],
     ],
 ]
 ```
@@ -548,7 +548,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 балансировку нагрузки и переключение при сбое между основными серверами, также как и между подчинёнными. Различие
 заключается в том, что когда ни к одному из основных серверов не удастся подключиться будет выброшено исключение.
 
-> Note: Когда вы используете свойство [[yii\db\Connection::masters|masters]] для настройки одного или нескольких
+> Note: Когда вы используете свойство [[yii\db\Connection::primaries|primaries]] для настройки одного или нескольких
   основных серверов, все остальные свойства для настройки соединения с базой данных (такие как `dsn`, `username`, `password`)
   будут проигнорированы компонентом `Connection`.
 
@@ -578,19 +578,19 @@ try {
 Если вы хотите запустить транзакцию на подчинённом сервере, вы должны указать это явно, как показано ниже:
 
 ```php
-$transaction = Yii::$app->db->slave->beginTransaction();
+$transaction = Yii::$app->db->replica->beginTransaction();
 ```
 
 Иногда может потребоваться выполнить запрос на чтение через подключение к основному серверу. Это может быть достигнуто
-с использованием метода `useMaster()`:
+с использованием метода `usePrimary()`:
 
 ```php
-$rows = Yii::$app->db->useMaster(function ($db) {
+$rows = Yii::$app->db->usePrimary(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-Вы также можете явно установить `$db->enableSlaves` в ложь, чтоб направлять все запросы к соединению с мастером.
+Вы также можете явно установить `$db->enableReplicas` в ложь, чтоб направлять все запросы к соединению с мастером.
 
 
 ## Работа со схемой базы данных <span id="database-schema"></span>

@@ -248,13 +248,13 @@ class Command extends Component
         $sql = $this->getSql();
 
         if ($this->db->getTransaction()) {
-            // master is in a transaction. use the same connection.
+            // primary is in a transaction. use the same connection.
             $forRead = false;
         }
         if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
-            $pdo = $this->db->getSlavePdo();
+            $pdo = $this->db->getReplicaPdo();
         } else {
-            $pdo = $this->db->getMasterPdo();
+            $pdo = $this->db->getPrimaryPdo();
         }
 
         try {
