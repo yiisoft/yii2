@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
 - Bug #17474: Fix retrieving inserted data for a primary key of type trigger for SQL Server 2005 or later (darkdef)
 - Bug #18001: Fix getting table metadata for tables `(` in their name (floor12)
+- Bug #18101: Fix behavior OUTPUT INSERTED.* for SQL Server query: "insert default values"; corrected mssql phpunit tests; off profiling echo message in migration test (darkdef)
 
 
 2.0.35 May 02, 2020
