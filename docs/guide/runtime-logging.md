@@ -143,7 +143,7 @@ If you do not specify the [[yii\log\Target::categories|categories]] property, it
 messages of *any* category.
 
 In addition to specifying allowed categories using the [[yii\log\Target::categories|categories]] property, you may also
-block certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
+exclude certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
 is found or matches one of the patterns in this property, it will NOT be processed by the target.
  
 The following target configuration specifies that the target should only process error and warning messages
