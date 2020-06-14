@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
 - Bug #17474: Fix retrieving inserted data for a primary key of type trigger for SQL Server 2005 or later (darkdef)
 - Bug #18001: Fix getting table metadata for tables `(` in their name (floor12)
+- Enh #18083: Add `Controller::$request` and `$response` (brandonkelly)
 - Enh #18102: Use “primary”/“replica” terminology instead of “master”/“slave” (brandonkelly)
   - Added `yii\db\Connection::$enableReplicas` and deprecated `$enableSlaves` via magic methods.
   - Added `yii\db\Connection::$replicas` and deprecated `$slaves` via magic methods.
