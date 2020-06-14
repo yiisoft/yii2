@@ -327,7 +327,7 @@ SQL;
             throw $e;
         }
         foreach ($columns as $info) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
                 $info = array_change_key_case($info, CASE_LOWER);
             }
             $column = $this->loadColumnSchema($info);
@@ -475,7 +475,7 @@ SQL;
     protected function isOldMysql()
     {
         if ($this->_oldMysql === null) {
-            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $version = $this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             $this->_oldMysql = version_compare($version, '5.1', '<=');
         }
 
