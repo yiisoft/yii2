@@ -491,12 +491,12 @@ try {
 
     // マスタの構成
     'dsn' => 'マスタ・サーバの DSN',
-    'username' => 'master',
+    'username' => 'primary',
     'password' => '',
 
     // スレーブの共通の構成
-    'slaveConfig' => [
-        'username' => 'slave',
+    'replicaConfig' => [
+        'username' => 'replica',
         'password' => '',
         'attributes' => [
             // 短かめの接続タイムアウトを使う
@@ -505,7 +505,7 @@ try {
     ],
 
     // スレーブの構成のリスト
-    'slaves' => [
+    'replicas' => [
         ['dsn' => 'スレーブ・サーバ 1 の DSN'],
         ['dsn' => 'スレーブ・サーバ 2 の DSN'],
         ['dsn' => 'スレーブ・サーバ 3 の DSN'],
@@ -531,7 +531,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 
 > Info: [[yii\db\Command::execute()]] を呼ぶことで実行されるクエリは、書き込みのクエリと見なされ、
   [[yii\db\Command]] の "query" メソッドのうちの一つによって実行されるその他すべてのクエリは、読み出しクエリと見なされます。
-  現在アクティブなスレーブ接続は `Yii::$app->db->slave` によって取得することが出来ます。
+  現在アクティブなスレーブ接続は `Yii::$app->db->replica` によって取得することが出来ます。
 
 `Connection` コンポーネントは、スレーブ間のロード・バランス調整とフェイルオーバーをサポートしています。
 読み出しクエリを最初に実行するときに、`Connection` コンポーネントはランダムにスレーブを選んで接続を試みま・す。
@@ -553,8 +553,8 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     'class' => 'yii\db\Connection',
 
     // マスタの共通の構成
-    'masterConfig' => [
-        'username' => 'master',
+    'primaryConfig' => [
+        'username' => 'primary',
         'password' => '',
         'attributes' => [
             // 短かめの接続タイムアウトを使う
@@ -563,14 +563,14 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     ],
 
     // マスタの構成のリスト
-    'masters' => [
+    'primaries' => [
         ['dsn' => 'マスタ・サーバ 1 の DSN'],
         ['dsn' => 'マスタ・サーバ 2 の DSN'],
     ],
 
     // スレーブの共通の構成
-    'slaveConfig' => [
-        'username' => 'slave',
+    'replicaConfig' => [
+        'username' => 'replica',
         'password' => '',
         'attributes' => [
             // 短かめの接続タイムアウトを使う
@@ -579,7 +579,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     ],
 
     // スレーブの構成のリスト
-    'slaves' => [
+    'replicas' => [
         ['dsn' => 'スレーブ・サーバ 1 の DSN'],
         ['dsn' => 'スレーブ・サーバ 2 の DSN'],
         ['dsn' => 'スレーブ・サーバ 3 の DSN'],
@@ -592,7 +592,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 `Connection` コンポーネントは、スレーブ間での場合と同じように、マスタ間でのロード・バランス調整とフェイルオーバーをサポートしています。
 一つ違うのは、マスタが一つも利用できないときは例外が投げられる、という点です。
 
-> Note: [[yii\db\Connection::masters|masters]] プロパティを使って一つまたは複数のマスタを構成する場合は、
+> Note: [[yii\db\Connection::primaries|primaries]] プロパティを使って一つまたは複数のマスタを構成する場合は、
   データベース接続を定義する `Connection` オブジェクト自体の他のプロパティ
   (例えば、`dsn`、`username`、`password`) は全て無視されます。
 
@@ -623,19 +623,19 @@ try {
 スレーブ接続を使ってトランザクションを開始したいときは、次のように、明示的にそうする必要があります。
 
 ```php
-$transaction = Yii::$app->db->slave->beginTransaction();
+$transaction = Yii::$app->db->replica->beginTransaction();
 ```
 
 時として、読み出しクエリの実行にマスタ接続を使うことを強制したい場合があります。
-これは、`useMaster()` メソッドを使うことによって達成できます。
+これは、`usePrimary()` メソッドを使うことによって達成できます。
 
 ```php
-$rows = Yii::$app->db->useMaster(function ($db) {
+$rows = Yii::$app->db->usePrimary(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-直接に `Yii::$app->db->enableSlaves` を `false` に設定して、全てのクエリをマスタ接続に向けることも出来ます。
+直接に `Yii::$app->db->enableReplicas` を `false` に設定して、全てのクエリをマスタ接続に向けることも出来ます。
 
 
 ## データベース・スキーマを扱う <span id="database-schema"></span>

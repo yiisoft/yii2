@@ -57,7 +57,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         if ($this->defaultSchema === null) {
             $username = $this->db->username;
             if (empty($username)) {
-                $username = isset($this->db->masters[0]['username']) ? $this->db->masters[0]['username'] : '';
+                $username = isset($this->db->primaries[0]['username']) ? $this->db->primaries[0]['username'] : '';
             }
             $this->defaultSchema = strtoupper($username);
         }
@@ -134,7 +134,7 @@ SQL;
         $rows = $command->queryAll();
         $names = [];
         foreach ($rows as $row) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
             $names[] = $row['TABLE_NAME'];
@@ -337,7 +337,7 @@ SQL;
         }
 
         foreach ($columns as $column) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $column = array_change_key_case($column, CASE_UPPER);
             }
             $c = $this->createColumn($column);
@@ -382,9 +382,9 @@ SQL;
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            // get the last insert id from the master connection
+            // get the last insert id from the primary connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
-            return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
+            return $this->db->usePrimary(function (Connection $db) use ($sequenceName) {
                 return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
             });
         } else {
@@ -467,7 +467,7 @@ SQL;
         ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
 
