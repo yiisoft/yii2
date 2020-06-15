@@ -206,7 +206,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $tableName = $db->quoteTableName($tableName);
             if ($value === null) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $value = $this->db->usePrimary(function (Connection $db) use ($key, $tableName) {
+                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
                     return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
                 });
             } else {

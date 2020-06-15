@@ -57,7 +57,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         if ($this->defaultSchema === null) {
             $username = $this->db->username;
             if (empty($username)) {
-                $username = isset($this->db->primaries[0]['username']) ? $this->db->primaries[0]['username'] : '';
+                $username = isset($this->db->masters[0]['username']) ? $this->db->masters[0]['username'] : '';
             }
             $this->defaultSchema = strtoupper($username);
         }
@@ -384,7 +384,7 @@ SQL;
         if ($this->db->isActive) {
             // get the last insert id from the primary connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
-            return $this->db->usePrimary(function (Connection $db) use ($sequenceName) {
+            return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
                 return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
             });
         } else {

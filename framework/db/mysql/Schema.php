@@ -475,7 +475,7 @@ SQL;
     protected function isOldMysql()
     {
         if ($this->_oldMysql === null) {
-            $version = $this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             $this->_oldMysql = version_compare($version, '5.1', '<=');
         }
 

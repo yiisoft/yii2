@@ -44,7 +44,7 @@ use yii\db\QueryInterface;
  * ['type_id', 'exist', 'targetRelation' => 'type'],
  * ```
  *
- * @mixin ForceMasterDbTrait
+ * @property bool $forcePrimaryDb whether this validator is forced to always use the primary DB connection
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -89,26 +89,29 @@ class ExistValidator extends Validator
     public $targetAttributeJunction = 'and';
     /**
      * @var bool whether this validator is forced to always use the primary DB connection
-     * @since 2.0.36
+     * @since 2.0.14
+     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
      */
-    public $forcePrimaryDb = true;
+    public $forceMasterDb = true;
     /**
      * Returns the value of [[forcePrimaryDb]].
      * @return bool
-     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getForceMasterDb()
+    public function getForcePrimaryDb()
     {
-        return $this->forcePrimaryDb;
+        return $this->forceMasterDb;
     }
     /**
      * Sets the value of [[forcePrimaryDb]].
      * @param bool $value
-     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setForceMasterDb($value)
+    public function setForcePrimaryDb($value)
     {
-        $this->forcePrimaryDb = $value;
+        $this->forceMasterDb = $value;
     }
 
 
@@ -152,8 +155,8 @@ class ExistValidator extends Validator
             $relationQuery->andWhere($this->filter);
         }
 
-        if ($this->forcePrimaryDb && method_exists($model::getDb(), 'usePrimary')) {
-            $model::getDb()->usePrimary(function() use ($relationQuery, &$exists) {
+        if ($this->forceMasterDb && method_exists($model::getDb(), 'useMaster')) {
+            $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
                 $exists = $relationQuery->exists();
             });
         } else {
@@ -280,8 +283,8 @@ class ExistValidator extends Validator
         $db = $targetClass::getDb();
         $exists = false;
 
-        if ($this->forcePrimaryDb && method_exists($db, 'usePrimary')) {
-            $db->usePrimary(function ($db) use ($query, $value, &$exists) {
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function ($db) use ($query, $value, &$exists) {
                 $exists = $this->queryValueExists($query, $value);
             });
         } else {

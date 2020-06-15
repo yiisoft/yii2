@@ -155,7 +155,7 @@ EOD;
                 throw new InvalidArgumentException("Can't reset sequence for composite primary key in table: $table");
             }
             // use primary connection to get the biggest PK value
-            $value = $this->db->usePrimary(function (Connection $db) use ($tableSchema) {
+            $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
                 return $db->createCommand(
                     'SELECT MAX("' . $tableSchema->primaryKey[0] . '") FROM "'. $tableSchema->name . '"'
                 )->queryScalar();
