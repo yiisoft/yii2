@@ -221,7 +221,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         // enable to have ability to alter several tables
-        $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+        $this->db->getPrimaryPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $command;
     }

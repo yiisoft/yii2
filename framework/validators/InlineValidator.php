@@ -68,7 +68,10 @@ class InlineValidator extends Validator
         $method = $this->method;
         if (is_string($method)) {
             $method = [$model, $method];
+        } elseif ($method instanceof \Closure) {
+            $method = $this->method->bindTo($model);
         }
+
         call_user_func($method, $attribute, $this->params, $this);
     }
 
@@ -81,6 +84,8 @@ class InlineValidator extends Validator
             $method = $this->clientValidate;
             if (is_string($method)) {
                 $method = [$model, $method];
+            } elseif ($method instanceof \Closure) {
+                $method = $this->method->bindTo($model);
             }
 
             return call_user_func($method, $attribute, $this->params, $this);

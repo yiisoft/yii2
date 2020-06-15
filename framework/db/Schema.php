@@ -459,7 +459,7 @@ abstract class Schema extends BaseObject
             return $str;
         }
 
-        if (($value = $this->db->getSlavePdo()->quote($str)) !== false) {
+        if (($value = $this->db->getReplicaPdo()->quote($str)) !== false) {
             return $value;
         }
 
@@ -478,7 +478,11 @@ abstract class Schema extends BaseObject
      */
     public function quoteTableName($name)
     {
-        if (strpos($name, '(') !== false || strpos($name, '{{') !== false) {
+
+        if (strpos($name, '(') === 0 && strpos($name, ')') === strlen($name) - 1) {
+            return $name;
+        }
+        if (strpos($name, '{{') !== false) {
             return $name;
         }
         if (strpos($name, '.') === false) {
@@ -488,7 +492,6 @@ abstract class Schema extends BaseObject
         foreach ($parts as $i => $part) {
             $parts[$i] = $this->quoteSimpleTableName($part);
         }
-
         return implode('.', $parts);
     }
 
@@ -693,7 +696,7 @@ abstract class Schema extends BaseObject
     public function getServerVersion()
     {
         if ($this->_serverVersion === null) {
-            $this->_serverVersion = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $this->_serverVersion = $this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
         }
         return $this->_serverVersion;
     }
@@ -807,7 +810,7 @@ abstract class Schema extends BaseObject
      */
     protected function normalizePdoRowKeyCase(array $row, $multiple)
     {
-        if ($this->db->getSlavePdo()->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_UPPER) {
+        if ($this->db->getReplicaPdo()->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_UPPER) {
             return $row;
         }
 

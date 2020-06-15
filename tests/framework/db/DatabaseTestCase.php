@@ -130,15 +130,15 @@ abstract class DatabaseTestCase extends TestCase
                 return $sql;
         }
     }
-    
+
     /**
      * @return \yii\db\Connection
      */
-    protected function getConnectionWithInvalidSlave()
+    protected function getConnectionWithInvalidReplica()
     {
         $config = array_merge($this->database, [
             'serverStatusCache' => new DummyCache(),
-            'slaves' => [
+            'replicas' => [
                 [], // invalid config
             ],
         ]);

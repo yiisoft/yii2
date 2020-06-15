@@ -479,8 +479,8 @@ try {
 
 Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 to get better database availability and faster server response time. With database replication, data are replicated
-from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
-while reads may also take place on the slave servers.
+from the so-called *primary servers* to *replica servers*. All writes and updates must take place on the primary servers,
+while reads may also take place on the replica servers.
 
 To take advantage of database replication and achieve read-write splitting, you can configure a [[yii\db\Connection]]
 component like the following:
@@ -489,14 +489,14 @@ component like the following:
 [
     'class' => 'yii\db\Connection',
 
-    // configuration for the master
-    'dsn' => 'dsn for master server',
-    'username' => 'master',
+    // configuration for the primary server
+    'dsn' => 'dsn for primary server',
+    'username' => 'primary',
     'password' => '',
 
-    // common configuration for slaves
-    'slaveConfig' => [
-        'username' => 'slave',
+    // common configuration for replicas
+    'replicaConfig' => [
+        'username' => 'replica',
         'password' => '',
         'attributes' => [
             // use a smaller connection timeout
@@ -504,57 +504,57 @@ component like the following:
         ],
     ],
 
-    // list of slave configurations
-    'slaves' => [
-        ['dsn' => 'dsn for slave server 1'],
-        ['dsn' => 'dsn for slave server 2'],
-        ['dsn' => 'dsn for slave server 3'],
-        ['dsn' => 'dsn for slave server 4'],
+    // list of replica configurations
+    'replicas' => [
+        ['dsn' => 'dsn for replica server 1'],
+        ['dsn' => 'dsn for replica server 2'],
+        ['dsn' => 'dsn for replica server 3'],
+        ['dsn' => 'dsn for replica server 4'],
     ],
 ]
 ```
 
-The above configuration specifies a setup with a single master and multiple slaves. One of the slaves will
-be connected and used to perform read queries, while the master will be used to perform write queries.
+The above configuration specifies a setup with a single primary server and multiple replicas. One of the replicas
+will be connected and used to perform read queries, while the primary server will be used to perform write queries.
 Such read-write splitting is accomplished automatically with this configuration. For example,
 
 ```php
 // create a Connection instance using the above configuration
 Yii::$app->db = Yii::createObject($config);
 
-// query against one of the slaves
+// query against one of the replicas
 $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 
-// query against the master
+// query against the primary server
 Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
 > Info: Queries performed by calling [[yii\db\Command::execute()]] are considered as write queries, while
   all other queries done through one of the "query" methods of [[yii\db\Command]] are read queries.
-  You can get the currently active slave connection via `Yii::$app->db->slave`.
+  You can get the currently active replica connection via `Yii::$app->db->replica`.
 
-The `Connection` component supports load balancing and failover between slaves.
-When performing a read query for the first time, the `Connection` component will randomly pick a slave and
-try connecting to it. If the slave is found "dead", it will try another one. If none of the slaves is available,
-it will connect to the master. By configuring a [[yii\db\Connection::serverStatusCache|server status cache]],
+The `Connection` component supports load balancing and failover between replicas.
+When performing a read query for the first time, the `Connection` component will randomly pick a replica and
+try connecting to it. If the replica is found "dead", it will try another one. If none of the replicas are available,
+it will connect to the primary server. By configuring a [[yii\db\Connection::serverStatusCache|server status cache]],
 a "dead" server can be remembered so that it will not be tried again during a
 [[yii\db\Connection::serverRetryInterval|certain period of time]].
 
-> Info: In the above configuration, a connection timeout of 10 seconds is specified for every slave.
-  This means if a slave cannot be reached in 10 seconds, it is considered as "dead". You can adjust this parameter
+> Info: In the above configuration, a connection timeout of 10 seconds is specified for every replica.
+  This means if a replica cannot be reached in 10 seconds, it is considered as "dead". You can adjust this parameter
   based on your actual environment.
 
 
-You can also configure multiple masters with multiple slaves. For example,
+You can also configure multiple primary servers with multiple replicas. For example,
 
 
 ```php
 [
     'class' => 'yii\db\Connection',
 
-    // common configuration for masters
-    'masterConfig' => [
-        'username' => 'master',
+    // common configuration for primary servers
+    'primaryConfig' => [
+        'username' => 'primary',
         'password' => '',
         'attributes' => [
             // use a smaller connection timeout
@@ -562,15 +562,15 @@ You can also configure multiple masters with multiple slaves. For example,
         ],
     ],
 
-    // list of master configurations
-    'masters' => [
-        ['dsn' => 'dsn for master server 1'],
-        ['dsn' => 'dsn for master server 2'],
+    // list of primary server configurations
+    'primaries' => [
+        ['dsn' => 'dsn for primary server 1'],
+        ['dsn' => 'dsn for primary server 2'],
     ],
 
-    // common configuration for slaves
-    'slaveConfig' => [
-        'username' => 'slave',
+    // common configuration for replicas
+    'replicaConfig' => [
+        'username' => 'replica',
         'password' => '',
         'attributes' => [
             // use a smaller connection timeout
@@ -578,35 +578,35 @@ You can also configure multiple masters with multiple slaves. For example,
         ],
     ],
 
-    // list of slave configurations
-    'slaves' => [
-        ['dsn' => 'dsn for slave server 1'],
-        ['dsn' => 'dsn for slave server 2'],
-        ['dsn' => 'dsn for slave server 3'],
-        ['dsn' => 'dsn for slave server 4'],
+    // list of replica configurations
+    'replicas' => [
+        ['dsn' => 'dsn for replica server 1'],
+        ['dsn' => 'dsn for replica server 2'],
+        ['dsn' => 'dsn for replica server 3'],
+        ['dsn' => 'dsn for replica server 4'],
     ],
 ]
 ```
 
-The above configuration specifies two masters and four slaves. The `Connection` component also supports
-load balancing and failover between masters just as it does between slaves. A difference is that when none 
-of the masters are available an exception will be thrown.
+The above configuration specifies two primary servers and four replicas. The `Connection` component also supports
+load balancing and failover between primary servers just as it does between replicas. A difference is that when none 
+of the primary servers are available, an exception will be thrown.
 
-> Note: When you use the [[yii\db\Connection::masters|masters]] property to configure one or multiple
-  masters, all other properties for specifying a database connection (e.g. `dsn`, `username`, `password`)
+> Note: When you use the [[yii\db\Connection::primaries|primaries]] property to configure one or multiple
+  primary servers, all other properties for specifying a database connection (e.g. `dsn`, `username`, `password`)
   with the `Connection` object itself will be ignored.
 
 
-By default, transactions use the master connection. And within a transaction, all DB operations will use
-the master connection. For example,
+By default, transactions use the primary connection. And within a transaction, all DB operations will use
+the primary connection. For example,
 
 ```php
 $db = Yii::$app->db;
-// the transaction is started on the master connection
+// the transaction is started on the primary server
 $transaction = $db->beginTransaction();
 
 try {
-    // both queries are performed against the master
+    // both queries are performed against the primary server
     $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
     $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
@@ -620,22 +620,22 @@ try {
 }
 ```
 
-If you want to start a transaction with the slave connection, you should explicitly do so, like the following:
+If you want to start a transaction with a replica, you should explicitly do so, like the following:
 
 ```php
-$transaction = Yii::$app->db->slave->beginTransaction();
+$transaction = Yii::$app->db->replica->beginTransaction();
 ```
 
-Sometimes, you may want to force using the master connection to perform a read query. This can be achieved
-with the `useMaster()` method:
+Sometimes, you may want to force using the primary server to perform a read query. This can be achieved
+with the `usePrimary()` method:
 
 ```php
-$rows = Yii::$app->db->useMaster(function ($db) {
+$rows = Yii::$app->db->usePrimary(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-You may also directly set `Yii::$app->db->enableSlaves` to be `false` to direct all queries to the master connection.
+You may also directly set `Yii::$app->db->enableReplicas` to be `false` to direct all queries to the primary server.
 
 
 ## Working with Database Schema <span id="database-schema"></span>
