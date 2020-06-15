@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
   - Added `yii\validators\ExistValidator::$forcePrimaryDb` and deprecated `$forceMasterDb` via magic methods.
   - Added `yii\validators\UniqueValidator::$forcePrimaryDb` and deprecated `$forceMasterDb` via magic methods.
 - Bug #18101: Fix behavior of OUTPUT INSERTED.* for SQL Server query: "insert default values"; correct MSSQL unit tests; turn off profiling echo message in migration test (darkdef)
+- Bug #18105: Fix for old trigger in RBAC migration with/without prefixTable (darkdef)
 
 
 2.0.35 May 02, 2020
