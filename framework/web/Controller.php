@@ -18,6 +18,8 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
+ * @property Request $request
+ * @property Response $response
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -72,10 +74,9 @@ class Controller extends \yii\base\Controller
      */
     public function asJson($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_JSON;
-        $response->data = $data;
-        return $response;
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->data = $data;
+        return $this->response;
     }
 
     /**
@@ -99,10 +100,9 @@ class Controller extends \yii\base\Controller
      */
     public function asXml($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_XML;
-        $response->data = $data;
-        return $response;
+        $this->response->format = Response::FORMAT_XML;
+        $this->response->data = $data;
+        return $this->response;
     }
 
     /**
@@ -200,7 +200,7 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
 
@@ -239,7 +239,7 @@ class Controller extends \yii\base\Controller
     public function redirect($url, $statusCode = 302)
     {
         // calling Url::to() here because Response::redirect() modifies route before calling Url::to()
-        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
+        return $this->response->redirect(Url::to($url), $statusCode);
     }
 
     /**
@@ -256,7 +256,7 @@ class Controller extends \yii\base\Controller
      */
     public function goHome()
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getHomeUrl());
+        return $this->response->redirect(Yii::$app->getHomeUrl());
     }
 
     /**
@@ -279,7 +279,7 @@ class Controller extends \yii\base\Controller
      */
     public function goBack($defaultUrl = null)
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
+        return $this->response->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
     }
 
     /**
@@ -299,6 +299,6 @@ class Controller extends \yii\base\Controller
      */
     public function refresh($anchor = '')
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+        return $this->response->redirect($this->request->getUrl() . $anchor);
     }
 }

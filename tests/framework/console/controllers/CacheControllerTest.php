@@ -33,11 +33,6 @@ class CacheControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->_cacheController = Yii::createObject([
-            'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
-            'interactive' => false,
-        ], [null, null]); //id and module are null
-
         $databases = self::getParam('databases');
         $config = $databases[$this->driverName];
         $pdoDriver = 'pdo_' . $this->driverName;
@@ -72,6 +67,11 @@ class CacheControllerTest extends TestCase
                 ]
             ],
         ]);
+
+        $this->_cacheController = Yii::createObject([
+            'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
+            'interactive' => false,
+        ], [null, null]); //id and module are null
 
         if (isset($config['fixture'])) {
             Yii::$app->db->open();
