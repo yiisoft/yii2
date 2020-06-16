@@ -470,7 +470,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         ActiveRecord::$db = $connection;
 
         $model = null;
-        $connection->usePrimary(function() use (&$model) {
+        $connection->useMaster(function() use (&$model) {
             $model = WithCustomer::find()->one();
         });
 

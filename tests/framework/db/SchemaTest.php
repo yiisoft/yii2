@@ -757,7 +757,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         $connection = $this->getConnection(false);
-        $connection->getReplicaPdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -775,7 +775,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         $connection = $this->getConnection(false);
-        $connection->getReplicaPdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }

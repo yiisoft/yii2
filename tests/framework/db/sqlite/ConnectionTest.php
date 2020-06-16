@@ -58,8 +58,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $db = $this->preparePrimaryReplica($primaryCount, $replicaCount);
 
-            $this->assertInstanceOf(Connection::className(), $db->getReplica());
-            $this->assertTrue($db->getReplica()->isActive);
+            $this->assertInstanceOf(Connection::className(), $db->getSlave());
+            $this->assertTrue($db->getSlave()->isActive);
             $this->assertFalse($db->isActive);
 
             // test SELECT uses replica
@@ -70,13 +70,13 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $db->createCommand("UPDATE profile SET description='test' WHERE id=1")->execute();
             $this->assertTrue($db->isActive);
             if ($primaryCount > 0) {
-                $this->assertInstanceOf(Connection::className(), $db->getPrimary());
-                $this->assertTrue($db->getPrimary()->isActive);
+                $this->assertInstanceOf(Connection::className(), $db->getMaster());
+                $this->assertTrue($db->getMaster()->isActive);
             } else {
-                $this->assertNull($db->getPrimary());
+                $this->assertNull($db->getMaster());
             }
             $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
-            $result = $db->usePrimary(function (Connection $db) {
+            $result = $db->useMaster(function (Connection $db) {
                 return $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar();
             });
             $this->assertEquals('test', $result);
@@ -96,7 +96,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $customer = Customer::findOne(1);
             $this->assertInstanceOf(Customer::className(), $customer);
             $this->assertEquals('user1', $customer->name);
-            $result = $db->usePrimary(function () {
+            $result = $db->useMaster(function () {
                 return Customer::findOne(1)->name;
             });
             $this->assertEquals('test', $result);
@@ -115,10 +115,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->preparePrimaryReplica($primariesCount, $replicasCount);
-            $db->shufflePrimaries = true;
+            $db->shuffleMasters = true;
 
-            $hit_replicas[$db->getReplica()->dsn] = true;
-            $hit_primaries[$db->getPrimary()->dsn] = true;
+            $hit_replicas[$db->getSlave()->dsn] = true;
+            $hit_primaries[$db->getMaster()->dsn] = true;
             if (\count($hit_replicas) === $replicasCount && \count($hit_primaries) === $primariesCount) {
                 break;
             }
@@ -140,10 +140,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->preparePrimaryReplica($primariesCount, $replicasCount);
-            $db->shufflePrimaries = false;
+            $db->shuffleMasters = false;
 
-            $hit_replicas[$db->getReplica()->dsn] = true;
-            $hit_primaries[$db->getPrimary()->dsn] = true;
+            $hit_replicas[$db->getSlave()->dsn] = true;
+            $hit_primaries[$db->getMaster()->dsn] = true;
             if (\count($hit_replicas) === $replicasCount) {
                 break;
             }
@@ -157,16 +157,16 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     public function testRestorePrimaryAfterException()
     {
         $db = $this->preparePrimaryReplica(1, 1);
-        $this->assertTrue($db->enableReplicas);
+        $this->assertTrue($db->enableSlaves);
         try {
-            $db->usePrimary(function (Connection $db) {
+            $db->useMaster(function (Connection $db) {
                 throw new \Exception('fail');
             });
             $this->fail('Exception was caught somewhere');
         } catch (\Exception $e) {
             // ok
         }
-        $this->assertTrue($db->enableReplicas);
+        $this->assertTrue($db->enableSlaves);
     }
 
     /**

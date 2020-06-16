@@ -114,6 +114,43 @@ use yii\caching\CacheInterface;
  * @property bool $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
+ * @property bool $enableReplicas whether to enable read/write splitting by using [[replicas]] to read data.
+ * Note that if [[replicas]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
+ * @property array $replicas list of replica connection configurations. Each configuration is used to create a replica DB connection.
+ * When [[enableReplicas]] is true, one of these configurations will be chosen and used to create a DB connection
+ * for performing read queries only.
+ * @property array $replicaConfig the configuration that should be merged with every replica configuration listed in [[replicas]].
+ * For example,
+ *
+ * ```php
+ * [
+ *     'username' => 'replica',
+ *     'password' => 'replica',
+ *     'attributes' => [
+ *         // use a smaller connection timeout
+ *         PDO::ATTR_TIMEOUT => 10,
+ *     ],
+ * ]
+ * ```
+ * @property array $primaries list of primary connection configurations. Each configuration is used to create a primary DB connection.
+ * When [[open()]] is called, one of these configurations will be chosen and used to create a DB connection
+ * which will be used by this object.
+ * Note that when this property is not empty, the connection setting (e.g. `dsn`, `username`) of this object will
+ * be ignored.
+ * @property array $primaryConfig the configuration that should be merged with every primary configuration listed in [[primaries]].
+ * For example,
+ *
+ * ```php
+ * [
+ *     'username' => 'primary',
+ *     'password' => 'primary',
+ *     'attributes' => [
+ *         // use a smaller connection timeout
+ *         PDO::ATTR_TIMEOUT => 10,
+ *     ],
+ * ]
+ * ```
+ * @property bool $shufflePrimaries whether to shuffle [[primaries]] before getting one.
  * @property-read Connection|null $primary The currently active primary connection. `null` is returned if no primary
  * connection is available. This property is read-only.
  * @property-read PDO $primaryPdo The PDO instance for the currently active primary connection. This property is
@@ -128,7 +165,6 @@ use yii\caching\CacheInterface;
  * is read-only.
  * @property Transaction|null $transaction The currently active transaction. Null if no active transaction.
  * This property is read-only.
- * @mixin ConnectionDeprecationsTrait
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -344,53 +380,57 @@ class Connection extends Component
     /**
      * @var bool whether to enable read/write splitting by using [[replicas]] to read data.
      * Note that if [[replicas]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
-     * @since 2.0.36
+     * @deprecated since 2.0.36. Use [[enableReplicas]] instead.
      */
-    public $enableReplicas = true;
+    public $enableSlaves = true;
     /**
      * Returns the value of [[enableReplicas]].
      * @return bool
-     * @deprecated since 2.0.36. Use [[enableReplicas]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getEnableSlaves()
+    public function getEnableReplicas()
     {
-        return $this->enableReplicas;
+        return $this->enableSlaves;
     }
     /**
      * Sets the value of [[enableReplicas]].
      * @param bool $value
-     * @deprecated since 2.0.36. Use [[enableReplicas]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setEnableSlaves($value)
+    public function setEnableReplicas($value)
     {
-        $this->enableReplicas = $value;
+        $this->enableSlaves = $value;
     }
     /**
      * @var array list of replica connection configurations. Each configuration is used to create a replica DB connection.
      * When [[enableReplicas]] is true, one of these configurations will be chosen and used to create a DB connection
      * for performing read queries only.
-     * @see enableReplicas
-     * @see replicaConfig
-     * @since 2.0.36
+     * @see enableSlaves
+     * @see slaveConfig
+     * @deprecated since 2.0.36. Use [[replicas]] instead.
      */
-    public $replicas = [];
+    public $slaves = [];
     /**
      * Returns the value of [[replicas]].
      * @return array
-     * @deprecated since 2.0.36. Use [[replicas]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getSlaves()
+    public function getReplicas()
     {
-        return $this->replicas;
+        return $this->slaves;
     }
     /**
      * Sets the value of [[replicas]].
      * @param array $value
-     * @deprecated since 2.0.36. Use [[replicas]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setSlaves($value)
+    public function setReplicas($value)
     {
-        $this->replicas = $value;
+        $this->slaves = $value;
     }
     /**
      * @var array the configuration that should be merged with every replica configuration listed in [[replicas]].
@@ -407,26 +447,28 @@ class Connection extends Component
      * ]
      * ```
      *
-     * @since 2.0.36
+     * @deprecated since 2.0.36. Use [[replicaConfig]] instead.
      */
-    public $replicaConfig = [];
+    public $slaveConfig = [];
     /**
      * Returns the value of [[replicaConfig]].
      * @return array
-     * @deprecated since 2.0.36. Use [[replicaConfig]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getSlaveConfig()
+    public function getReplicaConfig()
     {
-        return $this->replicaConfig;
+        return $this->slaveConfig;
     }
     /**
      * Sets the value of [[replicaConfig]].
      * @param array $value
-     * @deprecated since 2.0.36. Use [[replicaConfig]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setSlaveConfig($value)
+    public function setReplicaConfig($value)
     {
-        $this->replicaConfig = $value;
+        $this->slaveConfig = $value;
     }
     /**
      * @var array list of primary connection configurations. Each configuration is used to create a primary DB connection.
@@ -434,28 +476,30 @@ class Connection extends Component
      * which will be used by this object.
      * Note that when this property is not empty, the connection setting (e.g. `dsn`, `username`) of this object will
      * be ignored.
-     * @see primaryConfig
-     * @see shufflePrimaries
-     * @since 2.0.36
+     * @see masterConfig
+     * @see shuffleMasters
+     * @deprecated since 2.0.36. Use [[primaries]] instead.
      */
-    public $primaries = [];
+    public $masters = [];
     /**
      * Returns the value of [[primaries]].
      * @return array
-     * @deprecated since 2.0.36. Use [[primaries]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getMasters()
+    public function getPrimaries()
     {
-        return $this->primaries;
+        return $this->masters;
     }
     /**
      * Sets the value of [[primaries]].
      * @param array $value
-     * @deprecated since 2.0.36. Use [[primaries]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setMasters($value)
+    public function setPrimaries($value)
     {
-        $this->primaries = $value;
+        $this->masters = $value;
     }
     /**
      * @var array the configuration that should be merged with every primary configuration listed in [[primaries]].
@@ -472,51 +516,55 @@ class Connection extends Component
      * ]
      * ```
      *
-     * @since 2.0.36
+     * @deprecated since 2.0.36. Use [[primaryConfig]] instead.
      */
-    public $primaryConfig = [];
+    public $masterConfig = [];
     /**
      * Returns the value of [[primaryConfig]].
      * @return array
-     * @deprecated since 2.0.36. Use [[primaryConfig]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getMasterConfig()
+    public function getPrimaryConfig()
     {
-        return $this->primaryConfig;
+        return $this->masterConfig;
     }
     /**
      * Sets the value of [[primaryConfig]].
      * @param array $value
-     * @deprecated since 2.0.36. Use [[primaryConfig]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setMasterConfig($value)
+    public function setPrimaryConfig($value)
     {
-        $this->primaryConfig = $value;
+        $this->masterConfig = $value;
     }
     /**
      * @var bool whether to shuffle [[primaries]] before getting one.
      * @since 2.0.11
-     * @see primaries
-     * @since 2.0.36
+     * @see masters
+     * @deprecated since 2.0.36. Use [[shufflePrimaries]] instead.
      */
-    public $shufflePrimaries = true;
+    public $shuffleMasters = true;
     /**
      * Returns the value of [[shufflePrimaries]].
      * @return bool
-     * @deprecated since 2.0.36. Use [[shufflePrimaries]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getShuffleMasters()
+    public function getShufflePrimaries()
     {
-        return $this->shufflePrimaries;
+        return $this->shuffleMasters;
     }
     /**
      * Sets the value of [[shufflePrimaries]].
      * @param bool $value
-     * @deprecated since 2.0.36. Use [[shufflePrimaries]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setShuffleMasters($value)
+    public function setShufflePrimaries($value)
     {
-        $this->shufflePrimaries = $value;
+        $this->shuffleMasters = $value;
     }
     /**
      * @var bool whether to enable logging of database queries. Defaults to true.
@@ -714,8 +762,8 @@ class Connection extends Component
             return;
         }
 
-        if (!empty($this->primaries)) {
-            $db = $this->getPrimary();
+        if (!empty($this->masters)) {
+            $db = $this->getMaster();
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
@@ -1087,7 +1135,7 @@ class Connection extends Component
             if (($pos = strpos($this->dsn, ':')) !== false) {
                 $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
             } else {
-                $this->_driverName = strtolower($this->getReplicaPdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
+                $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
             }
         }
 
@@ -1124,9 +1172,9 @@ class Connection extends Component
      */
     public function getReplicaPdo($fallbackToPrimary = true)
     {
-        $db = $this->getReplica(false);
+        $db = $this->getSlave(false);
         if ($db === null) {
-            return $fallbackToPrimary ? $this->getPrimaryPdo() : null;
+            return $fallbackToPrimary ? $this->getMasterPdo() : null;
         }
 
         return $db->pdo;
@@ -1181,12 +1229,12 @@ class Connection extends Component
      */
     public function getReplica($fallbackToPrimary = true)
     {
-        if (!$this->enableReplicas) {
+        if (!$this->enableSlaves) {
             return $fallbackToPrimary ? $this : null;
         }
 
         if ($this->_replica === false) {
-            $this->_replica = $this->openFromPool($this->replicas, $this->replicaConfig);
+            $this->_replica = $this->openFromPool($this->slaves, $this->slaveConfig);
         }
 
         return $this->_replica === null && $fallbackToPrimary ? $this : $this->_replica;
@@ -1218,9 +1266,9 @@ class Connection extends Component
     public function getPrimary()
     {
         if ($this->_primary === false) {
-            $this->_primary = $this->shufflePrimaries
-                ? $this->openFromPool($this->primaries, $this->primaryConfig)
-                : $this->openFromPoolSequentially($this->primaries, $this->primaryConfig);
+            $this->_primary = $this->shuffleMasters
+                ? $this->openFromPool($this->masters, $this->masterConfig)
+                : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }
 
         return $this->_primary;
@@ -1259,19 +1307,19 @@ class Connection extends Component
      */
     public function usePrimary(callable $callback)
     {
-        if ($this->enableReplicas) {
-            $this->enableReplicas = false;
+        if ($this->enableSlaves) {
+            $this->enableSlaves = false;
             try {
                 $result = call_user_func($callback, $this);
             } catch (\Exception $e) {
-                $this->enableReplicas = true;
+                $this->enableSlaves = true;
                 throw $e;
             } catch (\Throwable $e) {
-                $this->enableReplicas = true;
+                $this->enableSlaves = true;
                 throw $e;
             }
             // TODO: use "finally" keyword when miminum required PHP version is >= 5.5
-            $this->enableReplicas = true;
+            $this->enableSlaves = true;
         } else {
             $result = call_user_func($callback, $this);
         }

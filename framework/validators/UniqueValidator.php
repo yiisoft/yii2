@@ -37,7 +37,7 @@ use yii\helpers\Inflector;
  * ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']]
  * ```
  *
- * @mixin ForceMasterDbTrait
+ * @property bool $forcePrimaryDb whether this validator is forced to always use the primary DB connection
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -94,26 +94,29 @@ class UniqueValidator extends Validator
     public $targetAttributeJunction = 'and';
     /**
      * @var bool whether this validator is forced to always use the primary DB connection
-     * @since 2.0.26
+     * @since 2.0.14
+     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
      */
-    public $forcePrimaryDb =  true;
+    public $forceMasterDb =  true;
     /**
      * Returns the value of [[forcePrimaryDb]].
      * @return bool
-     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function getForceMasterDb()
+    public function getForcePrimaryDb()
     {
-        return $this->forcePrimaryDb;
+        return $this->forceMasterDb;
     }
     /**
      * Sets the value of [[forcePrimaryDb]].
      * @param bool $value
-     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
+     * @since 2.0.36
+     * @internal
      */
-    public function setForceMasterDb($value)
+    public function setForcePrimaryDb($value)
     {
-        $this->forcePrimaryDb = $value;
+        $this->forceMasterDb = $value;
     }
 
 
@@ -162,8 +165,8 @@ class UniqueValidator extends Validator
 
         $modelExists = false;
 
-        if ($this->forcePrimaryDb && method_exists($db, 'usePrimary')) {
-            $db->usePrimary(function () use ($targetClass, $conditions, $model, &$modelExists) {
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
                 $modelExists = $this->modelExists($targetClass, $conditions, $model);
             });
         } else {
