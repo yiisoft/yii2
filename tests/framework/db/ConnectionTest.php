@@ -409,7 +409,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
 
     /**
-     * Test whether replica connection is recovered when getReplicaPdo() is called after close().
+     * Test whether slave connection is recovered when call getSlavePdo() after close().
      *
      * @see https://github.com/yiisoft/yii2/issues/14165
      */
@@ -424,14 +424,14 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($connection->getSlavePdo(false));
         $connection->close();
 
-        $primaryPdo = $connection->getMasterPdo();
-        $this->assertNotFalse($primaryPdo);
-        $this->assertNotNull($primaryPdo);
+        $masterPdo = $connection->getMasterPdo();
+        $this->assertNotFalse($masterPdo);
+        $this->assertNotNull($masterPdo);
 
-        $replicaPdo = $connection->getSlavePdo(false);
-        $this->assertNotFalse($replicaPdo);
-        $this->assertNotNull($replicaPdo);
-        $this->assertNotSame($primaryPdo, $replicaPdo);
+        $slavePdo = $connection->getSlavePdo(false);
+        $this->assertNotFalse($slavePdo);
+        $this->assertNotNull($slavePdo);
+        $this->assertNotSame($masterPdo, $slavePdo);
     }
 
     public function testServerStatusCacheWorks()

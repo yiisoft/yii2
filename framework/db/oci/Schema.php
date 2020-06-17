@@ -134,7 +134,7 @@ SQL;
         $rows = $command->queryAll();
         $names = [];
         foreach ($rows as $row) {
-            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
             $names[] = $row['TABLE_NAME'];
@@ -337,7 +337,7 @@ SQL;
         }
 
         foreach ($columns as $column) {
-            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $column = array_change_key_case($column, CASE_UPPER);
             }
             $c = $this->createColumn($column);
@@ -382,7 +382,7 @@ SQL;
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            // get the last insert id from the primary connection
+            // get the last insert id from the master connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
             return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
                 return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
@@ -467,7 +467,7 @@ SQL;
         ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
-            if ($this->db->replicaPdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
 

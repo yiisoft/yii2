@@ -13,7 +13,6 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
-use yii\db\Connection;
 use yii\helpers\Inflector;
 
 /**
@@ -36,8 +35,6 @@ use yii\helpers\Inflector;
  * // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
  * ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']]
  * ```
- *
- * @property bool $forcePrimaryDb whether this validator is forced to always use the primary DB connection
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -93,31 +90,10 @@ class UniqueValidator extends Validator
      */
     public $targetAttributeJunction = 'and';
     /**
-     * @var bool whether this validator is forced to always use the primary DB connection
+     * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
-     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
      */
     public $forceMasterDb =  true;
-    /**
-     * Returns the value of [[forcePrimaryDb]].
-     * @return bool
-     * @since 2.0.36
-     * @internal
-     */
-    public function getForcePrimaryDb()
-    {
-        return $this->forceMasterDb;
-    }
-    /**
-     * Sets the value of [[forcePrimaryDb]].
-     * @param bool $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setForcePrimaryDb($value)
-    {
-        $this->forceMasterDb = $value;
-    }
 
 
     /**
@@ -160,7 +136,6 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        /** @var Connection|mixed $db */
         $db = $targetClass::getDb();
 
         $modelExists = false;
@@ -216,10 +191,10 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
-
+                
                 // any with relation can't be loaded because related fields are not selected
                 $query->with = null;
-
+    
                 if (is_array($query->joinWith)) {
                     // any joinWiths need to have eagerLoading turned off to prevent related fields being loaded
                     foreach ($query->joinWith as &$joinWith) {

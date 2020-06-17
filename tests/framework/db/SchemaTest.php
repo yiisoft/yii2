@@ -105,10 +105,10 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetTableSchemasWithAttrCase()
     {
         $db = $this->getConnection(false);
-        $db->replicaPdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
         $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
 
-        $db->replicaPdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
         $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
     }
 

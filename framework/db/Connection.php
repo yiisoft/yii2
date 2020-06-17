@@ -22,9 +22,9 @@ use yii\caching\CacheInterface;
  * of the [PDO PHP extension](https://secure.php.net/manual/en/book.pdo.php).
  *
  * Connection supports database replication and read-write splitting. In particular, a Connection component
- * can be configured with multiple [[primaries]] and [[replicas]]. It will do load balancing and failover by choosing
- * appropriate servers. It will also automatically direct read operations to the replicas and write operations to
- * the primary connections.
+ * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
+ * appropriate servers. It will also automatically direct read operations to the slaves and write operations to
+ * the masters.
  *
  * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
  * call [[open()]] to connect to the database server. The current state of the connection can be checked using [[$isActive]].
@@ -114,55 +114,19 @@ use yii\caching\CacheInterface;
  * @property bool $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
- * @property bool $enableReplicas whether to enable read/write splitting by using [[replicas]] to read data.
- * Note that if [[replicas]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
- * @property array $replicas list of replica connection configurations. Each configuration is used to create a replica DB connection.
- * When [[enableReplicas]] is true, one of these configurations will be chosen and used to create a DB connection
- * for performing read queries only.
- * @property array $replicaConfig the configuration that should be merged with every replica configuration listed in [[replicas]].
- * For example,
- *
- * ```php
- * [
- *     'username' => 'replica',
- *     'password' => 'replica',
- *     'attributes' => [
- *         // use a smaller connection timeout
- *         PDO::ATTR_TIMEOUT => 10,
- *     ],
- * ]
- * ```
- * @property array $primaries list of primary connection configurations. Each configuration is used to create a primary DB connection.
- * When [[open()]] is called, one of these configurations will be chosen and used to create a DB connection
- * which will be used by this object.
- * Note that when this property is not empty, the connection setting (e.g. `dsn`, `username`) of this object will
- * be ignored.
- * @property array $primaryConfig the configuration that should be merged with every primary configuration listed in [[primaries]].
- * For example,
- *
- * ```php
- * [
- *     'username' => 'primary',
- *     'password' => 'primary',
- *     'attributes' => [
- *         // use a smaller connection timeout
- *         PDO::ATTR_TIMEOUT => 10,
- *     ],
- * ]
- * ```
- * @property bool $shufflePrimaries whether to shuffle [[primaries]] before getting one.
- * @property-read Connection|null $primary The currently active primary connection. `null` is returned if no primary
- * connection is available. This property is read-only.
- * @property-read PDO $primaryPdo The PDO instance for the currently active primary connection. This property is
+ * @property Connection $master The currently active master connection. `null` is returned if there is no
+ * master available. This property is read-only.
+ * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
  * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
  * @property string $serverVersion Server version as a string. This property is read-only.
- * @property-read Connection $replica The currently active replica connection. This property is read-only.
- * @property-read PDO $replicaPdo The PDO instance for the currently active replica connection. This property
- * is read-only.
+ * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
+ * available and `$fallbackToMaster` is false. This property is read-only.
+ * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
+ * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
  * @property Transaction|null $transaction The currently active transaction. Null if no active transaction.
  * This property is read-only.
  *
@@ -365,207 +329,79 @@ class Connection extends Component
     public $enableSavepoint = true;
     /**
      * @var CacheInterface|string|false the cache object or the ID of the cache application component that is used to store
-     * the health status of the DB servers specified in [[primaries]] and [[replicas]].
-     * This is used only when read/write splitting is enabled or [[primaries]] is not empty.
+     * the health status of the DB servers specified in [[masters]] and [[slaves]].
+     * This is used only when read/write splitting is enabled or [[masters]] is not empty.
      * Set boolean `false` to disabled server status caching.
      * @see openFromPoolSequentially() for details about the failover behavior.
      * @see serverRetryInterval
      */
     public $serverStatusCache = 'cache';
     /**
-     * @var int the retry interval in seconds for dead servers listed in [[primaries]] and [[replicas]].
+     * @var int the retry interval in seconds for dead servers listed in [[masters]] and [[slaves]].
      * This is used together with [[serverStatusCache]].
      */
     public $serverRetryInterval = 600;
     /**
-     * @var bool whether to enable read/write splitting by using [[replicas]] to read data.
-     * Note that if [[replicas]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
-     * @deprecated since 2.0.36. Use [[enableReplicas]] instead.
+     * @var bool whether to enable read/write splitting by using [[slaves]] to read data.
+     * Note that if [[slaves]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
      */
     public $enableSlaves = true;
     /**
-     * Returns the value of [[enableReplicas]].
-     * @return bool
-     * @since 2.0.36
-     * @internal
-     */
-    public function getEnableReplicas()
-    {
-        return $this->enableSlaves;
-    }
-    /**
-     * Sets the value of [[enableReplicas]].
-     * @param bool $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setEnableReplicas($value)
-    {
-        $this->enableSlaves = $value;
-    }
-    /**
-     * @var array list of replica connection configurations. Each configuration is used to create a replica DB connection.
-     * When [[enableReplicas]] is true, one of these configurations will be chosen and used to create a DB connection
+     * @var array list of slave connection configurations. Each configuration is used to create a slave DB connection.
+     * When [[enableSlaves]] is true, one of these configurations will be chosen and used to create a DB connection
      * for performing read queries only.
      * @see enableSlaves
      * @see slaveConfig
-     * @deprecated since 2.0.36. Use [[replicas]] instead.
      */
     public $slaves = [];
     /**
-     * Returns the value of [[replicas]].
-     * @return array
-     * @since 2.0.36
-     * @internal
-     */
-    public function getReplicas()
-    {
-        return $this->slaves;
-    }
-    /**
-     * Sets the value of [[replicas]].
-     * @param array $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setReplicas($value)
-    {
-        $this->slaves = $value;
-    }
-    /**
-     * @var array the configuration that should be merged with every replica configuration listed in [[replicas]].
+     * @var array the configuration that should be merged with every slave configuration listed in [[slaves]].
      * For example,
      *
      * ```php
      * [
-     *     'username' => 'replica',
-     *     'password' => 'replica',
+     *     'username' => 'slave',
+     *     'password' => 'slave',
      *     'attributes' => [
      *         // use a smaller connection timeout
      *         PDO::ATTR_TIMEOUT => 10,
      *     ],
      * ]
      * ```
-     *
-     * @deprecated since 2.0.36. Use [[replicaConfig]] instead.
      */
     public $slaveConfig = [];
     /**
-     * Returns the value of [[replicaConfig]].
-     * @return array
-     * @since 2.0.36
-     * @internal
-     */
-    public function getReplicaConfig()
-    {
-        return $this->slaveConfig;
-    }
-    /**
-     * Sets the value of [[replicaConfig]].
-     * @param array $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setReplicaConfig($value)
-    {
-        $this->slaveConfig = $value;
-    }
-    /**
-     * @var array list of primary connection configurations. Each configuration is used to create a primary DB connection.
+     * @var array list of master connection configurations. Each configuration is used to create a master DB connection.
      * When [[open()]] is called, one of these configurations will be chosen and used to create a DB connection
      * which will be used by this object.
-     * Note that when this property is not empty, the connection setting (e.g. `dsn`, `username`) of this object will
+     * Note that when this property is not empty, the connection setting (e.g. "dsn", "username") of this object will
      * be ignored.
      * @see masterConfig
      * @see shuffleMasters
-     * @deprecated since 2.0.36. Use [[primaries]] instead.
      */
     public $masters = [];
     /**
-     * Returns the value of [[primaries]].
-     * @return array
-     * @since 2.0.36
-     * @internal
-     */
-    public function getPrimaries()
-    {
-        return $this->masters;
-    }
-    /**
-     * Sets the value of [[primaries]].
-     * @param array $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setPrimaries($value)
-    {
-        $this->masters = $value;
-    }
-    /**
-     * @var array the configuration that should be merged with every primary configuration listed in [[primaries]].
+     * @var array the configuration that should be merged with every master configuration listed in [[masters]].
      * For example,
      *
      * ```php
      * [
-     *     'username' => 'primary',
-     *     'password' => 'primary',
+     *     'username' => 'master',
+     *     'password' => 'master',
      *     'attributes' => [
      *         // use a smaller connection timeout
      *         PDO::ATTR_TIMEOUT => 10,
      *     ],
      * ]
      * ```
-     *
-     * @deprecated since 2.0.36. Use [[primaryConfig]] instead.
      */
     public $masterConfig = [];
     /**
-     * Returns the value of [[primaryConfig]].
-     * @return array
-     * @since 2.0.36
-     * @internal
-     */
-    public function getPrimaryConfig()
-    {
-        return $this->masterConfig;
-    }
-    /**
-     * Sets the value of [[primaryConfig]].
-     * @param array $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setPrimaryConfig($value)
-    {
-        $this->masterConfig = $value;
-    }
-    /**
-     * @var bool whether to shuffle [[primaries]] before getting one.
+     * @var bool whether to shuffle [[masters]] before getting one.
      * @since 2.0.11
      * @see masters
-     * @deprecated since 2.0.36. Use [[shufflePrimaries]] instead.
      */
     public $shuffleMasters = true;
-    /**
-     * Returns the value of [[shufflePrimaries]].
-     * @return bool
-     * @since 2.0.36
-     * @internal
-     */
-    public function getShufflePrimaries()
-    {
-        return $this->shuffleMasters;
-    }
-    /**
-     * Sets the value of [[shufflePrimaries]].
-     * @param bool $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setShufflePrimaries($value)
-    {
-        $this->shuffleMasters = $value;
-    }
     /**
      * @var bool whether to enable logging of database queries. Defaults to true.
      * You may want to disable this option in a production environment to gain performance
@@ -596,13 +432,13 @@ class Connection extends Component
      */
     private $_driverName;
     /**
-     * @var Connection|false the currently active primary connection
+     * @var Connection|false the currently active master connection
      */
-    private $_primary = false;
+    private $_master = false;
     /**
-     * @var Connection|false the currently active replica connection
+     * @var Connection|false the currently active slave connection
      */
-    private $_replica = false;
+    private $_slave = false;
     /**
      * @var array query cache parameters for the [[cache()]] calls
      */
@@ -769,7 +605,7 @@ class Connection extends Component
                 return;
             }
 
-            throw new InvalidConfigException('None of the primary DB servers are available.');
+            throw new InvalidConfigException('None of the master DB servers is available.');
         }
 
         if (empty($this->dsn)) {
@@ -808,13 +644,13 @@ class Connection extends Component
      */
     public function close()
     {
-        if ($this->_primary) {
-            if ($this->pdo === $this->_primary->pdo) {
+        if ($this->_master) {
+            if ($this->pdo === $this->_master->pdo) {
                 $this->pdo = null;
             }
 
-            $this->_primary->close();
-            $this->_primary = false;
+            $this->_master->close();
+            $this->_master = false;
         }
 
         if ($this->pdo !== null) {
@@ -822,9 +658,9 @@ class Connection extends Component
             $this->pdo = null;
         }
 
-        if ($this->_replica) {
-            $this->_replica->close();
-            $this->_replica = false;
+        if ($this->_slave) {
+            $this->_slave->close();
+            $this->_slave = false;
         }
 
         $this->_schema = null;
@@ -1162,139 +998,79 @@ class Connection extends Component
     }
 
     /**
-     * Returns the PDO instance for the currently active replica connection.
-     * When [[enableReplicas]] is true, one of the replicas will be used for read queries, and its PDO instance
+     * Returns the PDO instance for the currently active slave connection.
+     * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.
-     * @param bool $fallbackToPrimary whether to return the primary PDO if no replica connections are available.
-     * @return PDO|null the PDO instance for the currently active replica connection. `null` is returned if no
-     * replica connections are available and `$fallbackToPrimary` is false.
-     * @since 2.0.36
+     * @param bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
+     * @return PDO the PDO instance for the currently active slave connection. `null` is returned if no slave connection
+     * is available and `$fallbackToMaster` is false.
      */
-    public function getReplicaPdo($fallbackToPrimary = true)
+    public function getSlavePdo($fallbackToMaster = true)
     {
         $db = $this->getSlave(false);
         if ($db === null) {
-            return $fallbackToPrimary ? $this->getMasterPdo() : null;
+            return $fallbackToMaster ? $this->getMasterPdo() : null;
         }
 
         return $db->pdo;
     }
 
     /**
-     * Returns the PDO instance for the currently active replica connection.
-     * When [[enableReplicas]] is true, one of the replicas will be used for read queries, and its PDO instance
-     * will be returned by this method.
-     * @param bool $fallbackToPrimary whether to return the primary PDO if no replica connections are available.
-     * @return PDO|null the PDO instance for the currently active replica connection. `null` is returned if no
-     * replica connections are available and `$fallbackToPrimary` is false.
-     * @deprecated since 2.0.36. Use [[getReplicaPdo()]] instead.
+     * Returns the PDO instance for the currently active master connection.
+     * This method will open the master DB connection and then return [[pdo]].
+     * @return PDO the PDO instance for the currently active master connection.
      */
-    public function getSlavePdo($fallbackToPrimary = true)
-    {
-        return $this->getReplicaPdo($fallbackToPrimary);
-    }
-
-    /**
-     * Returns the PDO instance for the currently active primary connection.
-     * This method will open the primary DB connection and then return [[pdo]].
-     * @return PDO the PDO instance for the currently active primary connection.
-     * @since 2.0.36
-     */
-    public function getPrimaryPdo()
+    public function getMasterPdo()
     {
         $this->open();
         return $this->pdo;
     }
 
     /**
-     * Returns the PDO instance for the currently active primary connection.
-     * This method will open the primary DB connection and then return [[pdo]].
-     * @return PDO the PDO instance for the currently active primary connection.
-     * @deprecated since 2.0.36. Use [[getPrimaryPdo()]] instead.
+     * Returns the currently active slave connection.
+     * If this method is called for the first time, it will try to open a slave connection when [[enableSlaves]] is true.
+     * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
+     * @return Connection the currently active slave connection. `null` is returned if there is no slave available and
+     * `$fallbackToMaster` is false.
      */
-    public function getMasterPdo()
-    {
-        return $this->getPrimaryPdo();
-    }
-
-    /**
-     * Returns the currently active replica connection.
-     * If this method is called for the first time, it will try to open a replica connection when [[enableReplicas]]
-     * is true.
-     * @param bool $fallbackToPrimary whether to return the primary connection if no replica connections are
-     * available.
-     * @return Connection|null the currently active replica connection. `null` is returned if no replica connections
-     * are available and `$fallbackToPrimary` is false.
-     * @since 2.0.36
-     */
-    public function getReplica($fallbackToPrimary = true)
+    public function getSlave($fallbackToMaster = true)
     {
         if (!$this->enableSlaves) {
-            return $fallbackToPrimary ? $this : null;
+            return $fallbackToMaster ? $this : null;
         }
 
-        if ($this->_replica === false) {
-            $this->_replica = $this->openFromPool($this->slaves, $this->slaveConfig);
+        if ($this->_slave === false) {
+            $this->_slave = $this->openFromPool($this->slaves, $this->slaveConfig);
         }
 
-        return $this->_replica === null && $fallbackToPrimary ? $this : $this->_replica;
+        return $this->_slave === null && $fallbackToMaster ? $this : $this->_slave;
     }
 
     /**
-     * Returns the currently active replica connection.
-     * If this method is called for the first time, it will try to open a replica connection when [[enableReplicas]]
-     * is true.
-     * @param bool $fallbackToPrimary whether to return the primary connection if no replica connections are
-     * available.
-     * @return Connection|null the currently active replica connection. `null` is returned if no replica connections
-     * are available and `$fallbackToPrimary` is false.
-     * @deprecated since 2.0.36. Use [[getReplica()]] instead.
+     * Returns the currently active master connection.
+     * If this method is called for the first time, it will try to open a master connection.
+     * @return Connection the currently active master connection. `null` is returned if there is no master available.
+     * @since 2.0.11
      */
-    public function getSlave($fallbackToPrimary = true)
+    public function getMaster()
     {
-        return $this->getReplica($fallbackToPrimary);
-    }
-
-
-    /**
-     * Returns the currently active primary connection.
-     * If this method is called for the first time, it will try to open a primary connection.
-     * @return Connection|null the currently active primary connection. `null` is returned if no primary connection
-     * is available.
-     * @since 2.0.36
-     */
-    public function getPrimary()
-    {
-        if ($this->_primary === false) {
-            $this->_primary = $this->shuffleMasters
+        if ($this->_master === false) {
+            $this->_master = $this->shuffleMasters
                 ? $this->openFromPool($this->masters, $this->masterConfig)
                 : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }
 
-        return $this->_primary;
+        return $this->_master;
     }
 
     /**
-     * Returns the currently active primary connection.
-     * If this method is called for the first time, it will try to open a primary connection.
-     * @return Connection|null the currently active primary connection. `null` is returned if no primary connection
-     * is available.
-     * @since 2.0.11
-     * @deprecated since 2.0.36. Use [[getPrimary()]] instead.
-     */
-    public function getMaster()
-    {
-        return $this->getPrimary();
-    }
-
-    /**
-     * Executes the provided callback by using the primary connection.
+     * Executes the provided callback by using the master connection.
      *
-     * This method is provided so that you can temporarily force using the primary connection to perform
+     * This method is provided so that you can temporarily force using the master connection to perform
      * DB operations even if they are read queries. For example,
      *
      * ```php
-     * $result = $db->usePrimary(function ($db) {
+     * $result = $db->useMaster(function ($db) {
      *     return $db->createCommand('SELECT * FROM user LIMIT 1')->queryOne();
      * });
      * ```
@@ -1303,9 +1079,8 @@ class Connection extends Component
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
      * @throws \Exception|\Throwable if there is any exception thrown from the callback
-     * @since 2.0.36
      */
-    public function usePrimary(callable $callback)
+    public function useMaster(callable $callback)
     {
         if ($this->enableSlaves) {
             $this->enableSlaves = false;
@@ -1325,29 +1100,6 @@ class Connection extends Component
         }
 
         return $result;
-    }
-
-    /**
-     * Executes the provided callback by using the primary connection.
-     *
-     * This method is provided so that you can temporarily force using the primary connection to perform
-     * DB operations even if they are read queries. For example,
-     *
-     * ```php
-     * $result = $db->usePrimary(function ($db) {
-     *     return $db->createCommand('SELECT * FROM user LIMIT 1')->queryOne();
-     * });
-     * ```
-     *
-     * @param callable $callback a PHP callable to be executed by this method. Its signature is
-     * `function (Connection $db)`. Its return value will be returned by this method.
-     * @return mixed the return value of the callback
-     * @throws \Exception|\Throwable if there is any exception thrown from the callback
-     * @deprecated since 2.0.36. Use [[usePrimary()]] instead.
-     */
-    public function useMaster(callable $callback)
-    {
-        return $this->usePrimary($callback);
     }
 
     /**
@@ -1467,8 +1219,8 @@ class Connection extends Component
         $fields = (array) $this;
 
         unset($fields['pdo']);
-        unset($fields["\000" . __CLASS__ . "\000" . '_primary']);
-        unset($fields["\000" . __CLASS__ . "\000" . '_replica']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_master']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_slave']);
         unset($fields["\000" . __CLASS__ . "\000" . '_transaction']);
         unset($fields["\000" . __CLASS__ . "\000" . '_schema']);
 
@@ -1482,8 +1234,8 @@ class Connection extends Component
     {
         parent::__clone();
 
-        $this->_primary = false;
-        $this->_replica = false;
+        $this->_master = false;
+        $this->_slave = false;
         $this->_schema = null;
         $this->_transaction = null;
         if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
