@@ -484,13 +484,13 @@ try {
     'class' => 'yii\db\Connection',
 
     // 主库的配置
-    'dsn' => 'dsn for primary server',
-    'username' => 'primary',
+    'dsn' => 'dsn for master server',
+    'username' => 'master',
     'password' => '',
 
     // 从库的通用配置
-    'replicaConfig' => [
-        'username' => 'replica',
+    'slaveConfig' => [
+        'username' => 'slave',
         'password' => '',
         'attributes' => [
             // 使用一个更小的连接超时
@@ -499,11 +499,11 @@ try {
     ],
 
     // 从库的配置列表
-    'replicas' => [
-        ['dsn' => 'dsn for replica server 1'],
-        ['dsn' => 'dsn for replica server 2'],
-        ['dsn' => 'dsn for replica server 3'],
-        ['dsn' => 'dsn for replica server 4'],
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
     ],
 ]
 ```
@@ -525,7 +525,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 
 > Info: 通过调用 [[yii\db\Command::execute()]] 来执行的语句都被视为写操作，
   而其他所有通过调用 [[yii\db\Command]] 中任一 "query" 方法来执行的语句都被视为读操作。
-  你可以通过 `Yii::$app->db->replica` 来获取当前有效的从库连接。
+  你可以通过 `Yii::$app->db->slave` 来获取当前有效的从库连接。
 
 `Connection` 组件支持从库间的负载均衡和失效备援，
 当第一次执行读操作时，`Connection` 组件将随机地挑选出一个从库并尝试与之建立连接，
@@ -547,8 +547,8 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     'class' => 'yii\db\Connection',
 
     // 主库通用的配置
-    'primaryConfig' => [
-        'username' => 'primary',
+    'masterConfig' => [
+        'username' => 'master',
         'password' => '',
         'attributes' => [
             // use a smaller connection timeout
@@ -557,14 +557,14 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     ],
 
     // 主库配置列表
-    'primaries' => [
-        ['dsn' => 'dsn for primary server 1'],
-        ['dsn' => 'dsn for primary server 2'],
+    'masters' => [
+        ['dsn' => 'dsn for master server 1'],
+        ['dsn' => 'dsn for master server 2'],
     ],
 
     // 从库的通用配置
-    'replicaConfig' => [
-        'username' => 'replica',
+    'slaveConfig' => [
+        'username' => 'slave',
         'password' => '',
         'attributes' => [
             // use a smaller connection timeout
@@ -573,11 +573,11 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
     ],
 
     // 从库配置列表
-    'replicas' => [
-        ['dsn' => 'dsn for replica server 1'],
-        ['dsn' => 'dsn for replica server 2'],
-        ['dsn' => 'dsn for replica server 3'],
-        ['dsn' => 'dsn for replica server 4'],
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
     ],
 ]
 ```
@@ -586,7 +586,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 `Connection` 组件在主库之间，也支持如从库间般的负载均衡和失效备援。
 唯一的差别是，如果没有主库可用，将抛出一个异常。
 
-> Note: 当你使用 [[yii\db\Connection::primaries|primaries]] 属性来配置一个或多个主库时，
+> Note: 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
   所有其他指定数据库连接的属性 (例如 `dsn`, `username`, `password`) 
   与 `Connection` 对象本身将被忽略。
 
@@ -617,19 +617,19 @@ try {
 如果你想在从库上开启事务，你应该明确地像下面这样做：
 
 ```php
-$transaction = Yii::$app->db->replica->beginTransaction();
+$transaction = Yii::$app->db->slave->beginTransaction();
 ```
 
 有时，你或许想要强制使用主库来执行读查询。
-这可以通过 `usePrimary()` 方法来完成：
+这可以通过 `useMaster()` 方法来完成：
 
 ```php
-$rows = Yii::$app->db->usePrimary(function ($db) {
+$rows = Yii::$app->db->useMaster(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-你也可以明确地将 `Yii::$app->db->enableReplicas` 设置为 false 来将所有的读操作指向主库连接。
+你也可以明确地将 `Yii::$app->db->enableSlaves` 设置为 false 来将所有的读操作指向主库连接。
 
 
 ## 操纵数据库模式（Working with Database Schema） <span id="database-schema"></span>

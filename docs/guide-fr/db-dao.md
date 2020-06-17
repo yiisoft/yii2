@@ -425,12 +425,12 @@ Pour tirer parti de la réplication des bases de données et réaliser l'éclate
 
     // configuration pour le maître
     'dsn' => 'dsn pour le serveur maître',
-    'username' => 'primary',
+    'username' => 'master',
     'password' => '',
 
     //  configuration commune pour les esclaves
-    'replicaConfig' => [
-        'username' => 'replica',
+    'slaveConfig' => [
+        'username' => 'slave',
         'password' => '',
         'attributes' => [
             // utilise un temps d'attente de connexion plus court
@@ -439,7 +439,7 @@ Pour tirer parti de la réplication des bases de données et réaliser l'éclate
     ],
 
     // liste des configurations d'esclave
-    'replicas' => [
+    'slaves' => [
         ['dsn' => 'dsn pour le serveur esclave 1'],
         ['dsn' => 'dsn pour le serveur esclave 2'],
         ['dsn' => 'dsn pour le serveur esclave 3'],
@@ -461,7 +461,7 @@ $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
-> Info: les requêtes effectuées en appelant [[yii\db\Command::execute()]] sont considérées comme des requêtes en écriture, tandis que toutes les autres requêtes faites via l'une des méthodes « *query* » sont des requêtes en lecture. Vous pouvez obtenir la connexion couramment active à un des esclaves via `Yii::$app->db->replica`.
+> Info: les requêtes effectuées en appelant [[yii\db\Command::execute()]] sont considérées comme des requêtes en écriture, tandis que toutes les autres requêtes faites via l'une des méthodes « *query* » sont des requêtes en lecture. Vous pouvez obtenir la connexion couramment active à un des esclaves via `Yii::$app->db->slave`.
 
 Le composant `Connection` prend en charge l'équilibrage de charge et de basculement entre esclaves. Lorsque vous effectuez une requête en lecture par la première fois, le composant `Connection` sélectionne un esclave de façon aléatoire et essaye de s'y connecter. Si l'esclave set trouvé « mort », il en essaye un autre. Si aucun des esclaves n'est disponible, il se connecte au maître. En configurant un [[yii\db\Connection::serverStatusCache|cache d'état du serveur]], le composant mémorise le serveur « mort » et ainsi, pendant un [[yii\db\Connection::serverRetryInterval|certain intervalle de temps]], n'essaye plus de s'y connecter.
 
@@ -476,8 +476,8 @@ Vous pouvez aussi configurer plusieurs maîtres avec plusieurs esclaves. Par exe
     'class' => 'yii\db\Connection',
 
     // configuration commune pour les maîtres
-    'primaryConfig' => [
-        'username' => 'primary',
+    'masterConfig' => [
+        'username' => 'master',
         'password' => '',
         'attributes' => [
             // utilise un temps d'attente de connexion plus court 
@@ -486,14 +486,14 @@ Vous pouvez aussi configurer plusieurs maîtres avec plusieurs esclaves. Par exe
     ],
 
     // liste des configurations de maître
-    'primaries' => [
-        ['dsn' => 'dsn for primary server 1'],
-        ['dsn' => 'dsn for primary server 2'],
+    'masters' => [
+        ['dsn' => 'dsn for master server 1'],
+        ['dsn' => 'dsn for master server 2'],
     ],
 
     // configuration commune pour les esclaves
-    'replicaConfig' => [
-        'username' => 'replica',
+    'slaveConfig' => [
+        'username' => 'slave',
         'password' => '',
         'attributes' => [
             // use a smaller connection timeout
@@ -502,18 +502,18 @@ Vous pouvez aussi configurer plusieurs maîtres avec plusieurs esclaves. Par exe
     ],
 
     // liste des configurations d'esclave 
-    'replicas' => [
-        ['dsn' => 'dsn for replica server 1'],
-        ['dsn' => 'dsn for replica server 2'],
-        ['dsn' => 'dsn for replica server 3'],
-        ['dsn' => 'dsn for replica server 4'],
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
     ],
 ]
 ```
 
 La configuration ci-dessus spécifie deux maîtres et quatre esclaves. Le composant `Connection` prend aussi en charge l'équilibrage de charge et le basculement entre maîtres juste comme il le fait pour les esclaves. Une différence est que, si aucun des maîtres n'est disponible, une exception est levée.
 
-> Note: lorsque vous utilisez la propriété [[yii\db\Connection::primaries|primaries]] pour configurer un ou plusieurs maîtres, toutes les autres propriétés pour spécifier une connexion à une base de données (p. ex. `dsn`, `username`, `password`) avec l'objet `Connection` lui-même sont ignorées.
+> Note: lorsque vous utilisez la propriété [[yii\db\Connection::masters|masters]] pour configurer un ou plusieurs maîtres, toutes les autres propriétés pour spécifier une connexion à une base de données (p. ex. `dsn`, `username`, `password`) avec l'objet `Connection` lui-même sont ignorées.
 
 
 Par défaut, les transactions utilisent la connexion au maître. De plus, dans une transaction, toutes les opérations de base de données utilisent la connexion au maître. Par exemple :
@@ -538,18 +538,18 @@ try {
 Si vous voulez démarrer une transaction avec une connexion à un esclave, vous devez le faire explicitement, comme ceci :
 
 ```php
-$transaction = Yii::$app->db->replica->beginTransaction();
+$transaction = Yii::$app->db->slave->beginTransaction();
 ```
 
-Parfois, vous désirez forcer l'utilisation de la connexion au maître pour effectuer une requête en lecture . Cela est possible avec la méthode `usePrimary()` :
+Parfois, vous désirez forcer l'utilisation de la connexion au maître pour effectuer une requête en lecture . Cela est possible avec la méthode `useMaster()` :
 
 ```php
-$rows = Yii::$app->db->usePrimary(function ($db) {
+$rows = Yii::$app->db->useMaster(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-Vous pouvez aussi définir directement `Yii::$app->db->enableReplicas` à `false` (faux) pour rediriger toutes les requêtes vers la connexion au maître.
+Vous pouvez aussi définir directement `Yii::$app->db->enableSlaves` à `false` (faux) pour rediriger toutes les requêtes vers la connexion au maître.
 
 
 ## Travail avec le schéma de la base de données <span id="database-schema"></span>

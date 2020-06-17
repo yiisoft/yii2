@@ -49,27 +49,27 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertTrue(true); // No exceptions means test is passed.
     }
 
-    public function testPrimaryReplica()
+    public function testMasterSlave()
     {
         $counts = [[0, 2], [1, 2], [2, 2]];
 
         foreach ($counts as $count) {
-            list($primaryCount, $replicaCount) = $count;
+            list($masterCount, $slaveCount) = $count;
 
-            $db = $this->preparePrimaryReplica($primaryCount, $replicaCount);
+            $db = $this->prepareMasterSlave($masterCount, $slaveCount);
 
             $this->assertInstanceOf(Connection::className(), $db->getSlave());
             $this->assertTrue($db->getSlave()->isActive);
             $this->assertFalse($db->isActive);
 
-            // test SELECT uses replica
+            // test SELECT uses slave
             $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM profile')->queryScalar());
             $this->assertFalse($db->isActive);
 
-            // test UPDATE uses primary
+            // test UPDATE uses master
             $db->createCommand("UPDATE profile SET description='test' WHERE id=1")->execute();
             $this->assertTrue($db->isActive);
-            if ($primaryCount > 0) {
+            if ($masterCount > 0) {
                 $this->assertInstanceOf(Connection::className(), $db->getMaster());
                 $this->assertTrue($db->getMaster()->isActive);
             } else {
@@ -82,7 +82,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $this->assertEquals('test', $result);
 
             // test ActiveRecord read/write split
-            ActiveRecord::$db = $db = $this->preparePrimaryReplica($primaryCount, $replicaCount);
+            ActiveRecord::$db = $db = $this->prepareMasterSlave($masterCount, $slaveCount);
             $this->assertFalse($db->isActive);
 
             $customer = Customer::findOne(1);
@@ -103,60 +103,60 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         }
     }
 
-    public function testPrimariesShuffled()
+    public function testMastersShuffled()
     {
-        $primariesCount = 2;
-        $replicasCount = 2;
+        $mastersCount = 2;
+        $slavesCount = 2;
         $retryPerNode = 10;
 
-        $nodesCount = $primariesCount + $replicasCount;
+        $nodesCount = $mastersCount + $slavesCount;
 
-        $hit_replicas = $hit_primaries = [];
+        $hit_slaves = $hit_masters = [];
 
         for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
-            $db = $this->preparePrimaryReplica($primariesCount, $replicasCount);
+            $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = true;
 
-            $hit_replicas[$db->getSlave()->dsn] = true;
-            $hit_primaries[$db->getMaster()->dsn] = true;
-            if (\count($hit_replicas) === $replicasCount && \count($hit_primaries) === $primariesCount) {
+            $hit_slaves[$db->getSlave()->dsn] = true;
+            $hit_masters[$db->getMaster()->dsn] = true;
+            if (\count($hit_slaves) === $slavesCount && \count($hit_masters) === $mastersCount) {
                 break;
             }
         }
 
-        $this->assertCount($primariesCount, $hit_primaries, 'all primaries hit');
-        $this->assertCount($replicasCount, $hit_replicas, 'all replicas hit');
+        $this->assertCount($mastersCount, $hit_masters, 'all masters hit');
+        $this->assertCount($slavesCount, $hit_slaves, 'all slaves hit');
     }
 
-    public function testPrimariesSequential()
+    public function testMastersSequential()
     {
-        $primariesCount = 2;
-        $replicasCount = 2;
+        $mastersCount = 2;
+        $slavesCount = 2;
         $retryPerNode = 10;
 
-        $nodesCount = $primariesCount + $replicasCount;
+        $nodesCount = $mastersCount + $slavesCount;
 
-        $hit_replicas = $hit_primaries = [];
+        $hit_slaves = $hit_masters = [];
 
         for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
-            $db = $this->preparePrimaryReplica($primariesCount, $replicasCount);
+            $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = false;
 
-            $hit_replicas[$db->getSlave()->dsn] = true;
-            $hit_primaries[$db->getMaster()->dsn] = true;
-            if (\count($hit_replicas) === $replicasCount) {
+            $hit_slaves[$db->getSlave()->dsn] = true;
+            $hit_masters[$db->getMaster()->dsn] = true;
+            if (\count($hit_slaves) === $slavesCount) {
                 break;
             }
         }
 
-        $this->assertCount(1, $hit_primaries, 'same primary hit');
-        // replicas are always random
-        $this->assertCount($replicasCount, $hit_replicas, 'all replicas hit');
+        $this->assertCount(1, $hit_masters, 'same master hit');
+        // slaves are always random
+        $this->assertCount($slavesCount, $hit_slaves, 'all slaves hit');
     }
 
-    public function testRestorePrimaryAfterException()
+    public function testRestoreMasterAfterException()
     {
-        $db = $this->preparePrimaryReplica(1, 1);
+        $db = $this->prepareMasterSlave(1, 1);
         $this->assertTrue($db->enableSlaves);
         try {
             $db->useMaster(function (Connection $db) {
@@ -170,11 +170,11 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     }
 
     /**
-     * @param int $primaryCount
-     * @param int $replicaCount
+     * @param int $masterCount
+     * @param int $slaveCount
      * @return Connection
      */
-    protected function preparePrimaryReplica($primaryCount, $replicaCount)
+    protected function prepareMasterSlave($masterCount, $slaveCount)
     {
         $databases = self::getParam('databases');
         $fixture = $databases[$this->driverName]['fixture'];
@@ -186,18 +186,18 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         ];
         $this->prepareDatabase($config, $fixture)->close();
 
-        for ($i = 0; $i < $primaryCount; ++$i) {
-            $primary = ['dsn' => "sqlite:$basePath/yii2test_primary{$i}.sq3"];
-            $db = $this->prepareDatabase($primary, $fixture);
+        for ($i = 0; $i < $masterCount; ++$i) {
+            $master = ['dsn' => "sqlite:$basePath/yii2test_master{$i}.sq3"];
+            $db = $this->prepareDatabase($master, $fixture);
             $db->close();
-            $config['primaries'][] = $primary;
+            $config['masters'][] = $master;
         }
 
-        for ($i = 0; $i < $replicaCount; ++$i) {
-            $replica = ['dsn' => "sqlite:$basePath/yii2test_replica{$i}.sq3"];
-            $db = $this->prepareDatabase($replica, $fixture);
+        for ($i = 0; $i < $slaveCount; ++$i) {
+            $slave = ['dsn' => "sqlite:$basePath/yii2test_slave{$i}.sq3"];
+            $db = $this->prepareDatabase($slave, $fixture);
             $db->close();
-            $config['replicas'][] = $replica;
+            $config['slaves'][] = $slave;
         }
 
         return \Yii::createObject($config);

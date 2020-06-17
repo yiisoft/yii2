@@ -12,7 +12,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\db\Connection;
 use yii\db\QueryInterface;
 
 /**
@@ -43,8 +42,6 @@ use yii\db\QueryInterface;
  * // the same as the previous, but using already defined relation "type"
  * ['type_id', 'exist', 'targetRelation' => 'type'],
  * ```
- *
- * @property bool $forcePrimaryDb whether this validator is forced to always use the primary DB connection
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -88,31 +85,10 @@ class ExistValidator extends Validator
      */
     public $targetAttributeJunction = 'and';
     /**
-     * @var bool whether this validator is forced to always use the primary DB connection
+     * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
-     * @deprecated since 2.0.36. Use [[forcePrimaryDb]] instead.
      */
     public $forceMasterDb = true;
-    /**
-     * Returns the value of [[forcePrimaryDb]].
-     * @return bool
-     * @since 2.0.36
-     * @internal
-     */
-    public function getForcePrimaryDb()
-    {
-        return $this->forceMasterDb;
-    }
-    /**
-     * Sets the value of [[forcePrimaryDb]].
-     * @param bool $value
-     * @since 2.0.36
-     * @internal
-     */
-    public function setForcePrimaryDb($value)
-    {
-        $this->forceMasterDb = $value;
-    }
 
 
     /**
@@ -279,7 +255,6 @@ class ExistValidator extends Validator
      */
     private function valueExists($targetClass, $query, $value)
     {
-        /** @var Connection|mixed $db */
         $db = $targetClass::getDb();
         $exists = false;
 
