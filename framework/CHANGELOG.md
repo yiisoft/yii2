@@ -9,7 +9,7 @@ Yii Framework 2 Change Log
 - Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
 - Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
 - Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
-- Enh #17722: Add action injection support (SamMousa, samdark)
+- Enh #17722: Add action injection support (SamMousa, samdark, erickskrauch)
 - Bug #18041: Fix RBAC migration for MSSQL (darkdef)
 - Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag ANSI_NULL_DFLT_ON to ON for current connect to DB (darkdef)
 - Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)

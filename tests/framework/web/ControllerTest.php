@@ -155,7 +155,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('Component: yii\web\Request $request', \Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
         $this->assertInstanceOf(VendorImage::className(), $args[3]);
-        $this->assertEquals('DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
+        $this->assertEquals('Container DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
         $this->assertNull($args[4]);
         $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
         $this->assertEquals($params['after'], $args[5]);
@@ -189,6 +189,7 @@ class ControllerTest extends TestCase
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
         $args = $this->controller->bindActionParams($injectionAction, []);
         $this->assertInstanceOf(\yii\data\ArrayDataProvider::className(), $args[0]);
+        $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', \Yii::$app->requestedParams['dataProvider']);
     }
 
     /**
