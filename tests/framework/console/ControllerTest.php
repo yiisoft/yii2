@@ -176,6 +176,28 @@ class ControllerTest extends TestCase
         $this->assertEquals($params['after'], $args[5]);
     }
 
+    public function testInjectedActionParamsFromModule()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        $module = new \yii\base\Module('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+        ]));
+        $module->set('yii\data\DataProviderInterface', [
+            'class' => \yii\data\ArrayDataProvider::className(),
+        ]);
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', $module);
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
+        $args = $this->controller->bindActionParams($injectionAction, []);
+        $this->assertInstanceOf(\yii\data\ArrayDataProvider::className(), $args[0]);
+    }
+
     public function assertResponseStatus($status, $response)
     {
         $this->assertInstanceOf('yii\console\Response', $response);
