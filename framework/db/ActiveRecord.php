@@ -319,7 +319,7 @@ class ActiveRecord extends BaseActiveRecord
      * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
      *
      * @param array $attributes attribute values (name-value pairs) to be saved into the table
-     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * @param string|array|null $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows updated
@@ -772,7 +772,7 @@ class ActiveRecord extends BaseActiveRecord
      * Returns a value indicating whether the given active record is the same as the current one.
      * The comparison is made by comparing the table names and the primary key values of the two active records.
      * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-     * @param ActiveRecord $record record to compare to
+     * @param ActiveRecordInterface $record record to compare to
      * @return bool whether the two active records refer to the same row in the same database table.
      */
     public function equals($record)
