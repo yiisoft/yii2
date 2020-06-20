@@ -17,21 +17,9 @@ Yii Framework 2 Change Log
 - Bug #18001: Fix getting table metadata for tables `(` in their name (floor12)
 - Bug #18096: Fix InlineValidator with anonymous inline function not working well from EachValidator (trombipeti)
 - Enh #18083: Add `Controller::$request` and `$response` (brandonkelly)
-- Enh #18102: Use “primary”/“replica” terminology instead of “master”/“slave” (brandonkelly)
-  - Added `yii\db\Connection::$enableReplicas` and deprecated `$enableSlaves` via magic methods.
-  - Added `yii\db\Connection::$replicas` and deprecated `$slaves` via magic methods.
-  - Added `yii\db\Connection::$replicaConfig` and deprecated `$slaveConfig` via magic methods.
-  - Added `yii\db\Connection::$primaries` and deprecated `$masters` via magic methods.
-  - Added `yii\db\Connection::$primaryConfig` and deprecated `$masterConfig` via magic methods.
-  - Added `yii\db\Connection::$shufflePrimaries` and deprecated `$shuffleMasters` via magic methods.
-  - Added `yii\db\Connection::getReplicaPdo()` and deprecated `getSlavePdo()`.
-  - Added `yii\db\Connection::getPrimaryPdo()` and deprecated `getMasterPdo()`.
-  - Added `yii\db\Connection::getReplica()` and deprecated `getSlave()`.
-  - Added `yii\db\Connection::getPrimary()` and deprecated `getMaster()`.
-  - Added `yii\db\Connection::usePrimary()` and deprecated `useMaster()`.
-  - Added `yii\validators\ExistValidator::$forcePrimaryDb` and deprecated `$forceMasterDb` via magic methods.
-  - Added `yii\validators\UniqueValidator::$forcePrimaryDb` and deprecated `$forceMasterDb` via magic methods.
 - Bug #18101: Fix behavior of OUTPUT INSERTED.* for SQL Server query: "insert default values"; correct MSSQL unit tests; turn off profiling echo message in migration test (darkdef)
+- Bug #18105: Fix for old trigger in RBAC migration with/without prefixTable (darkdef)
+- Enh #18120: Include path to the log file into error message if `FileTarget::export` fails (uaoleg)
 
 
 2.0.35 May 02, 2020
