@@ -63,7 +63,7 @@ abstract class ErrorHandler extends Component
 
     public function init()
     {
-        $this->silentExitOnException = isset($this->silentExitOnException) ? $this->silentExitOnException : YII_ENV_TEST;
+        $this->silentExitOnException = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
         parent::init();
     }
 

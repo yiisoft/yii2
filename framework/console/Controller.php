@@ -80,7 +80,7 @@ class Controller extends \yii\base\Controller
 
     public function beforeAction($action)
     {
-        $silentExit = isset($this->silentExitOnException) ? $this->silentExitOnException : YII_ENV_TEST;
+        $silentExit = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
         Yii::$app->errorHandler->silentExitOnException = $silentExit;
 
         return parent::beforeAction($action);
