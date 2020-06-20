@@ -426,7 +426,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value) || $value === null)) {
                     $phName = $this->bindParam($value, $params);
-                    // @see https://github.com/yiisoft/yii2/issues/12599                    
+                    // @see https://github.com/yiisoft/yii2/issues/12599
                     $columns[$name] = new Expression("CONVERT(VARBINARY(MAX), $phName)", $params);
                 }
             }
@@ -437,10 +437,21 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     * Added OUTPUT construction for getting inserted data (for SQL Server 2005 or later)
+     * OUTPUT clause - The OUTPUT clause is new to SQL Server 2005 and has the ability to access
+     * the INSERTED and DELETED tables as is the case with a trigger.
      */
     public function insert($table, $columns, &$params)
     {
-        return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
+        $columns = $this->normalizeTableRowData($table, $columns, $params);
+
+        $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
+
+        list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . ($version2005orLater ? ' OUTPUT INSERTED.*' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
     }
 
     /**

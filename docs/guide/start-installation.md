@@ -291,9 +291,69 @@ in order to avoid many unnecessary system `stat()` calls.
 Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
 can properly detect if a connection is secure.
 
+### Recommended NGINX Unit Configuration <span id="recommended-nginx-unit-configuration"></span>
+
+You can run Yii-based apps using [NGINX Unit](https://unit.nginx.org/) with a PHP language module.
+Here is a sample configuration.
+
+```json
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes/yii"
+        }
+    },
+
+    "routes": {
+        "yii": [
+            {
+                "match": {
+                    "uri": [
+                        "!/assets/*",
+                        "*.php",
+                        "*.php/*"
+                    ]
+                },
+
+                "action": {
+                    "pass": "applications/yii/direct"
+                }
+            },
+            {
+                "action": {
+                    "share": "/path/to/app/web/",
+                    "fallback": {
+                        "pass": "applications/yii/index"
+                    }
+                }
+            }
+        ]
+    },
+
+    "applications": {
+        "yii": {
+            "type": "php",
+            "user": "www-data",
+            "targets": {
+                "direct": {
+                    "root": "/path/to/app/web/"
+                },
+
+                "index": {
+                    "root": "/path/to/app/web/",
+                    "script": "index.php"
+                }
+            }
+        }
+    }
+}
+```
+
+You can also [set up](https://unit.nginx.org/configuration/#php) your PHP environment or supply a custom `php.ini` in the same configuration.
+
 ### IIS Configuration <span id="iis-configuration"></span>
 
-It's recommended to host the application in a virtual host where document root points to `path/to/app/web` folder. In that `web` folder you have to place a file named `web.config` i.e. `path/to/app/web/web.config`. Content of the file should be the following:
+It's recommended to host the application in a virtual host (Web site) where document root points to `path/to/app/web` folder and that Web site is configured to run PHP. In that `web` folder you have to place a file named `web.config` i.e. `path/to/app/web/web.config`. Content of the file should be the following:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -317,3 +377,6 @@ It's recommended to host the application in a virtual host where document root p
 </system.webServer>
 </configuration>
 ```
+Also the following list of Microsoft's official resources could be useful in order to configure PHP on IIS:
+ 1. [How to set up your first IIS Web site](https://support.microsoft.com/en-us/help/323972/how-to-set-up-your-first-iis-web-site)
+ 2. [Configure a PHP Website on IIS](https://docs.microsoft.com/en-us/iis/application-frameworks/scenario-build-a-php-website-on-iis/configure-a-php-website-on-iis)

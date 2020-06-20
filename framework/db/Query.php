@@ -110,7 +110,6 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * - `all`: boolean, whether it should be `UNION ALL` or `UNION`
      */
     public $union;
-
     /**
      * @var array this is used to construct the WITH section in a SQL query.
      * Each array element is an array of the following structure:
