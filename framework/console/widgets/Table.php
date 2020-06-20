@@ -413,6 +413,6 @@ class Table extends Widget
      * @return null|string|string[]
      */
     protected function escapeCharacters($input) {
-        return preg_replace('/\e[[][A-Za-z0-9];?[0-9]*m?/', '', $input);
+        return Console::stripAnsiFormat($input);
     }
 }
