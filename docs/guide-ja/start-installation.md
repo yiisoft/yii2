@@ -291,6 +291,66 @@ server {
 また、HTTPS サーバを走らせている場合には、安全な接続であることを Yii が正しく検知できるように、
 `fastcgi_param HTTPS on;` を追加しなければならないことにも注意を払ってください。
 
+### 推奨される NGINX Unit の構成<span id="recommended-nginx-unit-configuration"></span>
+
+[NGINX Unit](https://unit.nginx.org/) と PHP 言語モジュールを使って Yii ベースのアプリを走らせることが出来ます。
+その構成のサンプルです。
+
+```json
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes/yii"
+        }
+    },
+
+    "routes": {
+        "yii": [
+            {
+                "match": {
+                    "uri": [
+                        "!/assets/*",
+                        "*.php",
+                        "*.php/*"
+                    ]
+                },
+
+                "action": {
+                    "pass": "applications/yii/direct"
+                }
+            },
+            {
+                "action": {
+                    "share": "/path/to/app/web/",
+                    "fallback": {
+                        "pass": "applications/yii/index"
+                    }
+                }
+            }
+        ]
+    },
+
+    "applications": {
+        "yii": {
+            "type": "php",
+            "user": "www-data",
+            "targets": {
+                "direct": {
+                    "root": "/path/to/app/web/"
+                },
+
+                "index": {
+                    "root": "/path/to/app/web/",
+                    "script": "index.php"
+                }
+            }
+        }
+    }
+}
+```
+
+また、自分の PHP 環境を [セットアップ](https://unit.nginx.org/configuration/#php) したり、この同じ構成でカスタマイズした `php.ini` を提供したりすることも出来ます。
+
 ### IIS の構成 <span id="iis-configuration"></span>
 
 ドキュメント・ルートが `path/to/app/web` フォルダを指すように構成された仮想ホストでアプリケーションをホストすることを推奨します。その `web` フォルダに `web.config` という名前のファイル、すなわち `path/to/app/web/web.config` を配置しなければなりません。ファイルの内容は以下の通りです。

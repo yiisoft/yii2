@@ -8,6 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 
@@ -16,6 +18,8 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
+ * @property Request $request
+ * @property Response $response
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -70,10 +74,9 @@ class Controller extends \yii\base\Controller
      */
     public function asJson($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_JSON;
-        $response->data = $data;
-        return $response;
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->data = $data;
+        return $this->response;
     }
 
     /**
@@ -97,10 +100,9 @@ class Controller extends \yii\base\Controller
      */
     public function asXml($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_XML;
-        $response->data = $data;
-        return $response;
+        $this->response->format = Response::FORMAT_XML;
+        $this->response->data = $data;
+        return $this->response;
     }
 
     /**
@@ -125,6 +127,7 @@ class Controller extends \yii\base\Controller
         $args = [];
         $missing = [];
         $actionParams = [];
+        $requestedParams = [];
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
@@ -162,6 +165,12 @@ class Controller extends \yii\base\Controller
                 }
                 $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (Exception $e) {
+                    throw new ServerErrorHttpException($e->getMessage(), 0, $e);
+                }
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
             } else {
@@ -177,6 +186,11 @@ class Controller extends \yii\base\Controller
 
         $this->actionParams = $actionParams;
 
+        // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
+        if (\Yii::$app->requestedParams === null) {
+            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
+        }
+
         return $args;
     }
 
@@ -186,7 +200,7 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
 
@@ -225,7 +239,7 @@ class Controller extends \yii\base\Controller
     public function redirect($url, $statusCode = 302)
     {
         // calling Url::to() here because Response::redirect() modifies route before calling Url::to()
-        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
+        return $this->response->redirect(Url::to($url), $statusCode);
     }
 
     /**
@@ -242,7 +256,7 @@ class Controller extends \yii\base\Controller
      */
     public function goHome()
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getHomeUrl());
+        return $this->response->redirect(Yii::$app->getHomeUrl());
     }
 
     /**
@@ -265,7 +279,7 @@ class Controller extends \yii\base\Controller
      */
     public function goBack($defaultUrl = null)
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
+        return $this->response->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
     }
 
     /**
@@ -285,6 +299,6 @@ class Controller extends \yii\base\Controller
      */
     public function refresh($anchor = '')
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+        return $this->response->redirect($this->request->getUrl() . $anchor);
     }
 }

@@ -720,6 +720,9 @@ class Connection extends Component
                 $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
             }
         }
+        if (in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
+            $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
+        }
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
