@@ -271,7 +271,7 @@ class Table extends Widget
                     $alreadyPrintedCells[$index] = true;
                 }
                 $chunk = $prefix . $chunk;
-                $repeat = $cellSize - mb_strwidth($this->escapeCharacters($chunk), Yii::$app->charset) - 1;
+                $repeat = $cellSize - Console::ansiStrwidth($chunk) - 1;
                 $buffer .= $chunk;
                 if ($repeat >= 0) {
                     $buffer .= str_repeat(' ', $repeat);
@@ -334,12 +334,9 @@ class Table extends Widget
         foreach ($columns as $column) {
             $columnWidth = max(array_map(function ($val) {
                 if (is_array($val)) {
-                    $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return max(array_map(function ($listItem) {
-                        return mb_strwidth($this->escapeCharacters($listItem), Yii::$app->charset);
-                    }, $val, $encodings)) + mb_strwidth($this->listPrefix, Yii::$app->charset);
+                    return max(array_map('yii\helpers\Console::ansiStrwidth', $val)) + Console::ansiStrwidth($this->listPrefix);
                 }
-                return mb_strwidth($this->escapeCharacters($val), Yii::$app->charset);
+                return Console::ansiStrwidth($val);
             }, $column)) + 2;
             $this->columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;
@@ -378,12 +375,9 @@ class Table extends Widget
             return $size == 2 || $columnWidth == 0 ? 0 : ceil($columnWidth / ($size - 2));
         }, $this->columnWidths, array_map(function ($val) {
             if (is_array($val)) {
-                $encodings = array_fill(0, count($val), Yii::$app->charset);
-                return array_map(function ($v) {
-                    return mb_strwidth($this->escapeCharacters($v), Yii::$app->charset);
-                }, $val, $encodings);
+                return array_map('yii\helpers\Console::ansiStrwidth', $val);
             }
-            return mb_strwidth($this->escapeCharacters($val), Yii::$app->charset);
+            return Console::ansiStrwidth($val);
         }, $row));
         return max($rowsPerCell);
     }
@@ -403,16 +397,5 @@ class Table extends Widget
                 : self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
         }
         return $this->screenWidth;
-    }
-
-    /**
-     * Trying to escape characters, which may have effect on visible string width, such as
-     * colorization markers
-     *
-     * @param $input
-     * @return null|string|string[]
-     */
-    protected function escapeCharacters($input) {
-        return Console::stripAnsiFormat($input);
     }
 }
