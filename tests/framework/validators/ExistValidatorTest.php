@@ -235,26 +235,26 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
     }
-
-    public function testForcePrimary()
+    
+    public function testForceMaster()
     {
-        $connection = $this->getConnectionWithInvalidReplica();
+        $connection = $this->getConnectionWithInvalidSlave();
         ActiveRecord::$db = $connection;
 
         $model = null;
-        $connection->usePrimary(function() use (&$model) {
+        $connection->useMaster(function() use (&$model) {
             $model = ValidatorTestMainModel::findOne(2);
         });
 
         $validator = new ExistValidator([
-            'forcePrimaryDb' => true,
+            'forceMasterDb' => true,
             'targetRelation' => 'references',
         ]);
         $validator->validateAttribute($model, 'id');
 
         $this->expectException('\yii\base\InvalidConfigException');
         $validator = new ExistValidator([
-            'forcePrimaryDb' => false,
+            'forceMasterDb' => false,
             'targetRelation' => 'references',
         ]);
         $validator->validateAttribute($model, 'id');

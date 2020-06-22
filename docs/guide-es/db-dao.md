@@ -439,8 +439,8 @@ try {
 
 Muchos DBMS soportan [replicación de bases de datos](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) para tener
 una mejor disponibilidad de la base de datos y un mejor tiempo de respuesta del servidor. Con la replicación de bases
-de datos, los datos están replicados en los llamados *servidores maestros* (primary servers) y *servidores esclavos*
-(replica servers). Todas las escrituras y actualizaciones deben hacerse en el servidor maestro, mientras que las lecturas
+de datos, los datos están replicados en los llamados *servidores maestros* (master servers) y *servidores esclavos*
+(slave servers). Todas las escrituras y actualizaciones deben hacerse en el servidor maestro, mientras que las lecturas
 se efectuarán en los servidores esclavos.
 
 Para aprovechar las ventajas de la replicación de la base de datos y lograr una división de lecuta-escritura, se puede configurar
@@ -451,13 +451,13 @@ el componente [[yii\db\Connection]] como se muestra a continuación:
     'class' => 'yii\db\Connection',
 
     // configuración para el maestro
-    'dsn' => 'dsn for primary server',
-    'username' => 'primary',
+    'dsn' => 'dsn for master server',
+    'username' => 'master',
     'password' => '',
 
     // configuración para los esclavos
-    'replicaConfig' => [
-        'username' => 'replica',
+    'slaveConfig' => [
+        'username' => 'slave',
         'password' => '',
         'attributes' => [
             // utiliza un tiempo de espera de conexión más pequeña
@@ -466,11 +466,11 @@ el componente [[yii\db\Connection]] como se muestra a continuación:
     ],
 
     // listado de configuraciones de esclavos
-    'replicas' => [
-        ['dsn' => 'dsn for replica server 1'],
-        ['dsn' => 'dsn for replica server 2'],
-        ['dsn' => 'dsn for replica server 3'],
-        ['dsn' => 'dsn for replica server 4'],
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
     ],
 ]
 ```
@@ -492,7 +492,7 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
 > Info: Las consultas realizadas llamando a [[yii\db\Command::execute()]] se consideran consultas de escritura,
   mientras que todas las demás se ejecutan mediante alguno de los métodos "query" de [[yii\db\Command]] son consultas
-  de lectura. Se puede obtener la conexión de esclavo activa mediante `$db->replica`.
+  de lectura. Se puede obtener la conexión de esclavo activa mediante `$db->slave`.
 
 El componente `Connection` soporta el balanceo de carga y la conmutación de errores entre esclavos. Cuando se realiza
 una consulta de lectura por primera vez, el componente `Connection` elegirá un esclavo aleatorio e intentará realizar
@@ -511,8 +511,8 @@ También se pueden configurar múltiples maestros con múltiples esclavos. Por e
     'class' => 'yii\db\Connection',
 
     // configuracion habitual para los maestros
-    'primaryConfig' => [
-        'username' => 'primary',
+    'masterConfig' => [
+        'username' => 'master',
         'password' => '',
         'attributes' => [
             // utilizar un tiempo de espera de conexión más pequeña
@@ -521,14 +521,14 @@ También se pueden configurar múltiples maestros con múltiples esclavos. Por e
     ],
 
     // listado de configuraciones de maestros
-    'primaries' => [
-        ['dsn' => 'dsn for primary server 1'],
-        ['dsn' => 'dsn for primary server 2'],
+    'masters' => [
+        ['dsn' => 'dsn for master server 1'],
+        ['dsn' => 'dsn for master server 2'],
     ],
 
     // configuración habitual para esclavos
-    'replicaConfig' => [
-        'username' => 'replica',
+    'slaveConfig' => [
+        'username' => 'slave',
         'password' => '',
         'attributes' => [
             // utilizar un tiempo de espera de conexión más pequeña
@@ -537,11 +537,11 @@ También se pueden configurar múltiples maestros con múltiples esclavos. Por e
     ],
 
     // listado de configuración de esclavos
-    'replicas' => [
-        ['dsn' => 'dsn for replica server 1'],
-        ['dsn' => 'dsn for replica server 2'],
-        ['dsn' => 'dsn for replica server 3'],
-        ['dsn' => 'dsn for replica server 4'],
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
     ],
 ]
 ```
@@ -550,7 +550,7 @@ La configuración anterior especifica dos maestros y cuatro esclavos. El compone
 balanceo de carga y la conmutación de errores entre maestros igual que hace con los esclavos. La diferencia es que
 cuando no se encuentra ningún maestro disponible se lanza una excepción.
 
-> Note: cuando se usa la propiedad [[yii\db\Connection::primaries|primaries]] para configurar uno o múltiples maestros, se
+> Note: cuando se usa la propiedad [[yii\db\Connection::masters|masters]] para configurar uno o múltiples maestros, se
   ignorarán todas las otras propiedades que especifiquen una conexión de base de datos
   (ej. `dsn`, `username`, `password`), junto con el mismo objeto `Connection`.
 
@@ -577,19 +577,19 @@ Si se quiere empezar la transacción con una conexión a un esclavo, se debe hac
 continuación:
 
 ```php
-$transaction = $db->replica->beginTransaction();
+$transaction = $db->slave->beginTransaction();
 ```
 
 A veces, se puede querer forzar el uso de una conexión maestra para realizar una consulta de lectura. Se puede lograr
-usando el método `usePrimary()`:
+usando el método `useMaster()`:
 
 ```php
-$rows = $db->usePrimary(function ($db) {
+$rows = $db->useMaster(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-También se puede utilizar directamente estableciendo `$db->enableReplicas` a `false` para que se redirijan todas las
+También se puede utilizar directamente estableciendo `$db->enableSlaves` a `false` para que se redirijan todas las
 consultas a la conexión del maestro.
 
 ## Trabajando con Esquemas de Bases de Datos <span id="database-schema"></span>
