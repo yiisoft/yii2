@@ -18,6 +18,24 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'mysql';
 
+    public function getExpectedColumns()
+    {
+        $columns = parent::getExpectedColumns();
+        $columns['bit_col_default_null'] = [
+                'type' => 'boolean',
+                'dbType' => 'bit(1)',
+                'phpType' => 'boolean',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 1,
+                'precision' => 1,
+                'scale' => null,
+                'defaultValue' => null,
+        ];
+        return $columns;
+    }
+
     public function testLoadDefaultDatetimeColumn()
     {
         if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
