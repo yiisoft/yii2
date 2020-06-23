@@ -18,6 +18,7 @@ use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\CustomerWithAlias;
+use yiiunit\data\ar\Department;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\CustomerQuery;
@@ -2079,5 +2080,23 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
 
         $this->assertEquals(['1', '01', '001', '001', '2', '2b', '2b', '02'], $alphaIdentifiers);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18131
+     */
+    public function testNonNumericFindOne()
+    {
+        $department = Department::findOne(1);
+        $this->assertNotNull($department);
+
+        $department = Department::findOne('1');
+        $this->assertNotNull($department);
+
+        $department = Department::findOne('a1');
+        $this->assertNull($department);
+
+        $department = Department::findOne('1a');
+        $this->assertNull($department);
     }
 }
