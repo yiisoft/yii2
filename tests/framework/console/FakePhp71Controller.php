@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\console;
 
+use yii\data\DataProviderInterface;
 use yiiunit\framework\console\stubs\DummyService;
 use yii\console\Controller;
 use yii\console\Request;
@@ -19,6 +20,10 @@ class FakePhp71Controller extends Controller
     }
 
     public function actionNullableInjection(?Request $request, ?Post $post)
+    {
+    }
+
+    public function actionModuleServiceInjection(DataProviderInterface $dataProvider)
     {
     }
 }

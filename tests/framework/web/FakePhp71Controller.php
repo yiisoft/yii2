@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\data\DataProviderInterface;
 use yii\web\Controller;
 use yii\web\Request;
 use yiiunit\framework\web\stubs\VendorImage;
@@ -25,6 +26,10 @@ class FakePhp71Controller extends Controller
     }
 
     public function actionNullableInjection(?Request $request, ?Post $post)
+    {
+    }
+
+    public function actionModuleServiceInjection(DataProviderInterface $dataProvider)
     {
     }
 }

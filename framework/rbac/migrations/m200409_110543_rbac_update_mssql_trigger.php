@@ -67,8 +67,8 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             $schema = $this->db->getSchema()->defaultSchema;
             $triggerSuffix = $this->db->schema->getRawTableName($authManager->itemChildTable);
 
-            $this->execute("DROP TRIGGER IF EXISTS {$schema}.trigger_{$triggerSuffix};");
-            $this->execute("DROP TRIGGER IF EXISTS {$schema}.trigger_auth_item_child;");
+            $this->execute("IF (OBJECT_ID(N'{$schema}.trigger_{$triggerSuffix}') IS NOT NULL) DROP TRIGGER {$schema}.trigger_{$triggerSuffix};");
+            $this->execute("IF (OBJECT_ID(N'{$schema}.trigger_auth_item_child') IS NOT NULL) DROP TRIGGER {$schema}.trigger_auth_item_child;");
 
             $this->execute("CREATE TRIGGER {$schema}.trigger_delete_{$triggerSuffix}
             ON {$schema}.{$authManager->itemTable}
