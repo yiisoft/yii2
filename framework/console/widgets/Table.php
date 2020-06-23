@@ -266,8 +266,9 @@ class Table extends Widget
                         $finalChunk[$index] = '';
                     }
                 } else {
-                    if(!isset($alreadyPrintedCells[$index]))
+                    if (!isset($alreadyPrintedCells[$index])) {
                         $chunk = $cell;
+                    }
                     $alreadyPrintedCells[$index] = true;
                 }
                 $chunk = $prefix . $chunk;
