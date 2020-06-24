@@ -155,11 +155,43 @@ class ControllerTest extends TestCase
         $this->assertEquals('Component: yii\web\Request $request', \Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
         $this->assertInstanceOf(VendorImage::className(), $args[3]);
-        $this->assertEquals('DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
+        $this->assertEquals('Container DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', \Yii::$app->requestedParams['vendorImage']);
         $this->assertNull($args[4]);
         $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
         $this->assertEquals($params['after'], $args[5]);
     }
+
+    public function testInjectedActionParamsFromModule()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+        $module = new \yii\base\Module('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $module->set('yii\data\DataProviderInterface', [
+            'class' => \yii\data\ArrayDataProvider::className(),
+        ]);
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', $module);
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
+        $args = $this->controller->bindActionParams($injectionAction, []);
+        $this->assertInstanceOf(\yii\data\ArrayDataProvider::className(), $args[0]);
+        $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', \Yii::$app->requestedParams['dataProvider']);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/17701
      */

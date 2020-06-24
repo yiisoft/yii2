@@ -4,12 +4,13 @@ Yii Framework 2 Change Log
 2.0.36 under development
 ------------------------
 
+- Bug #18047: Fix colorization markers output in Table.php (cheeseq)
 - Bug #18028: Fix division by zero exception in Table.php::calculateRowHeight (fourhundredfour)
 - Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
 - Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
 - Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
 - Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
-- Enh #17722: Add action injection support (SamMousa, samdark)
+- Enh #17722: Add action injection support (SamMousa, samdark, erickskrauch)
 - Bug #18041: Fix RBAC migration for MSSQL (darkdef)
 - Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag ANSI_NULL_DFLT_ON to ON for current connect to DB (darkdef)
 - Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
@@ -20,6 +21,8 @@ Yii Framework 2 Change Log
 - Bug #18101: Fix behavior of OUTPUT INSERTED.* for SQL Server query: "insert default values"; correct MSSQL unit tests; turn off profiling echo message in migration test (darkdef)
 - Bug #18105: Fix for old trigger in RBAC migration with/without prefixTable (darkdef)
 - Enh #18120: Include path to the log file into error message if `FileTarget::export` fails (uaoleg)
+- Enh #15202: Add optional param `--silent-exit-on-exception` in `yii\console\Controller` (egorrishe)
+- Bug #18110: Add quotes to return value of viewName in MSSQL schema. It is `[someView]` now (darkdef)
 
 
 2.0.35 May 02, 2020
