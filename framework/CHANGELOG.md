@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.36 under development
 ------------------------
 
+- Bug #18127: Add resolving DI references inside of arrays in dependencies (hiqsol)
 - Bug #18047: Fix colorization markers output in Table.php (cheeseq)
 - Bug #18028: Fix division by zero exception in Table.php::calculateRowHeight (fourhundredfour)
 - Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
