@@ -296,7 +296,7 @@ SQL;
             if (($column->type === 'timestamp' || $column->type === 'datetime')
                 && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
-            } elseif (isset($type) && $type === 'bit') {
+            } elseif (isset($type) && $type === 'bit' && !is_null($info['default'])) {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
