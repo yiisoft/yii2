@@ -83,6 +83,18 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bool_col2']['precision'] = null;
         $columns['time']['defaultValue'] = '12:00:00 AM 01/01/2002';
         $columns['ts_default']['defaultValue'] = new Expression('SYS_TIMESTAMP');
+        $columns['bit_col_default_null'] = [
+                'type' => 'integer',
+                'dbType' => 'bit(8)',
+                'phpType' => 'integer',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 8,
+                'precision' => 8,
+                'scale' => null,
+                'defaultValue' => null,
+        ];
         return $columns;
     }
 

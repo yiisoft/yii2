@@ -136,7 +136,8 @@ CREATE TABLE "type" (
   "bool_col" tinyint NOT NULL,
   "bool_col2" tinyint DEFAULT '1',
   "ts_default" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "bit_col" BIT(8) NOT NULL DEFAULT b'10000010'
+  "bit_col" BIT(8) NOT NULL DEFAULT b'10000010',
+  `bit_col_default_null` BIT(8) NULL DEFAULT NULL
 );
 
 CREATE TABLE "composite_fk" (
