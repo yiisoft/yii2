@@ -565,6 +565,26 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
+     * Builds a SQL statement for dropping constraints for column of table.
+     * now for usage with MS SQL Server only
+     *
+     * @param string $table the table whose constraint is to be dropped. The name will be properly quoted by the method.
+     * @param string $column the column whose constraint is to be dropped. The name will be properly quoted by the method.
+     * @param string $type type of constraint, leave empty for all type of constraints(for example: D - default, 'UQ' - unique, 'C' - check)
+     * @see https://docs.microsoft.com/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
+     * @since 2.0.36
+     */
+    public function dropConstraintsForColumn($table, $column, $type='')
+    {
+        $time = $this->beginCommand("drop constraints from table $table for column $column");
+        $command = $this->db->createCommand();
+        if (method_exists($command, 'dropConstraintsForColumn')) {
+            $command->dropConstraintsForColumn($table, $column, $type)->execute();
+        }
+        $this->endCommand($time);
+    }
+
+    /**
      * Prepares for a command to be executed, and outputs to the console.
      *
      * @param string $description the description for the command, to be output to the console.

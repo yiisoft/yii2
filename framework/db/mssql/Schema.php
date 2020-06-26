@@ -600,7 +600,7 @@ SQL;
             return '[' . $item . ']';
         }, $views);
 
-        return $views;        
+        return $views;
     }
 
     /**

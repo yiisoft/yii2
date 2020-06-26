@@ -316,10 +316,10 @@ class Connection extends Component
         'mysql' => 'yii\db\Command', // MySQL
         'sqlite' => 'yii\db\sqlite\Command', // sqlite 3
         'sqlite2' => 'yii\db\sqlite\Command', // sqlite 2
-        'sqlsrv' => 'yii\db\Command', // newer MSSQL driver on MS Windows hosts
+        'sqlsrv' => 'yii\db\mssql\Command', // newer MSSQL driver on MS Windows hosts
         'oci' => 'yii\db\oci\Command', // Oracle driver
-        'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
-        'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+        'mssql' => 'yii\db\mssql\Command', // older MSSQL driver on MS Windows hosts
+        'dblib' => 'yii\db\mssql\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
         'cubrid' => 'yii\db\Command', // CUBRID
     ];
     /**
