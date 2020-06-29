@@ -925,11 +925,16 @@ class Connection extends Component
      * If the column name contains prefix, the prefix will also be properly quoted.
      * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
+     * If the column name is Exresion - return as is
      * @param string $name column name
      * @return string the properly quoted column name
      */
     public function quoteColumnName($name)
     {
+        // Expression is not will be quoted (https://github.com/yiisoft/yii2/issues/18134)
+        if ($name instanceof ExpressionInterface) {
+            return $name;
+        }
         if (isset($this->_quotedColumnNames[$name])) {
             return $this->_quotedColumnNames[$name];
         }
