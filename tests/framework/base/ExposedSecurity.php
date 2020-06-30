@@ -33,15 +33,15 @@ class ExposedSecurity extends Security
     /**
      * {@inheritdoc}
      */
-    public function getUseLibreSSL()
+    public function shouldUseLibreSSL()
     {
-        return parent::getUseLibreSSL();
+        return parent::shouldUseLibreSSL();
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isWindows()
+    public function isWindows()
     {
         return parent::isWindows();
     }

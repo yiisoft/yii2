@@ -91,16 +91,18 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
     /**
-     * @var boolean The recent (> 2.1.5) LibreSSL RNGs are faster and likely better than /dev/urandom.
+     * @var boolean if LibreSSL should be used.
+     * The recent (> 2.1.5) LibreSSL RNGs are faster and likely better than /dev/urandom.
      */
-    private $_useLibreSSL = null;
+    private $_useLibreSSL;
 
 
     /**
-     * Check that openssl used LibreSSL  version >= 2.1.5
-     * @return boolean that used LibreSSL version 2.1.5 or hi
+     * @return boolean if LibreSSL should be used
+     * Use version is 2.1.5 or higher.
+     * @since 2.0.36
      */
-    protected function getUseLibreSSL()
+    protected function shouldUseLibreSSL()
     {
         if ($this->_useLibreSSL === null) {
             // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
@@ -114,14 +116,11 @@ class Security extends Component
     }
 
     /**
-     * Check server operation system - windows or not
-     * @return boolean true if used windows on server
+     * @return bool if operating system is Windows
      */
-    protected static function isWindows()
+    protected function isWindows()
     {
-        return
-            DIRECTORY_SEPARATOR !== '/'
-            && substr_compare(PHP_OS, 'win', 0, 3, true) === 0;
+        return DIRECTORY_SEPARATOR !== '/';
     }
 
     /**
@@ -502,7 +501,7 @@ class Security extends Component
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
         if (function_exists('openssl_random_pseudo_bytes')
-            && ($this->getUseLibreSSL() || $this->isWindows())
+            && ($this->shouldUseLibreSSL() || $this->isWindows())
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
