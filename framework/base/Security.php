@@ -117,6 +117,7 @@ class Security extends Component
 
     /**
      * @return bool if operating system is Windows
+     * @since 2.0.36
      */
     protected function isWindows()
     {
