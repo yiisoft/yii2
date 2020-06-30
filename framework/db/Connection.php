@@ -931,7 +931,6 @@ class Connection extends Component
      */
     public function quoteColumnName($name)
     {
-        // Expression is not will be quoted (https://github.com/yiisoft/yii2/issues/18134)
         if ($name instanceof ExpressionInterface) {
             return $name;
         }
