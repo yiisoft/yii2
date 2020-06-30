@@ -487,6 +487,8 @@ class Container extends Component
                     $class = $reflection->getName();
                     throw new InvalidConfigException("Missing required parameter \"$name\" when instantiating \"$class\".");
                 }
+            } elseif (is_array($dependency)) {
+                $dependencies[$index] = $this->resolveDependencies($dependency, $reflection);
             }
         }
 

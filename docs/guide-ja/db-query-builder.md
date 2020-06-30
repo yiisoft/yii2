@@ -602,6 +602,28 @@ $query1->union($query2);
 
 [[yii\db\Query::union()|union()]] を複数回呼んで、`UNION` 句をさらに追加することが出来ます。
 
+### [[yii\db\Query::withQuery()|withQuery()]] <span id="with-query"></span>
+
+[[yii\db\Query::withQuery()|withQuery()]] メソッドは SQL クエリの `WITH` プレフィックスを指定するものです。サブクエリの代りに `WITH` を使うと読みやすさを向上させ、ユニークな機能(再帰 CTE)を利用することが出来ます。詳細は [modern-sql](https://modern-sql.com/feature/with) を参照して下さい。例えば、次のクエリは `admin` の持つ権限をその子も含めて全て再帰的に取得します。
+
+```php
+$initialQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->where(['parent' => 'admin']);
+
+$recursiveQuery = (new \yii\db\Query())
+    ->select(['aic.parent', 'aic.child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->innerJoin('t1', 't1.child = aic.parent');
+
+$mainQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from('t1')
+    ->withQuery($initialQuery->union($recursiveQuery), 't1', true);
+```
+
+[[yii\db\Query::withQuery()|withQuery()]] を複数回呼び出してさらなる CTE をメイン・クエリに追加することが出来ます。クエリはアタッチされたのと同じ順序でプリペンドされます。クエリのうちの一つが再帰的である場合は CTE 全体が再帰的になります。
 
 ## クエリ・メソッド <span id="query-methods"></span>
 

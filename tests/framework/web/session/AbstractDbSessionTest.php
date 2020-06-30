@@ -159,6 +159,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
         // add mapped custom column
         $migration = new Migration;
+        $migration->compact = true;
         $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
 
         $session->writeCallback = function ($session) {
