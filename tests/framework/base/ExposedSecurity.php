@@ -37,12 +37,4 @@ class ExposedSecurity extends Security
     {
         return parent::shouldUseLibreSSL();
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isWindows()
-    {
-        return parent::isWindows();
-    }
 }
