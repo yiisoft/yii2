@@ -413,10 +413,11 @@ class FileValidator extends Validator
             }
         }
 
-        if (is_array($this->extensions) and count($this->extensions)) {
-            foreach ($this->extensions as $ext) {
-                if (StringHelper::endsWith($file->name, $ext, false))
+        if (!empty($this->extensions)) {
+            foreach ((array) $this->extensions as $ext) {
+                if (StringHelper::endsWith($file->name, ".$ext", false)) {
                     return true;
+                }
             }
             return false;
         }
