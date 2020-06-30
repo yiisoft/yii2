@@ -119,9 +119,7 @@ abstract class BaseMigrateController extends Controller
                 throw new InvalidConfigException('At least one of `migrationPath` or `migrationNamespaces` should be specified.');
             }
 
-            if (!is_array($this->migrationNamespaces)) {
-                $this->migrationNamespaces = [$this->migrationNamespaces];
-            }
+            $this->migrationNamespaces = (array) $this->migrationNamespaces;
 
             foreach ($this->migrationNamespaces as $key => $value) {
                 $this->migrationNamespaces[$key] = trim($value, '\\');
