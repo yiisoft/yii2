@@ -2526,7 +2526,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18134
      */
-    public function testIssue18134()
+    public function testExpressionIsNotQuotedInColumnName()
     {
         $query = (new Query())->where(['like', new Expression('name'), 'string']);
         list($sql, $params) = $this->getQueryBuilder()->build($query);
