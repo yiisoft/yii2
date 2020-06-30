@@ -71,7 +71,7 @@ class ValidatorTest extends TestCase
         $this->assertSame(['c', 'd', 'e'], $val->except);
         $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $this->assertInstanceOf(InlineValidator::className(), $val);
-        $this->assertSame('inlineVal', $val->method);
+        $this->assertSame('inlineVal', $val->method[1]);
         $this->assertSame(['foo' => 'bar'], $val->params);
     }
 
@@ -317,7 +317,7 @@ class ValidatorTest extends TestCase
         $model = new DynamicModel();
         $model->defineAttribute(1);
         $model->addRule([1], SafeValidator::className());
-    
+
         $this->assertNull($model->{1});
         $this->assertTrue($model->validate([1]));
 

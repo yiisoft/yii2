@@ -352,16 +352,39 @@ class UserTest extends TestCase
 
     public function testAccessChecker()
     {
-        $appConfig = [
+        $this->mockWebApplication([
             'components' => [
                 'user' => [
                     'identityClass' => UserIdentity::className(),
                     'accessChecker' => AccessChecker::className()
                 ]
             ],
-        ];
+        ]);
+        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
 
-        $this->mockWebApplication($appConfig);
+        $this->mockWebApplication([
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'accessChecker' => [
+                        'class' => AccessChecker::className(),
+                    ],
+                ],
+            ],
+        ]);
+        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+
+        $this->mockWebApplication([
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'accessChecker' => 'accessChecker',
+                ],
+                'accessChecker' => [
+                    'class' => AccessChecker::className(),
+                ]
+            ],
+        ]);
         $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
     }
 

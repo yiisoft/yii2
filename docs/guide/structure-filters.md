@@ -34,7 +34,7 @@ public function behaviors()
 By default, filters declared in a controller class will be applied to *all* actions in that controller. You can,
 however, explicitly specify which actions the filter should be applied to by configuring the
 [[yii\base\ActionFilter::only|only]] property. In the above example, the `HttpCache` filter only applies to the
-`index` and `view` actions. You can also configure the [[yii\base\ActionFilter::except|except]] property to blacklist
+`index` and `view` actions. You can also configure the [[yii\base\ActionFilter::except|except]] property to prevent
 some actions from being filtered.
 
 Besides controllers, you can also declare filters in a [module](structure-modules.md) or [application](structure-applications.md).

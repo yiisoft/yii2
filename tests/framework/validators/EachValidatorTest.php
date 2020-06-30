@@ -9,8 +9,10 @@ namespace yiiunit\framework\validators;
 
 use yii\validators\EachValidator;
 use yiiunit\data\base\ArrayAccessObject;
+use yiiunit\data\base\Speaker;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestTypedPropModel;
+use yiiunit\data\validators\models\ValidatorTestEachAndInlineMethodModel;
 use yiiunit\TestCase;
 
 /**
@@ -220,5 +222,40 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['boolean']]);
         $validator->validateAttribute($model, 'arrayTypedProperty');
         $this->assertFalse($model->hasErrors('arrayTypedProperty'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18011
+     */
+    public function testErrorMessage()
+    {
+        $model = new Speaker();
+        $model->customLabel = ['invalid_ip'];
+
+        $validator = new EachValidator(['rule' => ['ip']]);
+        $validator->validateAttribute($model, 'customLabel');
+        $validator->validateAttribute($model, 'firstName');
+
+        $this->assertEquals('This is the custom label must be a valid IP address.', $model->getFirstError('customLabel'));
+        $this->assertEquals('First Name is invalid.', $model->getFirstError('firstName'));
+    }
+
+    public function testCustomMethod()
+    {
+        $model = new Speaker();
+        $model->firstName = ['a', 'b'];
+
+        $validator = new EachValidator(['rule' => ['customValidatingMethod']]);
+        $validator->validateAttribute($model, 'firstName');
+
+        $this->assertEquals('Custom method error', $model->getFirstError('firstName'));
+    }
+
+    public function testAnonymousMethod()
+    {
+        $model = new ValidatorTestEachAndInlineMethodModel();
+
+        $model->validate();
+        $this->assertFalse($model->hasErrors('arrayProperty'));
     }
 }

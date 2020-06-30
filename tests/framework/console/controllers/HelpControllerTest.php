@@ -128,6 +128,7 @@ action:route to action
 --interactive: whether to run the command interactively.
 --color: whether to enable ANSI color in the output.If not set, ANSI color will only be enabled for terminals that support it.
 --help: whether to display help information about current command.
+--silent-exit-on-exception: if TRUE - script finish with `ExitCode\:\:OK` in case of exception.FALSE - `ExitCode\:\:UNSPECIFIED_ERROR`.Default\: `YII_ENV_TEST`
 
 STRING
         , $result);
