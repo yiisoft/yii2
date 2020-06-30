@@ -1200,7 +1200,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
                 [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
-
+            
             // in object conditions
             [new InCondition('id', 'in', 1), '[[id]]=:qp0', [':qp0' => 1]],
             [new InCondition('id', 'in', [1]), '[[id]]=:qp0', [':qp0' => 1]],
@@ -1208,7 +1208,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new InCondition('id', 'not in', [1]), '[[id]]<>:qp0', [':qp0' => 1]],
             [new InCondition('id', 'in', [1, 2]), '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
             [new InCondition('id', 'not in', [1, 2]), '[[id]] NOT IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
-
+            
             // exists
             [['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
@@ -2480,7 +2480,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '[[location]].[[title_ru]] LIKE :qp0',
                 [':qp0' => 'vi%'],
             ],
-
+            
             // like object conditions
             [new LikeCondition('name', 'like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
             [new LikeCondition('name', 'not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
@@ -2521,17 +2521,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/18134
-     */
-    public function testExpressionIsNotQuotedInColumnName()
-    {
-        $query = (new Query())->where(['like', new Expression('name'), 'string']);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals('SELECT * WHERE name LIKE :qp0'.$this->likeEscapeCharSql, $sql);
-        $this->assertEquals([':qp0' => "%string%"], $params);
     }
 
     /**
