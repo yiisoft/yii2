@@ -587,7 +587,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @return string the DROP CONSTRAINTS SQL
      * @since 2.0.36
      */
-    public function dropConstraintsForColumn($table, $column, $type='')
+    private function dropConstraintsForColumn($table, $column, $type='')
     {
         return "
 DECLARE @tableName VARCHAR(MAX) = '".$this->db->quoteTableName($table)."'
