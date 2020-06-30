@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db\oci;
 
 use yiiunit\data\ar\DefaultPk;
+use yiiunit\data\ar\DefaultMultiplePk;
 use yiiunit\data\ar\Type;
 
 /**
@@ -120,5 +121,16 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $record->type = 'type';
         $record->save(false);
         $this->assertEquals(5, $record->primaryKey);
+    }
+
+    public function testMultiplePrimaryKeyAfterSave()
+    {
+        $record = new DefaultMultiplePk();
+        $record->id = 5;
+        $record->second_key_column = 'secondKey';
+        $record->type = 'type';
+        $record->save(false);
+        $this->assertEquals(5, $record->id);
+        $this->assertEquals('secondKey', $record->second_key_column);
     }
 }
