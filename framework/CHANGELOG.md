@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Enh #18120: Include path to the log file into error message if `FileTarget::export` fails (uaoleg)
 - Enh #15202: Add optional param `--silent-exit-on-exception` in `yii\console\Controller` (egorrishe)
 - Bug #18110: Add quotes to return value of viewName in MSSQL schema. It is `[someView]` now (darkdef)
+- Bug #17985: Convert migrationNamespaces to array if needed (darkdef)
 - Bug #13973: Correct alterColumn for MSSQL & drop constraints before drop column (darkdef)
 
 
