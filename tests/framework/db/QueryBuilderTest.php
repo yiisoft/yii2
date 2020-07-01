@@ -2490,6 +2490,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new LikeCondition('name', 'not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
             [new LikeCondition('name', 'or like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") OR [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
             [new LikeCondition('name', 'or not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+
+            // like with expression as columnName
+            [['like', new Expression('name'), 'string'], 'name LIKE :qp0', [':qp0' => "%string%"]],
         ];
 
         // adjust dbms specific escaping
@@ -2521,17 +2524,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/18134
-     */
-    public function testExpressionIsNotQuotedInColumnName()
-    {
-        $query = (new Query())->where(['like', new Expression('name'), 'string']);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals('SELECT * WHERE name LIKE :qp0'.$this->likeEscapeCharSql, $sql);
-        $this->assertEquals([':qp0' => "%string%"], $params);
     }
 
     /**
