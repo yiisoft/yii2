@@ -956,7 +956,7 @@ TEXT;
         if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
             if ($functions['openssl_random_pseudo_bytes'] === false) {
                 $this->markTestSkipped('Function mcrypt_create_iv() is deprecated as of PHP 7.1');
-            } elseif (!$this->security->getUseLibreSSL() && !$this->isWindows()) {
+            } elseif (!$this->security->shouldUseLibreSSL() && !$this->isWindows()) {
                 $this->markTestSkipped('Function openssl_random_pseudo_bytes need LibreSSL version >=2.1.5 or Windows system on server');
             }
         }
