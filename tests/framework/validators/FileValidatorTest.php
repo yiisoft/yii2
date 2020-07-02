@@ -452,6 +452,25 @@ class FileValidatorTest extends TestCase
         $this->assertNotFalse(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions '));
     }
 
+    public function testValidateAttributeDoubleType()
+    {
+        $val = new FileValidator([
+            'extensions' => 'tar.gz, tar.xz',
+            'checkExtensionByMimeType' => false,
+        ]);
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_tar' => $this->createTestFiles([['name' => 'one.tar.gz']]),
+                'attr_bar' => $this->createTestFiles([['name' => 'bad.bar.xz']]),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_tar');
+        $this->assertFalse($m->hasErrors('attr_tar'));
+        $val->validateAttribute($m, 'attr_bar');
+        $this->assertTrue($m->hasErrors('attr_bar'));
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_bar')), 'Only files with these extensions '));
+    }
+
     public function testIssue11012()
     {
         $baseName = '飛兒樂團光茫';
