@@ -579,7 +579,7 @@ class Module extends ServiceLocator
             $controllerClass= $this->controllerMap[$id.'/'.$route];
             $id=$id.'/'.$route;
             $route='';
-            
+
         }elseif (isset($this->controllerMap[$id])) {
             $controllerClass= $this->controllerMap[$id];
         }
@@ -601,13 +601,18 @@ class Module extends ServiceLocator
         if ($module !== null) {
             return $module->createController($moduleRoute);
         }
-
-        $controller = $this->createControllerByID($id . '/' . $route);
-        if ($controller !== null) {
-            $route = '';
+        if ($route !== '') {
+           $controller = $this->createControllerByID($id . '/' . $route);
+           if ($controller !== null) {
+                $route = '';
+            }else{
+                $controller = $this->createControllerByID($id);
+            }
         }else{
             $controller = $this->createControllerByID($id);
         }
+
+
 
         return $controller === null ? false : [$controller, $route];
     }
