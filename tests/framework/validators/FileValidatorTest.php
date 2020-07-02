@@ -522,6 +522,7 @@ class FileValidatorTest extends TestCase
             ['test.txt', 'text/*', 'txt'],
             ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
+            ['test.tar.xz', 'application/x-xz', 'tar.xz'],
         ]);
     }
 
