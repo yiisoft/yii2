@@ -79,6 +79,18 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bit_col']['dbType'] = 'bit';
         $columns['bit_col']['size'] = 8;
         $columns['bit_col']['precision'] = null;
+        $columns['bit_col_default_null'] = [
+                'type' => 'integer',
+                'dbType' => 'bit',
+                'phpType' => 'integer',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 8,
+                'precision' => null,
+                'scale' => null,
+                'defaultValue' => null,
+        ];
         $columns['bigint_col'] = [
             'type' => 'bigint',
             'dbType' => 'int8',
