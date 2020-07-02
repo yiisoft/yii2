@@ -28,7 +28,6 @@ Yii Framework 2 Change Log
 - Bug #18094: Support for composite file extension validation (darkdef)
 
 
-
 2.0.35 May 02, 2020
 -------------------
 
