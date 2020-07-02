@@ -16,6 +16,7 @@ use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\BarSetter;
+use yiiunit\framework\di\stubs\Corge;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
@@ -350,6 +351,43 @@ class ContainerTest extends TestCase
         $qux = $bar->qux;
         $this->assertInstanceOf(Qux::className(), $qux);
         $this->assertSame(42, $qux->a);
+    }
+
+    public function testReferencesInArrayInDependencies()
+    {
+        $quxInterface = 'yiiunit\framework\di\stubs\QuxInterface';
+        $container = new Container();
+        $container->setSingletons([
+            $quxInterface => [
+                'class' => Qux::className(),
+                'a' => 42,
+            ],
+            'qux' => Instance::of($quxInterface),
+            'bar' => [
+                'class' => Bar::className(),
+            ],
+            'corge' => [
+                '__class' => Corge::className(),
+                '__construct()' => [
+                    [
+                        'qux' => Instance::of('qux'),
+                        'bar' => Instance::of('bar'),
+                        'q33' => new Qux(33),
+                    ],
+                ],
+            ],
+        ]);
+        $corge = $container->get('corge');
+        $this->assertInstanceOf(Corge::className(), $corge);
+        $qux = $corge->map['qux'];
+        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertSame(42, $qux->a);
+        $bar = $corge->map['bar'];
+        $this->assertInstanceOf(Bar::className(), $bar);
+        $this->assertSame($qux, $bar->qux);
+        $q33 = $corge->map['q33'];
+        $this->assertInstanceOf(Qux::className(), $q33);
+        $this->assertSame(33, $q33->a);
     }
 
     public function testGetByInstance()

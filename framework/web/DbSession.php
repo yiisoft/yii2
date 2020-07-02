@@ -95,9 +95,7 @@ class DbSession extends MultiFieldSession
     }
 
     /**
-     * Updates the current session ID with a newly generated one .
-     * Please refer to <https://secure.php.net/session_regenerate_id> for more details.
-     * @param bool $deleteOldSession Whether to delete the old associated session file or not.
+     * {@inheritdoc}
      */
     public function regenerateID($deleteOldSession = false)
     {

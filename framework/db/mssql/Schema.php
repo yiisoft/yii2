@@ -595,7 +595,12 @@ WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'VIEW'
 ORDER BY [t].[table_name]
 SQL;
 
-        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+        $views = $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+        $views = array_map(static function ($item) {
+            return '[' . $item . ']';
+        }, $views);
+
+        return $views;        
     }
 
     /**

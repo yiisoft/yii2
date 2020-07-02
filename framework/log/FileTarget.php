@@ -123,21 +123,21 @@ class FileTarget extends Target
             $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
             if ($writeResult === false) {
                 $error = error_get_last();
-                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
+                throw new LogRuntimeException("Unable to export log through file ({$this->logFile})!: {$error['message']}");
             }
             $textSize = strlen($text);
             if ($writeResult < $textSize) {
-                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+                throw new LogRuntimeException("Unable to export whole log through file ({$this->logFile})! Wrote $writeResult out of $textSize bytes.");
             }
         } else {
             $writeResult = @fwrite($fp, $text);
             if ($writeResult === false) {
                 $error = error_get_last();
-                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
+                throw new LogRuntimeException("Unable to export log through file ({$this->logFile})!: {$error['message']}");
             }
             $textSize = strlen($text);
             if ($writeResult < $textSize) {
-                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+                throw new LogRuntimeException("Unable to export whole log through file ({$this->logFile})! Wrote $writeResult out of $textSize bytes.");
             }
             @flock($fp, LOCK_UN);
             @fclose($fp);
