@@ -612,8 +612,6 @@ class Module extends ServiceLocator
             $controller = $this->createControllerByID($id);
         }
 
-
-
         return $controller === null ? false : [$controller, $route];
     }
 
