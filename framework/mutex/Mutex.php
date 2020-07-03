@@ -102,6 +102,7 @@ abstract class Mutex extends Component
      *
      * @param string $name of the lock to check
      * @return bool Returns true if currently acquired
+     * @since 2.0.36
      */
     public function isAcquired($name) {
         return in_array($name, $this->_locks, true);
