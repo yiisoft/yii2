@@ -205,7 +205,7 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
-        if (static::isArrayAccess($array) && static::keyExists($key, $array)) {
+        if (static::keyExists($key, $array)) {
             return $array[$key];
         }
         if (is_object($array)) {
