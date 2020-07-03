@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #18031: HttpBasicAuth with auth callback now triggers login events same was as other authentication methods (samdark)
 - Bug #18134: Expression as columnName should not be quoted in likeCondition (darkdef)
 - Bug #18147: Fixed parameters binding for MySQL when prepare emulation is off (rskrzypczak)
+- Enh #18151: Added `Mutex::isAcquired()` to check if lock is currently acquired (rhertogh)
 - Bug #18094: Support for composite file extension validation (darkdef)
 
 
