@@ -1508,7 +1508,7 @@ class ArrayHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18086
      */
-    public function testArrayAccess()
+    public function testArrayAccessWithPublicProperty()
     {
         $data = new ArrayAccessibleObject(['value' => 123]);
 
