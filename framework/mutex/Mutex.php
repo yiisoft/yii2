@@ -42,7 +42,7 @@ abstract class Mutex extends Component
     /**
      * @var string[] names of the locks acquired by the current PHP process.
      */
-    protected $_locks = [];
+    private $_locks = [];
 
 
     /**
@@ -95,6 +95,16 @@ abstract class Mutex extends Component
         }
 
         return false;
+    }
+
+    /**
+     * Checks if a lock is currently acquired
+     *
+     * @param string $name of the lock to check
+     * @return bool Returns true if currently acquired
+     */
+    public function isAcquired($name) {
+        return in_array($name, $this->_locks, true);
     }
 
     /**

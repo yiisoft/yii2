@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #17985: Convert migrationNamespaces to array if needed (darkdef)
 - Bug #18134: Expression as columnName should not be quoted in likeCondition (darkdef)
 - Bug #18147: Fixed parameters binding for MySQL when prepare emulation is off (rskrzypczak)
+- Enh #18151: Added `Mutex::isAcquired()` to check if lock is currently acquired (rhertogh)
 
 
 2.0.35 May 02, 2020
