@@ -101,7 +101,7 @@ class HttpBasicAuth extends AuthMethod
                 if ($identity === null) {
                     $this->handleFailure($response);
                 } elseif ($user->getIdentity(false) !== $identity) {
-                    $user->switchIdentity($identity);
+                    $user->login($identity);
                 }
 
                 return $identity;
