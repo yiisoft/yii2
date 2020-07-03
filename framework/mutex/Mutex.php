@@ -42,7 +42,7 @@ abstract class Mutex extends Component
     /**
      * @var string[] names of the locks acquired by the current PHP process.
      */
-    private $_locks = [];
+    protected $_locks = [];
 
 
     /**
