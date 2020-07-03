@@ -868,22 +868,6 @@ class BaseArrayHelper
     }
 
     /**
-     * Checks whether a variable is an array or [[\ArrayAccess]].
-     *
-     * This method does the same as the PHP function [is_array()](https://secure.php.net/manual/en/function.is-array.php)
-     * but additionally works on objects that implement the [[\ArrayAccess]] interface.
-     * @param mixed $var The variable being evaluated.
-     * @return bool whether data on $var can be accessed as arrays
-     * @see https://secure.php.net/manual/en/function.is-array.php
-     * @since 2.0.36
-     */
-    public static function isArrayAccess($var)
-    {
-        return is_array($var) || $var instanceof \ArrayAccess;
-    }
-
-
-    /**
      * Checks whether an array or [[Traversable]] is a subset of another array or [[Traversable]].
      *
      * This method will return `true`, if all elements of `$needles` are contained in
