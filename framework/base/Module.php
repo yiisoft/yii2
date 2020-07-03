@@ -572,9 +572,13 @@ class Module extends ServiceLocator
         }
 
         // module and controller map take precedence
-        $routeInfo=pathinfo($route);
-        $id =$routeInfo['dirname']!=='.'?$routeInfo['dirname']:$routeInfo['basename'];
-        $route = $routeInfo['dirname']!=='.'?$routeInfo['basename']:'';
+        if (($pos = strrpos($route, '/')) !== false) {
+                $id = substr($route, 0, $pos);
+                $route = substr($route, $pos + 1);
+            }else{
+                $id = $route;
+                $route = '';
+        }
         if (isset($this->controllerMap[$id.'/'.$route])) {
             $controllerClass= $this->controllerMap[$id.'/'.$route];
             $id=$id.'/'.$route;
