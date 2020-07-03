@@ -512,9 +512,9 @@ FROM
     `information_schema`.`REFERENTIAL_CONSTRAINTS` AS `rc`,
     `information_schema`.`TABLE_CONSTRAINTS` AS `tc`
 WHERE
-    `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE()) AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `kcu`.`TABLE_NAME` = :tableName
-    AND `rc`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `rc`.`TABLE_NAME` = :tableName AND `rc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
-    AND `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`TABLE_NAME` = :tableName AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME` AND `tc`.`CONSTRAINT_TYPE` = 'FOREIGN KEY'
+    `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName1, DATABASE()) AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `kcu`.`TABLE_NAME` = :tableName
+    AND `rc`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `rc`.`TABLE_NAME` = :tableName1 AND `rc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
+    AND `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`TABLE_NAME` = :tableName2 AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME` AND `tc`.`CONSTRAINT_TYPE` = 'FOREIGN KEY'
 UNION
 SELECT
     `kcu`.`CONSTRAINT_NAME` AS `name`,
@@ -530,15 +530,21 @@ FROM
     `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`,
     `information_schema`.`TABLE_CONSTRAINTS` AS `tc`
 WHERE
-    `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE()) AND `kcu`.`TABLE_NAME` = :tableName
-    AND `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`TABLE_NAME` = :tableName AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME` AND `tc`.`CONSTRAINT_TYPE` IN ('PRIMARY KEY', 'UNIQUE')
+    `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName2, DATABASE()) AND `kcu`.`TABLE_NAME` = :tableName3
+    AND `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`TABLE_NAME` = :tableName4 AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME` AND `tc`.`CONSTRAINT_TYPE` IN ('PRIMARY KEY', 'UNIQUE')
 ORDER BY `position` ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
         $constraints = $this->db->createCommand($sql, [
             ':schemaName' => $resolvedName->schemaName,
+            ':schemaName1' => $resolvedName->schemaName,
+            ':schemaName2' => $resolvedName->schemaName,
             ':tableName' => $resolvedName->name,
+            ':tableName1' => $resolvedName->name,
+            ':tableName2' => $resolvedName->name,
+            ':tableName3' => $resolvedName->name,
+            ':tableName4' => $resolvedName->name
         ])->queryAll();
         $constraints = $this->normalizePdoRowKeyCase($constraints, true);
         $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
