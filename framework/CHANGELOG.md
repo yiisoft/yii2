@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Enh #15202: Add optional param `--silent-exit-on-exception` in `yii\console\Controller` (egorrishe)
 - Bug #18110: Add quotes to return value of viewName in MSSQL schema. It is `[someView]` now (darkdef)
 - Bug #17985: Convert migrationNamespaces to array if needed (darkdef)
+- Bug #18031: HttpBasicAuth with auth callback now triggers login events same was as other authentication methods (samdark)
 - Bug #18134: Expression as columnName should not be quoted in likeCondition (darkdef)
 - Bug #18147: Fixed parameters binding for MySQL when prepare emulation is off (rskrzypczak)
 
