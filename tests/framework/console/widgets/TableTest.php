@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console;
 
 use yii\console\widgets\Table;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -312,6 +313,56 @@ EXPECTED;
                 ->setScreenWidth(200)
                 ->run()
         );
+    }
+
+    public function testColorizedInput()
+    {
+        $table = new Table();
+
+        $expected = <<<"EXPECTED"
+╔═══════╤═══════╤══════════╗
+║ test1 │ test2 │ test3    ║
+╟───────┼───────┼──────────╢
+║ col1  │ \e[33mcol2\e[0m  │ col3     ║
+╟───────┼───────┼──────────╢
+║ col1  │ col2  │ • col3-0 ║
+║       │       │ • \e[31mcol3-1\e[0m ║
+║       │       │ • col3-2 ║
+╚═══════╧═══════╧══════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table
+                ->setHeaders(['test1', 'test2', 'test3'])
+                ->setRows([
+                    ['col1', Console::renderColoredString('%ycol2%n'), 'col3'],
+                    ['col1', 'col2', ['col3-0', Console::renderColoredString('%rcol3-1%n'), 'col3-2']],
+                ])
+                ->run()
+        );
+    }
+
+    public function testColorizedInputStripsANSIMarkersInternally()
+    {
+        $table = new Table();
+
+        $table
+            ->setHeaders(['t1', 't2', 't3'])
+            ->setRows([
+                ['col1', Console::renderColoredString('%ycol2%n'), 'col3'],
+                ['col1', 'col2', ['col3-0', Console::renderColoredString('%rcol3-1%n'), 'col3-2']],
+            ])
+            ->setScreenWidth(200)
+            ->run();
+
+        $columnWidths = \PHPUnit_Framework_Assert::readAttribute($table, "columnWidths");
+
+        $this->assertArrayHasKey(1, $columnWidths);
+        $this->assertEquals(4+2, $columnWidths[1]);
+        $this->assertArrayHasKey(2, $columnWidths);
+        $this->assertEquals(8+2, $columnWidths[2]);
     }
 
     public function testCalculateRowHeightShouldNotThrowDivisionByZeroException()

@@ -60,6 +60,7 @@ return [
   'Unknown option: --{name}' => 'Ismeretlen kapcsoló: --{name}',
   'Update' => 'Szerkesztés',
   'View' => 'Megtekintés',
+  'just now' => 'éppen most',
   'Yes' => 'Igen',
   'You are not allowed to perform this action.' => 'Nincs jogosultsága a művelet végrehajtásához.',
   'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Legfeljebb {limit, number} fájlt tölthet fel.',

@@ -30,7 +30,7 @@ return [
     'File upload failed.' => '.فشل في تحميل الملف',
     'Home' => 'الرئيسية',
     'Invalid data received for parameter "{param}".' => 'بيانات غير صالحة قد وردت في "{param}".',
-    'Login Required' => 'تسجبل الدخول مطلوب',
+    'Login Required' => 'تسجيل الدخول مطلوب',
     'Missing required arguments: {params}' => 'البيانات المطلوبة ضرورية: {params}',
     'Missing required parameters: {params}' => 'البيانات المطلوبة ضرورية: {params}',
     'No' => 'لا',

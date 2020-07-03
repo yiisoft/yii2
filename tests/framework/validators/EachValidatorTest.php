@@ -12,6 +12,7 @@ use yiiunit\data\base\ArrayAccessObject;
 use yiiunit\data\base\Speaker;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestTypedPropModel;
+use yiiunit\data\validators\models\ValidatorTestEachAndInlineMethodModel;
 use yiiunit\TestCase;
 
 /**
@@ -255,5 +256,13 @@ class EachValidatorTest extends TestCase
         $this->assertEquals(['a', 'b'], $model->getCheckedValues());
         // make sure original array is restored at the end
         $this->assertEquals(['a', 'b'], $model->firstName);
+    }
+
+    public function testAnonymousMethod()
+    {
+        $model = new ValidatorTestEachAndInlineMethodModel();
+
+        $model->validate();
+        $this->assertFalse($model->hasErrors('arrayProperty'));
     }
 }
