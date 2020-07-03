@@ -214,8 +214,8 @@ class BaseArrayHelper
             try {
                 return $array->$key;
             } catch (\Exception $e) {
-                if (static::isArrayAccess($array)) {
-                    return false;
+                if ($array instanceof ArrayAccess) {
+                    return $default;
                 }
                 throw $e;
             }
