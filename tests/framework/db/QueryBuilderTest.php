@@ -2492,7 +2492,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new LikeCondition('name', 'or not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
 
             // like with expression as columnName
-            [['like', new Expression('name'), 'string'], 'name LIKE :qp0', [':qp0' => "%string%"]],
+            [['like', new Expression('name'), 'teststring'], 'name LIKE :qp0', [':qp0' => "%teststring%"]],
         ];
 
         // adjust dbms specific escaping
