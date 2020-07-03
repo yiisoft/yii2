@@ -29,7 +29,6 @@ Yii Framework 2 Change Log
 - Bug #18134: Expression as columnName should not be quoted in likeCondition (darkdef)
 - Bug #18147: Fixed parameters binding for MySQL when prepare emulation is off (rskrzypczak)
 - Bug #18094: Support for composite file extension validation (darkdef)
-
 - Bug #18086: Fix accessing public properties of `ArrayAccess` via `ArrayHelper::getValue()` (samdark) 
 
 2.0.35 May 02, 2020
