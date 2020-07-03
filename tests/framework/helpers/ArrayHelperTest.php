@@ -8,6 +8,7 @@
 namespace yiiunit\framework\helpers;
 
 use ArrayAccess;
+use yiiunit\data\helpers\ArrayAccessObject;
 use Iterator;
 use yii\base\BaseObject;
 use yii\data\Sort;
@@ -1502,5 +1503,16 @@ class ArrayHelperTest extends TestCase
         ];
 
         $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18086
+     */
+    public function testArrayAccess()
+    {
+        $data = new ArrayAccessObject(['value' => 123]);
+
+        $this->assertEquals(123, ArrayHelper::getValue($data, 'value'));
+        $this->assertEquals('bar1', ArrayHelper::getValue($data, 'name'));
     }
 }
