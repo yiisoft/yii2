@@ -8,7 +8,6 @@
 namespace yiiunit\framework\helpers;
 
 use ArrayAccess;
-use yiiunit\data\helpers\ArrayAccessObject;
 use Iterator;
 use yii\base\BaseObject;
 use yii\data\Sort;
@@ -46,6 +45,7 @@ class Post3 extends BaseObject
 
 class ArrayAccessibleObject implements ArrayAccess
 {
+    public $name = 'bar1';
     protected $container = [];
 
     public function __construct($container)
@@ -1510,7 +1510,7 @@ class ArrayHelperTest extends TestCase
      */
     public function testArrayAccess()
     {
-        $data = new ArrayAccessObject(['value' => 123]);
+        $data = new ArrayAccessibleObject(['value' => 123]);
 
         $this->assertEquals(123, ArrayHelper::getValue($data, 'value'));
         $this->assertEquals('bar1', ArrayHelper::getValue($data, 'name'));
