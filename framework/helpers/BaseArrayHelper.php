@@ -211,7 +211,14 @@ class BaseArrayHelper
         if (is_object($array)) {
             // this is expected to fail if the property does not exist, or __get() is not implemented
             // it is not reliably possible to check whether a property is accessible beforehand
-            return $array->$key;
+            try {
+                return $array->$key;
+            } catch (\Exception $e) {
+                if (static::isArrayAccess($array)) {
+                    return false;
+                }
+                throw $e;
+            }
         }
 
         return $default;
