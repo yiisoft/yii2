@@ -397,3 +397,9 @@ To use this feature across different PHP versions check the version first. E.g.
 ```
 > Note: Since not all browsers support the `sameSite` setting yet, it is still strongly recommended to also include
   [additional CSRF protection](security-best-practices.md#avoiding-csrf).
+
+## Session php.ini settings
+
+As [noted in PHP manual](https://www.php.net/manual/en/session.security.ini.php), `php.ini` has important
+session security settings. Please ensure recommended settings are applied. Especially `session.use_strict_mode`
+that is not enabled by default in PHP installations.
