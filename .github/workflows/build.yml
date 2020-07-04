@@ -61,11 +61,11 @@ jobs:
         run: |
             curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - >/dev/null 2>&1
             curl -sSL https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list | sudo tee /etc/apt/sources.list.d/mssql-server-2017.list >/dev/null 2>&1
-            printf "\033[32;1m? \033[0m\033[90;1madd microsoft keys & repository\n"
+            printf "\033[32;1m✓ \033[0m\033[90;1madd microsoft keys & repository\n"
             sudo apt-get -q update >/dev/null 2>&1
-            printf "\033[32;1m? \033[0m\033[90;1mapt-get update\n"
+            printf "\033[32;1m✓ \033[0m\033[90;1mapt-get update\n"
             sudo pecl -q install pdo_sqlsrv > /dev/null 2>&1
-            printf "\033[32;1m? \033[0m\033[90;1mpecl install pdo_sqlsrv\n"
+            printf "\033[32;1m✓ \033[0m\033[90;1mpecl install pdo_sqlsrv\n"
             if (php -m | grep -i -q -w "pdo_sqlsrv"); then
                 printf "\033[32;1mpdo_sqlsrv installed correct\n"
             else
