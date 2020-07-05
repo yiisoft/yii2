@@ -45,6 +45,7 @@ class Post3 extends BaseObject
 
 class ArrayAccessibleObject implements ArrayAccess
 {
+    public $name = 'bar1';
     protected $container = [];
 
     public function __construct($container)
@@ -1502,5 +1503,16 @@ class ArrayHelperTest extends TestCase
         ];
 
         $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18086
+     */
+    public function testArrayAccessWithPublicProperty()
+    {
+        $data = new ArrayAccessibleObject(['value' => 123]);
+
+        $this->assertEquals(123, ArrayHelper::getValue($data, 'value'));
+        $this->assertEquals('bar1', ArrayHelper::getValue($data, 'name'));
     }
 }
