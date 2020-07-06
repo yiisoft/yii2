@@ -31,6 +31,7 @@ Yii Framework 2 Change Log
 - Enh #18151: Added `Mutex::isAcquired()` to check if lock is currently acquired (rhertogh)
 - Bug #18094: Support for composite file extension validation (darkdef)
 - Bug #18086: Fix accessing public properties of `ArrayAccess` via `ArrayHelper::getValue()` (samdark)
+- Bug #18051: Fix using `EachValidator` with custom validation function (bizley)
 
 2.0.35 May 02, 2020
 -------------------
