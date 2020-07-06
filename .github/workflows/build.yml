@@ -28,6 +28,15 @@ jobs:
         ports:
           - 5432:5432
         options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+      mssql:
+          image: mcr.microsoft.com/mssql/server:2017-latest
+          env:
+              SA_PASSWORD: YourStrong!Passw0rd
+              ACCEPT_EULA: Y
+              MSSQL_PID: Developer
+          ports:
+              - 1433:1433
+          options: --name=mssql --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
@@ -37,14 +46,32 @@ jobs:
     steps:
       - name: Generate french locale
         run: sudo locale-gen fr_FR.UTF-8
+      - name: Create MS SQL Database
+        run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          tools: pecl
           extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached, mysql, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, sqlite
           ini-values: date.timezone='UTC'
+      - name: Install php-sqlsrv
+        run: |
+            curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - >/dev/null 2>&1
+            curl -sSL https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list | sudo tee /etc/apt/sources.list.d/mssql-server-2017.list >/dev/null 2>&1
+            printf "\033[32;1m✓ \033[0m\033[90;1madd microsoft keys & repository\n"
+            sudo apt-get -q update >/dev/null 2>&1
+            printf "\033[32;1m✓ \033[0m\033[90;1mapt-get update\n"
+            sudo pecl -q install pdo_sqlsrv > /dev/null 2>&1
+            printf "\033[32;1m✓ \033[0m\033[90;1mpecl install pdo_sqlsrv\n"
+            if (php -m | grep -i -q -w "pdo_sqlsrv"); then
+                printf "\033[32;1mpdo_sqlsrv installed correct\n"
+            else
+                printf "\033[31;1mpdo_sqlsrv not installed :-(\n"
+            fi
+        if: matrix.php == '7.4' || matrix.php == '7.3' || matrix.php == '7.2'
       - name: Install Memcached
         uses: niden/actions-memcached@v7
       - name: Get composer cache directory
