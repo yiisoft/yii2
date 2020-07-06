@@ -63,7 +63,7 @@ Upgrade from Yii 2.0.35
   function ($attribute, $params, $validator, $current)
   ```
 
-* Behavior of inline validator used as a rule of EachValidator has been changed - `$attribute` now refers to original
+* Behavior of inline validator used as a rule of `EachValidator` has been changed - `$attribute` now refers to original
   model's attribute and not its temporary counterpart:
   
   ```php

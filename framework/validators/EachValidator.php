@@ -86,7 +86,7 @@ class EachValidator extends Validator
     /**
      * Creates validator object based on the validation rule specified in [[rule]].
      * @param Model|null $model model in which context validator should be created.
-     * @param mixed|null $current value being currently validated
+     * @param mixed|null $current value being currently validated.
      * @throws \yii\base\InvalidConfigException
      * @return Validator validator instance
      */
@@ -95,7 +95,9 @@ class EachValidator extends Validator
         $rule = $this->rule;
         if ($rule instanceof Validator) {
             return $rule;
-        } elseif (is_array($rule) && isset($rule[0])) { // validator type
+        }
+
+        if (is_array($rule) && isset($rule[0])) { // validator type
             if (!is_object($model)) {
                 $model = new Model(); // mock up context model
             }

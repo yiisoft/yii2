@@ -59,7 +59,7 @@ class InlineValidator extends Validator
      */
     public $clientValidate;
     /**
-     * @var mixed the value of attribute being currently validated
+     * @var mixed the value of attribute being currently validated.
      * @since 2.0.36
      */
     public $current;
@@ -81,7 +81,7 @@ class InlineValidator extends Validator
         if ($current === null) {
             $current = $model->$attribute;
         }
-        call_user_func($method, $attribute, $this->params, $this, $current);
+        $method($attribute, $this->params, $this, $current);
     }
 
     /**
@@ -100,7 +100,7 @@ class InlineValidator extends Validator
             if ($current === null) {
                 $current = $model->$attribute;
             }
-            return call_user_func($method, $attribute, $this->params, $this, $current);
+            return $method($attribute, $this->params, $this, $current);
         }
 
         return null;
