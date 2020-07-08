@@ -19,4 +19,22 @@ namespace yii\helpers;
  */
 class Html extends BaseHtml
 {
+  /**
+     * Overriding a method to optionally authorize the output
+     */
+    public static function a($text, $url = NULL, $options = [])
+    {
+        if (isset($options['userCan']))
+        {
+            if (\Yii::$app->user->can($options['userCan']))
+            {
+                return parent::a($text, $url, $options);
+            }
+            else
+            {
+                return '';
+            }
+        }        
+        return parent::a($text, $url, $options);        
+    }
 }
