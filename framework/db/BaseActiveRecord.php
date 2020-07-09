@@ -1212,7 +1212,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function instantiate($row)
     {
-        return Yii::createObject(static::class);
+        return Yii::createObject(static::className());
     }
 
     /**
