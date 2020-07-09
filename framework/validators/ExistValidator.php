@@ -295,7 +295,7 @@ class ExistValidator extends Validator
         if (is_array($value)) {
             $alias = $this->getTableAlias($query);
             
-            return $query->count("DISTINCT [[`$alias`.`$this->targetAttribute`]]") == count($value) ;
+            return $query->count("DISTINCT `$alias`.`$this->targetAttribute`") == count($value) ;
         }
         return $query->exists();
     }
