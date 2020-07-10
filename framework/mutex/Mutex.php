@@ -104,7 +104,8 @@ abstract class Mutex extends Component
      * @return bool Returns true if currently acquired
      * @since 2.0.36
      */
-    public function isAcquired($name) {
+    public function isAcquired($name)
+    {
         return in_array($name, $this->_locks, true);
     }
 

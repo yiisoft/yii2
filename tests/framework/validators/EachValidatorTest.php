@@ -240,6 +240,9 @@ class EachValidatorTest extends TestCase
         $this->assertEquals('First Name is invalid.', $model->getFirstError('firstName'));
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18051
+     */
     public function testCustomMethod()
     {
         $model = new Speaker();
@@ -249,6 +252,10 @@ class EachValidatorTest extends TestCase
         $validator->validateAttribute($model, 'firstName');
 
         $this->assertEquals('Custom method error', $model->getFirstError('firstName'));
+        // make sure each value of attribute array is checked separately
+        $this->assertEquals(['a', 'b'], $model->getCheckedValues());
+        // make sure original array is restored at the end
+        $this->assertEquals(['a', 'b'], $model->firstName);
     }
 
     public function testAnonymousMethod()

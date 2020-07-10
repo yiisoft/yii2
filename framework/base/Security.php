@@ -90,6 +90,7 @@ class Security extends Component
      * @since 2.0.6
      */
     public $passwordHashCost = 13;
+
     /**
      * @var boolean if LibreSSL should be used.
      * The recent (> 2.1.5) LibreSSL RNGs are faster and likely better than /dev/urandom.
@@ -98,7 +99,7 @@ class Security extends Component
 
 
     /**
-     * @return boolean if LibreSSL should be used
+     * @return bool if LibreSSL should be used
      * Use version is 2.1.5 or higher.
      * @since 2.0.36
      */
