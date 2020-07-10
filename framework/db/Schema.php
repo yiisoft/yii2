@@ -564,7 +564,7 @@ abstract class Schema extends BaseObject
 		}
         else if (is_string($this->columnQuoteCharacter)) {
             if(strlen($this->columnQuoteCharacter) < 1){
-                return $name
+                return $name;
             }
             $startingCharacter = $endingCharacter = $this->columnQuoteCharacter;
         } else {
