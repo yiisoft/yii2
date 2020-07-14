@@ -42,8 +42,8 @@ abstract class ErrorHandler extends Component
      */
     public $exception;
     /**
-     * @var bool if TRUE - `handleException()` will finish script with `ExitCode::OK`.
-     * FALSE - `ExitCode::UNSPECIFIED_ERROR`.
+     * @var bool if true - `handleException()` will finish script with `ExitCode::OK`.
+     * false - `ExitCode::UNSPECIFIED_ERROR`.
      * @since 2.0.36
      */
     public $silentExitOnException;
