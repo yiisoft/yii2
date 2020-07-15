@@ -240,7 +240,7 @@ class Controller extends \yii\base\Controller
             \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
         }
 
-        return $args;
+        return array_merge($args, $params);
     }
 
     /**
