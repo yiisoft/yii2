@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18171: Changed case of columns names in sql query for findConstraints (darkdef)
+Fix #18170: Fix regression in passing extra console command arguments to the action (darkdef)
 
 
 2.0.36 July 07, 2020
