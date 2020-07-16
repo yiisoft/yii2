@@ -119,6 +119,8 @@ abstract class BaseMigrateController extends Controller
                 throw new InvalidConfigException('At least one of `migrationPath` or `migrationNamespaces` should be specified.');
             }
 
+            $this->migrationNamespaces = (array) $this->migrationNamespaces;
+
             foreach ($this->migrationNamespaces as $key => $value) {
                 $this->migrationNamespaces[$key] = trim($value, '\\');
             }
@@ -446,7 +448,7 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Truncates the whole database and starts the migration from the beginning.
+     * Drops all tables and related constraints. Starts the migration from the beginning.
      *
      * ```
      * yii migrate/fresh
@@ -462,7 +464,7 @@ abstract class BaseMigrateController extends Controller
         }
 
         if ($this->confirm(
-            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+            "Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
             $this->truncateDatabase();
             return $this->actionUp();
         }

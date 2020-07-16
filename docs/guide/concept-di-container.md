@@ -375,6 +375,24 @@ cannot be instantiated. This is because you need to tell the DI container how to
 Now if you access the controller again, an instance of `app\components\BookingService` will be
 created and injected as the 3rd parameter to the controller's constructor.
 
+Since Yii 2.0.36 when using PHP 7 action injection is available for both web and console controllers:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\BookingInterface;
+
+class HotelController extends Controller
+{    
+    public function actionBook($id, BookingInterface $bookingService)
+    {
+        $result = $bookingService->book($id);
+        // ...    
+    }
+}
+``` 
+
 Advanced Practical Usage <span id="advanced-practical-usage"></span>
 ---------------
 

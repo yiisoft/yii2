@@ -317,7 +317,7 @@ class Connection extends Component
         'sqlite' => 'yii\db\sqlite\Command', // sqlite 3
         'sqlite2' => 'yii\db\sqlite\Command', // sqlite 2
         'sqlsrv' => 'yii\db\Command', // newer MSSQL driver on MS Windows hosts
-        'oci' => 'yii\db\Command', // Oracle driver
+        'oci' => 'yii\db\oci\Command', // Oracle driver
         'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
         'cubrid' => 'yii\db\Command', // CUBRID
@@ -332,6 +332,8 @@ class Connection extends Component
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
      * Set boolean `false` to disabled server status caching.
+     * @see openFromPoolSequentially() for details about the failover behavior.
+     * @see serverRetryInterval
      */
     public $serverStatusCache = 'cache';
     /**
@@ -654,14 +656,19 @@ class Connection extends Component
         if ($this->pdo !== null) {
             Yii::debug('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
-            $this->_schema = null;
-            $this->_transaction = null;
         }
 
         if ($this->_slave) {
             $this->_slave->close();
             $this->_slave = false;
         }
+
+        $this->_schema = null;
+        $this->_transaction = null;
+        $this->_driverName = null;
+        $this->_queryCacheInfo = [];
+        $this->_quotedTableNames = null;
+        $this->_quotedColumnNames = null;
     }
 
     /**
@@ -712,6 +719,9 @@ class Connection extends Component
             if ($this->driverName !== 'sqlsrv') {
                 $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
             }
+        }
+        if (in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
+            $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
         }
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
@@ -1094,12 +1104,16 @@ class Connection extends Component
 
     /**
      * Opens the connection to a server in the pool.
-     * This method implements the load balancing among the given list of the servers.
+     *
+     * This method implements load balancing and failover among the given list of the servers.
      * Connections will be tried in random order.
+     * For details about the failover behavior, see [[openFromPoolSequentially]].
+     *
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
      * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
+     * @see openFromPoolSequentially
      */
     protected function openFromPool(array $pool, array $sharedConfig)
     {
@@ -1109,13 +1123,26 @@ class Connection extends Component
 
     /**
      * Opens the connection to a server in the pool.
-     * This method implements the load balancing among the given list of the servers.
-     * Connections will be tried in sequential order.
+     *
+     * This method implements failover among the given list of servers.
+     * Connections will be tried in sequential order. The first successful connection will return.
+     *
+     * If [[serverStatusCache]] is configured, this method will cache information about
+     * unreachable servers and does not try to connect to these for the time configured in [[serverRetryInterval]].
+     * This helps to keep the application stable when some servers are unavailable. Avoiding
+     * connection attempts to unavailable servers saves time when the connection attempts fail due to timeout.
+     *
+     * If none of the servers are available the status cache is ignored and connection attempts are made to all
+     * servers (Since version 2.0.35). This is to avoid downtime when all servers are unavailable for a short time.
+     * After a successful connection attempt the server is marked as avaiable again.
+     *
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
      * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      * @since 2.0.11
+     * @see openFromPool
+     * @see serverStatusCache
      */
     protected function openFromPoolSequentially(array $pool, array $sharedConfig)
     {
@@ -1129,8 +1156,8 @@ class Connection extends Component
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
 
-        foreach ($pool as $config) {
-            $config = array_merge($sharedConfig, $config);
+        foreach ($pool as $i => $config) {
+            $pool[$i] = $config = array_merge($sharedConfig, $config);
             if (empty($config['dsn'])) {
                 throw new InvalidConfigException('The "dsn" option must be specified.');
             }
@@ -1153,6 +1180,30 @@ class Connection extends Component
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
                 }
+                // exclude server from retry below
+                unset($pool[$i]);
+            }
+        }
+
+        if ($cache instanceof CacheInterface) {
+            // if server status cache is enabled and no server is available
+            // ignore the cache and try to connect anyway
+            // $pool now only contains servers we did not already try in the loop above
+            foreach ($pool as $config) {
+
+                /* @var $db Connection */
+                $db = Yii::createObject($config);
+                try {
+                    $db->open();
+                } catch (\Exception $e) {
+                    Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
+                    continue;
+                }
+
+                // mark this server as available again after successful connection
+                $cache->delete([__METHOD__, $config['dsn']]);
+
+                return $db;
             }
         }
 

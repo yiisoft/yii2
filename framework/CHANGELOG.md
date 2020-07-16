@@ -1,10 +1,105 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.33 under development
+2.0.37 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
+- Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
+
+
+2.0.36 July 07, 2020
+--------------------
+
+- Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
+- Bug #17474: Fix retrieving inserted data for a primary key of type trigger for SQL Server 2005 or later (darkdef)
+- Bug #17985: Convert migrationNamespaces to array if needed (darkdef)
+- Bug #18001: Fix getting table metadata for tables `(` in their name (floor12)
+- Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
+- Bug #18028: Fix division by zero exception in console `Table::calculateRowHeight()` (fourhundredfour)
+- Bug #18031: `HttpBasicAuth` with auth callback now triggers login events same was as other authentication methods (samdark)
+- Bug #18041: Fix RBAC migration for MSSQL (darkdef)
+- Bug #18047: Fix colorization markers output in console `Table` (cheeseq)
+- Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
+- Bug #18051: Fix using `EachValidator` with custom validation function (bizley)
+- Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag `ANSI_NULL_DFLT_ON` to ON for current DB connection (darkdef)
+- Bug #18086: Fix accessing public properties of `ArrayAccess` via `ArrayHelper::getValue()` (samdark)
+- Bug #18094: Add support for composite file extension validation (darkdef)
+- Bug #18096: Fix `InlineValidator` with anonymous inline function not working well from `EachValidator` (trombipeti)
+- Bug #18101: Fix behavior of `OUTPUT INSERTED.*` for SQL Server query: "insert default values"; correct MSSQL unit tests; turn off profiling echo message in migration test (darkdef)
+- Bug #18105: Fix for old trigger in RBAC migration with/without `prefixTable` (darkdef)
+- Bug #18110: Add quotes to return value of viewName in MSSQL schema. It is `[someView]` now (darkdef)
+- Bug #18127: Resolve DI references inside of arrays in dependencies (hiqsol)
+- Bug #18134: `Expression` as `columnName` should not be quoted in `likeCondition` (darkdef)
+- Bug #18147: Fix parameters binding for MySQL when prepare emulation is off (rskrzypczak)
+- Enh #15202: Add optional param `--silent-exit-on-exception` in `yii\console\Controller` (egorrishe)
+- Enh #17722: Add action injection support (SamMousa, samdark, erickskrauch)
+- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
+- Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
+- Enh #18083: Add `Controller::$request` and `$response` (brandonkelly)
+- Enh #18120: Include the path to the log file into error message if `FileTarget::export` fails (uaoleg)
+- Enh #18151: Add `Mutex::isAcquired()` to check if lock is currently acquired (rhertogh)
+
+
+2.0.35 May 02, 2020
+-------------------
+
+- Bug #16481: Fix RBAC MSSQL trigger (achretien)
+- Bug #17653: Fix `TypeError: pair[1] is undefined` when query param doesn't have `=` sign (baso10)
+- Bug #17810: Fix `EachValidator` crashing with uninitialized typed properties (ricardomm85)
+- Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
+- Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
+- Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
+- Bug #17961: Fix pagination `pageSizeLimit` ignored if set as array with more then 2 elements (tsvetiligo)
+- Bug #17974: Fix `ActiveRelationTrait` compatibility with PHP 7.4 (Ximich)
+- Bug #17975: Fix deleting unused messages with console command if message tables were created manually (auerswald, cebe)
+- Bug #17991: Improve `yii\db\Connection` master and slave failover, no connection attempt was made when all servers are marked as unavailable  (cebe)
+- Bug #18000: PK value of Oracle ActiveRecord is missing after save (mankwok)
+- Bug #18010: Allow upper or lower case operators in `InCondition` and `LikeCondition` (alex-code)
+- Bug #18011: Add attribute labels support for `DynamicModel`, fixed `EachValidator` to pass the attribute label to the underlying `DynamicModel` (storch)
+- Enh #17758: `Query::withQuery()` can now be used for CTE (sartor)
+- Enh #17993: Add `yii\i18n\Formatter::$currencyDecimalSeparator` to allow setting custom symbols for currency decimal in `IntlNumberFormatter` (XPOHOC269)
+- Enh #18006: Allow `SameSite` cookie pre PHP 7.3 (scottix)
+
+
+2.0.34 March 26, 2020
+---------------------
+
+- Bug #17932: Fix regression in detection of AJAX requests (samdark)
+- Bug #17933: Log warning instead of erroring when URLManager is unable to initialize cache (samdark)
+- Bug #17934: Fix regression in Oracle when binding several string parameters (fen1xpv, samdark)
+- Bug #17935: Reset DB quoted table/column name caches when the connection is closed (brandonkelly)
+
+
+2.0.33 March 24, 2020
+---------------------
+
+- Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)
+- Bug #13749: Fix Yii opens db connection even when hits query cache (shushenghong)
+- Bug #16092: Fix duplicate joins in usage of `joinWith` (germanow)
+- Bug #16145: Fix `Html` helper `checkboxList()`, `radioList()`, `renderSelectOptions()`, `dropDownList()`, `listBox()` methods to work properly with traversable selection (samdark)
+- Bug #16334: Add `\JsonSerializable` support to `ArrayableTrait` (germanow)
+- Bug #17667: Fix `CREATE INDEX` failure on SQLite when specifying schema (santilin, samdark)
+- Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
+- Bug #17797: Fix for `activeListInput` options (alex-code)
+- Bug #17798: Avoid creating directory for stream log targets in `FileTarget` (wapmorgan)
+- Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
+- Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
+- Bug #17843: Fix `yii\web\Session::setCookieParamsInternal` checked "samesite" parameter incorrectly (schevgeny)
+- Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
+- Bug #17859: Fix loading fixtures under Windows (samdark)
+- Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
+- Bug #17875: Use `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files in case of POST request (sup-ham)
+- Bug #17878: Detect CORS AJAX requests without `X-Requested-With` in `Request::getIsAjax()` (dicrtarasov, samdark)
+- Bug #17881: `yii\db\Query::queryScalar()` wasn’t reverting the `select`, `orderBy`, `limit`, and `offset` params if an exception occurred (brandonkelly)
+- Bug #17884: Fix 0 values in console Table rendered as empty string (mikehaertl)
+- Bug #17886: Fix `yii\rest\Serializer` to serialize arrays (patacca)
+- Bug #17909: Reset DB schema, transaction, and driver name when the connection is closed (brandonkelly)
+- Bug #17920: Fix quoting for `Command::getRawSql` having `Expression` in params (alex-code)
+- Enh #7622: Allow `yii\data\ArrayDataProvider` to control the sort flags for `sortModels` through `yii\data\Sort::sortFlags` property (askobara)
+- Enh #16721: Use `Instance::ensure()` to initialize `UrlManager::$cache` (rob006)
+- Enh #17827: Add `StringValidator::$strict` that can be turned off to allow any scalars (adhayward, samdark)
+- Enh #17929: Actions can now have bool typed params bound (alex-code)
 
 
 2.0.32 January 21, 2020
@@ -24,9 +119,8 @@ Yii Framework 2 Change Log
 - Bug #17771: migrate/fresh was not returning exit code (samdark)
 - Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
 - Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
-- Enh #17729: Path alias support was added to `yii\web\UploadFile::saveAs()` (sup-ham)
+- Enh #17729: Path alias support was added to `yii\web\UploadedFile::saveAs()` (sup-ham)
 - Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
-
 
 2.0.31 December 18, 2019
 ------------------------

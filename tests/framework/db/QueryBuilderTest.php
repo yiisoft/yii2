@@ -9,6 +9,8 @@ namespace yiiunit\framework\db;
 
 use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
+use yii\db\conditions\LikeCondition;
+use yii\db\conditions\InCondition;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
@@ -942,7 +944,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
             [
@@ -951,7 +953,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
                     'postgres' => 'bigserial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
             [
@@ -1198,6 +1200,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
                 [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
+
+            // in object conditions
+            [new InCondition('id', 'in', 1), '[[id]]=:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'in', [1]), '[[id]]=:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'not in', 1), '[[id]]<>:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'not in', [1]), '[[id]]<>:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'in', [1, 2]), '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
+            [new InCondition('id', 'not in', [1, 2]), '[[id]] NOT IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
+
             // exists
             [['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
@@ -1674,6 +1685,56 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
             ->union($thirdQuery, true);
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
+    public function testBuildWithQuery()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS ((SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2) UNION ( SELECT [[id]] FROM [[t3]] WHERE expr = 3 )) SELECT * FROM [[a2]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $with2Query = (new Query())
+            ->select('id')
+            ->from('t2')
+            ->innerJoin('a1', 't2.id = a1.id')
+            ->where('expr = 2');
+
+        $with3Query = (new Query())
+            ->select('id')
+            ->from('t3')
+            ->where('expr = 3');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1')
+            ->withQuery($with2Query->union($with3Query), 'a2')
+            ->from('a2');
+
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
+    public function testBuildWithQueryRecursive()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH RECURSIVE a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1) SELECT * FROM [[a1]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1', true)
+            ->from('a1');
+
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
@@ -2419,6 +2480,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '[[location]].[[title_ru]] LIKE :qp0',
                 [':qp0' => 'vi%'],
             ],
+
+            // like object conditions
+            [new LikeCondition('name', 'like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'or like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'or not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") AND [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'or like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") OR [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'or not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+
+            // like with expression as columnName
+            [['like', new Expression('name'), 'teststring'], 'name LIKE :qp0', [':qp0' => "%teststring%"]],
         ];
 
         // adjust dbms specific escaping

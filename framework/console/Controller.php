@@ -34,6 +34,8 @@ use yii\helpers\Inflector;
  * read-only.
  * @property array $passedOptions The names of the options passed during execution. This property is
  * read-only.
+ * @property Request $request
+ * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,12 +65,27 @@ class Controller extends \yii\base\Controller
      * @since 2.0.10
      */
     public $help;
+    /**
+     * @var bool if true - script finish with `ExitCode::OK` in case of exception.
+     * false - `ExitCode::UNSPECIFIED_ERROR`.
+     * Default: `YII_ENV_TEST`
+     * @since 2.0.36
+     */
+    public $silentExitOnException;
 
     /**
      * @var array the options passed during execution.
      */
     private $_passedOptions = [];
 
+
+    public function beforeAction($action)
+    {
+        $silentExit = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
+        Yii::$app->errorHandler->silentExitOnException = $silentExit;
+
+        return parent::beforeAction($action);
+    }
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -182,19 +199,35 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $args = array_values($params);
-
+        $args = [];
         $missing = [];
+        $actionParams = [];
+        $requestedParams = [];
         foreach ($method->getParameters() as $i => $param) {
-            if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = $args[$i] === '' ? [] : preg_split('/\s*,\s*/', $args[$i]);
+            $name = $param->getName();
+            $key = null;
+            if (array_key_exists($i, $params)) {
+                $key = $i;
+            } elseif (array_key_exists($name, $params)) {
+                $key = $name;
             }
-            if (!isset($args[$i])) {
-                if ($param->isDefaultValueAvailable()) {
-                    $args[$i] = $param->getDefaultValue();
-                } else {
-                    $missing[] = $param->getName();
+
+            if ($key !== null) {
+                if ($param->isArray()) {
+                    $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
                 }
+                $args[] = $actionParams[$key] = $params[$key];
+                unset($params[$key]);
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (\yii\base\Exception $e) {
+                    throw new Exception($e->getMessage());
+                }
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $actionParams[$i] = $param->getDefaultValue();
+            } else {
+                $missing[] = $name;
             }
         }
 
@@ -202,7 +235,12 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
-        return $args;
+        // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
+        if (\Yii::$app->requestedParams === null) {
+            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
+        }
+
+        return array_merge($args, $params);
     }
 
     /**
@@ -243,6 +281,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
+     * @param int ...$args additional parameters to decorate the output
      * @return int|bool Number of bytes printed or false on error
      */
     public function stdout($string)
@@ -374,7 +413,7 @@ class Controller extends \yii\base\Controller
     public function options($actionID)
     {
         // $actionId might be used in subclasses to provide options specific to action id
-        return ['color', 'interactive', 'help'];
+        return ['color', 'interactive', 'help', 'silentExitOnException'];
     }
 
     /**

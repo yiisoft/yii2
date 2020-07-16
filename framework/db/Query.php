@@ -111,6 +111,17 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $union;
     /**
+     * @var array this is used to construct the WITH section in a SQL query.
+     * Each array element is an array of the following structure:
+     *
+     * - `query`: either a string or a [[Query]] object representing a query
+     * - `alias`: string, alias of query for further usage
+     * - `recursive`: boolean, whether it should be `WITH RECURSIVE` or `WITH`
+     * @see withQuery()
+     * @since 2.0.35
+     */
+    public $withQueries;
+    /**
      * @var array list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
@@ -461,12 +472,24 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
-            $command = $this->createCommand($db);
+
+            $e = null;
+            try {
+                $command = $this->createCommand($db);
+            } catch (\Exception $e) {
+                // throw it later
+            } catch (\Throwable $e) {
+                // throw it later
+            }
 
             $this->select = $select;
             $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
+
+            if ($e !== null) {
+                throw $e;
+            }
 
             return $command->queryScalar();
         }
@@ -909,16 +932,18 @@ PATTERN;
      * Appends a JOIN part to the query.
      * The first parameter specifies what type of join it is.
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
@@ -943,16 +968,18 @@ PATTERN;
 
     /**
      * Appends an INNER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -967,16 +994,18 @@ PATTERN;
 
     /**
      * Appends a LEFT OUTER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -991,16 +1020,18 @@ PATTERN;
 
     /**
      * Appends a RIGHT OUTER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -1227,6 +1258,20 @@ PATTERN;
     public function union($sql, $all = false)
     {
         $this->union[] = ['query' => $sql, 'all' => $all];
+        return $this;
+    }
+
+    /**
+     * Prepends a SQL statement using WITH syntax.
+     * @param string|Query $query the SQL statement to be prepended using WITH
+     * @param string $alias query alias in WITH construction
+     * @param bool $recursive TRUE if using WITH RECURSIVE and FALSE if using WITH
+     * @return $this the query object itself
+     * @since 2.0.35
+     */
+    public function withQuery($query, $alias, $recursive = false)
+    {
+        $this->withQueries[] = ['query' => $query, 'alias' => $alias, 'recursive' => $recursive];
         return $this;
     }
 

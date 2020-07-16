@@ -8,6 +8,8 @@
 namespace yii\base;
 
 use Yii;
+use yii\di\Instance;
+use yii\di\NotInstantiableException;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -63,6 +65,16 @@ class Controller extends Component implements ViewContextInterface
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
+    /**
+     * @var Request|array|string The request.
+     * @since 2.0.36
+     */
+    public $request = 'request';
+    /**
+     * @var Response|array|string The response.
+     * @since 2.0.36
+     */
+    public $response = 'response';
 
     /**
      * @var View the view object that can be used to render views or view files.
@@ -84,6 +96,17 @@ class Controller extends Component implements ViewContextInterface
         $this->id = $id;
         $this->module = $module;
         parent::__construct($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.36
+     */
+    public function init()
+    {
+        parent::init();
+        $this->request = Instance::ensure($this->request, Request::className());
+        $this->response = Instance::ensure($this->response, Response::className());
     }
 
     /**
@@ -522,5 +545,38 @@ class Controller extends Component implements ViewContextInterface
         }
 
         return $path;
+    }
+
+    /**
+     * Fills parameters based on types and names in action method signature.
+     * @param \ReflectionType $type The reflected type of the action parameter.
+     * @param string $name The name of the parameter.
+     * @param array &$args The array of arguments for the action, this function may append items to it.
+     * @param array &$requestedParams The array with requested params, this function may write specific keys to it.
+     * @throws ErrorException when we cannot load a required service.
+     * @throws InvalidConfigException Thrown when there is an error in the DI configuration.
+     * @throws NotInstantiableException Thrown when a definition cannot be resolved to a concrete class
+     * (for example an interface type hint) without a proper definition in the container.
+     * @since 2.0.36
+     */
+    final protected function bindInjectedParams(\ReflectionType $type, $name, &$args, &$requestedParams)
+    {
+        // Since it is not a builtin type it must be DI injection.
+        $typeName = $type->getName();
+        if (($component = $this->module->get($name, false)) instanceof $typeName) {
+            $args[] = $component;
+            $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
+        } elseif ($this->module->has($typeName) && ($service = $this->module->get($typeName)) instanceof $typeName) {
+            $args[] = $service;
+            $requestedParams[$name] = 'Module ' . get_class($this->module) . " DI: $typeName \$$name";
+        } elseif (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName) {
+            $args[] = $service;
+            $requestedParams[$name] = "Container DI: $typeName \$$name";
+        } elseif ($type->allowsNull()) {
+            $args[] = null;
+            $requestedParams[$name] = "Unavailable service: $name";
+        } else {
+            throw new Exception('Could not load required service: ' . $name);
+        }
     }
 }

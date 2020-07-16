@@ -51,6 +51,104 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.35
+-----------------------
+
+* Inline validator signature has been updated with 4th parameter `current`:
+
+  ```php
+  /**
+   * @param mixed $current the currently validated value of attribute
+   */
+  function ($attribute, $params, $validator, $current)
+  ```
+
+* Behavior of inline validator used as a rule of `EachValidator` has been changed - `$attribute` now refers to original
+  model's attribute and not its temporary counterpart:
+  
+  ```php
+  public $array_attribute = ['first', 'second'];
+
+  public function rules()
+  {
+      return [
+          ['array_attribute', 'each', 'rule' => ['customValidatingMethod']],
+      ];
+  }
+  
+  public function customValidatingMethod($attribute, $params, $validator, $current)
+  {
+      // $attribute === 'array_attribute' (as before)
+  
+      // now: $this->$attribute === ['first', 'second'] (on every iteration)
+      // previously:
+      // $this->$attribute === 'first' (on first iteration)
+      // $this->$attribute === 'second' (on second iteration)
+  
+      // use now $current instead
+      // $current === 'first' (on first iteration)
+      // $current === 'second' (on second iteration)
+  }
+  ```
+
+* If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
+  the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
+
+
+Upgrade from Yii 2.0.32
+-----------------------
+
+* `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 "levels",
+  e.g. `ArrayHelper::filter($myArray, ['A.B.C']`. Until Yii 2.0.32 all data after the 2nd level was returned,
+  please see the following example:
+  
+  ```php
+  $myArray = [
+      'A' => 1,
+      'B' => [
+          'C' => 1,
+          'D' => [
+              'E' => 1,
+              'F' => 2,
+          ]
+      ],
+  ];
+  ArrayHelper::filter($myArray, ['B.D.E']);
+  ```
+  
+  Before Yii 2.0.33 this would return
+  
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+              'F' => 2, //Please note the unexpected inclusion of other elements
+          ],
+      ],
+  ]
+  ```
+
+  Since Yii 2.0.33 this returns
+
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+          ],
+      ],
+  ]
+  ```
+  
+  Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
+  
+* `UploadedFile` class `deleteTempFile()` and `isUploadedFile()` methods introduced in 2.0.32 were removed.
+
+* Exception will be thrown if `UrlManager::$cache` configuration is incorrect (previously misconfiguration was silently 
+  ignored and `UrlManager` continue to work without cache). Make sure that `UrlManager::$cache` is correctly configured 
+  or set it to `null` to explicitly disable cache.
+
 Upgrade from Yii 2.0.31
 -----------------------
 
@@ -61,6 +159,14 @@ Upgrade from Yii 2.0.30
 -----------------------
 * `yii\helpers\BaseInflector::slug()` now ensures there is no repeating $replacement string occurrences.
   In case you rely on Yii 2.0.16 - 2.0.30 behavior, consider replacing `Inflector` with your own implementation.
+  
+  
+Upgrade from Yii 2.0.28
+-----------------------
+
+* `yii\helpers\Html::tag()` now generates boolean attributes
+  [according to HTML specification](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute).
+  For `true` value attribute is present, for `false` value it is absent.  
 
 Upgrade from Yii 2.0.20
 -----------------------
@@ -222,7 +328,10 @@ Upgrade from Yii 2.0.13
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
 * In case you aren't using CSRF cookies (REST APIs etc.) you should turn them off explicitly by setting
-  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file. 
+  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file.
+  
+* Previously headers sent after content output was started were silently ignored. This behavior was changed to throwing
+  `\yii\web\HeadersAlreadySentException`.
 
 Upgrade from Yii 2.0.12
 -----------------------

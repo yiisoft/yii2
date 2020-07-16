@@ -954,7 +954,7 @@ class BaseHtml
             $name .= '[]';
         }
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -1041,7 +1041,7 @@ class BaseHtml
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -1822,8 +1822,8 @@ class BaseHtml
      */
     protected static function activeListInput($type, $model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
+        $name = ArrayHelper::remove($options, 'name', static::getInputName($model, $attribute));
+        $selection = ArrayHelper::remove($options, 'value', static::getAttributeValue($model, $attribute));
         if (!array_key_exists('unselect', $options)) {
             $options['unselect'] = '';
         }
@@ -1854,7 +1854,7 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
         $lines = [];

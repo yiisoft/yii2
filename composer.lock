@@ -4,14 +4,14 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "523a6f879c83447c011295844df33c18",
+    "content-hash": "57627068914aee26c8205110ee14f928",
     "packages": [
         {
             "name": "bower-asset/inputmask",
             "version": "3.3.11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobinHerbots/Inputmask.git",
+                "url": "git@github.com:RobinHerbots/Inputmask.git",
                 "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
@@ -77,7 +77,7 @@
             "version": "2.0.7.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:yiisoft/jquery-pjax.git",
+                "url": "https://github.com/yiisoft/jquery-pjax.git",
                 "reference": "aef7b953107264f00234902a3880eb50dafc48be"
             },
             "dist": {
@@ -1256,6 +1256,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.8.x-dev"
+                },
+                "patches_applied": {
+                    "Fix PHP 7.2 compatibility": "./tests/phpunit_getopt.patch"
                 }
             },
             "autoload": {

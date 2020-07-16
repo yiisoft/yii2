@@ -175,13 +175,17 @@ class UploadedFile extends BaseObject
      */
     public function saveAs($file, $deleteTempFile = true)
     {
-        if ($this->error !== UPLOAD_ERR_OK) {
+        if ($this->hasError) {
             return false;
         }
-        if (false === $this->copyTempFile(Yii::getAlias($file))) {
-            return false;
+
+        $targetFile = Yii::getAlias($file);
+        if (is_resource($this->_tempResource)) {
+            $result = $this->copyTempFile($targetFile);
+            return $deleteTempFile ? @fclose($this->_tempResource) : (bool) $result;
         }
-        return !$deleteTempFile || $this->deleteTempFile();
+
+        return $deleteTempFile ? move_uploaded_file($this->tempName, $targetFile) : copy($this->tempName, $targetFile);
     }
 
     /**
@@ -193,9 +197,6 @@ class UploadedFile extends BaseObject
      */
     protected function copyTempFile($targetFile)
     {
-        if (!is_resource($this->_tempResource)) {
-            return $this->isUploadedFile($this->tempName) && copy($this->tempName, $targetFile);
-        }
         $target = fopen($targetFile, 'wb');
         if ($target === false) {
             return false;
@@ -205,32 +206,6 @@ class UploadedFile extends BaseObject
         @fclose($target);
 
         return $result;
-    }
-
-    /**
-     * Delete temporary file
-     *
-     * @return bool if file was deleted
-     * @since 2.0.32
-     */
-    protected function deleteTempFile()
-    {
-        if (is_resource($this->_tempResource)) {
-            return @fclose($this->_tempResource);
-        }
-        return $this->isUploadedFile($this->tempName) && @unlink($this->tempName);
-    }
-
-    /**
-     * Check if file is uploaded file
-     *
-     * @param string $file path to the file to check
-     * @return bool
-     * @since 2.0.32
-     */
-    protected function isUploadedFile($file)
-    {
-        return is_uploaded_file($file);
     }
 
     /**
