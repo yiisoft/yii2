@@ -671,6 +671,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the saving succeeded (i.e. no validation errors occurred).
+     * @throws \Exception|\Throwable in case insert or update failed.
      */
     public function save($runValidation = true, $attributeNames = null)
     {
