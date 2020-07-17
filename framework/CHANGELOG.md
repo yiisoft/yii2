@@ -4,7 +4,8 @@ Yii Framework 2 Change Log
 2.0.37 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
+- Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
 
 
 2.0.36 July 07, 2020
