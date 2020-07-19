@@ -654,7 +654,7 @@ class PhpDocController extends Controller
         } else {
             $namespace = $namespace['name'];
         }
-        $classes = $this->match('#\n(?:abstract )(?:final )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
+        $classes = $this->match('#\n(?:abstract )?(?:final )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
 
         if (\count($classes) > 1) {
             $this->stderr("[ERR] There should be only one class in a file: $fileName\n", Console::FG_RED);
