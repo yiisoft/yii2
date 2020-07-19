@@ -21,7 +21,7 @@ use yii\base\InvalidConfigException;
 class UrlNormalizer extends BaseObject
 {
     /**
-     * Represents permament redirection during route normalization.
+     * Represents permanent redirection during route normalization.
      * @see https://en.wikipedia.org/wiki/HTTP_301
      */
     const ACTION_REDIRECT_PERMANENT = 301;
@@ -114,6 +114,9 @@ class UrlNormalizer extends BaseObject
         if ($this->normalizeTrailingSlash === true) {
             $pathInfo = $this->normalizeTrailingSlash($pathInfo, $suffix);
         }
+
+        // Ensure there is no incorrect characters in pathInfo such as newlines
+        $pathInfo = preg_replace('/\s+/', ' ', $pathInfo);
 
         $normalized = $sourcePathInfo !== $pathInfo;
 
