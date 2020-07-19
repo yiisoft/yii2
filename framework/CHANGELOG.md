@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
 - Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
+- Bug #18182: `yii\db\Expression` was not supported as condition in `ActiveRecord::findOne()` and `ActiveRecord::findAll()` (rhertogh)
 
 
 2.0.36 July 07, 2020
