@@ -173,24 +173,22 @@ class ActiveRecord extends BaseActiveRecord
     {
         $query = static::find();
 
-        if (!($condition instanceof Expression)) {
-            if (!ArrayHelper::isAssociative($condition)) {
-                // query by primary key
-                $primaryKey = static::primaryKey();
-                if (isset($primaryKey[0])) {
-                    $pk = $primaryKey[0];
-                    if (!empty($query->join) || !empty($query->joinWith)) {
-                        $pk = static::tableName() . '.' . $pk;
-                    }
-                    // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
-                    $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
-                } else {
-                    throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
+        if (!ArrayHelper::isAssociative($condition) && !$condition instanceof Expression) {
+            // query by primary key
+            $primaryKey = static::primaryKey();
+            if (isset($primaryKey[0])) {
+                $pk = $primaryKey[0];
+                if (!empty($query->join) || !empty($query->joinWith)) {
+                    $pk = static::tableName() . '.' . $pk;
                 }
-            } elseif (is_array($condition)) {
-                $aliases = static::filterValidAliases($query);
-                $condition = static::filterCondition($condition, $aliases);
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
+            } else {
+                throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
+        } elseif (is_array($condition)) {
+            $aliases = static::filterValidAliases($query);
+            $condition = static::filterCondition($condition, $aliases);
         }
 
         return $query->andWhere($condition);
