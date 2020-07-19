@@ -504,6 +504,11 @@ class PhpDocController extends Controller
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
     {
+        if ($this->shouldSkipClass($className)) {
+            $this->stderr("[INFO] Skipping class $className.\n", Console::FG_BLUE, Console::BOLD);
+            return false;
+        }
+
         try {
             $ref = new \ReflectionClass($className);
         } catch (\Exception $e) {
@@ -854,5 +859,13 @@ class PhpDocController extends Controller
             $isDepreceatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
         }
         return !$isDepreceatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
+    }
+
+    private function shouldSkipClass($className)
+    {
+        if (PHP_VERSION_ID > 70100) {
+            return $className === 'yii\base\Object';
+        }
+        return false;
     }
 }
