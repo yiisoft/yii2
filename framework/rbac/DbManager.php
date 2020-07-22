@@ -984,6 +984,11 @@ class DbManager extends BaseManager
         }
         $this->_checkAccessAssignments = [];
     }
+    
+    public function invalidateAssignmentCache($userId)
+    {
+        unset($this->_checkAccessAssignments[(string) $userId]);
+    }
 
     public function loadFromCache()
     {
