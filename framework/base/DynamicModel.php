@@ -245,7 +245,7 @@ class DynamicModel extends Model
      */
     public function attributes()
     {
-        return array_keys($this->_attributes);
+        return array_merge(parent::attributes(), array_keys($this->_attributes));
     }
 
     /**
