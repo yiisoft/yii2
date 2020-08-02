@@ -40,6 +40,9 @@ use yii\helpers\Console;
  *     ],
  * ]);
  *
+ * @property string $listPrefix List prefix. This property is write-only.
+ * @property int $screenWidth Screen width. This property is write-only.
+ *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
  */

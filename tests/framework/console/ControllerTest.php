@@ -77,11 +77,17 @@ class ControllerTest extends TestCase
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
+        $params = ['from params', 'notdefault'];
+        list($fromParam, $other) = $controller->run('trimargs', $params);
+        $this->assertEquals('from params', $fromParam);
+        $this->assertEquals('notdefault', $other);
+
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
+
     }
 
     public function testNullableInjectedActionParams()
