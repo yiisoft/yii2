@@ -451,7 +451,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . ($version2005orLater ? ' OUTPUT INSERTED.* INTO @temporary_inserted ' : '')
+            . ($version2005orLater ? ' OUTPUT INSERTED.* INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
 
         if ($version2005orLater) {
@@ -463,10 +463,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     .(in_array($column->dbType, ['char','varchar','nchar','nvarchar','binary','varbinary'])?"(MAX)":"")
                     .' '.($column->allowNull?"NULL":"");
             }
-            $sql = "declare @temporary_inserted table (".implode(", ", $cols).");".$sql.";select * from @temporary_inserted";
+            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (".implode(", ", $cols).");".$sql.";SELECT * FROM @temporary_inserted";
         }
 
-//        echo $sql;die;
         return $sql;
     }
 

@@ -772,7 +772,6 @@ SQL;
 
         $inserted = [];
         if ($version2005orLater) {
-            $command->pdoStatement->nextRowset(); // skip insert query and select inserted data
             $inserted = $command->pdoStatement->fetch();
         }
 
