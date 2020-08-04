@@ -9,6 +9,7 @@ namespace yii\base;
 
 use Yii;
 use yii\di\Instance;
+use yii\di\NotInstantiableException;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -65,12 +66,12 @@ class Controller extends Component implements ViewContextInterface
      */
     public $action;
     /**
-     * @var Request|array|string The request
+     * @var Request|array|string The request.
      * @since 2.0.36
      */
     public $request = 'request';
     /**
-     * @var Response|array|string
+     * @var Response|array|string The response.
      * @since 2.0.36
      */
     public $response = 'response';
@@ -553,8 +554,8 @@ class Controller extends Component implements ViewContextInterface
      * @param array &$args The array of arguments for the action, this function may append items to it.
      * @param array &$requestedParams The array with requested params, this function may write specific keys to it.
      * @throws ErrorException when we cannot load a required service.
-     * @throws \yii\base\InvalidConfigException Thrown when there is an error in the DI configuration.
-     * @throws \yii\di\NotInstantiableException Thrown when a definition cannot be resolved to a concrete class
+     * @throws InvalidConfigException Thrown when there is an error in the DI configuration.
+     * @throws NotInstantiableException Thrown when a definition cannot be resolved to a concrete class
      * (for example an interface type hint) without a proper definition in the container.
      * @since 2.0.36
      */

@@ -217,6 +217,7 @@ class Validator extends Component
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = [$model, $type];
         } else {
+            unset($params['current']);
             if (isset(static::$builtInValidators[$type])) {
                 $type = static::$builtInValidators[$type];
             }

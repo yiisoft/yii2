@@ -600,7 +600,7 @@ SQL;
             return '[' . $item . ']';
         }, $views);
 
-        return $views;        
+        return $views;
     }
 
     /**
@@ -768,8 +768,8 @@ SQL;
             return false;
         }
 
-        $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
-        $inserted = $version2005orLater ? $command->pdoStatement->fetch() : [];
+        $isVersion2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
+        $inserted = $isVersion2005orLater ? $command->pdoStatement->fetch() : [];
 
         $tableSchema = $this->getTableSchema($table);
         $result = [];
@@ -779,8 +779,13 @@ SQL;
                 break;
             }
             // @see https://github.com/yiisoft/yii2/issues/13828 & https://github.com/yiisoft/yii2/issues/17474
-            $result[$name] = isset($inserted[$name]) ? $inserted[$name] :
-                (isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue);
+            if (isset($inserted[$name])) {
+                $result[$name] = $inserted[$name];
+            } elseif (isset($columns[$name])) {
+                $result[$name] = $columns[$name];
+            } else {
+                $result[$name] = $tableSchema->columns[$name]->defaultValue;
+            }
         }
 
         return $result;
