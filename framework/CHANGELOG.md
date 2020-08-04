@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
 - Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
+- Bug #18198: Fix for tables with trigger - output inserted data from insert query with usage temporary table (darkdef)
 
 
 2.0.36 July 07, 2020
