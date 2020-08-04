@@ -5,14 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17147: Fix form attribute validations for empty select inputs (kartik-v)
-- Bug #18028: Fix division by zero exception in Table.php::calculateRowHeight (fourhundredfour)
-- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
-- Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
-- Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
-- Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
-- Enh #17722: Add action injection support (SamMousa, samdark, erickskrauch)
-- Bug #18041: Fix RBAC migration for MSSQL (darkdef)
-- Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag ANSI_NULL_DFLT_ON to ON for current connect to DB (darkdef)
 - Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
 - Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
 - Bug #18182: `yii\db\Expression` was not supported as condition in `ActiveRecord::findOne()` and `ActiveRecord::findAll()` (rhertogh)
@@ -145,7 +137,7 @@ Yii Framework 2 Change Log
 - Bug #17701: Throw `BadRequestHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
 - Bug #17710: Fix MemCache duration normalization to avoid memcached/system timestamp mismatch (samdark)
 - Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of non-string (samdark)
-- Bug #17723: Fix incorrect decoding of deflt binary value for PostgreSQL (samdark)
+- Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
 - Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
 - Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
 - Bug #17740: `yii\helpers\BaseInflector::slug()` doesn't replace multiple replacement string occurrences to single one (batyrmastyr)
