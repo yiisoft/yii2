@@ -9,4 +9,18 @@ namespace PHPSTORM_META {
             '' => '@',
         ])
     );
+
+    override(
+        \yii\di\Instance::ensure(0),
+        map([
+            '' => '@',
+        ])
+    );
+
+    override(
+        \Yii::createObject(0),
+        map([
+            '' => '@',
+        ])
+    );
 }
