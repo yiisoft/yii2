@@ -294,7 +294,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->delete($this->itemChildTable, ['or', '[[parent]]=:name', '[[child]]=:name'], [':name' => $item->name])
+                ->delete($this->itemChildTable, ['or', '[[parent]]=:parent', '[[child]]=:child'], [':parent' => $item->name, ':child' => $item->name])
                 ->execute();
             $this->db->createCommand()
                 ->delete($this->assignmentTable, ['item_name' => $item->name])
