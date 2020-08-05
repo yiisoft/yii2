@@ -94,7 +94,7 @@ class InlineValidator extends Validator
             if (is_string($method)) {
                 $method = [$model, $method];
             } elseif ($method instanceof \Closure) {
-                $method = $this->method->bindTo($model);
+                $method = $method->bindTo($model);
             }
             $current = $this->current;
             if ($current === null) {

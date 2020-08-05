@@ -94,6 +94,20 @@ Upgrade from Yii 2.0.35
 * If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
   the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
 
+Upgrade from Yii 2.0.34
+-----------------------
+
+* `ExistValidator` used as a rule of `EachValidator` now requires providing `targetClass` explicitely and it's not possible to use it with `targetRelation` in
+  that configuration.
+  
+  ```php
+  public function rules()
+  {
+      return [
+          ['attribute', 'each', 'rule' => ['exist', 'targetClass' => static::className(), 'targetAttribute' => 'id']],
+      ];
+  }
+  ```
 
 Upgrade from Yii 2.0.32
 -----------------------
