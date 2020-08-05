@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.36
+-----------------------
+
+* `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
+  with an integer value, adjust your code.
+
 Upgrade from Yii 2.0.35
 -----------------------
 
