@@ -458,12 +458,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $schema = $this->db->getTableSchema($table);
             $cols = [];
             foreach ($schema->columns as $column) {
-                $cols[] = $this->db->quoteColumnName($column->name).' '
-                    .$column->dbType
-                    .(in_array($column->dbType, ['char','varchar','nchar','nvarchar','binary','varbinary'])?"(MAX)":"")
-                    .' '.($column->allowNull?"NULL":"");
+                $cols[] = $this->db->quoteColumnName($column->name) . ' '
+                    . $column->dbType
+                    . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
+                    . ' ' . ($column->allowNull ? "NULL" : "");
             }
-            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (".implode(", ", $cols).");".$sql.";SELECT * FROM @temporary_inserted";
+            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (" . implode(", ", $cols) . ");" . $sql . ";SELECT * FROM @temporary_inserted";
         }
 
         return $sql;

@@ -26,7 +26,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     /**
      * @throws \yii\db\Exception
      */
-    public function testWithTriggerSave()
+    public function testSaveWithTrigger()
     {
         $db = $this->getConnection();
 
