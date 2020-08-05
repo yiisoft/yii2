@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.37 under development
 ------------------------
 
+- Enh #18213: Make fixtures handle circular dependencies (JesseHines0)
 - Bug #17147: Fix form attribute validations for empty select inputs (kartik-v)
 - Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
 - Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
