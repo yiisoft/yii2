@@ -820,6 +820,7 @@ class BaseHtml
      * - encode: bool, whether to encode option prompt and option value characters.
      *   Defaults to `true`. This option is available since 2.0.3.
      * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -878,6 +879,8 @@ class BaseHtml
      *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
      *   Defaults to `true`. This option is available since 2.0.3.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -933,6 +936,7 @@ class BaseHtml
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
      *   This option is ignored if `item` option is set.
      * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the checkbox tag using [[checkbox()]].
      * - item: callable, a callback that can be used to customize the generation of the HTML code
@@ -1025,6 +1029,7 @@ class BaseHtml
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
      *   This option is ignored if `item` option is set.
      * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the radio button tag using [[radio()]].
      * - item: callable, a callback that can be used to customize the generation of the HTML code
