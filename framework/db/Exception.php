@@ -31,8 +31,9 @@ class Exception extends \yii\base\Exception
      */
     public function __construct($message, $errorInfo = [], $code = '', \Exception $previous = null)
     {
+        parent::__construct($message, 0, $previous);
         $this->errorInfo = $errorInfo;
-        parent::__construct($message, $code, $previous);
+        $this->code = $code;
     }
 
     /**
