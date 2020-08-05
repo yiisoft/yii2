@@ -65,6 +65,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } else {
             echo $message . "\n";
         }
+        if (($previous = $exception->getPrevious()) !== null) {
+            $causedBy = "\n" . $this->formatMessage('Caused by: ', [Console::BOLD]);
+            if (PHP_SAPI === 'cli') {
+                Console::stderr($causedBy);
+            } else {
+                echo $causedBy;
+            }
+            $this->renderException($previous);
+        }
     }
 
     /**
