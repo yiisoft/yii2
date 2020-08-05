@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
 - Bug #18182: `yii\db\Expression` was not supported as condition in `ActiveRecord::findOne()` and `ActiveRecord::findAll()` (rhertogh)
 - Bug #18189: Fix "Invalid parameter number" in `yii\rbac\DbManager::removeItem()` (samdark)
+- Enh #18210: Allow strict comparison for multi-select inputs (alex-code)
 - Bug #18204: Fix 2.0.36 regression in inline validator and JS validation (samdark)
 - Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
 - Bug #18198: Fix saving tables with trigger by outputting inserted data from insert query with usage of temporary table (darkdef)
