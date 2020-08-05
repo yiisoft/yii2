@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #18189: Fix "Invalid parameter number" in `yii\rbac\DbManager::removeItem()` (samdark)
 - Bug #18204: Fix 2.0.36 regression in inline validator and JS validation (samdark)
 - Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
+- Bug #18198: Fix saving tables with trigger by outputting inserted data from insert query with usage of temporary table (darkdef)
 
 
 2.0.36 July 07, 2020
