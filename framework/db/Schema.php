@@ -674,7 +674,7 @@ abstract class Schema extends BaseObject
         }
         $message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-        return new $exceptionClass($message, $errorInfo, (int)$e->getCode(), $e);
+        return new $exceptionClass($message, $errorInfo, $e->getCode(), $e);
     }
 
     /**
