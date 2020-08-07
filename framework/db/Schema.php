@@ -559,7 +559,7 @@ abstract class Schema extends BaseObject
      */
     public function quoteSimpleColumnName($name)
     {
-        if (is_string($this->tableQuoteCharacter)) {
+        if (is_string($this->columnQuoteCharacter)) {
             $startingCharacter = $endingCharacter = $this->columnQuoteCharacter;
         } else {
             list($startingCharacter, $endingCharacter) = $this->columnQuoteCharacter;

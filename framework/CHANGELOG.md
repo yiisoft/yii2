@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
 - Bug #18198: Fix saving tables with trigger by outputting inserted data from insert query with usage of temporary table (darkdef)
 - Bug #18203: PDO exception code was not properly passed to `yii\db\Exception` (samdark)
+- Bug #18156: Fix `yii\db\Schema::quoteSimpleTableName()` was checking incorrect quote character (M4tho, samdark)
 
 2.0.36 July 07, 2020
 --------------------
