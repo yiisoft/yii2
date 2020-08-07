@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.36
+-----------------------
+
+* `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
+  with an integer value, adjust your code.
+
 Upgrade from Yii 2.0.35
 -----------------------
 
@@ -88,6 +94,16 @@ Upgrade from Yii 2.0.35
       // use now $current instead
       // $current === 'first' (on first iteration)
       // $current === 'second' (on second iteration)
+  }
+  ```
+  
+* `$this` in an inline validator defined as closure now refers to model instance. If you need to access the object registering
+  the validator, pass its instance through use statement:
+  
+  ```php
+  $registrar = $this;
+  $validator = function($attribute, $params, $validator, $current) use ($registrar) {
+      // ...
   }
   ```
 
