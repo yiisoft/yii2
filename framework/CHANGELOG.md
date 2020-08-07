@@ -1,21 +1,22 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.37 under development
-------------------------
+2.0.37 August 07, 2020
+----------------------
 
 - Bug #17147: Fix form attribute validations for empty select inputs (kartik-v)
-- Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
+- Bug #18156: Fix `yii\db\Schema::quoteSimpleTableName()` was checking incorrect quote character (M4tho, samdark)
 - Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
+- Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
 - Bug #18182: `yii\db\Expression` was not supported as condition in `ActiveRecord::findOne()` and `ActiveRecord::findAll()` (rhertogh)
 - Bug #18189: Fix "Invalid parameter number" in `yii\rbac\DbManager::removeItem()` (samdark)
-- Enh #18210: Allow strict comparison for multi-select inputs (alex-code)
-- Bug #18204: Fix 2.0.36 regression in inline validator and JS validation (samdark)
-- Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
 - Bug #18198: Fix saving tables with trigger by outputting inserted data from insert query with usage of temporary table (darkdef)
 - Bug #18203: PDO exception code was not properly passed to `yii\db\Exception` (samdark)
-- Bug #18156: Fix `yii\db\Schema::quoteSimpleTableName()` was checking incorrect quote character (M4tho, samdark)
+- Bug #18204: Fix 2.0.36 regression in inline validator and JS validation (samdark)
+- Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
+- Enh #18210: Allow strict comparison for multi-select inputs (alex-code)
 - Enh #18217: Make `yii\console\ErrorHandler` render chained exceptions in debug mode (mikehaertl)
+
 
 2.0.36 July 07, 2020
 --------------------
