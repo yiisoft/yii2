@@ -198,12 +198,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT ".$this->db->quoteColumnName("UQ_{$constraintBase}")." UNIQUE ({$columnName})";
         }
 
-        $sql = 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
         . $this->db->quoteColumnName($column) . ' '
         . $this->getColumnType($type)
         . implode("\n", $sqlAfter);
-
-        return $sql;
     }
 
     /**
@@ -600,7 +598,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $type type of constraint, leave empty for all type of constraints(for example: D - default, 'UQ' - unique, 'C' - check)
      * @see https://docs.microsoft.com/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
      * @return string the DROP CONSTRAINTS SQL
-     * @since 2.0.36
      */
     private function dropConstraintsForColumn($table, $column, $type='')
     {
@@ -623,7 +620,7 @@ WHILE 1=1 BEGIN
 		    WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
         ) cons
         JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
-        ".(!empty($type)?" WHERE so.[type]='{$type}'":"").")
+        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : "" ) . ")
     IF @constraintName IS NULL BREAK
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
 END
