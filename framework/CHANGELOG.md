@@ -18,7 +18,6 @@ Yii Framework 2 Change Log
 - Bug #18189: Fix "Invalid parameter number" in `yii\rbac\DbManager::removeItem()` (samdark)
 - Bug #18198: Fix saving tables with trigger by outputting inserted data from insert query with usage of temporary table (darkdef)
 - Bug #18203: PDO exception code was not properly passed to `yii\db\Exception` (samdark)
-- Bug #13973: Correct alterColumn for MSSQL & drop constraints before drop column (darkdef)
 - Bug #18204: Fix 2.0.36 regression in inline validator and JS validation (samdark)
 - Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
 - Enh #18210: Allow strict comparison for multi-select inputs (alex-code)

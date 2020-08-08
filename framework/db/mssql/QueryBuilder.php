@@ -190,18 +190,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if (preg_match('/\s+CHECK\s+\((.+)\)/i', $type, $matches)) {
             $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
-            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT ".$this->db->quoteColumnName("CK_{$constraintBase}")." CHECK ({$matches[1]})";
+            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("CK_{$constraintBase}") . " CHECK ({$matches[1]})";
         }
 
         $type = preg_replace('/\s+UNIQUE/i', '', $type, -1, $count);
         if ($count) {
-            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT ".$this->db->quoteColumnName("UQ_{$constraintBase}")." UNIQUE ({$columnName})";
+            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
         }
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-        . $this->db->quoteColumnName($column) . ' '
-        . $this->getColumnType($type)
-        . implode("\n", $sqlAfter);
+            . $this->db->quoteColumnName($column) . ' '
+            . $this->getColumnType($type) . "\n"
+            . implode("\n", $sqlAfter);
     }
 
     /**
@@ -601,8 +601,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function dropConstraintsForColumn($table, $column, $type='')
     {
-        return "
-DECLARE @tableName VARCHAR(MAX) = '".$this->db->quoteTableName($table)."'
+        return "DECLARE @tableName VARCHAR(MAX) = '" . $this->db->quoteTableName($table) . "'
 DECLARE @columnName VARCHAR(MAX) = '{$column}'
 
 WHILE 1=1 BEGIN
@@ -614,17 +613,16 @@ WHILE 1=1 BEGIN
             JOIN [sys].[columns] c ON c.[object_id]=sc.[id] AND c.[column_id]=sc.[colid] AND c.[name]=@columnName
             WHERE sc.[id] = OBJECT_ID(@tableName)
             UNION
-		    SELECT object_id(i.[name]) FROM [sys].[indexes] i
-		    JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
-		    JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
-		    WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
+            SELECT object_id(i.[name]) FROM [sys].[indexes] i
+            JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
+            JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
+            WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
         ) cons
         JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
-        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : "" ) . ")
+        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : "") . ")
     IF @constraintName IS NULL BREAK
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
-END
-";
+END";
     }
 
     /**
@@ -633,7 +631,7 @@ END
      */
     public function dropColumn($table, $column)
     {
-        return $this->dropConstraintsForColumn($table, $column)."\nALTER TABLE " . $this->db->quoteTableName($table)
+        return $this->dropConstraintsForColumn($table, $column) . "\nALTER TABLE " . $this->db->quoteTableName($table)
             . " DROP COLUMN " . $this->db->quoteColumnName($column);
     }
 

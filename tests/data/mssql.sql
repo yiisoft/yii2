@@ -27,6 +27,7 @@ IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
 IF OBJECT_ID('[T_upsert_1]', 'U') IS NOT NULL DROP TABLE [T_upsert_1];
 IF OBJECT_ID('[table.with.special.characters]', 'U') IS NOT NULL DROP TABLE [table.with.special.characters];
 IF OBJECT_ID('[stranger ''table]', 'U') IS NOT NULL DROP TABLE [stranger 'table];
+IF OBJECT_ID('[foo1]', 'U') IS NOT NULL DROP TABLE [foo1];
 
 CREATE TABLE [dbo].[profile] (
     [id] [int] IDENTITY NOT NULL,
@@ -390,3 +391,8 @@ CREATE TABLE [dbo].[test_trigger_alert] (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE [dbo].[foo1] (
+  [id] [int] IDENTITY NOT NULL,
+  [bar] [varchar](32),
+  PRIMARY KEY (id)
+);
