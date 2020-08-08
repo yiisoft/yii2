@@ -123,7 +123,7 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} KB' => '{nFormatted} KB',
+    '{nFormatted} kB' => '{nFormatted} KB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
