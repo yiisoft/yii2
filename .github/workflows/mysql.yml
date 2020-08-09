@@ -1,0 +1,91 @@
+on:
+  - pull_request
+  - push
+
+name: mysql
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php-version }}-mysql-${{ matrix.mysql-version }}
+    env:
+      extensions: curl, mbstring, dom, intl, pdo, mysql, pdo_mysql
+      key: cache-v1
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+
+        php-version:
+          - "7.4"
+          - "8.0"
+
+        mysql-version:
+          - "5.7"
+          - "latest"
+
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql-version }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: yiitest
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup cache environment
+        id: cache-env
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.cache-env.outputs.dir }}
+          key: ${{ steps.cache-env.outputs.key }}
+          restore-keys: ${{ steps.cache-env.outputs.key }}
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: ${{ env.extensions }}
+          ini-values: date.timezone='UTC'
+          coverage: pcov
+
+      - name: Determine composer cache directory on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: echo "::set-env name=COMPOSER_CACHE_DIR::$(composer config cache-dir)"
+
+      - name: Determine composer cache directory on Windows
+        if: matrix.os == 'windows-latest'
+        run: ECHO "::set-env name=COMPOSER_CACHE_DIR::~\AppData\Local\Composer"
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+
+      - name: Install dependencies with composer php 7.4
+        if: matrix.php-version == '7.4'
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader
+
+      - name: Install dependencies with composer php 8.0
+        if: matrix.php-version == '8.0'
+        run: composer update --ignore-platform-reqs --prefer-dist --no-interaction --no-progress --optimize-autoloader
+
+      - name: Run mysql tests with phpunit
+        run: vendor/bin/phpunit --group mysql
