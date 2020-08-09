@@ -8,7 +8,7 @@ jobs:
   tests:
     name: PHP ${{ matrix.php-version }}-mysql-${{ matrix.mysql-version }}
     env:
-      extensions: curl, mbstring, dom, intl, pdo, mysql, pdo_mysql
+      extensions: curl, intl, pdo, mysql, pdo_mysql
       key: cache-v1
 
     runs-on: ${{ matrix.os }}
@@ -22,7 +22,6 @@ jobs:
           - "7.4"
 
         mysql-version:
-          - "5.7"
           - "latest"
 
     services:
@@ -62,13 +61,9 @@ jobs:
           ini-values: date.timezone='UTC'
           coverage: pcov
 
-      - name: Determine composer cache directory on Linux
+      - name: Determine composer cache directory
         if: matrix.os == 'ubuntu-latest'
         run: echo "::set-env name=COMPOSER_CACHE_DIR::$(composer config cache-dir)"
-
-      - name: Determine composer cache directory on Windows
-        if: matrix.os == 'windows-latest'
-        run: ECHO "::set-env name=COMPOSER_CACHE_DIR::~\AppData\Local\Composer"
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
@@ -78,13 +73,8 @@ jobs:
           restore-keys: |
             php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
 
-      - name: Install dependencies with composer php 7.4
-        if: matrix.php-version == '7.4'
+      - name: Install dependencies with composer
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader
-
-      - name: Install dependencies with composer php 8.0
-        if: matrix.php-version == '8.0'
-        run: composer update --ignore-platform-reqs --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
       - name: Run mysql tests with phpunit
         run: vendor/bin/phpunit --group mysql
