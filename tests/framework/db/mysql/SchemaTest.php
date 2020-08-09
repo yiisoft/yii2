@@ -121,7 +121,7 @@ SQL;
 
     public function getExpectedColumns()
     {
-        $version = $this->getConnection()->getPDO()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $version = $this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
 
         return array_merge(
             parent::getExpectedColumns(),
