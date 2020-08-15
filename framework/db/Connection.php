@@ -418,6 +418,10 @@ class Connection extends Component
      * @see enableLogging
      */
     public $enableProfiling = true;
+    /**
+     * @var bool flag for recognize SyBase databases on uses pdo_dblib
+     */
+    public $isSybase = false;
 
     /**
      * @var Transaction the currently active transaction
@@ -720,7 +724,7 @@ class Connection extends Component
                 $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
             }
         }
-        if (in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
+        if (in_array($this->getDriverName(), ['mssql', 'dblib'], true) and $this->isSybase) {
             $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
         }
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
