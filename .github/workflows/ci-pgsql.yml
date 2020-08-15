@@ -2,13 +2,13 @@ on:
   - pull_request
   - push
 
-name: mysql
+name: ci-pgsql
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }}-mysql-${{ matrix.mysql-version }}
+    name: PHP ${{ matrix.php-version }}-pgsql-${{ matrix.pgsql-version }}
     env:
-      extensions: curl, intl, pdo, mysql, pdo_mysql
+      extensions: curl, intl, pdo, pdo_pgsql
       key: cache-v1
 
     runs-on: ${{ matrix.os }}
@@ -16,23 +16,24 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
+          - [ubuntu-latest]
 
         php-version:
-          - "7.4"
+          - ['5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
 
-        mysql-version:
-          - "latest"
+        pgsql-version:
+          - ["10.14", "11.9", "latest"]
 
     services:
-      mysql:
-        image: mysql:${{ matrix.mysql-version }}
+      postgres:
+        image: postgres:${{ matrix.pgsql-version }}
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: yiitest
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: yiitest
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 5432:5432
+        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout
@@ -76,5 +77,5 @@ jobs:
       - name: Install dependencies with composer
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
-      - name: Run mysql tests with phpunit
-        run: vendor/bin/phpunit --group mysql
+      - name: Run pgsql tests with phpunit
+        run: vendor/bin/phpunit --group pgsql
