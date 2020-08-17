@@ -313,7 +313,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             $column->type === 'time' && $info['Default'] === 'SYS_TIME'
         ) {
             $column->defaultValue = new Expression($info['Default']);
-        } elseif (isset($type) && $type === 'bit') {
+        } elseif (isset($type) && $type === 'bit' && !is_null($info['default'])) {
             $column->defaultValue = hexdec(trim($info['Default'], 'X\''));
         } else {
             $column->defaultValue = $column->phpTypecast($info['Default']);

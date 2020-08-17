@@ -145,6 +145,7 @@ CREATE TABLE "type" (
   bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bit_col BIT(8) NOT NULL DEFAULT B'10000010',
+  bit_col_default_null BIT(8) NULL DEFAULT NULL,
   bigint_col BIGINT,
   intarray_col integer[],
   textarray2_col text[][],
