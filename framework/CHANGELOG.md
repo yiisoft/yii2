@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18233: Add PHP 8 support (samdark)
 
 
 2.0.37 August 07, 2020
