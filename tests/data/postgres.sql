@@ -143,7 +143,7 @@ CREATE TABLE "type" (
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col boolean NOT NULL,
   bool_col2 boolean DEFAULT TRUE,
-  ts_default TIMESTAMP NOT NULL DEFAULT NOW(),
+  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bit_col BIT(8) NOT NULL DEFAULT B'10000010',
   bigint_col BIGINT,
   intarray_col integer[],

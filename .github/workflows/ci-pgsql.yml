@@ -22,9 +22,10 @@ jobs:
           - "7.4"
 
         pgsql-version:
-          - "10.14"
-          - "11.9"
-          - "latest"
+          - "10"
+          - "11"
+          - "12"
+          - "13"
 
     services:
       postgres:
