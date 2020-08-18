@@ -7,6 +7,7 @@
 
 namespace yii\filters;
 
+use Closure;
 use Yii;
 use yii\base\ActionFilter;
 use yii\web\Request;
@@ -48,8 +49,15 @@ class RateLimiter extends ActionFilter
      */
     public $errorMessage = 'Rate limit exceeded.';
     /**
-     * @var RateLimitInterface the user object that implements the RateLimitInterface.
-     * If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
+     * @var RateLimitInterface|closure the user object that implements the RateLimitInterface.
+     * If not set, it will take the value of `Yii::$app->user->getIdentity(false)`. {@since 2.0.38} its possible to provide
+     * a closure function in order to assign a user identity on runtime. Using a closure is required when not working with
+     * standard `user` service component.
+     * ```php
+     * 'user' => function() {
+     *     return Yii::$app->apiUser->identity;
+     * }
+     * ```
      */
     public $user;
     /**
@@ -82,6 +90,10 @@ class RateLimiter extends ActionFilter
     {
         if ($this->user === null && Yii::$app->getUser()) {
             $this->user = Yii::$app->getUser()->getIdentity(false);
+        }
+
+        if ($this->user instanceof Closure) {
+            $this->user = call_user_func($this->user, $action);
         }
 
         if ($this->user instanceof RateLimitInterface) {
