@@ -419,7 +419,8 @@ class Connection extends Component
      */
     public $enableProfiling = true;
     /**
-     * @var bool flag for recognize SyBase databases on uses pdo_dblib
+     * @var bool If the database connected via pdo_dblib is SyBase.
+     * @since 2.0.38
      */
     public $isSybase = false;
 
