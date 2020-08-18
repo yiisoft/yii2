@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
+- Bug #18233: Add PHP 8 support (samdark)
 - Bug #18239: Fix support of no-extension files for FileValidator::validateExtension (darkdef)
 
 
