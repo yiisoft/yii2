@@ -448,10 +448,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
-        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+
+        $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . ($version2005orLater ? ' OUTPUT INSERTED.*' : '')
+            . ($version2005orLater ? ' OUTPUT INSERTED.* INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+
+        if ($version2005orLater) {
+            $schema = $this->db->getTableSchema($table);
+            $cols = [];
+            foreach ($schema->columns as $column) {
+                $cols[] = $this->db->quoteColumnName($column->name) . ' '
+                    . $column->dbType
+                    . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
+                    . ' ' . ($column->allowNull ? "NULL" : "");
+            }
+            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (" . implode(", ", $cols) . ");" . $sql . ";SELECT * FROM @temporary_inserted";
+        }
+
+        return $sql;
     }
 
     /**
