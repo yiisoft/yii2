@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
-- Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime. (nadar)
+- Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
 - Bug #18233: Add PHP 8 support (samdark)
 
 
