@@ -202,7 +202,7 @@ class FontAwesomeAsset extends AssetBundle
 ```
 
 The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
-the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
+the `only` publishing option, only the `webfonts` and `css` subdirectories will be published.
 
 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
