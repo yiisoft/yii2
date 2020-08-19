@@ -124,19 +124,44 @@ class FontAwesomeAsset extends AssetBundle
     public $css = [ 
         'css/font-awesome.min.css', 
     ]; 
+    public $publishOptions = [
+        'only' => [
+            'webfonts/*',
+            'css/*',
+        ]
+    ];
+}  
+```
+
+Более сложную логику можно реализовать с помощью переопределения `init()`. Ниже указан пример публикации поддиректорий этим способом:
+```php
+<?php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class FontAwesomeAsset extends AssetBundle 
+{
+    public $sourcePath = '@bower/font-awesome'; 
+    public $css = [ 
+        'css/font-awesome.min.css', 
+    ]; 
     
     public function init()
     {
         parent::init();
         $this->publishOptions['beforeCopy'] = function ($from, $to) {
-            $dirname = basename(dirname($from));
-            return $dirname === 'fonts' || $dirname === 'css';
+            if (basename(dirname($from)) !== 'font-awesome') {
+                return true;
+            }
+            $dirname = basename($from);
+            return $dirname === 'webfonts' || $dirname === 'css';
         };
     }
 }  
 ```
 
-В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
+В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `webfonts` и `css` поддиректории будут опубликованы. 
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
