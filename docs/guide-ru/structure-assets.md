@@ -126,7 +126,7 @@ class FontAwesomeAsset extends AssetBundle
     ]; 
     public $publishOptions = [
         'only' => [
-            'webfonts/*',
+            'fonts/*',
             'css/*',
         ]
     ];
@@ -155,13 +155,13 @@ class FontAwesomeAsset extends AssetBundle
                 return true;
             }
             $dirname = basename($from);
-            return $dirname === 'webfonts' || $dirname === 'css';
+            return $dirname === 'fonts' || $dirname === 'css';
         };
     }
 }  
 ```
 
-В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `webfonts` и `css` поддиректории будут опубликованы. 
+В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы. 
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
