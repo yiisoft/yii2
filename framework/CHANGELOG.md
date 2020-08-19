@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
+- Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
 - Bug #18233: Add PHP 8 support (samdark)
 - Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
 
