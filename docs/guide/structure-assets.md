@@ -194,7 +194,7 @@ class FontAwesomeAsset extends AssetBundle
     ];
     public $publishOptions = [
         'only' => [
-            'fonts/*',
+            'webfonts/*',
             'css/*',
         ]
     ];
