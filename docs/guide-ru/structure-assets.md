@@ -134,6 +134,7 @@ class FontAwesomeAsset extends AssetBundle
 ```
 
 Более сложную логику можно реализовать с помощью переопределения `init()`. Ниже указан пример публикации поддиректорий этим способом:
+
 ```php
 <?php
 namespace app\assets;
