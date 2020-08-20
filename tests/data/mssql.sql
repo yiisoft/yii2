@@ -9,6 +9,8 @@ IF OBJECT_ID('[dbo].[customer]', 'U') IS NOT NULL DROP TABLE [dbo].[customer];
 IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
 IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
+IF OBJECT_ID('[dbo].[test_trigger]', 'U') IS NOT NULL DROP TABLE [dbo].[test_trigger];
+IF OBJECT_ID('[dbo].[test_trigger_alert]', 'U') IS NOT NULL DROP TABLE [dbo].[test_trigger_alert];
 IF OBJECT_ID('[dbo].[negative_default_values]', 'U') IS NOT NULL DROP TABLE [dbo].[negative_default_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
@@ -375,3 +377,16 @@ CREATE TABLE [dbo].[stranger 'table] (
     [id] [int],
     [stranger 'field] [varchar] (32)
 );
+
+CREATE TABLE [dbo].[test_trigger] (
+  [id] [int] IDENTITY NOT NULL,
+  [stringcol] [varchar](32) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE [dbo].[test_trigger_alert] (
+  [id] [int] IDENTITY NOT NULL,
+  [stringcol] [varchar](32) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
