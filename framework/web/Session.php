@@ -83,6 +83,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public $handler;
 
+    protected $_forceRegenerateId = null;
+
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
      * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
@@ -93,7 +95,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
      */
     private $frozenSessionData;
-
 
     /**
      * Initializes the application component.
@@ -135,6 +136,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $this->setCookieParamsInternal();
 
         YII_DEBUG ? session_start() : @session_start();
+
+        if ($this->_forceRegenerateId) {
+            $this->regenerateID();
+            $this->_forceRegenerateId = null;
+        }
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);

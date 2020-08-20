@@ -93,6 +93,19 @@ class DbSession extends MultiFieldSession
         $this->db = Instance::ensure($this->db, Connection::className());
     }
 
+    public function openSession($savePath, $sessionName)
+    {
+        $strictMode = ini_get('session.use_strict_mode');
+        if ($strictMode) {
+            $id = $this->getId();
+            if (!$this->getReadQuery($id)->exists()) {
+                $this->_forceRegenerateId = $id;
+            }
+        }
+
+        return parent::openSession($savePath, $sessionName);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -160,9 +173,7 @@ class DbSession extends MultiFieldSession
      */
     public function readSession($id)
     {
-        $query = new Query();
-        $query->from($this->sessionTable)
-            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
+        $query = $this->getReadQuery($id);
 
         if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
@@ -182,6 +193,11 @@ class DbSession extends MultiFieldSession
      */
     public function writeSession($id, $data)
     {
+        if ($id === $this->_forceRegenerateId) {
+            //Ignore write when forceRegenerate is active
+            return true;
+        }
+
         // exception must be caught in session write handler
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
@@ -238,6 +254,13 @@ class DbSession extends MultiFieldSession
             ->execute();
 
         return true;
+    }
+
+    protected function getReadQuery($id)
+    {
+        return (new Query())
+            ->from($this->sessionTable)
+            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
     }
 
     /**
