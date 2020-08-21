@@ -357,6 +357,7 @@ class ContainerTest extends TestCase
     {
         $quxInterface = 'yiiunit\framework\di\stubs\QuxInterface';
         $container = new Container();
+        $container->resolveArrays = true;
         $container->setSingletons([
             $quxInterface => [
                 'class' => Qux::className(),
