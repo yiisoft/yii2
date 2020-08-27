@@ -8,7 +8,7 @@ it to commands for [models](structure-models.md) and [views](structure-views.md)
 
 Besides MVC, Yii applications also have the following entities:
 
-* [entry scripts](structure-entry-scripts.md): they are PHP scripts that are directly accessible by end users.
+* [entry scripts](structure-entry-scripts.md): they are PHP scripts that are directly accessible by end user.
   They are responsible for starting a request handling cycle.
 * [applications](structure-applications.md): they are globally accessible objects that manage application components
   and coordinate them to fulfill requests.
