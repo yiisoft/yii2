@@ -937,8 +937,6 @@ class Request extends \yii\base\Request
             $pathInfo = substr($pathInfo, 0, $pos);
         }
 
-        $pathInfo = urldecode($pathInfo);
-
         // try to encode in UTF8 if not so
         // http://w3.org/International/questions/qa-forms-utf-8.html
         if (!preg_match('%^(?:
