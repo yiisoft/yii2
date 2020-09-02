@@ -7,9 +7,14 @@
 
 namespace yii\web;
 
+use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\validators\IpValidator;
+
+use function chr;
+use function ord;
+use function strlen;
 
 /**
  * The web Request class represents an HTTP request.
@@ -98,6 +103,7 @@ class Request extends \yii\base\Request
      * The name of the HTTP header for sending CSRF token.
      */
     const CSRF_HEADER = 'X-CSRF-Token';
+
     /**
      * The length of the CSRF token mask.
      * @deprecated since 2.0.12. The mask length is now equal to the token length.
@@ -121,30 +127,36 @@ class Request extends \yii\base\Request
      * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
      */
     public $enableCsrfValidation = true;
+
     /**
      * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
      * This property is used only when [[enableCsrfValidation]] is true.
      */
     public $csrfParam = '_csrf';
+
     /**
      * @var array the configuration for creating the CSRF [[Cookie|cookie]]. This property is used only when
      * both [[enableCsrfValidation]] and [[enableCsrfCookie]] are true.
      */
     public $csrfCookie = ['httpOnly' => true];
+
     /**
      * @var bool whether to use cookie to persist CSRF token. If false, CSRF token will be stored
      * in session under the name of [[csrfParam]]. Note that while storing CSRF tokens in session increases
      * security, it requires starting a session for every page, which will degrade your site performance.
      */
     public $enableCsrfCookie = true;
+
     /**
      * @var bool whether cookies should be validated to ensure they are not tampered. Defaults to true.
      */
     public $enableCookieValidation = true;
+
     /**
      * @var string a secret key used for cookie validation. This property must be set if [[enableCookieValidation]] is true.
      */
     public $cookieValidationKey;
+
     /**
      * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
      * request tunneled through POST. Defaults to '_method'.
@@ -152,6 +164,7 @@ class Request extends \yii\base\Request
      * @see getBodyParams()
      */
     public $methodParam = '_method';
+
     /**
      * @var array the parsers for converting the raw HTTP request body into [[bodyParams]].
      * The array keys are the request `Content-Types`, and the array values are the
@@ -172,6 +185,7 @@ class Request extends \yii\base\Request
      * @see getBodyParams()
      */
     public $parsers = [];
+
     /**
      * @var array the configuration for trusted security related headers.
      *
@@ -209,6 +223,7 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $trustedHosts = [];
+
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
      * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
@@ -229,6 +244,7 @@ class Request extends \yii\base\Request
         'Front-End-Https',
         'X-Rewrite-Url',
     ];
+
     /**
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
@@ -241,6 +257,7 @@ class Request extends \yii\base\Request
     public $ipHeaders = [
         'X-Forwarded-For', // Common
     ];
+
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
      * The array keys are header names and the array value is a list of header values that indicate a secure connection.
@@ -259,11 +276,11 @@ class Request extends \yii\base\Request
      * @var CookieCollection Collection of request cookies.
      */
     private $_cookies;
+
     /**
      * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
-
 
     /**
      * Resolves the current request into a route and the associated parameters.
@@ -330,6 +347,7 @@ class Request extends \yii\base\Request
                 }
             }
         }
+
         return $trustedHeaders;
     }
 
@@ -497,6 +515,7 @@ class Request extends \yii\base\Request
     public function getIsFlash()
     {
         $userAgent = $this->headers->get('User-Agent', '');
+
         return stripos($userAgent, 'Shockwave') !== false
             || stripos($userAgent, 'Flash') !== false;
     }
@@ -533,8 +552,9 @@ class Request extends \yii\base\Request
      * Request parameters are determined using the parsers configured in [[parsers]] property.
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
+     *
      * @return array the request parameters given in the request body.
-     * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
+     * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @see getMethod()
      * @see getBodyParam()
      * @see setBodyParams()
@@ -545,6 +565,7 @@ class Request extends \yii\base\Request
             if (isset($_POST[$this->methodParam])) {
                 $this->_bodyParams = $_POST;
                 unset($this->_bodyParams[$this->methodParam]);
+
                 return $this->_bodyParams;
             }
 
@@ -608,7 +629,7 @@ class Request extends \yii\base\Request
             // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
             try {
                 return $params->{$name};
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return $defaultValue;
             }
         }
@@ -693,6 +714,7 @@ class Request extends \yii\base\Request
     }
 
     private $_hostInfo;
+
     private $_hostName;
 
     /**
@@ -928,8 +950,6 @@ class Request extends \yii\base\Request
             $pathInfo = substr($pathInfo, 0, $pos);
         }
 
-        $pathInfo = urldecode($pathInfo);
-
         // try to encode in UTF8 if not so
         // http://w3.org/International/questions/qa-forms-utf-8.html
         if (!preg_match('%^(?:
@@ -974,14 +994,17 @@ class Request extends \yii\base\Request
     private function utf8Encode($s)
     {
         $s .= $s;
-        $len = \strlen($s);
+        $len = strlen($s);
         for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
             switch (true) {
-                case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
-                case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
-                default: $s[$j] = "\xC3"; $s[++$j] = \chr(\ord($s[$i]) - 64); break;
+                case $s[$i] < "\x80":$s[$j] = $s[$i]; break;
+                case $s[$i] < "\xC0":$s[$j] = "\xC2";$s[++$j] = $s[$i]; break;
+                default:
+                    $s[$j] = "\xC3";
+                    $s[++$j] = chr(ord($s[$i]) - 64); break;
             }
         }
+
         return substr($s, 0, $j);
     }
 
@@ -1155,16 +1178,15 @@ class Request extends \yii\base\Request
     {
         $ip = $this->getSecureForwardedHeaderTrustedPart('for');
         if ($ip !== null && preg_match(
-            '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/',
-            $ip,
-            $matches
-        )) {
+                '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:[\d]{1,3}\.){3}[\d]{1,3}))\]?(?::(?P<port>[\d]+))?$/',
+                $ip,
+                $matches
+            )) {
             $ip = $this->getUserIpFromIpHeader($matches['ip']);
             if ($ip !== null) {
                 return $ip;
             }
         }
-
 
         foreach ($this->ipHeaders as $ipHeader) {
             if ($this->headers->has($ipHeader)) {
@@ -1174,6 +1196,7 @@ class Request extends \yii\base\Request
                 }
             }
         }
+
         return null;
     }
 
@@ -1185,6 +1208,7 @@ class Request extends \yii\base\Request
     public function getUserIP()
     {
         $ip = $this->getUserIpFromIpHeaders();
+
         return $ip === null ? $this->getRemoteIP() : $ip;
     }
 
@@ -1229,6 +1253,7 @@ class Request extends \yii\base\Request
                 break;
             }
         }
+
         return $resultIp;
     }
 
@@ -1243,6 +1268,7 @@ class Request extends \yii\base\Request
         if($userIp === null) {
             return $this->getRemoteHost();
         }
+
         return gethostbyaddr($userIp);
     }
 
@@ -1777,6 +1803,7 @@ class Request extends \yii\base\Request
     protected function createCsrfCookie($token)
     {
         $options = $this->csrfCookie;
+
         return Yii::createObject(array_merge($options, [
             'class' => 'yii\web\Cookie',
             'name' => $this->csrfParam,
@@ -1853,6 +1880,7 @@ class Request extends \yii\base\Request
                 return $lastElement[$token];
             }
         }
+
         return null;
     }
 
@@ -1923,9 +1951,11 @@ class Request extends \yii\base\Request
                     $value = $item['value2'];
                 }
                 $carry[strtolower($item['key'])] = $value;
+
                 return $carry;
             }, []);
         }
+
         return $this->_secureForwardedHeaderParts;
     }
 }
