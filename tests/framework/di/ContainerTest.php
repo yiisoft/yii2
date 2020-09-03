@@ -470,6 +470,27 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
+    public function test18245()
+    {
+        $container = new Container();
+        $container->setSingletons([
+            'asd' => [
+                ['class' => Qux::class],
+                ['asd'],
+            ],
+            QuxInterface::class => [
+                ['class' => Qux::class],
+                [Instance::of('asd')],
+            ],
+        ]);
+
+        $asd = $container->get('asd');
+        $qux = $container->get(QuxInterface::class);
+        $this->assertInstanceOf(Qux::class, $qux);
+        $this->assertSame($asd, $qux->a);
+        $this->assertSame('asd', $asd->a);
+    }
+
     /**
      * @requires PHP 5.6
      */
