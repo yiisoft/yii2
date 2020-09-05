@@ -20,6 +20,8 @@ use yiiunit\TestCase;
  */
 abstract class AbstractDbSessionTest extends TestCase
 {
+    use SessionTestTrait;
+
     /**
      * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
      */
@@ -265,5 +267,10 @@ abstract class AbstractDbSessionTest extends TestCase
         Yii::$app->set('db', Yii::$app->sessionDb);
         Yii::$app->set('sessionDb', null);
         ini_set('session.gc_maxlifetime', $oldTimeout);
+    }
+
+    public function testUseStrictMode()
+    {
+        $this->useStrictModeTest(DbSession::className());
     }
 }

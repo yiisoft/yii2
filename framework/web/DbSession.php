@@ -95,8 +95,7 @@ class DbSession extends MultiFieldSession
 
     public function openSession($savePath, $sessionName)
     {
-        $strictMode = ini_get('session.use_strict_mode');
-        if ($strictMode) {
+        if ($this->useStrictMode) {
             $id = $this->getId();
             if (!$this->getReadQuery($id)->exists()) {
                 $this->_forceRegenerateId = $id;
@@ -193,7 +192,7 @@ class DbSession extends MultiFieldSession
      */
     public function writeSession($id, $data)
     {
-        if ($id === $this->_forceRegenerateId) {
+        if ($this->useStrictMode && $id === $this->_forceRegenerateId) {
             //Ignore write when forceRegenerate is active
             return true;
         }

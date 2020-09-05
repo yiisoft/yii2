@@ -69,6 +69,18 @@ class CacheSession extends Session
         return true;
     }
 
+    public function openSession($savePath, $sessionName)
+    {
+        if ($this->useStrictMode) {
+            $id = $this->getId();
+            if (!$this->cache->exists($this->calculateKey($id))) {
+                $this->_forceRegenerateId = $id;
+            }
+        }
+
+        return parent::openSession($savePath, $sessionName);
+    }
+
     /**
      * Session read handler.
      * @internal Do not call this method directly.
@@ -91,6 +103,11 @@ class CacheSession extends Session
      */
     public function writeSession($id, $data)
     {
+        if ($this->useStrictMode && $id === $this->_forceRegenerateId) {
+            //Ignore write when forceRegenerate is active
+            return true;
+        }
+
         return $this->cache->set($this->calculateKey($id), $data, $this->getTimeout());
     }
 

@@ -88,4 +88,27 @@ class SessionTest extends TestCase
 
         $session->destroy();
     }
+
+    public function testInitUseStrictMode()
+    {
+        ini_set('session.use_strict_mode', 0);
+        $session = new Session([
+            'useStrictMode' => null,
+        ]);
+        $this->assertEquals(false, $session->useStrictMode);
+        $session = new Session([
+            'useStrictMode' => true,
+        ]);
+        $this->assertEquals(true, $session->useStrictMode);
+
+        ini_set('session.use_strict_mode', 1);
+        $session = new Session([
+            'useStrictMode' => null,
+        ]);
+        $this->assertEquals(true, $session->useStrictMode);
+        $session = new Session([
+            'useStrictMode' => false,
+        ]);
+        $this->assertEquals(false, $session->useStrictMode);
+    }
 }
