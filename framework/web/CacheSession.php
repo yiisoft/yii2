@@ -71,7 +71,7 @@ class CacheSession extends Session
 
     public function openSession($savePath, $sessionName)
     {
-        if ($this->useStrictMode) {
+        if ($this->getUseStrictMode()) {
             $id = $this->getId();
             if (!$this->cache->exists($this->calculateKey($id))) {
                 $this->_forceRegenerateId = $id;
@@ -103,7 +103,7 @@ class CacheSession extends Session
      */
     public function writeSession($id, $data)
     {
-        if ($this->useStrictMode && $id === $this->_forceRegenerateId) {
+        if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
             //Ignore write when forceRegenerate is active
             return true;
         }

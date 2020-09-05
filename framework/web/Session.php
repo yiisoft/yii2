@@ -68,6 +68,7 @@ use yii\base\InvalidConfigException;
  * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  * @property bool $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
  * false.
+ * @property bool $useStrictMode Whether strict mode is enabled or not.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -82,13 +83,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
      */
     public $handler;
-    /**
-     * @var bool|null When `true` this setting prevents the session component to use an uninitialized session ID.
-     * If this value is `null` (default) the ini setting 'session.use-strict-mode' will be used.
-     * Warning! Although enabling strict mode is mandatory for secure sessions, the default value of 'session.use-strict-mode' is `0`.
-     * @see https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
-     */
-    public $useStrictMode = null;
 
     protected $_forceRegenerateId = null;
 
@@ -110,13 +104,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function init()
     {
         parent::init();
-
         register_shutdown_function([$this, 'close']);
-
-        if ($this->useStrictMode === null) {
-            $this->useStrictMode = (bool)ini_get('session.use_strict_mode');
-        }
-
         if ($this->getIsActive()) {
             Yii::warning('Session is already started', __METHOD__);
             $this->updateFlashCounters();
@@ -533,6 +521,28 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $this->freeze();
         ini_set('session.gc_maxlifetime', $value);
         $this->unfreeze();
+    }
+
+    /**
+     * @var bool Whether strict mode is enabled or not.
+     * When `true` this setting prevents the session component to use an uninitialized session ID.
+     * Warning! Although enabling strict mode is mandatory for secure sessions, the default value of 'session.use-strict-mode' is `0`.
+     * @see https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
+     */
+    public function setUseStrictMode($value)
+    {
+        $this->freeze();
+        ini_set('session.use_strict_mode', $value ? '1' : '0');
+        $this->unfreeze();
+    }
+
+    /**
+     * @return bool Whether strict mode is enabled or not.
+     * @see setUseStrictMode()
+     */
+    public function getUseStrictMode()
+    {
+        return (bool)ini_get('session.use_strict_mode');
     }
 
     /**
