@@ -83,7 +83,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
      */
     public $handler;
-
+    /**
+     * @var string|null Holds the session id in case useStrictMode is enabled and the session id needs to be regenerated
+     */
     protected $_forceRegenerateId = null;
 
     /**
@@ -96,6 +98,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
      */
     private $frozenSessionData;
+
 
     /**
      * Initializes the application component.
@@ -138,7 +141,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         YII_DEBUG ? session_start() : @session_start();
 
-        if ($this->useStrictMode && $this->_forceRegenerateId) {
+        if ($this->getUseStrictMode() && $this->_forceRegenerateId) {
             $this->regenerateID();
             $this->_forceRegenerateId = null;
         }

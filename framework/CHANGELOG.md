@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #18233: Add PHP 8 support (samdark)
 - Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
 - Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
+- Enh #18247: Added support for the 'session.use_strict_mode' ini directive in `yii\web\Session` (rhertogh)
 
 
 2.0.37 August 07, 2020

@@ -93,11 +93,19 @@ class DbSession extends MultiFieldSession
         $this->db = Instance::ensure($this->db, Connection::className());
     }
 
+    /**
+     * Session open handler.
+     * @internal Do not call this method directly.
+     * @param string $savePath session save path
+     * @param string $sessionName session name
+     * @return bool whether session is opened successfully
+     */
     public function openSession($savePath, $sessionName)
     {
         if ($this->getUseStrictMode()) {
             $id = $this->getId();
             if (!$this->getReadQuery($id)->exists()) {
+                //This session id does not exist, mark it for forced regeneration
                 $this->_forceRegenerateId = $id;
             }
         }
@@ -193,7 +201,7 @@ class DbSession extends MultiFieldSession
     public function writeSession($id, $data)
     {
         if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
-            //Ignore write when forceRegenerate is active
+            //Ignore write when forceRegenerate is active for this id
             return true;
         }
 
@@ -255,6 +263,11 @@ class DbSession extends MultiFieldSession
         return true;
     }
 
+    /**
+     * Generates a query to get the session from db
+     * @param string $id The id of the session
+     * @return Query
+     */
     protected function getReadQuery($id)
     {
         return (new Query())

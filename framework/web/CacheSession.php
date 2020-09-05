@@ -69,11 +69,19 @@ class CacheSession extends Session
         return true;
     }
 
+    /**
+     * Session open handler.
+     * @internal Do not call this method directly.
+     * @param string $savePath session save path
+     * @param string $sessionName session name
+     * @return bool whether session is opened successfully
+     */
     public function openSession($savePath, $sessionName)
     {
         if ($this->getUseStrictMode()) {
             $id = $this->getId();
             if (!$this->cache->exists($this->calculateKey($id))) {
+                //This session id does not exist, mark it for forced regeneration
                 $this->_forceRegenerateId = $id;
             }
         }
@@ -104,7 +112,7 @@ class CacheSession extends Session
     public function writeSession($id, $data)
     {
         if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
-            //Ignore write when forceRegenerate is active
+            //Ignore write when forceRegenerate is active for this id
             return true;
         }
 
