@@ -17,6 +17,7 @@ trait SessionTestTrait
         $nonStrictSession = new $class([
             'useStrictMode' => false,
         ]);
+        $nonStrictSession->close();
         $nonStrictSession->destroySession('non_existing_non_strict');
         $nonStrictSession->setId('non_existing_non_strict');
         $nonStrictSession->open();
@@ -28,6 +29,7 @@ trait SessionTestTrait
         $strictSession = new $class([
             'useStrictMode' => true,
         ]);
+        $strictSession->close();
         $strictSession->destroySession('non_existing_strict');
         $strictSession->setId('non_existing_strict');
         $strictSession->open();
