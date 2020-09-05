@@ -353,7 +353,7 @@ server {
 
 ### IIS の構成 <span id="iis-configuration"></span>
 
-ドキュメント・ルートが `path/to/app/web` フォルダを指すように構成された仮想ホストでアプリケーションをホストすることを推奨します。その `web` フォルダに `web.config` という名前のファイル、すなわち `path/to/app/web/web.config` を配置しなければなりません。ファイルの内容は以下の通りです。
+ドキュメント・ルートが `path/to/app/web` フォルダを指し、PHP を実行するように構成された仮想ホスト (ウェブ・サイト) でアプリケーションをホストすることを推奨します。その `web` フォルダに `web.config` という名前のファイル、すなわち `path/to/app/web/web.config` を配置しなければなりません。ファイルの内容は以下の通りです。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -377,3 +377,6 @@ server {
 </system.webServer>
 </configuration>
 ```
+また、IIS 上で PHP を構成するためには、以下にリストした Microsoft の公式リソースが有用でしょう。
+ 1. [IIS の最初の Web サイトを構成する方法](https://support.microsoft.com/ja-jp/help/323972/how-to-set-up-your-first-iis-web-site)
+ 2. [Configure a PHP Website on IIS](https://docs.microsoft.com/en-us/iis/application-frameworks/scenario-build-a-php-website-on-iis/configure-a-php-website-on-iis)

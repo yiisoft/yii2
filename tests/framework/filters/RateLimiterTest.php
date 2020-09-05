@@ -158,4 +158,21 @@ class RateLimiterTest extends TestCase
         $rateLimiter->addRateLimitHeaders($response, 1, 0, 0);
         $this->assertCount(3, $response->getHeaders());
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18236
+     */
+    public function testUserWithClosureFunction()
+    {
+        $rateLimiter = new RateLimiter();
+        $rateLimiter->user = function($action) {
+            return new User(['identityClass' => RateLimit::className()]);
+        };
+        $rateLimiter->beforeAction('test');
+
+        // testing the evaluation of user closure, which in this case returns not the expect object and therefore 
+        // the log message "does not implement RateLimitInterface" is expected.
+        $this->assertInstanceOf(User::className(), $rateLimiter->user);
+        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
+    }
 }

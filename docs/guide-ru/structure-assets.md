@@ -124,12 +124,38 @@ class FontAwesomeAsset extends AssetBundle
     public $css = [ 
         'css/font-awesome.min.css', 
     ]; 
+    public $publishOptions = [
+        'only' => [
+            'fonts/*',
+            'css/*',
+        ]
+    ];
+}  
+```
+
+Более сложную логику можно реализовать с помощью переопределения `init()`. Ниже указан пример публикации поддиректорий этим способом:
+
+```php
+<?php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class FontAwesomeAsset extends AssetBundle 
+{
+    public $sourcePath = '@bower/font-awesome'; 
+    public $css = [ 
+        'css/font-awesome.min.css', 
+    ]; 
     
     public function init()
     {
         parent::init();
         $this->publishOptions['beforeCopy'] = function ($from, $to) {
-            $dirname = basename(dirname($from));
+            if (basename(dirname($from)) !== 'font-awesome') {
+                return true;
+            }
+            $dirname = basename($from);
             return $dirname === 'fonts' || $dirname === 'css';
         };
     }
