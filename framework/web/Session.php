@@ -548,6 +548,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * When `true` this setting prevents the session component to use an uninitialized session ID.
      * Warning! Although enabling strict mode is mandatory for secure sessions, the default value of 'session.use-strict-mode' is `0`.
      * @see https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
+     * @since 2.0.38
      */
     public function setUseStrictMode($value)
     {
@@ -559,6 +560,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * @return bool Whether strict mode is enabled or not.
      * @see setUseStrictMode()
+     * @since 2.0.38
      */
     public function getUseStrictMode()
     {
