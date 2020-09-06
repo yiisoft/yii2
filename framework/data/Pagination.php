@@ -343,7 +343,7 @@ class Pagination extends BaseObject implements Linkable
      */
     protected function getQueryParam($name, $defaultValue = null)
     {
-        if (($params = $this->params) === null) {
+        if (!isset($this->params[$name]) || ($params = $this->params) === null) {
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
