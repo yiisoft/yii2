@@ -18,10 +18,10 @@ trait SessionTestTrait
             'useStrictMode' => false,
         ]);
         $nonStrictSession->close();
-        $nonStrictSession->destroySession('non_existing_non_strict');
-        $nonStrictSession->setId('non_existing_non_strict');
+        $nonStrictSession->destroySession('non-existing-non-strict');
+        $nonStrictSession->setId('non-existing-non-strict');
         $nonStrictSession->open();
-        $this->assertEquals('non_existing_non_strict', $nonStrictSession->getId());
+        $this->assertEquals('non-existing-non-strict', $nonStrictSession->getId());
         $nonStrictSession->close();
 
         //strict-mode test
@@ -30,21 +30,22 @@ trait SessionTestTrait
             'useStrictMode' => true,
         ]);
         $strictSession->close();
-        $strictSession->destroySession('non_existing_strict');
-        $strictSession->setId('non_existing_strict');
+        $strictSession->destroySession('non-existing-strict');
+        $strictSession->setId('non-existing-strict');
         $strictSession->open();
         $id = $strictSession->getId();
-        $this->assertNotEquals('non_existing_strict', $id);
+        $this->assertNotEquals('non-existing-strict', $id);
         $strictSession->set('strict_mode_test', 'session data');
         $strictSession->close();
         //Ensure session was not stored under forced id
-        $strictSession->setId('non_existing_strict');
+        $strictSession->setId('non-existing-strict');
         $strictSession->open();
         $this->assertNotEquals('session data', $strictSession->get('strict_mode_test'));
         $strictSession->close();
         //Ensure session can be accessed with the new (and thus existing) id.
         $strictSession->setId($id);
         $strictSession->open();
+        $this->assertNotEmpty($id);
         $this->assertEquals($id, $strictSession->getId());
         $this->assertEquals('session data', $strictSession->get('strict_mode_test'));
         $strictSession->close();

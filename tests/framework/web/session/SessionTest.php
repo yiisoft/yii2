@@ -15,6 +15,8 @@ use yiiunit\TestCase;
  */
 class SessionTest extends TestCase
 {
+    use SessionTestTrait;
+
     /**
      * Test to prove that after Session::destroy session id set to old value.
      */
@@ -106,5 +108,20 @@ class SessionTest extends TestCase
             'useStrictMode' => false,
         ]);
         $this->assertEquals(false, $session->getUseStrictMode());
+    }
+
+    public function testUseStrictMode()
+    {
+        //Manual garbage collection since native storage module might not support removing data via Session::destroySession()
+        $sessionSavePath = session_save_path() ?: sys_get_temp_dir();
+        // Only perform garbage collection if "N argument" is not used,
+        // see https://www.php.net/manual/en/session.configuration.php#ini.session.save-path
+        if (strpos($sessionSavePath, ';') === false) {
+            foreach (['non-existing-non-strict', 'non-existing-strict'] as $sessionId) {
+                @unlink($sessionSavePath . '/sess_' . $sessionId);
+            }
+        }
+
+        $this->useStrictModeTest(Session::className());
     }
 }
