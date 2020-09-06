@@ -85,6 +85,10 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
         run: composer update $DEFAULT_COMPOSER_FLAGS
+      - name: Set session dir write permissions
+        run: |
+          sudo chown -R root:$(whoami) $(php -r "echo session_save_path();")
+          sudo chmod -R 1773 $(php -r "echo session_save_path();")
       - name: PHP Unit tests for PHP 7.1
         run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group oci,wincache,xcache,zenddata,cubrid
         if: matrix.php == '7.1'

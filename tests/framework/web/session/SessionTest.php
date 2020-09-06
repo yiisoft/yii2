@@ -17,18 +17,6 @@ class SessionTest extends TestCase
 {
     use SessionTestTrait;
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        // Disable garbage collection,
-        // see https://www.leaseweb.com/labs/2012/08/ps_files_cleanup_dir-permission-denied/
-        $session = new Session();
-        $session->setGCProbability(0);
-        @session_start();
-        @session_destroy();
-    }
-
     /**
      * Test to prove that after Session::destroy session id set to old value.
      */
