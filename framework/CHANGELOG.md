@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
-- Bug #18269: fixed attempt trying work with int variable how with string in `yii\base\Model`
+- Bug #18269: Fix integer safe attribute to work properly in `yii\base\Model` (Ladone)
 - Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
 - Bug #18233: Add PHP 8 support (samdark)
 - Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
