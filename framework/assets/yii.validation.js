@@ -413,7 +413,7 @@ yii.validation = (function ($) {
 
             for (var index=0; index < options.extensions.length; index++) {
                 var ext = options.extensions[index].toLowerCase();
-                if (filename.substr(filename.length - options.extensions[index].length - 1) === ('.' + ext)) {
+                if ((ext === '' && filename.indexOf('.') === -1) || (filename.substr(filename.length - options.extensions[index].length - 1) === ('.' + ext))) {
                     found = true;
                     break;
                 }

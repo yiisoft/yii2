@@ -457,7 +457,11 @@ class Container extends Component
                 } elseif ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
                 } else {
-                    $c = $param->getClass();
+                    if (PHP_VERSION_ID >= 80000) {
+                        $c = $param->getType();
+                    } else {
+                        $c = $param->getClass();
+                    }
                     $dependencies[] = Instance::of($c === null ? null : $c->getName());
                 }
             }
