@@ -76,6 +76,12 @@ use yii\base\InvalidConfigException;
 class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
+     * @var string|null Holds the original session module (before a custom handler is registered) so that it can be
+     * restored when a Session component without custom handler is used after one that has.
+     */
+    static protected $_originalSessionModule = null;
+
+    /**
      * @var string the name of the session variable that stores the flash message data.
      */
     public $flashParam = '__flash';
@@ -162,6 +168,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function registerSessionHandler()
     {
+        $sessionModuleName = session_module_name();
+        if (static::$_originalSessionModule === null) {
+            static::$_originalSessionModule = $sessionModuleName;
+        }
+
         if ($this->handler !== null) {
             if (!is_object($this->handler)) {
                 $this->handler = Yii::createObject($this->handler);
@@ -190,6 +201,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                     [$this, 'gcSession']
                 );
             }
+        } elseif (
+            $sessionModuleName !== static::$_originalSessionModule
+            && static::$_originalSessionModule !== null
+            && static::$_originalSessionModule !== 'user'
+        ) {
+            session_module_name(static::$_originalSessionModule);
         }
     }
 
