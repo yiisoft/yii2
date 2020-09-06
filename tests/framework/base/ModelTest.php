@@ -175,7 +175,7 @@ class ModelTest extends TestCase
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
     }
 
-    public function testSafeAttributes(): void
+    public function testSafeAttributes()
     {
         $model = new RulesModel();
         $model->rules = [
