@@ -25,6 +25,8 @@ class SessionTest extends TestCase
         // see https://www.leaseweb.com/labs/2012/08/ps_files_cleanup_dir-permission-denied/
         $session = new Session();
         $session->setGCProbability(0);
+        @session_start();
+        @session_destroy();
     }
 
     /**
