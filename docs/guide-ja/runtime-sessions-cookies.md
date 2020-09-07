@@ -397,3 +397,9 @@ Yii 2.0.21 以降、[[yii\web\Cookie::sameSite]] 設定がサポートされて�
 ```
 > Note: 今はまだ `sameSite` 設定をサポートしていないブラウザもありますので、
   [追加の CSRF 保護](security-best-practices.md#avoiding-csrf) を行うことを強く推奨します。
+
+## セッションに関する php.ini の設定
+
+[PHP マニュアル](https://www.php.net/manual/ja/session.security.ini.php) で示されているように、`php.ini` にはセッションのセキュリティに関する重要な設定があります。
+推奨される設定を必ず適用して下さい。特に、PHP インストールのデフォルトでは有効にされていない
+`session.use_strict_mode` を有効にして下さい。
