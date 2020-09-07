@@ -106,6 +106,8 @@ Upgrade from Yii 2.0.35
       // ...
   }
   ```
+  
+* Validator closure callbacks should not be declared as static.
 
 * If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
   the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
