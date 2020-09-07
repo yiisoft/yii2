@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
+- Enh #18213: Do not load fixtures with circular dependencies twice instead of throwing an exception (JesseHines0)
 - Bug #18066: Fixed `yii\db\Query::create()` wasn't using all info from `withQuery()` (maximkou)
 - Bug #18269: Fix integer safe attribute to work properly in `yii\base\Model` (Ladone)
 - Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
