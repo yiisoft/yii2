@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
-- Bug #18066: Fixed `yii\db\Query::create` to copying `withQueries` (maximkou)
+- Bug #18066: Fixed `yii\db\Query` wasn't using all info from `withQuery()` (maximkou)
 
 
 2.0.37 August 07, 2020
