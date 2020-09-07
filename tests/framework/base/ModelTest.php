@@ -175,6 +175,18 @@ class ModelTest extends TestCase
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
     }
 
+    public function testIsAttributeSafeForIntegerAttribute()
+    {
+        $model = new RulesModel();
+        $model->rules = [
+            [
+                [123456], 'safe',
+            ]
+        ];
+
+        $this->assertTrue($model->isAttributeSafe(123456));
+    }
+
     public function testSafeScenarios()
     {
         $model = new RulesModel();

@@ -452,6 +452,27 @@ class FileValidatorTest extends TestCase
         $this->assertNotFalse(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions '));
     }
 
+    public function testValidateEmptyExtension()
+    {
+        $val = new FileValidator([
+            'extensions' => ['txt', ''],
+            'checkExtensionByMimeType' => false,
+        ]);
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_txt' => $this->createTestFiles([['name' => 'one.txt']]),
+                'attr_empty' => $this->createTestFiles([['name' => 'bad.']]),
+                'attr_empty2' => $this->createTestFiles([['name' => 'bad']]),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_txt');
+        $this->assertFalse($m->hasErrors('attr_txt'));
+        $val->validateAttribute($m, 'attr_empty');
+        $this->assertFalse($m->hasErrors('attr_empty'));
+        $val->validateAttribute($m, 'attr_empty2');
+        $this->assertFalse($m->hasErrors('attr_empty2'));
+    }
+
     public function testValidateAttributeDoubleType()
     {
         $val = new FileValidator([

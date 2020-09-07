@@ -415,7 +415,7 @@ class FileValidator extends Validator
 
         if (!empty($this->extensions)) {
             foreach ((array) $this->extensions as $ext) {
-                if (StringHelper::endsWith($file->name, ".$ext", false)) {
+                if ($extension === $ext || StringHelper::endsWith($file->name, ".$ext", false)) {
                     return true;
                 }
             }
