@@ -551,7 +551,7 @@ SQL;
                 if (
                     in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
                     in_array(
-                        $column->defaultValue,
+                        strtoupper($column->defaultValue),
                         ['now()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
                         true
                     )
@@ -561,7 +561,7 @@ SQL;
                     $column->defaultValue = ($column->defaultValue === 'true');
                 } elseif (preg_match("/^B'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = bindec($matches[1]);
-                } elseif (preg_match("#^'(\d+)'::\"bit\"$#", $column->defaultValue, $matches)) {
+                } elseif (preg_match("/^'(\d+)'::\"bit\"$/", $column->defaultValue, $matches)) {
                     $column->defaultValue = bindec($matches[1]);
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $column->phpTypecast($matches[1]);
