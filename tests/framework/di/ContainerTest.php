@@ -494,4 +494,33 @@ class ContainerTest extends TestCase
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
+
+    public function testDelayedInitializationOfSubArray()
+    {
+        $definitions = [
+            'test' => [
+                'class' => Corge::className(),
+                '__construct()' => [
+                    [Instance::of('setLater')],
+                ],
+            ],
+        ];
+
+        $application = Yii::createObject([
+            '__class' => \yii\web\Application::className(),
+            'basePath' => __DIR__,
+            'id' => 'test',
+            'components' => [
+                'request' => [
+                    'baseUrl' => '123'
+                ],
+            ],
+            'container' => [
+                'definitions' => $definitions,
+            ],
+        ]);
+
+        Yii::$container->set('setLater', new Qux());
+        Yii::$container->get('test');
+    }
 }
