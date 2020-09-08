@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #18196: `yii\rbac\DbManager::$checkAccessAssignments` is now `protected` (alex-code)
 - Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
 - Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
+- Bug #13973: Correct alterColumn for MSSQL & drop constraints before drop column (darkdef)
 
 
 2.0.37 August 07, 2020
