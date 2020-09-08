@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
 - Bug #18248: Render only one stack trace on console for chained exceptions (mikehaertl)
 - Bug #18233: Add PHP 8 support (samdark)
+- Enh #18196: `yii\rbac\DbManager::$checkAccessAssignments` is now `protected` (alex-code)
 - Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
 - Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
 
