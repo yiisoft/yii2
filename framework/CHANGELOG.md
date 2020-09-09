@@ -14,6 +14,9 @@ Yii Framework 2 Change Log
 - Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
 - Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
 - Bug #13973: Correct alterColumn for MSSQL & drop constraints before drop column (darkdef)
+- Bug #18040: Display width specification for integer data types was deprecated in MySQL 8.0.19 (terabytesoftw)
+- Bug #15265: PostgreSQL > 10.0 is not pass tests with default value of timestamp CURRENT_TIMESTAMP (terabytesoftw)
+- Bug #18232: Fail tests pgsql v-10.14, v-11.9, v-12-latest (terabytesoftw)
 
 
 2.0.37 August 07, 2020
