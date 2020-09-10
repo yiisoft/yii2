@@ -656,7 +656,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->tinyInteger()->unsigned(),
                 [
                     'mysql' => 'tinyint(3) UNSIGNED',
-                    'pgsql' => 'smallint UNSIGNED',
+                    'pgsql' => 'smallint',
                     'sqlite' => 'tinyint UNSIGNED',
                     'cubrid' => 'smallint UNSIGNED',
                 ],
