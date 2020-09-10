@@ -656,10 +656,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->tinyInteger()->unsigned(),
                 [
                     'mysql' => 'tinyint(3) UNSIGNED',
-                    'pgsql' => 'smallint',
                     'sqlite' => 'tinyint UNSIGNED',
                     'cubrid' => 'smallint UNSIGNED',
-                ],
+                ]
             ],
             [
                 Schema::TYPE_TINYINT,
@@ -961,7 +960,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->comment('test comment'),
                 [
                     'mysql' => "int(11) COMMENT 'test comment'",
-                    'pgsql' => 'integer',
                     'sqlsrv' => 'int',
                     'cubrid' => "int COMMENT 'test comment'",
                 ],
@@ -974,7 +972,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey()->comment('test comment'),
                 [
                     'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
-                    'pgsql' => 'serial NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                 ],
@@ -987,7 +984,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey()->first(),
                 [
                     'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
-                    'pgsql' => 'serial NOT NULL PRIMARY KEY',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
@@ -1001,12 +997,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->first(),
                 [
                     'mysql' => 'int(11) FIRST',
-                    'pgsql' => 'integer',
                     'oci' => 'NUMBER(10)',
                     'sqlsrv' => 'int',
                     'cubrid' => 'int FIRST',
                 ],
                 [
+                    'pgsql' => 'integer',
                     'sqlsrv' => 'integer',
                 ]
             ],
@@ -1015,7 +1011,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string()->first(),
                 [
                     'mysql' => 'varchar(255) FIRST',
-                    'pgsql' => 'varchar(255)',
                     'oci' => 'VARCHAR2(255)',
                     'sqlsrv' => 'nvarchar(255)',
                     'cubrid' => 'varchar(255) FIRST',
@@ -1029,7 +1024,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->append('NOT NULL')->first(),
                 [
                     'mysql' => 'int(11) NOT NULL FIRST',
-                    'pgsql' => 'integer NOT NULL',
                     'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'int NOT NULL',
                     'cubrid' => 'int NOT NULL FIRST',
@@ -1043,7 +1037,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string()->append('NOT NULL')->first(),
                 [
                     'mysql' => 'varchar(255) NOT NULL FIRST',
-                    'pgsql' => 'varchar(255) NOT NULL',
                     'oci' => 'VARCHAR2(255) NOT NULL',
                     'sqlsrv' => 'nvarchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL FIRST',
