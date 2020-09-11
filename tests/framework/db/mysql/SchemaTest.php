@@ -118,4 +118,63 @@ SQL;
         $this->assertInstanceOf(Expression::className(), $column->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
     }
+
+    public function getExpectedColumns()
+    {
+        $version = $this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+
+        return array_merge(
+            parent::getExpectedColumns(),
+            [
+                'int_col' => [
+                    'type' => 'integer',
+                    'dbType' => \version_compare($version, '8.0.17', '>') ? 'int' : 'int(11)',
+                    'phpType' => 'integer',
+                    'allowNull' => false,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'scale' => null,
+                    'defaultValue' => null,
+                ],
+                'int_col2' => [
+                    'type' => 'integer',
+                    'dbType' => \version_compare($version, '8.0.17', '>') ? 'int' : 'int(11)',
+                    'phpType' => 'integer',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'scale' => null,
+                    'defaultValue' => 1,
+                ],
+                'tinyint_col' => [
+                    'type' => 'tinyint',
+                    'dbType' => \version_compare($version, '8.0.17', '>') ? 'tinyint' : 'tinyint(3)',
+                    'phpType' => 'integer',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 3,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 3,
+                    'scale' => null,
+                    'defaultValue' => 1,
+                ],
+                'smallint_col' => [
+                    'type' => 'smallint',
+                    'dbType' =>  \version_compare($version, '8.0.17', '>') ? 'smallint' : 'smallint(1)',
+                    'phpType' => 'integer',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 1,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 1,
+                    'scale' => null,
+                    'defaultValue' => 1,
+                ],
+            ]
+        );
+    }
 }
