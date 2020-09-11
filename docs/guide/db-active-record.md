@@ -1567,7 +1567,7 @@ values from received data set.
 You are able to fetch additional columns or values from query and store it inside the Active Record.
 For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
 Each room stores information about its geometrical size using fields `length`, `width`, `height`.
-Imagine we need to retrieve list of all available rooms with their volume in descendant order.
+Imagine we need to retrieve list of all available rooms with their volume in descending order.
 So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
 to be displayed in the list.
 To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:

@@ -84,6 +84,28 @@ trait MutexTestTrait
         $this->assertFalse($mutexTwo->release($mutexName));
     }
 
+    /**
+     * @dataProvider mutexDataProvider()
+     *
+     * @param string $mutexName
+     */
+    public function testMutexIsAcquired($mutexName)
+    {
+        $mutexOne = $this->createMutex();
+        $mutexTwo = $this->createMutex();
+
+        $this->assertFalse($mutexOne->isAcquired($mutexName));
+        $this->assertTrue($mutexOne->acquire($mutexName));
+        $this->assertTrue($mutexOne->isAcquired($mutexName));
+        
+        $this->assertFalse($mutexTwo->isAcquired($mutexName));
+
+        $this->assertTrue($mutexOne->release($mutexName));
+        $this->assertFalse($mutexOne->isAcquired($mutexName));
+
+        $this->assertFalse($mutexOne->isAcquired('non existing'));
+    }
+
     public static function mutexDataProvider()
     {
         $utf = <<<'UTF'

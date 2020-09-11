@@ -319,8 +319,10 @@ Wbudowany walidator jest zdefiniowaną w modelu metodą lub funkcją anonimową.
  * @param mixed $params wartość parametru podanego w zasadzie walidacji
  * @param \yii\validators\InlineValidator $validator powiązana instancja InlineValidator
  * Ten parametr jest dostępny od wersji 2.0.11.
+ * @param mixed $current aktualnie walidowana wartość atrybutu.
+ * Ten parametr jest dostępny od wersji 2.0.36.
  */
-function ($attribute, $params, $validator)
+function ($attribute, $params, $validator, $current)
 ```
 
 Jeśli atrybut nie przejdzie walidacji, metoda/funkcja powinna wywołać metodę [[yii\base\Model::addError()|addError()]] do zapisania wiadomości o błędzie w modelu,

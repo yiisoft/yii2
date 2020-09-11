@@ -41,6 +41,12 @@ abstract class ErrorHandler extends Component
      * @var \Exception|null the exception that is being handled currently.
      */
     public $exception;
+    /**
+     * @var bool if true - `handleException()` will finish script with `ExitCode::OK`.
+     * false - `ExitCode::UNSPECIFIED_ERROR`.
+     * @since 2.0.36
+     */
+    public $silentExitOnException;
 
     /**
      * @var string Used to reserve memory for fatal error handler.
@@ -55,6 +61,12 @@ abstract class ErrorHandler extends Component
      */
     private $_registered = false;
 
+
+    public function init()
+    {
+        $this->silentExitOnException = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
+        parent::init();
+    }
 
     /**
      * Register this error handler.
@@ -121,7 +133,7 @@ abstract class ErrorHandler extends Component
                 $this->clearOutput();
             }
             $this->renderException($exception);
-            if (!YII_ENV_TEST) {
+            if (!$this->silentExitOnException) {
                 \Yii::getLogger()->flush(true);
                 if (defined('HHVM_VERSION')) {
                     flush();

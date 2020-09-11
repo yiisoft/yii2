@@ -34,8 +34,6 @@ use yii\helpers\Inflector;
  * read-only.
  * @property array $passedOptions The names of the options passed during execution. This property is
  * read-only.
- * @property Request $request
- * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -65,12 +63,27 @@ class Controller extends \yii\base\Controller
      * @since 2.0.10
      */
     public $help;
+    /**
+     * @var bool if true - script finish with `ExitCode::OK` in case of exception.
+     * false - `ExitCode::UNSPECIFIED_ERROR`.
+     * Default: `YII_ENV_TEST`
+     * @since 2.0.36
+     */
+    public $silentExitOnException;
 
     /**
      * @var array the options passed during execution.
      */
     private $_passedOptions = [];
 
+
+    public function beforeAction($action)
+    {
+        $silentExit = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
+        Yii::$app->errorHandler->silentExitOnException = $silentExit;
+
+        return parent::beforeAction($action);
+    }
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -225,7 +238,7 @@ class Controller extends \yii\base\Controller
             \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
         }
 
-        return $args;
+        return array_merge($args, $params);
     }
 
     /**
@@ -398,7 +411,7 @@ class Controller extends \yii\base\Controller
     public function options($actionID)
     {
         // $actionId might be used in subclasses to provide options specific to action id
-        return ['color', 'interactive', 'help'];
+        return ['color', 'interactive', 'help', 'silentExitOnException'];
     }
 
     /**
