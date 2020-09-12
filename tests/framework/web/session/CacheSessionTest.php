@@ -54,6 +54,11 @@ class CacheSessionTest extends \yiiunit\TestCase
         $this->assertTrue($session->destroySession($session->getId()));
     }
 
+    public function testInitUseStrictMode()
+    {
+        $this->initStrictModeTest(CacheSession::className());
+    }
+
     public function testUseStrictMode()
     {
         $this->useStrictModeTest(CacheSession::className());
