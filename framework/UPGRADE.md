@@ -51,14 +51,17 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
+
 Upgrade from Yii 2.0.36
 -----------------------
 
 * `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
   with an integer value, adjust your code.
-  
-* Resolving DI references inside of arrays in dependencies was made optional to be compatible with pre-2.0.35. In order
-  to turn it on, set `resolveArrays` of container instance to `true`.
 
 Upgrade from Yii 2.0.35
 -----------------------
