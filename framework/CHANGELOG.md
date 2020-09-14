@@ -4,10 +4,20 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
+- Enh #18213: Do not load fixtures with circular dependencies twice instead of throwing an exception (JesseHines0)
+- Bug #18066: Fixed `yii\db\Query::create()` wasn't using all info from `withQuery()` (maximkou)
+- Bug #18269: Fix integer safe attribute to work properly in `yii\base\Model` (Ladone)
 - Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
+- Bug #18248: Render only one stack trace on console for chained exceptions (mikehaertl)
 - Bug #18233: Add PHP 8 support (samdark)
+- Enh #18196: `yii\rbac\DbManager::$checkAccessAssignments` is now `protected` (alex-code)
 - Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
 - Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
+- Bug #13973: Correct alterColumn for MSSQL & drop constraints before drop column (darkdef)
+- Bug #18040: Display width specification for integer data types was deprecated in MySQL 8.0.19 (terabytesoftw)
+- Bug #15265: PostgreSQL > 10.0 is not pass tests with default value of timestamp CURRENT_TIMESTAMP (terabytesoftw)
+- Bug #18232: Fail tests pgsql v-10.14, v-11.9, v-12-latest (terabytesoftw)
+- Bug #16892: Validation error class was not applied to checkbox and radio when validationStateOn = self::VALIDATION_STATE_ON_INPUT (dan-szabo, samdark)
 
 
 2.0.37 August 07, 2020
