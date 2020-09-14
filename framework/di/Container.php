@@ -93,8 +93,8 @@ use yii\helpers\ArrayHelper;
  *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
- *
- * @property bool $resolveArrays whether to attempt to resolve elements in array dependencies
+ * @property bool $resolveArrays Whether to attempt to resolve elements in array dependencies. This property
+ * is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -122,11 +122,11 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
-
     /**
      * @var bool whether to attempt to resolve elements in array dependencies
      */
     private $_resolveArrays = false;
+
 
     /**
      * Returns an instance of the requested class.
