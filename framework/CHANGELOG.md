@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.38 under development
 ------------------------
 
+- Bug: (CVE-2020-15148): Disable unserialization of `yii\db\BatchQueryResult` to prevent remote code execution in case application calls unserialize() on user input containing specially crafted string (samdark, russtone)
 - Enh #18213: Do not load fixtures with circular dependencies twice instead of throwing an exception (JesseHines0)
 - Bug #18066: Fix `yii\db\Query::create()` wasn't using all info from `withQuery()` (maximkou)
 - Bug #18269: Fix integer safe attribute to work properly in `yii\base\Model` (Ladone)
