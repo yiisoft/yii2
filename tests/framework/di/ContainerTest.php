@@ -496,6 +496,9 @@ class ContainerTest extends TestCase
         require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18245
+     */
     public function testDelayedInitializationOfSubArray()
     {
         $definitions = [
