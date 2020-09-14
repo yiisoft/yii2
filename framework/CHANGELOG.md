@@ -18,7 +18,7 @@ Yii Framework 2 Change Log
 - Bug #15265: PostgreSQL > 10.0 is not pass tests with default value of timestamp CURRENT_TIMESTAMP (terabytesoftw)
 - Bug #18232: Fail tests pgsql v-10.14, v-11.9, v-12-latest (terabytesoftw)
 - Bug #16892: Validation error class was not applied to checkbox and radio when validationStateOn = self::VALIDATION_STATE_ON_INPUT (dan-szabo, samdark)
-
+- Bug #18245: Make resolving DI references inside of arrays in dependencies optional (SamMousa, samdark, hiqsol)
 
 2.0.37 August 07, 2020
 ----------------------
