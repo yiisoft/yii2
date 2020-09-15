@@ -54,6 +54,9 @@ for both A and B.
 Upgrade from Yii 2.0.37
 -----------------------
 
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
+
 * `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
   In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
   `Session::writeSession()` functions changes might be required:

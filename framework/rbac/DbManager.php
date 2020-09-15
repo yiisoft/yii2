@@ -106,6 +106,7 @@ class DbManager extends BaseManager
      */
     protected $checkAccessAssignments = [];
 
+
     /**
      * Initializes the application component.
      * This method overrides the parent implementation by establishing the database connection.
