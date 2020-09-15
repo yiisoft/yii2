@@ -4,19 +4,7 @@ Yii Framework 2 Change Log
 2.0.39 under development
 ------------------------
 
-- Enh #18213: Do not load fixtures with circular dependencies twice instead of throwing an exception (JesseHines0)
-- Bug #18066: Fixed `yii\db\Query::create()` wasn't using all info from `withQuery()` (maximkou)
-- Bug #18269: Fix integer safe attribute to work properly in `yii\base\Model` (Ladone)
-- Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
-- Bug #18248: Render only one stack trace on console for chained exceptions (mikehaertl)
-- Bug #18233: Add PHP 8 support (samdark)
-- Enh #18196: `yii\rbac\DbManager::$checkAccessAssignments` is now `protected` (alex-code)
-- Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
-- Bug #18229: Add flag for recognize SyBase databases on uses pdo_dblib (darkdef)
 - Enh #18247: Added support for the 'session.use_strict_mode' ini directive in `yii\web\Session` (rhertogh)
-- Bug #13973: Correct alterColumn for MSSQL & drop constraints before drop column (darkdef)
-- Bug #18040: Display width specification for integer data types was deprecated in MySQL 8.0.19 (terabytesoftw)
-- no changes in this release.
 
 
 2.0.38 September 14, 2020
