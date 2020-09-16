@@ -357,6 +357,7 @@ class ContainerTest extends TestCase
     {
         $quxInterface = 'yiiunit\framework\di\stubs\QuxInterface';
         $container = new Container();
+        $container->resolveArrays = true;
         $container->setSingletons([
             $quxInterface => [
                 'class' => Qux::className(),
@@ -493,5 +494,37 @@ class ContainerTest extends TestCase
         }
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18245
+     */
+    public function testDelayedInitializationOfSubArray()
+    {
+        $definitions = [
+            'test' => [
+                'class' => Corge::className(),
+                '__construct()' => [
+                    [Instance::of('setLater')],
+                ],
+            ],
+        ];
+
+        $application = Yii::createObject([
+            '__class' => \yii\web\Application::className(),
+            'basePath' => __DIR__,
+            'id' => 'test',
+            'components' => [
+                'request' => [
+                    'baseUrl' => '123'
+                ],
+            ],
+            'container' => [
+                'definitions' => $definitions,
+            ],
+        ]);
+
+        Yii::$container->set('setLater', new Qux());
+        Yii::$container->get('test');
     }
 }

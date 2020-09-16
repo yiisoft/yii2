@@ -223,4 +223,15 @@ class BatchQueryResult extends BaseObject implements \Iterator
 
         return null;
     }
+
+    /**
+     * Unserialization is disabled to prevent remote code execution in case application
+     * calls unserialize() on user input containing specially crafted string.
+     * @see CVE-2020-15148
+     * @since 2.0.38
+     */
+    public function __wakeup()
+    {
+        throw new \BadMethodCallException('Cannot unserialize ' . __CLASS__);
+    }
 }

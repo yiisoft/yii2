@@ -93,6 +93,8 @@ use yii\helpers\ArrayHelper;
  *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
+ * @property bool $resolveArrays Whether to attempt to resolve elements in array dependencies. This property
+ * is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -120,6 +122,10 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
+    /**
+     * @var bool whether to attempt to resolve elements in array dependencies
+     */
+    private $_resolveArrays = false;
 
 
     /**
@@ -491,7 +497,7 @@ class Container extends Component
                     $class = $reflection->getName();
                     throw new InvalidConfigException("Missing required parameter \"$name\" when instantiating \"$class\".");
                 }
-            } elseif (is_array($dependency)) {
+            } elseif ($this->_resolveArrays && is_array($dependency)) {
                 $dependencies[$index] = $this->resolveDependencies($dependency, $reflection);
             }
         }
@@ -681,5 +687,14 @@ class Container extends Component
 
             $this->setSingleton($class, $definition);
         }
+    }
+
+    /**
+     * @param bool $value whether to attempt to resolve elements in array dependencies
+     * @since 2.0.37
+     */
+    public function setResolveArrays($value)
+    {
+        $this->_resolveArrays = (bool) $value;
     }
 }

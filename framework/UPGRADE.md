@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
+
 Upgrade from Yii 2.0.36
 -----------------------
 
@@ -106,6 +112,8 @@ Upgrade from Yii 2.0.35
       // ...
   }
   ```
+  
+* Validator closure callbacks should not be declared as static.
 
 * If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
   the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
