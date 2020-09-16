@@ -8,7 +8,6 @@
 namespace yiiunit\framework\di;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\validators\NumberValidator;

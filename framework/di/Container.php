@@ -392,11 +392,11 @@ class Container extends Component
 
         if ($addDependencies && is_int(key($addDependencies))) {
             $dependencies = array_values($dependencies);
+            $dependencies = $this->mergeDependencies($dependencies, $addDependencies);
+        } else {
+            $dependencies = $this->mergeDependencies($dependencies, $addDependencies);
+            $dependencies = array_values($dependencies);
         }
-        foreach ($addDependencies as $index => $dependency) {
-            $dependencies[$index] = $dependency;
-        }
-        $dependencies = array_values($dependencies);
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
         if (!$reflection->isInstantiable()) {
@@ -420,6 +420,19 @@ class Container extends Component
         }
 
         return $object;
+    }
+
+    /**
+     * @param array $a
+     * @param array $b
+     * @return array
+     */
+    private function mergeDependencies($a, $b)
+    {
+        foreach ($b as $index => $dependency) {
+            $a[$index] = $dependency;
+        }
+        return $a;
     }
 
     /**
