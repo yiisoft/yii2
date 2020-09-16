@@ -8,6 +8,7 @@
 namespace yiiunit\framework\di;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\validators\NumberValidator;
@@ -540,5 +541,18 @@ class ContainerTest extends TestCase
         ]);
         $this->assertSame('Hello', $test->name);
         $this->assertSame('red', $test->color);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18284
+     */
+    public function testInvalidConstructorParameters()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Dependencies indexed by name and by position in the same array are not allowed.');
+        (new Container())->get(Car::className(), [
+            'color' => 'red',
+            'Hello',
+        ]);
     }
 }
