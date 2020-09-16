@@ -379,16 +379,24 @@ class Container extends Component
         /* @var $reflection ReflectionClass */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
+        $addDependencies = [];
         if (isset($config['__construct()'])) {
-            foreach ($config['__construct()'] as $index => $param) {
-                $dependencies[$index] = $param;
-            }
+            $addDependencies = $config['__construct()'];
             unset($config['__construct()']);
         }
-
         foreach ($params as $index => $param) {
-            $dependencies[$index] = $param;
+            $addDependencies[$index] = $param;
         }
+
+        $this->validateDependencies($addDependencies);
+
+        if ($addDependencies && is_int(key($addDependencies))) {
+            $dependencies = array_values($dependencies);
+        }
+        foreach ($addDependencies as $index => $dependency) {
+            $dependencies[$index] = $dependency;
+        }
+        $dependencies = array_values($dependencies);
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
         if (!$reflection->isInstantiable()) {
@@ -412,6 +420,34 @@ class Container extends Component
         }
 
         return $object;
+    }
+
+    /**
+     * @param array $parameters
+     * @throws InvalidConfigException
+     */
+    private function validateDependencies($parameters)
+    {
+        $hasStringParameter = false;
+        $hasIntParameter = false;
+        foreach ($parameters as $index => $parameter) {
+            if (is_string($index)) {
+                $hasStringParameter = true;
+                if ($hasIntParameter) {
+                    break;
+                }
+            } else {
+                $hasIntParameter = true;
+                if ($hasStringParameter) {
+                    break;
+                }
+            }
+        }
+        if ($hasIntParameter && $hasStringParameter) {
+            throw new InvalidConfigException(
+                'Dependencies indexed by name and by position in the same array are not allowed.'
+            );
+        }
     }
 
     /**
@@ -461,14 +497,14 @@ class Container extends Component
                 if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
                     break;
                 } elseif ($param->isDefaultValueAvailable()) {
-                    $dependencies[] = $param->getDefaultValue();
+                    $dependencies[$param->getName()] = $param->getDefaultValue();
                 } else {
                     if (PHP_VERSION_ID >= 80000) {
                         $c = $param->getType();
                     } else {
                         $c = $param->getClass();
                     }
-                    $dependencies[] = Instance::of($c === null ? null : $c->getName());
+                    $dependencies[$param->getName()] = Instance::of($c === null ? null : $c->getName());
                 }
             }
         }
