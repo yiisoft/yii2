@@ -441,7 +441,13 @@ class Response extends \yii\base\Response
 
         if (is_array($this->stream)) {
             list($handle, $begin, $end) = $this->stream;
-            fseek($handle, $begin);
+
+            // only seek if stream is seekable
+            $metaData = stream_get_meta_data($handle);
+            if (isset($metaData['seekable']) && $metaData['seekable'] === true) {
+                fseek($handle, $begin);
+            }
+
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
                     $chunkSize = $end - $pos + 1;
