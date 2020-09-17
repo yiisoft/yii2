@@ -237,10 +237,13 @@ class TargetTest extends TestCase
         $this->assertCount(6, static::$messages[1]);
     }
 
+    /**
+     * @covers \yii\log\Logger::getProfiling()
+     */
     public function testBreakProfilingWithFlush()
     {
         $logger = new Logger();
-        $dispatcher = new Dispatcher([
+        new Dispatcher([
             'logger' => $logger,
             'targets' => [new TestTarget()],
             'flushInterval' => 2,
