@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.39 under development
 ------------------------
 
-- no changes in this release.
+- Bug #16418: Fixed `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
 
 
 2.0.38 September 14, 2020
