@@ -476,21 +476,29 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
 
-        $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
-            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . ($version2005orLater ? ' OUTPUT INSERTED.* INTO @temporary_inserted' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
-
         if ($version2005orLater) {
             $schema = $this->db->getTableSchema($table);
             $cols = [];
+            $columns = [];
             foreach ($schema->columns as $column) {
+                if (!$column->isPrimaryKey)
+                    continue;
                 $cols[] = $this->db->quoteColumnName($column->name) . ' '
                     . $column->dbType
                     . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
                     . ' ' . ($column->allowNull ? "NULL" : "");
+                $columns[] = 'INSERTED.' . $column->name;
             }
-            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (" . implode(", ", $cols) . ");" . $sql . ";SELECT * FROM @temporary_inserted";
+        }
+
+        $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (($version2005orLater and count($columns)) ? ' OUTPUT ' . implode(',', $columns) . ' INTO @temporary_inserted' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+
+        if ($version2005orLater and count($columns)) {
+            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (" . implode(", ", $cols) . ");" . $sql .
+                ";SELECT * FROM @temporary_inserted";
         }
 
         return $sql;
