@@ -276,7 +276,7 @@ class ViewTest extends TestCase
                 'depends' => 'yii\web\AssetBundle',
             ]); // <script src="/assetSources/js/jquery.js"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertNotRegExp($pattern, $html);
+        $this->assertRegExp($pattern, $html);
 
         $view = new View();
         $view->registerJsFile('/assetSources/js/jquery.js',
@@ -422,7 +422,7 @@ class ViewTest extends TestCase
                 'depends' => 'yii\web\AssetBundle',
             ]); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertNotRegExp($pattern, $html);
+        $this->assertRegExp($pattern, $html);
 
         $view = new View();
         $view->registerCssFile('/assetSources/css/stub.css',
