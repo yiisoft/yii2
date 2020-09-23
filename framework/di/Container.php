@@ -462,17 +462,23 @@ class Container extends Component
                     break;
                 }
 
-                if ($param->isDefaultValueAvailable()) {
-                    $dependencies[] = $param->getDefaultValue();
+                if (PHP_VERSION_ID >= 80000) {
+                    $c = $param->getType();
+                    $isClass = $c !== null && !$param->getType()->isBuiltin();
                 } else {
-                    if (PHP_VERSION_ID >= 80000) {
-                        $c = $param->getType();
-                        $isClass = $c !== null && !$param->getType()->isBuiltin();
-                    } else {
-                        $c = $param->getClass();
-                        $isClass = $c !== null;
-                    }
-                    $dependencies[] = Instance::of($isClass ? $c->getName() : null);
+                    $c = $param->getClass();
+                    $isClass = $c !== null;
+                }
+                $className = $isClass ? $c->getName() : null;
+
+                if ($className !== null &&
+                    ($this->has($className) || class_exists($className))
+                ) {
+                    $dependencies[] = Instance::of($className);
+                } else {
+                    $dependencies[] = $param->isDefaultValueAvailable()
+                        ? $param->getDefaultValue()
+                        : null;
                 }
             }
         }
