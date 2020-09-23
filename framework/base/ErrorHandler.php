@@ -298,7 +298,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Renders the exception.
-     * @param \Exception|\Error\Throwable $exception the exception to be rendered.
+     * @param \Exception|\Error|\Throwable $exception the exception to be rendered.
      */
     abstract protected function renderException($exception);
 
