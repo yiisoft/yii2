@@ -475,13 +475,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
-
         if ($version2005orLater) {
             $schema = $this->db->getTableSchema($table);
             $cols = [];
             $columns = [];
             foreach ($schema->columns as $column) {
-                if (!$column->isPrimaryKey)
+                if ($column->isComputed)
                     continue;
                 $cols[] = $this->db->quoteColumnName($column->name) . ' '
                     . $column->dbType
