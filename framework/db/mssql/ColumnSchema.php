@@ -16,6 +16,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
 {
     /**
      * @var bool whether this column is a computed column
+     * @since 2.0.39
      */
     public $isComputed;
 

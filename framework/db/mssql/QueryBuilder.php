@@ -480,8 +480,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $cols = [];
             $columns = [];
             foreach ($schema->columns as $column) {
-                if ($column->isComputed)
+                if ($column->isComputed) {
                     continue;
+                }
                 $cols[] = $this->db->quoteColumnName($column->name) . ' '
                     . $column->dbType
                     . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
@@ -489,15 +490,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $columns[] = 'INSERTED.' . $column->name;
             }
         }
+        $countColumns = count($columns);
 
         $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (($version2005orLater and count($columns)) ? ' OUTPUT ' . implode(',', $columns) . ' INTO @temporary_inserted' : '')
+            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $columns) . ' INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
 
-        if ($version2005orLater and count($columns)) {
-            $sql = "SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (" . implode(", ", $cols) . ");" . $sql .
-                ";SELECT * FROM @temporary_inserted";
+        if ($version2005orLater && $countColumns) {
+            $sql = 'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (' . implode(', ', $cols) . ');' . $sql .
+                ';SELECT * FROM @temporary_inserted';
         }
 
         return $sql;
