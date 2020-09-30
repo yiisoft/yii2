@@ -295,7 +295,7 @@ class Response extends \yii\base\Response
 
     /**
      * Sets the response status code based on the exception.
-     * @param \Exception|\Error $e the exception object.
+     * @param \Exception|\Error|\Throwable $e the exception object.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
