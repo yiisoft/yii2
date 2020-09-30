@@ -201,7 +201,7 @@ class ResponseTest extends \yiiunit\TestCase
         $this->response
             ->sendStreamAsFile($stream, 'test-stream')
             ->send();
-        $content = ob_get_clean();
+        ob_get_clean();
         static::assertEquals(200, $this->response->statusCode);
     }
 
