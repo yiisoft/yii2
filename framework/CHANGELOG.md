@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.39 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18290: Test and fix for non-seekable streams (schmunk42)
 
 
 2.0.38 September 14, 2020

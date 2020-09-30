@@ -443,8 +443,7 @@ class Response extends \yii\base\Response
             list($handle, $begin, $end) = $this->stream;
 
             // only seek if stream is seekable
-            $metaData = stream_get_meta_data($handle);
-            if (isset($metaData['seekable']) && $metaData['seekable'] === true) {
+            if ($this->isSeekable($handle)) {
                 fseek($handle, $begin);
             }
 
@@ -589,7 +588,9 @@ class Response extends \yii\base\Response
         if (isset($options['fileSize'])) {
             $fileSize = $options['fileSize'];
         } else {
-            fseek($handle, 0, SEEK_END);
+            if ($this->isSeekable($handle)) {
+                fseek($handle, 0, SEEK_END);
+            }
             $fileSize = ftell($handle);
         }
 
@@ -1093,6 +1094,23 @@ class Response extends \yii\base\Response
             } else {
                 throw new InvalidArgumentException('Response content must be a string or an object implementing __toString().');
             }
+        }
+    }
+
+    /**
+     * Checks if a stream is seekable
+     *
+     * @param $handle
+     * @return bool
+     */
+    private function isSeekable($handle){
+        if (!is_resource($handle)) {
+            return true;
+        }
+
+        $metaData = stream_get_meta_data($handle);
+        if (isset($metaData['seekable']) && $metaData['seekable'] === true) {
+            return true;
         }
     }
 }
