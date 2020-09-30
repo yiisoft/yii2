@@ -1110,8 +1110,6 @@ class Response extends \yii\base\Response
         }
 
         $metaData = stream_get_meta_data($handle);
-        if (isset($metaData['seekable']) && $metaData['seekable'] === true) {
-            return true;
-        }
+        return isset($metaData['seekable']) && $metaData['seekable'] === true;
     }
 }
