@@ -1103,7 +1103,8 @@ class Response extends \yii\base\Response
      * @param $handle
      * @return bool
      */
-    private function isSeekable($handle){
+    private function isSeekable($handle)
+    {
         if (!is_resource($handle)) {
             return true;
         }
