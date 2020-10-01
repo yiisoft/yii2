@@ -590,8 +590,10 @@ class Response extends \yii\base\Response
         } else {
             if ($this->isSeekable($handle)) {
                 fseek($handle, 0, SEEK_END);
+                $fileSize = ftell($handle);
+            } else {
+                $fileSize = 0;
             }
-            $fileSize = ftell($handle);
         }
 
         $range = $this->getHttpRange($fileSize);
