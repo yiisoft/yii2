@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #16418: Fixed `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
 - Bug #18297: Replace usage of deprecated `ReflectionParameter::isArray()` method in PHP8 (baletskyi)
 - Bug #18303: Fix creating migration issue for column methods used after defaultValues (wsaid)
+- Bug #18287: Fix for OUTPUT INSERTED and computed columns. Added flag to computed values in table schema (darkdef)
 - Bug #18308: Fixed `\yii\base\Model::getErrorSummary()` reverse order (DrDeath72)
 
 
