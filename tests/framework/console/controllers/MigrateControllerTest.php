@@ -131,14 +131,13 @@ class MigrateControllerTest extends TestCase
                     price:money(11,2):notNull,
                     parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')',
             ],
-            'create_fields_withc_col_method_after_default_value' => [
+            'create_fields_with_col_method_after_default_value' => [
                 'fields' => 'id:primaryKey,
                     title:string(10):notNull:unique:defaultValue("test"):after("id"),
                     body:text:notNull:defaultValue("test"):after("title"),
                     address:text:notNull:defaultValue("test"):after("body"),
                     address2:text:notNull:defaultValue(\'te:st\'):after("address"),
                     address3:text:notNull:defaultValue(\':te:st:\'):after("address2")',
-
             ],
             'create_title_pk' => [
                 'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
@@ -246,7 +245,7 @@ class MigrateControllerTest extends TestCase
             ['create_field_with_colon_default_values', 'create_test_table', 'test', $params['create_field_with_colon_default_values']],
 
             // @see https://github.com/yiisoft/yii2/issues/18303
-            ['create_fields_withc_col_method_after_default_value', 'create_test_table', 'test', $params['create_fields_withc_col_method_after_default_value']],
+            ['create_fields_with_col_method_after_default_value', 'create_test_table', 'test', $params['create_fields_with_col_method_after_default_value']],
 
             ['drop_test', 'drop_test_table', 'test', []],
             ['drop_test', 'drop_test__table', 'test_', []],
