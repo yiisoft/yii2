@@ -4,9 +4,12 @@ Yii Framework 2 Change Log
 2.0.39 under development
 ------------------------
 
+- Bug #18290: Fix response with non-seekable streams (schmunk42)
 - Bug #16418: Fixed `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
 - Bug #18297: Replace usage of deprecated `ReflectionParameter::isArray()` method in PHP8 (baletskyi)
 - Bug #18303: Fix creating migration issue for column methods used after defaultValues (wsaid)
+- Bug #18308: Fixed `\yii\base\Model::getErrorSummary()` reverse order (DrDeath72)
+
 
 2.0.38 September 14, 2020
 -------------------------

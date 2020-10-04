@@ -191,6 +191,20 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals($statusCode, $this->response->getStatusCode());
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/18290
+     */
+    public function testNonSeekableStream()
+    {
+        $stream = fopen('php://output', 'r+');
+        ob_start();
+        $this->response
+            ->sendStreamAsFile($stream, 'test-stream')
+            ->send();
+        ob_get_clean();
+        static::assertEquals(200, $this->response->statusCode);
+    }
+
     public function dataProviderSetStatusCodeByException()
     {
         $data = [
