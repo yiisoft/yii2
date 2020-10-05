@@ -92,7 +92,7 @@ jobs:
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors
         env:
           PHPUNIT_EXCLUDE_GROUP: oci,wincache,xcache,zenddata,cubrid
-        if: matrix.php == '7.4' || matrix.php == '7.3' || matrix.php == '7.2'
+        if: matrix.php == '7.4' || matrix.php == '7.3' || matrix.php == '7.2' || matrix.php == '8.0'
       - name: PHP Unit tests for PHP 5.4 - 7.0
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors
         if: matrix.php == '7.0' || matrix.php == '5.6' || matrix.php == '5.5' || matrix.php == '5.4'
