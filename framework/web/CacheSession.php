@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\di\Instance;
 
 /**
@@ -31,7 +31,7 @@ use yii\di\Instance;
  * ]
  * ```
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -39,7 +39,7 @@ use yii\di\Instance;
 class CacheSession extends Session
 {
     /**
-     * @var Cache|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
      * The session data will be stored using this cache object.
      *
      * After the CacheSession object is created, if you want to change this property,
@@ -56,13 +56,13 @@ class CacheSession extends Session
     public function init()
     {
         parent::init();
-        $this->cache = Instance::ensure($this->cache, Cache::className());
+        $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
     }
 
     /**
      * Returns a value indicating whether to use custom session storage.
      * This method overrides the parent implementation and always returns true.
-     * @return boolean whether to use custom storage.
+     * @return bool whether to use custom storage.
      */
     public function getUseCustomStorage()
     {
@@ -71,7 +71,7 @@ class CacheSession extends Session
 
     /**
      * Session read handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
      */
@@ -84,10 +84,10 @@ class CacheSession extends Session
 
     /**
      * Session write handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
-     * @return boolean whether session write is successful
+     * @return bool whether session write is successful
      */
     public function writeSession($id, $data)
     {
@@ -96,13 +96,18 @@ class CacheSession extends Session
 
     /**
      * Session destroy handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
-     * @return boolean whether session is destroyed successfully
+     * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {
-        return $this->cache->delete($this->calculateKey($id));
+        $cacheId = $this->calculateKey($id);
+        if ($this->cache->exists($cacheId) === false) {
+            return true;
+        }
+
+        return $this->cache->delete($cacheId);
     }
 
     /**

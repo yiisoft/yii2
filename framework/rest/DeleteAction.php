@@ -13,6 +13,8 @@ use yii\web\ServerErrorHttpException;
 /**
  * DeleteAction implements the API endpoint for deleting a model.
  *
+ * For more details and usage information on DeleteAction, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

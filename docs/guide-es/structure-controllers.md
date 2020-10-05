@@ -312,7 +312,7 @@ los usuarios.
 
 * Para [[yii\web\Application|aplicaciones Web]], el valor de retorno pueden ser también datos arbitrarios que serán
   asignados a [[yii\web\Response::data]] y más adelante convertidos a una cadena representando el cuerpo de la respuesta.
-* Para [[yii\console\Application|aplicaciones de consola], el valor de retorno puede ser también un entero representando
+* Para [[yii\console\Application|aplicaciones de consola]], el valor de retorno puede ser también un entero representando
   el [[yii\console\Response::exitStatus|status de salida]] de la ejecución del comando.
 
 En los ejemplos mostrados arriba, los resultados de las acciones son todas cadenas que serán tratadas como el cuerpo de la respuesta

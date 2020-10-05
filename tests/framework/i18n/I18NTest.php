@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\i18n;
 
+use Yii;
 use yii\base\Event;
 use yii\i18n\I18N;
 use yii\i18n\PhpMessageSource;
@@ -35,11 +36,17 @@ class I18NTest extends TestCase
     {
         $this->i18n = new I18N([
             'translations' => [
-                'test' => new PhpMessageSource([
+                'test' => [
+                    'class' => $this->getMessageSourceClass(),
                     'basePath' => '@yiiunit/data/i18n/messages',
-                ])
-            ]
+                ],
+            ],
         ]);
+    }
+
+    private function getMessageSourceClass()
+    {
+        return PhpMessageSource::className();
     }
 
     public function testTranslate()
@@ -63,14 +70,15 @@ class I18NTest extends TestCase
     {
         $i18n = new I18N([
             'translations' => [
-                '*' => new PhpMessageSource([
+                '*' => [
+                    'class' => $this->getMessageSourceClass(),
                     'basePath' => '@yiiunit/data/i18n/messages',
                     'fileMap' => [
                         'test' => 'test.php',
                         'foo' => 'test.php',
                     ],
-                ])
-            ]
+                ],
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -91,7 +99,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7964
+     * @see https://github.com/yiisoft/yii2/issues/7964
      */
     public function testSourceLanguageFallback()
     {
@@ -105,8 +113,8 @@ class I18NTest extends TestCase
                             'foo' => 'test.php',
                         ],
                     ]
-                )
-            ]
+                ),
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -133,8 +141,8 @@ class I18NTest extends TestCase
 
     public function testTranslateParams2()
     {
-        if (!extension_loaded("intl")) {
-            $this->markTestSkipped("intl not installed. Skipping.");
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl not installed. Skipping.');
         }
         $msg = 'His name is {name} and his speed is about {n, number} km/h.';
         $params = [
@@ -157,7 +165,8 @@ class I18NTest extends TestCase
 
     /**
      * When translation is missing source language should be used for formatting.
-     * https://github.com/yiisoft/yii2/issues/2209
+     *
+     * @see https://github.com/yiisoft/yii2/issues/2209
      */
     public function testMissingTranslationFormatting()
     {
@@ -165,7 +174,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7093
+     * @see https://github.com/yiisoft/yii2/issues/7093
      */
     public function testRussianPlurals()
     {
@@ -174,19 +183,19 @@ class I18NTest extends TestCase
 
     public function testUsingSourceLanguageForMissingTranslation()
     {
-        \Yii::$app->sourceLanguage = 'ru';
-        \Yii::$app->language = 'en';
+        Yii::$app->sourceLanguage = 'ru';
+        Yii::$app->language = 'en';
 
         $msg = '{n, plural, =0{Нет комментариев} =1{# комментарий} one{# комментарий} few{# комментария} many{# комментариев} other{# комментария}}';
-        $this->assertEquals('5 комментариев', \Yii::t('app', $msg, ['n' => 5]));
-        $this->assertEquals('3 комментария', \Yii::t('app', $msg, ['n' => 3]));
-        $this->assertEquals('1 комментарий', \Yii::t('app', $msg, ['n' => 1]));
-        $this->assertEquals('21 комментарий', \Yii::t('app', $msg, ['n' => 21]));
-        $this->assertEquals('Нет комментариев', \Yii::t('app', $msg, ['n' => 0]));
+        $this->assertEquals('5 комментариев', Yii::t('app', $msg, ['n' => 5]));
+        $this->assertEquals('3 комментария', Yii::t('app', $msg, ['n' => 3]));
+        $this->assertEquals('1 комментарий', Yii::t('app', $msg, ['n' => 1]));
+        $this->assertEquals('21 комментарий', Yii::t('app', $msg, ['n' => 21]));
+        $this->assertEquals('Нет комментариев', Yii::t('app', $msg, ['n' => 0]));
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/2519
+     * @see https://github.com/yiisoft/yii2/issues/2519
      */
     public function testMissingTranslationEvent()
     {
@@ -211,5 +220,68 @@ class I18NTest extends TestCase
         $this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
+    }
+
+    public function sourceLanguageDataProvider()
+    {
+        return [
+            ['en-GB'],
+            ['en'],
+        ];
+    }
+
+    /**
+     * @dataProvider sourceLanguageDataProvider
+     * @param $sourceLanguage
+     */
+    public function testIssue11429($sourceLanguage)
+    {
+        $this->mockApplication();
+        $this->setI18N();
+
+        Yii::$app->sourceLanguage = $sourceLanguage;
+        $logger = Yii::getLogger();
+        $logger->messages = [];
+        $filter = function ($array) {
+            // Ensures that error message is related to PhpMessageSource
+            $className = $this->getMessageSourceClass();
+            return substr_compare($array[2], $className, 0, strlen($className)) === 0;
+        };
+
+        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-GB'));
+        $this->assertEquals([], array_filter($logger->messages, $filter));
+
+        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en'));
+        $this->assertEquals([], array_filter($logger->messages, $filter));
+
+        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-CA'));
+        $this->assertEquals([], array_filter($logger->messages, $filter));
+
+        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz-HZ'));
+        $this->assertCount(1, array_filter($logger->messages, $filter));
+        $logger->messages = [];
+
+        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz'));
+        $this->assertCount(1, array_filter($logger->messages, $filter));
+        $logger->messages = [];
+    }
+
+    /**
+     * Formatting a message that contains params but they are not provided.
+     * @see https://github.com/yiisoft/yii2/issues/10884
+     */
+    public function testFormatMessageWithNoParam()
+    {
+        $message = 'Incorrect password (length must be from {min, number} to {max, number} symbols).';
+        $this->assertEquals($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
+    }
+
+    public function testFormatMessageWithDottedParameters()
+    {
+        $message = 'date: {dt.test}';
+        $this->assertEquals('date: 1510147434', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
+
+        $message = 'date: {dt.test,date}';
+        $this->assertEquals('date: Nov 8, 2017', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
     }
 }

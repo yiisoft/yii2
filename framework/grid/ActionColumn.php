@@ -8,7 +8,6 @@
 namespace yii\grid;
 
 use Yii;
-use Closure;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -27,13 +26,15 @@ use yii\helpers\Url;
  * ]
  * ```
  *
+ * For more details and usage information on ActionColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class ActionColumn extends Column
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $headerOptions = ['class' => 'action-column'];
     /**
@@ -108,19 +109,27 @@ class ActionColumn extends Column
     public $visibleButtons = [];
     /**
      * @var callable a callback that creates a button URL using the specified model information.
-     * The signature of the callback should be the same as that of [[createUrl()]].
+     * The signature of the callback should be the same as that of [[createUrl()]]
+     * Since 2.0.10 it can accept additional parameter, which refers to the column instance itself:
+     *
+     * ```php
+     * function (string $action, mixed $model, mixed $key, integer $index, ActionColumn $this) {
+     *     //return string;
+     * }
+     * ```
+     *
      * If this property is not set, button URLs will be created using [[createUrl()]].
      */
     public $urlCreator;
     /**
-     * @var array html options to be applied to the [[initDefaultButtons()|default buttons]].
+     * @var array html options to be applied to the [[initDefaultButton()|default button]].
      * @since 2.0.4
      */
     public $buttonOptions = [];
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -133,36 +142,45 @@ class ActionColumn extends Column
      */
     protected function initDefaultButtons()
     {
-        if (!isset($this->buttons['view'])) {
-            $this->buttons['view'] = function ($url, $model, $key) {
+        $this->initDefaultButton('view', 'eye-open');
+        $this->initDefaultButton('update', 'pencil');
+        $this->initDefaultButton('delete', 'trash', [
+            'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+            'data-method' => 'post',
+        ]);
+    }
+
+    /**
+     * Initializes the default button rendering callback for single button.
+     * @param string $name Button name as it's written in template
+     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
+     * @param array $additionalOptions Array of additional options
+     * @since 2.0.11
+     */
+    protected function initDefaultButton($name, $iconName, $additionalOptions = [])
+    {
+        if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
+            $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
+                switch ($name) {
+                    case 'view':
+                        $title = Yii::t('yii', 'View');
+                        break;
+                    case 'update':
+                        $title = Yii::t('yii', 'Update');
+                        break;
+                    case 'delete':
+                        $title = Yii::t('yii', 'Delete');
+                        break;
+                    default:
+                        $title = ucfirst($name);
+                }
                 $options = array_merge([
-                    'title' => Yii::t('yii', 'View'),
-                    'aria-label' => Yii::t('yii', 'View'),
+                    'title' => $title,
+                    'aria-label' => $title,
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
-                return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, $options);
-            };
-        }
-        if (!isset($this->buttons['update'])) {
-            $this->buttons['update'] = function ($url, $model, $key) {
-                $options = array_merge([
-                    'title' => Yii::t('yii', 'Update'),
-                    'aria-label' => Yii::t('yii', 'Update'),
-                    'data-pjax' => '0',
-                ], $this->buttonOptions);
-                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
-            };
-        }
-        if (!isset($this->buttons['delete'])) {
-            $this->buttons['delete'] = function ($url, $model, $key) {
-                $options = array_merge([
-                    'title' => Yii::t('yii', 'Delete'),
-                    'aria-label' => Yii::t('yii', 'Delete'),
-                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                    'data-method' => 'post',
-                    'data-pjax' => '0',
-                ], $this->buttonOptions);
-                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
+                ], $additionalOptions, $this->buttonOptions);
+                $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
+                return Html::a($icon, $url, $options);
             };
         }
     }
@@ -171,25 +189,25 @@ class ActionColumn extends Column
      * Creates a URL for the given action and model.
      * This method is called for each button and each row.
      * @param string $action the button name (or action ID)
-     * @param \yii\db\ActiveRecord $model the data model
+     * @param \yii\db\ActiveRecordInterface $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the current row index
+     * @param int $index the current row index
      * @return string the created URL
      */
     public function createUrl($action, $model, $key, $index)
     {
         if (is_callable($this->urlCreator)) {
-            return call_user_func($this->urlCreator, $action, $model, $key, $index);
-        } else {
-            $params = is_array($key) ? $key : ['id' => (string) $key];
-            $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
-
-            return Url::toRoute($params);
+            return call_user_func($this->urlCreator, $action, $model, $key, $index, $this);
         }
+
+        $params = is_array($key) ? $key : ['id' => (string) $key];
+        $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
+
+        return Url::toRoute($params);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {
@@ -207,9 +225,9 @@ class ActionColumn extends Column
             if ($isVisible && isset($this->buttons[$name])) {
                 $url = $this->createUrl($name, $model, $key, $index);
                 return call_user_func($this->buttons[$name], $url, $model, $key);
-            } else {
-                return '';
             }
+
+            return '';
         }, $this->template);
     }
 }

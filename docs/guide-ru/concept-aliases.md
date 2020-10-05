@@ -18,6 +18,9 @@ Yii::setAlias('@foo', '/path/to/foo');
 
 // псевдоним URL
 Yii::setAlias('@bar', 'http://www.example.com');
+
+// псевдоним конкретного файла, содержащего класс \foo\Bar
+Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
 ```
 
 > Note: псевдоним пути к файлу или URL *не* обязательно указывает на существующий файл или ресурс.
@@ -105,7 +108,7 @@ $cache = new FileCache([
 - `@yii`: директория, в которой находится файл `BaseYii.php` (директория фреймворка).
 - `@app`: [[yii\base\Application::basePath|базовый путь]] текущего приложения.
 - `@runtime`: [[yii\base\Application::runtimePath|директория runtime]] текущего приложения.
-- `@vendor`: [[yii\base\Application::vendorPath|директория vendor Composer].
+- `@vendor`: [[yii\base\Application::vendorPath|директория vendor Composer]].
 - `@webroot`: вебрут текущего веб приложения (там где находится [входной скрипт](structure-entry-scripts.md) `index.php`).
 - `@web`: базовый URL текущего приложения.
 

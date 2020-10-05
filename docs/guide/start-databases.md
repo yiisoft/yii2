@@ -23,6 +23,8 @@ Preparing the Database <span id="preparing-database"></span>
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
 You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
 
+> Info: While MariaDB used to be a drop-in replacement for MySQL this is no longer fully true. In case you wish to use advanced features like `JSON` support in MariaDB, please check the MariaDB extension listed below.
+
 Next, create a table named `country` in the database, and insert some sample data. You may run the following SQL statements to do so:
 
 ```sql
@@ -32,16 +34,16 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
@@ -49,7 +51,7 @@ At this point, you have a database named `yii2basic`, and within it a `country` 
 Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
 
-Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
+Before proceeding, make sure you have installed both the [PDO](https://secure.php.net/manual/en/book.pdo.php) PHP extension and
 the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
 if your application uses a relational database.
 
@@ -83,6 +85,7 @@ If you need to work with databases support for which isn't bundled with Yii, che
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 Creating an Active Record <span id="creating-active-record"></span>
@@ -129,7 +132,7 @@ $country->save();
 ```
 
 > Info: Active Record is a powerful way to access and manipulate database data in an object-oriented fashion.
-You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
+You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Database Access Objects](db-dao.md).
 
 
 Creating an Action <span id="creating-action"></span>
@@ -175,16 +178,19 @@ class CountryController extends Controller
 
 Save the above code in the file `controllers/CountryController.php`.
 
-The `index` action calls `Country::find()`. This Active Record method builds a DB query and retrieves all of the data from the `country` table.
-To limit the number of countries returned in each request, the query is paginated with the help of a
+First, The `index` action calls `Country::find()`. This [find()](https://www.yiiframework.com/doc/api/2.0/yii-db-activerecord#find()-detail) method creates a [ActiveQuery](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery) query object, which provides methods to access data from the `country` table.
+
+To limit the number of countries returned in each request, the query object is paginated with the help of a
 [[yii\data\Pagination]] object. The `Pagination` object serves two purposes:
 
-* Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
+* Sets the `offset` and `limit` clauses for the SQL statement represented by the query object so that it only
   returns a single page of data at a time (at most 5 rows in a page).
 * It's used in the view to display a pager consisting of a list of page buttons, as will be explained in
   the next subsection.
+  
+Next, [all()](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery#all()-detail) returns all `country` records based on the query results.
 
-At the end of the code, the `index` action renders a view named `index`, and passes the country data as well as the pagination
+At the end of the code, the `index` action renders a view named `index`, and passes the returned country data as well as the pagination
 information to it.
 
 
@@ -204,7 +210,7 @@ use yii\widgets\LinkPager;
 <ul>
 <?php foreach ($countries as $country): ?>
     <li>
-        <?= Html::encode("{$country->name} ({$country->code})") ?>:
+        <?= Html::encode("{$country->code} ({$country->name})") ?>:
         <?= $country->population ?>
     </li>
 <?php endforeach; ?>
@@ -225,7 +231,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how all of the above code works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![Country List](images/start-country-list.png)
@@ -235,7 +241,7 @@ If you click on the button "2", you will see the page display another five count
 Observe more carefully and you will find that the URL in the browser also changes to
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
@@ -257,7 +263,7 @@ Summary <span id="summary"></span>
 In this section, you learned how to work with a database. You also learned how to fetch and display
 data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md),
+In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide),
 to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
 operations for working with the data in a database table. As a matter of fact, the code you have just written can all
 be automatically generated in Yii using the Gii tool.

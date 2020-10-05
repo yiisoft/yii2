@@ -42,9 +42,9 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior`, with two properties--
-`prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
+The above code defines the behavior class `app\components\MyBehavior`, with two properties
+`prop1` and `prop2` and one method `foo()`. Note that property `prop2`
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\BaseObject]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 
@@ -291,6 +291,8 @@ The behavior configuration above specifies that when the record is being:
   the `created_at` and `updated_at` attributes
 * updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
 
+> Note: For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current UNIX timestamp:
 
@@ -327,7 +329,7 @@ There are several built-in and external behaviors available:
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
+While behaviors are similar to [traits](https://secure.php.net/traits) in that they both "inject" their
 properties and methods to the primary class, they differ in many aspects. As explained below, they
 both have pros and cons. They are more like complements to each other rather than alternatives.
 

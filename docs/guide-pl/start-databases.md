@@ -32,24 +32,24 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
-W tym miejscu masz już utworzoną bazę danych o nazwie `yii2basic`, posiadającą tabelę `country` z trzeba kolumnami. Tabela zawiera 10 wierszy danych.
+W tym miejscu masz już utworzoną bazę danych o nazwie `yii2basic`, posiadającą tabelę `country` z trzema kolumnami. Tabela zawiera 10 wierszy danych.
 
 Konfiguracja połączenia z bazą danych <span id="configuring-db-connection"></span>
 ---------------------------
 
-Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](http://www.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
+Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](https://secure.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
 (np. `pdo_mysql` dla MySQL).
 Jest to podstawowe wymaganie, jeśli Twoja aplikacja używa relacyjnej bazy danych.
 
@@ -69,7 +69,7 @@ return [
 
 Plik `config/db.php` jest typowym narzędziem [konfiguracyjnym](concept-configurations.md) opartym na plikach.
 Ten szczególny plik konfiguracyjny określa parametry potrzebne do utworzenia oraz zainicjalizowania instancji [[yii\db\Connection|Connection]], dzięki czemu będziesz mógł wywoływać 
-komendy SQL dp swojej bazy przez aplikację.
+komendy SQL do swojej bazy przez aplikację.
 
 Powyższa konfiguracja może być dostępna z poziomu kodu aplikacji używając wyrażenia `Yii::$app->db`.
 
@@ -210,17 +210,17 @@ Sprawdź jak to działa <span id="trying-it-out"></span>
 Aby zobaczyć jak działa powyższy kod, użyj przeglądarki i przejdź pod podany adres URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
-![Lista krajów](../guide/images/start-country-list.png)
+![Lista krajów](images/start-country-list.png)
 
 Na początku zobaczysz stronę pokazującą pięć krajów. Poniżej listy znajduje się paginacja z czterema przyciskami.
 Jeśli klikniesz przycisk "2", zobaczysz stronę wyświetlającą pięć innych krajów z bazy danych: druga strona wierszy.
 Zauważ, że adres URL w przeglądarce również się zmienił na 
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Za kulisami, [[yii\data\Pagination|Pagination]] dostarcza wszystkich niezbędnych funkcjonalności do stronicowania zbioru danych: 

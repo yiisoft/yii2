@@ -22,11 +22,11 @@ carregará uma [configuração](concept-configurations.md) e a aplicará à apli
 da seguinte forma:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // carrega a configuração da aplicação
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // instancia e configura a aplicação
 (new yii\web\Application($config))->run();
@@ -253,12 +253,10 @@ enquanto `article` será mapeado para `app\controllers\PostController`.
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
@@ -400,7 +398,7 @@ Mais detalhes sobre essa propriedade podem ser encontrados na seção
 Essa propriedade é disponibilizada como uma maneira alternativa de definir a
 timezone do PHP em tempo de execução. Ao confiugrar essa propriedade, você está
 essencialmente chamando a função
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php)
 do PHP. Por exemplo:
 
 ```php

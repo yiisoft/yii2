@@ -34,7 +34,7 @@ trait ArrayAccessTrait
     /**
      * Returns the number of data items.
      * This method is required by Countable interface.
-     * @return integer number of data elements.
+     * @return int number of data elements.
      */
     public function count()
     {
@@ -44,7 +44,7 @@ trait ArrayAccessTrait
     /**
      * This method is required by the interface [[\ArrayAccess]].
      * @param mixed $offset the offset to check on
-     * @return boolean
+     * @return bool
      */
     public function offsetExists($offset)
     {
@@ -53,7 +53,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param integer $offset the offset to retrieve element.
+     * @param int $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
@@ -63,7 +63,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param integer $offset the offset to set element
+     * @param int $offset the offset to set element
      * @param mixed $item the element value
      */
     public function offsetSet($offset, $item)

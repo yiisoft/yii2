@@ -56,6 +56,16 @@ use yii\validators\Validator;
 class DynamicModel extends Model
 {
     private $_attributes = [];
+    /**
+     * Array of the dynamic attribute labels.
+     * Used to as form field labels and in validation errors.
+     *
+     * @see attributeLabels()
+     * @see setAttributeLabels()
+     * @see setAttributeLabel()
+     * @since 2.0.35
+     */
+    private $_attributeLabels = [];
 
 
     /**
@@ -76,23 +86,23 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             return $this->_attributes[$name];
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
         } else {
             parent::__set($name, $value);
@@ -100,27 +110,54 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __isset($name)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             return isset($this->_attributes[$name]);
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __unset($name)
     {
-        if (array_key_exists($name, $this->_attributes)) {
+        if ($this->hasAttribute($name)) {
             unset($this->_attributes[$name]);
         } else {
             parent::__unset($name);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        return parent::canGetProperty($name, $checkVars, $checkBehaviors) || $this->hasAttribute($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        return parent::canSetProperty($name, $checkVars, $checkBehaviors) || $this->hasAttribute($name);
+    }
+
+    /**
+     * Returns a value indicating whether the model has an attribute with the specified name.
+     * @param string $name the name of the attribute
+     * @return bool whether the model has an attribute with the specified name.
+     * @since 2.0.16
+     */
+    public function hasAttribute($name)
+    {
+        return array_key_exists($name, $this->_attributes);
     }
 
     /**
@@ -147,15 +184,26 @@ class DynamicModel extends Model
      * You can also directly manipulate [[validators]] to add or remove validation rules.
      * This method provides a shortcut.
      * @param string|array $attributes the attribute(s) to be validated by the rule
-     * @param mixed $validator the validator for the rule.This can be a built-in validator name,
-     * a method name of the model class, an anonymous function, or a validator class name.
+     * @param string|Validator|\Closure $validator the validator. This can be either:
+     *  * a built-in validator name listed in [[builtInValidators]];
+     *  * a method name of the model class;
+     *  * an anonymous function;
+     *  * a validator class name.
+     *  * a Validator.
      * @param array $options the options (name-value pairs) to be applied to the validator
      * @return $this the model itself
      */
     public function addRule($attributes, $validator, $options = [])
     {
         $validators = $this->getValidators();
-        $validators->append(Validator::createValidator($validator, $this, (array) $attributes, $options));
+
+        if ($validator instanceof Validator) {
+            $validator->attributes = (array)$attributes;
+        } else {
+            $validator = Validator::createValidator($validator, $this, (array)$attributes, $options);
+        }
+
+        $validators->append($validator);
 
         return $this;
     }
@@ -179,7 +227,7 @@ class DynamicModel extends Model
                 if ($rule instanceof Validator) {
                     $validators->append($rule);
                 } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-                    $validator = Validator::createValidator($rule[1], $model, (array) $rule[0], array_slice($rule, 2));
+                    $validator = Validator::createValidator($rule[1], $model, (array)$rule[0], array_slice($rule, 2));
                     $validators->append($validator);
                 } else {
                     throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
@@ -193,10 +241,53 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributes()
     {
         return array_keys($this->_attributes);
+    }
+
+    /**
+     * Sets the attribute labels in a massive way.
+     *
+     * @see attributeLabels()
+     * @see $_attributeLabels
+     * @since 2.0.35
+     *
+     * @param array $labels Array of attribute labels
+     * @return $this
+     */
+    public function setAttributeLabels(array $labels = [])
+    {
+        $this->_attributeLabels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * Sets a label for an attribute.
+     *
+     * @see attributeLabels()
+     * @see $_attributeLabels
+     * @since 2.0.35
+     *
+     * @param string $attribute Attribute name
+     * @param string $label Attribute label value
+     * @return $this
+     */
+    public function setAttributeLabel($attribute, $label)
+    {
+        $this->_attributeLabels[$attribute] = $label;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), $this->_attributeLabels);
     }
 }

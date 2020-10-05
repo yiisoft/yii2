@@ -28,6 +28,8 @@ use Yii;
  * And the parameters provided for the action are: `['id' => 1]`.
  * Then the `run()` method will be invoked as `run(1)` automatically.
  *
+ * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
+ *
  * @property string $uniqueId The unique ID of this action among the whole application. This property is
  * read-only.
  *
@@ -41,7 +43,7 @@ class Action extends Component
      */
     public $id;
     /**
-     * @var Controller|\yii\web\Controller the controller that owns this action
+     * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
     public $controller;
 
@@ -84,7 +86,7 @@ class Action extends Component
             throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
         $args = $this->controller->bindActionParams($this, $params);
-        Yii::trace('Running action: ' . get_class($this) . '::run()', __METHOD__);
+        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
@@ -93,9 +95,9 @@ class Action extends Component
             $this->afterRun();
 
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -103,7 +105,7 @@ class Action extends Component
      * You may override this method to do preparation work for the action run.
      * If the method returns false, it will cancel the action.
      *
-     * @return boolean whether to run the action.
+     * @return bool whether to run the action.
      */
     protected function beforeRun()
     {

@@ -32,6 +32,8 @@ use yii\web\ForbiddenHttpException;
  * You should usually override [[checkAccess()]] to check whether the current user has the privilege to perform
  * the specified action against the specified model.
  *
+ * For more details and usage information on ActiveController, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -54,7 +56,7 @@ class ActiveController extends Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -65,7 +67,7 @@ class ActiveController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function actions()
     {
@@ -104,7 +106,7 @@ class ActiveController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function verbs()
     {

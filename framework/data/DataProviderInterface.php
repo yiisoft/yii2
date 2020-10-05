@@ -13,6 +13,8 @@ namespace yii\data;
  * Data providers are components that sort and paginate data, and provide them to widgets
  * such as [[\yii\grid\GridView]], [[\yii\widgets\ListView]].
  *
+ * For more details and usage information on DataProviderInterface, see the [guide article on data providers](guide:output-data-providers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -26,7 +28,7 @@ interface DataProviderInterface
      *
      * This method will be implicitly called by [[getModels()]] and [[getKeys()]] if it has not been called before.
      *
-     * @param boolean $forcePrepare whether to force data preparation even if it has been done before.
+     * @param bool $forcePrepare whether to force data preparation even if it has been done before.
      */
     public function prepare($forcePrepare = false);
 
@@ -34,14 +36,14 @@ interface DataProviderInterface
      * Returns the number of data models in the current page.
      * This is equivalent to `count($provider->getModels())`.
      * When [[getPagination|pagination]] is false, this is the same as [[getTotalCount|totalCount]].
-     * @return integer the number of data models in the current page.
+     * @return int the number of data models in the current page.
      */
     public function getCount();
 
     /**
      * Returns the total number of data models.
      * When [[getPagination|pagination]] is false, this is the same as [[getCount|count]].
-     * @return integer total number of possible data models.
+     * @return int total number of possible data models.
      */
     public function getTotalCount();
 
@@ -64,7 +66,7 @@ interface DataProviderInterface
     public function getSort();
 
     /**
-     * @return Pagination the pagination object. If this is false, it means the pagination is disabled.
+     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination();
 }

@@ -9,24 +9,33 @@ translation, view translation, date and number formatting.
 
 ## Locale and Language <span id="locale-language"></span>
 
-Locale is a set of parameters that defines the user's language, country and any special variant preferences 
-that the user wants to see in their user interface. It is usually identified by an ID consisting of a language 
-ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States. 
-For consistency, all locale IDs used in Yii applications should be canonicalized to the format of 
+### Locale
+
+Locale is a set of parameters that defines the user's language, country and any special variant preferences
+that the user wants to see in their user interface. It is usually identified by an ID consisting of a language
+ID and a region ID. 
+
+For example, the ID `en-US` stands for the locale of "English and the United States".
+
+For consistency reasons, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-More details about locale can be found in the 
+[ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
+More details about locale can be found in the
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+
+### Language
 
 In Yii, we often use the term "language" to refer to a locale.
 
-A Yii application uses two kinds of languages: [[yii\base\Application::$sourceLanguage|source language]] and
-[[yii\base\Application::$language|target language]]. The former refers to the language in which the text messages
-in the source code are written, while the latter is the language that should be used to display content to end users.
+A Yii application uses two kinds of languages: 
+* [[yii\base\Application::$sourceLanguage|source language]]: This refers to the language in which the text messages in the source code are written.
+* [[yii\base\Application::$language|target language]]: This is the language that should be used to display content to end users.
+
 The so-called message translation service mainly translates a text message from source language to target language.
 
-You can configure application languages in the application configuration like the following:
+### Configuration
+You can configure application languages in the "application configuration" like the following:
 
 ```php
 return [
@@ -41,8 +50,8 @@ return [
 ```
 
 The default value for the [[yii\base\Application::$sourceLanguage|source language]] is `en-US`, meaning
-US English. It is recommended that you keep this default value unchanged, because it is usually much easier
-to find people who can translate from English to other languages than from non-English to non-English.
+US English. It is **recommended** that you keep this default value unchanged. Usually it is much easier
+to find people who can translate from "English to other languages" than from "non-English to non-English".
 
 You often need to set the [[yii\base\Application::$language|target language]] dynamically based on different 
 factors, such as the language preference of end users. Instead of configuring it in the application configuration,
@@ -53,20 +62,27 @@ you can use the following statement to change the target language:
 \Yii::$app->language = 'zh-CN';
 ```
 
+> Tip: If your source language varies among different parts of your code, you can
+> override the source language for different message sources, which are described in the next section.
+
 ## Message Translation <span id="message-translation"></span>
 
+### From source language to target language
 The message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
-to another (usually the [[yii\base\Application::$language|target language]]). It does the translation by looking
-up the message to be translated in a message source which stores the original messages and the translated messages.
-If the message is found, the corresponding translated message will be returned; otherwise the original message will be 
+to another (usually the [[yii\base\Application::$language|target language]]). 
+
+It does the translation by looking up the message to be translated in a message source which stores the original messages and the translated messages. If the message is found, the corresponding translated message will be returned; otherwise the original message will be 
 returned untranslated.
 
+### How to implement
 To use the message translation service, you mainly need to do the following work:
 
-* Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
-* Configure one or multiple message sources in which the message translation service can look for translated messages;
-* Let the translators translate messages and store them in the message source(s).
+1. Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method.
+2. Configure one or multiple message sources in which the message translation service can look for translated messages.
+3. Let the translators translate messages and store them in the message source(s).
 
+
+#### 1. Wrap a text message
 The method [[Yii::t()]] can be used like the following,
 
 ```php
@@ -76,6 +92,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 where the second parameter refers to the text message to be translated, while the first parameter refers to 
 the name of the category which is used to categorize the message. 
 
+#### 2. Configure one or multiple message sources
 The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) `translate`
 method to perform the actual translation work. The component can be configured in the application configuration as follows,
 
@@ -98,16 +115,48 @@ method to perform the actual translation work. The component can be configured i
 ],
 ```
 
-In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. The pattern
-`app*` indicates that all message categories whose names start with `app` should be translated using this
-message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations. Each
-PHP file corresponds to the messages of a single category. By default, the file name should be the same as
-the category name. However, you may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category
-to a PHP file with a different naming approach. In the above example, the category `app/error` is mapped to
-the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
-the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
+In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. 
 
-Beside storing the messages in PHP files, you may also use the following message sources to store translated messages
+##### Category wildcards with `*` symbol
+
+The pattern `app*` indicates that all message categories whose names start with `app` should be translated using this
+message source. 
+
+#### 3. Let the translators translate messages and store them in the message source(s)
+
+The [[yii\i18n\PhpMessageSource]] class uses PHP files with a simple PHP array to store message translations. 
+These files contain a map of the messages in `source language` to the translation in the `target language`.
+
+> Info: You can automatically generate these PHP files by using the [`message` command](#message-command),
+> which will be introduced later in this chapter.
+
+Each PHP file corresponds to the messages of a single category. By default, the file name should be the same as
+the category name. Example for `app/messages/nl-NL/main.php:`
+
+```php
+<?php
+
+/**
+* Translation map for nl-NL
+*/
+return [
+    'welcome' => 'welkom'
+];
+
+```
+
+
+##### File mapping
+
+You may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category to a PHP file with a different naming approach. 
+
+In the above example, the category `app/error` is mapped to the PHP file `@app/messages/ru-RU/error.php` 
+(assuming `ru-RU` is the target language). 
+However, without this configuration the category would be mapped to `@app/messages/ru-RU/app/error.php` instead.
+
+#####  Other storage types
+
+Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
 
 - [[yii\i18n\GettextMessageSource]] uses GNU Gettext MO or PO files to maintain translated messages.
@@ -182,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: Parameter formatting requires the installation of the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
+> Note: Parameter formatting requires the installation of the [intl PHP extension](https://secure.php.net/manual/en/intro.intl.php).
 
 You can use either the short form or the full form to specify a placeholder with formatting:
 
@@ -253,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
@@ -276,7 +325,7 @@ You can also specify a custom pattern to format the time value:
 echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Spellout <span id="spellout"></span>
@@ -367,7 +416,7 @@ while `one` matches `21` or `101`:
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
 specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
@@ -431,10 +480,11 @@ do not match either one of them. Following each possible parameter value, you sh
 it in a pair of curly brackets.
 
 
-### Specifying default translation <span id="default-translation"></span>
+### Specifying default message source <span id="default-message-source"></span>
 
-You can specify default translations that will be used as a fallback for categories that don't match any other translation.
-This translation should be marked with `*`. In order to do it add the following to the application config:
+You can specify default message source that will be used as a fallback for category that doesn't match any
+configured category. You can do that by configuring a wildcard category `*`. In order to do that, add the following
+to the application config:
 
 ```php
 //configure i18n component
@@ -629,9 +679,9 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 > and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
-### Using the `message` command <a name="message-command"></a>
+### Using the `message` command <span id="message-command"></span>
 
-Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files] or to [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
+Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
 First of all you need to create a configuration file. Decide where you want to store it and then issue the command 
 
@@ -688,12 +738,12 @@ See the [Data Formatting](output-formatting.md) section for details.
 
 ## Setting Up PHP Environment <span id="setup-environment"></span>
 
-Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its I18N features,
+Yii uses the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to provide most of its I18N features,
 such as the date and number formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
 Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
 only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
-The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
+The [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
 provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
 formatting result of date and number values. To ensure your website produces the same results across all environments,
 it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)
@@ -705,6 +755,7 @@ To find out which version of ICU is used by PHP, you can run the following scrip
 <?php
 echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
+echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 ```
 
 It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features
@@ -715,4 +766,4 @@ numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
 to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
 on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
-used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb).
+used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb).

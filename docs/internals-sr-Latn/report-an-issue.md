@@ -1,4 +1,4 @@
-Prijavite Problem
+Prijavite problem
 =================
 
 Molimo da ispratite smernice ispod kada prijavljujete problem kako bi vaš problem bio što pre razrešen:

@@ -27,7 +27,7 @@ Se hai già Composer installato assicurati di avere una versione aggiornata. Puo
 
 Una volta installato Composer, puoi installare Yii eseguendo questo comando in una directory accessbile via web:
 
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Il primo comando installa il [plugin composer asset](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -106,7 +106,7 @@ di Yii. Puoi verificare le richieste in due modi:
   ```
 
 Devi configurare la tua installazione di PHP in modo che soddisfi le richieste minime di Yii. E' molto importante che tu stia usando 
-PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](http://www.php.net/manual/en/pdo.installation.php) e un driver
+PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](https://secure.php.net/manual/en/pdo.installation.php) e un driver
 di database di PDO (come ad esempio `pdo_mysql` per i database MySQL), se la tua applicazione richiede un database.
 
 
@@ -160,8 +160,8 @@ DocumentRoot "path/to/basic/web"
 
 ### Configurazione consigliata di Nginx <span id="recommended-nginx-configuration"></span>
 
-Devi aver installato PHP con il demone [FPM](http://php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
-Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.local` con
+Devi aver installato PHP con il demone [FPM](https://secure.php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
+Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.test` con
 il nome reale del server web.
 
 ```
@@ -172,7 +172,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

@@ -19,11 +19,11 @@ When an [entry script](structure-entry-scripts.md) creates an application, it wi
 a [configuration](concept-configurations.md) and apply it to the application, as follows:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // load application configuration
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // instantiate and configure the application
 (new yii\web\Application($config))->run();
@@ -192,6 +192,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ]
 ```
 
+> Info: Debug panel on development environment will not work when this property is enabled.
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
@@ -232,12 +233,10 @@ specific controllers. In the following example, `account` will be mapped to
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
@@ -358,7 +357,7 @@ More details about this property can be found in the [Internationalization](tuto
 
 This property is provided as an alternative way of setting the default time zone of the PHP runtime.
 By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example:
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). For example:
 
 ```php
 [
@@ -366,6 +365,7 @@ By configuring this property, you are essentially calling the PHP function
 ]
 ```
 
+For more details on the implications of setting the time zone, please check the [section on date formatting](output-formatting.md#time-zones).
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 

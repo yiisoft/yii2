@@ -1,0 +1,113 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_YII2_PHP_IMAGE: yiisoftware/yii2-php:7.4-apache
+  DOCKER_MYSQL_IMAGE: percona:5.7
+  DOCKER_POSTGRES_IMAGE: postgres:9.3
+
+before_script:
+  - apk add --no-cache git curl docker-compose
+  - docker info
+  - cd tests
+
+stages:
+  - travis
+  - test
+  - cleanup
+
+test:
+  stage: test
+  script:
+    - docker-compose up --build -d
+    - docker-compose run --rm php vendor/bin/phpunit -v --exclude caching,db,data --log-junit tests/_junit/test.xml
+
+caching:
+  stage: test
+  only:
+    - tests/caching
+    - tests/full
+  script:
+    - export COMPOSE_FILE=docker-compose.yml:docker-compose.${CI_BUILD_NAME}.yml
+    - docker-compose up --build -d
+    - docker-compose run --rm php vendor/bin/phpunit -v --group caching --exclude db
+
+db:
+  stage: test
+  only:
+    - tests/mysql
+    - tests/full
+  script:
+    - docker-compose up --build -d
+    - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql,mssql,cubrid,oci
+
+
+mysql:
+  stage: test
+  only:
+    - tests/mysql
+    - tests/full
+  script:
+    - export COMPOSE_FILE=docker-compose.yml:docker-compose.${CI_BUILD_NAME}.yml
+    - docker-compose up --build -d
+    # wait for db (retry X times)
+    - docker-compose run --rm php bash -c "while ! curl mysql:3306; do ((c++)) && ((c==30)) && break; sleep 2; done"
+    - docker-compose run --rm php vendor/bin/phpunit -v --group mysql
+
+
+pgsql:
+  stage: test
+  only:
+    - tests/pgsql
+    - tests/full
+  script:
+    - export COMPOSE_FILE=docker-compose.yml:docker-compose.${CI_BUILD_NAME}.yml
+    - docker-compose up --build -d
+    # wait for db (retry X times)
+    - docker-compose run --rm php bash -c 'while [ true ]; do curl postgres:5432; if [ $? == 52 ]; then break; fi; ((c++)) && ((c==25)) && break; sleep 2; done'
+    - docker-compose run --rm php vendor/bin/phpunit -v --group pgsql
+
+
+cubrid:
+  stage: test
+  only:
+    - tests/cubrid
+    - tests/extra
+  script:
+    - cd cubrid
+    - docker-compose up --build -d
+    # wait for db (retry X times)
+    - docker-compose run --rm php bash -c 'while [ true ]; do curl cubrid:1523; if [ $? == 56 ]; then break; fi; ((c++)) && ((c==20)) && break; sleep 3; done'
+    - sleep 5
+    - docker-compose run --rm php /project/vendor/bin/phpunit -v --group cubrid
+
+
+mssql:
+  stage: test
+  only:
+    - tests/mssql
+    - tests/extra
+  script:
+    - cd mssql
+    - docker-compose up --build -d
+    # wait for db (retry X times)
+    - docker-compose run --rm php bash -c 'while [ true ]; do curl mssql:1433; if [ $? == 52 ]; then break; fi; ((c++)) && ((c==15)) && break; sleep 5; done'
+    - sleep 3
+    # Note: Password has to be the last parameter
+    - docker-compose run --rm sqlcmd sh -c 'sqlcmd -S mssql -U sa -Q "CREATE DATABASE yii2test" -P Microsoft-12345'
+    - docker-compose run --rm php vendor/bin/phpunit -v --group mssql
+
+
+travis:
+  stage: travis
+  only:
+    - travis
+  script:
+    - export COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml:docker-compose.pgsql.yml
+    - docker-compose up --build -d
+    # wait for dbs ...
+    - sleep 10
+    - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,xcache,zenddata,cubrid
+

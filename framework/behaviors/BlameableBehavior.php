@@ -8,7 +8,6 @@
 namespace yii\behaviors;
 
 use Yii;
-use yii\base\Event;
 use yii\db\BaseActiveRecord;
 
 /**
@@ -29,8 +28,13 @@ use yii\db\BaseActiveRecord;
  *
  * By default, BlameableBehavior will fill the `created_by` and `updated_by` attributes with the current user ID
  * when the associated AR object is being inserted; it will fill the `updated_by` attribute
- * with the current user ID when the AR object is being updated. If your attribute names are different, you may configure
- * the [[createdByAttribute]] and [[updatedByAttribute]] properties like the following:
+ * with the current user ID when the AR object is being updated.
+ *
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. `created_by` and `updated_by` should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ *
+ * If your attribute names are different, you may configure the [[createdByAttribute]] and [[updatedByAttribute]]
+ * properties like the following:
  *
  * ```php
  * public function behaviors()
@@ -63,15 +67,20 @@ class BlameableBehavior extends AttributeBehavior
      */
     public $updatedByAttribute = 'updated_by';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * In case, when the property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     public $value;
+    /**
+     * @var mixed Default value for cases when the user is guest
+     * @since 2.0.14
+     */
+    public $defaultValue;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -86,17 +95,38 @@ class BlameableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
-     * In case, when the [[value]] property is `null`, the value of `Yii::$app->user->id` will be used as the value.
+     * In case, when the [[value]] property is `null`, the value of [[defaultValue]] will be used as the value.
      */
     protected function getValue($event)
     {
-        if ($this->value === null) {
-            $user = Yii::$app->get('user', false);
-            return $user && !$user->isGuest ? $user->id : null;
+        if ($this->value === null && Yii::$app->has('user')) {
+            $userId = Yii::$app->get('user')->id;
+            if ($userId === null) {
+                return $this->getDefaultValue($event);
+            }
+
+            return $userId;
+        } elseif ($this->value === null) {
+            return $this->getDefaultValue($event);
         }
 
         return parent::getValue($event);
+    }
+
+    /**
+     * Get default value
+     * @param \yii\base\Event $event
+     * @return array|mixed
+     * @since 2.0.14
+     */
+    protected function getDefaultValue($event)
+    {
+        if ($this->defaultValue instanceof \Closure || (is_array($this->defaultValue) && is_callable($this->defaultValue))) {
+            return call_user_func($this->defaultValue, $event);
+        }
+
+        return $this->defaultValue;
     }
 }

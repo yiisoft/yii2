@@ -8,9 +8,7 @@
 namespace yiiunit\framework\console;
 
 use yii\console\Controller;
-use yiiunit\framework\di\stubs\QuxInterface;
-use yiiunit\framework\web\stubs\Bar;
-use yii\validators\EmailValidator;
+use yii\console\Response;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -18,6 +16,44 @@ use yii\validators\EmailValidator;
  */
 class FakeController extends Controller
 {
+    public $test;
+
+    public $testArray = [];
+
+    public $alias;
+
+    private static $_wasActionIndexCalled = false;
+
+    public static function getWasActionIndexCalled()
+    {
+        $wasCalled = self::$_wasActionIndexCalled;
+        self::$_wasActionIndexCalled = false;
+
+        return $wasCalled;
+    }
+
+    public function options($actionID)
+    {
+        return array_merge(parent::options($actionID), [
+            'test',
+            'testArray',
+            'alias',
+        ]);
+    }
+
+    public function optionAliases()
+    {
+        return [
+            't' => 'test',
+            'ta' => 'testArray',
+            'a' => 'alias',
+        ];
+    }
+
+    public function actionIndex()
+    {
+        self::$_wasActionIndexCalled = true;
+    }
 
     public function actionAksi1($fromParam, $other = 'default')
     {
@@ -31,5 +67,42 @@ class FakeController extends Controller
 
     public function actionAksi3($available, $missing)
     {
+    }
+
+    public function actionAksi4()
+    {
+        return $this->test;
+    }
+
+    public function actionAksi5()
+    {
+        return $this->alias;
+    }
+
+    public function actionAksi6()
+    {
+        return $this->testArray;
+    }
+
+    public function actionTrimargs($param1 = null)
+    {
+        return func_get_args();
+    }
+
+    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
+    {
+        return $simpleArgument;
+    }
+
+    public function actionStatus($status = 0)
+    {
+        return $status;
+    }
+
+    public function actionResponse($status = 0)
+    {
+        $response = new Response();
+        $response->exitStatus = (int) $status;
+        return $response;
     }
 }

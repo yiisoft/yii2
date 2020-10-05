@@ -19,11 +19,11 @@
 [конфігурацію](concept-configurations.md) та застосує її до додатка, наприклад:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // завантаження конфігурації додатка
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // створення екземпляру додатка і його налаштування
 (new yii\web\Application($config))->run();
@@ -232,12 +232,10 @@ Yii встановлює відповідність між ідентифіка�
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
@@ -358,7 +356,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 Дана властивість надає альтернативний спосіб встановлення часової зони за замовчуванням у процесі роботи додатка.
 Таким чином, вказуючи дану властивість, ви, по суті, викликаєте PHP-функцію 
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Наприклад,
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). Наприклад,
 
 ```php
 [

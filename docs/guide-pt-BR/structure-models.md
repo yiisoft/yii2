@@ -43,8 +43,8 @@ echo $model->name;
 ```
 
 Você também pode acessar os atributos como elementos de um array, graças ao suporte 
-de [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) e 
-[ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) pelo 
+de [ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) e 
+[ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php) pelo 
 [[yii\base\Model]]:
 
 ```php
@@ -266,8 +266,8 @@ mensagens apropriadas de erros serão exibidas para ajudar o usuário a corrigi-
 Você pode chamar o método [[yii\base\Model::validate()]] para validar os dados 
 recebidos. O método usará as regras de validação declaradas em [[yii\base\Model::rules()]] 
 para validar todos os atributos relevantes. Se nenhum erro for encontrado, o método 
-retornará true. Caso contrário, o método irá manter os erros na propriedade 
-[[yii\base\Model::errors]] e retornará false. Por exemplo,
+retornará `true`. Caso contrário, o método irá manter os erros na propriedade 
+[[yii\base\Model::errors]] e retornará `false`. Por exemplo,
 
 ```php
 $model = new \app\models\ContactForm;

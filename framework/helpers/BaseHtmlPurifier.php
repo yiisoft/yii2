@@ -18,7 +18,7 @@ namespace yii\helpers;
 class BaseHtmlPurifier
 {
     /**
-     * Passes markup through HTMLPurifier making it safe to output to end user
+     * Passes markup through HTMLPurifier making it safe to output to end user.
      *
      * @param string $content The HTML content to purify
      * @param array|\Closure|null $config The config to use for HtmlPurifier.
@@ -50,10 +50,10 @@ class BaseHtmlPurifier
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $purifier->config->set('Cache.SerializerPermissions', 0775);
 
+        static::configure($configInstance);
         if ($config instanceof \Closure) {
             call_user_func($config, $configInstance);
         }
-        static::configure($configInstance);
 
         return $purifier->purify($content);
     }

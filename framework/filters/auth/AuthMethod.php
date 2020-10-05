@@ -10,10 +10,11 @@ namespace yii\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\web\UnauthorizedHttpException;
-use yii\web\User;
+use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\Response;
+use yii\web\UnauthorizedHttpException;
+use yii\web\User;
 
 /**
  * AuthMethod is a base class implementing the [[AuthInterface]] interface.
@@ -39,23 +40,24 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @var array list of action IDs that this filter will be applied to, but auth failure will not lead to error.
      * It may be used for actions, that are allowed for public, but return some additional data for authenticated users.
      * Defaults to empty, meaning authentication is not optional for any action.
-     * @see isOptional
+     * Since version 2.0.10 action IDs can be specified as wildcards, e.g. `site/*`.
+     * @see isOptional()
      * @since 2.0.7
      */
     public $optional = [];
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
-        $response = $this->response ? : Yii::$app->getResponse();
+        $response = $this->response ?: Yii::$app->getResponse();
 
         try {
             $identity = $this->authenticate(
-                $this->user ? : Yii::$app->getUser(),
-                $this->request ? : Yii::$app->getRequest(),
+                $this->user ?: Yii::$app->getUser(),
+                $this->request ?: Yii::$app->getRequest(),
                 $response
             );
         } catch (UnauthorizedHttpException $e) {
@@ -68,39 +70,46 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
         if ($identity !== null || $this->isOptional($action)) {
             return true;
-        } else {
-            $this->challenge($response);
-            $this->handleFailure($response);
-            return false;
         }
+
+        $this->challenge($response);
+        $this->handleFailure($response);
+
+        return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handleFailure($response)
     {
-        throw new UnauthorizedHttpException('You are requesting with an invalid credential.');
+        throw new UnauthorizedHttpException('Your request was made with invalid credentials.');
     }
 
     /**
      * Checks, whether authentication is optional for the given action.
      *
-     * @param Action $action
-     * @return boolean
+     * @param Action $action action to be checked.
+     * @return bool whether authentication is optional or not.
      * @see optional
      * @since 2.0.7
      */
     protected function isOptional($action)
     {
         $id = $this->getActionId($action);
-        return in_array($id, $this->optional, true);
+        foreach ($this->optional as $pattern) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

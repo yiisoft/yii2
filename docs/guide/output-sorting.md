@@ -80,7 +80,7 @@ $sort->route = 'article/index';
 // display links leading to sort by name and age, respectively
 echo $sort->link('name') . ' | ' . $sort->link('age');
 
-// displays: /index.php?r=article/index&sort=age
+// displays: /index.php?r=article%2Findex&sort=age
 echo $sort->createUrl('age');
 ```
 

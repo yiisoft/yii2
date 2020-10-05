@@ -9,9 +9,9 @@ $object->label = trim($label);
 
 A desvantagem do código acima é que você teria que chamar `trim ()` em todos os lugares onde você definir a propriedade `label` no seu código. Se, no futuro, a propriedade `label` receber um novo requisito, tais como a primeira letra deve ser capitalizado, você teria que modificar novamente todos os pedaços de código que atribui um valor para a propriedade `label`. A repetição de código leva a erros, e é uma prática que você deve evitar sempre que possível.
 
-Para resolver este problema, o Yii introduz uma classe base chamada [[yii\base\Object]] que suporta definições de propriedades baseadas nos métodos *getter* e *setter* da classe. Se uma classe precisar dessa funcionalidade, ela deve estender a classe [[yii\base\Object]], ou de uma classe-filha.
+Para resolver este problema, o Yii introduz uma classe base chamada [[yii\base\BaseObject]] que suporta definições de propriedades baseadas nos métodos *getter* e *setter* da classe. Se uma classe precisar dessa funcionalidade, ela deve estender a classe [[yii\base\BaseObject]], ou de uma classe-filha.
 
-> Informação: Quase todas as classes nativas (core) do framework Yii estendem de [[yii\base\Object]] ou de uma classe-filha. Isto significa que sempre que você vê um método *getter* ou *setter* em uma classe nativa (core), você pode usá-lo como uma propriedade.
+> Informação: Quase todas as classes nativas (core) do framework Yii estendem de [[yii\base\BaseObject]] ou de uma classe-filha. Isto significa que sempre que você vê um método *getter* ou *setter* em uma classe nativa (core), você pode usá-lo como uma propriedade.
 
 Um método getter é um método cujo nome inicia com a palavra `get`; um método setter inicia com `set`.
 O nome depois do prefixo `get` ou `set` define o nome da propriedade. Por exemplo, um getter `getLabel()` e/ou um setter `setLabel()` define a propriedade chamada `label`, como mostrado no código a seguir:
@@ -19,9 +19,9 @@ O nome depois do prefixo `get` ou `set` define o nome da propriedade. Por exempl
 ```php
 namespace app\components;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     private $_label;
 

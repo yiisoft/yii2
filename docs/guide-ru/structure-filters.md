@@ -87,7 +87,7 @@ class ActionTimeFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         $time = microtime(true) - $this->_startTime;
-        Yii::trace("Action '{$action->uniqueId}' spent $time second.");
+        Yii::debug("Action '{$action->uniqueId}' spent $time second.");
         return parent::afterAction($action, $result);
     }
 }
@@ -293,7 +293,7 @@ public function behaviors()
 
 Фильтр по типу запроса *(VerbFilter)* проверяет, разрешено ли запросам HTTP выполнять затребованные ими действия.
 Если нет, то будет выброшено исключение HTTP с кодом 405. В следующем примере в фильтре по типу запроса указан обычный
-набор разрешённых методов запроса при выполнения CRUD операций.
+набор разрешённых методов запроса при выполнении CRUD операций.
 
 ```php
 use yii\filters\VerbFilter;
@@ -340,7 +340,10 @@ public function behaviors()
 }
 ```
 
-Фильтрация Cors может быть настроена с помощью свойства `cors`.
+Если вам необходимо добавить CORS-фильтрацию к [[yii\rest\ActiveController]] в вашем API, обратитесь к разделу
+[Контроллеры](rest-controllers.md#cors).
+
+Фильтрация Cors может быть настроена с помощью свойства [[yii\filters\Cors::$cors|$cors]].
 
 * `cors['Origin']`: массив, используемый для определения источников. Может принимать значение `['*']` (все) или
   `['http://www.myserver.net', 'http://www.myotherserver.com']`. По умолчанию значение равно `['*']`.

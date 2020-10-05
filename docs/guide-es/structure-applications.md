@@ -20,11 +20,11 @@ Cuando un [script de entrada](structure-entry-scripts.md) crea una aplicación, 
 una [configuración](concept-configurations.md) y la aplicará a la aplicación, como se muestra a continuación:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // carga la configuración de la aplicación
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // instancia y configura la aplicación
 (new yii\web\Application($config))->run();
@@ -215,12 +215,10 @@ para controladores específicos. En el siguiente ejemplo, `account` será mapead
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
@@ -337,7 +335,7 @@ Puedes encontrar más detalles de esta propiedad en la sección [Internacionaliz
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 Esta propiedad es provista como una forma alternativa de definir el `time zone` de PHP por defecto en tiempo de ejecución.
-Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](http://php.net/manual/es/function.date-default-timezone-set.php).
+Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](https://secure.php.net/manual/es/function.date-default-timezone-set.php).
 Por ejemplo:
 
 ```php

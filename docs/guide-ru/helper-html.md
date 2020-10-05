@@ -2,7 +2,7 @@ Html-помощник
 =============
 
 Каждое веб-приложение формирует большое количество HTML-разметки. Если разметка статическая, её можно эффективно
-сформировать [смешиванием PHP и HTML в одном файле](http://php.net/manual/ru/language.basic-syntax.phpmode.php), но
+сформировать [смешиванием PHP и HTML в одном файле](https://secure.php.net/manual/ru/language.basic-syntax.phpmode.php), но
 когда разметка динамическая, становится сложно формировать её без дополнительной помощи. Yii предоставляет такую помощь
 в виде Html-помощника, который обеспечивает набор статических методов для обработки часто-используемых HTML тэгов, их
 атрибутов и содержимого.
@@ -43,7 +43,7 @@ Html-помощник
 Дополнительные атрибуты используются во многих методах Html-помощника и в различных виджетах. Во всех этих случаях в
 дело вступают механизмы дополнительной обработки данных, о которых следует знать:
 
-- Если значение равно null, соответствующий атрибут не будет выведен.
+- Если значение равно `null`, соответствующий атрибут не будет выведен.
 - Атрибуты, значения которых имеют тип boolean, будут интерпретированы как
   [логические атрибуты](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 - Значения атрибутов будут экранированы с использованием метода [[yii\helpers\Html::encode()|Html::encode()]].
@@ -155,8 +155,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### Экранирование контента <span id="encoding-and-decoding-content"></span>
 
 Для корректного и безопасного отображения контента специальные символы в HTML-коде должны быть экранированы. В чистом
-PHP это осуществляется с помощью функций [htmlspecialchars](http://www.php.net/manual/ru/function.htmlspecialchars.php)
-и [htmlspecialchars_decode](http://www.php.net/manual/ru/function.htmlspecialchars-decode.php). Проблема использования
+PHP это осуществляется с помощью функций [htmlspecialchars](https://secure.php.net/manual/ru/function.htmlspecialchars.php)
+и [htmlspecialchars_decode](https://secure.php.net/manual/ru/function.htmlspecialchars-decode.php). Проблема использования
 этих функций заключается в том, что приходится указывать кодировку и дополнительные флаги во время каждого вызова.
 Поскольку флаги всё время одинаковы, а кодировка остаётся одной и той же в пределах приложения, Yii в целях
 безопасности предоставляет два компактных и простых в использовании метода:
@@ -244,11 +244,11 @@ $decodedUserName = Html::decode($userName);
 Сигнатура методов для формирования радио-переключателей и чекбоксов немного отличается: 
 
 ```php
-<?= Html::radio('agree', true, ['label' => 'Я согласен']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => 'Я согласен']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => 'Я согласен']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => 'Я согласен']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
 Выпадающие и обычные списки могут быть сформированы следующим образом:
@@ -347,18 +347,18 @@ echo Html::getAttributeName('dates[0]');
 Для формирования встроенных скриптов и стилей есть два метода:
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 Результатом будет:
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Привет!");', ['defer' => true]);
+<?= Html::script('alert("Привет!");') ?>
 
 Результатом будет:
 
-<script defer>alert("Привет!");</script>
+<script>alert("Привет!");</script>
 ```
 
 Если вы хотите подключить внешний CSS-файл:

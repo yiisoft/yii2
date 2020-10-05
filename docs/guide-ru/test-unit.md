@@ -15,10 +15,11 @@
 Запуск тестов шаблонов проектов basic и advanced
 ------------------------------------------------
 
-Следуйте инструкциям в `apps/advanced/tests/README.md` и `apps/basic/tests/README.md`.
+- [Инструкции для шаблона advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-testing.md).  
+- [Инструкции для шаблона basic](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing).
 
 Модульные тесты фреймворка
 --------------------------
 
 Если вам необходимо запустить набор модульных тестов для самого Yii, прочитайте
-"[Подготовка к разработке Yii2](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/getting-started.md)".
+"[Подготовка к разработке Yii 2](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/getting-started.md)".
