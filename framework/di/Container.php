@@ -467,10 +467,12 @@ class Container extends Component
                 } else {
                     if (PHP_VERSION_ID >= 80000) {
                         $c = $param->getType();
+                        $isClass = $c !== null && !$param->getType()->isBuiltin();
                     } else {
                         $c = $param->getClass();
+                        $isClass = $c !== null;
                     }
-                    $dependencies[] = Instance::of($c === null ? null : $c->getName());
+                    $dependencies[] = Instance::of($isClass ? $c->getName() : null);
                 }
             }
         }
@@ -567,13 +569,16 @@ class Container extends Component
 
         foreach ($reflection->getParameters() as $param) {
             $name = $param->getName();
+
             if (PHP_VERSION_ID >= 80000) {
                 $class = $param->getType();
+                $isClass = $class !== null && !$param->getType()->isBuiltin();
             } else {
                 $class = $param->getClass();
+                $isClass = $class !== null;
             }
 
-            if ($class !== null) {
+            if ($isClass) {
                 $className = $class->getName();
                 if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
