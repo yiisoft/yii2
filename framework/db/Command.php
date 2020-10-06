@@ -246,6 +246,9 @@ class Command extends Component
         }
 
         $sql = $this->getSql();
+        if ($sql === '') {
+            return;
+        }
 
         if ($this->db->getTransaction()) {
             // master is in a transaction. use the same connection.
