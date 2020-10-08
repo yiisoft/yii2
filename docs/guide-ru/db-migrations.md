@@ -446,7 +446,7 @@ class m150811_220037_drop_position_column_from_post_table extends Migration
 
 ### Добавление промежуточной таблицы
 
-Если имя миграции задано как `create_junction_table_for_xxx_and_yyy_tables`, файл будет содержать код для создания промежуточной таблцы.
+Если имя миграции задано как `create_junction_table_for_xxx_and_yyy_tables`, файл будет содержать код для создания промежуточной таблицы.
 
 ```php
 yii migrate/create create_junction_table_for_post_and_tag_tables
