@@ -366,8 +366,8 @@ class BaseConsole
      */
     public static function ansiColorizedSubstr($string, $start, $length)
     {
-        if ($start < 0 || $length < 0) {
-            throw new \Exception('Feature not supported');
+        if ($start < 0 || $length <= 0) {
+            return '';
         }
 
         $textItems = preg_split(self::ansiCodesPattern(), $string);
