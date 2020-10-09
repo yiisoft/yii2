@@ -345,15 +345,23 @@ class Table extends Widget
             $totalWidth += $columnWidth;
         }
 
-        $relativeWidth = $screenWidth / $totalWidth;
-
         if ($totalWidth > $screenWidth) {
+            $minWidth = 3;
+            $fixWidths = [];
+            $relativeWidth = $screenWidth / $totalWidth;
             foreach ($this->columnWidths as $j => $width) {
-                $this->columnWidths[$j] = (int) ($width * $relativeWidth);
-                if ($j === count($this->columnWidths)) {
-                    $this->columnWidths = $totalWidth;
+                $scaledWidth = (int) ($width * $relativeWidth);
+                if ($scaledWidth < $minWidth) {
+                    $fixWidths[$j] = 3;
                 }
-                $totalWidth -= $this->columnWidths[$j];
+            }
+
+            $totalFixWidth = array_sum($fixWidths);
+            $relativeWidth = ($screenWidth - $totalFixWidth) / ($totalWidth - $totalFixWidth);
+            foreach ($this->columnWidths as $j => $width) {
+                if (!array_key_exists($j, $fixWidths)) {
+                    $this->columnWidths[$j] = (int) ($width * $relativeWidth);
+                }
             }
         }
     }

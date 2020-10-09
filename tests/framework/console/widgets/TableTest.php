@@ -463,4 +463,35 @@ EXPECTED;
                 ->run()
         );
     }
+
+    /**
+     * @param $smallString
+     * @dataProvider dataMinimumWidth
+     */
+    public function testMinimumWidth($smallString)
+    {
+        $bigString = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+
+        (new Table())
+            ->setHeaders(['t1', 't2', ''])
+            ->setRows([
+                [$bigString, $bigString, $smallString],
+            ])
+            ->setScreenWidth(20)
+            ->run();
+
+        // Without exceptions
+        $this->assertTrue(true);
+    }
+
+    public function dataMinimumWidth()
+    {
+        return [
+            ['X'],
+            [''],
+            [['X', 'X', 'X']],
+            [[]],
+            [['']]
+        ];
+    }
 }
