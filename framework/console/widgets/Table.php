@@ -243,36 +243,35 @@ class Table extends Widget
 
         $buffer = '';
         $arrayPointer = [];
-        $finalChunk = [];
-        $alreadyPrintedCells = [];
+        $renderedChunkTexts = [];
         for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($size as $index => $cellSize) {
                 $cell = isset($row[$index]) ? $row[$index] : null;
                 $prefix = '';
-                $chunk = '';
                 if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
                 }
                 if (is_array($cell)) {
-                    if (empty($finalChunk[$index])) {
-                        $finalChunk[$index] = '';
+                    if (empty($renderedChunkTexts[$index])) {
+                        $renderedChunkTexts[$index] = '';
+                        $start = 0;
                         $prefix = $this->listPrefix;
                         if (!isset($arrayPointer[$index])) {
                             $arrayPointer[$index] = 0;
                         }
+                    } else {
+                        $start = mb_strwidth($renderedChunkTexts[$index], Yii::$app->charset);
                     }
-                    $chunk = $cell[$arrayPointer[$index]];
-                    $finalChunk[$index] .= $chunk;
-                    if (isset($cell[$arrayPointer[$index] + 1]) && $finalChunk[$index] === $cell[$arrayPointer[$index]]) {
+                    $chunk = Console::ansiColorizedSubstr($cell[$arrayPointer[$index]], $start, $cellSize - 4);
+                    $renderedChunkTexts[$index] .= Console::stripAnsiFormat($chunk);
+                    $fullChunkText = Console::stripAnsiFormat($cell[$arrayPointer[$index]]);
+                    if (isset($cell[$arrayPointer[$index] + 1]) && $renderedChunkTexts[$index] === $fullChunkText) {
                         $arrayPointer[$index]++;
-                        $finalChunk[$index] = '';
+                        $renderedChunkTexts[$index] = '';
                     }
                 } else {
-                    if (!isset($alreadyPrintedCells[$index])) {
-                        $chunk = $cell;
-                    }
-                    $alreadyPrintedCells[$index] = true;
+                    $chunk = Console::ansiColorizedSubstr($cell, ($cellSize * $i) - ($i * 2), $cellSize - 2);
                 }
                 $chunk = $prefix . $chunk;
                 $repeat = $cellSize - Console::ansiStrwidth($chunk) - 1;

@@ -379,4 +379,88 @@ EXPECTED;
         ]);
         $this->assertEqualsWithoutLE($table, $table);
     }
+
+    public function testLineBreakTableCell()
+    {
+        $table = new Table();
+
+        $expected = <<<"EXPECTED"
+╔══════════════════════╗
+║ test                 ║
+╟──────────────────────╢
+║ AAAAAAAAAAAAAAAAAAAA ║
+║ BBBBBBBBBBBBBBBBBBBB ║
+║ CCCCC                ║
+╟──────────────────────╢
+║ • AAAAAAAAAAAAAAAAAA ║
+║ BBBBBBB              ║
+║ • CCCCCCCCCCCCCCCCCC ║
+║ DDDDDDD              ║
+╚══════════════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test'])
+                ->setRows([
+                    ['AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCC'],
+                    [[
+                        'AAAAAAAAAAAAAAAAAABBBBBBB',
+                        'CCCCCCCCCCCCCCCCCCDDDDDDD',
+                    ]],
+                ])
+                ->setScreenWidth(25)
+                ->run()
+        );
+    }
+
+    public function testColorizedLineBreakTableCell()
+    {
+        $table = new Table();
+
+        $expected = <<<"EXPECTED"
+╔══════════════════════╗
+║ test                 ║
+╟──────────────────────╢
+║ \e[33mAAAAAAAAAAAAAAAAAAAA\e[0m ║
+║ \e[33mBBBBBBBBBBBBBBBBBBBB\e[0m ║
+║ \e[33mCCCCC\e[0m                ║
+╟──────────────────────╢
+║ \e[31mAAAAAAAAAAAAAAAAAAAA\e[0m ║
+║ \e[32mBBBBBBBBBBBBBBBBBBBB\e[0m ║
+║ \e[34mCCCCC\e[0m                ║
+╟──────────────────────╢
+║ • \e[31mAAAAAAAAAAAAAAAAAA\e[0m ║
+║ \e[31mBBBBBBB\e[0m              ║
+║ • \e[33mCCCCCCCCCCCCCCCCCC\e[0m ║
+║ \e[33mDDDDDDD\e[0m              ║
+╟──────────────────────╢
+║ • \e[35mAAAAAAAAAAAAAAAAAA\e[0m ║
+║ \e[31mBBBBBBB\e[0m              ║
+║ • \e[32mCCCCCCCCCCCCCCCCCC\e[0m ║
+║ \e[34mDDDDDDD\e[0m              ║
+╚══════════════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test'])
+                ->setRows([
+                    [Console::renderColoredString('%yAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCC%n')],
+                    [Console::renderColoredString('%rAAAAAAAAAAAAAAAAAAAA%gBBBBBBBBBBBBBBBBBBBB%bCCCCC%n')],
+                    [[
+                        Console::renderColoredString('%rAAAAAAAAAAAAAAAAAABBBBBBB%n'),
+                        Console::renderColoredString('%yCCCCCCCCCCCCCCCCCCDDDDDDD%n'),
+                    ]],
+                    [[
+                        Console::renderColoredString('%mAAAAAAAAAAAAAAAAAA%rBBBBBBB%n'),
+                        Console::renderColoredString('%gCCCCCCCCCCCCCCCCCC%bDDDDDDD%n'),
+                    ]],
+                ])
+                ->setScreenWidth(25)
+                ->run()
+        );
+    }
 }
