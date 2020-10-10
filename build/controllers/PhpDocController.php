@@ -722,43 +722,45 @@ class PhpDocController extends Controller
                 ];
             }
 
+            if (\count($props) === 0) {
+                continue;
+            }
+
             ksort($props);
 
-            if (\count($props) > 0) {
-                $phpdoc .= " *\n";
-                foreach ($props as $propName => &$prop) {
-                    $docline = ' * @';
-                    $docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
-                    $note = '';
-                    if (isset($prop['get'], $prop['set'])) {
-                        if ($prop['get']['type'] != $prop['set']['type']) {
-                            $note = ' Note that the type of this property differs in getter and setter.'
-                                  . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';
-                        }
-                    } elseif (isset($prop['get'])) {
-                        if (!$this->hasSetterInParents($className, $propName)) {
-                            $note = ' This property is read-only.';
-                            //$docline .= '-read';
-                        }
-                    } elseif (isset($prop['set'])) {
-                        if (!$this->hasGetterInParents($className, $propName)) {
-                            $note = ' This property is write-only.';
-                            //$docline .= '-write';
-                        }
-                    } else {
-                        continue;
+            $phpdoc .= " *\n";
+            foreach ($props as $propName => &$prop) {
+                $docLine = ' * @property';
+                $note = '';
+                if (isset($prop['get'], $prop['set'])) {
+                    if ($prop['get']['type'] != $prop['set']['type']) {
+                        $note = ' Note that the type of this property differs in getter and setter.'
+                                . ' See [[get' . ucfirst($propName) . '()]] '
+                                . ' and [[set' . ucfirst($propName) . '()]] for details.';
                     }
-                    $docline .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
-                    $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
-                    foreach ($comment as &$cline) {
-                        $cline = ltrim($cline, '* ');
+                } elseif (isset($prop['get'])) {
+                    if (!$this->hasSetterInParents($className, $propName)) {
+                        $note = ' This property is read-only.';
+                        $docLine .= '-read';
                     }
-                    $docline = wordwrap($docline . implode(' ', $comment), 110, "\n * ") . "\n";
-
-                    $phpdoc .= $docline;
+                } elseif (isset($prop['set'])) {
+                    if (!$this->hasGetterInParents($className, $propName)) {
+                        $note = ' This property is write-only.';
+                        $docLine .= '-write';
+                    }
+                } else {
+                    continue;
                 }
-                $phpdoc .= " *\n";
+                $docLine .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
+                $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
+                foreach ($comment as &$cline) {
+                    $cline = ltrim($cline, '* ');
+                }
+                $docLine = wordwrap($docLine . implode(' ', $comment), 110, "\n * ") . "\n";
+
+                $phpdoc .= $docLine;
             }
+            $phpdoc .= " *\n";
         }
 
         return [$className, $phpdoc];

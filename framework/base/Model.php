@@ -639,7 +639,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $lines = [];
         $errors = $showAllErrors ? $this->getErrors() : $this->getFirstErrors();
         foreach ($errors as $es) {
-            $lines = array_merge((array)$es, $lines);
+            $lines = array_merge($lines, (array)$es);
         }
         return $lines;
     }
