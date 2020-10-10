@@ -211,7 +211,7 @@ class ViewTest extends TestCase
         $this->assertRegExp($pattern, $html);
 
         // with alias but wo timestamp
-        // The timestamp setting won't be redefined because global AssetManager is used
+        // redefine AssetManager timestamp setting
         $view = new View();
         $view->registerJsFile('@web/assetSources/js/jquery.js',
             [
@@ -219,7 +219,7 @@ class ViewTest extends TestCase
                 'depends' => 'yii\web\AssetBundle',
             ]); // <script src="/assetSources/js/jquery.js"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertRegExp($pattern, $html);
+        $this->assertNotRegExp($pattern, $html);
 
         // wo depends == wo AssetManager
         $view = new View();
@@ -268,15 +268,15 @@ class ViewTest extends TestCase
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
 
-        // The timestamp setting won't be redefined because global AssetManager is used
+        // redefine AssetManager timestamp setting
         $view = new View();
         $view->registerJsFile('/assetSources/js/jquery.js',
             [
                 'appendTimestamp' => true,
                 'depends' => 'yii\web\AssetBundle',
-            ]); // <script src="/assetSources/js/jquery.js"></script>
+            ]); // <script src="/assetSources/js/jquery.js?v=1602294572"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertNotRegExp($pattern, $html);
+        $this->assertRegExp($pattern, $html);
 
         $view = new View();
         $view->registerJsFile('/assetSources/js/jquery.js',
@@ -357,7 +357,7 @@ class ViewTest extends TestCase
         $this->assertRegExp($pattern, $html);
 
         // with alias but wo timestamp
-        // The timestamp setting won't be redefined because global AssetManager is used
+        // redefine AssetManager timestamp setting
         $view = new View();
         $view->registerCssFile('@web/assetSources/css/stub.css',
             [
@@ -365,7 +365,7 @@ class ViewTest extends TestCase
                 'depends' => 'yii\web\AssetBundle',
             ]); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertRegExp($pattern, $html);
+        $this->assertNotRegExp($pattern, $html);
 
         // wo depends == wo AssetManager
         $view = new View();
@@ -414,15 +414,15 @@ class ViewTest extends TestCase
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
 
-        // The timestamp setting won't be redefined because global AssetManager is used
+        // redefine AssetManager timestamp setting
         $view = new View();
         $view->registerCssFile('/assetSources/css/stub.css',
             [
                 'appendTimestamp' => true,
                 'depends' => 'yii\web\AssetBundle',
-            ]); // <link href="/assetSources/css/stub.css" rel="stylesheet" >
+            ]); // <link href="/assetSources/css/stub.css?v=1602294572" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertNotRegExp($pattern, $html);
+        $this->assertRegExp($pattern, $html);
 
         $view = new View();
         $view->registerCssFile('/assetSources/css/stub.css',
