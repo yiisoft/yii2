@@ -155,4 +155,26 @@ class StringValidatorTest extends TestCase
         $this->assertTrue($val->validate(42));
         $this->assertTrue($val->validate(36.6));
     }
+
+    public function testValidateValueWithStrictMode()
+    {
+        $val = new StringValidator();
+        $val->strict = true;
+
+        // string
+        $this->assertTrue($val->validate('Just some string'));
+
+        // non-scalar
+        $this->assertFalse($val->validate(['array']));
+        $this->assertFalse($val->validate(new \stdClass()));
+        $this->assertFalse($val->validate(null));
+
+        // bool
+        $this->assertFalse($val->validate(true));
+        $this->assertFalse($val->validate(false));
+
+        // number
+        $this->assertFalse($val->validate(42));
+        $this->assertFalse($val->validate(36.6));
+    }
 }
