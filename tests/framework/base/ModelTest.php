@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\base;
 
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yiiunit\data\base\InvalidRulesModel;
 use yiiunit\data\base\RulesModel;
@@ -497,6 +498,22 @@ class ModelTest extends TestCase
         $this->assertTrue($model->validate(['name']), 'Should validate only name attribute');
         $this->assertTrue($model->validate('name'), 'Should validate only name attribute');
         $this->assertFalse($model->validate(), 'Should validate all attributes');
+    }
+
+    public function testValidateWithWrongAttributeNamesAsArray()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $model = new ComplexModel1();
+        # as array
+        $model->validate(['unknown model attribute']);
+    }
+
+    public function testValidateWithWrongAttributeNamesAsString()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $model = new ComplexModel1();
+        # as string
+        $model->validate('unknown model attribute');
     }
 
     public function testFormNameWithAnonymousClass()
