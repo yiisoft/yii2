@@ -362,10 +362,10 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         }
 
         $attributeNames = (array)$attributeNames;
-        $modelAttributeNames = array_keys($this->attributes);
+        $scenarioAttributeNames = $this->activeAttributes();
         foreach ($attributeNames as $attributeName)
-            if (!in_array($attributeName, $modelAttributeNames))
-                throw new InvalidArgumentException("{$attributeName} does not exists in {$this->formName()}.");
+            if (!in_array($attributeName, $scenarioAttributeNames))
+                throw new InvalidArgumentException("{$attributeName} does not exists in {$this->formName()} or is not part of scenario {$scenario}.");
 
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
