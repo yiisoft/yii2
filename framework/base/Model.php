@@ -245,9 +245,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * as the form name. You may override it when the model is used in different forms.
      *
      * @return string the form name of this model class.
+     * @see load()
      * @throws InvalidConfigException when form is defined with anonymous class and `formName()` method is
      * not overridden.
-     * @see load()
      */
     public function formName()
     {
@@ -340,6 +340,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
      * @return bool whether the validation is successful without any error.
      * @throws InvalidArgumentException if the current scenario is unknown.
+     * @throws InvalidArgumentException if the current attributeNames is not part of current scenario or if it's unknown Model attribute.
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
@@ -365,7 +366,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $scenarioAttributeNames = $this->activeAttributes();
         foreach ($attributeNames as $attributeName)
             if (!in_array($attributeName, $scenarioAttributeNames))
-                throw new InvalidArgumentException("{$attributeName} does not exists in {$this->formName()} or is not part of scenario {$scenario}.");
+                throw new InvalidArgumentException("{$attributeName} does not exists in {$this->formName()} or is not part of current scenario {$scenario}.");
 
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
@@ -469,7 +470,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
             if ($rule instanceof Validator) {
                 $validators->append($rule);
             } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-                $validator = Validator::createValidator($rule[1], $this, (array)$rule[0], array_slice($rule, 2));
+                $validator = Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
                 $validators->append($validator);
             } else {
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
@@ -565,6 +566,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the errors for all attributes or a single attribute.
      * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+     * @property array An array of errors for all attributes. Empty array is returned if no error.
+     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
@@ -580,8 +583,6 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * ]
      * ```
      *
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
-     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
      * @see getFirstErrors()
      * @see getFirstError()
      */
