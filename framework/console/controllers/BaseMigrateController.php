@@ -211,6 +211,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated up successfully.\n", Console::FG_GREEN);
         }
+        return ExitCode::OK;
     }
 
     /**
@@ -272,6 +273,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated down successfully.\n", Console::FG_GREEN);
         }
+        return ExitCode::OK;
     }
 
     /**
@@ -338,6 +340,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " redone.\n", Console::FG_GREEN);
             $this->stdout("\nMigration redone successfully.\n", Console::FG_GREEN);
         }
+        return ExitCode::OK;
     }
 
     /**
@@ -367,13 +370,13 @@ abstract class BaseMigrateController extends Controller
     public function actionTo($version)
     {
         if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
-            $this->migrateToVersion($namespaceVersion);
+            return $this->migrateToVersion($namespaceVersion);
         } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
-            $this->migrateToVersion($migrationName);
+            return $this->migrateToVersion($migrationName);
         } elseif ((string) (int) $version == $version) {
-            $this->migrateToTime($version);
+            return $this->migrateToTime($version);
         } elseif (($time = strtotime($version)) !== false) {
-            $this->migrateToTime($time);
+            return $this->migrateToTime($time);
         } else {
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n the full namespaced name of a migration (e.g. app\\migrations\\M101129185401CreateUserTable),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
         }
@@ -464,7 +467,8 @@ abstract class BaseMigrateController extends Controller
         }
 
         if ($this->confirm(
-            "Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+            "Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!"
+        )) {
             $this->truncateDatabase();
             return $this->actionUp();
         }
@@ -826,8 +830,9 @@ abstract class BaseMigrateController extends Controller
         if ($count === 0) {
             $this->stdout("Nothing needs to be done.\n", Console::FG_GREEN);
         } else {
-            $this->actionDown($count);
+            return $this->actionDown($count);
         }
+        return ExitCode::OK;
     }
 
     /**
@@ -844,9 +849,7 @@ abstract class BaseMigrateController extends Controller
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
-                $this->actionUp($i + 1);
-
-                return ExitCode::OK;
+                return $this->actionUp($i + 1);
             }
         }
 
@@ -857,7 +860,7 @@ abstract class BaseMigrateController extends Controller
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
-                    $this->actionDown($i);
+                    return $this->actionDown($i);
                 }
 
                 return ExitCode::OK;
