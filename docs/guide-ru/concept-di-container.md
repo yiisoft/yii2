@@ -110,7 +110,7 @@ $container->get('Foo', [], [
 Допустим, мы работаем над API и у нас есть:
 
 - `app\components\Request`, наследуемый от `yii\web\Request` и реализующий дополнительные возможности.
-- `app\components\Response`, наследуемый от `yii\web\Response` с свойством `format`, по умолчанию инициализируемом как `json`.
+- `app\components\Response`, наследуемый от `yii\web\Response` со свойством `format`, по умолчанию инициализируемом как `json`.
 - `app\storage\FileStorage` и `app\storage\DocumentsReader`, где реализована некая логика для работы с документами в
   неком файловом хранилище:
   
