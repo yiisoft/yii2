@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.38
+-----------------------
+
+* The storage structure of the file cache has been changed when you use `\yii\caching\FileCache::$keyPrefix`.
+It is worth warming up the cache again if there is a logical dependency when working with the file cache.
+
 Upgrade from Yii 2.0.37
 -----------------------
 
