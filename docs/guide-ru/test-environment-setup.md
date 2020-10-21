@@ -14,7 +14,7 @@ Yii 2 официально поддерживает интеграцию с фр
 [`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) и
 [`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced).
 
-Для того, чтобы запустить тесты необходимо установить [Codeception](https://github.com/Codeception/Codeception).
+Для того, чтобы запустить тесты, необходимо установить [Codeception](https://github.com/Codeception/Codeception).
 Сделать это можно как локально, то есть только для текущего проекта, так и глобально для компьютера разработчика.
 
 Для локальной установки используйте следующие команды:
