@@ -50,7 +50,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
   See [Cache Expiration](#cache-expiration) and [Cache Dependencies](#cache-dependencies) to know more.
   
 
-## Cache Components <span id="cache-components"></span>
+## Cache Components
 
 Data caching relies on the so-called *cache components* which represent various cache storage,
 such as memory, files, databases.
@@ -99,7 +99,7 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
   by default by many cache-dependent classes (e.g. [[yii\web\UrlManager]]).
 
 
-### Supported Cache Storage <span id="supported-cache-storage"></span>
+### Supported Cache Storage
 
 Yii supports a wide range of cache storage. The following is a summary:
 
@@ -218,7 +218,7 @@ property. For example, in the application configuration you can write the follow
 To ensure interoperability, only alphanumeric characters should be used.
 
 
-### Cache Expiration <span id="cache-expiration"></span>
+### Cache Expiration
 
 A data item stored in a cache will remain there forever unless it is removed because of some caching policy
 enforcement (e.g. caching space is full and the oldest data are removed). To change this behavior, you can provide
@@ -244,7 +244,7 @@ over the default unlimited duration.
 This will allow you not to pass custom `duration` parameter to [[yii\caching\Cache::set()|set()]] each time.
 
 
-### Cache Dependencies <span id="cache-dependencies"></span>
+### Cache Dependencies
 
 Besides expiration setting, cached data item may also be invalidated by changes of the so-called *cache dependencies*.
 For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
@@ -284,7 +284,7 @@ Below is a summary of the available cache dependencies:
   [[yii\caching\Cache::get()|get()]] may return `false` while [[yii\caching\Cache::exists()|exists()]] returns `true`.
 
 
-## Query Caching <span id="query-caching"></span>
+## Query Caching
 
 Query caching is a special caching feature built on top of data caching. It is provided to cache the result
 of database queries.

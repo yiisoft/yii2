@@ -99,7 +99,7 @@ function ($event) {
 }
 ```
 
-Attaching Behaviors <span id="attaching-behaviors"></span>
+Attaching Behaviors
 -------------------
 
 You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former is more common in practice.

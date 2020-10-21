@@ -54,7 +54,7 @@ These data providers mainly vary in the way how the data source is specified. In
 we will explain the detailed usage of each of these data providers.
 
 
-## Active Data Provider <span id="active-data-provider"></span> 
+## Active Data Provider
 
 To use [[yii\data\ActiveDataProvider]], you should configure its [[yii\data\ActiveDataProvider::query|query]] property.
 It can take either a [[yii\db\Query]] or [[yii\db\ActiveQuery]] object. If the former, the data returned will be arrays;
@@ -99,7 +99,7 @@ By default, [[yii\data\ActiveDataProvider]] uses the `db` application component 
 use a different database connection by configuring the [[yii\data\ActiveDataProvider::db]] property.
 
 
-## SQL Data Provider <span id="sql-data-provider"></span>
+## SQL Data Provider
 
 [[yii\data\SqlDataProvider]] works with a raw SQL statement which is used to fetch the needed
 data. Based on the specifications of [[yii\data\SqlDataProvider::sort|sort]] and 
@@ -340,7 +340,7 @@ class CsvDataProvider extends BaseDataProvider
 }
 ```
 
-## Filtering Data Providers using Data Filters <span id="filtering-data-providers-using-data-filters"></span>
+## Filtering Data Providers using Data Filters
 
 While you can build conditions for active data provider manually as described in
 [Filtering Data](output-data-widgets.md#filtering-data) and [Separate Filter Form](output-data-widgets.md#separate-filter-form)

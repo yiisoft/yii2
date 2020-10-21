@@ -82,7 +82,7 @@ the `request` [application component](structure-application-components.md) to us
   `application/x-www-form-urlencoded` and `multipart/form-data` input formats.
 
 
-## Trying it Out <span id="trying-it-out"></span>
+## Trying it Out
 
 With the above minimal amount of effort, you have already finished your task of creating the RESTful APIs
 for accessing the user data. The APIs you have created include:

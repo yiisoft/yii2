@@ -48,7 +48,7 @@ or other objects which trigger the [view rendering](#rendering-views).
   be recognized by IDEs. It is also a good way of documenting your views.
 
 
-### Security <span id="security"></span>
+### Security
 
 When creating views that generate HTML pages, it is important that you encode and/or filter the data coming
 from end users before presenting them. Otherwise, your application may be subject to
@@ -116,7 +116,7 @@ methodName($view, $params = [])
 ```
 
 
-### Rendering in Controllers <span id="rendering-in-controllers"></span>
+### Rendering in Controllers
 
 Within [controllers](structure-controllers.md), you may call the following controller methods to render views:
 
@@ -218,7 +218,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### Named Views <span id="named-views"></span>
+### Named Views
 
 When you render a view, you can specify the view using either a view name or a view file path/alias. In most cases,
 you would use the former because it is more concise and flexible. We call views specified using names as *named views*.
@@ -248,7 +248,7 @@ actually render the view file `@app/views/post/view.php`, while calling `$this->
 will render the view file `@app/views/post/_overview.php`.
 
 
-### Accessing Data in Views <span id="accessing-data-in-views"></span>
+### Accessing Data in Views
 
 There are two approaches to access data within a view: push and pull.
 
@@ -279,7 +279,7 @@ on context objects. Its drawback is that you need to manually build the data arr
 become tedious and error prone if a view is shared and rendered in different places.
 
 
-### Sharing Data among Views <span id="sharing-data-among-views"></span>
+### Sharing Data among Views
 
 The [[yii\base\View|view component]] provides the [[yii\base\View::params|params]] property that you can use
 to share data among views.
@@ -301,7 +301,7 @@ passed along [[yii\base\View::params|params]]:
 ```
 
 
-## Layouts <span id="layouts"></span>
+## Layouts
 
 Layouts are a special type of views that represent the common parts of multiple views. For example, the pages
 for most Web applications share the same page header and footer. While you can repeat the same page header and footer
@@ -571,7 +571,7 @@ Then in the layout, make sure you have the following code in the `<head>` sectio
 ```
 
 
-### Registering Meta Tags <span id="registering-meta-tags"></span>
+### Registering Meta Tags
 
 Web pages usually need to generate various meta tags needed by different parties. Like page titles, meta tags
 appear in the `<head>` section and are usually generated in layouts.
