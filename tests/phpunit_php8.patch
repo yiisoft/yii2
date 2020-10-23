@@ -1,0 +1,39 @@
+diff --git a/src/Framework/TestCase.php b/src/Framework/TestCase.php
+index 638f42513..b4c7d3a5e 100644
+--- a/src/Framework/TestCase.php
++++ b/src/Framework/TestCase.php
+@@ -905,7 +905,7 @@ protected function runTest()
+         try {
+             $testResult = $method->invokeArgs(
+                 $this,
+-                array_merge($this->data, $this->dependencyInput)
++                array_values(array_merge($this->data, $this->dependencyInput))
+             );
+         } catch (Throwable $_e) {
+             $e = $_e;
+diff --git a/src/Util/Configuration.php b/src/Util/Configuration.php
+index 5c1041608..b2f7a7bd0 100644
+--- a/src/Util/Configuration.php
++++ b/src/Util/Configuration.php
+@@ -162,7 +162,7 @@ protected function __construct($filename)
+     /**
+      * @since  Method available since Release 3.4.0
+      */
+-    final private function __clone()
++    private function __clone()
+     {
+     }
+ 
+diff --git a/src/Util/PHP/Template/TestCaseMethod.tpl.dist b/src/Util/PHP/Template/TestCaseMethod.tpl.dist
+index b48f354cd..d59cdeea7 100644
+--- a/src/Util/PHP/Template/TestCaseMethod.tpl.dist
++++ b/src/Util/PHP/Template/TestCaseMethod.tpl.dist
+@@ -78,7 +78,7 @@ if ('' !== $configurationFilePath) {
+     unset($configuration);
+ }
+ 
+-function __phpunit_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
++function __phpunit_error_handler($errno, $errstr, $errfile, $errline, $errcontext = null)
+ {
+    return true;
+ }
