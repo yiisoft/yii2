@@ -507,17 +507,17 @@ EXPECTED;
 ╟─────────────────┼─────────────────┼─────────────────╢
 ║ \e[0m\e[34mtestcontent11\e[0m   │ \e[0m\e[33mtestcontent12\e[0m   │ testcontent13   ║
 ╟─────────────────┼─────────────────┼─────────────────╢
-║ testcontent21   │ testcontent22   │ - a             ║
-║                 │                 │ - \e[0m\e[35mb\e[0m             ║
-║                 │                 │ - \e[0m\e[32mc\e[0m             ║
+║ testcontent21   │ testcontent22   │ • a             ║
+║                 │                 │ • \e[0m\e[35mb\e[0m             ║
+║                 │                 │ • \e[0m\e[32mc\e[0m             ║
 ╚═════════════════╧═════════════════╧═════════════════╝
 
 EXPECTED;
 
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', Console::ansiFormat('test3', [Console::FG_RED])])
             ->setRows([
-                [Console::ansiFormat('testcontent1', [Console::FG_BLUE]), Console::ansiFormat('testcontent2', [Console::FG_YELLOW]), 'testcontent3'],
-                ['testcontent1', 'testcontent2', [
+                [Console::ansiFormat('testcontent11', [Console::FG_BLUE]), Console::ansiFormat('testcontent12', [Console::FG_YELLOW]), 'testcontent13'],
+                ['testcontent21', 'testcontent22', [
                     'a',
                     Console::ansiFormat('b', [Console::FG_PURPLE]),
                     Console::ansiFormat('c', [Console::FG_GREEN]),
