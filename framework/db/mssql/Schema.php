@@ -364,6 +364,7 @@ SQL;
         $column->enumValues = []; // mssql has only vague equivalents to enum
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
         $column->autoIncrement = $info['is_identity'] == 1;
+        $column->isComputed = (bool)$info['is_computed'];
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
 
@@ -436,6 +437,7 @@ SELECT
  END AS 'data_type',
  [t1].[column_default],
  COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
+ COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsComputed') AS is_computed,
  (
     SELECT CONVERT(VARCHAR, [t2].[value])
 		FROM [sys].[extended_properties] AS [t2]

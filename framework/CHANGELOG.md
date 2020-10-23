@@ -4,9 +4,16 @@ Yii Framework 2 Change Log
 2.0.39 under development
 ------------------------
 
+- Bug #18160, #18192: Fixed `registerFile` with argument depends set does not use the position and appendTimestamp argument, also modify the unit view (baleeny)
+- Bug #18290: Fix response with non-seekable streams (schmunk42)
 - Bug #16418: Fixed `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
 - Bug #18297: Replace usage of deprecated `ReflectionParameter::isArray()` method in PHP8 (baletskyi)
-
+- Bug #18303: Fix creating migration issue for column methods used after defaultValues (wsaid)
+- Bug #18287: Fix for OUTPUT INSERTED and computed columns. Added flag to computed values in table schema (darkdef)
+- Bug #18308: Fixed `\yii\base\Model::getErrorSummary()` reverse order (DrDeath72)
+- Bug #18313: Fix multipart form data parse with double quotes (wsaid)
+- Bug #18317: Additional PHP 8 compatibility fixes (samdark, bizley)
+- Bug #16831: Fix console Table Widget does not render correctly in combination with ANSI formatting (issidorov, cebe)
 
 2.0.38 September 14, 2020
 -------------------------
