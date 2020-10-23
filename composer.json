@@ -115,10 +115,11 @@
         "composer-exit-on-patch-failure": true,
         "patches": {
             "phpunit/phpunit-mock-objects": {
-                "Fix PHP 7 compatibility": "./tests/phpunit_mock_objects.patch"
+                "Fix PHP 7 and 8 compatibility": "./tests/phpunit_mock_objects.patch"
             },
             "phpunit/phpunit": {
-                "Fix PHP 7.2 compatibility": "./tests/phpunit_getopt.patch"
+                "Fix PHP 7 compatibility": "./tests/phpunit_php7.patch",
+                "Fix PHP 8 compatibility": "./tests/phpunit_php8.patch"
             }
         }
     }
