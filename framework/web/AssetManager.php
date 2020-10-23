@@ -298,30 +298,14 @@ class AssetManager extends Component
      */
     public function getAssetUrl($bundle, $asset)
     {
-        if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            if (strncmp($actualAsset, '@web/', 5) === 0) {
-                $asset = substr($actualAsset, 5);
-                $basePath = Yii::getAlias('@webroot');
-                $baseUrl = Yii::getAlias('@web');
-            } else {
-                $asset = Yii::getAlias($actualAsset);
-                $basePath = $this->basePath;
-                $baseUrl = $this->baseUrl;
-            }
-        } else {
-            $basePath = $bundle->basePath;
-            $baseUrl = $bundle->baseUrl;
+        $assetUrl = $this->getActualAssetUrl($bundle, $asset);
+        $assetPath = $this->getAssetPath($bundle, $asset);
+
+        if ($this->appendTimestamp && $assetPath && ($timestamp = @filemtime($assetPath)) > 0) {
+            return "$assetUrl?v=$timestamp";
         }
 
-        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
-            return $asset;
-        }
-
-        if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
-            return "$baseUrl/$asset?v=$timestamp";
-        }
-
-        return "$baseUrl/$asset";
+        return $assetUrl;
     }
 
     /**
@@ -624,5 +608,34 @@ class AssetManager extends Component
         }
         $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
         return sprintf('%x', crc32($path . Yii::getVersion() . '|' . $this->linkAssets));
+    }
+
+    /**
+     * Returns the actual URL for the specified asset. Without parameters.
+     * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
+     * @param AssetBundle $bundle the asset bundle which the asset file belongs to
+     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
+     * @return string the actual URL for the specified asset.
+     * @since 2.0.39
+     */
+    public function getActualAssetUrl($bundle, $asset)
+    {
+        if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
+            if (strncmp($actualAsset, '@web/', 5) === 0) {
+                $asset = substr($actualAsset, 5);
+                $baseUrl = Yii::getAlias('@web');
+            } else {
+                $asset = Yii::getAlias($actualAsset);
+                $baseUrl = $this->baseUrl;
+            }
+        } else {
+            $baseUrl = $bundle->baseUrl;
+        }
+
+        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
+            return $asset;
+        }
+
+        return "$baseUrl/$asset";
     }
 }
