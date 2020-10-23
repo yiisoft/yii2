@@ -503,13 +503,13 @@ EXPECTED;
         // @see https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
         $expected = <<<EXPECTED
 ╔═══════════════╤═══════════════╤═══════════════╗
-║ test1         │ test2         │ \e[0m\e[31mtest3\e[0m         ║
+║ test1         │ test2         │ \e[31mtest3\e[0m         ║
 ╟───────────────┼───────────────┼───────────────╢
-║ \e[0m\e[34mtestcontent11\e[0m │ \e[0m\e[33mtestcontent12\e[0m │ testcontent13 ║
+║ \e[34mtestcontent11\e[0m │ \e[33mtestcontent12\e[0m │ testcontent13 ║
 ╟───────────────┼───────────────┼───────────────╢
 ║ testcontent21 │ testcontent22 │ • a           ║
-║               │               │ • \e[0m\e[35mb\e[0m           ║
-║               │               │ • \e[0m\e[32mc\e[0m           ║
+║               │               │ • \e[35mb\e[0m           ║
+║               │               │ • \e[32mc\e[0m           ║
 ╚═══════════════╧═══════════════╧═══════════════╝
 
 EXPECTED;
