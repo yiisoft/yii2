@@ -399,9 +399,7 @@ class DateValidator extends Validator
     private function getIntlDateFormatter($format)
     {
         if (!isset($this->_dateFormats[$format])) {
-            // if no time was provided in the format string set time to 0 to get a simple date timestamp
-            $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
-            $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $hasTimeInfo ? $this->timeZone : 'UTC', null, $format);
+            $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone, null, $format);
 
             return $formatter;
         }
@@ -435,14 +433,14 @@ class DateValidator extends Validator
      */
     private function parseDateValuePHP($value, $format)
     {
-        // if no time was provided in the format string set time to 0 to get a simple date timestamp
-        $hasTimeInfo = (strpbrk($format, 'HhGgisU') !== false);
-
-        $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
+        $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($this->timeZone));
         $errors = DateTime::getLastErrors();
         if ($date === false || $errors['error_count'] || $errors['warning_count'] || ($this->strictDateFormat && $date->format($format) !== $value)) {
             return false;
         }
+
+        // if no time was provided in the format string set time to 0 to get a simple date timestamp
+        $hasTimeInfo = (strpbrk($format, 'HhGgisU') !== false);
 
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
