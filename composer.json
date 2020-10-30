@@ -81,7 +81,7 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
-        "cweagans/composer-patches": "^1.6",
+        "cweagans/composer-patches": "^1.7",
         "phpunit/phpunit": "4.8.34",
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "~2.2.3",
@@ -115,11 +115,11 @@
         "composer-exit-on-patch-failure": true,
         "patches": {
             "phpunit/phpunit-mock-objects": {
-                "Fix PHP 7 and 8 compatibility": "./tests/phpunit_mock_objects.patch"
+                "Fix PHP 7 and 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_mock_objects.patch"
             },
             "phpunit/phpunit": {
-                "Fix PHP 7 compatibility": "./tests/phpunit_php7.patch",
-                "Fix PHP 8 compatibility": "./tests/phpunit_php8.patch"
+                "Fix PHP 7 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php7.patch",
+                "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch"
             }
         }
     }
