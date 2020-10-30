@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #18247: Added support for the 'session.use_strict_mode' ini directive in `yii\web\Session` (rhertogh)
+- Bug #18263: Fix writing `\yii\caching\FileCache` files to the same directory when `keyPrefix` is set (githubjeka)
 - Bug #18160, #18192: Fixed `registerFile` with argument depends set does not use the position and appendTimestamp argument, also modify the unit view (baleeny)
 - Bug #18290: Fix response with non-seekable streams (schmunk42)
 - Bug #16418: Fixed `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
