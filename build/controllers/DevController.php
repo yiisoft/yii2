@@ -51,6 +51,7 @@ class DevController extends Controller
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
         'bootstrap' => 'git@github.com:yiisoft/yii2-bootstrap.git',
+        'bootstrap4' => 'git@github.com:yiisoft/yii2-bootstrap4.git',
         'codeception' => 'git@github.com:yiisoft/yii2-codeception.git',
         'composer' => 'git@github.com:yiisoft/yii2-composer.git',
         'debug' => 'git@github.com:yiisoft/yii2-debug.git',

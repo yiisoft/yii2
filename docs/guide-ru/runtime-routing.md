@@ -453,8 +453,8 @@ echo Url::previous();
 ]
 ```
 
-> Note: по умолчанию [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] отключен. Чтобы использовать
-  нормализацию его необходимо сконфигурировать.
+> Note: По умолчанию [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] отключен. Чтобы использовать
+  нормализацию, его необходимо сконфигурировать.
 
 ### Методы HTTP <span id="http-methods"></span>
 

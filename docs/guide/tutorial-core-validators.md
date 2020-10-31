@@ -155,7 +155,8 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
   
   Note, that when using `timestampAttribute`, the input value will be converted to a unix timestamp, which by definition is in UTC, so
-  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed.
+  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed (this behavior 
+  can be changed by setting [[yii\validators\DateValidator::$defaultTimeZone|$defaultTimeZone]] since 2.0.39).
 
 - Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
   [[yii\validators\DateValidator::$max|maximum]] timestamp.
@@ -191,8 +192,8 @@ or `1970-01-01` in the input field of a date picker.
 This validator does not validate data. Instead, it assigns a default value to the attributes being validated
 if the attributes are empty.
 
-- `value`: the default value or a PHP callable that returns the default value which will be assigned to
-  the attributes being validated if they are empty. The signature of the PHP callable should be as follows,
+- `value`: the default value or a closure as callback that returns the default value which will be assigned to
+  the attributes being validated if they are empty. The signature of the closure should be as follows,
 
 ```php
 function foo($model, $attribute) {
