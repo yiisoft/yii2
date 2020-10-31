@@ -63,6 +63,41 @@ Upgrade from Yii 2.0.37
 * Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
   to turn it on, set `resolveArrays` of container instance to `true`.
 
+* `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
+  In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
+  `Session::writeSession()` functions changes might be required:
+  * When in strict mode the `openSession()` function should check if the requested session id exists
+    (and mark it for forced regeneration if not).
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode()) {
+        $id = $this->getId();
+        if (!$this->getReadQuery($id)->exists()) {
+            //This session id does not exist, mark it for forced regeneration
+            $this->_forceRegenerateId = $id;
+        }
+    }
+    // ... normal function continues ...
+    ``` 
+  * When in strict mode the `writeSession()` function should ignore writing the session under the old id.
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
+        //Ignore write when forceRegenerate is active for this id
+        return true;
+    }
+    // ... normal function continues ...
+    ```
+  > Note: The sample code above is specific for the `yii\web\DbSession` class.
+    Make sure you use the correct implementation based on your parent class,
+    e.g. `yii\web\CacheSession`, `yii\redis\Session`, `yii\mongodb\Session`, etc.
+  
+  > Note: In case your custom functions call their `parent` functions, there are probably no changes needed to your 
+    code if those parents implement the `useStrictMode` checks.
+
+  > Warning: in case `openSession()` and/or `writeSession()` functions do not implement the `useStrictMode` code
+    the session could be stored under the forced id without warning even if `useStrictMode` is enabled.
+
 Upgrade from Yii 2.0.36
 -----------------------
 

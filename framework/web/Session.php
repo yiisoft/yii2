@@ -68,12 +68,25 @@ use yii\base\InvalidConfigException;
  * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  * @property bool $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
  * false.
+ * @property bool $useStrictMode Whether strict mode is enabled or not.
+ * Note: Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
+    /**
+     * @var string|null Holds the original session module (before a custom handler is registered) so that it can be
+     * restored when a Session component without custom handler is used after one that has.
+     */
+    static protected $_originalSessionModule = null;
+
+    /**
+     * Polyfill for ini directive session.use-strict-mode for PHP < 5.5.2.
+     */
+    static private $_useStrictModePolyfill = false;
+
     /**
      * @var string the name of the session variable that stores the flash message data.
      */
@@ -82,6 +95,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
      */
     public $handler;
+    /**
+     * @var string|null Holds the session id in case useStrictMode is enabled and the session id needs to be regenerated
+     */
+    protected $_forceRegenerateId = null;
 
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
@@ -136,6 +153,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         YII_DEBUG ? session_start() : @session_start();
 
+        if ($this->getUseStrictMode() && $this->_forceRegenerateId) {
+            $this->regenerateID();
+            $this->_forceRegenerateId = null;
+        }
+
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
             $this->updateFlashCounters();
@@ -152,6 +174,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function registerSessionHandler()
     {
+        $sessionModuleName = session_module_name();
+        if (static::$_originalSessionModule === null) {
+            static::$_originalSessionModule = $sessionModuleName;
+        }
+
         if ($this->handler !== null) {
             if (!is_object($this->handler)) {
                 $this->handler = Yii::createObject($this->handler);
@@ -180,6 +207,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                     [$this, 'gcSession']
                 );
             }
+        } elseif (
+            $sessionModuleName !== static::$_originalSessionModule
+            && static::$_originalSessionModule !== null
+            && static::$_originalSessionModule !== 'user'
+        ) {
+            session_module_name(static::$_originalSessionModule);
         }
     }
 
@@ -191,6 +224,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->getIsActive()) {
             YII_DEBUG ? session_write_close() : @session_write_close();
         }
+
+        $this->_forceRegenerateId = null;
     }
 
     /**
@@ -512,6 +547,43 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $this->freeze();
         ini_set('session.gc_maxlifetime', $value);
         $this->unfreeze();
+    }
+
+    /**
+     * @var bool Whether strict mode is enabled or not.
+     * When `true` this setting prevents the session component to use an uninitialized session ID.
+     * Note: Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.
+     * Warning! Although enabling strict mode is mandatory for secure sessions, the default value of 'session.use-strict-mode' is `0`.
+     * @see https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
+     * @since 2.0.38
+     */
+    public function setUseStrictMode($value)
+    {
+        if (PHP_VERSION_ID < 50502) {
+            if ($this->getUseCustomStorage() || !$value) {
+                self::$_useStrictModePolyfill = $value;
+            } else {
+                throw new InvalidConfigException('Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.');
+            }
+        } else {
+            $this->freeze();
+            ini_set('session.use_strict_mode', $value ? '1' : '0');
+            $this->unfreeze();
+        }
+    }
+
+    /**
+     * @return bool Whether strict mode is enabled or not.
+     * @see setUseStrictMode()
+     * @since 2.0.38
+     */
+    public function getUseStrictMode()
+    {
+        if (PHP_VERSION_ID < 50502) {
+            return self::$_useStrictModePolyfill;
+        }
+
+        return (bool)ini_get('session.use_strict_mode');
     }
 
     /**
