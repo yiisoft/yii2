@@ -211,7 +211,12 @@ class Controller extends \yii\base\Controller
             }
 
             if ($key !== null) {
-                if ($param->isArray()) {
+                if (PHP_VERSION_ID >= 80000) {
+                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+                } else {
+                    $isArray = $param->isArray();
+                }
+                if ($isArray) {
                     $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
                 }
                 $args[] = $actionParams[$key] = $params[$key];
@@ -550,7 +555,13 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
-            if ($reflection->getClass() !== null) {
+            if (PHP_VERSION_ID >= 80000) {
+                $class = $reflection->getType();
+            } else {
+                $class = $reflection->getClass();
+            }
+
+            if ($class !== null) {
                 continue;
             }
             $name = $reflection->getName();

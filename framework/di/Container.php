@@ -93,6 +93,8 @@ use yii\helpers\ArrayHelper;
  *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
+ * @property bool $resolveArrays Whether to attempt to resolve elements in array dependencies. This property
+ * is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -120,6 +122,10 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
+    /**
+     * @var bool whether to attempt to resolve elements in array dependencies
+     */
+    private $_resolveArrays = false;
 
 
     /**
@@ -452,17 +458,21 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
                     break;
-                } elseif ($param->isDefaultValueAvailable()) {
+                }
+
+                if ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
                 } else {
                     if (PHP_VERSION_ID >= 80000) {
                         $c = $param->getType();
+                        $isClass = $c !== null && !$param->getType()->isBuiltin();
                     } else {
                         $c = $param->getClass();
+                        $isClass = $c !== null;
                     }
-                    $dependencies[] = Instance::of($c === null ? null : $c->getName());
+                    $dependencies[] = Instance::of($isClass ? $c->getName() : null);
                 }
             }
         }
@@ -491,7 +501,7 @@ class Container extends Component
                     $class = $reflection->getName();
                     throw new InvalidConfigException("Missing required parameter \"$name\" when instantiating \"$class\".");
                 }
-            } elseif (is_array($dependency)) {
+            } elseif ($this->_resolveArrays && is_array($dependency)) {
                 $dependencies[$index] = $this->resolveDependencies($dependency, $reflection);
             }
         }
@@ -559,12 +569,23 @@ class Container extends Component
 
         foreach ($reflection->getParameters() as $param) {
             $name = $param->getName();
-            if (($class = $param->getClass()) !== null) {
+
+            if (PHP_VERSION_ID >= 80000) {
+                $class = $param->getType();
+                $isClass = $class !== null && !$param->getType()->isBuiltin();
+            } else {
+                $class = $param->getClass();
+                $isClass = $class !== null;
+            }
+
+            if ($isClass) {
                 $className = $class->getName();
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
                     break;
-                } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
+                }
+
+                if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
                     $args[] = $params[$name];
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
@@ -681,5 +702,14 @@ class Container extends Component
 
             $this->setSingleton($class, $definition);
         }
+    }
+
+    /**
+     * @param bool $value whether to attempt to resolve elements in array dependencies
+     * @since 2.0.37
+     */
+    public function setResolveArrays($value)
+    {
+        $this->_resolveArrays = (bool) $value;
     }
 }

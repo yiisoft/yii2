@@ -1383,6 +1383,7 @@ PATTERN;
             'having' => $from->having,
             'union' => $from->union,
             'params' => $from->params,
+            'withQueries' => $from->withQueries,
         ]);
     }
 
