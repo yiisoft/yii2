@@ -18,6 +18,7 @@ use yiiunit\framework\di\stubs\Alpha;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\BarSetter;
 use yiiunit\framework\di\stubs\Beta;
+use yiiunit\framework\di\stubs\Car;
 use yiiunit\framework\di\stubs\Corge;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
@@ -174,7 +175,7 @@ class ContainerTest extends TestCase
 
 
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
-            return[$a, \get_class($b), $c];
+            return [$a, \get_class($b), $c];
         };
         $result = Yii::$container->invoke($myFunc, ['a']);
         $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
@@ -264,7 +265,8 @@ class ContainerTest extends TestCase
             'qux.using.closure' => function () {
                 return new Qux();
             },
-            'rollbar', 'baibaratsky\yii\rollbar\Rollbar'
+            'rollbar',
+            'baibaratsky\yii\rollbar\Rollbar'
         ]);
         $container->setDefinitions([]);
 
@@ -280,8 +282,7 @@ class ContainerTest extends TestCase
         try {
             $container->get('rollbar');
             $this->fail('InvalidConfigException was not thrown');
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
         }
     }
@@ -545,5 +546,31 @@ class ContainerTest extends TestCase
         $alpha = $container->get(Alpha::className());
         $this->assertInstanceOf(Beta::className(), $alpha->beta);
         $this->assertInstanceOf($QuxInterface, $alpha->omega);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18284
+     */
+    public function testNamedConstructorParameters()
+    {
+        $test = (new Container())->get(Car::className(), [
+            'name' => 'Hello',
+            'color' => 'red',
+        ]);
+        $this->assertSame('Hello', $test->name);
+        $this->assertSame('red', $test->color);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18284
+     */
+    public function testInvalidConstructorParameters()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Dependencies indexed by name and by position in the same array are not allowed.');
+        (new Container())->get(Car::className(), [
+            'color' => 'red',
+            'Hello',
+        ]);
     }
 }
