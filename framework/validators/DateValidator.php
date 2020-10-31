@@ -126,10 +126,11 @@ class DateValidator extends Validator
      * This can be the same attribute as the one being validated. If this is the case,
      * the original value will be overwritten with the timestamp value after successful validation.
      *
-     * Note, that when using this property, the input value will be converted to a unix timestamp,
-     * which by definition is in UTC, so a conversion from the [[$timeZone|input time zone]] to UTC
-     * will be performed. When defining [[$timestampAttributeFormat]] you can control the conversion by
-     * setting [[$timestampAttributeTimeZone]] to a different value than `'UTC'`.
+     * Note, that when using this property, the input value will be converted to a unix timestamp, which by definition
+     * is in [[$defaultTimeZone|default UTC time zone]], so a conversion from the [[$timeZone|input time zone]] to
+     * the default one will be performed. If you want to change the default time zone, set the [[$defaultTimeZone]] property.
+     * When defining [[$timestampAttributeFormat]] you can further control the conversion by setting
+     * [[$timestampAttributeTimeZone]] to a different value than `'UTC'`.
      *
      * @see timestampAttributeFormat
      * @see timestampAttributeTimeZone
