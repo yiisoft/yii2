@@ -16,6 +16,8 @@ Yii Framework 2 Change Log
 - Bug #18313: Fix multipart form data parse with double quotes (wsaid)
 - Bug #18317: Additional PHP 8 compatibility fixes (samdark, bizley)
 - Bug #16831: Fix console Table Widget does not render correctly in combination with ANSI formatting (issidorov, cebe)
+- Enh #18285: Added possibility in DI container define constructor parameters as name-value pairs (vjik)
+
 
 2.0.38 September 14, 2020
 -------------------------
