@@ -56,7 +56,7 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: pecl
           extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached, mysql, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, sqlite
-          ini-values: date.timezone='UTC'
+          ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
       - name: Install php-sqlsrv
         run: |
             curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - >/dev/null 2>&1
@@ -114,6 +114,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.2
+          ini-values: session.save_path=${{ runner.temp }}
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
