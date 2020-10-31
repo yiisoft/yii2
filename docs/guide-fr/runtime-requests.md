@@ -93,7 +93,7 @@ et avant le nom du script d'entrée.
 
 
 
-## Enntêtes HTTP  <span id="http-headers"></span> 
+## Entêtes HTTP  <span id="http-headers"></span> 
 
 Vous pouvez obtenir les entêtes HTTP via la [[yii\web\HeaderCollection|collection d'entêtes]] qui est retournée par la propriété [[yii\web\Request::headers]]. Par exemple :
 
