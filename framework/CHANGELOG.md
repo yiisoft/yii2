@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #18317: Additional PHP 8 compatibility fixes (samdark, bizley)
 - Bug #16831: Fix console Table Widget does not render correctly in combination with ANSI formatting (issidorov, cebe)
 - Enh #18304: Added support constructor parameters with default values in DI container (vjik) 
+- Enh #18351: Added option to change default timezone for parsing formats without time part in `yii\validators\DateValidator` (bizley)
 
 
 2.0.38 September 14, 2020
