@@ -458,17 +458,21 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
                     break;
-                } elseif ($param->isDefaultValueAvailable()) {
+                }
+
+                if ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
                 } else {
                     if (PHP_VERSION_ID >= 80000) {
                         $c = $param->getType();
+                        $isClass = $c !== null && !$param->getType()->isBuiltin();
                     } else {
                         $c = $param->getClass();
+                        $isClass = $c !== null;
                     }
-                    $dependencies[] = Instance::of($c === null ? null : $c->getName());
+                    $dependencies[] = Instance::of($isClass ? $c->getName() : null);
                 }
             }
         }
@@ -565,12 +569,23 @@ class Container extends Component
 
         foreach ($reflection->getParameters() as $param) {
             $name = $param->getName();
-            if (($class = $param->getClass()) !== null) {
+
+            if (PHP_VERSION_ID >= 80000) {
+                $class = $param->getType();
+                $isClass = $class !== null && !$param->getType()->isBuiltin();
+            } else {
+                $class = $param->getClass();
+                $isClass = $class !== null;
+            }
+
+            if ($isClass) {
                 $className = $class->getName();
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
                     break;
-                } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
+                }
+
+                if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
                     $args[] = $params[$name];
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {

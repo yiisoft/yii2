@@ -191,8 +191,8 @@ or `1970-01-01` in the input field of a date picker.
 This validator does not validate data. Instead, it assigns a default value to the attributes being validated
 if the attributes are empty.
 
-- `value`: the default value or a PHP callable that returns the default value which will be assigned to
-  the attributes being validated if they are empty. The signature of the PHP callable should be as follows,
+- `value`: the default value or a closure as callback that returns the default value which will be assigned to
+  the attributes being validated if they are empty. The signature of the closure should be as follows,
 
 ```php
 function foo($model, $attribute) {
