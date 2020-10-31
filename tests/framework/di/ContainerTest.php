@@ -534,7 +534,7 @@ class ContainerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18304
      */
-    public function testNulledConstrutorParameters()
+    public function testNulledConstructorParameters()
     {
         $alpha = (new Container())->get(Alpha::className());
         $this->assertInstanceOf(Beta::className(), $alpha->beta);
