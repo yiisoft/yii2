@@ -11,7 +11,7 @@ other people your great work.
   that can be used without Yii, we will refer to them using the term "package" or "library".
 
 
-## Using Extensions <span id="using-extensions"></span>
+## Using Extensions
 
 To use an extension, you need to install it first. Most extensions are distributed as [Composer](https://getcomposer.org/)
 packages which can be installed by taking the following two simple steps:
@@ -90,7 +90,7 @@ are under the `myext` namespace, then you can include the following code in your
 ```
 
 
-## Creating Extensions <span id="creating-extensions"></span>
+## Creating Extensions
 
 You may consider creating an extension when you feel the need to share with other people your great code.
 An extension can contain any code you like, such as a helper class, a widget, a module, etc.
@@ -204,7 +204,7 @@ to refer to a NPM package. When Composer installs a Bower or NPM package, by def
 installed under the `@vendor/bower/PackageName` and `@vendor/npm/Packages` directories, respectively.
 These two directories can also be referred to using the shorter aliases `@bower/PackageName` and `@npm/PackageName`.
 
-For more details about asset management, please refer to the [Assets](structure-assets.md#bower-npm-assets) section.
+For more details about asset management, please refer to the [Assets](structure-assets.md#bower-and-npm-assets-installation) section.
 
 
 #### Class Autoloading <span id="class-autoloading"></span>
@@ -250,7 +250,7 @@ extension, we use `yii\imagine` as the namespace for its classes.
 Do not use `yii`, `yii2` or `yiisoft` as your vendor name. These names are reserved for use by the Yii core code.
 
 
-#### Bootstrapping Classes <span id="bootstrapping-classes"></span>
+#### Bootstrapping Classes
 
 Sometimes, you may want your extension to execute some code during the [bootstrapping process](runtime-bootstrapping.md)
 stage of an application. For example, your extension may want to respond to the application's `beginRequest` event

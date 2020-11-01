@@ -143,7 +143,7 @@ inner cache has been invalidated. Therefore, you must be careful in setting the 
 of the nested caches, otherwise the outdated inner fragments may be kept in the outer fragment.
 
 
-## Dynamic Content <span id="dynamic-content"></span>
+## Dynamic Content
 
 When using fragment caching, you may encounter the situation where a large fragment of content is relatively
 static except at one or a few places. For example, a page header may display the main menu bar together with

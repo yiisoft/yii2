@@ -253,7 +253,7 @@ Read more about working with migrations from different namespaces in
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
 
-### Building Authorization Data <span id="generating-rbac-data"></span>
+### Building Authorization Data
 
 Building authorization data is all about the following tasks:
 
@@ -338,7 +338,7 @@ Migration could be applied by using `yii migrate`.
 ### Using console command
 
 If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a
--[console command](tutorial-console.md#create-command) that will initialize authorization data once via
+-[console command](tutorial-console.md#creating-your-own-console-commands) that will initialize authorization data once via
 APIs offered by `authManager`:
 
 ```php
@@ -648,7 +648,7 @@ class UserGroupRule extends Rule
 }
 ```
 
-Then create your own command/migration as explained [in the previous section](#generating-rbac-data):
+Then create your own command/migration as explained [in the previous section](#building-authorization-data):
 
 ```php
 $auth = Yii::$app->authManager;

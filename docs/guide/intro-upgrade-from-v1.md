@@ -527,7 +527,7 @@ the same goal.
 Please refer to the [Url manager docs](runtime-routing.md) section for more details.
 
 An important change in the naming convention for routes is that camel case names of controllers
-and actions are now converted to lower case where each word is separated by a hypen, e.g. the controller
+and actions are now converted to lower case where each word is separated by a hyphen, e.g. the controller
 id for the `CamelCaseController` will be `camel-case`.
 See the section about [controller IDs](structure-controllers.md#controller-ids) and [action IDs](structure-controllers.md#action-ids) for more details.
 
@@ -536,5 +536,5 @@ Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md#using-both-yii2-yii1) section.
+the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md#using-both-yii2-with-yii) section.
 

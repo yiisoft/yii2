@@ -119,7 +119,7 @@ This alternative approach is most preferable when you are releasing a Yii compon
 3rd-party library. You use the static method like shown above to represent the complex logic of building the
 3rd-party object, and the user of your component only needs to call the static method to configure the component.
 
-## Tree traversal <span id="tree-traversal"></span>
+## Tree traversal
 
 Modules allow arbitrary nesting; a Yii application is essentially a tree of modules.
 Since each of these modules is a service locator it makes sense for children to have access to their parent.

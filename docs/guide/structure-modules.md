@@ -27,7 +27,7 @@ forum/
 ```
 
 
-### Module Classes <span id="module-classes"></span>
+### Module Classes
 
 Each module should have a unique module class which extends from [[yii\base\Module]]. The class should be located
 directly under the module's [[yii\base\Module::basePath|base path]] and should be [autoloadable](concept-autoloading.md).

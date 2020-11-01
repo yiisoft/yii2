@@ -13,7 +13,7 @@ There are two types of applications: [[yii\web\Application|Web applications]] an
 Web requests, while the latter handles console command requests.
 
 
-## Application Configurations <span id="application-configurations"></span>
+## Application Configurations
 
 When an [entry script](structure-entry-scripts.md) creates an application, it will load
 a [configuration](concept-configurations.md) and apply it to the application, as follows:
@@ -588,7 +588,7 @@ as for that of `beforeAction`. That is, controllers are the first objects trigge
 followed by modules (if any), and finally applications.
 
 
-## Application Lifecycle <span id="application-lifecycle"></span>
+## Application Lifecycle
 
 ![Application Lifecycle](images/application-lifecycle.png)
 

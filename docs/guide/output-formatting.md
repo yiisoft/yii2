@@ -125,7 +125,7 @@ Since version 2.0.7 it is also possible to format dates in different calendar sy
 Please refer to the API documentation of the formatters [[yii\i18n\Formatter::$calendar|$calendar]]-property on how to set a different calendar.
 
 
-### Time Zones <span id="time-zones"></span>
+### Time Zones
 
 When formatting date and time values, Yii will convert them to the target [[yii\i18n\Formatter::timeZone|time zone]].
 The value being formatted is assumed to be in UTC, unless a time zone is explicitly given or you have configured
@@ -152,7 +152,7 @@ as set in the PHP configuration.
 > likely that you do not have the latest information in the time zone database installed on your system.
 > You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > for details on updating the time zone database. Please also read
-> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).  
+> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setting-up-php-environment).  
 
 ## Formatting Numbers <span id="numbers"></span>
 
@@ -238,7 +238,7 @@ By default, the currently active [[yii\i18n\Formatter::locale|locale]] is determ
 > Note: The Yii formatter relies on the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to support
 > localized data formatting. Because different versions of the ICU library compiled with PHP may cause different
 > formatting results, it is recommended that you use the same ICU version for all your environments. For more details,
-> please refer to [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
+> please refer to [Setting up your PHP environment for internationalization](tutorial-i18n.md#setting-up-php-environment).
 >
 > If the intl extension is not installed, the data will not be localized. 
 >
