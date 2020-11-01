@@ -17,6 +17,9 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
+ * @property-read Request $request
+ * @property-read Response $response
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
