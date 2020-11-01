@@ -118,7 +118,7 @@ Now you can use most features provided by Yii. For example, you can create Activ
 to work with databases.
 
 
-## Using both Yii2 with Yii
+## Using Yii 2 with Yii 1
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
