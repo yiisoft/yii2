@@ -358,8 +358,11 @@ $container->setSingleton('yii\db\Connection', [
 // "db" ранее зарегистрированный псевдоним
 $db = $container->get('db');
 
-// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
+
+// эквивалентно: $api = new \app\components\Api($host, $apiKey);
+$api = $container->get('app\components\Api', ['host' => $host, 'apiKey' => $apiKey]);
 ```
 
 За кулисами, контейнер внедрения зависимостей делает гораздо больше работы, чем просто создание нового объекта.
