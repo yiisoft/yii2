@@ -143,11 +143,14 @@ class Container extends Component
      * In this case, the constructor parameters and object configurations will be used
      * only if the class is instantiated the first time.
      *
-     * @param string|Instance $class the class Instance, name or an alias name (e.g. `foo`) that was previously registered via [[set()]]
-     * or [[setSingleton()]].
-     * @param array $params a list of constructor parameter values. The parameters should be provided in the order
-     * they appear in the constructor declaration. If you want to skip some parameters, you should index the remaining
-     * ones with the integers that represent their positions in the constructor parameter list.
+     * @param string|Instance $class the class Instance, name or an alias name (e.g. `foo`) that was previously
+     * registered via [[set()]] or [[setSingleton()]].
+     * @param array $params a list of constructor parameter values. Use one of two definitions:
+     *  - Parameters as name-value pairs, for example: `['posts' => PostRepository::class]`.
+     *  - Parameters in the order they appear in the constructor declaration. If you want to skip some parameters,
+     *    you should index the remaining ones with the integers that represent their positions in the constructor
+     *    parameter list.
+     * Dependencies indexed by name and by position in the same array are not allowed.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
@@ -379,15 +382,23 @@ class Container extends Component
         /* @var $reflection ReflectionClass */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
+        $addDependencies = [];
         if (isset($config['__construct()'])) {
-            foreach ($config['__construct()'] as $index => $param) {
-                $dependencies[$index] = $param;
-            }
+            $addDependencies = $config['__construct()'];
             unset($config['__construct()']);
         }
-
         foreach ($params as $index => $param) {
-            $dependencies[$index] = $param;
+            $addDependencies[$index] = $param;
+        }
+
+        $this->validateDependencies($addDependencies);
+
+        if ($addDependencies && is_int(key($addDependencies))) {
+            $dependencies = array_values($dependencies);
+            $dependencies = $this->mergeDependencies($dependencies, $addDependencies);
+        } else {
+            $dependencies = $this->mergeDependencies($dependencies, $addDependencies);
+            $dependencies = array_values($dependencies);
         }
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
@@ -412,6 +423,47 @@ class Container extends Component
         }
 
         return $object;
+    }
+
+    /**
+     * @param array $a
+     * @param array $b
+     * @return array
+     */
+    private function mergeDependencies($a, $b)
+    {
+        foreach ($b as $index => $dependency) {
+            $a[$index] = $dependency;
+        }
+        return $a;
+    }
+
+    /**
+     * @param array $parameters
+     * @throws InvalidConfigException
+     */
+    private function validateDependencies($parameters)
+    {
+        $hasStringParameter = false;
+        $hasIntParameter = false;
+        foreach ($parameters as $index => $parameter) {
+            if (is_string($index)) {
+                $hasStringParameter = true;
+                if ($hasIntParameter) {
+                    break;
+                }
+            } else {
+                $hasIntParameter = true;
+                if ($hasStringParameter) {
+                    break;
+                }
+            }
+        }
+        if ($hasIntParameter && $hasStringParameter) {
+            throw new InvalidConfigException(
+                'Dependencies indexed by name and by position in the same array are not allowed.'
+            );
+        }
     }
 
     /**
@@ -463,7 +515,7 @@ class Container extends Component
                 }
 
                 if ($param->isDefaultValueAvailable()) {
-                    $dependencies[] = $param->getDefaultValue();
+                    $dependencies[$param->getName()] = $param->getDefaultValue();
                 } else {
                     if (PHP_VERSION_ID >= 80000) {
                         $c = $param->getType();
@@ -472,7 +524,7 @@ class Container extends Component
                         $c = $param->getClass();
                         $isClass = $c !== null;
                     }
-                    $dependencies[] = Instance::of($isClass ? $c->getName() : null);
+                    $dependencies[$param->getName()] = Instance::of($isClass ? $c->getName() : null);
                 }
             }
         }
