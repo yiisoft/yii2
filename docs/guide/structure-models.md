@@ -21,7 +21,7 @@ Please refer to the relevant documentation for more details about these advanced
   components built to support [[yii\base\Model]], it is usually the preferable base class for a model.
 
 
-## Attributes <span id="attributes"></span>
+## Attributes
 
 Models represent business data in terms of *attributes*. Each attribute is like a publicly accessible property
 of a model. The method [[yii\base\Model::attributes()]] specifies what attributes a model class has.
@@ -82,7 +82,7 @@ override the magic methods such as `__get()`, `__set()` so that the attributes c
 normal object properties.
 
 
-### Attribute Labels <span id="attribute-labels"></span>
+### Attribute Labels
 
 When displaying values or getting input for attributes, you often need to display some labels associated
 with attributes. For example, given an attribute named `firstName`, you may want to display a label `First Name`
@@ -151,7 +151,7 @@ is being used in, you may return different labels for the same attribute.
   in models is often very convenient and can result in very clean and reusable code.
 
 
-## Scenarios <span id="scenarios"></span>
+## Scenarios
 
 A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
 but it may also be used for the user registration purpose. In different scenarios, a model may use different
@@ -232,7 +232,7 @@ You can, however, use it for other purposes. For example, you may declare [attri
 differently based on the current scenario.
 
 
-## Validation Rules <span id="validation-rules"></span>
+## Validation Rules
 
 When the data for a model is received from end users, it should be validated to make sure it satisfies
 certain rules (called *validation rules*, also known as *business rules*). For example, given a `ContactForm` model,
@@ -304,7 +304,7 @@ An attribute will be validated if and only if it is an active attribute declared
 is associated with one or multiple active rules declared in `rules()`.
 
 
-## Massive Assignment <span id="massive-assignment"></span>
+## Massive Assignment
 
 Massive assignment is a convenient way of populating a model with user inputs using a single line of code.
 It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::$attributes]]
@@ -327,7 +327,7 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### Safe Attributes <span id="safe-attributes"></span>
+### Safe Attributes
 
 Massive assignment only applies to the so-called *safe attributes* which are the attributes listed in
 [[yii\base\Model::scenarios()]] for the current [[yii\base\Model::scenario|scenario]] of a model.
@@ -406,7 +406,7 @@ public function rules()
 In this case attributes `username`, `password` and `secret` are required, but `secret` must be assigned explicitly.
 
 
-## Data Exporting <span id="data-exporting"></span>
+## Data Exporting
 
 Models often need to be exported in different formats. For example, you may want to convert a collection of
 models into JSON or Excel format. The exporting process can be broken down into two independent steps:

@@ -57,12 +57,6 @@ Upgrade from Yii 2.0.38
 * The storage structure of the file cache has been changed when you use `\yii\caching\FileCache::$keyPrefix`.
 It is worth warming up the cache again if there is a logical dependency when working with the file cache.
 
-Upgrade from Yii 2.0.37
------------------------
-
-* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
-  to turn it on, set `resolveArrays` of container instance to `true`.
-
 * `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
   In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
   `Session::writeSession()` functions changes might be required:
@@ -96,7 +90,13 @@ Upgrade from Yii 2.0.37
     code if those parents implement the `useStrictMode` checks.
 
   > Warning: in case `openSession()` and/or `writeSession()` functions do not implement the `useStrictMode` code
-    the session could be stored under the forced id without warning even if `useStrictMode` is enabled.
+    the session could be stored under a malicious id without warning even if `useStrictMode` is enabled.
+
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
 
 Upgrade from Yii 2.0.36
 -----------------------

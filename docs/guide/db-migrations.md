@@ -143,7 +143,7 @@ class m150101_185401_create_news_table extends Migration
 
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
 property. You can use it to manipulate the database schema using the methods as described in
-[Working with Database Schema](db-dao.md#database-schema).
+[Working with Database Schema](db-dao.md#working-with-database-schema).
 
 Rather than using physical types, when creating a table or column you should use *abstract types*
 so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines
@@ -188,7 +188,7 @@ class m150101_185401_create_news_table extends Migration
 A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
 
-## Generating Migrations <span id="generating-migrations"></span>
+## Generating Migrations
 
 Since version 2.0.7 migration console provides a convenient way to create migrations.
 
@@ -982,7 +982,7 @@ yii migrate/create app\\migrations\\Create_studentsExamTable
 
 This generates migration within namespace `app\migrations` creating table `studentsExam`.
 
-### Separated Migrations <span id="separated-migrations"></span>
+### Separated Migrations
 
 Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
 'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect

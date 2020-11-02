@@ -2,12 +2,12 @@ Data widgets
 ============
 
 Yii provides a set of [widgets](structure-widgets.md) that can be used to display data.
-While the [DetailView](#detail-view) widget can be used to display data for a single record,
-[ListView](#list-view) and [GridView](#grid-view) can be used to display a list or table of data records
+While the [DetailView](#detailview) widget can be used to display data for a single record,
+[ListView](#listview) and [GridView](#gridview) can be used to display a list or table of data records
 providing features like pagination, sorting and filtering.
 
 
-DetailView <span id="detail-view"></span>
+DetailView
 ----------
 
 The [[yii\widgets\DetailView|DetailView]] widget displays the details of a single data [[yii\widgets\DetailView::$model|model]].
@@ -59,7 +59,7 @@ echo DetailView::widget([
 ]);
 ```
 
-ListView <span id="list-view"></span>
+ListView
 --------
 
 The [[yii\widgets\ListView|ListView]] widget is used to display data from a [data provider](output-data-providers.md).
@@ -124,7 +124,7 @@ echo ListView::widget([
 These are then also available as variables in the view.
 
 
-GridView <span id="grid-view"></span>
+GridView
 --------
 
 Data grid or [[yii\grid\GridView|GridView]] is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
@@ -224,7 +224,7 @@ You may specify various container HTML options by passing arrays to:
 - [[yii\grid\Column::contentOptions|contentOptions]]
 
 
-#### Data column <span id="data-column"></span>
+#### Data column
 
 [[yii\grid\DataColumn|Data column]] is used for displaying and sorting data. It is the default column type so the specifying class could be omitted when
 using it.
@@ -375,7 +375,7 @@ echo GridView::widget([
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
-### Filtering data <span id="filtering-data"></span>
+### Filtering data
 
 For filtering data, the GridView needs a [model](structure-models.md) that represents the search criteria which is
 usually taken from the filter fields in the GridView table.
@@ -462,7 +462,7 @@ echo GridView::widget([
 ]);
 ```
 
-### Separate filter form <span id="separate-filter-form"></span>
+### Separate filter form
 
 Most of the time using GridView header filters is enough, but in case you need a separate filter form,
 you can easily add it as well. You can create partial view `_search.php` with the following contents:

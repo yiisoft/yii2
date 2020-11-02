@@ -35,7 +35,7 @@ Yii::configure($object, $config);
 Note that, in this case, the configuration array should not contain a `class` element.
 
 
-## Configuration Format <span id="configuration-format"></span>
+## Configuration Format
 
 The format of a configuration can be formally described as:
 
@@ -85,7 +85,7 @@ create an object according to a configuration by using [[Yii::createObject()]]. 
 describe application configurations and widget configurations - two major usages of configurations.
 
 
-### Application Configurations <span id="application-configurations"></span>
+### Application Configurations
 
 The configuration for an [application](structure-applications.md) is probably one of the most complex arrays in Yii.
 This is because the [[yii\web\Application|application]] class has a lot of configurable properties and events.
@@ -183,7 +183,7 @@ The `items` property is also configured with menu items to be displayed.
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
 
 
-## Configuration Files <span id="configuration-files"></span>
+## Configuration Files
 
 When a configuration is very complex, a common practice is to store it in one or multiple PHP files, known as
 *configuration files*. A configuration file returns a PHP array representing the configuration.
@@ -256,7 +256,7 @@ Without using default configurations, you would have to configure `maxButtonCoun
 link pagers.
 
 
-## Environment Constants <span id="environment-constants"></span>
+## Environment Constants
 
 Configurations often vary according to the environment in which an application runs. For example,
 in development environment, you may want to use a database named `mydb_dev`, while on production server

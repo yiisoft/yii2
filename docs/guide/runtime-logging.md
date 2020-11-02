@@ -14,7 +14,7 @@ Using the Yii logging framework involves the following steps:
 In this section, we will mainly describe the first two steps.
 
 
-## Log Messages <span id="log-messages"></span>
+## Log Messages
 
 Recording log messages is as simple as calling one of the following logging methods:
 
@@ -56,7 +56,7 @@ enough messages are logged or when the application ends, the logger object will 
 [[yii\log\Dispatcher|message dispatcher]] to send recorded log messages to the registered [log targets](#log-targets).
 
 
-## Log Targets <span id="log-targets"></span>
+## Log Targets
 
 A log target is an instance of the [[yii\log\Target]] class or its child class. It filters the log messages by their
 severity levels and categories and then exports them to some medium. For example, a [[yii\log\DbTarget|database target]]
@@ -359,7 +359,7 @@ log target classes included in the Yii release.
   as [Monolog](https://github.com/Seldaek/monolog) by using
   [PSR log target extension](https://github.com/samdark/yii2-psr-log-target).
 
-## Performance Profiling <span id="performance-profiling"></span>
+## Performance Profiling
 
 Performance profiling is a special type of message logging that is used to measure the time taken by certain
 code blocks and find out what are the performance bottlenecks. For example, the [[yii\db\Command]] class uses

@@ -8,7 +8,7 @@ controllers will analyze incoming request data, pass them to [models](structure-
 into [views](structure-views.md), and finally generate outgoing responses.
 
 
-## Actions <span id="actions"></span>
+## Actions
 
 Controllers are composed of *actions* which are the most basic units that end users can address and request for
 execution. A controller can have one or multiple actions.
@@ -62,7 +62,7 @@ will redirect the browser to the `view` action with the ID of the newly created 
 the `create` view through which users can provide the needed input.
 
 
-## Routes <span id="routes"></span>
+## Routes
 
 End users address actions through the so-called *routes*. A route is a string that consists of the following parts:
 
@@ -88,7 +88,7 @@ will be executed. For more details on how routes are resolved into actions, plea
 the [Routing and URL Creation](runtime-routing.md) section.
 
 
-## Creating Controllers <span id="creating-controllers"></span>
+## Creating Controllers
 
 In [[yii\web\Application|Web applications]], controllers should extend from [[yii\web\Controller]] or its
 child classes. Similarly in [[yii\console\Application|console applications]], controllers should extend from
@@ -105,7 +105,7 @@ class SiteController extends Controller
 ```
 
 
-### Controller IDs <span id="controller-ids"></span>
+### Controller IDs
 
 Usually, a controller is designed to handle the requests regarding a particular type of resource.
 For this reason, controller IDs are often nouns referring to the types of the resources that they are handling.
@@ -190,7 +190,7 @@ You may change the default controller with the following [application configurat
 ```
 
 
-## Creating Actions <span id="creating-actions"></span>
+## Creating Actions
 
 Creating actions can be as simple as defining the so-called *action methods* in a controller class. An action method is
 a *public* method whose name starts with the word `action`. The return value of an action method represents
@@ -216,7 +216,7 @@ class SiteController extends Controller
 ```
 
 
-### Action IDs <span id="action-ids"></span>
+### Action IDs
 
 An action is often designed to perform a particular manipulation of a resource. For this reason,
 action IDs are usually verbs, such as `view`, `update`, etc.
@@ -255,7 +255,7 @@ if you plan to reuse the same action in different places, or if you want to redi
 you should consider defining it as a *standalone action*.
 
 
-### Standalone Actions <span id="standalone-actions"></span>
+### Standalone Actions
 
 Standalone actions are defined in terms of action classes extending [[yii\base\Action]] or its child classes.
 For example, in the Yii releases, there are [[yii\web\ViewAction]] and [[yii\web\ErrorAction]], both of which
@@ -329,7 +329,7 @@ public function actionForward()
 ```
 
 
-### Action Parameters <span id="action-parameters"></span>
+### Action Parameters
 
 The action methods for inline actions and the `run()` methods for standalone actions can take parameters,
 called *action parameters*. Their values are obtained from requests. For [[yii\web\Application|Web applications]],

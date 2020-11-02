@@ -20,11 +20,11 @@ As you can see in the screenshot, Yii has already defined a set of commands that
   You can learn more about this command in the [Assets Section](structure-assets.md#using-asset-bundles).
 - [[yii\console\controllers\CacheController|CacheController]] - Allows you to flush application caches.
 - [[yii\console\controllers\FixtureController|FixtureController]] - Manages fixture data loading and unloading for testing purposes.
-  This command is described in more detail in the [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
+  This command is described in more detail in the [Testing Section about Fixtures](test-fixtures.md#managing-fixtures-with-yii-fixture).
 - [[yii\console\controllers\HelpController|HelpController]] - Provides help information about console commands, this is the default command
   and prints what you have seen in the above output.
 - [[yii\console\controllers\MessageController|MessageController]] - Extracts messages to be translated from source files.
-  To learn more about this command, please refer to the [I18N Section](tutorial-i18n.md#message-command).
+  To learn more about this command, please refer to the [I18N Section](tutorial-i18n.md#using-the-message-command).
 - [[yii\console\controllers\MigrateController|MigrateController]] - Manages application migrations.
   Database migrations are described in more detail in the [Database Migration Section](db-migrations.md).
 - [[yii\console\controllers\ServeController|ServeController]] - Allows you run PHP built-in web server.
@@ -156,7 +156,7 @@ Then reload your shell
 exec $SHELL -l
 ```
 
-Creating your own console commands <span id="create-command"></span>
+Creating your own console commands
 ----------------------------------
 
 ### Console Controller and Action
