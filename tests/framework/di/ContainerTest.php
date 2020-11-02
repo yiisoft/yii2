@@ -14,8 +14,10 @@ use yii\validators\NumberValidator;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
+use yiiunit\framework\di\stubs\Alpha;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\BarSetter;
+use yiiunit\framework\di\stubs\Beta;
 use yiiunit\framework\di\stubs\Car;
 use yiiunit\framework\di\stubs\Corge;
 use yiiunit\framework\di\stubs\Foo;
@@ -527,6 +529,23 @@ class ContainerTest extends TestCase
 
         Yii::$container->set('setLater', new Qux());
         Yii::$container->get('test');
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18304
+     */
+    public function testNulledConstructorParameters()
+    {
+        $alpha = (new Container())->get(Alpha::className());
+        $this->assertInstanceOf(Beta::className(), $alpha->beta);
+        $this->assertNull($alpha->omega);
+
+        $QuxInterface = __NAMESPACE__ . '\stubs\QuxInterface';
+        $container = new Container();
+        $container->set($QuxInterface, Qux::className());
+        $alpha = $container->get(Alpha::className());
+        $this->assertInstanceOf(Beta::className(), $alpha->beta);
+        $this->assertInstanceOf($QuxInterface, $alpha->omega);
     }
 
     /**
