@@ -65,7 +65,7 @@ you can use the following statement to change the target language:
 > Tip: If your source language varies among different parts of your code, you can
 > override the source language for different message sources, which are described in the next section.
 
-## Message Translation
+## Message Translation <span id="message-translation"></span>
 
 ### From source language to target language
 The message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
@@ -127,7 +127,7 @@ message source.
 The [[yii\i18n\PhpMessageSource]] class uses PHP files with a simple PHP array to store message translations. 
 These files contain a map of the messages in `source language` to the translation in the `target language`.
 
-> Info: You can automatically generate these PHP files by using the [`message` command](#using-the-message-command),
+> Info: You can automatically generate these PHP files by using the [`message` command](#message-command),
 > which will be introduced later in this chapter.
 
 Each PHP file corresponds to the messages of a single category. By default, the file name should be the same as
@@ -679,7 +679,7 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 > and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
-### Using the `message` command
+### Using the `message` command <span id="message-command"></span>
 
 Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
@@ -736,7 +736,7 @@ to render the view `views/site/index.php`, it will end up rendering the translat
 See the [Data Formatting](output-formatting.md) section for details.
 
 
-## Setting Up PHP Environment
+## Setting Up PHP Environment <span id="setup-environment"></span>
 
 Yii uses the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to provide most of its I18N features,
 such as the date and number formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].

@@ -200,7 +200,7 @@ string in valid JS syntax, which can be inserted into the JavaScript code to pla
 > The jQuery function in form of `$(` or `$.` is not interpreted
 > as a PHP variable and can safely be used.
 
-## The `yii.js` script
+## The `yii.js` script <span id="yii.js"></span>
 
 > Note: This section has not been written yet. It should contain explanation of the functionality provided by `yii.js`:
 > 

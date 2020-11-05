@@ -288,7 +288,7 @@ Note that the aforementioned methods only create the query and you always have t
 to actually run them.
 
 
-## Quoting Table and Column Names
+## Quoting Table and Column Names <span id="quoting-table-and-column-names"></span>
 
 When writing database-agnostic code, properly quoting table and column names is often a headache because
 different databases have different name quoting rules. To overcome this problem, you may use the following
@@ -339,7 +339,7 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 ```
 
 
-## Performing Transactions
+## Performing Transactions <span id="performing-transactions"></span>
 
 When running multiple related queries in a sequence, you may need to wrap them in a transaction to ensure the integrity
 and consistency of your database. If any of the queries fails, the database will be rolled back to the state as if
@@ -638,7 +638,7 @@ $rows = Yii::$app->db->useMaster(function ($db) {
 You may also directly set `Yii::$app->db->enableSlaves` to be `false` to direct all queries to the master connection.
 
 
-## Working with Database Schema
+## Working with Database Schema <span id="database-schema"></span>
 
 Yii DAO provides a whole set of methods to let you manipulate the database schema, such as creating new tables,
 dropping a column from a table, etc. These methods are listed as follows:

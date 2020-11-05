@@ -8,7 +8,7 @@ without leading `@` will be prefixed with `@` character.
 Yii has many pre-defined aliases already available. For example, the alias `@yii` represents the installation path of
 the Yii framework; `@web` represents the base URL for the currently running Web application.
 
-Defining Aliases
+Defining Aliases <span id="defining-aliases"></span>
 ----------------
 
 You can define an alias for a file path or URL by calling [[Yii::setAlias()]]:
@@ -104,7 +104,7 @@ $cache = new FileCache([
 Please pay attention to the API documentation to see if a property or method parameter supports aliases.
 
 
-Predefined Aliases
+Predefined Aliases <span id="predefined-aliases"></span>
 ------------------
 
 Yii predefines a set of aliases to easily reference commonly used file paths and URLs:
@@ -125,7 +125,7 @@ The rest of the aliases are defined in the application constructor when applying
 
 > Note: `@web` and `@webroot` aliases as their descriptions indicate are defined within [[yii\web\Application|Web application]] and therefore are not available for [[yii\console\Application|Console application]] by default.
 
-Extension Aliases
+Extension Aliases <span id="extension-aliases"></span>
 -----------------
 
 An alias is automatically defined for each [extension](structure-extensions.md) that is installed via Composer.

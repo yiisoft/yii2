@@ -476,7 +476,7 @@ If you are interested in the attribute values prior to their most recent modific
 > [intval()](https://secure.php.net/manual/en/function.intval.php), [floatval()](https://secure.php.net/manual/en/function.floatval.php),
 > [boolval](https://secure.php.net/manual/en/function.boolval.php), etc...
 
-### Default Attribute Values
+### Default Attribute Values <span id="default-attribute-values"></span>
 
 Some of your table columns may have default values defined in the database. Sometimes, you may want to pre-populate your
 Web form for an Active Record instance with these default values. To avoid writing the same default values again,
@@ -493,7 +493,7 @@ $customer->loadDefaultValues();
 ### Attributes Typecasting <span id="attributes-typecasting"></span>
 
 Being populated by query results, [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
-information from [database table schema](db-dao.md#working-with-database-schema). This allows data retrieved from table column
+information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
 declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
 However, typecasting mechanism has several limitations:
 
@@ -1154,7 +1154,7 @@ In the code example above, we are modifying the relational query by appending an
 > ```
 
 
-### Joining with Relations
+### Joining with Relations <span id="joining-with-relations"></span>
 
 > Note: The content described in this subsection is only applicable to relational databases, such as
   MySQL, PostgreSQL, etc.

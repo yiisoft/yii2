@@ -57,7 +57,7 @@ $param = $request->getBodyParam('id');
   You can customize the way how these parameters are parsed by configuring the [[yii\web\Request::parsers]] property.
   
 
-## Request Methods
+## Request Methods <span id="request-methods"></span>
 
 You can get the HTTP method used by the current request via the expression `Yii::$app->request->method`.
 A whole set of boolean properties is also provided for you to check if the current method is of certain type.
@@ -139,7 +139,7 @@ $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
 
-## Trusted proxies and headers
+## Trusted proxies and headers <span id="trusted-proxies"></span>
 
 In the previous section you have seen how to get user information like host and IP address.
 This will work out of the box in a normal setup where a single webserver is used to serve the website.

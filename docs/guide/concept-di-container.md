@@ -219,7 +219,7 @@ $container->setSingleton('yii\db\Connection', [
 ]);
 ```
 
-Resolving Dependencies
+Resolving Dependencies <span id="resolving-dependencies"></span>
 ----------------------
 
 Once you have registered dependencies, you can use the DI container to create new objects,
@@ -313,7 +313,7 @@ $lister = new UserLister($finder);
 ```
 
 
-Practical Usage
+Practical Usage <span id="practical-usage"></span>
 ---------------
 
 Yii creates a DI container when you include the `Yii.php` file in the [entry script](structure-entry-scripts.md)
@@ -396,7 +396,8 @@ class HotelController extends Controller
 }
 ``` 
 
-## Advanced Practical Usage
+Advanced Practical Usage <span id="advanced-practical-usage"></span>
+---------------
 
 Say we work on API application and have:
 

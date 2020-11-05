@@ -18,7 +18,7 @@ to develop applications with multiple tiers.
   recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
 
 
-Installing via Composer
+Installing via Composer <span id="installing-via-composer"></span>
 -----------------------
 
 ### Installing Composer
@@ -177,7 +177,7 @@ should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the 
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
-Configuring Web Servers
+Configuring Web Servers <span id="configuring-web-servers"></span>
 -----------------------
 
 > Info: You may skip this subsection for now if you are just test driving Yii with no intention
@@ -204,7 +204,7 @@ to modify its Web server configuration, you may still adjust the structure of yo
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
 > Info: If you are running your Yii application behind a reverse proxy, you might need to configure
-> [Trusted proxies and headers](runtime-requests.md#trusted-proxies-and-headers) in the request component.
+> [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
 
 ### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 

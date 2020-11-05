@@ -70,7 +70,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-Using Yii in Third-Party Systems
+Using Yii in Third-Party Systems <span id="using-yii-in-others"></span>
 --------------------------------
 
 Because Yii provides many excellent features, sometimes you may want to use some of its features to support
@@ -118,7 +118,8 @@ Now you can use most features provided by Yii. For example, you can create Activ
 to work with databases.
 
 
-## Using Yii 2 with Yii 1
+Using Yii 2 with Yii 1 <span id="using-both-yii2-yii1"></span>
+----------------------
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
@@ -127,7 +128,7 @@ This can be achieved as described below.
 > Note: Yii 2 requires PHP 5.4 or above. You should make sure that both your server and the existing application
 > support this.
 
-First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-third-party-systems).
+First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
 
 Second, modify the entry script of the application as follows,
 

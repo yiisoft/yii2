@@ -205,7 +205,7 @@ The above example defines an asset bundle for the ["fontawesome" package](http:/
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
-### Bower and NPM Assets installation
+### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
 Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) package 
 managers. In PHP world we have Composer, that manages PHP dependencies, but it is possible to load
@@ -295,7 +295,7 @@ After configuring Composer to support Bower and NPM:
   uses `@bower/jquery/dist` instead of `@bower/jquery`.
 
 
-## Using Asset Bundles
+## Using Asset Bundles <span id="using-asset-bundles"></span>
 
 To use an asset bundle, register it with a [view](structure-views.md) by calling the [[yii\web\AssetBundle::register()]]
 method. For example, in a view template you can register an asset bundle like the following:
@@ -362,7 +362,7 @@ $bundle->js[] = 'i18n/' . Yii::$app->language . '.js'; // dynamic file added
   unexpected side effects, and should be avoided if possible.
 
 
-### Customizing Asset Bundles
+### Customizing Asset Bundles <span id="customizing-asset-bundles"></span>
 
 Yii manages asset bundles through an application component named `assetManager` which is implemented by [[yii\web\AssetManager]].
 By configuring the [[yii\web\AssetManager::bundles]] property, it is possible to customize the behavior of an asset bundle.
@@ -564,7 +564,7 @@ be referenced in your application or extension code.
 
 - [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
   in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
-  More information about `yii.js` can be found in the [Client Scripts Section](output-client-scripts.md#the-yiijs-script).
+  More information about `yii.js` can be found in the [Client Scripts Section](output-client-scripts.md#yii.js).
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
 - [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
 - [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for

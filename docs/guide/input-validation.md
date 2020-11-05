@@ -194,7 +194,7 @@ function whose return value determines whether to apply the rule or not. For exa
 ```
 
 
-### Data Filtering
+### Data Filtering <span id="data-filtering"></span>
 
 User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
 `username` input. You may use validation rules to achieve this goal.
@@ -236,7 +236,7 @@ The above code will perform the following operations on the input:
    Here we set [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] to `true`, which is `false` by default
    on the [[yii\validators\FilterValidator|filter]] validator.
 
-### Handling Empty Inputs
+### Handling Empty Inputs <span id="handling-empty-inputs"></span>
 
 When input data are submitted from HTML forms, you often need to assign some default values to the inputs
 if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
@@ -344,7 +344,7 @@ Besides using the [core validators](tutorial-core-validators.md) included in the
 create your own validators. You may create inline validators or standalone validators.
 
 
-### Inline Validators
+### Inline Validators <span id="inline-validators"></span>
 
 An inline validator is one defined in terms of a model method or an anonymous function. The signature of
 the method/function is:
@@ -746,7 +746,7 @@ JS;
 > to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
 > in Yii 2.0 Cookbook.
 
-### Deferred Validation
+### Deferred Validation <span id="deferred-validation"></span>
 
 If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
 For example, to perform a custom AJAX validation, you can use the following code:

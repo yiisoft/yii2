@@ -252,7 +252,7 @@ Since collection in REST APIs is a data provider, it shares all data provider fe
 
 An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.
 
-### Filtering collections
+### Filtering collections <span id="filtering-collections"></span>
 
 Since version 2.0.13 Yii provides a facility to filter collections. An example can be found in the
 [Quick Start](rest-quick-start.md#trying-it-out) guide. In case you're implementing an endpoint yourself,

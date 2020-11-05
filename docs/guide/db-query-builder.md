@@ -37,7 +37,7 @@ LIMIT 10
   [[yii\db\Query]] objects.
 
 
-## Building Queries
+## Building Queries <span id="building-queries"></span>
 
 To build a [[yii\db\Query]] object, you call different query building methods to specify different parts of
 a SQL query. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
@@ -167,7 +167,7 @@ the four formats to specify a `WHERE` condition:
 - operator format, e.g. `['like', 'name', 'test']`
 - object format, e.g. `new LikeCondition('name', 'LIKE', 'test')`
 
-#### String Format
+#### String Format <span id="string-format"></span>
 
 String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
 It works as if you are writing a raw SQL. For example,
@@ -201,7 +201,7 @@ $query->where('status=:status')
 As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
 for table and column names when writing conditions in string format. 
 
-#### Hash Format
+#### Hash Format <span id="hash-format"></span>
 
 Hash format is best used to specify multiple `AND`-concatenated sub-conditions each being a simple equality assertion.
 It is written as an array whose keys are column names and values the corresponding values that the columns should be.
@@ -333,7 +333,7 @@ $query->where(['=', $column, $value]);
 // $value is safe, but $column name won't be encoded!
 ```
 
-#### Object Format
+#### Object Format <span id="object-format"></span>
 
 Object Form is available since 2.0.14 and is both most powerful and most complex way to define conditions.
 You need to follow it either if you want to build your own abstraction over query builder or if you want to implement
@@ -393,7 +393,7 @@ WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
 
 
-#### Filter Conditions
+#### Filter Conditions <span id="filter-conditions"></span>
 
 When building `WHERE` conditions based on input from end users, you usually want to ignore those input values, that are empty.
 For example, in a search form that allows you to search by username and email, you would like to ignore the username/email
@@ -625,7 +625,7 @@ $mainQuery = (new \yii\db\Query())
 
 [[yii\db\Query::withQuery()|withQuery()]] can be called multiple times to prepend more CTE's to main query. Queries will be prepend in same order as they attached. If one of query is recursive then whole CTE become recursive.
 
-## Query Methods
+## Query Methods <span id="query-methods"></span>
 
 [[yii\db\Query]] provides a whole set of methods for different query purposes:
 
@@ -867,7 +867,7 @@ $unbufferedDb->close();
 It is recommended to design your own code with your production practice for extra massive data,
 [for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
 
-### Adding custom Conditions and Expressions
+### Adding custom Conditions and Expressions <span id="adding-custom-conditions-and-expressions"></span>
 
 As it was mentioned in [Conditions – Object Format](#object-format) chapter, it is possible to create custom condition
 classes. For example, let's create a condition that will check that specific columns are less than some value.
