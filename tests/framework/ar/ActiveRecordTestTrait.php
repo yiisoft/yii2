@@ -9,6 +9,7 @@ namespace yiiunit\framework\ar;
 
 use yii\base\Event;
 use yii\db\BaseActiveRecord;
+use yii\db\Expression;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
 use yiiunit\TestCase;
@@ -103,6 +104,17 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::find()->where(['name' => 'user2'])->one();
         $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals(2, $customer->id);
+
+        // find by expression
+        $customer = $customerClass::findOne(new Expression('id = :id', [':id' => 2]));
+        $this->assertInstanceOf($customerClass, $customer);
+        $this->assertEquals('user2', $customer->name);
+        $customer = $customerClass::findOne(new Expression('id = :id AND name = :name', [':id' => 2, ':name' => 'user1']));
+        $this->assertNull($customer);
+        $customer = $customerClass::findOne(new Expression('id = :id', [':id' => 5]));
+        $this->assertNull($customer);
+        $customer = $customerClass::findOne(new Expression('name = :name', [':name' => 'user5']));
+        $this->assertNull($customer);
 
         // scope
         $this->assertCount(2, $customerClass::find()->active()->all());

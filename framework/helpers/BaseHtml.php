@@ -420,7 +420,7 @@ class BaseHtml
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
-     * @param string $email email address. If this is null, the first parameter (link body) will be treated
+     * @param string|null $email email address. If this is null, the first parameter (link body) will be treated
      * as the email address and used.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -470,7 +470,7 @@ class BaseHtml
      * @param string $content label text. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is is coming from end users, you should [[encode()]]
      * it to prevent XSS attacks.
-     * @param string $for the ID of the HTML element that this label is associated with.
+     * @param string|null $for the ID of the HTML element that this label is associated with.
      * If this is null, the "for" attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -545,8 +545,8 @@ class BaseHtml
     /**
      * Generates an input type of the given type.
      * @param string $type the type attribute.
-     * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $name the name attribute. If it is null, the name attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -617,7 +617,7 @@ class BaseHtml
     /**
      * Generates a text input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -632,7 +632,7 @@ class BaseHtml
     /**
      * Generates a hidden input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -647,7 +647,7 @@ class BaseHtml
     /**
      * Generates a password input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -665,7 +665,7 @@ class BaseHtml
      * be "multipart/form-data". After the form is submitted, the uploaded file information
      * can be obtained via $_FILES[$name] (see PHP documentation).
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -819,6 +819,8 @@ class BaseHtml
      *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
      *   Defaults to `true`. This option is available since 2.0.3.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -877,6 +879,8 @@ class BaseHtml
      *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
      *   Defaults to `true`. This option is available since 2.0.3.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -931,6 +935,8 @@ class BaseHtml
      *   This option is available since version 2.0.16.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
      *   This option is ignored if `item` option is set.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the checkbox tag using [[checkbox()]].
      * - item: callable, a callback that can be used to customize the generation of the HTML code
@@ -962,13 +968,14 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $strict = ArrayHelper::remove($options, 'strict', false);
 
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection, $strict));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1021,6 +1028,8 @@ class BaseHtml
      *   This option is available since version 2.0.16.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
      *   This option is ignored if `item` option is set.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the radio button tag using [[radio()]].
      * - item: callable, a callback that can be used to customize the generation of the HTML code
@@ -1049,6 +1058,7 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $strict = ArrayHelper::remove($options, 'strict', false);
 
         $hidden = '';
         if (isset($options['unselect'])) {
@@ -1067,7 +1077,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection, $strict));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1860,6 +1870,7 @@ class BaseHtml
         $lines = [];
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
+        $strict = ArrayHelper::remove($tagOptions, 'strict', false);
         if (isset($tagOptions['prompt'])) {
             $promptOptions = ['value' => ''];
             if (is_string($tagOptions['prompt'])) {
@@ -1887,7 +1898,7 @@ class BaseHtml
                 if (!isset($groupAttrs['label'])) {
                     $groupAttrs['label'] = $key;
                 }
-                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
+                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode, 'strict' => $strict];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
@@ -1896,7 +1907,7 @@ class BaseHtml
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection));
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {

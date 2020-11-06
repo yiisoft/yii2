@@ -153,10 +153,10 @@ class AssetBundle extends BaseObject
             if (is_array($js)) {
                 $file = array_shift($js);
                 $options = ArrayHelper::merge($this->jsOptions, $js);
-                $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
+                $view->registerJsFile($manager->getActualAssetUrl($this, $file), $options);
             } else {
                 if ($js !== null) {
-                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
+                    $view->registerJsFile($manager->getActualAssetUrl($this, $js), $this->jsOptions);
                 }
             }
         }
@@ -164,10 +164,10 @@ class AssetBundle extends BaseObject
             if (is_array($css)) {
                 $file = array_shift($css);
                 $options = ArrayHelper::merge($this->cssOptions, $css);
-                $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
+                $view->registerCssFile($manager->getActualAssetUrl($this, $file), $options);
             } else {
                 if ($css !== null) {
-                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
+                    $view->registerCssFile($manager->getActualAssetUrl($this, $css), $this->cssOptions);
                 }
             }
         }

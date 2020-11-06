@@ -8,6 +8,7 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\Expression;
 
@@ -166,15 +167,41 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS.
      */
     public function alterColumn($table, $column, $type)
     {
-        $type = $this->getColumnType($type);
-        $sql = 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-            . $this->db->quoteColumnName($column) . ' '
-            . $this->getColumnType($type);
+        $sqlAfter = [];
 
-        return $sql;
+        $columnName = $this->db->quoteColumnName($column);
+        $tableName = $this->db->quoteTableName($table);
+
+        $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
+
+        $type = $this->getColumnType($type);
+
+        if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
+            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
+            $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
+            $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $matches[1]);
+        } else {
+            $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
+        }
+
+        if (preg_match('/\s+CHECK\s+\((.+)\)/i', $type, $matches)) {
+            $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
+            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("CK_{$constraintBase}") . " CHECK ({$matches[1]})";
+        }
+
+        $type = preg_replace('/\s+UNIQUE/i', '', $type, -1, $count);
+        if ($count) {
+            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
+        }
+
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
+            . $this->db->quoteColumnName($column) . ' '
+            . $this->getColumnType($type) . "\n"
+            . implode("\n", $sqlAfter);
     }
 
     /**
@@ -448,10 +475,34 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
-        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+        if ($version2005orLater) {
+            $schema = $this->db->getTableSchema($table);
+            $cols = [];
+            $columns = [];
+            foreach ($schema->columns as $column) {
+                if ($column->isComputed) {
+                    continue;
+                }
+                $cols[] = $this->db->quoteColumnName($column->name) . ' '
+                    . $column->dbType
+                    . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
+                    . ' ' . ($column->allowNull ? "NULL" : "");
+                $columns[] = 'INSERTED.' . $column->name;
+            }
+        }
+        $countColumns = count($columns);
+
+        $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . ($version2005orLater ? ' OUTPUT INSERTED.*' : '')
+            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $columns) . ' INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+
+        if ($version2005orLater && $countColumns) {
+            $sql = 'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (' . implode(', ', $cols) . ');' . $sql .
+                ';SELECT * FROM @temporary_inserted';
+        }
+
+        return $sql;
     }
 
     /**
@@ -547,4 +598,50 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return parent::extractAlias($table);
     }
+
+    /**
+     * Builds a SQL statement for dropping constraints for column of table.
+     *
+     * @param string $table the table whose constraint is to be dropped. The name will be properly quoted by the method.
+     * @param string $column the column whose constraint is to be dropped. The name will be properly quoted by the method.
+     * @param string $type type of constraint, leave empty for all type of constraints(for example: D - default, 'UQ' - unique, 'C' - check)
+     * @see https://docs.microsoft.com/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
+     * @return string the DROP CONSTRAINTS SQL
+     */
+    private function dropConstraintsForColumn($table, $column, $type='')
+    {
+        return "DECLARE @tableName VARCHAR(MAX) = '" . $this->db->quoteTableName($table) . "'
+DECLARE @columnName VARCHAR(MAX) = '{$column}'
+
+WHILE 1=1 BEGIN
+    DECLARE @constraintName NVARCHAR(128)
+    SET @constraintName = (SELECT TOP 1 OBJECT_NAME(cons.[object_id])
+        FROM (
+            SELECT sc.[constid] object_id
+            FROM [sys].[sysconstraints] sc
+            JOIN [sys].[columns] c ON c.[object_id]=sc.[id] AND c.[column_id]=sc.[colid] AND c.[name]=@columnName
+            WHERE sc.[id] = OBJECT_ID(@tableName)
+            UNION
+            SELECT object_id(i.[name]) FROM [sys].[indexes] i
+            JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
+            JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
+            WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
+        ) cons
+        JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
+        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : "") . ")
+    IF @constraintName IS NULL BREAK
+    EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
+END";
+    }
+
+    /**
+     * Drop all constraints before column delete
+     * {@inheritdoc}
+     */
+    public function dropColumn($table, $column)
+    {
+        return $this->dropConstraintsForColumn($table, $column) . "\nALTER TABLE " . $this->db->quoteTableName($table)
+            . " DROP COLUMN " . $this->db->quoteColumnName($column);
+    }
+
 }

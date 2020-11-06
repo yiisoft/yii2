@@ -246,6 +246,9 @@ class Command extends Component
         }
 
         $sql = $this->getSql();
+        if ($sql === '') {
+            return;
+        }
 
         if ($this->db->getTransaction()) {
             // master is in a transaction. use the same connection.
@@ -264,6 +267,9 @@ class Command extends Component
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
+            throw new Exception($message, null, (int) $e->getCode(), $e);
         }
     }
 

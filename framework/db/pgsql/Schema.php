@@ -548,14 +548,21 @@ SQL;
                 }
                 $column->defaultValue = null;
             } elseif ($column->defaultValue) {
-                if ($column->type === 'timestamp' && $column->defaultValue === 'now()') {
+                if (
+                    in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
+                    in_array(
+                        strtoupper($column->defaultValue),
+                        ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
+                        true
+                    )
+                ) {
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
                     $column->defaultValue = ($column->defaultValue === 'true');
                 } elseif (preg_match("/^B'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = bindec($matches[1]);
-                } elseif (strncasecmp($column->dbType, 'bit', 3) === 0 || strncasecmp($column->dbType, 'varbit', 6) === 0) {
-                    $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
+                } elseif (preg_match("/^'(\d+)'::\"bit\"$/", $column->defaultValue, $matches)) {
+                    $column->defaultValue = bindec($matches[1]);
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $column->phpTypecast($matches[1]);
                 } elseif (preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
