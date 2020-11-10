@@ -546,6 +546,7 @@ class ContainerTest extends TestCase
         $alpha = $container->get(Alpha::className());
         $this->assertInstanceOf(Beta::className(), $alpha->beta);
         $this->assertInstanceOf($QuxInterface, $alpha->omega);
+        $this->assertNull($alpha->unknown);
     }
 
     /**
