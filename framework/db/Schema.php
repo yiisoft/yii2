@@ -21,17 +21,18 @@ use yii\caching\TagDependency;
  *
  * Schema represents the database schema information that is DBMS specific.
  *
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
- * sequence object. This property is read-only.
- * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
- * @property string[] $schemaNames All schema names in the database, except system schemas. This property is
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
+ * the sequence object. This property is read-only.
+ * @property-read QueryBuilder $queryBuilder The query builder for this connection. This property is
  * read-only.
- * @property string $serverVersion Server version as a string. This property is read-only.
- * @property string[] $tableNames All table names in the database. This property is read-only.
- * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
- * instance of [[TableSchema]] or its child class. This property is read-only.
- * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
- * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]],
+ * @property-read string[] $schemaNames All schema names in the database, except system schemas. This property
+ * is read-only.
+ * @property-read string $serverVersion Server version as a string. This property is read-only.
+ * @property-read string[] $tableNames All table names in the database. This property is read-only.
+ * @property-read TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element
+ * is an instance of [[TableSchema]] or its child class. This property is read-only.
+ * @property-write string $transactionIsolationLevel The transaction isolation level to use for this
+ * transaction. This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]],
  * [[Transaction::REPEATABLE_READ]] and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific
  * syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is write-only.
  *

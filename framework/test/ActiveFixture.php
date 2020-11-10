@@ -24,7 +24,7 @@ use yii\db\TableSchema;
  *
  * For more details and usage information on ActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
  *
- * @property TableSchema $tableSchema The schema information of the database table associated with this
+ * @property-read TableSchema $tableSchema The schema information of the database table associated with this
  * fixture. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

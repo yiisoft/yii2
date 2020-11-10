@@ -27,10 +27,10 @@ use yii\web\Request;
  * may specify [[except]] to exclude messages of certain categories.
  *
  * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
- * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
+ * of this property differs in getter and setter. See [[getEnabled()]]  and [[setEnabled()]] for details.
  * @property int $levels The message levels that this target is interested in. This is a bitmap of level
  * values. Defaults to 0, meaning all available levels. Note that the type of this property differs in getter and
- * setter. See [[getLevels()]] and [[setLevels()]] for details.
+ * setter. See [[getLevels()]]  and [[setLevels()]] for details.
  *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
