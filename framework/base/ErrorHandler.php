@@ -345,7 +345,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a simple string.
-     * @param \Exception|\Error|\Throwable  $exception the exception being converted
+     * @param \Exception|\Error|\Throwable $exception the exception being converted
      * @return string the string representation of the exception.
      */
     public static function convertExceptionToString($exception)
@@ -363,7 +363,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a string that has verbose information about the exception and its trace.
-     * @param \Exception|\Error|\Throwable  $exception the exception being converted
+     * @param \Exception|\Error|\Throwable $exception the exception being converted
      * @return string the string representation of the exception.
      *
      * @since 2.0.14

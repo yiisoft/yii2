@@ -91,10 +91,10 @@ use yii\helpers\ArrayHelper;
  *
  * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
  *
- * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
- * definition or instance). This property is read-only.
- * @property bool $resolveArrays Whether to attempt to resolve elements in array dependencies. This property
- * is write-only.
+ * @property-read array $definitions The list of the object definitions or the loaded shared objects (type or
+ * ID => definition or instance). This property is read-only.
+ * @property-write bool $resolveArrays Whether to attempt to resolve elements in array dependencies. This
+ * property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -150,7 +150,7 @@ class Container extends Component
      *  - Parameters in the order they appear in the constructor declaration. If you want to skip some parameters,
      *    you should index the remaining ones with the integers that represent their positions in the constructor
      *    parameter list.
-     * Dependencies indexed by name and by position in the same array are not allowed.
+     *    Dependencies indexed by name and by position in the same array are not allowed.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition

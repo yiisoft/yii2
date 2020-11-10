@@ -36,8 +36,8 @@ use yii\base\NotSupportedException;
  *   Also messages that are working with the fallback implementation are not necessarily compatible with the
  *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
  *
- * @property string $errorCode Code of the last error. This property is read-only.
- * @property string $errorMessage Description of the last error. This property is read-only.
+ * @property-read string $errorCode Code of the last error. This property is read-only.
+ * @property-read string $errorMessage Description of the last error. This property is read-only.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>

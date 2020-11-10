@@ -30,13 +30,13 @@ use yii\base\Component;
  * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
  * or [[DbTarget|database]], with the help of the [[dispatcher]].
  *
- * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
- * second element the total time spent in SQL execution. This property is read-only.
- * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
+ * @property-read array $dbProfiling The first element indicates the number of SQL statements executed, and
+ * the second element the total time spent in SQL execution. This property is read-only.
+ * @property-read float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
- * @property array $profiling The profiling results. Each element is an array consisting of these elements:
- * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory` and
- * `memoryDiff` values are available since version 2.0.11. This property is read-only.
+ * @property-read array $profiling The profiling results. Each element is an array consisting of these
+ * elements: `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory`
+ * and `memoryDiff` values are available since version 2.0.11. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

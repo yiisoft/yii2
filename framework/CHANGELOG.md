@@ -1,23 +1,23 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.39 under development
+2.0.39 November 10, 2020
 ------------------------
 
-- Enh #18247: Add support for the 'session.use_strict_mode' ini directive in `yii\web\Session` (rhertogh)
-- Bug #18263: Fix writing `\yii\caching\FileCache` files to the same directory when `keyPrefix` is set (githubjeka)
-- Bug #18160, #18192: Fix `registerFile` with set argument `depends` does not take `position` and `appendTimestamp` into account (baleeny)
-- Bug #18290: Fix response with non-seekable streams (schmunk42)
 - Bug #16418: Fix `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
+- Bug #16831: Fix console Table widget does not render correctly in combination with ANSI formatting (issidorov, cebe)
+- Bug #18160, #18192: Fix `registerFile` with set argument `depends` does not take `position` and `appendTimestamp` into account (baleeny)
+- Bug #18263: Fix writing `\yii\caching\FileCache` files to the same directory when `keyPrefix` is set (githubjeka)
+- Bug #18287: Fix for `OUTPUT INSERTED` and computed columns. Add flag to mark computed values in table schema (darkdef)
+- Bug #18290: Fix response with non-seekable streams (schmunk42)
 - Bug #18297: Replace usage of deprecated `ReflectionParameter::isArray()` method in PHP8 (baletskyi)
 - Bug #18303: Fix creating migration for column methods used after `defaultValues` (wsaid)
-- Bug #18287: Fix for `OUTPUT INSERTED` and computed columns. Add flag to mark computed values in table schema (darkdef)
 - Bug #18308: Fix `\yii\base\Model::getErrorSummary()` reverse order (DrDeath72)
 - Bug #18313: Fix multipart form data parsing with double quotes (wsaid)
 - Bug #18317: Additional PHP 8 compatibility fixes (samdark, bizley)
-- Bug #16831: Fix console Table widget does not render correctly in combination with ANSI formatting (issidorov, cebe)
-- Enh #18304: Add support of constructor parameters with default values to DI container (vjik)
+- Enh #18247: Add support for the 'session.use_strict_mode' ini directive in `yii\web\Session` (rhertogh)
 - Enh #18285: Enhanced DI container to allow passing parameters by name in a constructor (vjik)
+- Enh #18304: Add support of constructor parameters with default values to DI container (vjik)
 - Enh #18351: Add option to change default timezone for parsing formats without time part in `yii\validators\DateValidator` (bizley)
 
 

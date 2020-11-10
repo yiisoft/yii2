@@ -20,6 +20,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public $isComputed;
 
+
     /**
      * Prepares default value and converts it according to [[phpType]]
      * @param mixed $value default value
