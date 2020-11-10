@@ -8,6 +8,7 @@
 namespace yii\di;
 
 use ReflectionClass;
+use ReflectionException;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -518,7 +519,11 @@ class Container extends Component
                     $c = $param->getType();
                     $isClass = $c !== null && !$param->getType()->isBuiltin();
                 } else {
-                    $c = $param->getClass();
+                    try {
+                        $c = $param->getClass();
+                    } catch (ReflectionException $e) {
+                        $c = null;
+                    }
                     $isClass = $c !== null;
                 }
                 $className = $isClass ? $c->getName() : null;

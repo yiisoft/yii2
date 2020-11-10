@@ -8,10 +8,12 @@ class Alpha extends BaseObject
 {
     public $beta;
     public $omega;
+    public $unknown = true;
 
-    public function __construct(Beta $beta = null, QuxInterface $omega = null)
+    public function __construct(Beta $beta = null, QuxInterface $omega = null, Unknown $unknown = null)
     {
         $this->beta = $beta;
         $this->omega = $omega;
+        $this->unknown = $unknown;
     }
 }
