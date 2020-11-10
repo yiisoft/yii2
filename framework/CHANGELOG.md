@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18370: Add option to provide a string replacement for `null` value in `yii\data\DataFilter` (bizley)
 
 
 2.0.39 November 10, 2020
