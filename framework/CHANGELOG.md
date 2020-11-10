@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.39.1 under development
+2.0.39.1 November 10, 2020
 --------------------------
 
 - Bug #18373: Fix not taking default value when unable to resolve non-exing class via DI container (vjik)
