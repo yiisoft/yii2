@@ -620,9 +620,9 @@ class PhpDocController extends Controller
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
             $line = trim($line);
-            if (strncmp($line, '* @property ', 12) === 0) {
+            if (strncmp($line, '* @property', 11) === 0) {
                 $propertyPart = true;
-            } elseif ($propertyPart && $line == '*') {
+            } elseif ($propertyPart && $line === '*') {
                 $propertyPosition = $i;
                 $propertyPart = false;
             }
@@ -635,7 +635,7 @@ class PhpDocController extends Controller
             }
         }
 
-        // if no properties or other tags where present add properties at the end
+        // if no properties or other tags were present add properties at the end
         if ($propertyPosition === false) {
             $propertyPosition = \count($lines) - 2;
         }
