@@ -24,6 +24,19 @@ class ModuleTest extends TestCase
         $this->mockApplication();
     }
 
+    public function testTrueParentModule()
+    {
+        $parent = new Module('parent');
+        $child = new Module('child');
+        $child2 = new Module('child2');
+
+        $parent->setModule('child', $child);
+        $parent->setModules(['child2', $child2]);
+
+        $this->assertEquals('parent', $child->module->id);
+        $this->assertEquals('parent', $child2->module->id);
+    }
+
     public function testControllerPath()
     {
         $module = new TestModule('test');
