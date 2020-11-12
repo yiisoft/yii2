@@ -2,6 +2,6 @@
 
 namespace yiiunit\framework\di\stubs;
 
-abstract class AbstractObject
+final class Color extends AbstractColor
 {
 }
