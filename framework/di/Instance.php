@@ -7,6 +7,7 @@
 
 namespace yii\di;
 
+use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 
@@ -60,24 +61,31 @@ class Instance
      */
     public $id;
 
+    /**
+     * @var bool if null should be returned instead of throwing an exception
+     */
+    public $optional;
 
     /**
      * Constructor.
      * @param string $id the component ID
+     * @param bool $optional if null should be returned instead of throwing an exception
      */
-    protected function __construct($id)
+    protected function __construct($id, $optional = false)
     {
         $this->id = $id;
+        $this->optional = $optional;
     }
 
     /**
      * Creates a new Instance object.
      * @param string $id the component ID
+     * @param bool $optional if null should be returned instead of throwing an exception
      * @return Instance the new Instance object.
      */
-    public static function of($id)
+    public static function of($id, $optional = false)
     {
-        return new static($id);
+        return new static($id, $optional);
     }
 
     /**
@@ -157,14 +165,21 @@ class Instance
      */
     public function get($container = null)
     {
-        if ($container) {
-            return $container->get($this->id);
-        }
-        if (Yii::$app && Yii::$app->has($this->id)) {
-            return Yii::$app->get($this->id);
-        }
+        try {
+            if ($container) {
+                return $container->get($this->id);
+            }
+            if (Yii::$app && Yii::$app->has($this->id)) {
+                return Yii::$app->get($this->id);
+            }
 
-        return Yii::$container->get($this->id);
+            return Yii::$container->get($this->id);
+        } catch (Exception $e) {
+            if ($this->optional) {
+                return null;
+            }
+            throw $e;
+        }
     }
 
     /**

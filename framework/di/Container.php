@@ -528,10 +528,8 @@ class Container extends Component
                 }
                 $className = $isClass ? $c->getName() : null;
 
-                if ($className !== null &&
-                    ($this->has($className) || class_exists($className))
-                ) {
-                    $dependencies[$param->getName()] = Instance::of($className);
+                if ($className !== null) {
+                    $dependencies[$param->getName()] = Instance::of($className, true);
                 } else {
                     $dependencies[$param->getName()] = $param->isDefaultValueAvailable()
                         ? $param->getDefaultValue()
@@ -558,7 +556,7 @@ class Container extends Component
         foreach ($dependencies as $index => $dependency) {
             if ($dependency instanceof Instance) {
                 if ($dependency->id !== null) {
-                    $dependencies[$index] = $this->get($dependency->id);
+                    $dependencies[$index] = $dependency->get($this);
                 } elseif ($reflection !== null) {
                     $name = $reflection->getConstructor()->getParameters()[$index]->getName();
                     $class = $reflection->getName();
