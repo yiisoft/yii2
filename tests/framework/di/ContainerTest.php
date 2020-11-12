@@ -547,6 +547,12 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Beta::className(), $alpha->beta);
         $this->assertInstanceOf($QuxInterface, $alpha->omega);
         $this->assertNull($alpha->unknown);
+        $this->assertNull($alpha->color);
+
+        $container = new Container();
+        $container->set(__NAMESPACE__ . '\stubs\AbstractColor', __NAMESPACE__ . '\stubs\Color');
+        $alpha = $container->get(Alpha::className());
+        $this->assertInstanceOf(__NAMESPACE__ . '\stubs\Color', $alpha->color);
     }
 
     /**
