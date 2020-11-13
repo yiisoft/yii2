@@ -186,7 +186,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             $this->markTestSkipped("This test can only be performed with reliable chmod. It's unreliable on your system.");
         }
 
-        // exception should be throw when creating asset manager (see https://github.com/yiisoft/yii2/pull/18381)
+        // Exception should be thrown when creating asset manager (see https://github.com/yiisoft/yii2/pull/18381)
         $this->setExpectedException('yii\base\InvalidConfigException', 'The directory is not writable by the Web process');
         $view = $this->getView(['basePath' => '@testReadOnlyAssetPath']);
         $bundle = new TestSourceAsset();
