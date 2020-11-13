@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.39.2 under development
-------------------------
+2.0.39.2 November 13, 2020
+--------------------------
 
 - Bug #18378: Fix not taking default value when unable to resolve abstract class via DI container (vjik)
 
