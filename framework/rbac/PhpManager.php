@@ -796,7 +796,7 @@ class PhpManager extends BaseManager
      */
     protected function saveToFile($data, $file)
     {
-        file_put_contents($file, "<?php\nreturn " . VarDumper::export($data) . ";\n", LOCK_EX);
+        file_put_contents($file, "<?php\r\n\r\nreturn " . VarDumper::export($data) . ";\r\n", LOCK_EX);
         $this->invalidateScriptCache($file);
     }
 

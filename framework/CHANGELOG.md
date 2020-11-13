@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18383: RBAC's generated file made PSR-12 compliant
 
 
 2.0.39.2 November 13, 2020
