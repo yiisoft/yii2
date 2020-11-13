@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- no changes in this release.
+- Enc #: The `yii\web\AssetManager` `$basePath` writeable check has been moved to the initializer of the class instead of making this check whenever a file will be pbulished (nadar)
 
 
 2.0.39.2 November 13, 2020

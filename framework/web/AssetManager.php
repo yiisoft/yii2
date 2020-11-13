@@ -212,6 +212,10 @@ class AssetManager extends Component
         if (!is_dir($this->basePath)) {
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
         }
+        
+        if (!is_writable($this->basePath)) {
+            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
+        }
 
         $this->basePath = realpath($this->basePath);
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
@@ -437,10 +441,6 @@ class AssetManager extends Component
 
         if (!is_string($path) || ($src = realpath($path)) === false) {
             throw new InvalidArgumentException("The file or directory to be published does not exist: $path");
-        }
-
-        if (!is_writable($this->basePath)) {
-            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
         }
 
         if (is_file($src)) {
