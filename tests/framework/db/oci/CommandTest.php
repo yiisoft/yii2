@@ -434,7 +434,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         ], $records);
     }
 
-    public function testCreateView(): void
+    public function testCreateView()
     {
         $db = $this->getConnection();
 
