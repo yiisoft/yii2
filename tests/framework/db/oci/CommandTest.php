@@ -184,4 +184,51 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             'address' => 'test address',
         ], $record);
     }
+
+    /**
+     * Test INSERT INTO ... SELECT SQL statement with alias syntax.
+     */
+    public function testInsertSelectAlias(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
+
+        $command = $db->createCommand();
+
+        $command->insert(
+            '{{customer}}',
+            [
+                'email'   => 't1@example.com',
+                'name'    => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+
+        $query = $db->createCommand(
+            "SELECT 't2@example.com' as [[email]], [[address]] as [[name]], [[name]] as [[address]] from {{customer}}"
+        );
+
+        $command->insert(
+            '{{customer}}',
+            $query->queryOne()
+        )->execute();
+
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
+
+        $this->assertEquals([
+            [
+                'email'   => 't1@example.com',
+                'name'    => 'test',
+                'address' => 'test address',
+            ],
+            [
+                'email'   => 't2@example.com',
+                'name'    => 'test address',
+                'address' => 'test',
+            ],
+        ], $record);
+    }
 }
