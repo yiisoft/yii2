@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 2.0.39.2 November 13, 2020
 --------------------------
 
+- Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
 - Bug #18378: Fix not taking default value when unable to resolve abstract class via DI container (vjik)
 
 
