@@ -295,4 +295,40 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         }
         setlocale(LC_NUMERIC, $locale);
     }
+
+    /**
+     * verify that {{}} are not going to be replaced in parameters.
+     */
+    public function testNoTablenameReplacement()
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->insert(
+            '{{customer}}',
+            [
+                'name' => 'Some {{weird}} name',
+                'email' => 'test@example.com',
+                'address' => 'Some {{%weird}} address',
+            ]
+        )->execute();
+
+        $customerId = $db->getLastInsertID('customer_SEQ');
+
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE [[id]]=' . $customerId)->queryOne();
+        $this->assertEquals('Some {{weird}} name', $customer['name']);
+        $this->assertEquals('Some {{%weird}} address', $customer['address']);
+
+        $db->createCommand()->update(
+            '{{customer}}',
+            [
+                'name' => 'Some {{updated}} name',
+                'address' => 'Some {{%updated}} address',
+            ],
+            ['id' => $customerId]
+        )->execute();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE [[id]]=' . $customerId)->queryOne();
+        $this->assertEquals('Some {{updated}} name', $customer['name']);
+        $this->assertEquals('Some {{%updated}} address', $customer['address']);
+    }
+
 }
