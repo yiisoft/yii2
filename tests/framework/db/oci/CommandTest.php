@@ -357,4 +357,39 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             ['id' => 1, 'bar' => 1],
         ], $records);
     }
+
+    public function testsInsertQueryAsColumnValue()
+    {
+        $time = time();
+
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+
+        $command = $db->createCommand();
+        $command->insert('{{order}}', [
+            'customer_id' => 1,
+            'created_at' => $time,
+            'total' => 42,
+        ])->execute();
+
+        $orderId = $db->getLastInsertID('order_SEQ');
+
+        $columnValueQuery = new \yii\db\Query();
+        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{order_with_null_fk}}',
+            [
+                'customer_id' => $orderId,
+                'created_at' => $columnValueQuery,
+                'total' => 42,
+            ]
+        )->execute();
+
+        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId)->queryScalar());
+
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
+    }
 }
