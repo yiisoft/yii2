@@ -160,4 +160,65 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         )->queryScalar();
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
+
+    public function testEnableQueryLog()
+    {
+        $connection = $this->getConnection();
+
+        foreach (['qlog1', 'qlog2', 'qlog3', 'qlog4'] as $table) {
+            if ($connection->getTableSchema($table, true) !== null) {
+                $connection->createCommand()->dropTable($table)->execute();
+            }
+        }
+
+        // profiling and logging
+        $connection->enableLogging = true;
+        $connection->enableProfiling = true;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
+        $this->assertCount(3, \Yii::getLogger()->messages);
+        $this->assertNotNull($connection->getTableSchema('qlog1', true));
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand('SELECT * FROM {{qlog1}}')->queryAll();
+        $this->assertCount(3, \Yii::getLogger()->messages);
+
+        // profiling only
+        $connection->enableLogging = false;
+        $connection->enableProfiling = true;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog2', ['id' => 'pk'])->execute();
+        $this->assertCount(2, \Yii::getLogger()->messages);
+        $this->assertNotNull($connection->getTableSchema('qlog2', true));
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand('SELECT * FROM {{qlog2}}')->queryAll();
+        $this->assertCount(2, \Yii::getLogger()->messages);
+
+        // logging only
+        $connection->enableLogging = true;
+        $connection->enableProfiling = false;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog3', ['id' => 'pk'])->execute();
+        $this->assertCount(1, \Yii::getLogger()->messages);
+        $this->assertNotNull($connection->getTableSchema('qlog3', true));
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand('SELECT * FROM {{qlog3}}')->queryAll();
+        $this->assertCount(1, \Yii::getLogger()->messages);
+
+        // disabled
+        $connection->enableLogging = false;
+        $connection->enableProfiling = false;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog4', ['id' => 'pk'])->execute();
+        $this->assertNotNull($connection->getTableSchema('qlog4', true));
+        $this->assertCount(0, \Yii::getLogger()->messages);
+        $connection->createCommand('SELECT * FROM {{qlog4}}')->queryAll();
+        $this->assertCount(0, \Yii::getLogger()->messages);
+    }
 }
