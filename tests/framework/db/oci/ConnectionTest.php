@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\Connection;
 use yii\db\Transaction;
 
 /**
@@ -134,6 +135,29 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
         )->queryScalar();
 
+        $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
+    }
+
+    /**
+     * Note: The READ UNCOMMITTED isolation level allows dirty reads. Oracle Database doesn't use dirty reads, nor does
+     * it even allow them.
+     *
+     * Change Transaction::READ_UNCOMMITTED => Transaction::READ_COMMITTED.
+     */
+    public function testTransactionShortcutCustom()
+    {
+        $connection = $this->getConnection(true);
+
+        $result = $connection->transaction(static function (Connection $db) {
+            $db->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+            return true;
+        }, Transaction::READ_COMMITTED);
+
+        $this->assertTrue($result, 'transaction shortcut valid value should be returned from callback');
+
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 }
