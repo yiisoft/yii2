@@ -188,7 +188,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * Test INSERT INTO ... SELECT SQL statement with alias syntax.
      */
-    public function testInsertSelectAlias(): void
+    public function testInsertSelectAlias()
     {
         $db = $this->getConnection();
 
