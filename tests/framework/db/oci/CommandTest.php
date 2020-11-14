@@ -161,4 +161,27 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             ['SELECT SUBSTR([[name]], :len) FROM {{customer}} WHERE [[email]] = :email'],
         ];
     }
+
+    public function testInsert()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryOne();
+        $this->assertEquals([
+            'email' => 't1@example.com',
+            'name' => 'test',
+            'address' => 'test address',
+        ], $record);
+    }
 }
