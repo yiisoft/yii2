@@ -392,4 +392,44 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
         $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
     }
+
+    public function testAlterTable()
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema('testAlterTable') !== null) {
+            $db->createCommand("DROP SEQUENCE testAlterTable_SEQ")->execute();
+            $db->createCommand()->dropTable('testAlterTable')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'testAlterTable',
+            ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER]
+        )->execute();
+
+        $db->createCommand('CREATE SEQUENCE testAlterTable_SEQ START with 1 INCREMENT BY 1')->execute();
+
+        $db->createCommand(
+            'INSERT INTO {{testAlterTable}} ([[id]], [[bar]]) VALUES(testAlterTable_SEQ.NEXTVAL, 1)'
+        )->execute();
+
+        $db->createCommand('ALTER TABLE {{testAlterTable}} ADD ([[bar_tmp]] VARCHAR(20))')->execute();
+
+        $db->createCommand('UPDATE {{testAlterTable}} SET [[bar_tmp]] = [[bar]]')->execute();
+
+        $db->createCommand('ALTER TABLE {{testAlterTable}} DROP COLUMN [[bar]]')->execute();
+
+        $db->createCommand('ALTER TABLE {{testAlterTable}} RENAME COLUMN [[bar_tmp]] TO [[bar]]')->execute();
+
+        $db->createCommand(
+            "INSERT INTO {{testAlterTable}} ([[id]], [[bar]]) VALUES(testAlterTable_SEQ.NEXTVAL, 'hello')"
+        )->execute();
+
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}}')->queryAll();
+
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+            ['id' => 2, 'bar' => 'hello'],
+        ], $records);
+    }
 }
