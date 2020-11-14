@@ -85,4 +85,37 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
     }
+
+    public function testTransaction()
+    {
+        $connection = $this->getConnection(false);
+
+        $this->assertNull($connection->transaction);
+
+        $transaction = $connection->beginTransaction();
+
+        $this->assertNotNull($connection->transaction);
+        $this->assertTrue($transaction->isActive);
+
+        $connection->createCommand()->insert('profile', ['description' => 'test transaction'])->execute();
+
+        $transaction->rollBack();
+        $this->assertFalse($transaction->isActive);
+        $this->assertNull($connection->transaction);
+
+        $this->assertEquals(0, $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction'"
+        )->queryScalar());
+
+        $transaction = $connection->beginTransaction();
+
+        $connection->createCommand()->insert(
+            'profile',
+            ['description' => 'test transaction']
+        )->execute();
+
+        $transaction->commit();
+        $this->assertFalse($transaction->isActive);
+        $this->assertNull($connection->transaction);
+    }
 }
