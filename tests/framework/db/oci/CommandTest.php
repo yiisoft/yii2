@@ -332,7 +332,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
 
-    public function testCreateTable(): void
+    public function testCreateTable()
     {
         $db = $this->getConnection();
 
