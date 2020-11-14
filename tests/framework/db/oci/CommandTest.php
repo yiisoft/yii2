@@ -152,4 +152,13 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
         }, 10);
     }
+
+    public function paramsNonWhereProvider()
+    {
+        return [
+            ['SELECT SUBSTR([[name]], :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR([[name]], :len)'],
+            ['SELECT SUBSTR([[name]], :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR([[name]], :len)'],
+            ['SELECT SUBSTR([[name]], :len) FROM {{customer}} WHERE [[email]] = :email'],
+        ];
+    }
 }
