@@ -9,6 +9,7 @@ namespace yiiunit\framework\db\oci;
 
 use yii\caching\ArrayCache;
 use yii\db\Connection;
+use yii\db\Query;
 use yii\db\Schema;
 
 /**
@@ -431,5 +432,45 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             ['id' => 1, 'bar' => 1],
             ['id' => 2, 'bar' => 'hello'],
         ], $records);
+    }
+
+    public function testCreateView(): void
+    {
+        $db = $this->getConnection();
+
+        $subquery = (new Query())
+            ->select('bar')
+            ->from('testCreateViewTable')
+            ->where(['>', 'bar', '5']);
+
+        if ($db->getSchema()->getTableSchema('testCreateView') !== null) {
+            $db->createCommand()->dropView('testCreateView')->execute();
+        }
+
+        if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
+            $db->createCommand("DROP SEQUENCE testCreateViewTable_SEQ")->execute();
+            $db->createCommand()->dropTable('testCreateViewTable')->execute();
+        }
+
+        $db->createCommand()->createTable('testCreateViewTable', [
+            'id'  => Schema::TYPE_PK,
+            'bar' => Schema::TYPE_INTEGER,
+        ])->execute();
+
+        $db->createCommand('CREATE SEQUENCE testCreateViewTable_SEQ START with 1 INCREMENT BY 1')->execute();
+
+        $db->createCommand(
+            'INSERT INTO {{testCreateViewTable}} ("id", "bar") VALUES(testCreateTable_SEQ.NEXTVAL, 1)'
+        )->execute();
+
+        $db->createCommand(
+            'INSERT INTO {{testCreateViewTable}} ("id", "bar") VALUES(testCreateTable_SEQ.NEXTVAL, 6)'
+        )->execute();
+
+        $db->createCommand()->createView('testCreateView', $subquery)->execute();
+
+        $records = $db->createCommand('SELECT [[bar]] FROM {{testCreateView}}')->queryAll();
+
+        $this->assertEquals([['bar' => 6]], $records);
     }
 }
