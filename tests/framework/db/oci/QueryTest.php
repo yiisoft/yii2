@@ -27,4 +27,9 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
         $result = (new Query())->from('customer')->where(['[[status]]' => 3])->one($db);
         $this->assertFalse($result);
     }
+
+    public function testUnion()
+    {
+        $this->markTestSkipped('Unsupported use of WITH clause in Oracle.');
+    }
 }
