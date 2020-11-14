@@ -331,4 +331,30 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
 
+    public function testCreateTable(): void
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema("testCreateTable") !== null) {
+            $db->createCommand("DROP SEQUENCE testCreateTable_SEQ")->execute();
+            $db->createCommand()->dropTable("testCreateTable")->execute();
+        }
+
+        $db->createCommand()->createTable(
+            '{{testCreateTable}}',
+            ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER]
+        )->execute();
+
+        $db->createCommand('CREATE SEQUENCE testCreateTable_SEQ START with 1 INCREMENT BY 1')->execute();
+
+        $db->createCommand(
+            'INSERT INTO {{testCreateTable}} ("id", "bar") VALUES(testCreateTable_SEQ.NEXTVAL, 1)'
+        )->execute();
+
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}}')->queryAll();
+
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+        ], $records);
+    }
 }
