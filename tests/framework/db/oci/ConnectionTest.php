@@ -118,4 +118,22 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertFalse($transaction->isActive);
         $this->assertNull($connection->transaction);
     }
+
+    public function testTransactionShortcutCorrect()
+    {
+        $connection = $this->getConnection(true);
+
+        $result = $connection->transaction(function () use ($connection) {
+            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+            return true;
+        });
+
+        $this->assertTrue($result, 'transaction shortcut valid value should be returned from callback');
+
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
+
+        $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
+    }
 }
