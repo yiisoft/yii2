@@ -75,6 +75,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
+    /**
+     * @dataProvider defaultValuesProvider
+     * @param string $sql
+     */
     public function testAddDropDefaultValue($sql, \Closure $builder)
     {
         $this->markTestSkipped('Adding/dropping default constraints is not supported in Oracle.');
