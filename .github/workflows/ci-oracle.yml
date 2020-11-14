@@ -9,7 +9,7 @@ jobs:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     env:
-      extensions: pdo, pdo_oci
+      extensions: oci8, pdo, pdo_oci
       key: cache-v1
 
     runs-on: ${{ matrix.os }}
@@ -56,7 +56,7 @@ jobs:
           extensions: ${{ env.extensions }}
           ini-values: date.timezone='UTC'
           coverage: pcov
-          tools: composer:v2
+          tools: composer:v2, pecl
 
       - name: Determine composer cache directory
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
