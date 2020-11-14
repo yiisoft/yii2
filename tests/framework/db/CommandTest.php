@@ -654,6 +654,9 @@ SQL;
                 break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
+                break;
+            case 'oci':
+                $expression = 'EXTRACT(YEAR FROM sysdate)';
         }
 
         $command = $db->createCommand();
