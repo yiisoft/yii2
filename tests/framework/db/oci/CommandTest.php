@@ -478,4 +478,9 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $this->assertEquals([['bar' => 6]], $records);
     }
+
+    public function testColumnCase()
+    {
+        $this->markTestSkipped('Should be fixed.');
+    }
 }
