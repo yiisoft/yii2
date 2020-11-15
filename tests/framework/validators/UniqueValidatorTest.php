@@ -308,6 +308,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val = new UniqueValidator();
 
         $m = new ValidatorTestRefModel(['ref' => 0]);
+
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 6;
+        }
+
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
         $m->save(false);
