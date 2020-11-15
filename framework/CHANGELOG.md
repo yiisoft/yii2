@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- Bug #18386: Fix `assets/yii.activeForm.js` incorrect target selector for `validatingCssClass`.
+- Bug #18386: Fix `assets/yii.activeForm.js` incorrect target selector for `validatingCssClass` (brussens)
 
 
 2.0.39.2 November 13, 2020
