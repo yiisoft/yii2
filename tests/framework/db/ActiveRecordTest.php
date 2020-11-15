@@ -940,7 +940,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         /** @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
-            $count = $query->count('c.id');
+            $count = $query->count('[[c.id]]');
         } elseif ($aliasMethod === 'querysyntax') {
             $count = $query->count('{{@customer}}.id');
         } elseif ($aliasMethod === 'applyAlias') {
