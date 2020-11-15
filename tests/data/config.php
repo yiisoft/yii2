@@ -37,15 +37,15 @@ $config = [
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
         'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=localhost,1433;Database=yiitest',
+            'dsn' => 'sqlsrv:Server=127.0.0.1,1433;Database=yiitest',
             'username' => 'SA',
             'password' => 'YourStrong!Passw0rd',
             'fixture' => __DIR__ . '/mssql.sql',
         ],
         'pgsql' => [
             'dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;',
-            'username' => 'postgres',
-            'password' => 'postgres',
+            'username' => 'root',
+            'password' => 'root',
             'fixture' => __DIR__ . '/postgres.sql',
         ],
         'oci' => [

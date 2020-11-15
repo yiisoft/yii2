@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db\oci;
 
 use yii\db\Expression;
+use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\data\ar\DefaultMultiplePk;
 use yiiunit\data\ar\Type;
@@ -133,5 +134,17 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $record->save(false);
         $this->assertEquals(5, $record->id);
         $this->assertEquals('secondKey', $record->second_key_column);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9006
+     */
+    public function testBit()
+    {
+        $falseBit = BitValues::findOne(1);
+        $this->assertEquals('0', $falseBit->val);
+
+        $trueBit = BitValues::findOne(2);
+        $this->assertEquals('1', $trueBit->val);
     }
 }
