@@ -147,4 +147,35 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $trueBit = BitValues::findOne(2);
         $this->assertEquals('1', $trueBit->val);
     }
+
+    /**
+     * Some PDO implementations(e.g. cubrid) do not support boolean values.
+     * Make sure this does not affect AR layer.
+     */
+    public function testBooleanAttribute()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        /* @var $this TestCase|ActiveRecordTestTrait */
+        $customer = new $customerClass();
+        $customer->name = 'boolean customer';
+        $customer->email = 'mail@example.com';
+        $customer->status = '1';
+        $customer->save(false);
+
+        $customer->refresh();
+        $this->assertEquals('1', $customer->status);
+
+        $customer->status = '0';
+        $customer->save(false);
+
+        $customer->refresh();
+        $this->assertEquals('0', $customer->status);
+
+        $customers = $customerClass::find()->where(['[[status]]' => '1'])->all();
+        $this->assertCount(2, $customers);
+
+        $customers = $customerClass::find()->where(['[[status]]' => '0'])->all();
+        $this->assertCount(1, $customers);
+    }
 }
