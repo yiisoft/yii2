@@ -31,7 +31,7 @@ class ModuleTest extends TestCase
         $child2 = new Module('child2');
 
         $parent->setModule('child', $child);
-        $parent->setModules(['child2', $child2]);
+        $parent->setModules(['child2' => $child2]);
 
         $this->assertEquals('parent', $child->module->id);
         $this->assertEquals('parent', $child2->module->id);
