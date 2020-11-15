@@ -272,7 +272,6 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
                 'IN (1,2,3) ORDER BY [[int_col]]'
             )->queryAll();
 
-
             $this->assertEquals(3, \count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
@@ -388,7 +387,9 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             ]
         )->execute();
 
-        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId)->queryScalar());
+        $this->assertEquals($time, $db->createCommand(
+            'SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId
+        )->queryScalar());
 
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
         $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
