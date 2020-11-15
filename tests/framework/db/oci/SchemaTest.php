@@ -43,6 +43,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['smallint_col']['size'] = 22;
         $columns['smallint_col']['precision'] = null;
         $columns['smallint_col']['scale'] = 0;
+        $columns['char_col']['type'] = 'string';
         $columns['char_col']['dbType'] = 'CHAR';
         $columns['char_col']['precision'] = null;
         $columns['char_col']['size'] = 100;
