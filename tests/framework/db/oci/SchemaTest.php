@@ -227,4 +227,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'another unique index' => ['someCol3'],
         ], $uniqueIndexes);
     }
+
+    public function testCompositeFk()
+    {
+        $this->markTestSkipped('Should be fixed.');
+    }
 }
