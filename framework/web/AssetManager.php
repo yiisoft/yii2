@@ -209,6 +209,18 @@ class AssetManager extends Component
     {
         parent::init();
         $this->basePath = Yii::getAlias($this->basePath);
+
+        $this->basePath = realpath($this->basePath);
+        $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+    }
+
+    /**
+     * Check whether the basePath exists and is writeable.
+     *
+     * @since 2.0.40
+     */
+    public function checkBasePathPermission()
+    {
         if (!is_dir($this->basePath)) {
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
         }
@@ -216,9 +228,6 @@ class AssetManager extends Component
         if (!is_writable($this->basePath)) {
             throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
         }
-
-        $this->basePath = realpath($this->basePath);
-        $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
     /**
@@ -458,6 +467,8 @@ class AssetManager extends Component
      */
     protected function publishFile($src)
     {
+        $this->checkBasePathPermission();
+
         $dir = $this->hash($src);
         $fileName = basename($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -513,6 +524,8 @@ class AssetManager extends Component
      */
     protected function publishDirectory($src, $options)
     {
+        $this->checkBasePathPermission();
+
         $dir = $this->hash($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
