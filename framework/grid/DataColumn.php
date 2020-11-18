@@ -206,8 +206,9 @@ class DataColumn extends Column
                     0 => $this->grid->formatter->booleanFormat[0],
                 ], $options) . $error;
             }
+            $options = array_merge(['maxlength' => true], $this->filterInputOptions);
 
-            return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
+            return Html::activeTextInput($model, $this->attribute, $options) . $error;
         }
 
         return parent::renderFilterCellContent();

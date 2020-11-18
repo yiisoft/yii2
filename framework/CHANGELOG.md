@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #18381: The `yii\web\AssetManager` `$basePath` writeable check has been moved to the initializer of the class instead of making this check whenever a file will be published (nadar)
+- Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
 
 
 2.0.39.2 November 13, 2020
