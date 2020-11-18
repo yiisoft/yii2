@@ -214,6 +214,7 @@ class AssetManager extends Component
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
+    private $_isBasePathPermissionChecked = null;
     /**
      * Check whether the basePath exists and is writeable.
      *
@@ -221,6 +222,11 @@ class AssetManager extends Component
      */
     public function checkBasePathPermission()
     {
+        // if the check is been done already, skip further checks
+        if ($this->_isBasePathPermissionChecked) {
+            return;
+        }
+
         if (!is_dir($this->basePath)) {
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
         }
@@ -228,6 +234,8 @@ class AssetManager extends Component
         if (!is_writable($this->basePath)) {
             throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
         }
+
+        $this->_isBasePathPermissionChecked = true;
     }
 
     /**
