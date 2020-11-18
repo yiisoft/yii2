@@ -25,6 +25,7 @@ use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\QuxFactory;
+use yiiunit\framework\di\stubs\Zeta;
 use yiiunit\TestCase;
 
 /**
@@ -579,5 +580,32 @@ class ContainerTest extends TestCase
             'color' => 'red',
             'Hello',
         ]);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/18379
+     */
+    public function testInvalidConfigException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        (new Container())->get(Bar::className());
+    }
+
+    public function testNullTypeConstructorParameters()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+
+        $zeta = (new Container())->get(Zeta::className());
+        $this->assertInstanceOf(Beta::className(), $zeta->beta);
+        $this->assertInstanceOf(Beta::className(), $zeta->betaNull);
+        $this->assertNull($zeta->color);
+        $this->assertNull($zeta->colorNull);
+        $this->assertNull($zeta->qux);
+        $this->assertNull($zeta->quxNull);
+        $this->assertNull($zeta->unknown);
+        $this->assertNull($zeta->unknownNull);
     }
 }

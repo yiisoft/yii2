@@ -529,7 +529,10 @@ class Container extends Component
                 $className = $isClass ? $c->getName() : null;
 
                 if ($className !== null) {
-                    $dependencies[$param->getName()] = Instance::of($className, true);
+                    $dependencies[$param->getName()] = Instance::of(
+                        $className,
+                        $param->isOptional() || (PHP_VERSION_ID >= 70100 && $param->getType()->allowsNull())
+                    );
                 } else {
                     $dependencies[$param->getName()] = $param->isDefaultValueAvailable()
                         ? $param->getDefaultValue()
