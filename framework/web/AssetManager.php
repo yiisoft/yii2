@@ -214,7 +214,8 @@ class AssetManager extends Component
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
-    private $_isBasePathPermissionChecked = null;
+    private $_isBasePathPermissionChecked;
+
     /**
      * Check whether the basePath exists and is writeable.
      *
