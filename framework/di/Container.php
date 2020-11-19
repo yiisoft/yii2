@@ -796,6 +796,6 @@ class Container extends Component
      */
     public function setResolveArrays($value)
     {
-        $this->_resolveArrays = (bool)$value;
+        $this->_resolveArrays = (bool) $value;
     }
 }
