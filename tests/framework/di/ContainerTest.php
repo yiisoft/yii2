@@ -583,7 +583,7 @@ class ContainerTest extends TestCase
         ]);
     }
 
-    public function dataInvalidConfigException()
+    public function dataNotInstantiableException()
     {
         return [
             [Bar::className()],
@@ -592,13 +592,13 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * @dataProvider dataInvalidConfigException
+     * @dataProvider dataNotInstantiableException
      *
      * @see https://github.com/yiisoft/yii2/pull/18379
      *
      * @param string $class
      */
-    public function testInvalidConfigException($class)
+    public function testNotInstantiableException($class)
     {
         $this->expectException('yii\di\NotInstantiableException');
         (new Container())->get($class);
