@@ -9,6 +9,8 @@ namespace yii\di;
 
 use ReflectionClass;
 use ReflectionException;
+use ReflectionNamedType;
+use ReflectionParameter;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -522,17 +524,23 @@ class Container extends Component
                     try {
                         $c = $param->getClass();
                     } catch (ReflectionException $e) {
-                        $c = null;
+                        if (PHP_VERSION_ID >= 70000 && !$this->isNulledParam($param)) {
+                            $type = $param->getType();
+                            throw new NotInstantiableException(
+                                $type instanceof ReflectionNamedType
+                                    ? $type->getName()
+                                    : 'Can not instantiate unknown class.'
+                            );
+                        } else {
+                            $c = null;
+                        }
                     }
                     $isClass = $c !== null;
                 }
                 $className = $isClass ? $c->getName() : null;
 
                 if ($className !== null) {
-                    $dependencies[$param->getName()] = Instance::of(
-                        $className,
-                        $param->isOptional() || (PHP_VERSION_ID >= 70100 && $param->getType()->allowsNull())
-                    );
+                    $dependencies[$param->getName()] = Instance::of($className, $this->isNulledParam($param));
                 } else {
                     $dependencies[$param->getName()] = $param->isDefaultValueAvailable()
                         ? $param->getDefaultValue()
@@ -545,6 +553,15 @@ class Container extends Component
         $this->_dependencies[$class] = $dependencies;
 
         return [$reflection, $dependencies];
+    }
+
+    /**
+     * @param ReflectionParameter $param
+     * @return bool
+     */
+    private function isNulledParam($param)
+    {
+        return $param->isOptional() || (PHP_VERSION_ID >= 70100 && $param->getType()->allowsNull());
     }
 
     /**

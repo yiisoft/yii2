@@ -22,6 +22,7 @@ use yiiunit\framework\di\stubs\Car;
 use yiiunit\framework\di\stubs\Corge;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
+use yiiunit\framework\di\stubs\Kappa;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\QuxFactory;
@@ -582,13 +583,25 @@ class ContainerTest extends TestCase
         ]);
     }
 
-    /**
-     * @see https://github.com/yiisoft/yii2/pull/18379
-     */
-    public function testInvalidConfigException()
+    public function dataInvalidConfigException()
     {
-        $this->expectException('yii\base\InvalidConfigException');
-        (new Container())->get(Bar::className());
+        return [
+            [Bar::className()],
+            [Kappa::className()],
+        ];
+    }
+
+    /**
+     * @dataProvider dataInvalidConfigException
+     *
+     * @see https://github.com/yiisoft/yii2/pull/18379
+     *
+     * @param string $class
+     */
+    public function testInvalidConfigException($class)
+    {
+        $this->expectException('yii\di\NotInstantiableException');
+        (new Container())->get($class);
     }
 
     public function testNullTypeConstructorParameters()
