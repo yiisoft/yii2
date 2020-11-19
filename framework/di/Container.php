@@ -524,12 +524,17 @@ class Container extends Component
                     try {
                         $c = $param->getClass();
                     } catch (ReflectionException $e) {
-                        if (PHP_VERSION_ID >= 70000 && !$this->isNulledParam($param)) {
-                            $type = $param->getType();
+                        if (!$this->isNulledParam($param)) {
+                            $notInstantiableClass = null;
+                            if (PHP_VERSION_ID >= 70000) {
+                                $type = $param->getType();
+                                if ($type instanceof ReflectionNamedType) {
+                                    $notInstantiableClass = $type->getName();
+                                }
+                            }
                             throw new NotInstantiableException(
-                                $type instanceof ReflectionNamedType
-                                    ? $type->getName()
-                                    : 'Can not instantiate unknown class.'
+                                $notInstantiableClass,
+                                $notInstantiableClass === null ? 'Can not instantiate unknown class.' : null
                             );
                         } else {
                             $c = null;
@@ -791,6 +796,6 @@ class Container extends Component
      */
     public function setResolveArrays($value)
     {
-        $this->_resolveArrays = (bool) $value;
+        $this->_resolveArrays = (bool)$value;
     }
 }
