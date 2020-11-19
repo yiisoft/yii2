@@ -495,7 +495,7 @@ class Container extends Component
      * Returns the dependencies of the specified class.
      * @param string $class class name, interface name or alias name
      * @return array the dependencies of the specified class.
-     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      */
     protected function getDependencies($class)
     {
@@ -507,7 +507,12 @@ class Container extends Component
         try {
             $reflection = new ReflectionClass($class);
         } catch (\ReflectionException $e) {
-            throw new InvalidConfigException('Failed to instantiate component or class "' . $class . '".', 0, $e);
+            throw new NotInstantiableException(
+                $class,
+                'Failed to instantiate component or class "' . $class . '".',
+                0,
+                $e
+            );
         }
 
         $constructor = $reflection->getConstructor();
