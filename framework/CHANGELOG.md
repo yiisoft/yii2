@@ -4,7 +4,13 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
+- Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
+
+2.0.39.2 November 13, 2020
+--------------------------
+
+- Bug #18378: Fix not taking default value when unable to resolve abstract class via DI container (vjik)
 
 
 2.0.39.1 November 10, 2020
