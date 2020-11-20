@@ -7,6 +7,8 @@
 
 namespace yii\log;
 
+use yii\helpers\Json;
+
 /**
  * JsonFileTarget extends FileTarget changing the output to JSON
  *
@@ -35,7 +37,7 @@ class JsonFileTarget extends FileTarget
             }
         }
 
-		return json_encode(['timestamp' => $timestamp, 'datetime' => date('Y-m-d\TH:i:s\Z', intval($timestamp)), 'text' => $text, 'level' => $level, 'category' => $category, 'traces' => $traces]);
+		return Json::encode(['timestamp' => $timestamp, 'datetime' => date('Y-m-d\TH:i:s\Z', intval($timestamp)), 'text' => $text, 'level' => $level, 'category' => $category, 'traces' => $traces]);
     }
 
 }
