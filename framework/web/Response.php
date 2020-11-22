@@ -1067,7 +1067,7 @@ class Response extends \yii\base\Response
      */
     protected function prepare()
     {
-        if ($this->statusCode === 204 || $this->statusCode === 304) {
+        if (in_array($this->getStatusCode(), [204, 304])) {
             // A 204/304 response cannot contain a message body according to rfc7231/rfc7232
             $this->content = '';
             $this->stream = null;
