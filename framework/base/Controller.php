@@ -59,12 +59,12 @@ class Controller extends Component implements ViewContextInterface
      * Defaults to null, meaning the actual layout value should inherit that from [[module]]'s layout value.
      * If false, no layout will be applied.
      */
-    public $layout;
+    public $layout = null;
     /**
-     * @var Action the action that is currently being executed. This property will be set
+     * @var Action|null the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
-    public $action;
+    public $action = null;
     /**
      * @var Request|array|string The request.
      * @since 2.0.36
@@ -77,13 +77,13 @@ class Controller extends Component implements ViewContextInterface
     public $response = 'response';
 
     /**
-     * @var View the view object that can be used to render views or view files.
+     * @var View|null the view object that can be used to render views or view files.
      */
-    private $_view;
+    private $_view = null;
     /**
-     * @var string the root directory that contains view files for this controller.
+     * @var string|null the root directory that contains view files for this controller.
      */
-    private $_viewPath;
+    private $_viewPath = null;
 
 
     /**
