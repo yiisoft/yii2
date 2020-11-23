@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- Bug #18199: Fix content body response on 304 http status code, according to RFC 7232 (rad8329)
+- Bug #18199: Fix content body response on 304 HTTP status code, according to RFC 7232 (rad8329)
 - Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
 
 
