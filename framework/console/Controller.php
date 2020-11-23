@@ -56,22 +56,22 @@ class Controller extends \yii\base\Controller
      */
     public $interactive = true;
     /**
-     * @var bool whether to enable ANSI color in the output.
+     * @var bool|null whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
-    public $color;
+    public $color = null;
     /**
      * @var bool whether to display help information about current command.
      * @since 2.0.10
      */
-    public $help;
+    public $help = false;
     /**
-     * @var bool if true - script finish with `ExitCode::OK` in case of exception.
+     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception.
      * false - `ExitCode::UNSPECIFIED_ERROR`.
      * Default: `YII_ENV_TEST`
      * @since 2.0.36
      */
-    public $silentExitOnException;
+    public $silentExitOnException = null;
 
     /**
      * @var array the options passed during execution.
