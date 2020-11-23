@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
 
 
 2.0.39.3 November 23, 2020
