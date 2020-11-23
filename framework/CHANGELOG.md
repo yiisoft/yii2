@@ -5,8 +5,15 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18199: Fix content body response on 304 http status code, according to RFC 7232 (rad8329)
+- Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
+
+
+2.0.39.3 November 23, 2020
+--------------------------
+
 - Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
 - Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
+
 
 2.0.39.2 November 13, 2020
 --------------------------
