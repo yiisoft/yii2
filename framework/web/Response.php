@@ -1073,10 +1073,14 @@ class Response extends \yii\base\Response
      * Prepares for sending the response.
      * The default implementation will convert [[data]] into [[content]] and set headers accordingly.
      * @throws InvalidConfigException if the formatter for the specified format is invalid or [[format]] is not supported
+     *
+     * @see https://tools.ietf.org/html/rfc7231#page-53
+     * @see https://tools.ietf.org/html/rfc7232#page-18
      */
     protected function prepare()
     {
-        if ($this->statusCode === 204) {
+        if (in_array($this->getStatusCode(), [204, 304])) {
+            // A 204/304 response cannot contain a message body according to rfc7231/rfc7232
             $this->content = '';
             $this->stream = null;
             return;
