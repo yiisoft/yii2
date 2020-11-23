@@ -77,13 +77,13 @@ class Controller extends Component implements ViewContextInterface
     public $response = 'response';
 
     /**
-     * @var View|null the view object that can be used to render views or view files.
+     * @var View the view object that can be used to render views or view files.
      */
-    private $_view = null;
+    private $_view;
     /**
-     * @var string|null the root directory that contains view files for this controller.
+     * @var string the root directory that contains view files for this controller.
      */
-    private $_viewPath = null;
+    private $_viewPath;
 
 
     /**
