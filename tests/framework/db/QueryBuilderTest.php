@@ -984,11 +984,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey()->first(),
                 [
                     'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
-                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                 ],
                 [
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'pk',
                 ]
             ],
@@ -997,11 +997,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->first(),
                 [
                     'mysql' => 'int(11) FIRST',
-                    'oci' => 'NUMBER(10)',
                     'sqlsrv' => 'int',
                     'cubrid' => 'int FIRST',
                 ],
                 [
+                    'oci' => 'NUMBER(10)',
                     'pgsql' => 'integer',
                     'sqlsrv' => 'integer',
                 ]
@@ -1011,11 +1011,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string()->first(),
                 [
                     'mysql' => 'varchar(255) FIRST',
-                    'oci' => 'VARCHAR2(255)',
                     'sqlsrv' => 'nvarchar(255)',
                     'cubrid' => 'varchar(255) FIRST',
                 ],
                 [
+                    'oci' => 'VARCHAR2(255)',
                     'sqlsrv' => 'string',
                 ]
             ],
@@ -1024,11 +1024,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->append('NOT NULL')->first(),
                 [
                     'mysql' => 'int(11) NOT NULL FIRST',
-                    'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'int NOT NULL',
                     'cubrid' => 'int NOT NULL FIRST',
                 ],
                 [
+                    'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'integer NOT NULL',
                 ]
             ],
@@ -1037,11 +1037,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string()->append('NOT NULL')->first(),
                 [
                     'mysql' => 'varchar(255) NOT NULL FIRST',
-                    'oci' => 'VARCHAR2(255) NOT NULL',
                     'sqlsrv' => 'nvarchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL FIRST',
                 ],
                 [
+                    'oci' => 'VARCHAR2(255) NOT NULL',
                     'sqlsrv' => 'string NOT NULL',
                 ]
             ],
