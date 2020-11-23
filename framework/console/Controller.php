@@ -79,6 +79,9 @@ class Controller extends \yii\base\Controller
     private $_passedOptions = [];
 
 
+    /**
+     * {@inheritdoc}
+     */
     public function beforeAction($action)
     {
         $silentExit = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
