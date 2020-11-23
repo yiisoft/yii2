@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.40 under development
+2.0.39.3 under development
 ------------------------
 
 - Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
