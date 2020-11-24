@@ -82,7 +82,8 @@ class FileMutex extends Mutex
      */
     public function init()
     {
-        parent::init();
+        $this->autoReleaseOnInit();
+
         $this->mutexPath = Yii::getAlias($this->mutexPath);
         if (!is_dir($this->mutexPath)) {
             FileHelper::createDirectory($this->mutexPath, $this->dirMode, true);
@@ -90,6 +91,69 @@ class FileMutex extends Mutex
         if ($this->isWindows === null) {
             $this->isWindows = DIRECTORY_SEPARATOR === '\\';
         }
+    }
+
+    /**
+     * Checks if a lock is currently acquired
+     *
+     * @param string $name of the lock to check
+     * @return bool Returns true if currently acquired
+     * @since 2.0.36
+     */
+    public function isAcquired($name)
+    {
+        return in_array($name, $this->_files, true);
+    }
+
+    /**
+     * Acquires a lock by name.
+     * @param string $name of the lock to be acquired. Must be unique.
+     * @param int $timeout time (in seconds) to wait for lock to be released. Defaults to zero meaning that method will return
+     * false immediately in case lock was already acquired.
+     * @return bool lock acquiring result.
+     */
+    public function acquire($name, $timeout = 0)
+    {
+        if (!$this->isAcquired($name) && $this->acquireLock($name, $timeout)) {
+            $this->_files[] = $name;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Releases acquired lock. This method will return false in case the lock was not found.
+     * @param string $name of the lock to be released. This lock must already exist.
+     * @return bool lock release result: false in case named lock was not found..
+     */
+    public function release($name)
+    {
+        if ($this->releaseLock($name)) {
+            $index = array_search($name, $this->_files);
+            if ($index !== false) {
+                unset($this->_files[$index]);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function autoReleaseOnInit()
+    {
+        if ($this->autoRelease) {
+            return;
+        }
+
+        $files = &$this->_files;
+        register_shutdown_function(function () use (&$files) {
+            foreach ($files as $lock) {
+                $this->releaseLock($lock);
+            }
+        });
     }
 
     /**
