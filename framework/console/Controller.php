@@ -59,7 +59,7 @@ class Controller extends \yii\base\Controller
      * @var bool|null whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
-    public $color = null;
+    public $color;
     /**
      * @var bool whether to display help information about current command.
      * @since 2.0.10
@@ -71,7 +71,7 @@ class Controller extends \yii\base\Controller
      * Default: `YII_ENV_TEST`
      * @since 2.0.36
      */
-    public $silentExitOnException = null;
+    public $silentExitOnException;
 
     /**
      * @var array the options passed during execution.
