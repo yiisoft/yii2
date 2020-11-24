@@ -37,7 +37,7 @@ $config = [
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
         'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=localhost,1433;Database=yiitest',
+            'dsn' => 'sqlsrv:Server=127.0.0.1,1433;Database=yiitest',
             'username' => 'SA',
             'password' => 'YourStrong!Passw0rd',
             'fixture' => __DIR__ . '/mssql.sql',
@@ -49,9 +49,9 @@ $config = [
             'fixture' => __DIR__ . '/postgres.sql',
         ],
         'oci' => [
-            'dsn' => 'oci:dbname=LOCAL_XE;charset=AL32UTF8;',
-            'username' => '',
-            'password' => '',
+            'dsn' => 'oci:dbname=localhost/XE;charset=AL32UTF8;',
+            'username' => 'system',
+            'password' => 'oracle',
             'fixture' => __DIR__ . '/oci.sql',
         ],
     ],

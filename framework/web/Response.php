@@ -138,9 +138,12 @@ class Response extends \yii\base\Response
      */
     public $content;
     /**
-     * @var resource|array the stream to be sent. This can be a stream handle or an array of stream handle,
-     * the begin position and the end position. Note that when this property is set, the [[data]] and [[content]]
-     * properties will be ignored by [[send()]].
+     * @var resource|array|callable the stream to be sent. This can be a stream handle or an array of stream handle,
+     * the begin position and the end position. Alternatively it can be set to a callable, which returns
+     * (or [yields](https://www.php.net/manual/en/language.generators.syntax.php)) an array of strings that should
+     * be echoed and flushed out one by one.
+     *
+     * Note that when this property is set, the [[data]] and [[content]] properties will be ignored by [[send()]].
      */
     public $stream;
     /**
@@ -439,6 +442,15 @@ class Response extends \yii\base\Response
         // Try to reset time limit for big files
         if (!function_exists('set_time_limit') || !@set_time_limit(0)) {
             Yii::warning('set_time_limit() is not available', __METHOD__);
+        }
+
+        if (is_callable($this->stream)) {
+            $data = call_user_func($this->stream);
+            foreach ($data as $datum) {
+                echo $datum;
+                flush();
+            }
+            return;
         }
 
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
@@ -1061,10 +1073,14 @@ class Response extends \yii\base\Response
      * Prepares for sending the response.
      * The default implementation will convert [[data]] into [[content]] and set headers accordingly.
      * @throws InvalidConfigException if the formatter for the specified format is invalid or [[format]] is not supported
+     *
+     * @see https://tools.ietf.org/html/rfc7231#page-53
+     * @see https://tools.ietf.org/html/rfc7232#page-18
      */
     protected function prepare()
     {
-        if ($this->statusCode === 204) {
+        if (in_array($this->getStatusCode(), [204, 304])) {
+            // A 204/304 response cannot contain a message body according to rfc7231/rfc7232
             $this->content = '';
             $this->stream = null;
             return;
