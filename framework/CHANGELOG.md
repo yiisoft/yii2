@@ -5,6 +5,17 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18383: RBAC's generated file made PSR-12 compliant (perlexed)
+- Bug #18386: Fix `assets/yii.activeForm.js` incorrect target selector for `validatingCssClass` (brussens)
+- Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
+- Bug #18199: Fix content body response on 304 HTTP status code, according to RFC 7232 (rad8329)
+- Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
+
+
+2.0.39.3 November 23, 2020
+--------------------------
+
+- Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
+- Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
 
 
 2.0.39.2 November 13, 2020

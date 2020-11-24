@@ -9,6 +9,8 @@ namespace yii\di;
 
 use ReflectionClass;
 use ReflectionException;
+use ReflectionNamedType;
+use ReflectionParameter;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -493,7 +495,7 @@ class Container extends Component
      * Returns the dependencies of the specified class.
      * @param string $class class name, interface name or alias name
      * @return array the dependencies of the specified class.
-     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      */
     protected function getDependencies($class)
     {
@@ -505,7 +507,12 @@ class Container extends Component
         try {
             $reflection = new ReflectionClass($class);
         } catch (\ReflectionException $e) {
-            throw new InvalidConfigException('Failed to instantiate component or class "' . $class . '".', 0, $e);
+            throw new NotInstantiableException(
+                $class,
+                'Failed to instantiate component or class "' . $class . '".',
+                0,
+                $e
+            );
         }
 
         $constructor = $reflection->getConstructor();
@@ -522,14 +529,28 @@ class Container extends Component
                     try {
                         $c = $param->getClass();
                     } catch (ReflectionException $e) {
-                        $c = null;
+                        if (!$this->isNulledParam($param)) {
+                            $notInstantiableClass = null;
+                            if (PHP_VERSION_ID >= 70000) {
+                                $type = $param->getType();
+                                if ($type instanceof ReflectionNamedType) {
+                                    $notInstantiableClass = $type->getName();
+                                }
+                            }
+                            throw new NotInstantiableException(
+                                $notInstantiableClass,
+                                $notInstantiableClass === null ? 'Can not instantiate unknown class.' : null
+                            );
+                        } else {
+                            $c = null;
+                        }
                     }
                     $isClass = $c !== null;
                 }
                 $className = $isClass ? $c->getName() : null;
 
                 if ($className !== null) {
-                    $dependencies[$param->getName()] = Instance::of($className, true);
+                    $dependencies[$param->getName()] = Instance::of($className, $this->isNulledParam($param));
                 } else {
                     $dependencies[$param->getName()] = $param->isDefaultValueAvailable()
                         ? $param->getDefaultValue()
@@ -542,6 +563,15 @@ class Container extends Component
         $this->_dependencies[$class] = $dependencies;
 
         return [$reflection, $dependencies];
+    }
+
+    /**
+     * @param ReflectionParameter $param
+     * @return bool
+     */
+    private function isNulledParam($param)
+    {
+        return $param->isOptional() || (PHP_VERSION_ID >= 70100 && $param->getType()->allowsNull());
     }
 
     /**

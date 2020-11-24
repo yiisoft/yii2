@@ -209,12 +209,34 @@ class AssetManager extends Component
     {
         parent::init();
         $this->basePath = Yii::getAlias($this->basePath);
-        if (!is_dir($this->basePath)) {
-            throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
-        }
 
         $this->basePath = realpath($this->basePath);
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+    }
+
+    private $_isBasePathPermissionChecked;
+
+    /**
+     * Check whether the basePath exists and is writeable.
+     *
+     * @since 2.0.40
+     */
+    public function checkBasePathPermission()
+    {
+        // if the check is been done already, skip further checks
+        if ($this->_isBasePathPermissionChecked) {
+            return;
+        }
+
+        if (!is_dir($this->basePath)) {
+            throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
+        }
+        
+        if (!is_writable($this->basePath)) {
+            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
+        }
+
+        $this->_isBasePathPermissionChecked = true;
     }
 
     /**
@@ -439,10 +461,6 @@ class AssetManager extends Component
             throw new InvalidArgumentException("The file or directory to be published does not exist: $path");
         }
 
-        if (!is_writable($this->basePath)) {
-            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
-        }
-
         if (is_file($src)) {
             return $this->_published[$path] = $this->publishFile($src);
         }
@@ -458,6 +476,8 @@ class AssetManager extends Component
      */
     protected function publishFile($src)
     {
+        $this->checkBasePathPermission();
+
         $dir = $this->hash($src);
         $fileName = basename($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -513,6 +533,8 @@ class AssetManager extends Component
      */
     protected function publishDirectory($src, $options)
     {
+        $this->checkBasePathPermission();
+
         $dir = $this->hash($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {

@@ -53,7 +53,7 @@ Changed current directory to <directory>
 Если вы используете Apache и настроили его как описано в разделе «[Установка Yii](start-installation.md)», то для тестов вам необходимо создать отдельный виртуальный хост который будет работать с той же папкой, но использовать входной скрипт `index-test.php`:
 ```
 <VirtualHost *:80>
-    DocumentRoot "path/to/basic/webb"
+    DocumentRoot "path/to/basic/web"
     ServerName mysite-test
     <Directory "path/to/basic/web">
         Order Allow,Deny
