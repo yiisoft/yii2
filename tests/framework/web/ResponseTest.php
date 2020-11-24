@@ -278,42 +278,44 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testEmptyContentOn204()
     {
-        $response = new Response();
-        $response->setStatusCode(204);
-        $response->content = 'not empty content';
-
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-        $this->assertSame($content, '');
+        $this->assertEmptyContentOn(204);
     }
 
     public function testSettingContentToNullOn204()
     {
-        $response = new Response();
-        $response->setStatusCode(204);
-        $response->content = 'not empty content';
-
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-        $this->assertSame($content, '');
-        $this->assertSame($response->content, '');
+        $this->assertEmptyContentOn(204, function ($response) {
+            /** @var $response Response */
+            $this->assertSame($response->content, '');
+        });
     }
 
     public function testSettingStreamToNullOn204()
     {
-        $response = new Response();
-        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+        $this->assertSettingStreamToNullOn(204);
+    }
 
-        $response->sendFile($dataFile);
-        $response->setStatusCode(204);
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18199
+     */
+    public function testEmptyContentOn304()
+    {
+        $this->assertEmptyContentOn(304);
+    }
 
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-        $this->assertSame($content, '');
-        $this->assertNull($response->stream);
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18199
+     */
+    public function testSettingContentToNullOn304()
+    {
+        $this->assertEmptyContentOn(304, function ($response) {
+            /** @var $response Response */
+            $this->assertSame($response->content, '');
+        });
+    }
+
+    public function testSettingStreamToNullOn304()
+    {
+        $this->assertSettingStreamToNullOn(304);
     }
 
     public function testSendFileWithInvalidCharactersInFileName()
@@ -341,5 +343,50 @@ class ResponseTest extends \yiiunit\TestCase
 
         // Only way to test is that it doesn't create any errors
         $this->assertEquals('', $content);
+    }
+
+    /**
+     * Asserts that given a status code, the response will have an empty content body. If the lambda is present, it will
+     * call the lambda what is supposed to handle other assertions.
+     *
+     * @param int $statusCode
+     * @param callable|null $callback lambda in charge to handle other assertions
+     *                                callable(\yii\web\Response $response):void
+     */
+    protected function assertEmptyContentOn($statusCode, $callback = null)
+    {
+        $response = new Response();
+        $response->setStatusCode($statusCode);
+        $response->content = 'not empty content';
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+
+        if ($callback && is_callable($callback)) {
+            $callback($response);
+        }
+    }
+
+    /**
+     * Asserts that given a status code, the response will have an empty content body, no matter
+     * if the response is a stream as file
+     *
+     * @param int $statusCode
+     */
+    protected function assertSettingStreamToNullOn($statusCode)
+    {
+        $response = new Response();
+        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+
+        $response->sendFile($dataFile);
+        $response->setStatusCode($statusCode);
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+        $this->assertNull($response->stream);
     }
 }
