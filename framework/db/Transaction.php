@@ -140,7 +140,10 @@ class Transaction extends \yii\base\BaseObject
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
             Yii::debug('Set savepoint ' . $this->_level, __METHOD__);
-            $schema->createSavepoint('LEVEL' . $this->_level);
+            // make sure the transaction wasn't autocommitted
+            if ($this->db->pdo->inTransaction()) {
+                $schema->createSavepoint('LEVEL' . $this->_level);
+            }
         } else {
             Yii::info('Transaction not started: nested transaction not supported', __METHOD__);
             throw new NotSupportedException('Transaction not started: nested transaction not supported.');
@@ -161,7 +164,10 @@ class Transaction extends \yii\base\BaseObject
         $this->_level--;
         if ($this->_level === 0) {
             Yii::debug('Commit transaction', __METHOD__);
-            $this->db->pdo->commit();
+            // make sure the transaction wasn't autocommitted
+            if ($this->db->pdo->inTransaction()) {
+                $this->db->pdo->commit();
+            }
             $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
             return;
         }
@@ -169,7 +175,10 @@ class Transaction extends \yii\base\BaseObject
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
             Yii::debug('Release savepoint ' . $this->_level, __METHOD__);
-            $schema->releaseSavepoint('LEVEL' . $this->_level);
+            // make sure the transaction wasn't autocommitted
+            if ($this->db->pdo->inTransaction()) {
+                $schema->releaseSavepoint('LEVEL' . $this->_level);
+            }
         } else {
             Yii::info('Transaction not committed: nested transaction not supported', __METHOD__);
         }
@@ -189,7 +198,10 @@ class Transaction extends \yii\base\BaseObject
         $this->_level--;
         if ($this->_level === 0) {
             Yii::debug('Roll back transaction', __METHOD__);
-            $this->db->pdo->rollBack();
+            // make sure the transaction wasn't autocommitted
+            if ($this->db->pdo->inTransaction()) {
+                $this->db->pdo->rollBack();
+            }
             $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
             return;
         }
@@ -197,7 +209,10 @@ class Transaction extends \yii\base\BaseObject
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
             Yii::debug('Roll back to savepoint ' . $this->_level, __METHOD__);
-            $schema->rollBackSavepoint('LEVEL' . $this->_level);
+            // make sure the transaction wasn't autocommitted
+            if ($this->db->pdo->inTransaction()) {
+                $schema->rollBackSavepoint('LEVEL' . $this->_level);
+            }
         } else {
             Yii::info('Transaction not rolled back: nested transaction not supported', __METHOD__);
         }
