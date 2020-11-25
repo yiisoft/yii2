@@ -61,7 +61,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $layout;
     /**
-     * @var Action the action that is currently being executed. This property will be set
+     * @var Action|null the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
@@ -77,11 +77,11 @@ class Controller extends Component implements ViewContextInterface
     public $response = 'response';
 
     /**
-     * @var View the view object that can be used to render views or view files.
+     * @var View|null the view object that can be used to render views or view files.
      */
     private $_view;
     /**
-     * @var string the root directory that contains view files for this controller.
+     * @var string|null the root directory that contains view files for this controller.
      */
     private $_viewPath;
 
