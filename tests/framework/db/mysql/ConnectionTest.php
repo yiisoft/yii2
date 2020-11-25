@@ -17,6 +17,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 {
     protected $driverName = 'mysql';
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testTransactionAutocommit()
     {
         /** @var Connection $connection */
