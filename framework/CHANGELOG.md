@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
 - Bug #18199: Fix content body response on 304 HTTP status code, according to RFC 7232 (rad8329)
 - Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
+- Bug #18406: Fix PDO exception when committing or rolling back an autocommitted transaction in PHP 8 (brandonkelly)
 
 
 2.0.39.3 November 23, 2020
