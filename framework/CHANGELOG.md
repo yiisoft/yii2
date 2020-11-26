@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.40 under development
 ------------------------
 
+- Bug #18383: RBAC's generated file made PSR-12 compliant (perlexed)
 - Bug #18393: Fix `ActiveRecord::refresh()` to load data from database even if cache is enabled (hooman-mirghasemi)
 - Bug #18386: Fix `assets/yii.activeForm.js` incorrect target selector for `validatingCssClass` (brussens)
 - Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
