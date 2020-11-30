@@ -23,7 +23,7 @@ use yii\web\View;
  * For more details and usage information on BaseMailer, see the [guide article on mailing](guide:tutorial-mailing).
  *
  * @property View $view View instance. Note that the type of this property differs in getter and setter. See
- * [[getView()]] and [[setView()]] for details.
+ * [[getView()]]  and [[setView()]] for details.
  * @property string $viewPath The directory that contains the view files for composing mail messages Defaults
  * to '@app/mail'.
  *

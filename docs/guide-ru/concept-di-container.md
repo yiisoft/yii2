@@ -110,7 +110,7 @@ $container->get('Foo', [], [
 Допустим, мы работаем над API и у нас есть:
 
 - `app\components\Request`, наследуемый от `yii\web\Request` и реализующий дополнительные возможности.
-- `app\components\Response`, наследуемый от `yii\web\Response` с свойством `format`, по умолчанию инициализируемом как `json`.
+- `app\components\Response`, наследуемый от `yii\web\Response` со свойством `format`, по умолчанию инициализируемом как `json`.
 - `app\storage\FileStorage` и `app\storage\DocumentsReader`, где реализована некая логика для работы с документами в
   неком файловом хранилище:
   
@@ -358,8 +358,11 @@ $container->setSingleton('yii\db\Connection', [
 // "db" ранее зарегистрированный псевдоним
 $db = $container->get('db');
 
-// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
+
+// эквивалентно: $api = new \app\components\Api($host, $apiKey);
+$api = $container->get('app\components\Api', ['host' => $host, 'apiKey' => $apiKey]);
 ```
 
 За кулисами, контейнер внедрения зависимостей делает гораздо больше работы, чем просто создание нового объекта.

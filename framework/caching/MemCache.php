@@ -55,10 +55,10 @@ use yii\base\InvalidConfigException;
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
- * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
- * This property is read-only.
+ * @property-read \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache
+ * component. This property is read-only.
  * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
- * property differs in getter and setter. See [[getServers()]] and [[setServers()]] for details.
+ * property differs in getter and setter. See [[getServers()]]  and [[setServers()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

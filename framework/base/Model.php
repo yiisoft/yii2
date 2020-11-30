@@ -37,19 +37,20 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
- * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
- * @property array $firstErrors The first errors. The array keys are the attribute names, and the array values
- * are the corresponding error messages. An empty array will be returned if there is no error. This property is
+ * @property-read array $errors An array of errors for all attributes. Empty array is returned if no error.
+ * The result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is
  * read-only.
- * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
+ * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
+ * values are the corresponding error messages. An empty array will be returned if there is no error. This
+ * property is read-only.
+ * @property-read ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
- * This property is read-only.
+ * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
+ * model. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
