@@ -211,6 +211,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated up successfully.\n", Console::FG_GREEN);
         }
+
         return ExitCode::OK;
     }
 
@@ -273,6 +274,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated down successfully.\n", Console::FG_GREEN);
         }
+
         return ExitCode::OK;
     }
 
@@ -340,6 +342,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " redone.\n", Console::FG_GREEN);
             $this->stdout("\nMigration redone successfully.\n", Console::FG_GREEN);
         }
+
         return ExitCode::OK;
     }
 
@@ -434,13 +437,11 @@ abstract class BaseMigrateController extends Controller
             if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
-                } else {
-                    if ($this->confirm("Set migration history at $originalVersion?")) {
-                        for ($j = 0; $j < $i; ++$j) {
-                            $this->removeMigrationHistory($migrations[$j]);
-                        }
-                        $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
+                } elseif ($this->confirm("Set migration history at $originalVersion?")) {
+                    for ($j = 0; $j < $i; ++$j) {
+                        $this->removeMigrationHistory($migrations[$j]);
                     }
+                    $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
                 }
 
                 return ExitCode::OK;
@@ -463,17 +464,18 @@ abstract class BaseMigrateController extends Controller
     {
         if (YII_ENV_PROD) {
             $this->stdout("YII_ENV is set to 'prod'.\nRefreshing migrations is not possible on production systems.\n");
+
             return ExitCode::OK;
         }
 
-        if ($this->confirm(
-            "Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!"
-        )) {
+        if ($this->confirm("Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
             $this->truncateDatabase();
+
             return $this->actionUp();
         }
 
         $this->stdout('Action was cancelled by user. Nothing has been performed.');
+
         return ExitCode::OK;
     }
 
@@ -549,6 +551,8 @@ abstract class BaseMigrateController extends Controller
                 $this->stdout("\t(" . date('Y-m-d H:i:s', $time) . ') ' . $version . "\n");
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -595,6 +599,8 @@ abstract class BaseMigrateController extends Controller
                 $this->stdout("\t" . $migration . "\n");
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -651,9 +657,16 @@ abstract class BaseMigrateController extends Controller
                 'namespace' => $namespace,
             ]);
             FileHelper::createDirectory($migrationPath);
-            file_put_contents($file, $content, LOCK_EX);
+            if (file_put_contents($file, $content, LOCK_EX) === false) {
+                $this->stdout("Failed to create new migration.\n", Console::FG_RED);
+
+                return ExitCode::IOERR;
+            }
+
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -832,6 +845,7 @@ abstract class BaseMigrateController extends Controller
         } else {
             return $this->actionDown($count);
         }
+
         return ExitCode::OK;
     }
 
