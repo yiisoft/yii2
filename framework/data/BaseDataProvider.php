@@ -275,4 +275,13 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         $this->_models = null;
         $this->_keys = null;
     }
+
+    /**
+     * Reset the counter.
+     * Used for testing purposes.
+     */
+    public static function resetCounter()
+    {
+        self::$counter = 0;
+    }
 }
