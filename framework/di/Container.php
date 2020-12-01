@@ -436,7 +436,11 @@ class Container extends Component
     private function mergeDependencies($a, $b)
     {
         foreach ($b as $index => $dependency) {
-            $a[$index] = $dependency;
+            $newDependency = $dependency;
+            if ($a[$index] instanceof Instance) {
+                $newDependency = Instance::ensure($dependency, $a[$index]->id, $this);
+            }
+            $a[$index] = $newDependency;
         }
         return $a;
     }

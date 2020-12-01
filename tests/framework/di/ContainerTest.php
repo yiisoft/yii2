@@ -621,4 +621,31 @@ class ContainerTest extends TestCase
         $this->assertNull($zeta->unknown);
         $this->assertNull($zeta->unknownNull);
     }
+
+    public function testInstantiatingClassTypedArgument()
+    {
+        // interface typed argument, int key, dependency should be built
+        $bar = (new Container())->get(Bar::className(), [Qux::className()]);
+        $this->assertInstanceOf(Qux::className(), $bar->qux);
+
+        // interface typed argument, string key, dependency should be built
+        $bar2 = (new Container())->get(Bar::className(), ['qux' => Qux::className()]);
+        $this->assertInstanceOf(Qux::className(), $bar2->qux);
+
+        // interface typed optional argument, string key, dependency should be built
+        $alpha = (new Container())->get(Alpha::className(), ['omega' => Qux::className()]);
+        $this->assertInstanceOf(Qux::className(), $alpha->omega);
+
+        // non-typed argument, string key, dependency should NOT be built
+        $car = (new Container())->get(Car::className(), ['color' => Qux::className()]);
+        $this->assertSame(Qux::className(), $car->color);
+
+        // class-typed argument, string key, nested dependency resolving, all dependencies should be built
+        $foo = (new Container())->get(Foo::className(), ['bar' => [
+            'class' => Bar::className(),
+            '__construct()' => [Qux::className()],
+        ]]);
+        $this->assertInstanceOf(Bar::className(), $foo->bar);
+        $this->assertInstanceOf(Qux::className(), $foo->bar->qux);
+    }
 }
