@@ -487,7 +487,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     . $column->dbType
                     . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
                     . ' ' . ($column->allowNull ? "NULL" : "");
-                $columns[] = 'INSERTED.' . $column->name;
+                $columns[] = 'INSERTED.' . $this->db->quoteColumnName($column->name);
             }
         }
         $countColumns = count($columns);
