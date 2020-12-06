@@ -1942,7 +1942,7 @@ class BaseHtml
      * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
-     * in a tag. If there is no attribute, an empty string will be returned.
+     * in a tag). If there is no attribute, an empty string will be returned.
      * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
