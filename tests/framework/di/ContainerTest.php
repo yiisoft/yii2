@@ -24,8 +24,8 @@ use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Kappa;
 use yiiunit\framework\di\stubs\Qux;
-use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\QuxFactory;
+use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\Zeta;
 use yiiunit\TestCase;
 
@@ -647,5 +647,19 @@ class ContainerTest extends TestCase
         ]]);
         $this->assertInstanceOf(Bar::className(), $foo->bar);
         $this->assertInstanceOf(Qux::className(), $foo->bar->qux);
+
+        // interface typed argument, int key, dependency preset but provided again
+        $c = new Container();
+        $c->set('yiiunit\framework\di\stubs\QuxInterface', Qux::className());
+        $bar = $c->get(Bar::className(), [Qux::className()]);
+        $this->assertInstanceOf(Qux::className(), $bar->qux);
+
+        // interface typed argument, int key, dependency already built
+        $bar = (new Container())->get(Bar::className(), [new Qux()]);
+        $this->assertInstanceOf(Qux::className(), $bar->qux);
+
+        // interface typed argument, int key, dependency as Instance of
+        $bar = (new Container())->get(Bar::className(), [Instance::of(Qux::className())]);
+        $this->assertInstanceOf(Qux::className(), $bar->qux);
     }
 }
