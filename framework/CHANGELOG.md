@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #18199: Fix content body response on 304 HTTP status code, according to RFC 7232 (rad8329)
 - Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
 - Bug #18406: Fix PDO exception when committing or rolling back an autocommitted transaction in PHP 8 (brandonkelly)
+- Bug #18287: Fix the OUTPUT got SQL syntax error if the column name is MSSQL keyword e.g key (darkdef)
 
 
 2.0.39.3 November 23, 2020
