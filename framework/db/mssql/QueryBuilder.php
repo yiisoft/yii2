@@ -483,11 +483,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 if ($column->isComputed) {
                     continue;
                 }
-                $cols[] = $this->db->quoteColumnName($column->name) . ' '
+                $quoteColumnName = $this->db->quoteColumnName($column->name);
+                $cols[] = $quoteColumnName . ' '
                     . $column->dbType
                     . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
                     . ' ' . ($column->allowNull ? "NULL" : "");
-                $columns[] = 'INSERTED.' . $column->name;
+                $columns[] = 'INSERTED.' . $quoteColumnName;
             }
         }
         $countColumns = count($columns);

@@ -106,14 +106,16 @@ trait ActiveRecordTestTrait
         $this->assertEquals(2, $customer->id);
 
         // find by expression
-        $customer = $customerClass::findOne(new Expression('id = :id', [':id' => 2]));
+        $customer = $customerClass::findOne(new Expression('[[id]] = :id', [':id' => 2]));
         $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals('user2', $customer->name);
-        $customer = $customerClass::findOne(new Expression('id = :id AND name = :name', [':id' => 2, ':name' => 'user1']));
+        $customer = $customerClass::findOne(
+            new Expression('[[id]] = :id AND [[name]] = :name', [':id' => 2, ':name' => 'user1'])
+        );
         $this->assertNull($customer);
-        $customer = $customerClass::findOne(new Expression('id = :id', [':id' => 5]));
+        $customer = $customerClass::findOne(new Expression('[[id]] = :id', [':id' => 5]));
         $this->assertNull($customer);
-        $customer = $customerClass::findOne(new Expression('name = :name', [':name' => 'user5']));
+        $customer = $customerClass::findOne(new Expression('[[name]] = :name', [':name' => 'user5']));
         $this->assertNull($customer);
 
         // scope
