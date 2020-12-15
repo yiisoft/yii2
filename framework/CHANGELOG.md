@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 --------------------------
 
 - Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
+- Bug #18400: Set parent module of the newly attached child module by `Module::setModule()` and `Module::setModules()` (sup-ham)
 - Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
 
 

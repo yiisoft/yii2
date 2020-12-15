@@ -450,6 +450,9 @@ class Module extends ServiceLocator
             unset($this->_modules[$id]);
         } else {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -504,6 +507,9 @@ class Module extends ServiceLocator
     {
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
