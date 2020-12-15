@@ -940,7 +940,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         /** @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
-            $count = $query->count('c.id');
+            $count = $query->count('[[c.id]]');
         } elseif ($aliasMethod === 'querysyntax') {
             $count = $query->count('{{@customer}}.id');
         } elseif ($aliasMethod === 'applyAlias') {
@@ -1020,12 +1020,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], false)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], false)
             ->where(['movies.name' => 'Toy Story']);
@@ -1037,12 +1037,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], false)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], true)
             ->where(['movies.name' => 'Toy Story']);
@@ -1055,15 +1055,15 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], true)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], false)
-            ->where(['movies.name' => 'Toy Story']);
+            ->where(['[[movies.name]]' => 'Toy Story']);
         $orders = $query->all();
         $this->assertCount(1, $orders, $query->createCommand()->rawSql . print_r($orders, true));
         $this->assertEquals(2, $orders[0]->id);
