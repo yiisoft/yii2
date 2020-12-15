@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #18339: Fix migrate controller actions to return exit codes (haohetao, bizley)
 - Bug #18287: Fix the OUTPUT got SQL syntax error if the column name is MSSQL keyword e.g key (darkdef)
 - Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
+- Bug #16492: Fix eager loading Active Record relations when relation key is a subject to a type-casting behavior (bizley)
 
 
 2.0.39.3 November 23, 2020

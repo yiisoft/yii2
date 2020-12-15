@@ -236,4 +236,9 @@ class Order extends ActiveRecord
             0 => 'customer_id',
         ];
     }
+
+    public function getQuantityOrderItems()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+    }
 }
