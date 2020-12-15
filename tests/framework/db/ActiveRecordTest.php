@@ -2080,4 +2080,19 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals(['1', '01', '001', '001', '2', '2b', '2b', '02'], $alphaIdentifiers);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/16492
+     */
+    public function testEagerLoadingWithTypeCastedCompositeIdentifier()
+    {
+        $aggregation = Order::find()->joinWith('quantityOrderItems', true)->all();
+        foreach ($aggregation as $item) {
+            if ($item->id == 1) {
+                $this->assertEquals(1, $item->quantityOrderItems[0]->order_id);
+            } elseif ($item->id != 1) {
+                $this->assertCount(0, $item->quantityOrderItems);
+            }
+        }
+    }
 }
