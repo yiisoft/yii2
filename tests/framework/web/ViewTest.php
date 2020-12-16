@@ -200,8 +200,8 @@ class ViewTest extends TestCase
             ['depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
-        // reset @web alias
-        \Yii::setAlias('@web', '/');
+        // reset aliases
+        $this->setUpAliases();
 
         // won't be used AssetManager but the timestamp will be
         $view = new View();
@@ -364,8 +364,8 @@ class ViewTest extends TestCase
             ['depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
-
-        \Yii::setAlias('@web', '/');
+        // reset aliases
+        $this->setUpAliases();
 
         // won't be used AssetManager but the timestamp will be
         $view = new View();
