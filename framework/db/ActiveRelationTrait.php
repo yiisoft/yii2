@@ -585,22 +585,23 @@ trait ActiveRelationTrait
         if (count($key) > 1) {
             return serialize($key);
         }
-        $key = reset($key);
-        return is_scalar($key) ? $key : serialize($key);
+        return reset($key);
     }
 
     /**
-     * @param mixed $value raw key value.
+     * @param mixed $value raw key value. Since 2.0.40 non-string values must be convertable to string (like special
+     * objects for cross-DBMS relations, for example: `|MongoId`).
      * @return string normalized key value.
      */
     private function normalizeModelKey($value)
     {
-        if (is_object($value) && method_exists($value, '__toString')) {
-            // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
-            $value = $value->__toString();
+        try {
+            return (string)$value;
+        } catch (\Exception $e) {
+            throw new InvalidConfigException('Value must be convertable to string.');
+        } catch (\Throwable $e) {
+            throw new InvalidConfigException('Value must be convertable to string.');
         }
-
-        return $value;
     }
 
     /**
