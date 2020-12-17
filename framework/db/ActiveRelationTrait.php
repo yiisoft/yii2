@@ -600,7 +600,7 @@ trait ActiveRelationTrait
             $value = $value->__toString();
         }
 
-        return $value;
+        return (string)$value;
     }
 
     /**

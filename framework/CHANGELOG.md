@@ -14,12 +14,14 @@ Yii Framework 2 Change Log
 - Bug #18339: Fix migrate controller actions to return exit codes (haohetao, bizley)
 - Bug #18287: Fix the OUTPUT got SQL syntax error if the column name is MSSQL keyword e.g key (darkdef)
 - Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
+- Bug #16492: Fix eager loading Active Record relations when relation key is a subject to a type-casting behavior (bizley)
 
 
 2.0.39.3 November 23, 2020
 --------------------------
 
 - Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
+- Bug #18400: Set parent module of the newly attached child module by `Module::setModule()` and `Module::setModules()` (sup-ham)
 - Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
 
 
