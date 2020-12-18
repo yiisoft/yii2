@@ -103,7 +103,7 @@ trait ArrayableTrait
      * This method will first identify which fields to be included in the resulting array by calling [[resolveFields()]].
      * It will then turn the model into an array with these fields. If `$recursive` is true,
      * any embedded objects will also be converted into arrays.
-     * When embeded objects are [[Arrayable]], their respective nested fields will be extracted and passed to [[toArray()]].
+     * When embedded objects are [[Arrayable]], their respective nested fields will be extracted and passed to [[toArray()]].
      *
      * If the model implements the [[Linkable]] interface, the resulting array will also have a `_link` element
      * which refers to a list of links as specified by the interface.
