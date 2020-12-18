@@ -496,7 +496,7 @@ class View extends \yii\base\View
                 $prefix = Yii::getAlias('@web');
                 $prefixStrlen = strlen($prefix);
                 $trimmedUrl = ltrim((substr($url, 0, $prefixStrlen) === $prefix) ? substr($url, $prefixStrlen) : $url, '/');
-                $timestamp =  @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
+                $timestamp = @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
                 if ($timestamp > 0) {
                     $url = $timestamp ? "$url?v=$timestamp" : $url;
                 }
