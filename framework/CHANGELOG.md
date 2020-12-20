@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
 - Bug #16492: Fix eager loading Active Record relations when relation key is a subject to a type-casting behavior (bizley)
 - Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
+- Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
 
 
 2.0.39.3 November 23, 2020
