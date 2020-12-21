@@ -421,9 +421,11 @@ class SerializerTest extends TestCase
     public function testSerializeJsonSerializable()
     {
         $serializer = new Serializer();
-        $model = new TestModel3();
+        $model3 = new TestModel3();
+        $model4 = new TestModel4();
 
-        $this->assertEquals(['customField' => 'test3/test4'], $serializer->serialize($model));
+        $this->assertEquals(['customField' => 'test3/test4'], $serializer->serialize($model3));
+        $this->assertEquals(['customField2' => 'test5/test6'], $serializer->serialize($model4));
     }
 
     /**
@@ -432,15 +434,18 @@ class SerializerTest extends TestCase
     public function testSerializeArrayableWithJsonSerializableAttribute()
     {
         $serializer = new Serializer();
-        $model = new TestModel4();
+        $model = new TestModel5();
 
-        $this->assertEquals([
-            'field3' => 'test3',
-            'field4' => 'test4',
-            'testModel3' => ['customField' => 'test3/test4'],
-            'testModelArray' => [['customField' => 'test3/test4']],
-        ],
-        $serializer->serialize($model));
+        $this->assertEquals(
+            [
+                'field7' => 'test7',
+                'field8' => 'test8',
+                'testModel3' => ['customField' => 'test3/test4'],
+                'testModel4' => ['customField2' => 'test5/test6'],
+                'testModelArray' => [['customField' => 'test3/test4'], ['customField2' => 'test5/test6']],
+            ],
+            $serializer->serialize($model)
+        );
     }
 
     /**
@@ -523,7 +528,11 @@ class TestModel3 extends Model implements \JsonSerializable
 
     public function fields()
     {
-        return static::$fields;
+        return [
+            'customField' => function() {
+                return $this->field3.'/'.$this->field4;
+            },
+        ];
     }
 
     public function extraFields()
@@ -533,20 +542,30 @@ class TestModel3 extends Model implements \JsonSerializable
 
     public function jsonSerialize()
     {
+        return $this->getAttributes();
+    }
+}
+class TestModel4 implements \JsonSerializable
+{
+    public $field5 = 'test5';
+    public $field6 = 'test6';
+
+    public function jsonSerialize()
+    {
         return [
-            'customField' => $this->field3.'/'.$this->field4,
+            'customField2' => $this->field5.'/'.$this->field6,
         ];
     }
 }
 
-class TestModel4 extends Model
+class TestModel5 extends Model
 {
-    public static $fields = ['field3', 'field4'];
+    public static $fields = ['field7', 'field8'];
     public static $extraFields = [];
 
-    public $field3 = 'test3';
-    public $field4 = 'test4';
-    public $extraField4 = 'testExtra2';
+    public $field7 = 'test7';
+    public $field8 = 'test8';
+    public $extraField4 = 'testExtra4';
 
     public function fields()
     {
@@ -554,8 +573,11 @@ class TestModel4 extends Model
         $fields['testModel3'] = function() {
             return $this->getTestModel3();
         };
+        $fields['testModel4'] = function() {
+            return $this->getTestModel4();
+        };
         $fields['testModelArray'] = function() {
-            return [$this->getTestModel3()];
+            return [$this->getTestModel3(), $this->getTestModel4()];
         };
         return $fields;
     }
@@ -568,5 +590,10 @@ class TestModel4 extends Model
     public function getTestModel3()
     {
         return new TestModel3();
+    }
+
+    public function getTestModel4()
+    {
+        return new TestModel4();
     }
 }

@@ -146,10 +146,10 @@ class Serializer extends Component
     {
         if ($data instanceof Model && $data->hasErrors()) {
             return $this->serializeModelErrors($data);
-        } elseif ($data instanceof \JsonSerializable) {
-            return $data->jsonSerialize();
         } elseif ($data instanceof Arrayable) {
             return $this->serializeModel($data);
+        } elseif ($data instanceof \JsonSerializable) {
+            return $data->jsonSerialize();
         } elseif ($data instanceof DataProviderInterface) {
             return $this->serializeDataProvider($data);
         } elseif (is_array($data)) {

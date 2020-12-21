@@ -128,17 +128,17 @@ trait ArrayableTrait
             if ($recursive) {
                 $nestedFields = $this->extractFieldsFor($fields, $field);
                 $nestedExpand = $this->extractFieldsFor($expand, $field);
-                if ($attribute instanceof \JsonSerializable) {
-                    $attribute = $attribute->jsonSerialize();
-                } elseif ($attribute instanceof Arrayable) {
+                if ($attribute instanceof Arrayable) {
                     $attribute = $attribute->toArray($nestedFields, $nestedExpand);
+                } elseif ($attribute instanceof \JsonSerializable) {
+                    $attribute = $attribute->jsonSerialize();
                 } elseif (is_array($attribute)) {
                     $attribute = array_map(
                         function ($item) use ($nestedFields, $nestedExpand) {
-                            if ($item instanceof \JsonSerializable) {
-                                return $item->jsonSerialize();
-                            } elseif ($item instanceof Arrayable) {
+                            if ($item instanceof Arrayable) {
                                 return $item->toArray($nestedFields, $nestedExpand);
+                            } elseif ($item instanceof \JsonSerializable) {
+                                return $item->jsonSerialize();
                             }
                             return $item;
                         },
