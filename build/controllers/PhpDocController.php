@@ -459,7 +459,7 @@ class PhpDocController extends Controller
             } elseif (strpos($line, 'use ') === 0) {
                 $endofUse = $i;
                 $property = false;
-            } elseif (!empty($line) && strpos($line, '*') === 0) {
+            } elseif (strpos($line, '*') === 0) {
                 $property = false;
             } elseif (!empty($line) && strpos($line, '*') !== 0 && strpos($line, 'function ') !== false || $line === '}') {
                 break;
