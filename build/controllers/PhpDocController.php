@@ -332,7 +332,7 @@ class PhpDocController extends Controller
                 if (!empty($line) && strpos($line, '*') === 0) {
                     $line = substr($line, 1);
                 }
-                if (!empty($line) && strpos($line, ' ') === 0) {
+                if (strpos($line, ' ') === 0) {
                     $line = substr($line, 1);
                 }
                 $docLine = str_replace("\t", '    ', rtrim($line));
