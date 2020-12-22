@@ -396,7 +396,7 @@ class FileHelperTest extends TestCase
 
     public function testRemoveDirectorySymlinks1()
     {
-        if (stripos(PHP_OS, 'win') === 0) {
+        if (DIRECTORY_SEPARATOR === '\\') {
             $this->markTestSkipped('Cannot test this on MS Windows since symlinks are uncommon for it.');
         }
 
