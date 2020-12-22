@@ -461,7 +461,7 @@ class PhpDocController extends Controller
                 $property = false;
             } elseif (strpos($line, '*') === 0) {
                 $property = false;
-            } elseif (!empty($line) && strpos($line, '*') !== 0 && strpos($line, 'function ') !== false || $line === '}') {
+            } elseif (strpos($line, '*') !== 0 && strpos($line, 'function ') !== false || $line === '}') {
                 break;
             }
 
