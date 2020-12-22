@@ -158,7 +158,7 @@ class Event extends BaseObject
             }
             if ($removed) {
                 self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
-                return $removed;
+                return true;
             }
         }
 
