@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #16492: Fix eager loading Active Record relations when relation key is a subject to a type-casting behavior (bizley)
 - Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
 - Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
+- Bug #18442: Fix calls with array access to strings (bizley)
 - Bug #18395: Fix regression in `yii\helpers\BaseArrayHelper::filter()` (allowing filtering arrays with numeric keys) (bizley)
 
 

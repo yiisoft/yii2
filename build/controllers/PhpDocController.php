@@ -329,16 +329,16 @@ class PhpDocController extends Controller
                 $tag = false;
             } elseif ($docBlock) {
                 $line = ltrim($line);
-                if (isset($line[0]) && $line[0] === '*') {
+                if (strpos($line, '*') === 0) {
                     $line = substr($line, 1);
                 }
-                if (isset($line[0]) && $line[0] === ' ') {
+                if (strpos($line, ' ') === 0) {
                     $line = substr($line, 1);
                 }
                 $docLine = str_replace("\t", '    ', rtrim($line));
                 if (empty($docLine)) {
                     $listIndent = '';
-                } elseif ($docLine[0] === '@') {
+                } elseif (strpos($docLine, '@') === 0) {
                     $listIndent = '';
                     $codeBlock = false;
                     $tag = true;
@@ -453,15 +453,15 @@ class PhpDocController extends Controller
                 $endofPrivate = $i;
                 $property = 'Private';
                 $level = 0;
-            } elseif (substr($line, 0, 6) === 'const ') {
+            } elseif (strpos($line, 'const ') === 0) {
                 $endofConst = $i;
                 $property = false;
-            } elseif (substr($line, 0, 4) === 'use ') {
+            } elseif (strpos($line, 'use ') === 0) {
                 $endofUse = $i;
                 $property = false;
-            } elseif (!empty($line) && $line[0] === '*') {
+            } elseif (strpos($line, '*') === 0) {
                 $property = false;
-            } elseif (!empty($line) && $line[0] !== '*' && strpos($line, 'function ') !== false || $line === '}') {
+            } elseif (strpos($line, '*') !== 0 && strpos($line, 'function ') !== false || $line === '}') {
                 break;
             }
 
@@ -797,7 +797,7 @@ class PhpDocController extends Controller
             return '';
         }
 
-        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[\strlen($str) - 1] != '.' ? '.' : '');
+        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[\strlen($str) - 1] !== '.' ? '.' : '');
     }
 
     protected function getPropParam($prop, $param)

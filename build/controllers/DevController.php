@@ -335,7 +335,7 @@ class DevController extends Controller
                 continue;
             }
             // ignore hidden directories
-            if ($file[0] === '.') {
+            if (strpos($file, '.') === 0) {
                 continue;
             }
             if (is_dir("$dir/$file")) {

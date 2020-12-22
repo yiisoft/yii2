@@ -443,7 +443,7 @@ SQL;
                 $row = array_change_key_case($row, CASE_LOWER);
             }
             $column = $row['columnname'];
-            if (!empty($column) && $column[0] === '"') {
+            if (strpos($column, '"') === 0) {
                 // postgres will quote names that are not lowercase-only
                 // https://github.com/yiisoft/yii2/issues/10613
                 $column = substr($column, 1, -1);

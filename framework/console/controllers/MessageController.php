@@ -386,7 +386,7 @@ EOD;
 
         if (!$removeUnused) {
             foreach ($obsolete as $pk => $msg) {
-                if (mb_substr($msg, 0, 2) === '@@' && mb_substr($msg, -2) === '@@') {
+                if (strpos($msg, '@@') === 0 && substr($msg, -2) === '@@') {
                     unset($obsolete[$pk]);
                 }
             }

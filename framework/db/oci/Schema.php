@@ -419,10 +419,12 @@ SQL;
                     $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
                 } else {
                     if ($defaultValue !== null) {
-                        if (($len = strlen($defaultValue)) > 2 && $defaultValue[0] === "'"
-                            && $defaultValue[$len - 1] === "'"
+                        if (
+                            strlen($defaultValue) > 2
+                            && strpos($defaultValue, "'") === 0
+                            && substr($defaultValue, -1) === "'"
                         ) {
-                            $defaultValue = substr($column['DATA_DEFAULT'], 1, -1);
+                            $defaultValue = substr($defaultValue, 1, -1);
                         } else {
                             $defaultValue = trim($defaultValue);
                         }
