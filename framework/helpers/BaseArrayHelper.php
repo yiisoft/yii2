@@ -944,7 +944,11 @@ class BaseArrayHelper
         $excludeFilters = [];
 
         foreach ($filters as $filter) {
-            if ($filter[0] === '!') {
+            if (!is_string($filter)) {
+                continue;
+            }
+
+            if (strpos($filter, '!') === 0) {
                 $excludeFilters[] = substr($filter, 1);
                 continue;
             }
