@@ -329,7 +329,7 @@ class PhpDocController extends Controller
                 $tag = false;
             } elseif ($docBlock) {
                 $line = ltrim($line);
-                if (!empty($line) && strpos($line, '*') === 0) {
+                if (strpos($line, '*') === 0) {
                     $line = substr($line, 1);
                 }
                 if (strpos($line, ' ') === 0) {
