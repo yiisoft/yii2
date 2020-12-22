@@ -944,17 +944,17 @@ class BaseArrayHelper
         $excludeFilters = [];
 
         foreach ($filters as $filter) {
-            if (!is_string($filter)) {
+            if (!is_string($filter) && !is_int($filter)) {
                 continue;
             }
 
-            if (strpos($filter, '!') === 0) {
+            if (is_string($filter) && strpos($filter, '!') === 0) {
                 $excludeFilters[] = substr($filter, 1);
                 continue;
             }
 
             $nodeValue = $array; //set $array as root node
-            $keys = explode('.', $filter);
+            $keys = explode('.', (string) $filter);
             foreach ($keys as $key) {
                 if (!array_key_exists($key, $nodeValue)) {
                     continue 2; //Jump to next filter
@@ -975,7 +975,7 @@ class BaseArrayHelper
 
         foreach ($excludeFilters as $filter) {
             $excludeNode = &$result;
-            $keys = explode('.', $filter);
+            $keys = explode('.', (string) $filter);
             $numNestedKeys = count($keys) - 1;
             foreach ($keys as $i => $key) {
                 if (!array_key_exists($key, $excludeNode)) {
