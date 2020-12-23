@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
 - Bug #18442: Fix calls with array access to strings (bizley)
 - Bug #18395: Fix regression in `yii\helpers\BaseArrayHelper::filter()` (allowing filtering arrays with numeric keys) (bizley)
+- Bug #18414: Fix `AssetManager::appendTimestamp()` not appending timestamp for website root in sub-directory (Isitar)
 
 
 2.0.39.3 November 23, 2020
