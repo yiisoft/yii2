@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #18442: Fix calls with array access to strings (bizley)
 - Bug #18395: Fix regression in `yii\helpers\BaseArrayHelper::filter()` (allowing filtering arrays with numeric keys) (bizley)
 - Bug #18414: Fix `AssetManager::appendTimestamp()` not appending timestamp for website root in sub-directory (Isitar)
+- Bug #18365 : Move quoting of table names to upper level to function `getSchemaMetadata()` in MSSQL driver to get clean names from schema (darkdef)
 
 
 2.0.39.3 November 23, 2020
