@@ -492,8 +492,14 @@ class View extends \yii\base\View
 
         if (empty($depends)) {
             // register directly without AssetManager
-            if ($appendTimestamp && Url::isRelative($url) && ($timestamp = @filemtime(Yii::getAlias('@webroot/' . ltrim($url, '/'), false))) > 0) {
-                $url = $timestamp ? "$url?v=$timestamp" : $url;
+            if ($appendTimestamp && Url::isRelative($url)) {
+                $prefix = Yii::getAlias('@web');
+                $prefixLength = strlen($prefix);
+                $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');
+                $timestamp = @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
+                if ($timestamp > 0) {
+                    $url = $timestamp ? "$url?v=$timestamp" : $url;
+                }
             }
             if ($type === 'js') {
                 $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
