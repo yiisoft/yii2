@@ -5,6 +5,7 @@ on: [push, pull_request]
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
   PHPUNIT_EXCLUDE_GROUP: mssql,oci,wincache,xcache,zenddata,cubrid
+  XDEBUG_MODE: coverage, develop
 
 jobs:
   phpunit:

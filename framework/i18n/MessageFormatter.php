@@ -423,7 +423,7 @@ class MessageFormatter extends Component
                         $selector = trim(mb_substr($selector, $pos + 1, mb_strlen($selector, $charset), $charset));
                     }
                     if ($message === false && $selector === 'other' ||
-                        $selector[0] === '=' && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
+                        strpos($selector, '=') === 0 && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {
                         $message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));

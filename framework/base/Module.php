@@ -425,7 +425,7 @@ class Module extends ServiceLocator
                 Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
-                $module->setInstance($module);
+                $module::setInstance($module);
                 return $this->_modules[$id] = $module;
             }
         }
