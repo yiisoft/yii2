@@ -494,8 +494,8 @@ class View extends \yii\base\View
             // register directly without AssetManager
             if ($appendTimestamp && Url::isRelative($url)) {
                 $prefix = Yii::getAlias('@web');
-                $prefixStrlen = strlen($prefix);
-                $trimmedUrl = ltrim((substr($url, 0, $prefixStrlen) === $prefix) ? substr($url, $prefixStrlen) : $url, '/');
+                $prefixLength = strlen($prefix);
+                $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');
                 $timestamp = @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
                 if ($timestamp > 0) {
                     $url = $timestamp ? "$url?v=$timestamp" : $url;
