@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
 - Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
 - Bug #18395: Fix regression in `yii\helpers\BaseArrayHelper::filter()` (allowing filtering arrays with numeric keys) (bizley)
+- Bug #18365 : moving quoting of table names to upper level to function getSchemaMetadata (darkdef)
 
 
 2.0.39.3 November 23, 2020
