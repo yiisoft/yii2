@@ -122,6 +122,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $sql = preg_replace('/^([\s(])*SELECT(\s+DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ($orderBy),", $sql);
 
         if ($this->hasLimit($limit)) {
+            if ($limit instanceof Expression) {
+                $limit = '('. (string)$limit . ')';
+            }
             $sql = "SELECT TOP $limit * FROM ($sql) sub";
         } else {
             $sql = "SELECT * FROM ($sql) sub";
