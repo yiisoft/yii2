@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.41 under development
 ------------------------
 
-- no changes in this release.
+- Enh 18447: Solution for correct getting PK from insert query without function `getLastInsertID` (darkdef)
 
 
 2.0.40 December 23, 2020
