@@ -535,8 +535,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $on = $this->buildCondition($onCondition, $params);
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+
+        /**
+         * fix number of select query params for old sql server version, without correct offset support
+         * @see QueryBuilder::oldBuildOrderByAndLimit
+         */
+        $insertNamesUsing = $insertNames;
+        if (strstr($values, 'rowNum = ROW_NUMBER()') !== false) {
+            $insertNamesUsing = array_merge(['[rowNum]'], $insertNames);
+        }
+
         $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
-            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNamesUsing) . ') '
             . "ON ($on)";
         $insertValues = [];
         foreach ($insertNames as $name) {
