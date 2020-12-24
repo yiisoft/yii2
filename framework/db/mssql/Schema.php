@@ -789,13 +789,12 @@ SQL;
         $tableSchema = $this->getTableSchema($table);
         $result = [];
         foreach ($tableSchema->primaryKey as $name) {
-            if ($tableSchema->columns[$name]->autoIncrement) {
-                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
-                break;
-            }
             // @see https://github.com/yiisoft/yii2/issues/13828 & https://github.com/yiisoft/yii2/issues/17474
             if (isset($inserted[$name])) {
                 $result[$name] = $inserted[$name];
+            } elseif ($tableSchema->columns[$name]->autoIncrement) {
+                // for a version earlier than 2005
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
             } elseif (isset($columns[$name])) {
                 $result[$name] = $columns[$name];
             } else {
