@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.41 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
 
 
 2.0.40 December 23, 2020
