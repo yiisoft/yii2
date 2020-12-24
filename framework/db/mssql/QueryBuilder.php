@@ -540,7 +540,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
 
         /**
-         * fix number of select query params for old sql server version, without correct offset support
+         * Fix number of select query params for old MSSQL version that does not support offset correctly.
          * @see QueryBuilder::oldBuildOrderByAndLimit
          */
         $insertNamesUsing = $insertNames;
