@@ -148,19 +148,25 @@ class Controller extends \yii\base\Controller
                     ($params[$name] !== null || !$type->allowsNull())
                 ) {
                     $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
-                    switch ($typeName) {
-                        case 'int':
-                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            break;
-                        case 'float':
-                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
-                            break;
-                        case 'bool':
-                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                            break;
-                    }
-                    if ($params[$name] === null) {
-                        $isValid = false;
+                    if ($params[$name] === '' && $type->allowsNull()) {
+                        if ($typeName !== 'string') { // for old string behavior compatibility
+                            $params[$name] = null;
+                        }
+                    } else {
+                        switch ($typeName) {
+                            case 'int':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                                break;
+                            case 'float':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
+                                break;
+                            case 'bool':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                break;
+                        }
+                        if ($params[$name] === null) {
+                            $isValid = false;
+                        }
                     }
                 }
                 if (!$isValid) {
