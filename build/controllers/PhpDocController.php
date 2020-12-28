@@ -826,11 +826,17 @@ class PhpDocController extends Controller
     protected function hasGetterInParents($className, $propName)
     {
         $class = $className;
-        while ($parent = get_parent_class($class)) {
-            if (method_exists($parent, 'get' . ucfirst($propName))) {
-                return true;
+
+        try {
+            while ($parent = get_parent_class($class)) {
+                if (method_exists($parent, 'get' . ucfirst($propName))) {
+                    return true;
+                }
+                $class = $parent;
             }
-            $class = $parent;
+        } catch (\Throwable $t) {
+            $this->stderr("[ERR] Error when getting parents for $className\n", Console::FG_RED);
+            return false;
         }
         return false;
     }
@@ -843,11 +849,17 @@ class PhpDocController extends Controller
     protected function hasSetterInParents($className, $propName)
     {
         $class = $className;
-        while ($parent = get_parent_class($class)) {
-            if (method_exists($parent, 'set' . ucfirst($propName))) {
-                return true;
+
+        try {
+            while ($parent = get_parent_class($class)) {
+                if (method_exists($parent, 'set' . ucfirst($propName))) {
+                    return true;
+                }
+                $class = $parent;
             }
-            $class = $parent;
+        } catch (\Throwable $t) {
+            $this->stderr("[ERR] Error when getting parents for $className\n", Console::FG_RED);
+            return false;
         }
         return false;
     }
