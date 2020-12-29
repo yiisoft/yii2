@@ -1090,6 +1090,11 @@ class Response extends \yii\base\Response
             return;
         }
 
+        if ($this->data instanceof ResponseFormatterInterface) {
+            $this->data->format($this);
+            return;
+        }
+
         if (isset($this->formatters[$this->format])) {
             $formatter = $this->formatters[$this->format];
             if (!is_object($formatter)) {
