@@ -52,7 +52,6 @@ class TypeFactoryRegistry implements ParameterTypeFactoryInterace
                 return $factory->createType($type, $context);
             }
         }
-
         return null;
     }
 }
