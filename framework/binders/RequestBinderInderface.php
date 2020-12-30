@@ -1,8 +1,14 @@
 <?php
 
-namespace yii\web;
+namespace yii\binders;
+
+use yii\web\Request;
 
 interface RequestBinderInterface
 {
-    public function bind($request);
+    /**
+     * @param BindingContext $context
+     * @return void
+     */
+    public function bind($context);
 }

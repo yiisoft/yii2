@@ -1,9 +1,14 @@
 <?php
 
-namespace yii\web;
+namespace yii\binders;
 
-class TypeFactoryRegistry
+class TypeFactoryRegistry implements ParameterTypeFactoryInterace
 {
+    /**
+     * @var array the typeFactories for creating action parameter types.
+     * The array keys are the factory names, and the array values are the corresponding configurations
+     * for creating the type factory objects.
+     */
     public $typeFactories = [];
 
     /**
@@ -15,21 +20,36 @@ class TypeFactoryRegistry
     }
 
     /**
-     * @return ParameterTypeFactoryInterace[]
+     * @return array
      */
-    public function getDefaultFactories()
+    protected function getDefaultFactories()
     {
-        return [];
+        return [
+        ];
     }
 
-    public function createType(ParameterType $type)
-    {
+    /**
+     * @inheritdoc
+     */
+    public function canCreateType($type) {
+        $factories = $this->getFactories();
+        foreach ($factories as $factory) {
+            if ($factory->canCreateType($type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createType($type, $context) {
         $factories = $this->getFactories();
 
         foreach ($factories as $factory) {
             if ($factory->canCreateType($type)) {
-                $instance = $factory->createType($type);
-                return $instance;
+                return $factory->createType($type, $context);
             }
         }
 

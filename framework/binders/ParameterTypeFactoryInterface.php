@@ -1,10 +1,21 @@
 <?php
 
-namespace yii\web;
+namespace yii\binders;
+
+use ReflectionParameter;
 
 interface ParameterTypeFactoryInterace
 {
-    public function canCreateType(ParameterType $type);
+    /**
+     * @param ReflectionParameter $type
+     * @return bool
+     */
+    public function canCreateType($type);
 
-    public function createType(ParameterType $type);
+    /**
+     * @param ReflectionParameter $type
+     * @param BindingContext $context
+     * @return mixed
+     */
+    public function createType($type, $context);
 }
