@@ -15,7 +15,9 @@ use yii\helpers\StringHelper;
 use yii\web\HttpException;
 use yii\web\Request;
 use yii\web\Response;
+use yii\web\ResponseFormatterInterface;
 use yiiunit\framework\web\mocks\TestRequestComponent;
+use yiiunit\framework\web\stubs\ResponseFormatter;
 
 /**
  * @group web
@@ -388,5 +390,19 @@ class ResponseTest extends \yiiunit\TestCase
         $content = ob_get_clean();
         $this->assertSame($content, '');
         $this->assertNull($response->stream);
+    }
+
+    public function testUsingDataAsResponseFormatter()
+    {
+        $response = new Response();
+        $response->data = new ResponseFormatter("test");
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+
+        $this->assertNotNull($response->data);
+        $this->assertInstanceOf(ResponseFormatterInterface::class, $response->data);
+        $this->assertSame($content,  $response->data->message);
     }
 }
