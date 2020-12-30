@@ -26,3 +26,4 @@ class DataFilterBinder extends ParameterTypeFactoryInterace {
         return $typeName;
     }
 }
+
