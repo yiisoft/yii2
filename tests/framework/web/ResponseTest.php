@@ -402,7 +402,6 @@ class ResponseTest extends \yiiunit\TestCase
         $content = ob_get_clean();
 
         $this->assertNotNull($response->data);
-        $this->assertInstanceOf(ResponseFormatterInterface::class, $response->data);
         $this->assertSame($content,  $response->data->message);
     }
 }
