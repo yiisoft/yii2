@@ -15,6 +15,6 @@ class BindingResult {
 
     public function __construct($value)
     {
-        $this->value;
+        $this->value = $value;
     }
 }
