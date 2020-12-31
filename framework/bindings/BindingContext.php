@@ -33,4 +33,9 @@ class BindingContext {
         $this->action = $action;
         $this->params = $params;
     }
+
+    public function getParameterValue($name)
+    {
+        return $this->params[$name];
+    }
 }

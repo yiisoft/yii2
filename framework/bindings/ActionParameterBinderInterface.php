@@ -7,7 +7,8 @@
 
 namespace yii\bindings;
 
-interface ActionParameterBinderInterface {
+interface ActionParameterBinderInterface
+{
     /**
      * @param Action $action
      * @param array $params

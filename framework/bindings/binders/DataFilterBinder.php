@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,16 +8,18 @@
 
 namespace yii\binders\system;
 
-use yii\binders\BindingResult;
-use yii\binders\ParameterBinderInterface;
+use yii\bindings\BindingResult;
+use yii\bindings\ParameterBinderInterface;
 
-class DataFilterBinder implements ParameterBinderInterface {
+class DataFilterBinder implements ParameterBinderInterface
+{
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($param, $context) {
+    public function bindModel($param, $context)
+    {
         $typeName = $param->getType()->getName();
         $dataFilter = new $typeName;
         $dataFilter->load($context->request->getBodyParams());

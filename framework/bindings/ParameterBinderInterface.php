@@ -7,7 +7,8 @@
 
 namespace yii\bindings;
 
-interface ParameterBinderInterface {
+interface ParameterBinderInterface
+{
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context

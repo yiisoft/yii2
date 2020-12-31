@@ -7,16 +7,16 @@
 
 namespace yii\binders\system;
 
-use yii\binders\BindingResult;
-use yii\binders\ParameterBinderInterface;
+use yii\bindings\ParameterBinderInterface;
 
-class DateTimeBinder implements ParameterBinderInterface {
+class DateTimeBinder implements ParameterBinderInterface
+{
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($param, $context) {
-        //TODO: Bind to date time
+    public function bindModel($param, $context)
+    {
     }
 }

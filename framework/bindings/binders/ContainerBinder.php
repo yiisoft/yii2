@@ -7,8 +7,7 @@
 
 namespace yii\binders\system;
 
-use yii\binders\BindingResult;
-use yii\binders\ParameterBinderInterface;
+use yii\bindings\ParameterBinderInterface;
 
 class ContainerBinder implements ParameterBinderInterface {
     /**

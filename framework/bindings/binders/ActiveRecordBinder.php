@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,14 +11,15 @@ namespace yii\bindings\binders;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 
-class ActiveRecordBinder implements ParameterBinderInterface {
+class ActiveRecordBinder implements ParameterBinderInterface
+{
     /**
      * @param ReflectionParameter $type
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($type, $context) {
-
+    public function bindModel($type, $context)
+    {
         //TODO: If id parameter is present then load model by id
         //TODO: Load model values from post request
 
