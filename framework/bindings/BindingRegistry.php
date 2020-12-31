@@ -13,17 +13,19 @@ class BindingRegistry extends BaseObject implements ParameterBinderInterface
 {
     private $_binders = null;
 
-    public function getBinders() {
+    public function getBinders()
+    {
         return $this->_binders;
     }
 
-    protected function getDefaultBinders() {
+    protected function getDefaultBinders()
+    {
         return [
             'builtin' => 'yii\bindings\binders\BuiltinTypeBinder',
-            'container' => 'yii\bindings\binders\ContainerTypeBinder',
             'activeRecord' => 'yii\bindings\binders\ActiveRecordBinder',
             'dataFilter' => 'yii\bindings\binders\DataFilterBinder',
             'dateTime' =>'yii\bindings\binders\DateTimeBinder',
+            'container' => 'yii\bindings\binders\ContainerTypeBinder',
             'type' => 'yii\bindings\binders\ClassTypeBinder',
         ];
     }

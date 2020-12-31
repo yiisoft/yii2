@@ -7,11 +7,16 @@
 
 namespace yii\bindings;
 
-class BindingResult {
+final class BindingResult {
     /**
      * @var mixed $value
      */
     public $value;
+
+    /**
+     * @var mixed $value
+     */
+    public $message = null;
 
     public function __construct($value)
     {
