@@ -5,21 +5,17 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders;
+namespace yii\bindings\binders;
 
-class ActiveRecordBinder extends ParameterTypeFactoryInterace {
+use yii\bindings\binders\BindingResult;
+use yii\bindings\binders\ParameterBinderInterface;
 
-    /**
-     * @inheritdoc
-     */
-    public function canCreateType($type) {
-        // TODO: Check if type is derived from ActiveRecord instance
-    }
+class ActiveRecordBinder extends ParameterBinderInterface {
 
     /**
      * @inheritdoc
      */
-    public function createType($type, $context) {
+    public function bindModel($type, $context) {
         $typeName = $type->getType()->getName();
         $id = \Yii::$app->request->get("id");
         return $typeName::findOne($id);

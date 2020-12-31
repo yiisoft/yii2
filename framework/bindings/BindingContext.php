@@ -5,13 +5,12 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders;
+namespace yii\bindings;
 
 use yii\base\Action;
-use yii\base\BaseObject;
 use yii\web\Request;
 
-class BindingContext extends BaseObject {
+class BindingContext {
 
     /**
      * @var Request
@@ -27,4 +26,11 @@ class BindingContext extends BaseObject {
      * @var array $params
      */
     public $params;
+
+    public function __construct($request, $action, $params)
+    {
+        $this->request = $request;
+        $this->action = $action;
+        $this->params = $params;
+    }
 }

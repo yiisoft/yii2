@@ -5,24 +5,22 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders;
+namespace yii\binders\system;
 
-class BuiltinTypeBinder extends ParameterTypeFactoryInterace {
+use yii\binders\BindingResult;
+use yii\binders\ParameterBinderInterface;
 
+class BuiltinTypeBinder extends ParameterBinderInterface {
     /**
      * @inheritdoc
      */
-    public function canCreateType($type) {
-        return PHP_VERSION_ID >= 70000 &&
-            ($paramType = $type->getType()) !== null &&
-            $paramType->isBuiltin();
-        // && ($params[$name] !== null || !$type->allowsNull()
-    }
+    public function bindModel($type, $context) {
 
-    /**
-     * @inheritdoc
-     */
-    public function createType($type, $context) {
+    //     return PHP_VERSION_ID >= 70000 &&
+    //     ($paramType = $type->getType()) !== null &&
+    //     $paramType->isBuiltin();
+    // // && ($params[$name] !== null || !$type->allowsNull()
+
         $name = $type->getName();
         $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
 
