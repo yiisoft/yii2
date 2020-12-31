@@ -82,7 +82,7 @@ is as specified by the `operator` property.
   is being used to validate an attribute, the default value of this property would be the name of
   the attribute suffixed with `_repeat`. For example, if the attribute being validated is `password`,
   then this property will default to `password_repeat`.
-- `compareValue`: a constant value that the input value should be compared with. When both
+- `compareValue`: a constant value (or a closure returning a value) that the input value should be compared with. When both
   of this property and `compareAttribute` are specified, this property will take precedence.
 - `operator`: the comparison operator. Defaults to `==`, meaning checking if the input value is equal
   to that of `compareAttribute` or `compareValue`. The following operators are supported:
