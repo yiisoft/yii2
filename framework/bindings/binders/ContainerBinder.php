@@ -10,13 +10,13 @@ namespace yii\binders\system;
 use yii\binders\BindingResult;
 use yii\binders\ParameterBinderInterface;
 
-class ClassTypeBinder implements ParameterBinderInterface {
+class ContainerBinder implements ParameterBinderInterface {
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
     public function bindModel($param, $context) {
-        //TODO: Hydrate object from context using reflection or binding interface
+        //TODO: Use container to bind parameter
     }
 }

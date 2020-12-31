@@ -10,7 +10,7 @@ namespace yii\binders\system;
 use yii\binders\BindingResult;
 use yii\binders\ParameterBinderInterface;
 
-class BuiltinTypeBinder extends ParameterBinderInterface {
+class BuiltinTypeBinder implements ParameterBinderInterface {
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context

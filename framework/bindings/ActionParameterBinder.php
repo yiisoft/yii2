@@ -42,7 +42,7 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
         }
 
         foreach ($methodParameters as $name => $param) {
-            $result = $bindingRegistry->create($param, $bindingContext);
+            $result = $bindingRegistry->bindModel($param, $bindingContext);
             if ($result instanceof BindingResult) {
                 $arguments[$name] = $result->value;
             }

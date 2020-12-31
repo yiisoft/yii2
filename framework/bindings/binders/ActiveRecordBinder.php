@@ -10,7 +10,7 @@ namespace yii\bindings\binders;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 
-class ActiveRecordBinder extends ParameterBinderInterface {
+class ActiveRecordBinder implements ParameterBinderInterface {
     /**
      * @param ReflectionParameter $type
      * @param BindingContext $context
