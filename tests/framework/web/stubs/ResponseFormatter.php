@@ -18,7 +18,8 @@ class ResponseFormatter implements ResponseFormatterInterface
         $this->message = $message;
     }
 
-    public function format($request) {
+    public function format($request)
+    {
         $request->content = $this->message;
     }
 }
