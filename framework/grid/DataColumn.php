@@ -205,7 +205,7 @@ class DataColumn extends Column
 
         $model = $this->grid->filterModel;
 
-        if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->filterAttribute)) {
+        if ($this->filter !== false && $model instanceof Model && $this->filterAttribute !== null && $model->isAttributeActive($this->filterAttribute)) {
             if ($model->hasErrors($this->filterAttribute)) {
                 Html::addCssClass($this->filterOptions, 'has-error');
                 $error = ' ' . Html::error($model, $this->filterAttribute, $this->grid->filterErrorOptions);
