@@ -7,17 +7,23 @@
 
 namespace yii\bindings\binders;
 
-use yii\bindings\binders\BindingResult;
-use yii\bindings\binders\ParameterBinderInterface;
+use yii\bindings\BindingResult;
+use yii\bindings\ParameterBinderInterface;
 
 class ActiveRecordBinder extends ParameterBinderInterface {
-
     /**
-     * @inheritdoc
+     * @param ReflectionParameter $type
+     * @param BindingContext $context
+     * @return BindingResult | null
      */
     public function bindModel($type, $context) {
         $typeName = $type->getType()->getName();
-        $id = \Yii::$app->request->get("id");
-        return $typeName::findOne($id);
+        $id = $context->request->get("id");
+        $result = $typeName::findOne($id);
+
+        if ($result !== null || $type->allowsNull()) {
+            return new BindingResult($result);
+        }
+        return null;
     }
 }

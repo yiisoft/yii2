@@ -9,9 +9,9 @@ namespace yii\bindings;
 
 interface ParameterBinderInterface {
     /**
-     * @param ReflectionParameter $type
+     * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($type, $context);
+    public function bindModel($param, $context);
 }

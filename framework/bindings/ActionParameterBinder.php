@@ -7,13 +7,20 @@
 
 namespace yii\bindings;
 
+use Yii;
 use yii\base\BaseObject;
 use yii\base\InlineAction;
 
 class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface {
+    private $bindingRegistry = null;
 
     public function getBindingRegistry() {
-        return new BindingRegistry();
+        if ($this->bindingRegistry == null) {
+            $this->bindingRegistry =  Yii::createObject([
+                'class' => "yii\bindings\BindingRegistry"
+            ]);
+        }
+        return $this->bindingRegistry;
     }
 
     public function bindActionParams($action, $params)

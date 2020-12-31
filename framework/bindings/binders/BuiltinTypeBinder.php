@@ -12,32 +12,37 @@ use yii\binders\ParameterBinderInterface;
 
 class BuiltinTypeBinder extends ParameterBinderInterface {
     /**
-     * @inheritdoc
+     * @param ReflectionParameter $param
+     * @param BindingContext $context
+     * @return BindingResult | null
      */
-    public function bindModel($type, $context) {
+    public function bindModel($param, $context) {
 
-    //     return PHP_VERSION_ID >= 70000 &&
-    //     ($paramType = $type->getType()) !== null &&
-    //     $paramType->isBuiltin();
-    // // && ($params[$name] !== null || !$type->allowsNull()
-
-        $name = $type->getName();
-        $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
-
+        $name = $param->getName();
         $value = $context->params[$name];
 
-        switch ($typeName) {
-            case 'int':
-                $value = filter_var($value, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                break;
-            case 'float':
-                $value = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
-                break;
-            case 'bool':
-                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                break;
-        }
+        if (PHP_VERSION_ID >= 70000)
+        {
+            $paramType = $param->getType();
 
-        return $value;
+            if ($paramType && $paramType->isBuiltin())
+            {
+                $typeName = PHP_VERSION_ID >= 70100 ? $paramType->getName() : (string)$paramType;
+
+                switch ($typeName) {
+                    case 'int':
+                        $value = filter_var($value, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                        break;
+                    case 'float':
+                        $value = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
+                        break;
+                    case 'bool':
+                        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                        break;
+                }
+                return new BindingResult($value);
+            }
+        }
+        return null;
     }
 }

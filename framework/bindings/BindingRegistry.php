@@ -11,29 +11,33 @@ use yii\base\BaseObject;
 
 class BindingRegistry extends BaseObject implements ParameterBinderInterface
 {
+    private $_binders = null;
+
     public function getBinders() {
-        return [];
+        return $this->_binders;
     }
 
     protected function getDefaultBinders() {
         return [
-            'yii\binders\system\BuiltinTypeBinder',
-            'yii\binders\system\ContainerTypeBinder',
-            'yii\binders\system\ActiveRecordBinder',
-            'yii\binders\system\DataFilterBinder',
-            'yii\binders\system\DateTimeBinder',
-            'yii\binders\system\ClassTypeBinder',
+            'builtin' => 'yii\bindings\binders\BuiltinTypeBinder',
+            'container' => 'yii\bindings\binders\ContainerTypeBinder',
+            'activeRecord' => 'yii\bindings\binders\ActiveRecordBinder',
+            'dataFilter' => 'yii\bindings\binders\DataFilterBinder',
+            'dateTime' =>'yii\bindings\binders\DateTimeBinder',
+            'type' => 'yii\bindings\binders\ClassTypeBinder',
         ];
     }
 
     /**
-     * @inheritdoc
+     * @param ReflectionParameter $param
+     * @param BindingContext $context
+     * @return BindingResult | null
      */
-    public function bindModel($type, $context)
+    public function bindModel($param, $context)
     {
         $binders = $this->getBinders();
         foreach($binders as $binder) {
-            $result = $binder->bindModel($type, $context);
+            $result = $binder->bindModel($param, $context);
             if ($result instanceof BindingResult) {
                 return $result;
             }

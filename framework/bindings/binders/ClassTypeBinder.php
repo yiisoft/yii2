@@ -10,16 +10,14 @@ namespace yii\binders\system;
 use yii\binders\BindingResult;
 use yii\binders\ParameterBinderInterface;
 
-class DataFilterBinder implements ParameterBinderInterface {
+class ClassTypeBinder implements ParameterBinderInterface {
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
     public function bindModel($param, $context) {
-        $typeName = $param->getType()->getName();
-        $dataFilter = new $typeName;
-        $dataFilter->load($context->request->getBodyParams());
-        return new BindingResult($dataFilter);
+        //TODO: Hydrate object from context using reflection or binding interface
+        return null;
     }
 }
