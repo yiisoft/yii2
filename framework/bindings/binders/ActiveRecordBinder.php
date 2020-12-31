@@ -17,6 +17,10 @@ class ActiveRecordBinder implements ParameterBinderInterface {
      * @return BindingResult | null
      */
     public function bindModel($type, $context) {
+
+        //TODO: If id parameter is present then load model by id
+        //TODO: Load model values from post request
+
         $typeName = $type->getType()->getName();
         $id = $context->request->get("id");
         $result = $typeName::findOne($id);
