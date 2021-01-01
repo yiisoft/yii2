@@ -5,17 +5,19 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders\system;
+namespace yii\bindings\binders;
 
 use yii\bindings\ParameterBinderInterface;
 
-class ClassTypeBinder implements ParameterBinderInterface {
+class ClassTypeBinder implements ParameterBinderInterface
+{
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($param, $context) {
+    public function bindModel($param, $context)
+    {
         //TODO: Hydrate object from context using reflection or binding interface
     }
 }

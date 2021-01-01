@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders\system;
+namespace yii\bindings\binders;
 
 use yii\bindings\ParameterBinderInterface;
 

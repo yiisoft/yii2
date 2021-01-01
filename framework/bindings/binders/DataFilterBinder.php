@@ -6,10 +6,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders\system;
+namespace yii\bindings\binders;
 
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ParameterInfo;
 
 class DataFilterBinder implements ParameterBinderInterface
 {
@@ -20,6 +21,12 @@ class DataFilterBinder implements ParameterBinderInterface
      */
     public function bindModel($param, $context)
     {
+        $paramInfo = ParameterInfo::fromParameter($param);
+
+        if (!$paramInfo->isInstanceOf("yii\\data\\DataFilter")) {
+            return null;
+        }
+
         $typeName = $param->getType()->getName();
         $dataFilter = new $typeName;
         $dataFilter->load($context->request->getBodyParams());

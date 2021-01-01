@@ -7,6 +7,8 @@
 
 namespace yii\bindings;
 
+use ReflectionClass;
+use ReflectionException;
 use ReflectionParameter;
 
 final class ParameterInfo
@@ -38,8 +40,7 @@ final class ParameterInfo
      */
     public function getTypeName()
     {
-        if (PHP_VERSION_ID >= 70000 && $this->parameter->hasType())
-        {
+        if (PHP_VERSION_ID >= 70000 && $this->parameter->hasType()) {
             $paramType = $this->parameter->getType();
             return PHP_VERSION_ID >= 70100 ? $paramType->getName() : (string)$paramType;
         }
@@ -63,8 +64,7 @@ final class ParameterInfo
      */
     public function isBuiltin()
     {
-        if (PHP_VERSION_ID >= 70000 && $this->parameter->hasType())
-        {
+        if (PHP_VERSION_ID >= 70000 && $this->parameter->hasType()) {
             return $this->parameter->getType()->isBuiltin();
         }
         return false;
@@ -76,5 +76,19 @@ final class ParameterInfo
     public function allowsNull()
     {
         return $this->parameter->allowsNull();
+    }
+
+    /**
+     * @param string $typeName
+     * @return bool
+     */
+    public function isInstanceOf($typeName)
+    {
+        try {
+            $reflectionClass = new ReflectionClass($this->getTypeName());
+            return $reflectionClass->isInstance($typeName);
+        } catch (ReflectionException $ex) {
+            return false;
+        }
     }
 }

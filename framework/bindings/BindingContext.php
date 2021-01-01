@@ -10,7 +10,8 @@ namespace yii\bindings;
 use yii\base\Action;
 use yii\web\Request;
 
-class BindingContext {
+class BindingContext
+{
 
     /**
      * @var Request
@@ -36,6 +37,9 @@ class BindingContext {
 
     public function getParameterValue($name)
     {
-        return $this->params[$name];
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
+        }
+        return null;
     }
 }

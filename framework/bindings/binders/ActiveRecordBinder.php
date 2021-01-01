@@ -10,6 +10,8 @@ namespace yii\bindings\binders;
 
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ParameterInfo;
+use yii\helpers\VarDumper;
 
 class ActiveRecordBinder implements ParameterBinderInterface
 {
@@ -18,18 +20,24 @@ class ActiveRecordBinder implements ParameterBinderInterface
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($type, $context)
+    public function bindModel($param, $context)
     {
         //TODO: If id parameter is present then load model by id
         //TODO: Load model values from post request
+        $paramInfo = ParameterInfo::fromParameter($param);
 
-        $typeName = $type->getType()->getName();
+        if (!$paramInfo->isInstanceOf("yii\\db\\ActiveRecord")) {
+            return null;
+        }
+
+        $typeName = $param->getType()->getName();
         $id = $context->request->get("id");
         $result = $typeName::findOne($id);
 
-        if ($result !== null || $type->allowsNull()) {
+        if ($result !== null || $paramInfo->allowsNull()) {
             return new BindingResult($result);
         }
+
         return null;
     }
 }

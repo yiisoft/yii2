@@ -5,19 +5,20 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders\system;
+namespace yii\bindings\binders;
 
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 
-class ContainerBinder implements ParameterBinderInterface {
+class ContainerBinder implements ParameterBinderInterface
+{
     /**
      * @param ReflectionParameter $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($param, $context) {
-
+    public function bindModel($param, $context)
+    {
         $result = null;
 
         $name = $param->getName();

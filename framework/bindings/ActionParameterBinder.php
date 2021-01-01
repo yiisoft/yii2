@@ -11,16 +11,19 @@ use Yii;
 use yii\base\BaseObject;
 use yii\base\InlineAction;
 
-class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface {
+class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface
+{
     private $bindingRegistry = null;
 
-    public function getBindingRegistry() {
-        if ($this->bindingRegistry == null) {
-            $this->bindingRegistry =  Yii::createObject([
-                'class' => "yii\bindings\BindingRegistry"
-            ]);
-        }
-        return $this->bindingRegistry;
+    public function getBindingRegistry()
+    {
+        // if ($this->bindingRegistry == null) {
+        //     $this->bindingRegistry =  Yii::createObject([
+        //         'class' => "yii\bindings\BindingRegistry"
+        //     ]);
+        // }
+        // return $this->bindingRegistry;
+        return new BindingRegistry();
     }
 
     public function bindActionParams($action, $params)
@@ -32,7 +35,7 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
         }
 
         $bindingRegistry = $this->getBindingRegistry();
-        $bindingContext = new BindingContext(\Yii::$app->request,$action, $params);
+        $bindingContext = new BindingContext(Yii::$app->request, $action, $params);
 
         $arguments = [];
 
@@ -46,12 +49,15 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
             if ($result instanceof BindingResult) {
                 $arguments[$name] = $result->value;
             }
+            var_dump([
+                $name, $result
+            ]);
         }
 
-        foreach($arguments as $name => $argument) {
+        foreach ($arguments as $name => $argument) {
             if ($argument instanceof ParameterBinderInterface) {
                 $param = $methodParameters[$name];
-                $argument->bindModel($param,  $bindingContext);
+                $argument->bindModel($param, $bindingContext);
             }
         }
 

@@ -6,14 +6,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\binders\system;
+namespace yii\bindings\binders;
 
 use ReflectionParameter;
+use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 use yii\bindings\ParameterInfo;
 
-class BuiltinTypeBinder implements ParameterBinderInterface
+class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
 {
     /**
      * @param ReflectionParameter $param
