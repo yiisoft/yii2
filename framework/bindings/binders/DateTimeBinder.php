@@ -39,11 +39,9 @@ class DateTimeBinder implements ParameterBinderInterface
         switch ($typeName) {
             case 'DateTime':
                 $value = DateTime::createFromFormat(DateTimeInterface::ISO8601, $value);
-                var_dump($value);
                 break;
             case 'DateTimeImmutable':
                 $value = DateTimeImmutable::createFromFormat(DateTimeInterface::ISO8601, $value);
-                var_dump($value);
                 break;
             default:
                 return null;
