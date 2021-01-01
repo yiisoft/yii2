@@ -49,9 +49,6 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
             if ($result instanceof BindingResult) {
                 $arguments[$name] = $result->value;
             }
-            var_dump([
-                $name, $result
-            ]);
         }
 
         foreach ($arguments as $name => $argument) {

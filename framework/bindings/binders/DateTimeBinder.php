@@ -7,7 +7,12 @@
 
 namespace yii\bindings\binders;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
+use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ParameterInfo;
 
 class DateTimeBinder implements ParameterBinderInterface
 {
@@ -18,5 +23,32 @@ class DateTimeBinder implements ParameterBinderInterface
      */
     public function bindModel($param, $context)
     {
+        $name = $param->getName();
+        $value = $context->getParameterValue($name);
+        $paramInfo = ParameterInfo::fromParameter($param);
+        $typeName = $paramInfo->getTypeName();
+
+        if (!$paramInfo->isInstanceOf("\\DateTimeInterface")) {
+            return null;
+        }
+
+        if (is_null($value) && $paramInfo->allowsNull()) {
+            return new BindingResult(null);
+        }
+
+        switch ($typeName) {
+            case 'DateTime':
+                $value = DateTime::createFromFormat(DateTimeInterface::ISO8601, $value);
+                var_dump($value);
+                break;
+            case 'DateTimeImmutable':
+                $value = DateTimeImmutable::createFromFormat(DateTimeInterface::ISO8601, $value);
+                var_dump($value);
+                break;
+            default:
+                return null;
+        }
+
+        return new BindingResult($value);
     }
 }

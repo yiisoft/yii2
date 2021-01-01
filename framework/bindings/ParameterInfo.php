@@ -86,7 +86,9 @@ final class ParameterInfo
     {
         try {
             $reflectionClass = new ReflectionClass($this->getTypeName());
-            return $reflectionClass->isInstance($typeName);
+            return $reflectionClass->implementsInterface($typeName);
+
+            //return $reflectionClass->isInstance($typeName);
         } catch (ReflectionException $ex) {
             return false;
         }

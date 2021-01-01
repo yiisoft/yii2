@@ -32,7 +32,7 @@ class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
         $isBuiltin = $paramInfo->isBuiltin();
         $allowsNull = $paramInfo->allowsNull();
 
-        if (!$isBuiltin || !$isArray) {
+        if (!$isBuiltin) {
             return null;
         }
 
@@ -48,8 +48,6 @@ class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
             $value = $this->filterValue($param, $typeName, $value);
             if ($value !== null) {
                 return new BindingResult($value);
-            } else {
-                return null;
             }
         }
 
