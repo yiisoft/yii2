@@ -8,33 +8,27 @@
 
 namespace yii\bindings\binders;
 
+use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
-use yii\bindings\ParameterInfo;
-use yii\helpers\VarDumper;
 
-class ActiveRecordBinder implements ParameterBinderInterface
+class ActiveRecordBinder extends BaseObject implements ParameterBinderInterface
 {
-    /**
-     * @param ReflectionParameter $type
-     * @param BindingContext $context
-     * @return BindingResult | null
-     */
     public function bindModel($param, $context)
     {
         //TODO: If id parameter is present then load model by id
         //TODO: Load model values from post request
-        $paramInfo = ParameterInfo::fromParameter($param);
 
-        if (!$paramInfo->isInstanceOf("yii\\db\\ActiveRecord")) {
+        if (!$param->isInstanceOf("yii\\db\\ActiveRecord")) {
             return null;
         }
 
-        $typeName = $param->getType()->getName();
-        $id = $context->request->get("id");
+        $id = $context->getParameterValue("id");
+
+        $typeName = $param->getTypeName();
         $result = $typeName::findOne($id);
 
-        if ($result !== null || $paramInfo->allowsNull()) {
+        if ($result !== null || $param->allowsNull()) {
             return new BindingResult($result);
         }
 

@@ -8,29 +8,22 @@
 
 namespace yii\bindings\binders;
 
-use ReflectionParameter;
 use yii\base\BaseObject;
+use yii\bindings\BindingParameter;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
-use yii\bindings\ParameterInfo;
 
 class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
 {
-    /**
-     * @param ReflectionParameter $param
-     * @param BindingContext $context
-     * @return BindingResult | null
-     */
     public function bindModel($param, $context)
     {
         $name = $param->getName();
-        $value = $context->getParameterValue($name);
-        $paramInfo = ParameterInfo::fromParameter($param);
+        $value = $param->value;
 
-        $isArray = $paramInfo->isArray();
-        $typeName = $paramInfo->getTypeName();
-        $isBuiltin = $paramInfo->isBuiltin();
-        $allowsNull = $paramInfo->allowsNull();
+        $isArray = $param->isArray();
+        $typeName = $param->getTypeName();
+        $isBuiltin = $param->isBuiltin();
+        $allowsNull = $param->allowsNull();
 
         if (!$isBuiltin) {
             return null;
@@ -60,7 +53,7 @@ class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
     }
 
     /**
-     * @var ReflectionParameter $param
+     * @var BindingParameter $param
      * @var string|null $typeName
      * @var mixed $value
      * @return mixed

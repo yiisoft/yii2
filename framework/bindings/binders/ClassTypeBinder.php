@@ -7,17 +7,66 @@
 
 namespace yii\bindings\binders;
 
+use Exception;
+use ReflectionClass;
+use yii\base\BaseObject;
+use yii\bindings\BindingParameter;
+use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 
-class ClassTypeBinder implements ParameterBinderInterface
+class ClassTypeBinder extends BaseObject implements ParameterBinderInterface
 {
-    /**
-     * @param ReflectionParameter $param
-     * @param BindingContext $context
-     * @return BindingResult | null
-     */
+    protected function getParams($param, $context)
+    {
+        if ($context->request->getIsGet()) {
+            $params = $param->value;
+            if (!is_array($params)) {
+                $params = json_decode($params, true);
+            }
+        } else {
+            $params = $context->request->getBodyParams();
+        }
+        return $params;
+    }
+
     public function bindModel($param, $context)
     {
-        //TODO: Hydrate object from context using reflection or binding interface
+        $typeName = $param->getTypeName();
+
+        if ($typeName === null) {
+            return null;
+        }
+
+        $data = $this->getParams($param, $context);
+        $instance = \Yii::createObject($typeName);
+        $result = $this->hydrateObject($instance, $data, $context);
+
+        return new BindingResult($result);
+    }
+
+    protected function hydrateObject($instance, $data, $context)
+    {
+        $reflection = new ReflectionClass($instance);
+
+        foreach ($reflection->getProperties() as $prop) {
+            try {
+                $value = $data[$prop->name] ?? null;
+
+                $bindingParameter = new BindingParameter($prop, $value);
+
+                echo "Binding {$prop->getName()}<br/>";
+
+                $result = $context->binder->bindModel($bindingParameter, $context);
+
+                if ($result instanceof BindingResult) {
+                    $prop->setAccessible(true);
+                    $prop->setValue($instance, $result->value);
+                }
+            } catch (Exception $e) {
+                var_dump($e->getMessage());
+                //throw $e;
+            }
+        }
+        return $instance;
     }
 }

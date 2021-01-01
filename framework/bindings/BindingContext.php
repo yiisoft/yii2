@@ -12,11 +12,15 @@ use yii\web\Request;
 
 class BindingContext
 {
-
     /**
      * @var Request
      */
     public $request;
+
+    /**
+     * @var ParameterBinderInterface
+     */
+    public $binder;
 
     /**
      * @var Action
@@ -28,9 +32,10 @@ class BindingContext
      */
     public $params;
 
-    public function __construct($request, $action, $params)
+    public function __construct($request, $binder, $action, $params)
     {
         $this->request = $request;
+        $this->binder = $binder;
         $this->action = $action;
         $this->params = $params;
     }

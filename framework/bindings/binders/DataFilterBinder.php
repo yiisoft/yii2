@@ -8,28 +8,30 @@
 
 namespace yii\bindings\binders;
 
+use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
-use yii\bindings\ParameterInfo;
 
-class DataFilterBinder implements ParameterBinderInterface
+class DataFilterBinder extends BaseObject implements ParameterBinderInterface
 {
-    /**
-     * @param ReflectionParameter $param
-     * @param BindingContext $context
-     * @return BindingResult | null
-     */
     public function bindModel($param, $context)
     {
-        $paramInfo = ParameterInfo::fromParameter($param);
-
-        if (!$paramInfo->isInstanceOf("yii\\data\\DataFilter")) {
+        if (!$param->isInstanceOf("yii\\data\\DataFilter")) {
             return null;
         }
 
-        $typeName = $param->getType()->getName();
-        $dataFilter = new $typeName;
-        $dataFilter->load($context->request->getBodyParams());
+        $typeName = $param->getTypeName();
+        $dataFilter = \Yii::createObject($typeName);
+
+        if ($context->request->getIsGet()) {
+            $params = $param->value;
+        } else {
+            $params = $context->request->getBodyParams();
+        }
+
+        //TODO: Convert params to array
+
+        $dataFilter->load($params);
         return new BindingResult($dataFilter);
     }
 }

@@ -7,29 +7,27 @@
 
 namespace yii\bindings\binders;
 
+use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 
-class ContainerBinder implements ParameterBinderInterface
+class ContainerBinder extends BaseObject implements ParameterBinderInterface
 {
-    /**
-     * @param ReflectionParameter $param
-     * @param BindingContext $context
-     * @return BindingResult | null
-     */
     public function bindModel($param, $context)
     {
         $result = null;
 
         $name = $param->getName();
-        $type = $param->getType();
+        $typeName = $param->getTypeName();
+
+        if ($typeName === null) {
+            return null;
+        }
 
         $module = $context->action->controller->module;
         $container = \Yii::$container;
 
-
         // Since it is not a builtin type it must be DI injection.
-        $typeName = $type->getName();
         if (($component = $module->get($name, false)) instanceof $typeName) {
             $result  = new BindingResult($component);
             $result->message = "Component: " . get_class($component) . " \$$name";
@@ -39,7 +37,7 @@ class ContainerBinder implements ParameterBinderInterface
         } elseif ($container->has($typeName) && ($service = $container->get($typeName)) instanceof $typeName) {
             $result  = new BindingResult($service);
             $result->message = "Container DI: $typeName \$$name";
-        } elseif ($type->allowsNull()) {
+        } elseif ($param->allowsNull()) {
             $result  = new BindingResult(null);
             $result->message = "Unavailable service: $name";
         }

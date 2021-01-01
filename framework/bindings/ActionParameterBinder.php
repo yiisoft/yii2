@@ -35,28 +35,39 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
         }
 
         $bindingRegistry = $this->getBindingRegistry();
-        $bindingContext = new BindingContext(Yii::$app->request, $action, $params);
+
+        $bindingContext = new BindingContext(
+            Yii::$app->request,
+            $bindingRegistry,
+            $action,
+            $params
+        );
 
         $arguments = [];
 
         $methodParameters = [];
         foreach ($method->getParameters() as $param) {
-            $methodParameters[$param->getName()] = $param;
+            $name = $param->getName();
+            $value = $bindingContext->getParameterValue($name);
+            $parameter = new BindingParameter($param, $value);
+            $methodParameters[$name] = $parameter;
         }
 
         foreach ($methodParameters as $name => $param) {
             $result = $bindingRegistry->bindModel($param, $bindingContext);
             if ($result instanceof BindingResult) {
                 $arguments[$name] = $result->value;
+            } else {
+                $arguments[$name] = null;
             }
         }
 
-        foreach ($arguments as $name => $argument) {
-            if ($argument instanceof ParameterBinderInterface) {
-                $param = $methodParameters[$name];
-                $argument->bindModel($param, $bindingContext);
-            }
-        }
+        // foreach ($arguments as $name => $argument) {
+        //     if ($argument instanceof ParameterBinderInterface) {
+        //         $param = $methodParameters[$name];
+        //         $argument->bindModel($param, $bindingContext);
+        //     }
+        // }
 
         return $arguments;
     }

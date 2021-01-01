@@ -7,46 +7,44 @@
 
 namespace yii\bindings\binders;
 
-use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
+use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
-use yii\bindings\ParameterInfo;
 
-class DateTimeBinder implements ParameterBinderInterface
+class DateTimeBinder extends BaseObject implements ParameterBinderInterface
 {
     /**
-     * @param ReflectionParameter $param
-     * @param BindingContext $context
-     * @return BindingResult | null
+     * @var array $dateFormats
      */
+    public $dateFormats = [
+        'Y-m-d',
+        'Y-m-d H:i:s',
+        DateTimeInterface::ISO8601,
+        DateTimeInterface::RFC3339
+    ];
+
     public function bindModel($param, $context)
     {
-        $name = $param->getName();
-        $value = $context->getParameterValue($name);
-        $paramInfo = ParameterInfo::fromParameter($param);
-        $typeName = $paramInfo->getTypeName();
+        $typeName = $param->getTypeName();
 
-        if (!$paramInfo->isInstanceOf("\\DateTimeInterface")) {
+        if ($typeName !== "DateTime" && $typeName !== "DateTimeImmutable") {
             return null;
         }
 
-        if (is_null($value) && $paramInfo->allowsNull()) {
+        $value = $param->value;
+
+        if (is_null($value) && $param->allowsNull()) {
             return new BindingResult(null);
         }
 
-        switch ($typeName) {
-            case 'DateTime':
-                $value = DateTime::createFromFormat(DateTimeInterface::ISO8601, $value);
-                break;
-            case 'DateTimeImmutable':
-                $value = DateTimeImmutable::createFromFormat(DateTimeInterface::ISO8601, $value);
-                break;
-            default:
-                return null;
+        foreach ($this->dateFormats as $format) {
+            $result = $typeName::createFromFormat($format, $value);
+            if ($result) {
+                return new BindingResult($result);
+            }
         }
 
-        return new BindingResult($value);
+        return null;
     }
 }
