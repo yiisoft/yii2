@@ -32,7 +32,7 @@ class DateTimeBinder extends BaseObject implements ParameterBinderInterface
             return null;
         }
 
-        $value = $param->value;
+        $value = $param->getValue();
 
         if (is_null($value) && $param->allowsNull()) {
             return new BindingResult(null);

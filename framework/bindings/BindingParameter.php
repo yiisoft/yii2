@@ -8,36 +8,22 @@
 namespace yii\bindings;
 
 use ReflectionParameter;
-use ReflectionProperty;
 
-interface BindingTargetInterface
-{
-    public function getTarget();
-    public function getValue();
-    public function getName();
-    public function getType();
-    public function getTypeName();
-    public function isArray();
-    public function isBuiltin();
-    public function isDefaultValueAvailable();
-    public function getDefaultValue();
-}
-
-
-final class BindingParameter
+final class BindingParameter implements BindingTargetInterface
 {
     /**
-     * @var ReflectionParameter|ReflectionProperty
+     * @var ReflectionParameter
      */
-    public $parameter;
+    private $parameter;
 
     /**
      * @var mixed
      */
-    public $value;
+    private $value;
 
     /**
      * @param ReflectionParameter $parameter
+     * @param mixed $value
      */
     public function __construct($parameter, $value = null)
     {
@@ -45,87 +31,71 @@ final class BindingParameter
         $this->value = $value;
     }
 
-    /**
-     * @return string
-     */
+    public function getTarget()
+    {
+        return $this->parameter;
+    }
+
     public function getName()
     {
         return $this->parameter->getName();
     }
 
-    /**
-     * @return string | null
-     */
-    public function getTypeName()
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    public function getType()
     {
         if (PHP_VERSION_ID >= 70000 && $this->parameter->hasType()) {
-            $paramType = $this->parameter->getType();
-            return PHP_VERSION_ID >= 70100 ? $paramType->getName() : (string)$paramType;
+            return $this->parameter->getType();
         }
         return null;
     }
 
-    /**
-     * @return bool
-     */
+    public function getTypeName()
+    {
+        if ($type = $this->getType()) {
+            return PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
+        }
+        return null;
+    }
+
     public function isArray()
     {
-        if ($this->parameter instanceof ReflectionParameter) {
-            if (PHP_VERSION_ID >= 80000) {
-                return ($type = $this->parameter->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
-            } else {
-                return $this->parameter->isArray();
-            }
-        } elseif ($this->parameter instanceof ReflectionProperty) {
+        if (PHP_VERSION_ID >= 80000) {
             return ($type = $this->parameter->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+        } else {
+            return $this->parameter->isArray();
         }
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function isBuiltin()
     {
-        if (PHP_VERSION_ID >= 70000 && $this->parameter->hasType()) {
-            return $this->parameter->getType()->isBuiltin();
+        if ($type = $this->getType()) {
+            return $type->isBuiltin();
         }
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function allowsNull()
     {
-        if ($this->parameter instanceof ReflectionProperty) {
-            if ($this->parameter->hasType() && $this->parameter->getType()->getName() == "array") {
-                return true;
-            }
-            return false;
-        }
-
         return $this->parameter->allowsNull();
     }
 
-    /**
-     * @param string $typeName
-     * @return bool
-     */
     public function isInstanceOf($typeName)
     {
         $parameterTypeName = $this->getTypeName();
         if ($parameterTypeName) {
             return is_a($parameterTypeName, $typeName, true);
         }
+        return false;
     }
 
     public function isDefaultValueAvailable()
     {
-        if ($this->parameter instanceof ReflectionProperty) {
-            return false;
-        }
-
         return $this->parameter->isDefaultValueAvailable();
     }
 

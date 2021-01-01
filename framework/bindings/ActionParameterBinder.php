@@ -13,17 +13,18 @@ use yii\base\InlineAction;
 
 class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface
 {
-    private $bindingRegistry = null;
+    private $bindingRegistryInstance = null;
+    public $bindingRegistry = "yii\\bindings\\BindingRegistry";
 
+    /**
+     * @return ParameterBinderInterface
+     */
     public function getBindingRegistry()
     {
-        // if ($this->bindingRegistry == null) {
-        //     $this->bindingRegistry =  Yii::createObject([
-        //         'class' => "yii\bindings\BindingRegistry"
-        //     ]);
-        // }
-        // return $this->bindingRegistry;
-        return new BindingRegistry();
+        if ($this->bindingRegistryInstance == null) {
+            $this->bindingRegistryInstance =  Yii::createObject($this->bindingRegistry);
+        }
+        return $this->bindingRegistryInstance;
     }
 
     public function bindActionParams($action, $params)
@@ -34,11 +35,11 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $bindingRegistry = $this->getBindingRegistry();
+        $binder = $this->getBindingRegistry();
 
         $bindingContext = new BindingContext(
             Yii::$app->request,
-            $bindingRegistry,
+            $binder,
             $action,
             $params
         );
@@ -49,25 +50,17 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             $value = $bindingContext->getParameterValue($name);
-            $parameter = new BindingParameter($param, $value);
-            $methodParameters[$name] = $parameter;
+            $methodParameters[$name] = new BindingParameter($param, $value);
         }
 
         foreach ($methodParameters as $name => $param) {
-            $result = $bindingRegistry->bindModel($param, $bindingContext);
+            $result = $binder->bindModel($param, $bindingContext);
             if ($result instanceof BindingResult) {
                 $arguments[$name] = $result->value;
             } else {
                 $arguments[$name] = null;
             }
         }
-
-        // foreach ($arguments as $name => $argument) {
-        //     if ($argument instanceof ParameterBinderInterface) {
-        //         $param = $methodParameters[$name];
-        //         $argument->bindModel($param, $bindingContext);
-        //     }
-        // }
 
         return $arguments;
     }

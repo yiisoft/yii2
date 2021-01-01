@@ -44,9 +44,20 @@ interface BindingTargetInterface
     public function isArray();
 
     /**
+     * @param string $typeName
+     * @return bool
+     */
+    public function isInstanceOf($typeName);
+
+    /**
      * @return bool
      */
     public function isBuiltin();
+
+    /**
+     * @return bool
+     */
+    public function allowsNull();
 
     /**
      * @return bool

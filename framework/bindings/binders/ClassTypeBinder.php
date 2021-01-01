@@ -19,7 +19,7 @@ class ClassTypeBinder extends BaseObject implements ParameterBinderInterface
     protected function getParams($param, $context)
     {
         if ($context->request->getIsGet()) {
-            $params = $param->value;
+            $params = $param->getValue();
             if (!is_array($params)) {
                 $params = json_decode($params, true);
             }

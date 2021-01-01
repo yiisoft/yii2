@@ -24,7 +24,7 @@ class DataFilterBinder extends BaseObject implements ParameterBinderInterface
         $dataFilter = \Yii::createObject($typeName);
 
         if ($context->request->getIsGet()) {
-            $params = $param->value;
+            $params = $param->getValue();
         } else {
             $params = $context->request->getBodyParams();
         }

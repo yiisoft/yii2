@@ -29,20 +29,6 @@ class BindingRegistry extends BaseObject implements ParameterBinderInterface
         return $this->_binders;
     }
 
-    // protected function getDefaultTypeBinders()
-    // {
-    //     // typeName => configuration
-    //     return [
-    //         'int' => 'yii\\bindings\\binders\\BuiltinTypeBinder',
-    //         'float' => 'yii\\bindings\\binders\\BuiltinTypeBinder',
-    //         'string' => 'yii\\bindings\\binders\\BuiltinTypeBinder',
-    //         'array' =>'yii\\bindings\\binders\\ArrayBinder',
-    //         'DateTime' => 'yii\\bindings\\binders\\DateTimeBinder',
-    //         'DateTimeImmutable' => 'yii\\bindings\\binders\\DateTimeBinder',
-    //     ];
-    // }
-
-
     protected function getDefaultBinders()
     {
         return [
@@ -58,6 +44,7 @@ class BindingRegistry extends BaseObject implements ParameterBinderInterface
     public function bindModel($param, $context)
     {
         $binders = $this->getBinders();
+
         foreach ($binders as $binder) {
             $result = $binder->bindModel($param, $context);
             if ($result instanceof BindingResult) {

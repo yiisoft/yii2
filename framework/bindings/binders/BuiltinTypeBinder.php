@@ -18,7 +18,7 @@ class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
     public function bindModel($param, $context)
     {
         $name = $param->getName();
-        $value = $param->value;
+        $value = $param->getValue();
 
         $isArray = $param->isArray();
         $typeName = $param->getTypeName();

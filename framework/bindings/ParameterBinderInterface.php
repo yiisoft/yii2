@@ -10,7 +10,7 @@ namespace yii\bindings;
 interface ParameterBinderInterface
 {
     /**
-     * @param BindingParameter $param
+     * @param BindingTargetInterface $param
      * @param BindingContext $context
      * @return BindingResult | null
      */
