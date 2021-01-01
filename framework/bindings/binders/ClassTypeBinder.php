@@ -11,6 +11,7 @@ use Exception;
 use ReflectionClass;
 use yii\base\BaseObject;
 use yii\bindings\BindingParameter;
+use yii\bindings\BindingProperty;
 use yii\bindings\BindingResult;
 use yii\bindings\ParameterBinderInterface;
 
@@ -52,9 +53,7 @@ class ClassTypeBinder extends BaseObject implements ParameterBinderInterface
             try {
                 $value = $data[$prop->name] ?? null;
 
-                $bindingParameter = new BindingParameter($prop, $value);
-
-                echo "Binding {$prop->getName()}<br/>";
+                $bindingParameter = new BindingProperty($prop, $value);
 
                 $result = $context->binder->bindModel($bindingParameter, $context);
 

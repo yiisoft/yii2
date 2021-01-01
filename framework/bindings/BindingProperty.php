@@ -28,7 +28,7 @@ final class BindingProperty implements BindingTargetInterface
      */
     public function __construct($property, $value = null)
     {
-        $this->parameter = $property;
+        $this->property = $property;
         $this->value = $value;
     }
 
@@ -65,12 +65,7 @@ final class BindingProperty implements BindingTargetInterface
 
     public function isArray()
     {
-        if (PHP_VERSION_ID >= 80000) {
-            return ($type = $this->property->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
-        } else {
-            return $this->property->isArray();
-        }
-        return false;
+        return $this->getTypeName() === "array";
     }
 
     public function isBuiltin()
