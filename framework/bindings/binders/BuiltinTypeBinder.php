@@ -10,19 +10,19 @@ namespace yii\bindings\binders;
 use yii\base\BaseObject;
 use yii\bindings\BindingParameter;
 use yii\bindings\BindingResult;
-use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ModelBinderInterface;
 
-class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
+class BuiltinTypeBinder extends BaseObject implements ModelBinderInterface
 {
-    public function bindModel($param, $context)
+    public function bindModel($target, $context)
     {
-        $name = $param->getName();
-        $value = $param->getValue();
+        $name = $target->getName();
+        $value = $target->getValue();
 
-        $isArray = $param->isArray();
-        $typeName = $param->getTypeName();
-        $isBuiltin = $param->isBuiltin();
-        $allowsNull = $param->allowsNull();
+        $isArray = $target->isArray();
+        $typeName = $target->getTypeName();
+        $isBuiltin = $target->isBuiltin();
+        $allowsNull = $target->allowsNull();
 
         if (!$isBuiltin) {
             return null;
@@ -37,14 +37,14 @@ class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
         }
 
         if ($isBuiltin && (($value !== null) || !$allowsNull)) {
-            $value = $this->filterValue($param, $typeName, $value);
+            $value = $this->filterValue($target, $typeName, $value);
             if ($value !== null) {
                 return new BindingResult($value);
             }
         }
 
-        if ($value == null && $param->isDefaultValueAvailable()) {
-            $value = $param->getDefaultValue();
+        if ($value == null && $target->isDefaultValueAvailable()) {
+            $value = $target->getDefaultValue();
             return new BindingResult($value);
         }
 
@@ -52,12 +52,12 @@ class BuiltinTypeBinder extends BaseObject implements ParameterBinderInterface
     }
 
     /**
-     * @var BindingParameter $param
+     * @var BindingParameter $target
      * @var string|null $typeName
      * @var mixed $value
      * @return mixed
      */
-    protected function filterValue($param, $typeName, $value)
+    protected function filterValue($target, $typeName, $value)
     {
         switch ($typeName) {
             case 'int':

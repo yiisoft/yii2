@@ -7,12 +7,12 @@
 
 namespace yii\bindings;
 
-interface ParameterBinderInterface
+interface ModelBinderInterface
 {
     /**
-     * @param BindingTargetInterface $param
+     * @param BindingTargetInterface $target
      * @param BindingContext $context
      * @return BindingResult | null
      */
-    public function bindModel($param, $context);
+    public function bindModel($target, $context);
 }

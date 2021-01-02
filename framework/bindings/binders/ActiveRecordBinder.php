@@ -9,19 +9,19 @@ namespace yii\bindings\binders;
 
 use yii\base\BaseObject;
 use yii\bindings\BindingResult;
-use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ModelBinderInterface;
 
-class ActiveRecordBinder extends BaseObject implements ParameterBinderInterface
+class ActiveRecordBinder extends BaseObject implements ModelBinderInterface
 {
-    public function bindModel($param, $context)
+    public function bindModel($target, $context)
     {
-        if (!$param->isInstanceOf("yii\\db\\ActiveRecord")) {
+        if (!$target->isInstanceOf("yii\\db\\ActiveRecord")) {
             return null;
         }
 
         $id = $context->getParameterValue("id");
 
-        $typeName = $param->getTypeName();
+        $typeName = $target->getTypeName();
         $result = $typeName::findOne($id);
 
         if ($context->request->isPost ||
@@ -34,7 +34,7 @@ class ActiveRecordBinder extends BaseObject implements ParameterBinderInterface
             $result->setAttributes($context->request->post());
         }
 
-        if ($result !== null || $param->allowsNull()) {
+        if ($result !== null || $target->allowsNull()) {
             return new BindingResult($result);
         }
 

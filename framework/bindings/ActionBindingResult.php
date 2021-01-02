@@ -7,12 +7,10 @@
 
 namespace yii\bindings;
 
-interface ActionModelBinderInterface
+class ActionBindingResult
 {
     /**
-     * @param Action $action
-     * @param array $params
-     * @return array
+     * @var array
      */
-    public function bindActionParams($action, $params);
+    public $arguments = [];
 }

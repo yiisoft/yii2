@@ -18,7 +18,7 @@ class BindingContext
     public $request;
 
     /**
-     * @var ParameterBinderInterface
+     * @var ModelBinderInterface
      */
     public $binder;
 

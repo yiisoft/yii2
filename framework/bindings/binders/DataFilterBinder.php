@@ -9,21 +9,21 @@ namespace yii\bindings\binders;
 
 use yii\base\BaseObject;
 use yii\bindings\BindingResult;
-use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ModelBinderInterface;
 
-class DataFilterBinder extends BaseObject implements ParameterBinderInterface
+class DataFilterBinder extends BaseObject implements ModelBinderInterface
 {
-    public function bindModel($param, $context)
+    public function bindModel($target, $context)
     {
-        if (!$param->isInstanceOf("yii\\data\\DataFilter")) {
+        if (!$target->isInstanceOf("yii\\data\\DataFilter")) {
             return null;
         }
 
-        $typeName = $param->getTypeName();
+        $typeName = $target->getTypeName();
         $dataFilter = \Yii::createObject($typeName);
 
         if ($context->request->getIsGet()) {
-            $params = $param->getValue();
+            $params = $target->getValue();
         } else {
             $params = $context->request->getBodyParams();
         }

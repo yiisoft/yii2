@@ -9,7 +9,7 @@ namespace yii\bindings;
 
 use yii\base\BaseObject;
 
-class BindingRegistry extends BaseObject implements ParameterBinderInterface
+class BindingRegistry extends BaseObject implements ModelBinderInterface
 {
     private $_binders = null;
     private $binders = [];

@@ -9,16 +9,16 @@ namespace yii\bindings\binders;
 
 use yii\base\BaseObject;
 use yii\bindings\BindingResult;
-use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ModelBinderInterface;
 
-class ContainerBinder extends BaseObject implements ParameterBinderInterface
+class ContainerBinder extends BaseObject implements ModelBinderInterface
 {
-    public function bindModel($param, $context)
+    public function bindModel($target, $context)
     {
         $result = null;
 
-        $name = $param->getName();
-        $typeName = $param->getTypeName();
+        $name = $target->getName();
+        $typeName = $target->getTypeName();
 
         if ($typeName === null) {
             return null;
@@ -37,7 +37,7 @@ class ContainerBinder extends BaseObject implements ParameterBinderInterface
         } elseif ($container->has($typeName) && ($service = $container->get($typeName)) instanceof $typeName) {
             $result  = new BindingResult($service);
             $result->message = "Container DI: $typeName \$$name";
-        } elseif ($param->allowsNull()) {
+        } elseif ($target->allowsNull()) {
             $result  = new BindingResult(null);
             $result->message = "Unavailable service: $name";
         }

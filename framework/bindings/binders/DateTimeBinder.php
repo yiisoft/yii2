@@ -10,9 +10,9 @@ namespace yii\bindings\binders;
 use DateTimeInterface;
 use yii\base\BaseObject;
 use yii\bindings\BindingResult;
-use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ModelBinderInterface;
 
-class DateTimeBinder extends BaseObject implements ParameterBinderInterface
+class DateTimeBinder extends BaseObject implements ModelBinderInterface
 {
     /**
      * @var array $dateFormats
@@ -24,17 +24,17 @@ class DateTimeBinder extends BaseObject implements ParameterBinderInterface
         DateTimeInterface::RFC3339
     ];
 
-    public function bindModel($param, $context)
+    public function bindModel($target, $context)
     {
-        $typeName = $param->getTypeName();
+        $typeName = $target->getTypeName();
 
         if ($typeName !== "DateTime" && $typeName !== "DateTimeImmutable") {
             return null;
         }
 
-        $value = $param->getValue();
+        $value = $target->getValue();
 
-        if (is_null($value) && $param->allowsNull()) {
+        if (is_null($value) && $target->allowsNull()) {
             return new BindingResult(null);
         }
 

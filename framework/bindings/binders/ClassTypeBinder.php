@@ -13,14 +13,14 @@ use yii\base\BaseObject;
 use yii\bindings\BindingParameter;
 use yii\bindings\BindingProperty;
 use yii\bindings\BindingResult;
-use yii\bindings\ParameterBinderInterface;
+use yii\bindings\ModelBinderInterface;
 
-class ClassTypeBinder extends BaseObject implements ParameterBinderInterface
+class ClassTypeBinder extends BaseObject implements ModelBinderInterface
 {
-    protected function getParams($param, $context)
+    protected function getParams($target, $context)
     {
         if ($context->request->getIsGet()) {
-            $params = $param->getValue();
+            $params = $target->getValue();
             if (!is_array($params)) {
                 $params = json_decode($params, true);
             }
@@ -30,15 +30,15 @@ class ClassTypeBinder extends BaseObject implements ParameterBinderInterface
         return $params;
     }
 
-    public function bindModel($param, $context)
+    public function bindModel($target, $context)
     {
-        $typeName = $param->getTypeName();
+        $typeName = $target->getTypeName();
 
         if ($typeName === null) {
             return null;
         }
 
-        $data = $this->getParams($param, $context);
+        $data = $this->getParams($target, $context);
         $instance = \Yii::createObject($typeName);
         $result = $this->hydrateObject($instance, $data, $context);
 
