@@ -11,7 +11,7 @@ use Yii;
 use yii\base\BaseObject;
 use yii\base\InlineAction;
 
-class ActionParameterBinder extends BaseObject implements ActionModelBinderInterface
+class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface
 {
     private $bindingRegistryInstance = null;
     public $bindingRegistry = "yii\\bindings\\BindingRegistry";

@@ -33,7 +33,7 @@ class ContainerBinder extends BaseObject implements ModelBinderInterface
             $result->message = "Component: " . get_class($component) . " \$$name";
         } elseif ($module->has($typeName) && ($service = $module->get($typeName)) instanceof $typeName) {
             $result  = new BindingResult($service);
-            $result->message = 'Module ' . get_class($this->module) . " DI: $typeName \$$name";
+            $result->message = 'Module ' . get_class($module) . " DI: $typeName \$$name";
         } elseif ($container->has($typeName) && ($service = $container->get($typeName)) instanceof $typeName) {
             $result  = new BindingResult($service);
             $result->message = "Container DI: $typeName \$$name";
