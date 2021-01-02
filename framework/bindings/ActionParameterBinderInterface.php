@@ -12,7 +12,7 @@ interface ActionModelBinderInterface
     /**
      * @param Action $action
      * @param array $params
-     * @return array
+     * @return ActionBindingResult
      */
     public function bindActionParams($action, $params);
 }

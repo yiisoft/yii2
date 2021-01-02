@@ -62,6 +62,8 @@ class ActionParameterBinder extends BaseObject implements ActionModelBinderInter
             }
         }
 
-        return $arguments;
+        $result = new ActionBindingResult;
+        $result->arguments = $arguments;
+        return $result;
     }
 }
