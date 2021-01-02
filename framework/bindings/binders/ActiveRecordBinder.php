@@ -15,9 +15,6 @@ class ActiveRecordBinder extends BaseObject implements ParameterBinderInterface
 {
     public function bindModel($param, $context)
     {
-        //TODO: If id parameter is present then load model by id
-        //TODO: Load model values from post request
-
         if (!$param->isInstanceOf("yii\\db\\ActiveRecord")) {
             return null;
         }
@@ -26,6 +23,16 @@ class ActiveRecordBinder extends BaseObject implements ParameterBinderInterface
 
         $typeName = $param->getTypeName();
         $result = $typeName::findOne($id);
+
+        if ($context->request->isPost ||
+            $context->request->isPut  ||
+            $context->request->isPatch) {
+            if ($result === null) {
+                $result = new $typeName;
+            }
+
+            $result->setAttributes($context->request->post());
+        }
 
         if ($result !== null || $param->allowsNull()) {
             return new BindingResult($result);
