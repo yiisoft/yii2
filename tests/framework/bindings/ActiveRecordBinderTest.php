@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\bindings;
 
+use yii\bindings\ActionParameterBinder;
 use yii\bindings\binders\ActiveRecordBinder;
 use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
@@ -15,9 +16,9 @@ use yiiunit\TestCase;
 class ActiveRecordBinderTest extends TestCase
 {
     /**
-     * @var ModelBinderInterface
+     * @var ActionParameterBinder
      */
-    private $modelBinder;
+    private $parameterBinder;
 
     /**
      * @var BindingContext
@@ -27,6 +28,7 @@ class ActiveRecordBinderTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        $this->parameterBinder = new ActionParameterBinder();
         $this->modelBinder = new ActiveRecordBinder();
 
         $this->mockWebApplication([

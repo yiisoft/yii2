@@ -10,11 +10,7 @@ namespace yiiunit\framework\bindings;
 
 use yii\base\InlineAction;
 use yii\bindings\ActionParameterBinder;
-use yii\bindings\binders\ActiveRecordBinder;
 use yii\bindings\binders\BuiltinTypeBinder;
-use yii\bindings\binders\ContainerBinder;
-use yii\bindings\binders\DateTimeBinder;
-use yii\bindings\binders\DataFilterBinder;
 use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
 use yiiunit\TestCase;
@@ -108,7 +104,7 @@ class BuiltinBinderTest extends TestCase
     {
         $binding = $this->modelBinder->bindModel(TypeReflector::getBindingTarget($typeName, $value), $this->context);
 
-        if ($expected) {
+        if ($expected !== null) {
             $this->assertNotNull($binding);
             $this->assertInstanceOf("yii\\bindings\\BindingResult", $binding);
             $this->assertSame($expected, $binding->value);
