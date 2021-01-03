@@ -91,7 +91,7 @@ class TestController extends Controller
     }
 }
 
-class BindingTestCase extends TestCase
+class BuiltinBinderTest extends TestCase
 {
     private const DELTA = 0.0001;
     /**
@@ -102,7 +102,7 @@ class BindingTestCase extends TestCase
     /**
      * @var ModelBinderInterface
      */
-    private $builtInBinder;
+    private $modelBinder;
 
     /**
      * @var ModelBinderInterface
@@ -203,35 +203,6 @@ class BindingTestCase extends TestCase
             $this->assertNotNull($binding);
             $this->assertInstanceOf("yii\\bindings\\BindingResult", $binding);
             $this->assertSame($expected, $binding->value);
-        } else {
-            $this->assertNull($binding);
-        }
-    }
-
-
-    public function dateTimeProvider()
-    {
-        return [
-            // DateTime
-            [ "DateTime", "Y-m-d", "2020-01-01"],
-            [ "DateTime", null,    "boo"],
-            // DateTimeImmutable
-            [ "DateTimeImmutable", "Y-m-d", "2020-01-01"],
-            [ "DateTimeImmutable", null,    "boo"],
-        ];
-    }
-
-    /**
-     * @dataProvider dateTimeProvider
-     */
-    public function testDateTimeBinder($typeName, $format, $value)
-    {
-        $binding = $this->dateTimeBinder->bindModel(TypeReflector::getBindingTarget($typeName, $value), $this->context);
-
-        if ($format) {
-            $this->assertNotNull($binding);
-            $this->assertInstanceOf("yii\\bindings\\BindingResult", $binding);
-            $this->assertSame($value, $binding->value->format($format));
         } else {
             $this->assertNull($binding);
         }
