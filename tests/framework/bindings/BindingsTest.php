@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\framework\bindings;
 
 use DateTime;
 use DateTimeImmutable;
