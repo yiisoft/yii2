@@ -10,7 +10,6 @@ namespace yii\bindings\binders;
 use Exception;
 use ReflectionClass;
 use yii\base\BaseObject;
-use yii\bindings\BindingParameter;
 use yii\bindings\BindingProperty;
 use yii\bindings\BindingResult;
 use yii\bindings\ModelBinderInterface;

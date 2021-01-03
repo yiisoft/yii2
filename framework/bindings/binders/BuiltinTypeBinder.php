@@ -16,9 +16,7 @@ class BuiltinTypeBinder extends BaseObject implements ModelBinderInterface
 {
     public function bindModel($target, $context)
     {
-        $name = $target->getName();
         $value = $target->getValue();
-
         $isArray = $target->isArray();
         $typeName = $target->getTypeName();
         $isBuiltin = $target->isBuiltin();
