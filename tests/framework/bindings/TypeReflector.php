@@ -19,12 +19,17 @@ class TypeReflector
     public float $float;
     public bool $bool;
     public string $string;
+
     public ?int $nullable_int;
     public ?float $nullable_float;
     public ?bool $nullable_bool;
     public ?string $nullable_string;
+
     public DateTime $DateTime;
     public DateTimeImmutable $DateTimeImmutable;
+
+    public \yii\data\DataFilter $yii_data_DataFilter;
+    public \yii\data\ActiveDataFilter $yii_data_ActiveDataFilter;
 
     public static function getReflectionProperty($name)
     {

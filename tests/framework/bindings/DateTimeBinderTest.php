@@ -38,26 +38,34 @@ class DateTimeBinderTest extends TestCase
     public function dateTimeProvider()
     {
         return [
-            // DateTime
-            [ "DateTime", "Y-m-d", "2020-01-01"],
-            [ "DateTime", null,    "boo"],
-            // DateTimeImmutable
-            [ "DateTimeImmutable", "Y-m-d", "2020-01-01"],
-            [ "DateTimeImmutable", null,    "boo"],
+            ["Y-m-d", "2021-01-01", "2020-01-01"],
+            ["Y-m-d H:m:s", "2021-01-01 10:30:45", "2020-01-01 10:30:45"],
+            ["Y-m-d H:m:s", "2011-10-05 14:48:00", "2011-10-05T14:48:00.000Z"],
+            [null,    null, "InvalidDate"],
         ];
     }
 
     /**
      * @dataProvider dateTimeProvider
      */
-    public function testDateTimeBinder($typeName, $format, $value)
+    public function testDateTimeBinder($format, $expected,  $value)
     {
-        $binding = $this->dateTimeBinder->bindModel(TypeReflector::getBindingTarget($typeName, $value), $this->context);
+        $binding = $this->dateTimeBinder->bindModel(TypeReflector::getBindingTarget("DateTime", $value), $this->context);
 
         if ($format) {
             $this->assertNotNull($binding);
             $this->assertInstanceOf("yii\\bindings\\BindingResult", $binding);
-            $this->assertSame($value, $binding->value->format($format));
+            $this->assertSame($expected, $binding->value->format($format));
+        } else {
+            $this->assertNull($binding);
+        }
+
+        $binding = $this->dateTimeBinder->bindModel(TypeReflector::getBindingTarget("DateTimeImmutable", $value), $this->context);
+
+        if ($format) {
+            $this->assertNotNull($binding);
+            $this->assertInstanceOf("yii\\bindings\\BindingResult", $binding);
+            $this->assertSame($expected, $binding->value->format($format));
         } else {
             $this->assertNull($binding);
         }

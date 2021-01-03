@@ -34,4 +34,13 @@ class DataFilterBinderTest extends TestCase
             ],
         ]);
     }
+
+    public function testDataFilter()
+    {
+
+    }
+
+    public function testActiveDataFilter()
+    {
+    }
 }
