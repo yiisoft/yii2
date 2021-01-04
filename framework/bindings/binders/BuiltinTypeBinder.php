@@ -8,11 +8,11 @@
 namespace yii\bindings\binders;
 
 use yii\base\BaseObject;
-use yii\bindings\BindingParameter;
 use yii\bindings\BindingResult;
+use yii\bindings\BindingTargetInterface;
 use yii\bindings\ModelBinderInterface;
 
-class BuiltinTypeBinder extends BaseObject implements ModelBinderInterface
+final class BuiltinTypeBinder extends BaseObject implements ModelBinderInterface
 {
     public function bindModel($target, $context)
     {
@@ -41,7 +41,7 @@ class BuiltinTypeBinder extends BaseObject implements ModelBinderInterface
             }
         }
 
-        if ($value == null && $target->isDefaultValueAvailable()) {
+        if ($value == null && $target->hasDefaultValue()) {
             $value = $target->getDefaultValue();
             return new BindingResult($value);
         }
@@ -50,12 +50,12 @@ class BuiltinTypeBinder extends BaseObject implements ModelBinderInterface
     }
 
     /**
-     * @var BindingParameter $target
+     * @var BindingTargetInterface $target
      * @var string|null $typeName
      * @var mixed $value
      * @return mixed
      */
-    protected function filterValue($target, $typeName, $value)
+    private function filterValue($target, $typeName, $value)
     {
         switch ($typeName) {
             case 'int':

@@ -14,7 +14,7 @@ use yii\bindings\BindingProperty;
 use yii\bindings\BindingResult;
 use yii\bindings\ModelBinderInterface;
 
-class ClassTypeBinder extends BaseObject implements ModelBinderInterface
+final class ClassTypeBinder extends BaseObject implements ModelBinderInterface
 {
     protected function getParams($target, $context)
     {

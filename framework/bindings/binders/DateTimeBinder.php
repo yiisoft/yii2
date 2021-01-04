@@ -7,21 +7,23 @@
 
 namespace yii\bindings\binders;
 
+use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ModelBinderInterface;
 
-class DateTimeBinder extends BaseObject implements ModelBinderInterface
+final class DateTimeBinder extends BaseObject implements ModelBinderInterface
 {
     /**
      * @var array $dateFormats
      */
     public $dateFormats = [
-        'Y-m-d',
-        'Y-m-d H:i:s',
-        DateTimeInterface::ISO8601,
-        DateTimeInterface::RFC3339
+        'Y-m-d' => ['resetTime' => true],
+        'Y-m-d H:i:s'=> ['resetTime' => false],
+        DateTimeInterface::ISO8601 => ['resetTime' => false],
+        DateTimeInterface::RFC3339 => ['resetTime' => false]
     ];
 
     public function bindModel($target, $context)
@@ -33,16 +35,27 @@ class DateTimeBinder extends BaseObject implements ModelBinderInterface
         }
 
         $value = $target->getValue();
+        $result = null;
 
-        if (is_null($value) && $target->allowsNull()) {
-            return new BindingResult(null);
+        foreach ($this->dateFormats as $format => $options) {
+            $result = DateTime::createFromFormat($format, $value);
+            if ($result) {
+                if (isset($options['resetTime']) && $options['resetTime']) {
+                    $result->setTime(0, 0, 0);
+                }
+                break;
+            }
         }
 
-        foreach ($this->dateFormats as $format) {
-            $result = $typeName::createFromFormat($format, $value);
-            if ($result) {
-                return new BindingResult($result);
+        if ($result) {
+            if ($typeName === "DateTimeImmutable") {
+                $result = DateTimeImmutable::createFromMutable($result);
             }
+            return new BindingResult($result);
+        }
+
+        if ($target->allowsNull()) {
+            return new BindingResult(null);
         }
 
         return null;

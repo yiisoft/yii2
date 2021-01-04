@@ -93,7 +93,7 @@ final class BindingProperty implements BindingTargetInterface
         return false;
     }
 
-    public function isDefaultValueAvailable()
+    public function hasDefaultValue()
     {
         if (PHP_VERSION_ID >= 80000) {
             return $this->property->hasDefaultValue();

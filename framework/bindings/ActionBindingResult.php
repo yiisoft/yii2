@@ -7,10 +7,20 @@
 
 namespace yii\bindings;
 
-class ActionBindingResult
+final class ActionBindingResult
 {
+    /**
+     * @var BindingParameter[]
+     */
+    public $parameters = [];
+
     /**
      * @var array
      */
     public $arguments = [];
+
+    /**
+     * @var array
+     */
+    public $missing = [];
 }

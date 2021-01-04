@@ -7,7 +7,8 @@
 
 namespace yii\bindings;
 
-final class BindingResult {
+final class BindingResult
+{
     /**
      * @var mixed $value
      */

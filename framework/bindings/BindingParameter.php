@@ -94,7 +94,7 @@ final class BindingParameter implements BindingTargetInterface
         return false;
     }
 
-    public function isDefaultValueAvailable()
+    public function hasDefaultValue()
     {
         return $this->parameter->isDefaultValueAvailable();
     }

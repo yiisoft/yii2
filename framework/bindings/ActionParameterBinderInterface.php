@@ -7,6 +7,8 @@
 
 namespace yii\bindings;
 
+use yii\base\Action;
+
 interface ActionParameterBinderInterface
 {
     /**

@@ -9,41 +9,42 @@ namespace yii\bindings;
 
 use yii\base\BaseObject;
 
-class BindingRegistry extends BaseObject implements ModelBinderInterface
+final class BindingRegistry extends BaseObject implements ModelBinderInterface
 {
-    private $_binders = null;
-    private $binders = [];
+    private $binderInstances = null;
+    public $binders = [];
 
-    public function getBinders()
+    public function getModelBinders()
     {
-        if (is_null($this->_binders)) {
-            $binders = array_merge($this->binders, $this->getDefaultBinders());
+        if ($this->binderInstances === null) {
+            $binders = array_merge($this->getDefaultBinders(), $this->binders);
 
             $result = [];
-            foreach ($binders as $config) {
-                $result[] = \Yii::createObject($config);
+            foreach ($binders as $key => $config) {
+                $result[$key] = \Yii::createObject($config);
             }
-            $this->_binders = $result;
+            $this->binderInstances = $result;
         }
 
-        return $this->_binders;
+        return $this->binderInstances;
     }
 
-    protected function getDefaultBinders()
+    private function getDefaultBinders()
     {
         return [
-            'builtin' => 'yii\\bindings\\binders\\BuiltinTypeBinder',
-            'activeRecord' => 'yii\\bindings\\binders\\ActiveRecordBinder',
-            'dataFilter' => 'yii\\bindings\\binders\\DataFilterBinder',
-            'dateTime' =>'yii\\bindings\\binders\\DateTimeBinder',
-            'container' => 'yii\\bindings\\binders\\ContainerBinder',
-            'classType' => 'yii\\bindings\\binders\\ClassTypeBinder',
+            '@builtin' => 'yii\\bindings\\binders\\BuiltinTypeBinder',
+            '@activeRecord' => 'yii\\bindings\\binders\\ActiveRecordBinder',
+            '@model' => 'yii\\bindings\\binders\\ModelBinder',
+            '@dataFilter' => 'yii\\bindings\\binders\\DataFilterBinder',
+            '@dateTime' =>'yii\\bindings\\binders\\DateTimeBinder',
+            '@container' => 'yii\\bindings\\binders\\ContainerBinder',
+            '@classType' => 'yii\\bindings\\binders\\ClassTypeBinder',
         ];
     }
 
     public function bindModel($param, $context)
     {
-        $binders = $this->getBinders();
+        $binders = $this->getModelBinders();
 
         foreach ($binders as $binder) {
             $result = $binder->bindModel($param, $context);
@@ -51,6 +52,7 @@ class BindingRegistry extends BaseObject implements ModelBinderInterface
                 return $result;
             }
         }
+
         return null;
     }
 }

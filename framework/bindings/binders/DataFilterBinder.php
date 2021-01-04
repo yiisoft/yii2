@@ -11,7 +11,7 @@ use yii\base\BaseObject;
 use yii\bindings\BindingResult;
 use yii\bindings\ModelBinderInterface;
 
-class DataFilterBinder extends BaseObject implements ModelBinderInterface
+final class DataFilterBinder extends BaseObject implements ModelBinderInterface
 {
     public function bindModel($target, $context)
     {

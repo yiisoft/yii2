@@ -62,7 +62,7 @@ interface BindingTargetInterface
     /**
      * @return bool
      */
-    public function isDefaultValueAvailable();
+    public function hasDefaultValue();
 
     /**
      * @return mixed

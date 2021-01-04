@@ -11,20 +11,20 @@ use Yii;
 use yii\base\BaseObject;
 use yii\base\InlineAction;
 
-class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface
+final class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface
 {
-    private $bindingRegistryInstance = null;
-    public $bindingRegistry = "yii\\bindings\\BindingRegistry";
+    private $modelBinderInstance = null;
+    public $modelBinderClass = "yii\\bindings\\BindingRegistry";
 
     /**
      * @return ModelBinderInterface
      */
-    public function getBindingRegistry()
+    public function getModelBinder()
     {
-        if ($this->bindingRegistryInstance == null) {
-            $this->bindingRegistryInstance =  Yii::createObject($this->bindingRegistry);
+        if ($this->modelBinderInstance == null) {
+            $this->modelBinderInstance =  Yii::createObject($this->modelBinderClass);
         }
-        return $this->bindingRegistryInstance;
+        return $this->modelBinderInstance;
     }
 
     public function bindActionParams($action, $params)
@@ -35,18 +35,13 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $binder = $this->getBindingRegistry();
-
-        $bindingContext = new BindingContext(
-            Yii::$app->request,
-            $binder,
-            $action,
-            $params
-        );
+        $binder = $this->getModelBinder();
+        $bindingContext = new BindingContext(Yii::$app->request, $binder, $action, $params);
 
         $arguments = [];
-
+        $missing = [];
         $methodParameters = [];
+
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             $value = $bindingContext->getParameterValue($name);
@@ -59,11 +54,14 @@ class ActionParameterBinder extends BaseObject implements ActionParameterBinderI
                 $arguments[$name] = $result->value;
             } else {
                 $arguments[$name] = null;
+                $missing[] = $name;
             }
         }
 
         $result = new ActionBindingResult;
+        $result->parameters = $methodParameters;
         $result->arguments = $arguments;
+        $result->missing = $missing;
         return $result;
     }
 }

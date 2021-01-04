@@ -10,7 +10,7 @@ namespace yii\bindings;
 use yii\base\Action;
 use yii\web\Request;
 
-class BindingContext
+final class BindingContext
 {
     /**
      * @var Request
