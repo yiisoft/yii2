@@ -10,9 +10,10 @@ namespace yiiunit\framework\bindings;
 use DateTime;
 use DateTimeImmutable;
 use ReflectionProperty;
+use yii\bindings\BindingParameter;
 use yii\bindings\BindingProperty;
 
-class TypeReflector
+final class TypeReflector
 {
     public array $array;
     public int $int;
@@ -31,6 +32,9 @@ class TypeReflector
     public \yii\data\DataFilter $yii_data_DataFilter;
     public \yii\data\ActiveDataFilter $yii_data_ActiveDataFilter;
 
+    /**
+     * @deprecated
+     */
     public static function getReflectionProperty($name)
     {
         $name = str_replace("?", "nullable_", $name);
@@ -41,5 +45,47 @@ class TypeReflector
     public static function getBindingTarget($name, $value)
     {
         return new BindingProperty(self::getReflectionProperty($name), $value);
+    }
+
+    public static function getBindingProperty($type, $name, $value, $defaultValue = null)
+    {
+        return new BindingProperty(self::propertyOf($type, $name, $defaultValue), $value);
+    }
+
+    public static function getBindingParameter($type, $name, $value, $defaultValue = null)
+    {
+        return new BindingParameter(self::parameterOf($type, $name, $defaultValue), $value);
+    }
+
+    public static function parameterOf(string $typeName, $name="value", $defaultValue = null)
+    {
+        $default = "";
+        if ($defaultValue) {
+            $default = "= $defaultValue";
+        }
+
+        $code = <<<CODE
+            return function($typeName \${$name} {$default}) { };
+        CODE;
+
+        $reflection = new \ReflectionFunction(eval($code));
+        return $reflection->getParameters()[0];
+    }
+
+    public static function propertyOf(string $typeName, $name="value", $defaultValue = null)
+    {
+        $default = "";
+        if ($defaultValue) {
+            $default = "= $defaultValue";
+        }
+
+        $code = <<<CODE
+            return new class {
+                public $typeName \${$name} {$default}
+            };
+        CODE;
+
+        $reflection = new \ReflectionClass(eval($code));
+        return $reflection->getProperty($name);
     }
 }
