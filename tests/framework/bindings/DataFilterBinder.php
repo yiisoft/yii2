@@ -7,9 +7,12 @@
 
 namespace yiiunit\framework\bindings;
 
+use yii\bindings\ActionParameterBinder;
 use yii\bindings\binders\DataFilterBinder;
 use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
+use yii\console\Application;
+use yiiunit\framework\bindings\mocks\ActionBindingController;
 use yiiunit\TestCase;
 
 class DataFilterBinderTest extends TestCase
@@ -28,11 +31,13 @@ class DataFilterBinderTest extends TestCase
     {
         parent::setUp();
         $this->modelBinder = new DataFilterBinder();
+        $this->parameterBinder = new ActionParameterBinder();
 
-        $this->mockWebApplication([
-            'components' => [
-            ],
-        ]);
+        $module = new \yii\base\Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
+        $module->set(yii\web\Request::class, ['class' => yii\web\Request::class]);
+        $this->controller = new ActionBindingController('binding', $module);
+
+        $this->mockWebApplication(['controller' => $this->controller]);
     }
 
     public function testDataFilter()

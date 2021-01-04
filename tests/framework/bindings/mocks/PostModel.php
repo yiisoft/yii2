@@ -7,29 +7,30 @@
 
 namespace yiiunit\framework\bindings\mocks;
 
-class Post extends \yii\db\ActiveRecord
+class PostModel extends \yii\base\Model
 {
+    public $title = "";
+    public $content = "";
+
     public $findOneCalled = false;
     public $setAttributesCalled = false;
-    public $arguments = [];
-
-    public static function findOne($condition)
-    {
-        $instance =  new static();
-        $instance->findOneCalled = true;
-        $instance->arguments['findOne'] = [
-            'condition' => $condition
-        ];
-        return $instance;
-    }
+    public $arguments = null;
 
     public function setAttributes($values, $safeOnly = true)
     {
         $this->setAttributesCalled = true;
-        $this->arguments['setAttributes'] = [
+        $this->arguments = [
             'values' => $values,
             'safeOnly' => $safeOnly
         ];
         parent::setAttributes($values, $safeOnly);
+    }
+
+    public function rules()
+    {
+        return [
+            ['title', 'string'],
+            ['content', 'string'],
+        ];
     }
 }

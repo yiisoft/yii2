@@ -53,7 +53,8 @@ class DateTimeBinderTest extends TestCase
      */
     public function testDateTimeBinder($format, $expected,  $value)
     {
-        $binding = $this->modelBinder->bindModel(TypeReflector::getBindingTarget("DateTime", $value), $this->context);
+        $target  = TypeReflector::getBindingParameter("DateTime", "value", $value);
+        $binding = $this->modelBinder->bindModel($target, $this->context);
 
         if ($format) {
             $this->assertNotNull($binding);
@@ -63,7 +64,8 @@ class DateTimeBinderTest extends TestCase
             $this->assertNull($binding);
         }
 
-        $binding = $this->modelBinder->bindModel(TypeReflector::getBindingTarget("DateTimeImmutable", $value), $this->context);
+        $target  = TypeReflector::getBindingParameter("DateTimeImmutable", "value", $value);
+        $binding = $this->modelBinder->bindModel($target, $this->context);
 
         if ($format) {
             $this->assertNotNull($binding);

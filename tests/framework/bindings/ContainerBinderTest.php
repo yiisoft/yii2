@@ -13,6 +13,7 @@ use yii\bindings\binders\ContainerBinder;
 use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
 use yii\console\Application;
+use yiiunit\framework\bindings\mocks\ActionBindingController;
 use yiiunit\TestCase;
 
 class ContainerBinderTest extends TestCase

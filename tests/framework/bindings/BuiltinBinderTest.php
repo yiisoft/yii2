@@ -79,7 +79,8 @@ class BuiltinBinderTest extends TestCase
      */
     public function testBuiltInBinder($typeName, $expected, $value)
     {
-        $binding = $this->modelBinder->bindModel(TypeReflector::getBindingTarget($typeName, $value), $this->context);
+        $target  = TypeReflector::getBindingParameter($typeName, "value", $value);
+        $binding = $this->modelBinder->bindModel($target, $this->context);
 
         if ($expected !== null) {
             $this->assertNotNull($binding);

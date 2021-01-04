@@ -8,37 +8,15 @@
 namespace yiiunit\framework\bindings;
 
 use Yii;
+use yii\base\InlineAction;
 use yii\bindings\ActionParameterBinder;
 use yii\bindings\binders\ActiveRecordBinder;
 use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
+use yii\console\Application;
+use yiiunit\framework\bindings\mocks\ActionBindingController;
+use yiiunit\framework\bindings\mocks\Post;
 use yiiunit\TestCase;
-
-class Post extends \yii\db\ActiveRecord
-{
-    public $findOneCalled = false;
-    public $setAttributesCalled = false;
-    public $arguments = null;
-
-    public static function findOne($condition)
-    {
-        $instance =  new static();
-        $instance->findOneCalled = true;
-        $instance->arguments = [
-            'condition' => $condition
-        ];
-        return $instance;
-    }
-
-    public function setAttributes($values, $safeOnly = true)
-    {
-        $this->setAttributesCalled = true;
-        $this->arguments = [
-            'values' => $values,
-            'safeOnly' => $safeOnly
-        ];
-    }
-}
 
 class ActiveRecordBinderTest extends TestCase
 {
@@ -57,24 +35,76 @@ class ActiveRecordBinderTest extends TestCase
      */
     private $context = null;
 
+    /**
+     * @var ActionBindingController
+     */
+    private $controller = null;
+
     protected function setUp()
     {
         parent::setUp();
         $this->parameterBinder = new ActionParameterBinder();
         $this->modelBinder = new ActiveRecordBinder();
 
-        $this->mockWebApplication([
-            'components' => [
-            ],
-        ]);
+        $module = new \yii\base\Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
+        $module->set(yii\web\Request::class, ['class' => yii\web\Request::class]);
+        $this->controller = new ActionBindingController('binding', $module);
+
+        $this->mockWebApplication(['controller' => $this->controller]);
     }
 
-    public function testActiveRecordBinder()
+    public function testActiveRecordBinderFindOne()
     {
-        $target = TypeReflector::getBindingParameter(Post::class, "model", null);
-        $context = new BindingContext(Yii::$app->request, $this->modelBinder, null, ["id" => 100]);
+        $action = new InlineAction("action", $this->controller, "actionActiveRecord");
 
-        $result = $this->modelBinder->bindModel($target, $context);
+        $result = $this->parameterBinder->bindActionParams($action, ["id" => 100]);
+        $args   = $result->arguments;
 
+        /**
+         * @var Post
+         */
+        $instance = $args["model"];
+
+        $this->assertNotNull($instance);
+        $this->assertInstanceOf(Post::class, $instance);
+        $this->assertSame(true, $instance->findOneCalled);
+        $this->assertSame(100, $instance->arguments['findOne']["condition"]);
+    }
+
+    public function testActiveRecordBinderSetAttributes()
+    {
+        $action = new InlineAction("action", $this->controller, "actionActiveRecord");
+
+        $id = 100;
+
+        $condition = [
+            "condition" => $id
+        ];
+
+        $values = [
+            "values" => [
+                "title" => "title",
+                "content" => "some content"
+            ],
+            "safeOnly" => true
+        ];
+
+        $_SERVER['REQUEST_METHOD'] = "POST";
+        Yii::$app->request->setBodyParams($values["values"]);
+
+        $result = $this->parameterBinder->bindActionParams($action, ["id" => $id]);
+        $args   = $result->arguments;
+
+        /**
+         * @var Post
+         */
+        $instance = $args["model"];
+
+        $this->assertNotNull($instance);
+        $this->assertInstanceOf(Post::class, $instance);
+        $this->assertSame(true, $instance->findOneCalled);
+        $this->assertSame(true, $instance->setAttributesCalled);
+        $this->assertSame($values, $instance->arguments["setAttributes"]);
+        $this->assertSame($condition, $instance->arguments["findOne"]);
     }
 }
