@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\bindings\mocks;
 
+use yii\data\ActiveDataFilter;
+use yii\data\DataFilter;
 use yii\web\Request;
 
 class ActionBindingController extends \yii\base\Controller
@@ -26,7 +28,12 @@ class ActionBindingController extends \yii\base\Controller
         return $model;
     }
 
-    public function actionMode(PostModel $model)
+    public function actionActiveDataFilter(ActiveDataFilter $model)
+    {
+        return $model;
+    }
+
+    public function actionDataFilter(DataFilter $model)
     {
         return $model;
     }
