@@ -17,7 +17,6 @@ use yiiunit\TestCase;
 
 class BuiltinBinderTest extends TestCase
 {
-    private const DELTA = 0.0001;
     /**
      * @var ActionParameterBinder
      */

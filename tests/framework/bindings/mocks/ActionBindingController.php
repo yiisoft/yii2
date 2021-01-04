@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\bindings;
+namespace yiiunit\framework\bindings\mocks;
 
 use yii\web\Request;
 
