@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\bindings;
 
+use DateTime;
+use DateTimeInterface;
 use yii\bindings\binders\DateTimeBinder;
 use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
@@ -38,10 +40,11 @@ class DateTimeBinderTest extends TestCase
     public function dateTimeProvider()
     {
         return [
-            ["Y-m-d", "2021-01-01", "2020-01-01"],
-            ["Y-m-d H:m:s", "2021-01-01 10:30:45", "2020-01-01 10:30:45"],
-            ["Y-m-d H:m:s", "2011-10-05 14:48:00", "2011-10-05T14:48:00.000Z"],
-            [null,    null, "InvalidDate"],
+            ["Y-m-d", "2021-01-01", "2021-01-01"],
+            ["Y-m-d H:i:s", "2021-01-01 10:30:45", "2021-01-01 10:30:45"],
+            ["Y-m-d H:i:s", "2021-01-03 02:45:31", "2021-01-03T02:45:31.523Z"],
+            //["Y-m-d H:i:s", "2021-01-03 02:45:31", "2021-01-03T02:45:31+0000"],
+            [null, null, "InvalidDate"],
         ];
     }
 
@@ -50,7 +53,7 @@ class DateTimeBinderTest extends TestCase
      */
     public function testDateTimeBinder($format, $expected,  $value)
     {
-        $binding = $this->dateTimeBinder->bindModel(TypeReflector::getBindingTarget("DateTime", $value), $this->context);
+        $binding = $this->modelBinder->bindModel(TypeReflector::getBindingTarget("DateTime", $value), $this->context);
 
         if ($format) {
             $this->assertNotNull($binding);
@@ -60,7 +63,7 @@ class DateTimeBinderTest extends TestCase
             $this->assertNull($binding);
         }
 
-        $binding = $this->dateTimeBinder->bindModel(TypeReflector::getBindingTarget("DateTimeImmutable", $value), $this->context);
+        $binding = $this->modelBinder->bindModel(TypeReflector::getBindingTarget("DateTimeImmutable", $value), $this->context);
 
         if ($format) {
             $this->assertNotNull($binding);

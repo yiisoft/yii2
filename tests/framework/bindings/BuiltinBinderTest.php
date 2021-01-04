@@ -45,37 +45,6 @@ class BuiltinBinderTest extends TestCase
         ]);
     }
 
-    public function testActionBuiltinProvider()
-    {
-        return [
-            [0, 0, 0, /**/ "0", "0", "0"],
-            [0, 0, 0, /**/ "0", "0", "0"],
-            [0, 0, 0, /**/ "0", "0", "0"],
-            [0, 0, 0, /**/ "0", "0", "0"],
-        ];
-    }
-
-    /**
-     * @dataProvider testActionBuiltinProvider
-     */
-    public function testActionBuiltin($int, $float, $bool, $intParam, $floatParam, $boolParam)
-    {
-        $action = new InlineAction("action", $this->controller, "actionBuiltin");
-
-        $result = $this->parameterBinder->bindActionParams($action, [
-            "int" => $intParam,
-            "float" => $floatParam,
-            "bool" => $boolParam
-        ]);
-
-        $args = $result->arguments;
-
-        $this->assertCount(3, $args);
-        $this->assertSame($int, $args['int']);
-        $this->assertSame($float, $args['float']);
-        $this->assertSame($bool, $args['bool']);
-    }
-
     public function builtInBinderProvider()
     {
         return [
@@ -83,17 +52,26 @@ class BuiltinBinderTest extends TestCase
             [ "int", -100, "-100"],
             [ "int", null, "boo"],
 
-            [ "float", 100, "100"],
+            [ "float", 100.5, "100.5"],
             [ "float", -100.5, "-100.5"],
             [ "float", null, "boo"],
 
             [ "bool", true, "true"],
             [ "bool", true, "yes"],
             [ "bool", true, "on"],
+            [ "bool", true, "1"],
+            [ "bool", true, true],
             [ "bool", false, "false"],
             [ "bool", false, "no"],
             [ "bool", false, "off"],
-            [ "bool", null, null]
+            [ "bool", false, "0"],
+            [ "bool", false, false],
+
+            [ "bool", null, "boo"],
+
+            [ "int", null, null],
+            [ "float", null, null],
+            //[ "bool", false, null],
         ];
     }
 

@@ -20,10 +20,9 @@ final class DateTimeBinder extends BaseObject implements ModelBinderInterface
      * @var array $dateFormats
      */
     public $dateFormats = [
-        'Y-m-d' => ['resetTime' => true],
+        'Y-m-d\TH:i:s.u\Z'=> ['resetTime' => false],
         'Y-m-d H:i:s'=> ['resetTime' => false],
-        DateTimeInterface::ISO8601 => ['resetTime' => false],
-        DateTimeInterface::RFC3339 => ['resetTime' => false]
+        'Y-m-d' => ['resetTime' => true]
     ];
 
     public function bindModel($target, $context)
@@ -39,7 +38,9 @@ final class DateTimeBinder extends BaseObject implements ModelBinderInterface
 
         foreach ($this->dateFormats as $format => $options) {
             $result = DateTime::createFromFormat($format, $value);
+
             if ($result) {
+               //  print_r([$format, $value, $result]);
                 if (isset($options['resetTime']) && $options['resetTime']) {
                     $result->setTime(0, 0, 0);
                 }
