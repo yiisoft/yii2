@@ -14,7 +14,7 @@ use yii\base\InlineAction;
 final class ActionParameterBinder extends BaseObject implements ActionParameterBinderInterface
 {
     private $modelBinderInstance = null;
-    public $modelBinderClass = "yii\\bindings\\BindingRegistry";
+    public $modelBinderClass = "yii\\bindings\\CompositeModelBinder";
 
     /**
      * @return ModelBinderInterface

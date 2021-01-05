@@ -9,7 +9,7 @@ namespace yii\bindings;
 
 use yii\base\BaseObject;
 
-final class BindingRegistry extends BaseObject implements ModelBinderInterface
+final class CompositeModelBinder extends BaseObject implements ModelBinderInterface
 {
     private $binderInstances = null;
     public $binders = [];
@@ -49,7 +49,6 @@ final class BindingRegistry extends BaseObject implements ModelBinderInterface
         foreach ($binders as $binder) {
             $result = $binder->bindModel($param, $context);
             if ($result instanceof BindingResult) {
-                // echo "\n[Binder] => ", get_class($binder), "\n";
                 return $result;
             }
         }
