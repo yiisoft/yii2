@@ -16,7 +16,6 @@ class ActiveRecordBinderTest extends BindingTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->parameterBinder = new ActionParameterBinder();
     }
 
     public function testActiveRecordBinderFindOne()

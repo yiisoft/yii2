@@ -15,26 +15,33 @@ class ActionBindingController extends \yii\base\Controller
 {
     public function actionTest(Request $request)
     {
-        return $request;
     }
 
     public function actionActiveRecord(Post $model)
     {
-        return $model;
     }
 
     public function actionModel(PostModel $model)
     {
-        return $model;
     }
 
     public function actionActiveDataFilter(ActiveDataFilter $model)
     {
-        return $model;
     }
 
     public function actionDataFilter(DataFilter $model)
     {
-        return $model;
+    }
+
+    public function actionPoint(Point $model)
+    {
+    }
+
+    public function actionCircle(Circle $model)
+    {
+    }
+
+    public function actionComposite(Composite $model)
+    {
     }
 }
