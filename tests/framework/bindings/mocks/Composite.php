@@ -11,4 +11,5 @@ class Composite
 {
     public \yii\web\Request $request;
     public Circle $circle;
+    public \yii\data\ActiveDataFilter $filter;
 }

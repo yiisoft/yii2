@@ -16,7 +16,6 @@ final class ContainerBinder extends BaseObject implements ModelBinderInterface
     public function bindModel($target, $context)
     {
         $result = null;
-
         $name = $target->getName();
         $typeName = $target->getTypeName();
 
@@ -27,7 +26,7 @@ final class ContainerBinder extends BaseObject implements ModelBinderInterface
         $module = $context->action->controller->module;
         $container = \Yii::$container;
 
-        // Since it is not a builtin type it must be DI injection.
+        // Try using DI container to bind target result
         if (($component = $module->get($name, false)) instanceof $typeName) {
             $result  = new BindingResult($component);
             $result->message = "Component: " . get_class($component) . " \$$name";
@@ -38,8 +37,9 @@ final class ContainerBinder extends BaseObject implements ModelBinderInterface
             $result  = new BindingResult($service);
             $result->message = "Container DI: $typeName \$$name";
         } elseif ($target->allowsNull()) {
-            $result  = new BindingResult(null);
-            $result->message = "Unavailable service: $name";
+            //NOTE: Binding may be supported by other binders in collection
+            //$result  = new BindingResult(null);
+            //$result->message = "Unavailable service: $name";
         }
 
         return $result;

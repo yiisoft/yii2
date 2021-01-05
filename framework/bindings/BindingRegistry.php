@@ -49,6 +49,7 @@ final class BindingRegistry extends BaseObject implements ModelBinderInterface
         foreach ($binders as $binder) {
             $result = $binder->bindModel($param, $context);
             if ($result instanceof BindingResult) {
+                // echo "\n[Binder] => ", get_class($binder), "\n";
                 return $result;
             }
         }

@@ -32,6 +32,7 @@ final class ClassTypeBinder extends BaseObject implements ModelBinderInterface
     public function bindModel($target, $context)
     {
         $typeName = $target->getTypeName();
+        // echo "\n => Hydrating $typeName\n";
 
         if ($typeName === null) {
             return null;
@@ -46,23 +47,27 @@ final class ClassTypeBinder extends BaseObject implements ModelBinderInterface
 
     protected function hydrateObject($instance, $data, $context)
     {
+
         $reflection = new ReflectionClass($instance);
 
         foreach ($reflection->getProperties() as $prop) {
-            try {
+            try
+            {
                 $value = $data[$prop->name] ?? null;
-
                 $bindingParameter = new BindingProperty($prop, $value);
-
                 $result = $context->binder->bindModel($bindingParameter, $context);
+                // echo " ===> ",
+                //     $bindingParameter->getTypeName(), " => ",
+                //     json_encode($value), " => ",
+                //     get_debug_type($result->value),
+                //     "\n";
 
                 if ($result instanceof BindingResult) {
                     $prop->setAccessible(true);
                     $prop->setValue($instance, $result->value);
                 }
             } catch (Exception $e) {
-                var_dump($e->getMessage());
-                //throw $e;
+                //var_dump($e->getMessage());
             }
         }
         return $instance;
