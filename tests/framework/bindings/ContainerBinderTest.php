@@ -7,43 +7,14 @@
 
 namespace yiiunit\framework\bindings;
 
-use yii\base\InlineAction;
-use yii\bindings\ActionParameterBinder;
 use yii\bindings\binders\ContainerBinder;
-use yii\bindings\BindingContext;
-use yii\bindings\ModelBinderInterface;
-use yii\console\Application;
-use yiiunit\framework\bindings\mocks\ActionBindingController;
-use yiiunit\TestCase;
 
-class ContainerBinderTest extends TestCase
+class ContainerBinderTest extends BindingTestCase
 {
-    /**
-     * @var ActionParameterBinder
-     */
-    private $parameterBinder;
-
-    /**
-     * @var ModelBinderInterface
-     */
-    private $modelBinder;
-
-    /**
-     * @var BindingContext
-     */
-    private $context = null;
-
     protected function setUp()
     {
         parent::setUp();
-
-        $this->parameterBinder = new ActionParameterBinder([]);
         $this->modelBinder = new ContainerBinder();
-
-        $this->mockWebApplication([
-            'components' => [
-            ],
-        ]);
     }
 
     public function testContainerBinder()
@@ -53,13 +24,7 @@ class ContainerBinderTest extends TestCase
             return;
         }
 
-        $module = new \yii\base\Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
-        $module->set(yii\web\Request::class, ['class' => yii\web\Request::class]);
-        $controller = new ActionBindingController('binding', $module);
-
-        $this->mockWebApplication(['controller' => $controller]);
-
-        $action = new InlineAction("action", $controller, "actionTest");
+        $action = $this->getControllerAction("actionTest");
 
         $result = $this->parameterBinder->bindActionParams($action, []);
         $args   = $result->arguments;

@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\bindings;
 
-use Yii;
 use yii\bindings\binders\DataFilterBinder;
 
 class DataFilterBinderTest extends BindingTestCase
@@ -18,35 +17,19 @@ class DataFilterBinderTest extends BindingTestCase
         $this->modelBinder = new DataFilterBinder();
     }
 
-    public function testDataFilter()
-    {
-        $action = $this->getControllerAction("actionDataFilter");
-
-        $values = [
-            "filter" => [
-                "name" => "value"
-            ],
+    public function dataProvider() {
+        return [
+            ['actionDataFilter',  "yii\data\DataFilter"],
+            ['actionActiveDataFilter',  "yii\data\ActiveDataFilter"],
         ];
-
-        $this->setBodyParams($values);
-
-        $result = $this->parameterBinder->bindActionParams($action, []);
-        $args   = $result->arguments;
-
-        /**
-         * @var \yii\data\DataFilter
-         */
-        $instance = $args["model"];
-
-        $this->assertNotNull($instance);
-        $this->assertInstanceOf(\yii\data\DataFilter::class, $instance);
-        $this->assertSame($values["filter"], $instance->getFilter());
     }
 
-    public function testActiveDataFilter()
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testDataFilter($actionName, $typeName)
     {
-        $action = $this->getControllerAction("actionActiveDataFilter");
-
+        //TODO: Use parameter name instead of "filter" property
         $values = [
             "filter" => [
                 "name" => "value"
@@ -55,16 +38,14 @@ class DataFilterBinderTest extends BindingTestCase
 
         $this->setBodyParams($values);
 
+        $action = $this->getControllerAction($actionName);
         $result = $this->parameterBinder->bindActionParams($action, []);
         $args   = $result->arguments;
 
-        /**
-         * @var \yii\data\ActiveDataFilter
-         */
         $instance = $args["model"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf(\yii\data\ActiveDataFilter::class, $instance);
+        $this->assertInstanceOf($typeName, $instance);
         $this->assertSame($values["filter"], $instance->getFilter());
     }
 }

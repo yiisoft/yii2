@@ -7,41 +7,14 @@
 
 namespace yiiunit\framework\bindings;
 
-
-use yii\base\InlineAction;
-use yii\bindings\ActionParameterBinder;
 use yii\bindings\binders\BuiltinTypeBinder;
-use yii\bindings\BindingContext;
-use yii\bindings\ModelBinderInterface;
-use yiiunit\TestCase;
 
-class BuiltinBinderTest extends TestCase
+class BuiltinBinderTest extends BindingTestCase
 {
-    /**
-     * @var ActionParameterBinder
-     */
-    private $parameterBinder;
-
-    /**
-     * @var ModelBinderInterface
-     */
-    private $modelBinder;
-
-    /**
-     * @var BindingContext
-     */
-    private $context = null;
-
     protected function setUp()
     {
         parent::setUp();
-        $this->parameterBinder = new ActionParameterBinder();
         $this->modelBinder = new BuiltinTypeBinder();
-
-        $this->mockWebApplication([
-            'components' => [
-            ],
-        ]);
     }
 
     public function builtInBinderProvider()
@@ -70,6 +43,7 @@ class BuiltinBinderTest extends TestCase
 
             [ "int", null, null],
             [ "float", null, null],
+            // Does not work the same for php5.4 and php5.6+ where null is converted to false
             //[ "bool", false, null],
         ];
     }

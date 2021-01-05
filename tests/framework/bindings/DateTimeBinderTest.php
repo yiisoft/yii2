@@ -30,11 +30,6 @@ class DateTimeBinderTest extends TestCase
     {
         parent::setUp();
         $this->modelBinder = new DateTimeBinder();
-
-        $this->mockWebApplication([
-            'components' => [
-            ],
-        ]);
     }
 
     public function dateTimeProvider()

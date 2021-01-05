@@ -23,12 +23,11 @@ class ActiveRecordBinderTest extends BindingTestCase
     {
         $action = $this->getControllerAction("actionActiveRecord");
         $result = $this->parameterBinder->bindActionParams($action, ["id" => 100]);
-        $args   = $result->arguments;
 
         /**
          * @var Post
          */
-        $instance = $args["model"];
+        $instance = $result->arguments["model"];
 
         $this->assertNotNull($instance);
         $this->assertInstanceOf(Post::class, $instance);
@@ -54,16 +53,13 @@ class ActiveRecordBinderTest extends BindingTestCase
             "safeOnly" => true
         ];
 
-        $_SERVER['REQUEST_METHOD'] = "POST";
-        Yii::$app->request->setBodyParams($values["values"]);
-
+        $this->setBodyParams($values["values"]);
         $result = $this->parameterBinder->bindActionParams($action, ["id" => $id]);
-        $args   = $result->arguments;
 
         /**
          * @var Post
          */
-        $instance = $args["model"];
+        $instance =  $result->arguments["model"];
 
         $this->assertNotNull($instance);
         $this->assertInstanceOf(Post::class, $instance);
