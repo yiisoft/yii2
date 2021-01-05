@@ -60,11 +60,11 @@ class Module extends ServiceLocator
      */
     public $id;
     /**
-     * @var Module the parent module of this module. `null` if this module does not have a parent.
+     * @var Module|null the parent module of this module. `null` if this module does not have a parent.
      */
     public $module;
     /**
-     * @var string|bool the layout that should be applied for views within this module. This refers to a view name
+     * @var string|bool|null the layout that should be applied for views within this module. This refers to a view name
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
      * will be taken. If this is `false`, layout will be disabled within this module.
      */
@@ -90,7 +90,7 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in.
+     * @var string|null the namespace that controller classes are in.
      * This namespace will be used to load controller classes by prepending it to the controller
      * class name.
      *
