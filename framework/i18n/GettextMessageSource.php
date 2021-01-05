@@ -102,7 +102,7 @@ class GettextMessageSource extends MessageSource
         $fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile, $category);
 
         if (
-            $messages === null && $fallbackMessages === null && $fallbackLanguage !== ''
+            $messages === null && $fallbackMessages === null
             && $fallbackLanguage !== $this->sourceLanguage
             && strpos($this->sourceLanguage, $fallbackLanguage) !== 0
         ) {
