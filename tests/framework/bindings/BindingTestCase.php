@@ -48,7 +48,7 @@ class BindingTestCase extends TestCase
     {
         parent::setUp();
         if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped("Bindings requres PHP version >= 7.1");
+            $this->markTestSkipped("Can not be tested on PHP < 7.1");
         }
 
         $this->parameterBinder = new ActionParameterBinder();

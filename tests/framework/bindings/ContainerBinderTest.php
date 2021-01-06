@@ -8,6 +8,7 @@
 namespace yiiunit\framework\bindings;
 
 use yii\bindings\binders\ContainerBinder;
+use yii\web\Request;
 
 /**
  * @group bindings
@@ -23,11 +24,6 @@ class ContainerBinderTest extends BindingTestCase
 
     public function testContainerBinder()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         $action = $this->getControllerAction("actionTest");
 
         $result = $this->parameterBinder->bindActionParams($action, []);
@@ -36,6 +32,6 @@ class ContainerBinderTest extends BindingTestCase
         $instance = $args["request"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf("yii\web\Request", $instance);
+        $this->assertInstanceOf(Request::className(), $instance);
     }
 }

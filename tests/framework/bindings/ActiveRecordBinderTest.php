@@ -33,7 +33,7 @@ class ActiveRecordBinderTest extends BindingTestCase
         $instance = $result->arguments["model"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf("yiiunit\framework\bindings\mocks\Post", $instance);
+        $this->assertInstanceOf("yiiunit\\framework\\bindings\\mocks\\Post", $instance);
         $this->assertSame(true, $instance->findOneCalled);
         $this->assertSame(100, $instance->arguments['findOne']["condition"]);
     }
