@@ -9,6 +9,10 @@ namespace yiiunit\framework\bindings;
 
 use yii\bindings\binders\ContainerBinder;
 
+/**
+ * @group bindings
+ * @requires PHP >= 7.1
+ */
 class ContainerBinderTest extends BindingTestCase
 {
     protected function setUp()

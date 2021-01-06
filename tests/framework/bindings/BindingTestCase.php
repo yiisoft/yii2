@@ -47,6 +47,10 @@ class BindingTestCase extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped("Bindings requres PHP version >= 7.1");
+        }
+
         $this->parameterBinder = new ActionParameterBinder();
         $module = new \yii\base\Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
         $module->set(yii\web\Request::class, ['class' => yii\web\Request::class]);

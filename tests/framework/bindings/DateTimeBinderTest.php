@@ -14,18 +14,12 @@ use yii\bindings\BindingContext;
 use yii\bindings\ModelBinderInterface;
 use yiiunit\TestCase;
 
-class DateTimeBinderTest extends TestCase
+/**
+ * @group bindings
+ * @requires PHP >= 7.1
+ */
+class DateTimeBinderTest extends BindingTestCase
 {
-    /**
-     * @var ModelBinderInterface
-     */
-    private $modelBinder;
-
-    /**
-     * @var BindingContext
-     */
-    private $context = null;
-
     protected function setUp()
     {
         parent::setUp();

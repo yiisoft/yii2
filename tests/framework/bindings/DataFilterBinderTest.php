@@ -9,6 +9,10 @@ namespace yiiunit\framework\bindings;
 
 use yii\bindings\binders\DataFilterBinder;
 
+/**
+ * @group bindings
+ * @requires PHP >= 7.1
+ */
 class DataFilterBinderTest extends BindingTestCase
 {
     protected function setUp()

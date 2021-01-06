@@ -22,33 +22,24 @@ final class TypeReflector
         return new BindingParameter(self::parameterOf($type, $name, $defaultValue), $value);
     }
 
-    public static function parameterOf(string $typeName, $name="value", $defaultValue = null)
+    public static function parameterOf($typeName, $name="value", $defaultValue = null)
     {
-        $default = "";
-        if ($defaultValue) {
-            $default = "= $defaultValue";
-        }
-
-        $code = <<<CODE
-            return function($typeName \${$name} {$default}) { };
-        CODE;
+        $default = $defaultValue ?  "= $defaultValue" : "";
+        $code = " return function($typeName \${$name} {$default}) { };";
 
         $reflection = new \ReflectionFunction(eval($code));
-        return $reflection->getParameters()[0];
+        $params =  $reflection->getParameters();
+        return $params[0];
     }
 
-    public static function propertyOf(string $typeName, $name="value", $defaultValue = null)
+    public static function propertyOf($typeName, $name="value", $defaultValue = null)
     {
-        $default = "";
-        if ($defaultValue) {
-            $default = "= $defaultValue";
-        }
-
-        $code = <<<CODE
+        $default = $defaultValue ?  "= $defaultValue" : "";
+        $code = "
             return new class {
                 public $typeName \${$name} {$default}
             };
-        CODE;
+        ";
 
         $reflection = new \ReflectionClass(eval($code));
         return $reflection->getProperty($name);

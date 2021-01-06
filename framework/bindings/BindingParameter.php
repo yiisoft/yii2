@@ -74,7 +74,7 @@ final class BindingParameter implements BindingTargetInterface
 
     public function isBuiltin()
     {
-        if ($type = $this->getType()) {
+        if (($type = $this->getType()) !== null) {
             return $type->isBuiltin();
         }
         return false;

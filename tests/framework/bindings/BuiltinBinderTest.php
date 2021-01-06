@@ -9,6 +9,10 @@ namespace yiiunit\framework\bindings;
 
 use yii\bindings\binders\BuiltinTypeBinder;
 
+/**
+ * @group bindings
+ * @requires PHP >= 7.1
+ */
 class BuiltinBinderTest extends BindingTestCase
 {
     protected function setUp()
@@ -49,11 +53,13 @@ class BuiltinBinderTest extends BindingTestCase
     }
 
     /**
+     * @requires PHP >= 7.1
      * @dataProvider builtInBinderProvider
      */
     public function testBuiltInBinder($typeName, $expected, $value)
     {
         $target  = TypeReflector::getBindingParameter($typeName, "value", $value);
+
         $binding = $this->modelBinder->bindModel($target, $this->context);
 
         if ($expected !== null) {

@@ -10,6 +10,10 @@ namespace yiiunit\framework\bindings;
 use yiiunit\framework\bindings\mocks\Circle;
 use yiiunit\framework\bindings\mocks\Point;
 
+/**
+ * @group bindings
+ * @requires PHP >= 7.1
+ */
 class ClassTypeBinderTest extends BindingTestCase
 {
     protected function setUp()
@@ -30,7 +34,7 @@ class ClassTypeBinderTest extends BindingTestCase
         $instance = $result->arguments["model"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf(Point::class, $instance);
+        $this->assertInstanceOf("yiiunit\\framework\\bindings\\mocks\\Point", $instance);
         $this->assertSame(25, $instance->x);
         $this->assertSame(35, $instance->y);
     }
@@ -52,8 +56,8 @@ class ClassTypeBinderTest extends BindingTestCase
         $instance = $result->arguments["model"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf(Circle::class, $instance);
-        $this->assertInstanceOf(Point::class,  $instance->center);
+        $this->assertInstanceOf("yiiunit\\framework\\bindings\\mocks\\Circle", $instance);
+        $this->assertInstanceOf("yiiunit\\framework\\bindings\\mocks\\Point",  $instance->center);
         $this->assertSame(25, $instance->center->x);
         $this->assertSame(35, $instance->center->y);
         $this->assertSame(50.0, $instance->radius);
@@ -80,21 +84,19 @@ class ClassTypeBinderTest extends BindingTestCase
         ]);
 
         $instance = $result->arguments["model"];
-        $circle = $instance->circle;
-        $filter = $instance->filter;
+        $circle = $instance ? $instance->circle : null;
+        $filter = $instance ? $instance->filter : null;
 
         $this->assertNotNull($instance);
         $this->assertNotNull($circle);
         $this->assertNotNull($filter);
-        $this->assertInstanceOf(\yii\web\Request::class, $instance->request);
-        $this->assertInstanceOf(\yii\data\ActiveDataFilter::class, $filter);
-        $this->assertInstanceOf(Circle::class, $circle);
-        $this->assertInstanceOf(Point::class,  $circle->center);
+        $this->assertInstanceOf("yii\\web\\Request", $instance->request);
+        $this->assertInstanceOf("yii\\data\\ActiveDataFilter", $filter);
+        $this->assertInstanceOf("yiiunit\\framework\\bindings\\mocks\\Circle", $circle);
+        $this->assertInstanceOf("yiiunit\\framework\\bindings\\mocks\\Point",  $circle->center);
         $this->assertSame(25, $circle->center->x);
         $this->assertSame(35, $circle->center->y);
         $this->assertSame(50.0, $circle->radius);
         $this->assertSame("purple", $circle->color);
-
-        //TODO: Test that filter is populated
     }
 }

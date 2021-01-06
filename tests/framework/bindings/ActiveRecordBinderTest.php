@@ -11,6 +11,10 @@ use Yii;
 use yii\bindings\ActionParameterBinder;
 use yiiunit\framework\bindings\mocks\Post;
 
+/**
+ * @group bindings
+ * @requires PHP >= 7.1
+ */
 class ActiveRecordBinderTest extends BindingTestCase
 {
     protected function setUp()
@@ -29,7 +33,7 @@ class ActiveRecordBinderTest extends BindingTestCase
         $instance = $result->arguments["model"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf(Post::class, $instance);
+        $this->assertInstanceOf("yiiunit\framework\bindings\mocks\Post", $instance);
         $this->assertSame(true, $instance->findOneCalled);
         $this->assertSame(100, $instance->arguments['findOne']["condition"]);
     }
@@ -61,7 +65,7 @@ class ActiveRecordBinderTest extends BindingTestCase
         $instance =  $result->arguments["model"];
 
         $this->assertNotNull($instance);
-        $this->assertInstanceOf(Post::class, $instance);
+        $this->assertInstanceOf("yiiunit\framework\bindings\mocks\Post", $instance);
         $this->assertSame(true, $instance->findOneCalled);
         $this->assertSame(true, $instance->setAttributesCalled);
         $this->assertSame($values, $instance->arguments["setAttributes"]);
