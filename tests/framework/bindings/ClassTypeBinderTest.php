@@ -12,13 +12,16 @@ use yiiunit\framework\bindings\mocks\Point;
 
 /**
  * @group bindings
- * @requires PHP >= 7.1
+ * @requires PHP >= 7.4
  */
 class ClassTypeBinderTest extends BindingTestCase
 {
     protected function setUp()
     {
         parent::setUp();
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped("Can not be tested on PHP < 7.4");
+        }
     }
 
     public function testActionPoint()
