@@ -8,6 +8,8 @@
 namespace yiiunit\framework\bindings;
 
 use Yii;
+use yii\base\Module;
+use yii\web\Request;
 use yii\base\InlineAction;
 use yii\bindings\ActionParameterBinder;
 use yii\bindings\BindingContext;
@@ -52,8 +54,8 @@ class BindingTestCase extends TestCase
         }
 
         $this->parameterBinder = new ActionParameterBinder();
-        $module = new \yii\base\Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
-        $module->set(yii\web\Request::className(), ['class' => yii\web\Request::className()]);
+        $module = new Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
+        $module->set(Request::className(), ['class' => Request::className()]);
         $this->controller = new ActionBindingController('binding', $module);
         $this->mockWebApplication(['controller' => $this->controller]);
     }
