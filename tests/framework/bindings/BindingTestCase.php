@@ -53,7 +53,7 @@ class BindingTestCase extends TestCase
 
         $this->parameterBinder = new ActionParameterBinder();
         $module = new \yii\base\Module('fake', new Application(['id' => 'app',  'basePath' => __DIR__,]));
-        $module->set(yii\web\Request::class, ['class' => yii\web\Request::class]);
+        $module->set(yii\web\Request::className(), ['class' => yii\web\Request::className()]);
         $this->controller = new ActionBindingController('binding', $module);
         $this->mockWebApplication(['controller' => $this->controller]);
     }
