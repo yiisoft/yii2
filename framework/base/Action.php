@@ -65,6 +65,11 @@ class Action extends Component
     protected $result = null;
 
     /**
+     * @var mixed the params used to run this action
+     */
+    protected $params = null;
+
+    /**
      * Constructor.
      *
      * @param string $id the ID of this action
@@ -105,6 +110,7 @@ class Action extends Component
      */
     public function runWithParams($params)
     {
+        $this->params = $params;
         $methodName = $this->getActionMethodName();
         $instance = $this->getActionObject();
 
@@ -171,6 +177,16 @@ class Action extends Component
     }
 
     /**
+     * Gets params used to run action
+     *
+     * @return mixed the params used to run action using runWithParams method
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
      * Gets object that contains a method for this action, for InlineAction it's controller instance, otherwise, it's the action itself
      *
      * @return object the object that contains method for this action
@@ -183,7 +199,7 @@ class Action extends Component
     /**
      * Returns action method name
      *
-     * @return string
+     * @return string the action method name
      */
     public function getActionMethodName()
     {
