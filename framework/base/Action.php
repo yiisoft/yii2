@@ -50,9 +50,15 @@ class Action extends Component
     public $controller;
 
     /**
-     * @var ReflectionMethod
+     * @var ReflectionMethod the action handler used to define this action
      */
     protected $actionHandler = null;
+
+    /**
+     *
+     * @var mixed
+     */
+    protected $result = null;
 
     /**
      * Constructor.
@@ -95,7 +101,10 @@ class Action extends Component
      */
     public function runWithParams($params)
     {
-        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
+        $methodName = $this->getActionMethodName();
+        $instance = $this->getActionObject();
+
+        Yii::debug('Running action: ' . get_class($instance) . "::{$methodName}(), invoked by "  . get_class($this->controller), __METHOD__);
 
         $args = $this->resolveActionArguments($params);
         $result = null;
@@ -128,6 +137,11 @@ class Action extends Component
     {
     }
 
+    /**
+     * Resolves action arguments, derived class my override this method to provide custom argument resolver
+     *
+     * @return array
+     */
     public function resolveActionArguments(array $params)
     {
         $args = $this->controller->bindActionParams($this, $params);
@@ -145,9 +159,31 @@ class Action extends Component
     public function getActionHandler()
     {
         if ($this->actionHandler === null) {
-            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
+            $methodName = $this->getActionMethodName();
+            $instance = $this->getActionObject();
+            throw new InvalidConfigException(get_class($instance) . " must define a \"{$methodName}()\" method.");
         }
         return $this->actionHandler;
+    }
+
+    /**
+     * Gets object that contains method for this action, for InlineAction it's controller instance otherwise it's action itself
+     *
+     * @return object the object that contains method for this action
+     */
+    public function getActionObject()
+    {
+        return $this;
+    }
+
+    /**
+     * Returns action method name
+     *
+     * @return string
+     */
+    public function getActionMethodName()
+    {
+        return "run";
     }
 
     /**
@@ -158,6 +194,7 @@ class Action extends Component
      */
     public function executeAction($args)
     {
-        return $this->getActionHandler()->invokeArgs($this, $args);
+        $instance = $this->getActionObject();
+        return $this->getActionHandler()->invokeArgs($instance, $args);
     }
 }
