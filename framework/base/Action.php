@@ -43,6 +43,7 @@ class Action extends Component
      * @var string ID of the action
      */
     public $id;
+
     /**
      * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
@@ -94,6 +95,8 @@ class Action extends Component
      */
     public function runWithParams($params)
     {
+        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
+
         $args = $this->resolveActionArguments($params);
         $result = null;
 
@@ -128,7 +131,6 @@ class Action extends Component
     public function resolveActionArguments(array $params)
     {
         $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
@@ -143,11 +145,7 @@ class Action extends Component
     public function getActionHandler()
     {
         if ($this->actionHandler === null) {
-            if ($this instanceof InlineAction) {
-                throw new InvalidConfigException(get_class($this) . " must define a \"{$this->actionMethod}()\" method.");
-            } else {
-                throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
-            }
+            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
         return $this->actionHandler;
     }

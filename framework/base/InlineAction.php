@@ -27,7 +27,6 @@ class InlineAction extends Action
      */
     public $actionMethod;
 
-
     /**
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
@@ -49,7 +48,17 @@ class InlineAction extends Action
      */
     public function runWithParams($params)
     {
-        return parent::runWithParams($params);
+        Yii::debug('Running action: ' . get_class($this->controller) . "::{$this->actionMethod}(), invoked by "  . get_class($this->controller), __METHOD__);
+
+        $args = $this->resolveActionArguments($params);
+        $result = null;
+
+        if ($this->beforeRun()) {
+            $result = $this->executeAction($args);
+            $this->afterRun();
+        }
+
+        return $result;
     }
 
     /**
