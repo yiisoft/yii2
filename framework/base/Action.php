@@ -7,6 +7,7 @@
 
 namespace yii\base;
 
+use ReflectionMethod;
 use Yii;
 
 /**
@@ -47,6 +48,10 @@ class Action extends Component
      */
     public $controller;
 
+    /**
+     * @var ReflectionMethod
+     */
+    protected $actionHandler = null;
 
     /**
      * Constructor.
@@ -59,6 +64,13 @@ class Action extends Component
     {
         $this->id = $id;
         $this->controller = $controller;
+
+        if ($this->actionHandler === null) {
+            $reflection = new \ReflectionClass($this);
+            if ($reflection->hasMethod("run")) {
+                $this->actionHandler = $reflection->getMethod("run");
+            }
+        }
         parent::__construct($config);
     }
 
@@ -82,22 +94,15 @@ class Action extends Component
      */
     public function runWithParams($params)
     {
-        if (!method_exists($this, 'run')) {
-            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
-        }
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
+        $args = $this->resolveActionArguments($params);
+        $result = null;
+
         if ($this->beforeRun()) {
-            $result = call_user_func_array([$this, 'run'], $args);
+            $result = $this->executeAction($args);
             $this->afterRun();
-
-            return $result;
         }
 
-        return null;
+        return $result;
     }
 
     /**
@@ -118,5 +123,43 @@ class Action extends Component
      */
     protected function afterRun()
     {
+    }
+
+    public function resolveActionArguments(array $params)
+    {
+        $args = $this->controller->bindActionParams($this, $params);
+        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
+        if (Yii::$app->requestedParams === null) {
+            Yii::$app->requestedParams = $args;
+        }
+        return $args;
+    }
+
+    /**
+     * Returns handler for this action
+     *
+     * @return ReflectionMethod
+     */
+    public function getActionHandler()
+    {
+        if ($this->actionHandler === null) {
+            if ($this instanceof InlineAction) {
+                throw new InvalidConfigException(get_class($this) . " must define a \"{$this->actionMethod}()\" method.");
+            } else {
+                throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
+            }
+        }
+        return $this->actionHandler;
+    }
+
+    /**
+     * Executes action handler using resolved action arguments
+     *
+     * @param array $args the action handler arguments
+     * @return mixed the result of action handler invocation
+     */
+    public function executeAction($args)
+    {
+        return $this->getActionHandler()->invokeArgs($this, $args);
     }
 }
