@@ -55,8 +55,12 @@ class Action extends Component
     protected $actionHandler = null;
 
     /**
-     *
-     * @var mixed
+     * @var array the action handler arguments, the derived class may access resolved action arguments in the beforeRun or the afterRun methods
+     */
+    protected $arguments = [];
+
+    /**
+     * @var mixed the result of the action, derived class my set or get action result in the afterRun method
      */
     protected $result = null;
 
@@ -106,15 +110,15 @@ class Action extends Component
 
         Yii::debug('Running action: ' . get_class($instance) . "::{$methodName}(), invoked by "  . get_class($this->controller), __METHOD__);
 
-        $args = $this->resolveActionArguments($params);
-        $result = null;
+        $this->arguments = $this->resolveActionArguments($params);
+        $this->result = null;
 
         if ($this->beforeRun()) {
-            $result = $this->executeAction($args);
+            $this->result = $this->executeAction($this->arguments);
             $this->afterRun();
         }
 
-        return $result;
+        return $this->result;
     }
 
     /**
@@ -167,7 +171,7 @@ class Action extends Component
     }
 
     /**
-     * Gets object that contains method for this action, for InlineAction it's controller instance otherwise it's action itself
+     * Gets object that contains a method for this action, for InlineAction it's controller instance, otherwise, it's the action itself
      *
      * @return object the object that contains method for this action
      */
