@@ -8,21 +8,16 @@
 namespace yiiunit\framework\data;
 
 use yii\data\ActiveDataProvider;
-use yii\db\Connection;
 use yii\db\Query;
 use yiiunit\TestCase;
 
 class ActiveDataProviderCloningTest extends TestCase
 {
-
-    // Tests :
-
     public function testClone()
     {
         $queryFirst = new Query();
 
         $dataProviderFirst = new ActiveDataProvider([
-            'db' => new Connection(),
             'query' => $queryFirst
         ]);
 
@@ -33,4 +28,3 @@ class ActiveDataProviderCloningTest extends TestCase
         $this->assertNotSame($querySecond, $queryFirst);
     }
 }
-

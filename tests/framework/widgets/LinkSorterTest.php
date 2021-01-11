@@ -34,7 +34,6 @@ class LinkSorterTest extends DatabaseTestCase
     public function testLabelsSimple()
     {
         $dataProvider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => Order::find(),
             'models' => [new Order()],
             'totalCount' => 1,
@@ -59,7 +58,6 @@ class LinkSorterTest extends DatabaseTestCase
     public function testLabelsExplicit()
     {
         $dataProvider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => Order::find(),
             'models' => [new Order()],
             'totalCount' => 1,
@@ -88,7 +86,7 @@ class LinkSorterTest extends DatabaseTestCase
     public function testShouldTriggerInitEvent()
     {
         $initTriggered = false;
-        $linkSorter = new LinkSorter(
+        new LinkSorter(
             [
                 'sort' => [
                     'attributes' => ['total'],
