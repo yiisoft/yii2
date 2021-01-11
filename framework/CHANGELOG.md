@@ -26,7 +26,7 @@ Yii Framework 2 Change Log
 - Bug #18414: Fix `AssetManager::appendTimestamp()` not appending timestamp for website root in sub-directory (Isitar)
 - Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
 - Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
-- Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
+- Bug #18437: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
 - Bug #18442: Fix calls with array access to string (bizley)
 - Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
 - Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
