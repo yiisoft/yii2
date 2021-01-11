@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
 - Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
+- Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
 
 
 2.0.40 December 23, 2020
