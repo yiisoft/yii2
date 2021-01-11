@@ -120,6 +120,7 @@ class DataColumn extends Column
     /**
      * @var string the attribute name of the [[GridView::filterModel]] associated with this column. If not set,
      * will have the same value as [[attribute]].
+     * @since 2.0.41
      */
     public $filterAttribute;
 
