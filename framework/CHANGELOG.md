@@ -11,6 +11,8 @@ Yii Framework 2 Change Log
 - Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
 - Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
 - Bug #18479: Fix invalid argument type for `preg_split` in `\yii\console\Controller`  (gazooz)
+- Bug #18477: Fix detecting availability of Xdebug's stack trace in `yii\base\ErrorException` (bizley)
+- Bug #18480: Transactions are not committed using the dblib driver (bbrunekreeft)
 
 
 2.0.40 December 23, 2020
