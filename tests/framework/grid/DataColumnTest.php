@@ -235,4 +235,33 @@ HTML
 HTML
             , $result);
     }
+
+    /**
+     * @see DataColumn::$filterAttribute
+     * @see DataColumn::renderFilterCellContent()
+     */
+    public function testFilterInputWithFilterAttribute()
+    {
+        $this->mockApplication();
+
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [],
+            ]),
+            'columns' => [
+                0 => [
+                    'attribute' => 'username',
+                    'filterAttribute' => 'user_id',
+                ],
+            ],
+            'filterModel' => new \yiiunit\data\base\RulesModel(['rules' => [['user_id', 'safe']]]),
+        ]);
+
+        $dataColumn = $grid->columns[0];
+        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
+        $method->setAccessible(true);
+        $result = $method->invoke($dataColumn);
+
+        $this->assertEquals('<input type="text" class="form-control" name="RulesModel[user_id]">', $result);
+    }
 }
