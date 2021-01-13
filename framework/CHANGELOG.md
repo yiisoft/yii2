@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
 - Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
 - Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
+- Bug #18477: Fix detecting availability of Xdebug's stack trace in `yii\base\ErrorException` (bizley)
 
 
 2.0.40 December 23, 2020
