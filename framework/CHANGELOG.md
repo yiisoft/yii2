@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.41 under development
 ------------------------
 
+- Enh #18483: Add `yii\log\Logger::$dbEventNames` that allows specifying event names used to get statistical results (profiling) of DB queries (atiline)
 - Enh #18455: Add ability to use separate attributes for data model and filter model of `yii\grid\GridView` in `yii\grid\DataColumn` (PowerGamer1)
 - Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
 - Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
