@@ -113,6 +113,7 @@ class Logger extends Component
     public $dispatcher;
     /**
      * @var array of event names used to get statistical results of DB queries.
+     * @since 2.0.41
      */
     public $dbEventNames = ['yii\db\Command::query', 'yii\db\Command::execute'];
 
