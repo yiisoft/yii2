@@ -53,7 +53,32 @@ class InlineAction extends Action
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
+        $modules = [];
+        $runAction = true;
 
-        return call_user_func_array([$this->controller, $this->actionMethod], $args);
+        // call beforeAction on modules
+        foreach ($this->controller->getModules() as $module) {
+            if ($module->beforeAction($this)) {
+                array_unshift($modules, $module);
+            } else {
+                $runAction = false;
+                break;
+            }
+        }
+
+        $result = null;
+
+        if ($runAction && $this->controller->beforeAction($this)) {
+
+            $result = call_user_func_array([$this->controller, $this->actionMethod], $args);
+            $result = $this->controller->afterAction($this, $result);
+
+            // call afterAction on modules
+            foreach ($modules as $module) {
+                /* @var $module Module */
+                $result = $module->afterAction($this, $result);
+            }
+        }
+        return $result;
     }
 }

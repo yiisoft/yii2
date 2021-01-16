@@ -90,14 +90,41 @@ class Action extends Component
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
-        if ($this->beforeRun()) {
-            $result = call_user_func_array([$this, 'run'], $args);
-            $this->afterRun();
 
-            return $result;
+        $modules = [];
+        $runAction = true;
+
+        // call beforeAction on modules
+        foreach ($this->controller->getModules() as $module) {
+            if ($module->beforeAction($this)) {
+                array_unshift($modules, $module);
+            } else {
+                $runAction = false;
+                break;
+            }
         }
 
-        return null;
+        $result = null;
+
+        if ($runAction && $this->controller->beforeAction($this)) {
+            // run the action
+            if ($this->beforeRun()) {
+                $result = call_user_func_array([$this, 'run'], $args);
+                $this->afterRun();
+            }
+
+            $result = $this->controller->afterAction($this, $result);
+
+            // call afterAction on modules
+            foreach ($modules as $module) {
+                /* @var $module Module */
+                $result = $module->afterAction($this, $result);
+            }
+        }
+
+
+
+        return $result;
     }
 
     /**

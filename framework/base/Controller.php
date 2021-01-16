@@ -161,33 +161,8 @@ class Controller extends Component implements ViewContextInterface
         $oldAction = $this->action;
         $this->action = $action;
 
-        $modules = [];
-        $runAction = true;
-
-        // call beforeAction on modules
-        foreach ($this->getModules() as $module) {
-            if ($module->beforeAction($action)) {
-                array_unshift($modules, $module);
-            } else {
-                $runAction = false;
-                break;
-            }
-        }
-
-        $result = null;
-
-        if ($runAction && $this->beforeAction($action)) {
-            // run the action
-            $result = $action->runWithParams($params);
-
-            $result = $this->afterAction($action, $result);
-
-            // call afterAction on modules
-            foreach ($modules as $module) {
-                /* @var $module Module */
-                $result = $module->afterAction($action, $result);
-            }
-        }
+        // run the action
+        $result = $action->runWithParams($params);
 
         if ($oldAction !== null) {
             $this->action = $oldAction;
