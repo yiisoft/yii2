@@ -7,8 +7,6 @@
 
 namespace yii\base;
 
-use Yii;
-
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
@@ -27,7 +25,6 @@ class InlineAction extends Action
      */
     public $actionMethod;
 
-
     /**
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
@@ -37,48 +34,36 @@ class InlineAction extends Action
     public function __construct($id, $controller, $actionMethod, $config = [])
     {
         $this->actionMethod = $actionMethod;
+        $this->actionHandler = (new \ReflectionClass($controller))->getMethod($actionMethod);
         parent::__construct($id, $controller, $config);
     }
 
     /**
-     * Runs this action with the specified parameters.
-     * This method is mainly invoked by the controller.
-     * @param array $params action parameters
-     * @return mixed the result of the action
+     * @inheritdoc
      */
-    public function runWithParams($params)
+    public function getActionObject()
     {
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
-        $modules = [];
-        $runAction = true;
+        return $this->controller;
+    }
 
-        // call beforeAction on modules
-        foreach ($this->controller->getModules() as $module) {
-            if ($module->beforeAction($this)) {
-                array_unshift($modules, $module);
-            } else {
-                $runAction = false;
-                break;
-            }
-        }
+    /**
+     * @inheritdoc
+     */
+    public function getActionMethodName()
+    {
+        return $this->actionMethod;
+    }
 
-        $result = null;
-
-        if ($runAction && $this->controller->beforeAction($this)) {
-
-            $result = call_user_func_array([$this->controller, $this->actionMethod], $args);
-            $result = $this->controller->afterAction($this, $result);
-
-            // call afterAction on modules
-            foreach ($modules as $module) {
-                /* @var $module Module */
-                $result = $module->afterAction($this, $result);
-            }
-        }
-        return $result;
+    /**
+     * Executes action handler using resolved action arguments
+     *
+     * @param array $args the action handler arguments
+     * @return mixed the result of action handler invocation
+     */
+    protected function executeAction($args)
+    {
+        $instance = $this->getActionObject();
+        return $this->result = $this->getActionHandler()->invokeArgs($instance, $args);
+        
     }
 }
