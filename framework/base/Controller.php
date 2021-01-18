@@ -555,11 +555,7 @@ class Controller extends Component implements ViewContextInterface
             $args[] = null;
             $this->actionParams[$name] = null;
             $requestedParams[$name] = "Unavailable service: $name";
-        } elseif (class_exists($typeName) && ($object = \Yii::createObject($typeName)) instanceof $typeName) {
-            $args[] = $object;
-            $this->actionParams[$name] = function() use ($typeName) { return  \Yii::createObject($typeName);};
-            $requestedParams[$name] = "Instance of: $typeName \$$name";;
-        } else {
+        }  else {
             throw new Exception('Could not load required service: ' . $name);
         }
     }
