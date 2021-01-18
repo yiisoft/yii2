@@ -72,11 +72,11 @@ class InlineAction extends Action
     /**
      * Get  argument passed to the specified parameter
      *
-     * @param string $paramName name of an inlineAction actionMethod/ Action::run() declared parameter
+     * @param string $paramName name of declared parameter in inlineAction actionMethod/ Action::run().
      * @return mixed value bound to the parameter `$paramName`
      * @throws BadRequestHttpException if the parameter `$paramName` is not defined or argument not yet bound to it.
      */
-    public function getArg($paramName)
+    public function getRequestedParam($paramName)
     {
         if (isset($this->controller->actionParams[$paramName])) {
             $arg = $this->controller->actionParams[$paramName];
@@ -87,7 +87,7 @@ class InlineAction extends Action
             }
         } 
 
-        throw new BadRequestHttpException(Yii::t('yii', 'Parameter: {param} does not exist or is not yet bound to the action', [
+        throw new BadRequestHttpException(Yii::t('yii', 'Parameter: {param} does not exist or no argument yet bound to it', [
             'param' => $paramName,
         ]));
     }
