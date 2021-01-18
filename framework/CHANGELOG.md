@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
 - Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
 - Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
+- Enh #18467: Add ability to access and use resolved arguments before executing `\yii\base\InlineAction` or ` \yii\base\Action` (Djibril)
 - Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
 - Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
 - Bug #18479: Fix invalid argument type for `preg_split` in `\yii\console\Controller` (gazooz)
