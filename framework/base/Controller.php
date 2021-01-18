@@ -541,15 +541,21 @@ class Controller extends Component implements ViewContextInterface
         $typeName = $type->getName();
         if (($component = $this->module->get($name, false)) instanceof $typeName) {
             $args[] = $component;
-            $this->actionParams[$name] = function() use ($name) { return $this->module->get($name, false);};
+            if (isset($this->actionParams)) {
+                $this->actionParams[$name] = function() use ($name) { return $this->module->get($name, false);};
+            }            
             $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
         } elseif ($this->module->has($typeName) && ($service = $this->module->get($typeName)) instanceof $typeName) {
             $args[] = $service;
-            $this->actionParams[$name] = function() use ($typeName) { return $this->module->get($typeName);};
+            if (isset($this->actionParams)) {
+                $this->actionParams[$name] = function() use ($typeName) { return $this->module->get($typeName);};
+            }            
             $requestedParams[$name] = 'Module ' . get_class($this->module) . " DI: $typeName \$$name";
         } elseif (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName) {
             $args[] = $service;
-            $this->actionParams[$name] = function() use ($typeName) { return  \Yii::$container->get($typeName);};
+            if (isset($this->actionParams)) {
+               $this->actionParams[$name] = function() use ($typeName) { return  \Yii::$container->get($typeName);}; 
+            }            
             $requestedParams[$name] = "Container DI: $typeName \$$name";
         } elseif ($type->allowsNull()) {
             $args[] = null;
