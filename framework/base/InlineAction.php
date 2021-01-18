@@ -7,6 +7,9 @@
 
 namespace yii\base;
 
+use Yii;
+use yii\web\BadRequestHttpException;
+
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
@@ -65,5 +68,27 @@ class InlineAction extends Action
         $instance = $this->getActionObject();
         return $this->result = $this->getActionHandler()->invokeArgs($instance, $args);
         
+    }
+    /**
+     * Get  argument passed to the specified parameter
+     *
+     * @param string $paramName name of an inlineAction actionMethod/ Action::run() declared parameter
+     * @return mixed value bound to the parameter `$paramName`
+     * @throws BadRequestHttpException if the parameter `$paramName` is not defined or argument not yet bound to it.
+     */
+    public function getArg($paramName)
+    {
+        if (isset($this->controller->actionParams[$paramName])) {
+            $arg = $this->controller->actionParams[$paramName];
+            if (is_callable($arg, true)) {
+                return call_user_func($arg);
+            } else {
+                return $arg;
+            }
+        } 
+
+        throw new BadRequestHttpException(Yii::t('yii', 'Parameter: {param} does not exist or is not yet bound to the action', [
+            'param' => $paramName,
+        ]));
     }
 }

@@ -559,7 +559,9 @@ class Controller extends Component implements ViewContextInterface
             $requestedParams[$name] = "Container DI: $typeName \$$name";
         } elseif ($type->allowsNull()) {
             $args[] = null;
-            $this->actionParams[$name] = null;
+            if (isset($this->actionParams)) {
+                $this->actionParams[$name] = function() { return  null;};
+            }            
             $requestedParams[$name] = "Unavailable service: $name";
         }  else {
             throw new Exception('Could not load required service: ' . $name);
