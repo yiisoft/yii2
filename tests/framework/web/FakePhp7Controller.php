@@ -21,3 +21,32 @@ class FakePhp7Controller extends Controller
     {
     }
 }
+
+/**
+ * @author Djibril <djidji01@gmail.com>
+ */
+class FakeAccessParamPhp7Controller extends Controller
+{
+    public $enableCsrfValidation = false;
+
+    public function actionAksi1(int $foo, float $bar = null, bool $true, bool $false)
+    {
+        return $this->actionParams;
+    }
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        } elseif ($action->getRequestedParam('foo') === 0) {
+            return false;
+        } elseif ($action->getRequestedParam('bar') === null) {
+            return false;
+        } elseif ($action->getRequestedParam('true') === false) {
+            return false;
+        } elseif ($action->getRequestedParam('false') === false) {
+            return false;
+        } 
+        return true;
+    }
+}

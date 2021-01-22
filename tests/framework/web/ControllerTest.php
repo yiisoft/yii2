@@ -232,6 +232,149 @@ class ControllerTest extends TestCase
         $this->controller->bindActionParams($aksi1, $params);
     }
 
+    public function testAccessRequestedParamBeforeAction()
+    {
+        $this->controller = new FakeAccessParamInBeforeActionController('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'validator' => 'avaliable'];
+        $result = $this->controller->runAction('aksi1', $params);
+        $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($params['fromGet'], $result['fromGet']);
+
+        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => false];
+        $result = $this->controller->runAction('aksi1', $params);
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertNull( $result);
+
+        $params = ['fromGet' => false, 'q' => 'd426', 'validator' => 'avaliable'];
+        $result = $this->controller->runAction('aksi1', $params);
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertNull($result);
+    }
+
+    public function testAccessTypedParamBeforeAction()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        // Use the PHP7 controller for this test
+        $this->controller = new FakeAccessParamPhp7Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $params = ['foo' => '100', 'bar' => 100, 'true' => true, 'false' => true];
+        $result = $this->controller->runAction('aksi1', $params);
+        $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($params['foo'], $result['foo']);
+
+        $params = ['foo' => 0, 'bar' => null, 'true' => true, 'false' => true];
+        $result = $this->controller->runAction('aksi1', $params);
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertNull( $result);
+
+        $params = ['foo' => '100', 'bar' => null, 'true' => false, 'false' => 'false'];
+        $result = $this->controller->runAction('aksi1', $params);
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertNull($result);
+    }
+
+    public function testAccessInjectedParamBeforeAction()
+    {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+
+        $module = new \yii\base\Module('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        $module->set('yii\data\DataProviderInterface', [
+            'class' => \yii\data\ArrayDataProvider::className(),
+            'key' => 'key'
+        ]);
+
+        // Use the PHP71 controller for this test
+        $this->controller = new FakeAccessParamPhp71Controller('fake', $module);
+        
+
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $Injectionparams = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+
+        $container = \Yii::$container->set(VendorImage::className(), ['name' => 'name']);
+        $result = $this->controller->runAction('injection', $Injectionparams);
+        $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($container->get(VendorImage::className()), $this->controller->action->getRequestedParam('vendorImage'));
+        $this->assertNotNull( $result);
+        $this->assertEquals('injection executed', $result);
+
+        $container = \Yii::$container->set(VendorImage::className(), ['name' => 'image']);
+        $result = $this->controller->runAction('injection', $Injectionparams);
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($container->get(VendorImage::className()), $this->controller->action->getRequestedParam('vendorImage'));
+        $this->assertNull( $result);
+        $this->controller->action = null;
+
+        $result = $this->controller->runAction('null-injection');        
+        $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($this->controller->csrfParam, $this->controller->action->getRequestedParam('request')->csrfParam);
+        $this->assertNotNull( $result);
+        $this->assertEquals('null injection executed', $result);
+
+        $this->controller->csrfParam = 'newCsrfparam';
+        $result = $this->controller->runAction('null-injection');        
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertNotEquals($this->controller->csrfParam, $this->controller->action->getRequestedParam('request')->csrfParam);
+        $this->assertNull( $result);
+        $this->controller->action = null;
+
+        $result = $this->controller->runAction('module-service-injection');
+        $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($this->controller->dataProviderkey, $this->controller->action->getRequestedParam('dataProvider')->key);
+        $this->assertNotNull( $result);
+        $this->assertEquals('module service executed', $result);
+
+        $this->controller->dataProviderkey = 'new-data-key';
+        $result = $this->controller->runAction('module-service-injection');
+        $this->assertFalse($this->controller->beforeAction($this->controller->action));
+        $this->assertNotEquals($this->controller->dataProviderkey, $this->controller->action->getRequestedParam('dataProvider')->key);
+        $this->assertNull( $result);
+    }
+
     public function testAsJson()
     {
         $data = [

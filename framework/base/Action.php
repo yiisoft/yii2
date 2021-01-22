@@ -7,8 +7,9 @@
 
 namespace yii\base;
 
-use ReflectionMethod;
 use Yii;
+use ReflectionMethod;
+use yii\web\BadRequestHttpException;
 
 /**
  * Action is the base class for all controller action classes.
@@ -120,7 +121,7 @@ class Action extends Component
                 break;
             }
         }
-
+        $this->result = null;
         if ($runAction && $this->controller->beforeAction($this)) {
             // run the action
             $this->executeAction($arguments);
@@ -224,4 +225,29 @@ class Action extends Component
         
         return $this->result; 
     }
+
+    
+    /**
+     * Get  argument passed to the specified parameter
+     *
+     * @param string $paramName name of declared parameter in inlineAction actionMethod/ Action::run().
+     * @return mixed value bound to the parameter `$paramName`
+     * @throws BadRequestHttpException if the parameter `$paramName` is not defined or argument not yet bound to it.
+     */
+    public function getRequestedParam($paramName)
+    {
+        if (array_key_exists($paramName, $this->controller->actionParams)) {
+            $arg = $this->controller->actionParams[$paramName];
+            if (is_callable($arg)) {
+                return call_user_func($arg);
+            } else {
+                return $arg;
+            }
+        } 
+
+        throw new BadRequestHttpException(Yii::t('yii', 'Parameter: {param} does not exist or no argument yet bound to it', [
+            'param' => $paramName,
+        ]));
+    }
+    
 }
