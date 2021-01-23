@@ -339,6 +339,7 @@ class ControllerTest extends TestCase
         $result = $this->controller->runAction('injection', $Injectionparams);
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
         $this->assertEquals($container->get(VendorImage::className()), $this->controller->action->getRequestedParam('vendorImage'));
+        $this->assertEquals('name', $this->controller->action->getRequestedParam('vendorImage')->name);
         $this->assertNotNull( $result);
         $this->assertEquals('injection executed', $result);
 
@@ -346,12 +347,15 @@ class ControllerTest extends TestCase
         $result = $this->controller->runAction('injection', $Injectionparams);
         $this->assertFalse($this->controller->beforeAction($this->controller->action));
         $this->assertEquals($container->get(VendorImage::className()), $this->controller->action->getRequestedParam('vendorImage'));
+        $this->assertNotEquals('name', $this->controller->action->getRequestedParam('vendorImage'));
         $this->assertNull( $result);
         $this->controller->action = null;
 
         $result = $this->controller->runAction('null-injection');        
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($this->controller->module->request, $this->controller->action->getRequestedParam('request'));
         $this->assertEquals($this->controller->csrfParam, $this->controller->action->getRequestedParam('request')->csrfParam);
+        $this->assertNull($this->controller->action->getRequestedParam('post'));
         $this->assertNotNull( $result);
         $this->assertEquals('null injection executed', $result);
 
@@ -364,6 +368,7 @@ class ControllerTest extends TestCase
 
         $result = $this->controller->runAction('module-service-injection');
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
+        $this->assertEquals($this->controller->module->get('yii\data\DataProviderInterface'), $this->controller->action->getRequestedParam('dataProvider'));
         $this->assertEquals($this->controller->dataProviderkey, $this->controller->action->getRequestedParam('dataProvider')->key);
         $this->assertNotNull( $result);
         $this->assertEquals('module service executed', $result);
