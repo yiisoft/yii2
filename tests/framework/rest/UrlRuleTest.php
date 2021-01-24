@@ -86,6 +86,8 @@ class UrlRuleTest extends TestCase
                 ['controller' => 'post', 'prefix' => 'admin'],
                 [
                     ['admin/posts', 'post/index'],
+                    ['different/posts', false],
+                    ['posts', false],
                 ],
             ],
             [
