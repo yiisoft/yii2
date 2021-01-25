@@ -126,6 +126,7 @@ class Controller extends \yii\base\Controller
 
         $args = [];
         $missing = [];
+        $actionParams = [];
         $requestedParams = [];
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
@@ -167,7 +168,7 @@ class Controller extends \yii\base\Controller
                         'param' => $name,
                     ]));
                 }
-                $args[] = $this->actionParams[$name] = $params[$name];
+                $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
             } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
                 try {
@@ -176,7 +177,7 @@ class Controller extends \yii\base\Controller
                     throw new ServerErrorHttpException($e->getMessage(), 0, $e);
                 }
             } elseif ($param->isDefaultValueAvailable()) {
-                $args[] = $this->actionParams[$name] = $param->getDefaultValue();
+                $args[] = $actionParams[$name] = $param->getDefaultValue();
             } else {
                 $missing[] = $name;
             }
@@ -188,9 +189,11 @@ class Controller extends \yii\base\Controller
             ]));
         }
 
+        $this->actionParams = $actionParams;
+
         // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
         if (\Yii::$app->requestedParams === null) {
-            \Yii::$app->requestedParams = array_merge($this->actionParams, $requestedParams);
+            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
         }
 
         return $args;

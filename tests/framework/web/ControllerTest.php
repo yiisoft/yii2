@@ -252,11 +252,13 @@ class ControllerTest extends TestCase
         $result = $this->controller->runAction('aksi1', $params);
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
         $this->assertEquals($params['fromGet'], $result['fromGet']);
+        \Yii::$app->requestedParams = null;
 
         $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => false];
         $result = $this->controller->runAction('aksi1', $params);
         $this->assertFalse($this->controller->beforeAction($this->controller->action));
         $this->assertNull( $result);
+        \Yii::$app->requestedParams = null;
 
         $params = ['fromGet' => false, 'q' => 'd426', 'validator' => 'avaliable'];
         $result = $this->controller->runAction('aksi1', $params);
@@ -290,11 +292,13 @@ class ControllerTest extends TestCase
         $result = $this->controller->runAction('aksi1', $params);
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
         $this->assertEquals($params['foo'], $result['foo']);
+        \Yii::$app->requestedParams = null;
 
         $params = ['foo' => 0, 'bar' => null, 'true' => true, 'false' => true];
         $result = $this->controller->runAction('aksi1', $params);
         $this->assertFalse($this->controller->beforeAction($this->controller->action));
         $this->assertNull( $result);
+        \Yii::$app->requestedParams = null;
 
         $params = ['foo' => '100', 'bar' => null, 'true' => false, 'false' => 'false'];
         $result = $this->controller->runAction('aksi1', $params);
@@ -342,6 +346,8 @@ class ControllerTest extends TestCase
         $this->assertEquals('name', $this->controller->action->getRequestedParam('vendorImage')->name);
         $this->assertNotNull( $result);
         $this->assertEquals('injection executed', $result);
+        \Yii::$app->requestedParams = null;
+
 
         $container = \Yii::$container->set(VendorImage::className(), ['name' => 'image']);
         $result = $this->controller->runAction('injection', $Injectionparams);
@@ -350,6 +356,7 @@ class ControllerTest extends TestCase
         $this->assertNotEquals('name', $this->controller->action->getRequestedParam('vendorImage'));
         $this->assertNull( $result);
         $this->controller->action = null;
+        \Yii::$app->requestedParams = null;
 
         $result = $this->controller->runAction('null-injection');        
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
@@ -358,6 +365,7 @@ class ControllerTest extends TestCase
         $this->assertNull($this->controller->action->getRequestedParam('post'));
         $this->assertNotNull( $result);
         $this->assertEquals('null injection executed', $result);
+        \Yii::$app->requestedParams = null;
 
         $this->controller->csrfParam = 'newCsrfparam';
         $result = $this->controller->runAction('null-injection');        
@@ -365,6 +373,7 @@ class ControllerTest extends TestCase
         $this->assertNotEquals($this->controller->csrfParam, $this->controller->action->getRequestedParam('request')->csrfParam);
         $this->assertNull( $result);
         $this->controller->action = null;
+        \Yii::$app->requestedParams = null;
 
         $result = $this->controller->runAction('module-service-injection');
         $this->assertTrue($this->controller->beforeAction($this->controller->action));
@@ -372,6 +381,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->dataProviderkey, $this->controller->action->getRequestedParam('dataProvider')->key);
         $this->assertNotNull( $result);
         $this->assertEquals('module service executed', $result);
+        \Yii::$app->requestedParams = null;
 
         $this->controller->dataProviderkey = 'new-data-key';
         $result = $this->controller->runAction('module-service-injection');

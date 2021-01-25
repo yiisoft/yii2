@@ -60,18 +60,18 @@ class FakeAccessParamPhp71Controller extends FakePhp71Controller
     
     public function beforeAction($action)
     {
-        if ($action->getActionMethodName() === 'actionInjection') {
+        if ($action->actionMethod === 'actionInjection') {
             if ( $action->getRequestedParam('request')->enableCsrfValidation === false) {
                 return false;
             } elseif ($action->getRequestedParam('vendorImage')->name !== 'name') {
                 return false;
             } 
 
-        } elseif ($action->getActionMethodName() === 'actionNullInjection') {            
+        } elseif ($action->actionMethod === 'actionNullInjection') {            
             if ($action->getRequestedParam('request')->csrfParam !== $this->csrfParam) {
                 return false;
             }
-        } elseif ($action->getActionMethodName() === 'actionModuleServiceInjection') {
+        } elseif ($action->actionMethod === 'actionModuleServiceInjection') {
             if ($action->getRequestedParam('dataProvider')->key !== $this->dataProviderkey) {
                 return false;
             }

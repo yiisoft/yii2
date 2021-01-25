@@ -7,7 +7,7 @@
 
 namespace yii\base;
 
-
+use Yii;
 
 /**
  * InlineAction represents an action that is defined as a controller method.
@@ -26,6 +26,7 @@ class InlineAction extends Action
      * @var string the controller method that this inline action is associated with
      */
     public $actionMethod;
+    
 
     /**
      * @param string $id the ID of this action
@@ -36,24 +37,7 @@ class InlineAction extends Action
     public function __construct($id, $controller, $actionMethod, $config = [])
     {
         $this->actionMethod = $actionMethod;
-        $this->actionHandler = (new \ReflectionClass($controller))->getMethod($actionMethod);
         parent::__construct($id, $controller, $config);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getActionObject()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getActionMethodName()
-    {
-        return $this->actionMethod;
     }
 
     /**
@@ -64,8 +48,8 @@ class InlineAction extends Action
      */
     protected function executeAction($args)
     {
-        $instance = $this->getActionObject();
-        return $this->result = $this->getActionHandler()->invokeArgs($instance, $args);
+        Yii::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
+        $this->result = call_user_func_array([$this->controller, $this->actionMethod], $args);
         
     }
 

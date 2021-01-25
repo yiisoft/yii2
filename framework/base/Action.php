@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use ReflectionMethod;
 use yii\web\BadRequestHttpException;
 
 /**
@@ -44,22 +43,15 @@ class Action extends Component
      * @var string ID of the action
      */
     public $id;
-
     /**
      * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
     public $controller;
 
     /**
-     * @var ReflectionMethod the action handler used to define this action
-     */
-    protected $actionHandler = null;
-
-    /**
      * @var mixed the result of the action, derived class my set or get action result in the afterRun method
      */
     protected $result = null;
-
 
     /**
      * Constructor.
@@ -72,13 +64,6 @@ class Action extends Component
     {
         $this->id = $id;
         $this->controller = $controller;
-
-        if ($this->actionHandler === null) {
-            $reflection = new \ReflectionClass($this);
-            if ($reflection->hasMethod("run")) {
-                $this->actionHandler = $reflection->getMethod("run");
-            }
-        }
         parent::__construct($config);
     }
 
@@ -96,17 +81,12 @@ class Action extends Component
      * Runs this action with the specified parameters.
      * This method is mainly invoked by the controller.
      *
-     * @param array $params the parameters to be bound to the action's run() method.
+     * @param array $params the parameters to be bound to the action's run()|$this->actionMethod method.
      * @return mixed the result of the action
-     * @throws InvalidConfigException if the action class does not have a run() method
+     * @throws InvalidConfigException if the action|controller class does not have a run()|$this->actionMethod method
      */
     public function runWithParams($params)
     {
-        $methodName = $this->getActionMethodName();
-        $instance = $this->getActionObject();
-
-        Yii::debug('Running action: ' . get_class($instance) . "::{$methodName}(), invoked by "  . get_class($this->controller), __METHOD__);
-
         $arguments = $this->resolveActionArguments($params);
 
         $modules = [];
@@ -156,7 +136,6 @@ class Action extends Component
      */
     protected function afterRun()
     {
-        return $this->result;
     }
 
     /**
@@ -174,41 +153,6 @@ class Action extends Component
     }
 
     /**
-     * Returns handler for this action
-     *
-     * @return ReflectionMethod
-     */
-    public function getActionHandler()
-    {
-        if ($this->actionHandler === null) {
-            $methodName = $this->getActionMethodName();
-            $instance = $this->getActionObject();
-            throw new InvalidConfigException(get_class($instance) . " must define a \"{$methodName}()\" method.");
-        }
-        return $this->actionHandler;
-    }
-
-    /**
-     * Gets object that contains a method for this action, for InlineAction it's controller instance, otherwise, it's the action itself
-     *
-     * @return object the object that contains method for this action
-     */
-    public function getActionObject()
-    {
-        return $this;
-    }
-
-    /**
-     * Returns action method name
-     *
-     * @return string the action method name
-     */
-    public function getActionMethodName()
-    {
-        return "run";
-    }
-
-    /**
      * Executes action handler using resolved action arguments
      *
      * @param array $args the action handler arguments
@@ -216,16 +160,16 @@ class Action extends Component
      */
     protected function executeAction($args)
     {
-        
-        if ($this->beforeRun()) {
-            $instance = $this->getActionObject();
-            $this->result = $this->getActionHandler()->invokeArgs($instance, $args);
-            $this->result = $this->afterRun();
+        if (!method_exists($this, 'run')) {
+            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
         
-        return $this->result; 
+        if ($this->beforeRun()) {
+            Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
+            $this->result = call_user_func_array([$this, 'run'], $args);
+            $this->afterRun();
+        }        
     }
-
     
     /**
      * Get  argument passed to the specified parameter
@@ -235,19 +179,50 @@ class Action extends Component
      * @throws BadRequestHttpException if the parameter `$paramName` is not defined or argument not yet bound to it.
      */
     public function getRequestedParam($paramName)
-    {
-        if (array_key_exists($paramName, $this->controller->actionParams)) {
-            $arg = $this->controller->actionParams[$paramName];
-            if (is_callable($arg)) {
-                return call_user_func($arg);
-            } else {
-                return $arg;
-            }
-        } 
+    { 
+        if (array_key_exists($paramName, (array) Yii::$app->requestedParams)) {
+            $isStandalone = $this instanceof InlineAction ? false : true;
+            $methodName = $isStandalone ? 'run' : $this->actionMethod ;
+            $methodKeeper = $isStandalone ?  $this : $this->controller;
+            $param = new \ReflectionParameter([$methodKeeper, $methodName], $paramName);
+            $paramType = $param->getType();
+            $found = false;
+           
+            if ($paramType === null || (PHP_VERSION_ID >= 70000 &&  $paramType->isBuiltin())) {
+                $requestedParam = Yii::$app->requestedParams[$paramName];
+                $found = true;
+            } elseif ($paramType !== null && PHP_VERSION_ID >= 70100 && !$paramType->isBuiltin()) {
+                $injectionDesc = Yii::$app->requestedParams[$paramName];
+                $typeName = $paramType->getName();
+                if (strpos( $injectionDesc, 'Component:') === 0) {
+                    if (($component =  $this->controller->module->get($paramName, false)) instanceof $typeName){
+                        $requestedParam = $component;
+                        $found = true;
+                    };
+                } elseif (strpos( $injectionDesc, 'Module') === 0 ) {                    
+                    if ($this->controller->module->has($typeName) && ($service = $this->controller->module->get($typeName)) instanceof $typeName){
+                        $requestedParam = $service;
+                        $found = true;
+                    };
+                } elseif (strpos( $injectionDesc, 'Container DI:') === 0 ) {
+                    if (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName){
+                        $requestedParam = $service;
+                        $found = true;
+                    }
+                } elseif (strpos( $injectionDesc, 'Unavailable service:') === 0 ) {
+                    if ($paramType->allowsNull()){
+                        $requestedParam = null;
+                        $found = true;
+                    }
+                }
 
-        throw new BadRequestHttpException(Yii::t('yii', 'Parameter: {param} does not exist or no argument yet bound to it', [
-            'param' => $paramName,
-        ]));
-    }
-    
+            }
+
+            if ($found) {
+                return $requestedParam;
+            }
+        }
+
+        throw new BadRequestHttpException("Parameter: {$paramName} does not exist or no argument yet bound to it");
+    }    
 }

@@ -35,7 +35,7 @@ class FakeAccessParamInBeforeActionController extends Controller
     }
 
     public function beforeAction($action)
-    {
+    {        
         if (!parent::beforeAction($action)) {
             return false;
         } elseif ($action->getRequestedParam('fromGet') === false) {
