@@ -185,7 +185,7 @@ class Action extends Component
             $methodName = $isStandalone ? 'run' : $this->actionMethod ;
             $methodKeeper = $isStandalone ?  $this : $this->controller;
             $param = new \ReflectionParameter([$methodKeeper, $methodName], $paramName);
-            $paramType = $param->getType();
+            $paramType = PHP_VERSION_ID >= 70000 ? $param->getType() : null;
             $found = false;
            
             if ($paramType === null || (PHP_VERSION_ID >= 70000 &&  $paramType->isBuiltin())) {
