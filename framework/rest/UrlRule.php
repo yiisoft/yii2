@@ -216,6 +216,10 @@ class UrlRule extends CompositeUrlRule
     public function parseRequest($manager, $request)
     {
         $pathInfo = $request->getPathInfo();
+        if ($this->prefix !== '' && strpos($pathInfo . '/', $this->prefix . '/') !== 0) {
+            return false;
+        }
+
         foreach ($this->rules as $urlName => $rules) {
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
