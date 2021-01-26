@@ -172,7 +172,7 @@ class Action extends Component
     }
     
     /**
-     * Get  argument passed to the specified parameter
+     * Get argument passed to the specified parameter
      *
      * @param string $paramName name of declared parameter in inlineAction actionMethod/ Action::run().
      * @return mixed value bound to the parameter `$paramName`
