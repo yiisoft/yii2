@@ -182,39 +182,26 @@ class Action extends Component
     public function getRequestedParam($paramName)
     { 
         if (array_key_exists($paramName, (array) Yii::$app->requestedParams)) {
-            $isStandalone = !$this instanceof InlineAction;
-            $methodName = $isStandalone ? 'run' : $this->actionMethod ;
-            $methodKeeper = $isStandalone ?  $this : $this->controller;
-            $param = new \ReflectionParameter([$methodKeeper, $methodName], $paramName);
-            $paramType = PHP_VERSION_ID >= 70000 ? $param->getType() : null;
-            $found = false;
-           
-            if ($paramType === null || (PHP_VERSION_ID >= 70000 &&  $paramType->isBuiltin())) {
+
+            $found = false;           
+            if (!isset($this->controller->ActionInjectionsMeta[$paramName])) {
                 $requestedParam = Yii::$app->requestedParams[$paramName];
                 $found = true;
-            } elseif ($paramType !== null && PHP_VERSION_ID >= 70100 && !$paramType->isBuiltin()) {
+            } else {
                 $injectionDesc = Yii::$app->requestedParams[$paramName];
-                $typeName = $paramType->getName();
+                $injectionType = $this->controller->ActionInjectionsMeta[$paramName];
                 if (strpos( $injectionDesc, 'Component:') === 0) {
-                    if (($component =  $this->controller->module->get($paramName, false)) instanceof $typeName){
-                        $requestedParam = $component;
-                        $found = true;
-                    };
-                } elseif (strpos( $injectionDesc, 'Module') === 0 ) {                    
-                    if ($this->controller->module->has($typeName) && ($service = $this->controller->module->get($typeName)) instanceof $typeName){
-                        $requestedParam = $service;
-                        $found = true;
-                    };
+                    $requestedParam = $this->controller->module->get($paramName, false);
+                    $found = true;
+                } elseif (strpos( $injectionDesc, 'Module') === 0 ) {
+                    $requestedParam = $this->controller->module->get($injectionType);
+                    $found = true;
                 } elseif (strpos( $injectionDesc, 'Container DI:') === 0 ) {
-                    if (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName){
-                        $requestedParam = $service;
-                        $found = true;
-                    }
+                    $requestedParam =  \Yii::$container->get($injectionType);
+                    $found = true;
                 } elseif (strpos( $injectionDesc, 'Unavailable service:') === 0 ) {
-                    if ($paramType->allowsNull()){
-                        $requestedParam = null;
-                        $found = true;
-                    }
+                    $requestedParam = null;
+                    $found = true;
                 }
 
             }
