@@ -49,7 +49,8 @@ class Action extends Component
     public $controller;
 
     /**
-     * @var mixed the result of the action, derived class my set or get action result in the afterRun method
+     * @var mixed the result of the action, derived class may set or get action result in the afterRun method.
+     * @since 2.0.41
      */
     protected $result = null;
 
