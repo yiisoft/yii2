@@ -181,7 +181,7 @@ class Action extends Component
     public function getRequestedParam($paramName)
     { 
         if (array_key_exists($paramName, (array) Yii::$app->requestedParams)) {
-            $isStandalone = $this instanceof InlineAction ? false : true;
+            $isStandalone = !$this instanceof InlineAction;
             $methodName = $isStandalone ? 'run' : $this->actionMethod ;
             $methodKeeper = $isStandalone ?  $this : $this->controller;
             $param = new \ReflectionParameter([$methodKeeper, $methodName], $paramName);
