@@ -81,7 +81,7 @@ class Action extends Component
      * Runs this action with the specified parameters.
      * This method is mainly invoked by the controller.
      *
-     * @param array $params the parameters to be bound to the action's run()|$this->actionMethod method.
+     * @param array $params the parameters to be bound to the action's run() or $this->actionMethod method.
      * @return mixed the result of the action
      * @throws InvalidConfigException if the action or controller class does not have a run() or $this->actionMethod method
      */
