@@ -157,7 +157,6 @@ class Action extends Component
      * Executes action handler using resolved action arguments
      *
      * @param array $args the action handler arguments
-     * @return mixed the result of action handler invocation
      */
     protected function executeAction($args)
     {
