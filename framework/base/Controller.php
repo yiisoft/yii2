@@ -18,8 +18,8 @@ use yii\di\NotInstantiableException;
  *
  * @property-read Module[] $modules All ancestor modules that this controller is located within. This property
  * is read-only.
- * @property-read array $actionInjectionsMeta action injected params in name-value format. Value corresponds parameter
- * of ServiceLocator|Container get() method.
+ * @property-read array $actionInjectionsMeta action injected params in 2D array format. Index is parameter name, Value define injector module|container
+ *  and type, the string to pass as argument of ServiceLocator|Container get() method.
  * @property-read string $route The route (module ID, controller ID and action ID) of the current request.
  * This property is read-only.
  * @property-read string $uniqueId The controller ID that is prefixed with the module ID (if any). This
@@ -214,10 +214,10 @@ class Controller extends Component implements ViewContextInterface
     }
 
     /**
-     * Returns descriptions of action injected params as name-value pairs.
-     * Value is used as parameter of ServiceLocator|Container `get()` method.
-     *
-     * @return array injected params in 'name-value pairs format.
+     * Returns descriptions of action injected params as 2D array.
+     * Index is parameter name, Value define injector module|container
+     * and type, the string to pass as argument of ServiceLocator|Container get() method.
+     * @return array injected params in 2D format.
      * @since 2.0.41
      */
     public function getActionInjectionsMeta()
@@ -562,19 +562,19 @@ class Controller extends Component implements ViewContextInterface
         if (($component = $this->module->get($name, false)) instanceof $typeName) {
             $args[] = $component;
             $requestedParams[$name] = "Component: " . get_class($component) . " \$$name";
-            $this->_actionInjectionsMeta[$name] = $name;
+            $this->_actionInjectionsMeta[$name] = ['injector' => 'ServiceLocator', 'type' => $name];
         } elseif ($this->module->has($typeName) && ($service = $this->module->get($typeName)) instanceof $typeName) {
             $args[] = $service;
             $requestedParams[$name] = 'Module ' . get_class($this->module) . " DI: $typeName \$$name";
-            $this->_actionInjectionsMeta[$name] = $typeName;
+            $this->_actionInjectionsMeta[$name] =  ['injector' => 'ServiceLocator', 'type' => $typeName];
         } elseif (\Yii::$container->has($typeName) && ($service = \Yii::$container->get($typeName)) instanceof $typeName) {
             $args[] = $service;
             $requestedParams[$name] = "Container DI: $typeName \$$name";
-            $this->_actionInjectionsMeta[$name] = $typeName;
+            $this->_actionInjectionsMeta[$name] =  ['injector' => 'Container', 'type' => $typeName];
         } elseif ($type->allowsNull()) {
             $args[] = null;
             $requestedParams[$name] = "Unavailable service: $name";
-            $this->_actionInjectionsMeta[$name] = $typeName;
+            $this->_actionInjectionsMeta[$name] =  ['injector' => null, 'type' => $typeName];
         } else {
             throw new Exception('Could not load required service: ' . $name);
         }

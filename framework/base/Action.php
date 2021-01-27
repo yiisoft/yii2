@@ -178,37 +178,24 @@ class Action extends Component
      * @param string $paramName name of declared parameter in inlineAction actionMethod/ Action::run().
      * @return mixed value bound to the parameter `$paramName`
      * @throws BadRequestHttpException if the parameter `$paramName` is not defined or argument not yet bound to it.
+     * @since 2.0.41
      */
     public function getRequestedParam($paramName)
     { 
         if (array_key_exists($paramName, (array) Yii::$app->requestedParams)) {
-
-            $found = false;           
-            if (!isset($this->controller->ActionInjectionsMeta[$paramName])) {
-                $requestedParam = Yii::$app->requestedParams[$paramName];
-                $found = true;
-            } else {
-                $injectionDesc = Yii::$app->requestedParams[$paramName];
-                $injectionType = $this->controller->ActionInjectionsMeta[$paramName];
-                if (strpos( $injectionDesc, 'Component:') === 0) {
-                    $requestedParam = $this->controller->module->get($paramName, false);
-                    $found = true;
-                } elseif (strpos( $injectionDesc, 'Module') === 0 ) {
-                    $requestedParam = $this->controller->module->get($injectionType);
-                    $found = true;
-                } elseif (strpos( $injectionDesc, 'Container DI:') === 0 ) {
-                    $requestedParam =  \Yii::$container->get($injectionType);
-                    $found = true;
-                } elseif (strpos( $injectionDesc, 'Unavailable service:') === 0 ) {
+            $requestedParam = Yii::$app->requestedParams[$paramName];          
+            if (isset($this->controller->actionInjectionsMeta[$paramName])) {                
+                $injectionMeta = $this->controller->actionInjectionsMeta[$paramName];
+                if ($injectionMeta['injector'] === 'ServiceLocator') {
+                    $requestedParam = $this->controller->module->get($injectionMeta['type']);
+                } elseif ($injectionMeta['injector'] === 'Container' ) {
+                    $requestedParam =  \Yii::$container->get($injectionMeta['type']);
+                } else {
                     $requestedParam = null;
-                    $found = true;
                 }
-
             }
-
-            if ($found) {
-                return $requestedParam;
-            }
+            
+            return $requestedParam;
         }
 
         throw new BadRequestHttpException("Parameter: {$paramName} does not exist or no argument yet bound to it");
