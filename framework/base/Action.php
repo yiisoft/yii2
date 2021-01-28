@@ -182,19 +182,21 @@ class Action extends Component
     public function getRequestedParam($paramName)
     { 
         if (array_key_exists($paramName, (array) Yii::$app->requestedParams)) {
-            $requestedParam = Yii::$app->requestedParams[$paramName];          
-            if (isset($this->controller->actionInjectionsMeta[$paramName])) {                
-                $injectionMeta = $this->controller->actionInjectionsMeta[$paramName];
-                if ($injectionMeta['injector'] === 'ServiceLocator') {
-                    $requestedParam = $this->controller->module->get($injectionMeta['type']);
-                } elseif ($injectionMeta['injector'] === 'Container' ) {
-                    $requestedParam =  \Yii::$container->get($injectionMeta['type']);
-                } else {
-                    $requestedParam = null;
-                }
+                    
+            if (!isset($this->controller->actionInjectionsMeta[$paramName])) {                               
+                 return Yii::$app->requestedParams[$paramName];
             }
-            
-            return $requestedParam;
+
+            $injectionMeta = $this->controller->actionInjectionsMeta[$paramName];
+            if ($injectionMeta['injector'] === 'ServiceLocator') {
+                return $this->controller->module->get($injectionMeta['type']);
+            }
+            if ($injectionMeta['injector'] === 'Container' ) {
+                return \Yii::$container->get($injectionMeta['type']);
+            }
+
+            return null; 
+           
         }
 
         throw new BadRequestHttpException("Parameter: {$paramName} does not exist or no argument yet bound to it");
