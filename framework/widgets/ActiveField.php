@@ -775,19 +775,19 @@ class ActiveField extends Component
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
         if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
-            foreach ($this->inputOptions as $key => $value) {
-                if (!isset($config['options'][$key])) {
-                    $config['options'][$key] = $value;
-                }
-            }
+            $classOptions = (new \ReflectionClass($class))->getDefaultProperties();
+            $classOptions = is_null($classOptions['options']) ? [] : $classOptions['options'];
+
+            $definitions = \Yii::$container->getDefinitions();
+            $diOptions = (isset($definitions[$class]['options'])) ? $definitions[$class]['options'] : [];
+
+            $fieldOptions = isset($config['options']) ? $config['options'] : [];
+            $config['options'] = array_merge($classOptions, $diOptions, $this->inputOptions, $fieldOptions);
+
             $config['field'] = $this;
-            if (!isset($config['options'])) {
-                $config['options'] = [];
-            }
             if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
                 $this->addErrorClassIfNeeded($config['options']);
             }
-
             $this->addAriaAttributes($config['options']);
             $this->adjustLabelFor($config['options']);
         }
