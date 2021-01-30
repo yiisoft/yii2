@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #18480: Transactions are not committed using the dblib driver (bbrunekreeft)
 - Enh #18493: Faster request parsing for REST UrlRule with prefix handling (bizley)
 - Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
+- Bug #8750: Fix MySQL support when running in `ANSI`/`ANSI_QUOTES` modes (brandonkelly)
 
 
 2.0.40 December 23, 2020
