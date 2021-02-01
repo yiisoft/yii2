@@ -285,7 +285,7 @@ class BaseInflector
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
      * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
-     * @see http://php.net/manual/en/transliterator.transliterate.php
+     * @see https://secure.php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
 
@@ -342,7 +342,7 @@ class BaseInflector
     {
         $words = static::humanize(static::underscore($words), $ucAll);
 
-        return $ucAll ? ucwords($words) : ucfirst($words);
+        return $ucAll ? StringHelper::mb_ucwords($words, self::encoding()) : StringHelper::mb_ucfirst($words, self::encoding());
     }
 
     /**
@@ -351,13 +351,13 @@ class BaseInflector
      * Converts a word like "send_email" to "SendEmail". It
      * will remove non alphanumeric character from the word, so
      * "who's online" will be converted to "WhoSOnline".
-     * @see variablize()
      * @param string $word the word to CamelCase
      * @return string
+     * @see variablize()
      */
     public static function camelize($word)
     {
-        return str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9]+/', ' ', $word)));
+        return str_replace(' ', '', StringHelper::mb_ucwords(preg_replace('/[^\pL\pN]+/u', ' ', $word), self::encoding()));
     }
 
     /**
@@ -369,13 +369,13 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = strtolower(trim(str_replace([
+        $label = mb_strtolower(trim(str_replace([
             '-',
             '_',
             '.',
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+        ], ' ', preg_replace('/(?<!\p{Lu})(\p{Lu})|(\p{Lu})(?=\p{Ll})/u', ' \0', $name))), self::encoding());
 
-        return $ucwords ? ucwords($label) : $label;
+        return $ucwords ? StringHelper::mb_ucwords($label, self::encoding()) : $label;
     }
 
     /**
@@ -389,12 +389,12 @@ class BaseInflector
      */
     public static function camel2id($name, $separator = '-', $strict = false)
     {
-        $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
+        $regex = $strict ? '/\p{Lu}/u' : '/(?<!\p{Lu})\p{Lu}/u';
         if ($separator === '_') {
-            return strtolower(trim(preg_replace($regex, '_\0', $name), '_'));
+            return mb_strtolower(trim(preg_replace($regex, '_\0', $name), '_'), self::encoding());
         }
 
-        return strtolower(trim(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name)), $separator));
+        return mb_strtolower(trim(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name)), $separator), self::encoding());
     }
 
     /**
@@ -407,7 +407,7 @@ class BaseInflector
      */
     public static function id2camel($id, $separator = '-')
     {
-        return str_replace(' ', '', ucwords(implode(' ', explode($separator, $id))));
+        return str_replace(' ', '', StringHelper::mb_ucwords(str_replace($separator, ' ', $id), self::encoding()));
     }
 
     /**
@@ -417,7 +417,7 @@ class BaseInflector
      */
     public static function underscore($words)
     {
-        return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $words));
+        return mb_strtolower(preg_replace('/(?<=\\pL)(\\p{Lu})/u', '_\\1', $words), self::encoding());
     }
 
     /**
@@ -429,8 +429,9 @@ class BaseInflector
     public static function humanize($word, $ucAll = false)
     {
         $word = str_replace('_', ' ', preg_replace('/_id$/', '', $word));
+        $encoding = self::encoding();
 
-        return $ucAll ? ucwords($word) : ucfirst($word);
+        return $ucAll ? StringHelper::mb_ucwords($word, $encoding) : StringHelper::mb_ucfirst($word, $encoding);
     }
 
     /**
@@ -446,7 +447,7 @@ class BaseInflector
     {
         $word = static::camelize($word);
 
-        return strtolower($word[0]) . substr($word, 1);
+        return mb_strtolower(mb_substr($word, 0, 1, self::encoding())) . mb_substr($word, 1, null, self::encoding());
     }
 
     /**
@@ -476,10 +477,21 @@ class BaseInflector
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
-        $string = static::transliterate($string);
-        $string = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $string);
-        $string = preg_replace('/[=\s—–-]+/u', $replacement, $string);
-        $string = trim($string, $replacement);
+        if ((string)$replacement !== '') {
+            $parts = explode($replacement, static::transliterate($string));
+        } else {
+            $parts = [static::transliterate($string)];
+        }
+
+        $replaced = array_map(function ($element) use ($replacement) {
+            $element = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $element);
+            return preg_replace('/[=\s—–-]+/u', $replacement, $element);
+        }, $parts);
+
+        $string = trim(implode($replacement, $replaced), $replacement);
+        if ((string)$replacement !== '') {
+            $string = preg_replace('#' . preg_quote($replacement) . '+#', $replacement, $string);
+        }
 
         return $lowercase ? strtolower($string) : $string;
     }
@@ -599,4 +611,13 @@ class BaseInflector
                 return implode($connector, array_slice($words, 0, -1)) . $lastWordConnector . end($words);
         }
     }
+
+    /**
+     * @return string
+     */
+    private static function encoding()
+    {
+        return isset(Yii::$app) ? Yii::$app->charset : 'UTF-8';
+    }
+
 }

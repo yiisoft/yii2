@@ -14,33 +14,39 @@ use Yii;
  *
  * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
- * @property \yii\web\AssetManager $assetManager The asset manager application component. This property is
- * read-only.
- * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
- * if auth manager is not configured. This property is read-only.
+ * @property-read \yii\web\AssetManager $assetManager The asset manager application component. This property
+ * is read-only.
+ * @property-read \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is
+ * returned if auth manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
- * @property \yii\caching\CacheInterface $cache The cache application component. Null if the component is not enabled.
- * This property is read-only.
- * @property array $container Values given in terms of name-value pairs. This property is write-only.
- * @property \yii\db\Connection $db The database connection. This property is read-only.
- * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
+ * @property-read \yii\caching\CacheInterface $cache The cache application component. Null if the component is
+ * not enabled. This property is read-only.
+ * @property-write array $container Values given in terms of name-value pairs. This property is write-only.
+ * @property-read \yii\db\Connection $db The database connection. This property is read-only.
+ * @property-read \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
  * component. This property is read-only.
- * @property \yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
- * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
- * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
- * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
- * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
- * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
+ * @property-read \yii\i18n\Formatter $formatter The formatter application component. This property is
+ * read-only.
+ * @property-read \yii\i18n\I18N $i18n The internationalization application component. This property is
+ * read-only.
+ * @property-read \yii\log\Dispatcher $log The log dispatcher application component. This property is
+ * read-only.
+ * @property-read \yii\mail\MailerInterface $mailer The mailer application component. This property is
+ * read-only.
+ * @property-read \yii\web\Request|\yii\console\Request $request The request component. This property is
+ * read-only.
+ * @property-read \yii\web\Response|\yii\console\Response $response The response component. This property is
  * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
- * @property \yii\base\Security $security The security application component. This property is read-only.
+ * @property-read \yii\base\Security $security The security application component. This property is read-only.
  * @property string $timeZone The time zone used by this application.
- * @property string $uniqueId The unique ID of the module. This property is read-only.
- * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
+ * @property-read string $uniqueId The unique ID of the module. This property is read-only.
+ * @property-read \yii\web\UrlManager $urlManager The URL manager for this application. This property is
+ * read-only.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
- * @property View|\yii\web\View $view The view application component that is used to render various view
+ * @property-read View|\yii\web\View $view The view application component that is used to render various view
  * files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -265,7 +271,7 @@ abstract class Application extends Module
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -293,10 +299,10 @@ abstract class Application extends Module
             if (isset($extension['bootstrap'])) {
                 $component = Yii::createObject($extension['bootstrap']);
                 if ($component instanceof BootstrapInterface) {
-                    Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                     $component->bootstrap($this);
                 } else {
-                    Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
                 }
             }
         }
@@ -304,7 +310,7 @@ abstract class Application extends Module
         foreach ($this->bootstrap as $mixed) {
             $component = null;
             if ($mixed instanceof \Closure) {
-                Yii::trace('Bootstrap with Closure', __METHOD__);
+                Yii::debug('Bootstrap with Closure', __METHOD__);
                 if (!$component = call_user_func($mixed, $this)) {
                     continue;
                 }
@@ -323,10 +329,10 @@ abstract class Application extends Module
             }
 
             if ($component instanceof BootstrapInterface) {
-                Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                 $component->bootstrap($this);
             } else {
-                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
             }
         }
     }
@@ -363,7 +369,7 @@ abstract class Application extends Module
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -471,7 +477,7 @@ abstract class Application extends Module
      * If time zone is not configured in php.ini or application config,
      * it will be set to UTC by default.
      * @return string the time zone used by this application.
-     * @see http://php.net/manual/en/function.date-default-timezone-get.php
+     * @see https://secure.php.net/manual/en/function.date-default-timezone-get.php
      */
     public function getTimeZone()
     {
@@ -481,9 +487,9 @@ abstract class Application extends Module
     /**
      * Sets the time zone used by this application.
      * This is a simple wrapper of PHP function date_default_timezone_set().
-     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+     * Refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available timezones.
      * @param string $value the time zone used by this application.
-     * @see http://php.net/manual/en/function.date-default-timezone-set.php
+     * @see https://secure.php.net/manual/en/function.date-default-timezone-set.php
      */
     public function setTimeZone($value)
     {

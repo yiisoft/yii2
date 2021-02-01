@@ -17,6 +17,7 @@ use yii\console\ExitCode;
 use yii\db\MigrationInterface;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 
 /**
  * BaseMigrateController is the base class for migrate controllers.
@@ -83,7 +84,6 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
-
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -92,8 +92,9 @@ abstract class BaseMigrateController extends Controller
      */
     public $compact = false;
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -117,6 +118,8 @@ abstract class BaseMigrateController extends Controller
             if (empty($this->migrationNamespaces) && empty($this->migrationPath)) {
                 throw new InvalidConfigException('At least one of `migrationPath` or `migrationNamespaces` should be specified.');
             }
+
+            $this->migrationNamespaces = (array) $this->migrationNamespaces;
 
             foreach ($this->migrationNamespaces as $key => $value) {
                 $this->migrationNamespaces[$key] = trim($value, '\\');
@@ -184,6 +187,11 @@ abstract class BaseMigrateController extends Controller
         }
 
         foreach ($migrations as $migration) {
+            $nameLimit = $this->getMigrationNameLimit();
+            if ($nameLimit !== null && strlen($migration) > $nameLimit) {
+                $this->stdout("\nThe migration name '$migration' is too long. Its not possible to apply this migration.\n", Console::FG_RED);
+                return ExitCode::UNSPECIFIED_ERROR;
+            }
             $this->stdout("\t$migration\n");
         }
         $this->stdout("\n");
@@ -203,6 +211,8 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated up successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -264,6 +274,8 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated down successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -330,6 +342,8 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " redone.\n", Console::FG_GREEN);
             $this->stdout("\nMigration redone successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -359,13 +373,13 @@ abstract class BaseMigrateController extends Controller
     public function actionTo($version)
     {
         if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
-            $this->migrateToVersion($namespaceVersion);
+            return $this->migrateToVersion($namespaceVersion);
         } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
-            $this->migrateToVersion($migrationName);
+            return $this->migrateToVersion($migrationName);
         } elseif ((string) (int) $version == $version) {
-            $this->migrateToTime($version);
+            return $this->migrateToTime($version);
         } elseif (($time = strtotime($version)) !== false) {
-            $this->migrateToTime($time);
+            return $this->migrateToTime($time);
         } else {
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n the full namespaced name of a migration (e.g. app\\migrations\\M101129185401CreateUserTable),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
         }
@@ -423,13 +437,11 @@ abstract class BaseMigrateController extends Controller
             if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
-                } else {
-                    if ($this->confirm("Set migration history at $originalVersion?")) {
-                        for ($j = 0; $j < $i; ++$j) {
-                            $this->removeMigrationHistory($migrations[$j]);
-                        }
-                        $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
+                } elseif ($this->confirm("Set migration history at $originalVersion?")) {
+                    for ($j = 0; $j < $i; ++$j) {
+                        $this->removeMigrationHistory($migrations[$j]);
                     }
+                    $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
                 }
 
                 return ExitCode::OK;
@@ -440,7 +452,7 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Truncates the whole database and starts the migration from the beginning.
+     * Drops all tables and related constraints. Starts the migration from the beginning.
      *
      * ```
      * yii migrate/fresh
@@ -452,16 +464,19 @@ abstract class BaseMigrateController extends Controller
     {
         if (YII_ENV_PROD) {
             $this->stdout("YII_ENV is set to 'prod'.\nRefreshing migrations is not possible on production systems.\n");
+
             return ExitCode::OK;
         }
 
-        if ($this->confirm(
-            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+        if ($this->confirm("Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
             $this->truncateDatabase();
-            $this->actionUp();
-        } else {
-            $this->stdout('Action was cancelled by user. Nothing has been performed.');
+
+            return $this->actionUp();
         }
+
+        $this->stdout('Action was cancelled by user. Nothing has been performed.');
+
+        return ExitCode::OK;
     }
 
     /**
@@ -536,6 +551,8 @@ abstract class BaseMigrateController extends Controller
                 $this->stdout("\t(" . date('Y-m-d H:i:s', $time) . ') ' . $version . "\n");
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -582,6 +599,8 @@ abstract class BaseMigrateController extends Controller
                 $this->stdout("\t" . $migration . "\n");
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -622,6 +641,12 @@ abstract class BaseMigrateController extends Controller
         }
 
         list($namespace, $className) = $this->generateClassName($name);
+        // Abort if name is too long
+        $nameLimit = $this->getMigrationNameLimit();
+        if ($nameLimit !== null && strlen($className) > $nameLimit) {
+            throw new Exception('The migration name is too long.');
+        }
+
         $migrationPath = $this->findMigrationPath($namespace);
 
         $file = $migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
@@ -632,9 +657,16 @@ abstract class BaseMigrateController extends Controller
                 'namespace' => $namespace,
             ]);
             FileHelper::createDirectory($migrationPath);
-            file_put_contents($file, $content);
+            if (file_put_contents($file, $content, LOCK_EX) === false) {
+                $this->stdout("Failed to create new migration.\n", Console::FG_RED);
+
+                return ExitCode::IOERR;
+            }
+
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -650,17 +682,15 @@ abstract class BaseMigrateController extends Controller
         if (strpos($name, '\\') !== false) {
             $namespace = substr($name, 0, strrpos($name, '\\'));
             $name = substr($name, strrpos($name, '\\') + 1);
-        } else {
-            if ($this->migrationPath === null) {
-                $migrationNamespaces = $this->migrationNamespaces;
-                $namespace = array_shift($migrationNamespaces);
-            }
+        } elseif ($this->migrationPath === null) {
+            $migrationNamespaces = $this->migrationNamespaces;
+            $namespace = array_shift($migrationNamespaces);
         }
 
         if ($namespace === null) {
             $class = 'm' . gmdate('ymd_His') . '_' . $name;
         } else {
-            $class = 'M' . gmdate('ymdHis') . ucfirst($name);
+            $class = 'M' . gmdate('ymdHis') . Inflector::camelize($name);
         }
 
         return [$namespace, $class];
@@ -813,8 +843,10 @@ abstract class BaseMigrateController extends Controller
         if ($count === 0) {
             $this->stdout("Nothing needs to be done.\n", Console::FG_GREEN);
         } else {
-            $this->actionDown($count);
+            return $this->actionDown($count);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -831,9 +863,7 @@ abstract class BaseMigrateController extends Controller
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
-                $this->actionUp($i + 1);
-
-                return ExitCode::OK;
+                return $this->actionUp($i + 1);
             }
         }
 
@@ -844,7 +874,7 @@ abstract class BaseMigrateController extends Controller
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
-                    $this->actionDown($i);
+                    return $this->actionDown($i);
                 }
 
                 return ExitCode::OK;
@@ -932,6 +962,18 @@ abstract class BaseMigrateController extends Controller
     protected function truncateDatabase()
     {
         throw new NotSupportedException('This command is not implemented in ' . get_class($this));
+    }
+
+    /**
+     * Return the maximum name length for a migration.
+     *
+     * Subclasses may override this method to define a limit.
+     * @return int|null the maximum name length for a migration or `null` if no limit applies.
+     * @since 2.0.13
+     */
+    protected function getMigrationNameLimit()
+    {
+        return null;
     }
 
     /**

@@ -19,7 +19,7 @@ use yii\base\InvalidConfigException;
  *
  * @property MessageFormatter $messageFormatter The message formatter to be used to format message via ICU
  * message format. Note that the type of this property differs in getter and setter. See
- * [[getMessageFormatter()]] and [[setMessageFormatter()]] for details.
+ * [[getMessageFormatter()]]  and [[setMessageFormatter()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -62,6 +62,7 @@ class I18N extends Component
                 'basePath' => '@yii/messages',
             ];
         }
+
         if (!isset($this->translations['app']) && !isset($this->translations['app*'])) {
             $this->translations['app'] = [
                 'class' => 'yii\i18n\PhpMessageSource',
@@ -109,7 +110,7 @@ class I18N extends Component
             return $message;
         }
 
-        if (preg_match('~{\s*[\w]+\s*,~u', $message)) {
+        if (preg_match('~{\s*[\w.]+\s*,~u', $message)) {
             $formatter = $this->getMessageFormatter();
             $result = $formatter->format($message, $params, $language);
             if ($result === false) {

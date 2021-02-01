@@ -7,6 +7,7 @@
 
 namespace yii\filters;
 
+use Closure;
 use Yii;
 use yii\base\ActionFilter;
 use yii\web\Request;
@@ -48,8 +49,14 @@ class RateLimiter extends ActionFilter
      */
     public $errorMessage = 'Rate limit exceeded.';
     /**
-     * @var RateLimitInterface the user object that implements the RateLimitInterface.
-     * If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
+     * @var RateLimitInterface|Closure the user object that implements the RateLimitInterface. If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
+     * {@since 2.0.38} It's possible to provide a closure function in order to assign the user identity on runtime. Using a closure to assign the user identity is recommend
+     * when you are **not** using the standard `Yii::$app->user` component. See the example below:
+     * ```php
+     * 'user' => function() {
+     *     return Yii::$app->apiUser->identity;
+     * }
+     * ```
      */
     public $user;
     /**
@@ -63,7 +70,7 @@ class RateLimiter extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -76,7 +83,7 @@ class RateLimiter extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -84,8 +91,12 @@ class RateLimiter extends ActionFilter
             $this->user = Yii::$app->getUser()->getIdentity(false);
         }
 
+        if ($this->user instanceof Closure) {
+            $this->user = call_user_func($this->user, $action);
+        }
+
         if ($this->user instanceof RateLimitInterface) {
-            Yii::trace('Check rate limit', __METHOD__);
+            Yii::debug('Check rate limit', __METHOD__);
             $this->checkRateLimit($this->user, $this->request, $this->response, $action);
         } elseif ($this->user) {
             Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);
@@ -106,10 +117,10 @@ class RateLimiter extends ActionFilter
      */
     public function checkRateLimit($user, $request, $response, $action)
     {
-        $current = time();
-
         list($limit, $window) = $user->getRateLimit($request, $action);
         list($allowance, $timestamp) = $user->loadAllowance($request, $action);
+
+        $current = time();
 
         $allowance += (int) (($current - $timestamp) * $limit / $window);
         if ($allowance > $limit) {
@@ -123,7 +134,7 @@ class RateLimiter extends ActionFilter
         }
 
         $user->saveAllowance($request, $action, $allowance - 1, $current);
-        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
+        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance + 1) * $window / $limit));
     }
 
     /**

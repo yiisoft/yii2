@@ -35,7 +35,7 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: le composant de formatage est conçu pour formater des valeurs à présenter à l'utilisateur. Si vous voulez convertir des entrées utilisateur en un format lisible par la machine, ou simplement formater une date dans un format lisible par la machine, le formateur n'est pas l'outil adapté à cela. Pour convertir une entrée utilisateur pour une date et un temps, vous pouvez utiliser [[yii\validators\DateValidator]] et [[yii\validators\NumberValidator]] respectivement. Pour une simple conversion entre les formats lisibles par la machine de date et de temps, la fonction PHP [date()](http://php.net/manual/en/function.date.php) suffit.
+> Note: le composant de formatage est conçu pour formater des valeurs à présenter à l'utilisateur. Si vous voulez convertir des entrées utilisateur en un format lisible par la machine, ou simplement formater une date dans un format lisible par la machine, le formateur n'est pas l'outil adapté à cela. Pour convertir une entrée utilisateur pour une date et un temps, vous pouvez utiliser [[yii\validators\DateValidator]] et [[yii\validators\NumberValidator]] respectivement. Pour une simple conversion entre les formats lisibles par la machine de date et de temps, la fonction PHP [date()](https://secure.php.net/manual/en/function.date.php) suffit.
 
 ## Configuration du formateur <span id="configuring-formatter"></span>
 
@@ -71,7 +71,7 @@ Le formateur prend en charge les formats de sortie suivants en relation avec les
 Les formats par défaut pour les dates et les temps utilisés pour les méthodes [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
 et [[yii\i18n\Formatter::asDatetime()|datetime]] peuvent être configurés globalement en configurant [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], et [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
-Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](http://userguide.icu-project.org/formatparse/datetime). Vous pouvez aussi utiliser la [syntaxe date() de PHP](http://php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
+Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](http://userguide.icu-project.org/formatparse/datetime). Vous pouvez aussi utiliser la [syntaxe date() de PHP](https://secure.php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
 
 ```php
 // format ICU
@@ -125,7 +125,7 @@ Pour les nombres, le formateur prend en charge les formats de sortie suivants :
 Le format pour un nombre peut être ajusté en utilisant [[yii\i18n\Formatter::decimalSeparator|decimalSeparator (séparateur de décimales)]] et
 [[yii\i18n\Formatter::thousandSeparator|thousandSeparator (séparateur de milliers) ]], qui prennent tous les deux les valeurs par défaut déterminées par la [[yii\i18n\Formatter::locale|locale]] courante.
 
-Pour une configuration plus avancée, [[yii\i18n\Formatter::numberFormatterOptions]] et [[yii\i18n\Formatter::numberFormatterTextOptions]] peuvent être utilisés pour configurer la classe [NumberFormater (formateur de nombres)](http://php.net/manual/en/class.numberformatter.php) utilisée en interne pour implémenter le formateur. Par exemple, pour ajuster la valeur minimum et maximum des chiffres fractionnaires, vous pouvez configurer la propriété [[yii\i18n\Formatter::numberFormatterOptions]] comme ceci :
+Pour une configuration plus avancée, [[yii\i18n\Formatter::numberFormatterOptions]] et [[yii\i18n\Formatter::numberFormatterTextOptions]] peuvent être utilisés pour configurer la classe [NumberFormater (formateur de nombres)](https://secure.php.net/manual/en/class.numberformatter.php) utilisée en interne pour implémenter le formateur. Par exemple, pour ajuster la valeur minimum et maximum des chiffres fractionnaires, vous pouvez configurer la propriété [[yii\i18n\Formatter::numberFormatterOptions]] comme ceci :
 
 ```php
 'numberFormatterOptions' => [
@@ -172,7 +172,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // affiche : 1 января 20
 
 Par défaut, la [[yii\i18n\Formatter::locale|locale]] est déterminée par la valeur de [[yii\base\Application::language]]. Vous pouvez la redéfinir en définissant la propriété [[yii\i18n\Formatter::locale]] explicitement.
 
-> Note: le formateur de Yii a besoin de l'[extension intl de PHP](http://php.net/manual/en/book.intl.php) pour prendre en charge la localisation des formats de données. Parce que différentes versions de la bibliothèque ICU compilées par PHP produisent des résultats de formatage différents, il est recommandé que vous utilisiez la même version de la bibliothèque ICU pour tous vos environnements. Pour plus de détails, reportez-vous au tutoriel [Configuration de votre environnement PHP pour l'internationalisation](tutorial-i18n.md#setup-environment).
+> Note: le formateur de Yii a besoin de l'[extension intl de PHP](https://secure.php.net/manual/en/book.intl.php) pour prendre en charge la localisation des formats de données. Parce que différentes versions de la bibliothèque ICU compilées par PHP produisent des résultats de formatage différents, il est recommandé que vous utilisiez la même version de la bibliothèque ICU pour tous vos environnements. Pour plus de détails, reportez-vous au tutoriel [Configuration de votre environnement PHP pour l'internationalisation](tutorial-i18n.md#setup-environment).
 >
 > Si l'extension intl extension n'est pas installée, les données ne sont pas localisées. 
 >

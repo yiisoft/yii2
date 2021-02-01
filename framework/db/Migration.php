@@ -65,14 +65,12 @@ class Migration extends Component implements MigrationInterface
      * ```
      */
     public $db = 'db';
-
     /**
      * @var int max number of characters of the SQL outputted. Useful for reduction of long statements and making
      * console output more compact.
      * @since 2.0.13
      */
     public $maxSqlOutputLength;
-
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -80,6 +78,7 @@ class Migration extends Component implements MigrationInterface
      * @since 2.0.13
      */
     public $compact = false;
+
 
     /**
      * Initializes the migration.
@@ -94,7 +93,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.6
      */
     protected function getDb()
@@ -176,8 +175,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
-     * you should still implement `up()` and `down()`, instead.
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -194,8 +192,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
-     * you should still implement `up()` and `down()`, instead.
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -237,7 +234,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Creates and executes an batch INSERT SQL statement.
+     * Creates and executes a batch INSERT SQL statement.
      * The method will properly escape the column names, and bind the values to be inserted.
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names.
@@ -247,6 +244,30 @@ class Migration extends Component implements MigrationInterface
     {
         $time = $this->beginCommand("insert into $table");
         $this->db->createCommand()->batchInsert($table, $columns, $rows)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
+     * Creates and executes a command to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * The method will properly escape the column names, and bind the values to be inserted.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the parameters to be bound to the command.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
+    {
+        $time = $this->beginCommand("upsert into $table");
+        $this->db->createCommand()->upsert($table, $insertColumns, $updateColumns, $params)->execute();
         $this->endCommand($time);
     }
 
@@ -505,7 +526,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * Builds a SQL statement for adding comment to table.
      *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $table the table to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
      * @since 2.0.8
      */
@@ -544,8 +565,8 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Prepares for a command to be executed, and outputs to the console
-     * 
+     * Prepares for a command to be executed, and outputs to the console.
+     *
      * @param string $description the description for the command, to be output to the console.
      * @return float the time before the command is executed, for the time elapsed to be calculated.
      * @since 2.0.13
@@ -559,8 +580,8 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Finalizes after the command has been executed, and outputs to the console the time elapsed
-     * 
+     * Finalizes after the command has been executed, and outputs to the console the time elapsed.
+     *
      * @param float $time the time before the command was executed.
      * @since 2.0.13
      */

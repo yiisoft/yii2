@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\di\Instance;
 use yii\rbac\CheckAccessInterface;
 
 /**
@@ -46,13 +47,13 @@ use yii\rbac\CheckAccessInterface;
  * ]
  * ```
  *
- * @property string|int $id The unique identifier for the user. If `null`, it means the user is a guest. This
- * property is read-only.
+ * @property-read string|int $id The unique identifier for the user. If `null`, it means the user is a guest.
+ * This property is read-only.
  * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
  * user. `null` is returned if the user is not logged in (not authenticated).
- * @property bool $isGuest Whether the current user is a guest. This property is read-only.
+ * @property-read bool $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
- * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
+ * of this property differs in getter and setter. See [[getReturnUrl()]]  and [[setReturnUrl()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -105,7 +106,8 @@ class User extends Component
      */
     public $authTimeout;
     /**
-     * @var CheckAccessInterface The access checker to use for checking access.
+     * @var CheckAccessInterface|string|array The access checker object to use for checking access or the application
+     * component ID of the access checker.
      * If not set the application auth manager will be used.
      * @since 2.0.9
      */
@@ -165,6 +167,9 @@ class User extends Component
         if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
+        if ($this->accessChecker !== null) {
+            $this->accessChecker = Instance::ensure($this->accessChecker, '\yii\rbac\CheckAccessInterface');
+        }
     }
 
     private $_identity = false;
@@ -184,8 +189,16 @@ class User extends Component
     {
         if ($this->_identity === false) {
             if ($this->enableSession && $autoRenew) {
-                $this->_identity = null;
-                $this->renewAuthStatus();
+                try {
+                    $this->_identity = null;
+                    $this->renewAuthStatus();
+                } catch (\Exception $e) {
+                    $this->_identity = false;
+                    throw $e;
+                } catch (\Throwable $e) {
+                    $this->_identity = false;
+                    throw $e;
+                }
             } else {
                 return null;
             }
@@ -208,12 +221,12 @@ class User extends Component
     {
         if ($identity instanceof IdentityInterface) {
             $this->_identity = $identity;
-            $this->_access = [];
         } elseif ($identity === null) {
             $this->_identity = null;
         } else {
             throw new InvalidValueException('The identity object must implement IdentityInterface.');
         }
+        $this->_access = [];
     }
 
     /**
@@ -246,11 +259,27 @@ class User extends Component
             } else {
                 $log = "User '$id' logged in from $ip. Session not enabled.";
             }
+
+            $this->regenerateCsrfToken();
+
             Yii::info($log, __METHOD__);
             $this->afterLogin($identity, false, $duration);
         }
 
         return !$this->getIsGuest();
+    }
+
+    /**
+     * Regenerates CSRF token
+     *
+     * @since 2.0.14.2
+     */
+    protected function regenerateCsrfToken()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->enableCsrfCookie || $this->enableSession) {
+            $request->getCsrfToken(true);
+        }
     }
 
     /**
@@ -416,7 +445,7 @@ class User extends Component
             && (!$checkAjax || !$request->getIsAjax())
             && $canRedirect
         ) {
-            $this->setReturnUrl($request->getUrl());
+            $this->setReturnUrl($request->getAbsoluteUrl());
         }
         if ($this->loginUrl !== null && $canRedirect) {
             $loginUrl = (array) $this->loginUrl;
@@ -513,9 +542,11 @@ class User extends Component
         if ($value !== null) {
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
-                $cookie = new Cookie($this->identityCookie);
-                $cookie->value = $value;
-                $cookie->expire = time() + (int) $data[2];
+                $cookie = Yii::createObject(array_merge($this->identityCookie, [
+                    'class' => 'yii\web\Cookie',
+                    'value' => $value,
+                    'expire' => time() + (int) $data[2],
+                ]));
                 Yii::$app->getResponse()->getCookies()->add($cookie);
             }
         }
@@ -532,13 +563,15 @@ class User extends Component
      */
     protected function sendIdentityCookie($identity, $duration)
     {
-        $cookie = new Cookie($this->identityCookie);
-        $cookie->value = json_encode([
-            $identity->getId(),
-            $identity->getAuthKey(),
-            $duration,
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $cookie->expire = time() + $duration;
+        $cookie = Yii::createObject(array_merge($this->identityCookie, [
+            'class' => 'yii\web\Cookie',
+            'value' => json_encode([
+                $identity->getId(),
+                $identity->getAuthKey(),
+                $duration,
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            'expire' => time() + $duration,
+        ]));
         Yii::$app->getResponse()->getCookies()->add($cookie);
     }
 
@@ -557,7 +590,7 @@ class User extends Component
             return null;
         }
         $data = json_decode($value, true);
-        if (count($data) == 3) {
+        if (is_array($data) && count($data) == 3) {
             list($id, $authKey, $duration) = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
@@ -583,7 +616,9 @@ class User extends Component
      */
     protected function removeIdentityCookie()
     {
-        Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+        Yii::$app->getResponse()->getCookies()->remove(Yii::createObject(array_merge($this->identityCookie, [
+            'class' => 'yii\web\Cookie',
+        ])));
     }
 
     /**

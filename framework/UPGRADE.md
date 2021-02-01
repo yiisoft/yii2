@@ -3,26 +3,27 @@ Upgrading Instructions for Yii Framework 2.0
 
 This file contains the upgrade notes for Yii 2.0. These notes highlight changes that
 could break your application when you upgrade Yii from one version to another.
-Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
+Even though we try to ensure backwards compatibility (BC) as much as possible, sometimes
 it is not possible or very complicated to avoid it and still create a good solution to
-a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md) for further details.
+a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md)
+for further details.
 
 Upgrading in general is as simple as updating your dependency in your composer.json and
 running `composer update`. In a big application however there may be more things to consider,
 which are explained in the following.
 
-> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer) so that you can run the `composer` command. If you have a `composer.phar` file
-inside of your project you need to replace `composer` with `php composer.phar` in the following.
+> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
+so that you can run the `composer` command. If you have a `composer.phar` file inside of your project you need to
+replace `composer` with `php composer.phar` in the following.
 
 > Tip: Upgrading dependencies of a complex software project always comes at the risk of breaking something, so make sure
 you have a backup (you should be doing this anyway ;) ).
 
-Before upgrading, make sure you have a global installation of the latest version of the
-[composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
-as well as a stable version of Composer:
+In case you use [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) instead of the currently recommended
+[asset-packagist.org](https://asset-packagist.org) to install Bower and NPM assets, make sure it is upgraded to the latest version as well. To ensure best stability you should also upgrade composer in this step:
 
     composer self-update
-    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
+    composer global require "fxp/composer-asset-plugin:^1.4.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
@@ -49,6 +50,374 @@ See the following notes on which changes to consider when upgrading from one ver
 if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
+
+Upgrade from Yii 2.0.39.3
+-------------------------
+
+* Priority of processing `yii\base\Arrayable`, and `JsonSerializable` data has been reversed (`Arrayable` data is checked
+  first now) in `yii\base\Model`, and `yii\rest\Serializer`. If your application relies on the previous priority you need 
+  to fix it manually based on the complexity of desired (de)serialization result.
+
+Upgrade from Yii 2.0.38
+-----------------------
+
+* The storage structure of the file cache has been changed when you use `\yii\caching\FileCache::$keyPrefix`.
+It is worth warming up the cache again if there is a logical dependency when working with the file cache.
+
+* `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
+  In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
+  `Session::writeSession()` functions changes might be required:
+  * When in strict mode the `openSession()` function should check if the requested session id exists
+    (and mark it for forced regeneration if not).
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode()) {
+        $id = $this->getId();
+        if (!$this->getReadQuery($id)->exists()) {
+            //This session id does not exist, mark it for forced regeneration
+            $this->_forceRegenerateId = $id;
+        }
+    }
+    // ... normal function continues ...
+    ``` 
+  * When in strict mode the `writeSession()` function should ignore writing the session under the old id.
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
+        //Ignore write when forceRegenerate is active for this id
+        return true;
+    }
+    // ... normal function continues ...
+    ```
+  > Note: The sample code above is specific for the `yii\web\DbSession` class.
+    Make sure you use the correct implementation based on your parent class,
+    e.g. `yii\web\CacheSession`, `yii\redis\Session`, `yii\mongodb\Session`, etc.
+  
+  > Note: In case your custom functions call their `parent` functions, there are probably no changes needed to your 
+    code if those parents implement the `useStrictMode` checks.
+
+  > Warning: in case `openSession()` and/or `writeSession()` functions do not implement the `useStrictMode` code
+    the session could be stored under a malicious id without warning even if `useStrictMode` is enabled.
+
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
+
+Upgrade from Yii 2.0.36
+-----------------------
+
+* `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
+  with an integer value, adjust your code.
+
+Upgrade from Yii 2.0.35
+-----------------------
+
+* Inline validator signature has been updated with 4th parameter `current`:
+
+  ```php
+  /**
+   * @param mixed $current the currently validated value of attribute
+   */
+  function ($attribute, $params, $validator, $current)
+  ```
+
+* Behavior of inline validator used as a rule of `EachValidator` has been changed - `$attribute` now refers to original
+  model's attribute and not its temporary counterpart:
+  
+  ```php
+  public $array_attribute = ['first', 'second'];
+
+  public function rules()
+  {
+      return [
+          ['array_attribute', 'each', 'rule' => ['customValidatingMethod']],
+      ];
+  }
+  
+  public function customValidatingMethod($attribute, $params, $validator, $current)
+  {
+      // $attribute === 'array_attribute' (as before)
+  
+      // now: $this->$attribute === ['first', 'second'] (on every iteration)
+      // previously:
+      // $this->$attribute === 'first' (on first iteration)
+      // $this->$attribute === 'second' (on second iteration)
+  
+      // use now $current instead
+      // $current === 'first' (on first iteration)
+      // $current === 'second' (on second iteration)
+  }
+  ```
+  
+* `$this` in an inline validator defined as closure now refers to model instance. If you need to access the object registering
+  the validator, pass its instance through use statement:
+  
+  ```php
+  $registrar = $this;
+  $validator = function($attribute, $params, $validator, $current) use ($registrar) {
+      // ...
+  }
+  ```
+  
+* Validator closure callbacks should not be declared as static.
+
+* If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
+  the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
+
+Upgrade from Yii 2.0.34
+-----------------------
+
+* `ExistValidator` used as a rule of `EachValidator` now requires providing `targetClass` explicitely and it's not possible to use it with `targetRelation` in
+  that configuration.
+  
+  ```php
+  public function rules()
+  {
+      return [
+          ['attribute', 'each', 'rule' => ['exist', 'targetClass' => static::className(), 'targetAttribute' => 'id']],
+      ];
+  }
+  ```
+
+Upgrade from Yii 2.0.32
+-----------------------
+
+* `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 "levels",
+  e.g. `ArrayHelper::filter($myArray, ['A.B.C']`. Until Yii 2.0.32 all data after the 2nd level was returned,
+  please see the following example:
+  
+  ```php
+  $myArray = [
+      'A' => 1,
+      'B' => [
+          'C' => 1,
+          'D' => [
+              'E' => 1,
+              'F' => 2,
+          ]
+      ],
+  ];
+  ArrayHelper::filter($myArray, ['B.D.E']);
+  ```
+  
+  Before Yii 2.0.33 this would return
+  
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+              'F' => 2, //Please note the unexpected inclusion of other elements
+          ],
+      ],
+  ]
+  ```
+
+  Since Yii 2.0.33 this returns
+
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+          ],
+      ],
+  ]
+  ```
+  
+  Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
+  
+* `UploadedFile` class `deleteTempFile()` and `isUploadedFile()` methods introduced in 2.0.32 were removed.
+
+* Exception will be thrown if `UrlManager::$cache` configuration is incorrect (previously misconfiguration was silently 
+  ignored and `UrlManager` continue to work without cache). Make sure that `UrlManager::$cache` is correctly configured 
+  or set it to `null` to explicitly disable cache.
+
+Upgrade from Yii 2.0.31
+-----------------------
+
+* `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on
+  content-type negotiation fail.
+
+Upgrade from Yii 2.0.30
+-----------------------
+* `yii\helpers\BaseInflector::slug()` now ensures there is no repeating $replacement string occurrences.
+  In case you rely on Yii 2.0.16 - 2.0.30 behavior, consider replacing `Inflector` with your own implementation.
+  
+  
+Upgrade from Yii 2.0.28
+-----------------------
+
+* `yii\helpers\Html::tag()` now generates boolean attributes
+  [according to HTML specification](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute).
+  For `true` value attribute is present, for `false` value it is absent.  
+
+Upgrade from Yii 2.0.20
+-----------------------
+
+* `yii\db\Query::select()` and `addSelect()` now normalize the format that columns are stored in when saving them 
+  to `$this->select`, so code that works directly with that property may need to be modified.
+  
+  For the following code:
+  
+  ```php
+  $a = $query->select('*');
+  $b = $query->select('id, name');
+  ```
+  
+  The value was stored as is i.e.
+  
+  ```php
+  // a
+  ['*']
+  
+  // b
+  ['id', 'name']
+  ``` 
+  
+  Now it is stored as
+  
+  ```php
+  // a
+  ['*' => '*']
+  
+  // b
+  ['id' => 'id', 'name' => 'name']
+  ```
+
+Upgrade from Yii 2.0.16
+-----------------------
+
+* In case you have extended the `yii\web\DbSession` class you should check if your 
+  custom implementation is compatible with the new `yii\web\DbSession::$fields` attribute.
+  Especially when overriding the `yii\web\DbSession::writeSession($id, $data)` function.
+
+Upgrade from Yii 2.0.15
+-----------------------
+
+* Updated dependency to `cebe/markdown` to version `1.2.x`.
+  If you need stick with 1.1.x, you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+
+  ```json
+  "cebe/markdown": "~1.1.0",
+  ```
+  
+* `yii\mutex\Mutex::acquire()` no longer returns `true` if lock is already acquired by the same component in the same process.
+  Make sure that you're not trying to acquire the same lock multiple times in a way that may create infinite loops, for example:
+    
+  ```php
+  if (Yii::$app->mutex->acquire('test')) {
+       while (!Yii::$app->mutex->acquire('test')) {
+           // `Yii::$app->mutex->acquire('test')` will always return `false` here, since lock is already acquired
+      }
+  }
+  ```
+  
+* Formatter methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` are using now inner fallback methods to handle 
+  very big number values to counter inner PHP casting and floating point number presentation issues. Make sure to provide 
+  such values as string numbers.
+  
+* Active Record relations are now being reset when corresponding key fields are changed. If you have relied on the fact
+  that relations are never reloaded you have to adjust your code.
+
+
+Upgrade from Yii 2.0.14
+-----------------------
+
+* When hash format condition (array) is used in `yii\db\ActiveRecord::findOne()` and `findAll()`, the array keys (column names)
+  are now limited to the table column names. This is to prevent SQL injection if input was not filtered properly.
+  You should check all usages of `findOne()` and `findAll()` to ensure that input is filtered correctly.
+  If you need to find models using different keys than the table columns, use `find()->where(...)` instead.
+
+  It's not an issue in the default generated code though as ID is filtered by
+  controller code:
+
+  The following code examples are **not** affected by this issue (examples shown for `findOne()` are valid also for `findAll()`):
+
+  ```php
+  // yii\web\Controller ensures that $id is scalar
+  public function actionView($id)
+  {
+      $model = Post::findOne($id);
+      // ...
+  }
+  ```
+
+  ```php
+  // casting to (int) or (string) ensures no array can be injected (an exception will be thrown so this is not a good practise)
+  $model = Post::findOne((int) Yii::$app->request->get('id'));
+  ```
+
+  ```php
+  // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+  $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+  ```
+
+  The following code however **is vulnerable**, an attacker could inject an array with an arbitrary condition and even exploit SQL injection:
+
+  ```php
+  $model = Post::findOne(Yii::$app->request->get('id'));
+  ```
+
+  For the above example, the SQL injection part is fixed with the patches provided in this release, but an attacker may still be able to search
+  records by different condition than a primary key search and violate your application business logic. So passing user input directly like this can cause problems and should be avoided.
+
+
+Upgrade from Yii 2.0.13
+-----------------------
+
+* Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
+  If your application relies on these constants, make sure to update your code to follow the changes.
+
+* `yii\base\Security::compareString()` is now throwing `yii\base\InvalidArgumentException` in case non-strings are compared.
+
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
+
+* Added JSON support for PostgreSQL and MySQL as well as Arrays support for PostgreSQL in ActiveRecord layer.
+  In case you already implemented such support yourself, please switch to Yii implementation.
+  * For MySQL JSON and PgSQL JSON & JSONB columns Active Record will return decoded JSON (that can be either array or scalar) after data population
+  and expects arrays or scalars to be assigned for further saving them into a database.
+  * For PgSQL Array columns Active Record will return `yii\db\ArrayExpression` object that acts as an array
+  (it implements `ArrayAccess`, `Traversable` and `Countable` interfaces) and expects array or `yii\db\ArrayExpression` to be
+  assigned for further saving it into the database.
+
+  In case this change makes the upgrade process to Yii 2.0.14 too hard in your project, you can [switch off the described behavior](https://github.com/yiisoft/yii2/issues/15716#issuecomment-368143206)
+  Then you can take your time to change your code and then re-enable arrays or JSON support.
+
+* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
+  when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
+  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+
+* `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
+  Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
+  space to customization. In case you rely on that property or override any of default condition builders, follow the 
+  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  to update your code.
+
+* Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
+  In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
+  method instead to index query results according to the `indexBy` parameter.
+
+* Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
+
+* You can start preparing your application for Yii 2.1 by doing the following:
+
+  - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
+  - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
+  - Replace calls to `Yii::trace()` with `Yii::debug()`.
+  - Remove calls to `yii\BaseYii::powered()`.
+  - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
+
+* In case you aren't using CSRF cookies (REST APIs etc.) you should turn them off explicitly by setting
+  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file.
+  
+* Previously headers sent after content output was started were silently ignored. This behavior was changed to throwing
+  `\yii\web\HeadersAlreadySentException`.
 
 Upgrade from Yii 2.0.12
 -----------------------
@@ -130,6 +499,9 @@ Upgrade from Yii 2.0.12
   However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
   to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
 
+* If you are using "asset" command to compress assets and your web application `assetManager` has `linkAssets` turned on,
+  make sure that "asset" command config has `linkAssets` turned on as well.
+
 
 Upgrade from Yii 2.0.11
 -----------------------
@@ -150,9 +522,10 @@ Upgrade from Yii 2.0.11
   internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
   benefit from the acceleration provided by this cache.
 
-* `yii\filters\AccessControl` now can be used without `user` component.  
-  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
-  matching a role throws `yii\base\InvalidConfigException`.
+* `yii\filters\AccessControl` now can be used without `user` component. This has two consequences:
+
+  1. If used without user component, `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` instead of redirecting to login page.
+  2. If used without user component, using `AccessRule` matching a role throws `yii\base\InvalidConfigException`.
   
 * Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
   assets manually, please adjust it. 
@@ -423,7 +796,7 @@ Upgrade from Yii 2.0 Beta
   You can add it with `ALTER TABLE log ADD COLUMN prefix TEXT AFTER log_time;`.
 
 * The `fileinfo` PHP extension is now required by Yii. If you use  `yii\helpers\FileHelper::getMimeType()`, make sure
-  you have enabled this extension. This extension is [builtin](http://www.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
+  you have enabled this extension. This extension is [builtin](https://secure.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
 
 * Please update your main layout file by adding this line in the `<head>` section: `<?= Html::csrfMetaTags() ?>`.
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
@@ -488,7 +861,7 @@ new ones save the following code as `convert.php` that should be placed in the s
       $out = var_export($data, true);
       $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
-      file_put_contents($fileName, $out);
+      file_put_contents($fileName, $out, LOCK_EX);
   }
 
   $items = [];

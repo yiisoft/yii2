@@ -7,8 +7,8 @@
 
 namespace yii;
 
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\log\Logger;
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.13-dev';
+        return '2.0.41-dev';
     }
 
     /**
@@ -125,12 +125,12 @@ class BaseYii
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
      * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
-     * @throws InvalidParamException if the alias is invalid while $throwException is true.
+     * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1)) {
+        if (strpos($alias, '@') !== 0) {
             // not an alias
             return $alias;
         }
@@ -151,7 +151,7 @@ class BaseYii
         }
 
         if ($throwException) {
-            throw new InvalidParamException("Invalid path alias: $alias");
+            throw new InvalidArgumentException("Invalid path alias: $alias");
         }
 
         return false;
@@ -211,7 +211,7 @@ class BaseYii
      * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
      *   actual path first by calling [[getAlias()]].
      *
-     * @throws InvalidParamException if $path is an invalid alias.
+     * @throws InvalidArgumentException if $path is an invalid alias.
      * @see getAlias()
      */
     public static function setAlias($alias, $path)
@@ -278,7 +278,7 @@ class BaseYii
     {
         if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
-            if ($classFile[0] === '@') {
+            if (strpos($classFile, '@') === 0) {
                 $classFile = static::getAlias($classFile);
             }
         } elseif (strpos($className, '\\') !== false) {
@@ -343,17 +343,29 @@ class BaseYii
     {
         if (is_string($type)) {
             return static::$container->get($type, $params);
-        } elseif (is_array($type) && isset($type['class'])) {
+        }
+
+        if (is_callable($type, true)) {
+            return static::$container->invoke($type, $params);
+        }
+
+        if (!is_array($type)) {
+            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        }
+
+        if (isset($type['__class'])) {
+            $class = $type['__class'];
+            unset($type['__class'], $type['class']);
+            return static::$container->get($class, $params, $type);
+        }
+
+        if (isset($type['class'])) {
             $class = $type['class'];
             unset($type['class']);
             return static::$container->get($class, $params, $type);
-        } elseif (is_callable($type, true)) {
-            return static::$container->invoke($type, $params);
-        } elseif (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
         }
 
-        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        throw new InvalidConfigException('Object configuration must be an array containing a "class" or "__class" element.');
     }
 
     private static $_logger;
@@ -380,19 +392,32 @@ class BaseYii
     }
 
     /**
-     * Logs a trace message.
+     * Logs a debug message.
      * Trace messages are logged mainly for development purpose to see
      * the execution work flow of some code. This method will only log
      * a message when the application is in debug mode.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
+     * @since 2.0.14
      */
-    public static function trace($message, $category = 'application')
+    public static function debug($message, $category = 'application')
     {
         if (YII_DEBUG) {
             static::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
         }
+    }
+
+    /**
+     * Alias of [[debug()]].
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
+     * @param string $category the category of the message.
+     * @deprecated since 2.0.14. Use [[debug()]] instead.
+     */
+    public static function trace($message, $category = 'application')
+    {
+        static::debug($message, $category);
     }
 
     /**
@@ -472,6 +497,7 @@ class BaseYii
     /**
      * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
      * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
+     * @deprecated since 2.0.14, this method will be removed in 2.1.0.
      */
     public static function powered()
     {
@@ -496,7 +522,7 @@ class BaseYii
      * echo \Yii::t('app', 'Hello, {username}!', ['username' => $username]);
      * ```
      *
-     * Further formatting of message parameters is supported using the [PHP intl extensions](http://www.php.net/manual/en/intro.intl.php)
+     * Further formatting of message parameters is supported using the [PHP intl extensions](https://secure.php.net/manual/en/intro.intl.php)
      * message formatter. See [[\yii\i18n\I18N::translate()]] for more details.
      *
      * @param string $category the message category.

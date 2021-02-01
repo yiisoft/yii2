@@ -23,7 +23,7 @@ namespace yii\helpers;
  * For more details please refer to the [Markdown library documentation](https://github.com/cebe/markdown#readme).
  *
  * > Note: The Markdown library works with PHPDoc annotations so if you use it together with
- * > PHP `opcache` make sure [it does not strip comments](http://php.net/manual/en/opcache.configuration.php#ini.opcache.save-comments).
+ * > PHP `opcache` make sure [it does not strip comments](https://secure.php.net/manual/en/opcache.configuration.php#ini.opcache.save-comments).
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

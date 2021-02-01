@@ -128,8 +128,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     /**
      * Formats scalar value to use in XML text node.
      *
-     * @param int|string|bool $value
-     * @return string
+     * @param int|string|bool|float $value a scalar value.
+     * @return string string representation of the value.
      * @since 2.0.11
      */
     protected function formatScalarValue($value)
@@ -137,11 +137,12 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         if ($value === true) {
             return 'true';
         }
-
         if ($value === false) {
             return 'false';
         }
-
+        if (is_float($value)) {
+            return StringHelper::floatToString($value);
+        }
         return (string) $value;
     }
 

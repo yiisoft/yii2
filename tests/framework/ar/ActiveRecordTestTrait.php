@@ -9,6 +9,7 @@ namespace yiiunit\framework\ar;
 
 use yii\base\Event;
 use yii\db\BaseActiveRecord;
+use yii\db\Expression;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
 use yiiunit\TestCase;
@@ -84,8 +85,7 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::findOne(5);
         $this->assertNull($customer);
         $customer = $customerClass::findOne(['id' => [5, 6, 1]]);
-        // can't use assertCount() here since it will count model attributes instead
-        $this->assertEquals(1, count($customer));
+        $this->assertInstanceOf($customerClass, $customer);
         $customer = $customerClass::find()->where(['id' => [5, 6, 1]])->one();
         $this->assertNotNull($customer);
 
@@ -104,6 +104,19 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::find()->where(['name' => 'user2'])->one();
         $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals(2, $customer->id);
+
+        // find by expression
+        $customer = $customerClass::findOne(new Expression('[[id]] = :id', [':id' => 2]));
+        $this->assertInstanceOf($customerClass, $customer);
+        $this->assertEquals('user2', $customer->name);
+        $customer = $customerClass::findOne(
+            new Expression('[[id]] = :id AND [[name]] = :name', [':id' => 2, ':name' => 'user1'])
+        );
+        $this->assertNull($customer);
+        $customer = $customerClass::findOne(new Expression('[[id]] = :id', [':id' => 5]));
+        $this->assertNull($customer);
+        $customer = $customerClass::findOne(new Expression('[[name]] = :name', [':name' => 'user5']));
+        $this->assertNull($customer);
 
         // scope
         $this->assertCount(2, $customerClass::find()->active()->all());
@@ -1106,7 +1119,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1161,7 +1174,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1275,5 +1288,27 @@ trait ActiveRecordTestTrait
 
         $this->assertFalse($customer->canGetProperty('non_existing_property'));
         $this->assertFalse($customer->canSetProperty('non_existing_property'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17089
+     */
+    public function testViaWithCallable()
+    {
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        /* @var Order $order */
+        $order = $orderClass::findOne(2);
+
+        $expensiveItems = $order->expensiveItemsUsingViaWithCallable;
+        $cheapItems = $order->cheapItemsUsingViaWithCallable;
+
+        $this->assertCount(2, $expensiveItems);
+        $this->assertEquals(4, $expensiveItems[0]->id);
+        $this->assertEquals(5, $expensiveItems[1]->id);
+
+        $this->assertCount(1, $cheapItems);
+        $this->assertEquals(3, $cheapItems[0]->id);
     }
 }

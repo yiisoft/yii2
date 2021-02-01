@@ -13,6 +13,7 @@ use yii\helpers\FileHelper;
 
 /**
  * FileMutex implements mutex "lock" mechanism via local file system files.
+ *
  * This component relies on PHP `flock()` function.
  *
  * Application configuration example:
@@ -27,11 +28,11 @@ use yii\helpers\FileHelper;
  * ]
  * ```
  *
- * Note: this component can maintain the locks only for the single web server,
- * it probably will not suffice to your in case you are using cloud server solution.
+ * > Note: this component can maintain the locks only for the single web server,
+ * > it probably will not suffice in case you are using cloud server solution.
  *
- * Warning: due to `flock()` function nature this component is unreliable when
- * using a multithreaded server API like ISAPI.
+ * > Warning: due to `flock()` function nature this component is unreliable when
+ * > using a multithreaded server API like ISAPI.
  *
  * @see Mutex
  *
@@ -40,6 +41,8 @@ use yii\helpers\FileHelper;
  */
 class FileMutex extends Mutex
 {
+    use RetryAcquireTrait;
+
     /**
      * @var string the directory to store mutex files. You may use [path alias](guide:concept-aliases) here.
      * Defaults to the "mutex" subdirectory under the application runtime path.
@@ -58,6 +61,13 @@ class FileMutex extends Mutex
      * but read-only for other users.
      */
     public $dirMode = 0775;
+    /**
+     * @var bool whether file handling should assume a Windows file system.
+     * This value will determine how [[releaseLock()]] goes about deleting the lock file.
+     * If not set, it will be determined by checking the DIRECTORY_SEPARATOR constant.
+     * @since 2.0.16
+     */
+    public $isWindows;
 
     /**
      * @var resource[] stores all opened lock files. Keys are lock names and values are file handles.
@@ -77,22 +87,22 @@ class FileMutex extends Mutex
         if (!is_dir($this->mutexPath)) {
             FileHelper::createDirectory($this->mutexPath, $this->dirMode, true);
         }
+        if ($this->isWindows === null) {
+            $this->isWindows = DIRECTORY_SEPARATOR === '\\';
+        }
     }
 
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      */
     protected function acquireLock($name, $timeout = 0)
     {
         $filePath = $this->getLockFilePath($name);
-        $waitTime = 0;
-
-        while (true) {
+        return $this->retryAcquire($timeout, function () use ($filePath, $name) {
             $file = fopen($filePath, 'w+');
-
             if ($file === false) {
                 return false;
             }
@@ -103,13 +113,7 @@ class FileMutex extends Mutex
 
             if (!flock($file, LOCK_EX | LOCK_NB)) {
                 fclose($file);
-
-                if (++$waitTime > $timeout) {
-                    return false;
-                }
-
-                sleep(1);
-                continue;
+                return false;
             }
 
             // Under unix we delete the lock file before releasing the related handle. Thus it's possible that we've acquired a lock on
@@ -126,15 +130,12 @@ class FileMutex extends Mutex
                 clearstatcache(true, $filePath);
                 flock($file, LOCK_UN);
                 fclose($file);
-                continue;
+                return false;
             }
 
             $this->_files[$name] = $file;
             return true;
-        }
-
-        // Should not be reached normally.
-        return false;
+        });
     }
 
     /**
@@ -148,7 +149,7 @@ class FileMutex extends Mutex
             return false;
         }
 
-        if (DIRECTORY_SEPARATOR === '\\') {
+        if ($this->isWindows) {
             // Under windows it's not possible to delete a file opened via fopen (either by own or other process).
             // That's why we must first unlock and close the handle and then *try* to delete the lock file.
             flock($this->_files[$name], LOCK_UN);

@@ -164,7 +164,7 @@ Content-Type: application/json; charset=UTF-8
 может пригодиться для более тонкой настройки кодирования.
 
 Свойство [[yii\web\Response::formatters|formatters]] компонента приложения `response` может быть
-[сконфигурировано](concept-configuration.md) следующим образом:
+[сконфигурировано](concept-configurations.md) следующим образом:
 
 ```php
 'response' => [

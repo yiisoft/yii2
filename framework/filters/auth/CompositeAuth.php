@@ -50,7 +50,7 @@ class CompositeAuth extends AuthMethod
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -58,7 +58,7 @@ class CompositeAuth extends AuthMethod
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function authenticate($user, $request, $response)
     {
@@ -80,7 +80,7 @@ class CompositeAuth extends AuthMethod
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {

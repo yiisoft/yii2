@@ -119,7 +119,7 @@ class MaskedInput extends InputWidget
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {

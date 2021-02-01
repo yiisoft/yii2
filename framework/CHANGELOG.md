@@ -1,18 +1,761 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.13 under development
+2.0.41 under development
 ------------------------
 
+- Enh #18483: Add `yii\log\Logger::$dbEventNames` that allows specifying event names used to get statistical results (profiling) of DB queries (atiline)
+- Enh #18455: Add ability to use separate attributes for data model and filter model of `yii\grid\GridView` in `yii\grid\DataColumn` (PowerGamer1)
+- Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
+- Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
+- Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
+- Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
+- Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
+- Bug #18479: Fix invalid argument type for `preg_split` in `\yii\console\Controller` (gazooz)
+- Bug #18477: Fix detecting availability of Xdebug's stack trace in `yii\base\ErrorException` (bizley)
+- Bug #18480: Transactions are not committed using the dblib driver (bbrunekreeft)
+- Enh #18493: Faster request parsing for REST UrlRule with prefix handling (bizley)
+- Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
+- Bug #8750: Fix MySQL support when running in `ANSI`/`ANSI_QUOTES` modes (brandonkelly)
+
+
+2.0.40 December 23, 2020
+------------------------
+
+- Bug #16492: Fix eager loading Active Record relations when relation key is a subject to a type-casting behavior (bizley)
+- Bug #18199: Fix content body response on 304 HTTP status code, according to RFC 7232 (rad8329)
+- Bug #18287: Fix the OUTPUT got SQL syntax error if the column name is MSSQL keyword e.g. key (darkdef)
+- Bug #18339: Fix migrate controller actions to return exit codes (haohetao, bizley)
+- Bug #18365: Move quoting of table names to upper level to function `getSchemaMetadata()` in MSSQL driver to get clean names from the schema (darkdef)
+- Bug #18383: RBAC's generated file made PSR-12 compliant (perlexed)
+- Bug #18386: Fix `assets/yii.activeForm.js` incorrect target selector for `validatingCssClass` (brussens)
+- Bug #18393: Fix `ActiveRecord::refresh()` to load data from the database even if cache is enabled (hooman-mirghasemi)
+- Bug #18395: Fix regression in `yii\helpers\BaseArrayHelper::filter()` (allowing filtering arrays with numeric keys) (bizley)
+- Bug #18400: Set parent module of the newly attached child module by `Module::setModule()` and `Module::setModules()` (sup-ham)
+- Bug #18406: Fix PDO exception when committing or rolling back an autocommitted transaction in PHP 8 (brandonkelly)
+- Bug #18414: Fix `AssetManager::appendTimestamp()` not appending timestamp for website root in sub-directory (Isitar)
+- Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
+- Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
+- Bug #18437: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
+- Bug #18442: Fix calls with array access to string (bizley)
+- Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
+- Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
+
+
+2.0.39.3 November 23, 2020
+--------------------------
+
+- Bug #18396: Fix not throw `InvalidConfigException` when failed to instantiate class via DI container in some cases (vjik)
+- Enh #18200: Add `maxlength` attribute by default to the input text when it is an active field within a `yii\grid\DataColumn` (rad8329)
+
+
+2.0.39.2 November 13, 2020
+--------------------------
+
+- Bug #18378: Fix not taking default value when unable to resolve abstract class via DI container (vjik)
+
+
+2.0.39.1 November 10, 2020
+--------------------------
+
+- Bug #18373: Fix not taking default value when unable to resolve non-existing class via DI container (vjik)
+- Enh #18370: Add option to provide a string replacement for `null` value in `yii\data\DataFilter` (bizley)
+
+
+2.0.39 November 10, 2020
+------------------------
+
+- Bug #16418: Fix `yii\data\Pagination::getLinks()` to return links to the first and the last pages regardless of the current page (ptz-nerf, bizley)
+- Bug #16831: Fix console Table widget does not render correctly in combination with ANSI formatting (issidorov, cebe)
+- Bug #18160, #18192: Fix `registerFile` with set argument `depends` does not take `position` and `appendTimestamp` into account (baleeny)
+- Bug #18263: Fix writing `\yii\caching\FileCache` files to the same directory when `keyPrefix` is set (githubjeka)
+- Bug #18287: Fix for `OUTPUT INSERTED` and computed columns. Add flag to mark computed values in table schema (darkdef)
+- Bug #18290: Fix response with non-seekable streams (schmunk42)
+- Bug #18297: Replace usage of deprecated `ReflectionParameter::isArray()` method in PHP8 (baletskyi)
+- Bug #18303: Fix creating migration for column methods used after `defaultValues` (wsaid)
+- Bug #18308: Fix `\yii\base\Model::getErrorSummary()` reverse order (DrDeath72)
+- Bug #18313: Fix multipart form data parsing with double quotes (wsaid)
+- Bug #18317: Additional PHP 8 compatibility fixes (samdark, bizley)
+- Enh #18247: Add support for the 'session.use_strict_mode' ini directive in `yii\web\Session` (rhertogh)
+- Enh #18285: Enhanced DI container to allow passing parameters by name in a constructor (vjik)
+- Enh #18304: Add support of constructor parameters with default values to DI container (vjik)
+- Enh #18351: Add option to change default timezone for parsing formats without time part in `yii\validators\DateValidator` (bizley)
+
+
+2.0.38 September 14, 2020
+-------------------------
+
+- Bug #13973: Correct alterColumn for MSSQL & drop constraints before dropping a column (darkdef)
+- Bug #15265: PostgreSQL > 10.0 is not pass tests with default value of timestamp CURRENT_TIMESTAMP (terabytesoftw)
+- Bug #16892: Validation error class was not applied to checkbox and radio when validationStateOn = self::VALIDATION_STATE_ON_INPUT (dan-szabo, samdark)
+- Bug #18040: Display width specification for integer data types was deprecated in MySQL 8.0.19 (terabytesoftw)
+- Bug #18066: Fix `yii\db\Query::create()` wasn't using all info from `withQuery()` (maximkou)
+- Bug #18229: Add a flag to specify SyBase database when used with pdo_dblib (darkdef)
+- Bug #18232: Fail tests pgsql v-10.14, v-11.9, v-12-latest (terabytesoftw)
+- Bug #18233: Add PHP 8 support (samdark)
+- Bug #18239: Fix support of no-extension files for `FileValidator::validateExtension()` (darkdef)
+- Bug #18245: Make resolving DI references inside of arrays in dependencies optional (SamMousa, samdark, hiqsol)
+- Bug #18248: Render only one stack trace on a console for chained exceptions (mikehaertl)
+- Bug #18269: Fix integer safe attribute to work properly in `yii\base\Model` (Ladone)
+- Bug: (CVE-2020-15148): Disable unserialization of `yii\db\BatchQueryResult` to prevent remote code execution in case application calls unserialize() on user input containing specially crafted string (samdark, russtone)
+- Enh #18196: `yii\rbac\DbManager::$checkAccessAssignments` is now `protected` (alex-code)
+- Enh #18213: Do not load fixtures with circular dependencies twice instead of throwing an exception (JesseHines0)
+- Enh #18236: Allow `yii\filters\RateLimiter` to accept a closure function for the `$user` property in order to assign values on runtime (nadar)
+
+
+2.0.37 August 07, 2020
+----------------------
+
+- Bug #17147: Fix form attribute validations for empty select inputs (kartik-v)
+- Bug #18156: Fix `yii\db\Schema::quoteSimpleTableName()` was checking incorrect quote character (M4tho, samdark)
+- Bug #18170: Fix 2.0.36 regression in passing extra console command arguments to the action (darkdef)
+- Bug #18171: Change case of column names in SQL query for `findConstraints` to fix MySQL 8 compatibility (darkdef)
+- Bug #18182: `yii\db\Expression` was not supported as condition in `ActiveRecord::findOne()` and `ActiveRecord::findAll()` (rhertogh)
+- Bug #18189: Fix "Invalid parameter number" in `yii\rbac\DbManager::removeItem()` (samdark)
+- Bug #18198: Fix saving tables with trigger by outputting inserted data from insert query with usage of temporary table (darkdef)
+- Bug #18203: PDO exception code was not properly passed to `yii\db\Exception` (samdark)
+- Bug #18204: Fix 2.0.36 regression in inline validator and JS validation (samdark)
+- Enh #18205: Add `.phpstorm.meta.php` file for better auto-completion in PhpStorm (vjik)
+- Enh #18210: Allow strict comparison for multi-select inputs (alex-code)
+- Enh #18217: Make `yii\console\ErrorHandler` render chained exceptions in debug mode (mikehaertl)
+
+
+2.0.36 July 07, 2020
+--------------------
+
+- Bug #13828: Fix retrieving inserted data for a primary key of type uniqueidentifier for SQL Server 2005 or later (darkdef)
+- Bug #17474: Fix retrieving inserted data for a primary key of type trigger for SQL Server 2005 or later (darkdef)
+- Bug #17985: Convert migrationNamespaces to array if needed (darkdef)
+- Bug #18001: Fix getting table metadata for tables `(` in their name (floor12)
+- Bug #18026: Fix `ArrayHelper::getValue()` did not work with `ArrayAccess` objects (mikk150)
+- Bug #18028: Fix division by zero exception in console `Table::calculateRowHeight()` (fourhundredfour)
+- Bug #18031: `HttpBasicAuth` with auth callback now triggers login events same was as other authentication methods (samdark)
+- Bug #18041: Fix RBAC migration for MSSQL (darkdef)
+- Bug #18047: Fix colorization markers output in console `Table` (cheeseq)
+- Bug #18051: Fix missing support for custom validation method in EachValidator (bizley)
+- Bug #18051: Fix using `EachValidator` with custom validation function (bizley)
+- Bug #18081: Fix for PDO_DBLIB/MSSQL. Set flag `ANSI_NULL_DFLT_ON` to ON for current DB connection (darkdef)
+- Bug #18086: Fix accessing public properties of `ArrayAccess` via `ArrayHelper::getValue()` (samdark)
+- Bug #18094: Add support for composite file extension validation (darkdef)
+- Bug #18096: Fix `InlineValidator` with anonymous inline function not working well from `EachValidator` (trombipeti)
+- Bug #18101: Fix behavior of `OUTPUT INSERTED.*` for SQL Server query: "insert default values"; correct MSSQL unit tests; turn off profiling echo message in migration test (darkdef)
+- Bug #18105: Fix for old trigger in RBAC migration with/without `prefixTable` (darkdef)
+- Bug #18110: Add quotes to return value of viewName in MSSQL schema. It is `[someView]` now (darkdef)
+- Bug #18127: Resolve DI references inside of arrays in dependencies (hiqsol)
+- Bug #18134: `Expression` as `columnName` should not be quoted in `likeCondition` (darkdef)
+- Bug #18147: Fix parameters binding for MySQL when prepare emulation is off (rskrzypczak)
+- Enh #15202: Add optional param `--silent-exit-on-exception` in `yii\console\Controller` (egorrishe)
+- Enh #17722: Add action injection support (SamMousa, samdark, erickskrauch)
+- Enh #18019: Allow jQuery 3.5.0 to be installed (wouter90)
+- Enh #18048: Use `Instance::ensure()` to set `User::$accessChecker` (lav45)
+- Enh #18083: Add `Controller::$request` and `$response` (brandonkelly)
+- Enh #18120: Include the path to the log file into error message if `FileTarget::export` fails (uaoleg)
+- Enh #18151: Add `Mutex::isAcquired()` to check if lock is currently acquired (rhertogh)
+
+
+2.0.35 May 02, 2020
+-------------------
+
+- Bug #16481: Fix RBAC MSSQL trigger (achretien)
+- Bug #17653: Fix `TypeError: pair[1] is undefined` when query param doesn't have `=` sign (baso10)
+- Bug #17810: Fix `EachValidator` crashing with uninitialized typed properties (ricardomm85)
+- Bug #17942: Fix for `DbCache` loop in MySQL `QueryBuilder` (alex-code)
+- Bug #17948: Ignore errors caused by `set_time_limit(0)` (brandonkelly)
+- Bug #17960: Fix unsigned primary key type mapping for SQLite (bizley)
+- Bug #17961: Fix pagination `pageSizeLimit` ignored if set as array with more then 2 elements (tsvetiligo)
+- Bug #17974: Fix `ActiveRelationTrait` compatibility with PHP 7.4 (Ximich)
+- Bug #17975: Fix deleting unused messages with console command if message tables were created manually (auerswald, cebe)
+- Bug #17991: Improve `yii\db\Connection` master and slave failover, no connection attempt was made when all servers are marked as unavailable  (cebe)
+- Bug #18000: PK value of Oracle ActiveRecord is missing after save (mankwok)
+- Bug #18010: Allow upper or lower case operators in `InCondition` and `LikeCondition` (alex-code)
+- Bug #18011: Add attribute labels support for `DynamicModel`, fixed `EachValidator` to pass the attribute label to the underlying `DynamicModel` (storch)
+- Enh #17758: `Query::withQuery()` can now be used for CTE (sartor)
+- Enh #17993: Add `yii\i18n\Formatter::$currencyDecimalSeparator` to allow setting custom symbols for currency decimal in `IntlNumberFormatter` (XPOHOC269)
+- Enh #18006: Allow `SameSite` cookie pre PHP 7.3 (scottix)
+
+
+2.0.34 March 26, 2020
+---------------------
+
+- Bug #17932: Fix regression in detection of AJAX requests (samdark)
+- Bug #17933: Log warning instead of erroring when URLManager is unable to initialize cache (samdark)
+- Bug #17934: Fix regression in Oracle when binding several string parameters (fen1xpv, samdark)
+- Bug #17935: Reset DB quoted table/column name caches when the connection is closed (brandonkelly)
+
+
+2.0.33 March 24, 2020
+---------------------
+
+- Bug #11945: Fix Schema Builder MySQL column definition order (simialbi)
+- Bug #13749: Fix Yii opens db connection even when hits query cache (shushenghong)
+- Bug #16092: Fix duplicate joins in usage of `joinWith` (germanow)
+- Bug #16145: Fix `Html` helper `checkboxList()`, `radioList()`, `renderSelectOptions()`, `dropDownList()`, `listBox()` methods to work properly with traversable selection (samdark)
+- Bug #16334: Add `\JsonSerializable` support to `ArrayableTrait` (germanow)
+- Bug #17667: Fix `CREATE INDEX` failure on SQLite when specifying schema (santilin, samdark)
+- Bug #17679: Fix Oracle exception "ORA-01461: can bind a LONG value only for insert into a LONG column" when inserting 4k+ string (vinpel, 243083df)
+- Bug #17797: Fix for `activeListInput` options (alex-code)
+- Bug #17798: Avoid creating directory for stream log targets in `FileTarget` (wapmorgan)
+- Bug #17828: Fix `yii\web\UploadedFile::saveAs()` failing when error value in `$_FILES` entry is a string (haveyaseen)
+- Bug #17829: `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 levels (rhertogh)
+- Bug #17843: Fix `yii\web\Session::setCookieParamsInternal` checked "samesite" parameter incorrectly (schevgeny)
+- Bug #17850: Update to `ReplaceArrayValue` config exception message (alex-code)
+- Bug #17859: Fix loading fixtures under Windows (samdark)
+- Bug #17863: `\yii\helpers\BaseInflector::slug()` doesn't work with an empty string as a replacement argument (haruatari)
+- Bug #17875: Use `move_uploaded_file()` function instead of `copy()` and `unlink()` for saving uploaded files in case of POST request (sup-ham)
+- Bug #17878: Detect CORS AJAX requests without `X-Requested-With` in `Request::getIsAjax()` (dicrtarasov, samdark)
+- Bug #17881: `yii\db\Query::queryScalar()` wasn’t reverting the `select`, `orderBy`, `limit`, and `offset` params if an exception occurred (brandonkelly)
+- Bug #17884: Fix 0 values in console Table rendered as empty string (mikehaertl)
+- Bug #17886: Fix `yii\rest\Serializer` to serialize arrays (patacca)
+- Bug #17909: Reset DB schema, transaction, and driver name when the connection is closed (brandonkelly)
+- Bug #17920: Fix quoting for `Command::getRawSql` having `Expression` in params (alex-code)
+- Enh #7622: Allow `yii\data\ArrayDataProvider` to control the sort flags for `sortModels` through `yii\data\Sort::sortFlags` property (askobara)
+- Enh #16721: Use `Instance::ensure()` to initialize `UrlManager::$cache` (rob006)
+- Enh #17827: Add `StringValidator::$strict` that can be turned off to allow any scalars (adhayward, samdark)
+- Enh #17929: Actions can now have bool typed params bound (alex-code)
+
+
+2.0.32 January 21, 2020
+-----------------------
+
+- Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
+- Bug #17037: Fix uploaded file saving method when data came from `MultipartFormDataParser` (sup-ham)
+- Bug #17300: Fix class-level event handling with wildcards (Toma91)
+- Bug #17635: Fix varbinary data handling for MSSQL (toatall)
+- Bug #17744: Fix a bug with setting incorrect `defaultValue` to AR column with `CURRENT_TIMESTAMP(x)` as default expression (MySQL >= 5.6.4) (bizley)
+- Bug #17749: Fix logger dispatcher behavior when target crashes in PHP 7.0+ (kamarton)
+- Bug #17755: Fix a bug for web request with `trustedHosts` set to format `['10.0.0.1' => ['X-Forwarded-For']]` (shushenghong)
+- Bug #17760: Fix `JSON::encode()` for `\DateTimeInterface` under PHP 7.4 (samdark)
+- Bug #17762: PHP 7.4: Remove special condition for converting PHP errors to exceptions if they occurred inside of `__toString()` call (rob006)
+- Bug #17766: Remove previous PJAX event binding before registering new one (samdark)
+- Bug #17767: Make `Formatter::formatNumber` method protected (TheCodeholic)
+- Bug #17771: migrate/fresh was not returning exit code (samdark)
+- Bug #17793: Fix inconsistent handling of null `data` attribute values in `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+- Bug #17803: Fix `ErrorHandler` unregister and register to only change global state when applicable (SamMousa)
+- Enh #17729: Path alias support was added to `yii\web\UploadedFile::saveAs()` (sup-ham)
+- Enh #17792: Add support for `aria` attributes to `yii\helpers\BaseHtml::renderTagAttributes()` (brandonkelly)
+
+2.0.31 December 18, 2019
+------------------------
+
+- Bug #17661: Fix query builder incorrect IN/NOT IN condition handling for null values (strychu)
+- Bug #17685: Fix invalid db component in `m180523_151638_rbac_updates_indexes_without_prefix` (rvkulikov)
+- Bug #17687: `Query::indexBy` can now include a table alias (brandonkelly)
+- Bug #17694: Fixed Error Handler to clear registered view tags, scripts, and files when rendering error view through action view (bizley)
+- Bug #17701: Throw `BadRequestHttpException` when request params can’t be bound to `int` and `float` controller action arguments (brandonkelly)
+- Bug #17710: Fix MemCache duration normalization to avoid memcached/system timestamp mismatch (samdark)
+- Bug #17723: Fix `Model::activeAttributes()` to access array offset on value of non-string (samdark)
+- Bug #17723: Fix incorrect decoding of default binary value for PostgreSQL (samdark)
+- Bug #17723: Fix incorrect type-casting of reflection type to string (samdark)
+- Bug #17725: Ensure we do not use external polyfills for pbkdf2() as these may be implemented incorrectly (samdark)
+- Bug #17740: `yii\helpers\BaseInflector::slug()` doesn't replace multiple replacement string occurrences to single one (batyrmastyr)
+- Bug #17745: Fix PostgreSQL query builder drops default value when it is empty (xepozz)
+- Enh #17665: Implement RFC 7239 `Forwarded` header parsing in Request (mikk150, kamarton)
+- Enh #17720: DI 3 support for application core components and default object configurations (sup-ham)
+
+
+2.0.30 November 19, 2019
+------------------------
+
+- Bug #17434: IE Ajax redirect fix for non 11.0 versions (kamarton)
+- Bug #17632: Unicode file name was not correctly parsed in multipart forms (AlexRas007, samdark)
+- Bug #17648: Handle empty column arrays in console `Table` widget (alex-code)
+- Bug #17657: Fix migration errors from missing `$schema` in RBAC init file when using MSSQL (PoohOka)
+- Bug #17670: Fix overriding core component class using `__class` (sup-ham, samdark)
+
+
+2.0.29 October 22, 2019
+-----------------------
+
+- Bug #8225: Fixed AJAX validation with checkboxList was only triggered on first select (execut)
+- Bug #17597: PostgreSQL 12 and partitioned tables support (batyrmastyr)
+- Bug #17602: `EmailValidator` with `checkDNS=true` throws `ErrorException` on bad domains on Alpine (batyrmastyr)
+- Bug #17606: Fix error in `AssetBundle` when a disabled bundle with custom init() was still published (onmotion)
+- Bug #17625: Fix boolean `data` attributes from subkeys rendering in `Html::renderTagAttributes()` (brandonkelly)
+- Enh #17607: Added Yii version 3 DI config compatibility (hiqsol)
+
+
+2.0.28 October 08, 2019
+-----------------------
+
+- Bug #17573: `Request::getUserIP()` security fix for the case when `Request::$trustedHost` and `Request::$ipHeaders` are used (kamarton)
+- Bug #17585: Fix `yii\i18n\Formatter` including the `@calendar` locale param in `Yii::t()` calls (brandonkelly)
+- Bug #17853: Fix errors in ActiveField to be properly caught when PHP 7 is used (My6UoT9)
+
+
+2.0.27 September 18, 2019
+-------------------------
+
+- Bug #16610: ErrorException trace was cut when using XDebug (Izumi-kun)
+- Bug #16671: Logging in `Connection::open()` was not respecting `Connection::$enableLogging` (samdark)
+- Bug #16855: Ignore console commands that have no actions (alexeevdv)
+- Bug #17434: Fix regular expression illegal character; Repeated fix for Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #17539: Fixed error when using `batch()` with `indexBy()` with MSSQL (alexkart)
+- Bug #17549: Fix `yii\db\ExpressionInterface` not supported in `yii\db\conditions\SimpleConditionBuilder` (razvanphp)
+- Enh #15526: Show valid aliases and options on invalid input in console application (samdark)
+- Enh #16826: `appendTimestamp` support was added to `View` methods `registerCssFile()` and `registerJsFile()` (onmotion)
+
+
+2.0.26 September 03, 2019
+-------------------------
+
+- Bug #16305: Fix `FileValidator` mime-type validation failure because of case sensitivity (kamarton)
+- Bug #16531: Fix error in `Response::sendContent()` when `set_time_limit()` is disabled (brandonkelly)
+- Bug #17355: Fix incorrect sequence of `EVENT_AFTER_REQUEST` when using Pjax (kamarton)
+- Bug #17434: Fix Internet Explorer 11 AJAX redirect bug in case of 301 and 302 response codes (`XMLHttpRequest: Network Error 0x800c0008`) (kamarton)
+- Bug #17449: Ensure `CHECK` statement goes after `COMMENT` in MySQL `QueryBuilder::addCommentOnColumn()` (Manu311)
+- Bug #17504: Fix upsert when `$updateColumns` is `true` but there are no columns to update in the table (alexkart)
+- Bug #17507: Fix regular expression escaping and simplify condition in `Controller::createAction()` (kamarton)
+- Bug #17511: Fix IPv6 subnets matching in `IpHelper::inRange()` (kamarton)
+- Bug #17522: `DbManager::isEmptyUserId()` is now protected (samdark)
+
+
+2.0.25 August 13, 2019
+----------------------
+
+- Bug #15779: If directory path is passed to `FileHelper::unlink()` and directory has files it will not delete files in this directory on Windows now (alexkart)
+- Bug #17223: Fixed detaching a behavior event when it is a Closure instance (GHopperMSK, rob006)
+- Bug #17473: Fixed `SimpleConditionBuilder::build()` when column is not a string (alexkart)
+- Bug #17485: Reverted #17477 (samdark)
+- Bug #17486: Fixed error when using `batch()` without `$db` parameter with MSSQL (alexkart)
+
+
+2.0.24 July 30, 2019
+--------------------
+
+- Bug #10020: Fixed quoting of column names with dots in MSSQL (alexkart)
+- Bug #16796: Fixed addition and removal of table and column comments in MSSQL (sdlins)
+- Bug #17219: Fixed quoting of table names with spaces in MSSQL (alexkart)
+- Bug #17424: Subdomain support for `User::loginRequired` (alex-code)
+- Bug #17437: Fixed generating namespaced migrations (bizley)
+- Bug #17449: Fixed order of SQL column build syntax for MySQL migration (choken)
+- Bug #17457: Fixed `phpTypecast()` for MSSQL (alexkart)
+- Bug #17469: Fixed updating `Yii` logger instance when setting new logger via configuration (samdark)
+
+
+2.0.23 July 16, 2019
+--------------------
+
+- Bug #10023: Fixed MSSQL "There are no more rows in the active result set" exception when using `each()` and `batch()` (alexkart)
+- Bug #17395: Fixed issues with actions that contain underscores in their names (alexkart)
+- Bug #17413, #17418, #17426, #17431: Fixed MSSQL tests (alexkart)
+- Bug #17420: Fixed loading of column default values for MSSQL (alexkart)
+- Bug #17435: Fixed `i18n_init` migration for MSSQL (alexkart)
+
+
+2.0.22 July 02, 2019
+--------------------
+
+- Bug #16394: Fixed issues in `migrate/create` when specifying default values with colons and adding multiple columns (alexkart)
+- Bug #17057: Fixed issues with table names that contain special characters or keywords in MSSQL (alexkart)
+- Bug #17325: Fixed "Cannot drop view" for MySQL while `migrate/fresh` (alexkart)
+- Bug #17341: Re-added fix for error from yii.activeForm.js in strict mode (mikehaertl)
+- Bug #17384: Fixed SQL error when passing `DISTINCT ON` queries (brandonkelly)
+- Bug #17389: Fixed `UniqueValidator` to work with Active Record having `joinWith()` in its `find()` (garthpmurray)
+- Enh #17382: Added `\yii\validators\DateValidator::$strictDateFormat` to enable strict validation (alexkart)
+- Enh #17396: Added 'invoked by controller' to the debug log message when `\yii\base\Action` is used (alexkart)
+
+
+2.0.21 June 18, 2019
+--------------------
+
+- Bug #16565: Added missing parts of the context message in `\yii\log\Target::collect` (alexkart)
+- Bug #17070: Striped invalid character from fallback file name in `Content-Disposition` header when using `\yii\web\Response::sendFile` (alexkart)
+- Bug #17332: Trigger 'change' for checkboxes in GridView (andrii-borysov-me)
+- Bug #17341: Fixed error from yii.activeForm.js in strict mode (mikehaertl)
+- Bug #17341: Allowed callable objects to be set to `\yii\filters\AccessRule::$roleParams` (alexkart)
+- Bug #17356: MSSQL Schema was not detecting string field size (ricarnevale, sdlins)
+- Enh #17344: Improved performance of `yii\db\Connection::addSelect()` (brandonkelly)
+- Enh #17345: Improved performance of `yii\db\Connection::quoteColumnName()` (brandonkelly)
+- Enh #17348: Improved performance of `yii\db\Connection::quoteTableName()` (brandonkelly)
+- Enh #17353: Added `sameSite` support for `yii\web\Cookie` and `yii\web\Session::cookieParams` (rhertogh)
+
+
+2.0.20 June 04, 2019
+--------------------
+
+- Bug #16509: Fixed console command help text wordwrap for multi-byte strings (alexkart)
+- Bug #17299: Fixed adding of input error class in `\yii\widgets\ActiveField::widget` (alexkart)
+- Bug #17328: Added mime aliases for BMP and SVG files (cmoeke)
+- Bug #17336: Fixed wildcard matching in Event::hasHandlers() (samdark)
+- Bug #12080: Fixed afterValidate triggering when any validation occurs (czzplnm)
+
+
+2.0.19 May 21, 2019
+-------------------
+
+- Bug #12077, #12135, #17263: Fixed PostgreSQL version of `alterColumn()` to accept properly `ColumnSchemaBuilder` definition of column (bizley)
+- Bug #16918: Console Table widget variables visibility was changed to protected to allow extending it (samdark)
+- Bug #17233: Fixed bug with integer model attribute names in Validator class (nadar)
+- Bug #17306: Added ".mjs" extensions to mimetypes meta (samdark)
+- Bug #17313: Support jQuery 3.4 (samdark)
+
+
+2.0.18 April 23, 2019
+---------------------
+
+- Bug #16589: Fixed not using `defaultValue` in `BlameableBehavior` for console app (evil1)
+- Bug #16820: `yii\filters\Cors::prepareHeaders()` now accepts Access-Control-Allow-Headers in preflight response (georgezim85)
+- Bug #17220: Fixed error when using non-InputWidget in active form field (s1lver)
+- Bug #17235: `yii\helpers\FileHelper::normalizePath()` now accepts stream wrappers (razvanphp)
+- Bug #17268: Fixed Formatter didn't take power into account (samdark)
+
+
+2.0.17 March 22, 2019
+---------------------
+
+- Bug #9438, #13740, #15037: Handle DB session callback custom fields before session closed (lubosdz)
+- Bug #16158: Fix multiple select validation was trigged on other fields blur event (GHopperMSK)
+- Bug #16335: Fixed in `yii\filters\AccessRule::matchIP()` user IP validation with netmask in rule (omentes)
+- Bug #16681: `ActiveField::inputOptions` were not used during some widgets rendering (GHopperMSK)
+- Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
+- Bug #17124: Fixed ErrorException when run `./yii fixture/unload` without arguments (ricpelo)
+- Bug #17127: `yii\db\ActiveRecord::findOne()` now accepts table aliases (albertborsos)
+- Bug #17133: Fixed aliases rendering during help generation for a console command (GHopperMSK)
+- Bug #17152: Fixed error page when using traceline option (asamats)
+- Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
+- Bug #17180: Do not populate `yii\web\Response::$response` when response code is 204 (mikk150)
+- Bug #17185: Fixed `AssetManager` timestamp appending when a file is published manually (GHopperMSK)
+- Bug #17215: Improved security for servers running PHP 7.0.0+ (brandonkelly)
+
+
+2.0.16.1 February 28, 2019
+--------------------------
+
+- Bug #17089: Fixed caching of related records when `via()` using with callable (rugabarbo)
+- Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
+- Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
+- Bug #17150: Fixed `yii\helpers\BaseInflector::camel2words()` splitting `ALLCAPS` words on each letter (brandonkelly)
+- Bug #17093: Fixed regression in `DataProvider::totalCount` (samdark)
+
+
+2.0.16 January 30, 2019
+-----------------------
+
+- Bug #5341: HasMany via two relations (shirase, cebe)
+- Bug #10843: Additional hidden input rendered by `yii\helpers\BaseHtml` methods inherits `disabled` HTML option if provided and set to `true` (bizley)
+- Bug #11960: Fixed `checked` option ignore in `yii\helpers\BaseHtml::checkbox()` (misantron)
+- Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
+- Bug #13977: Skip validation if file input does not exist (RobinKamps, s1lver)
+- Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` and `radioList` (s1lver)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` (s1lver)
+- Bug #14368: Added `role` attribute for active radio list (s1lver)
+- Bug #14636: Views can now use relative paths even when using themed views (sammousa)
+- Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
+- Bug #14759: Fixed `yii\web\JsonResponseFormatter` output for `null` data (misantron)
+- Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
+- Bug #14950: Fixed `yii\i18n\Formatter` methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` outputs for very big numbers (bizley)
+- Bug #15117: Fixed `yii\db\Schema::getTableMetadata` cache refreshing (boboldehampsink)
+- Bug #15167: Fixed loading of default value `current_timestamp()` for MariaDB >= 10.2.3 (rugabarbo, bloodrain777, Skinka)
+- Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
+- Bug #15286: Fixed incorrect formatting of time with timezone information (rugabarbo)
+- Bug #15482: AR::find()->with() missing data when using string identifiers for relations (rugabarbo)
+- Bug #15528: Fix timestamp formatting to always use decimal notation in `yii\log\Target::getTime()` (rob006)
+- Bug #15548: Fixed index names collision in RBAC (gonimar)
+- Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
+- Bug #15791: Added a warning when the form names conflict (s1lver, rustamwin)
+- Bug #15798: Fixed render `yii\grid\RadioButtonColumn::$content` and `yii\grid\CheckboxColumn::$content` (lesha724)
+- Bug #15802: Fixed exception class in yii\di\Container (vuchastyi, developeruz)
+- Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
+- Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
+- Bug #15875: afterSave for new models flushes unsaved data (shirase)
+- Bug #15876: `yii\db\ActiveQuery::viaTable()` now throws `InvalidConfigException`, if query is not prepared correctly (silverfire)
+- Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
+- Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts quoted table and column names using curly and square braces respectively (silverfire)
+- Bug #15988: Fixed bash completion (alekciy)
+- Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
+- Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
+- Bug #16022: Fix UniqueValidator for PostgreSQL. Checks the uniqueness of keys in `jsonb` field (lav45)
+- Bug #16028: Fix serialization of complex cache keys that contain non-UTF sequences (rugabarbo)
+- Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
+- Bug #16068: Fixed `yii\web\CookieCollection::has` when an expiration param is set to 'until the browser is closed' (OndrejVasicek)
+- Bug #16073: Fixed regression in Oracle `IN` condition builder for more than 1000 items (cebe)
+- Bug #16081: Fixed composite IN using just one column (rugabarbo)
+- Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
+- Bug #16101: Fixed Error Handler to clear registered meta tags, link tags, css/js scripts and files in error view (bizley)
+- Bug #16104: Fixed `yii\db\pgsql\QueryBuilder::dropIndex()` to prepend index name with schema name (wapmorgan)
+- Bug #16120: FileCache: rebuild cache file before touch when different file owner (Slamdunk)
+- Bug #16183: Fixed when `yii\helpers\BaseFileHelper` sometimes returned wrong value (samdark, SilverFire, OndrejVasicek)
+- Bug #16184: Fixed `yii\base\Widget` to access `stack` property with `self` instead of `static` (yanggs07)
+- Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
+- Bug #16217: Fixed `yii\console\controllers\HelpController` to work well in Windows environment (samdark)
+- Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
+- Bug #16252: Fixed `yii\base\DynamicModel` for checking exist property (vuongxuongminh)
+- Bug #16253: Fixed empty checkboxlist validation (GHopperMSK)
+- Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
+- Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
+- Bug #16278: Fixed drop existing views when console `migrate/fresh` command runs (developeruz)
+- Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
+- Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
+- Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
+- Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
+- Bug #16331: Fixed console table without headers (rhertogh)
+- Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
+- Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
+- Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
+- Bug #16469: Allow cache to be specified as interface and to be configured in DI container (alexeevdv)
+- Bug #16490: Fix schema on rbac init (marcelodeandrade)
+- Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
+- Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
+- Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
+- Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
+- Bug #16580: Delete unused php message files in MessageController if `$removeUnused` option is on (Groonya)
+- Bug #16648: Html::strtolower() was corrupting UTF-8 strings (Kolyunya)
+- Bug #16657: Ensure widgets after run event result contains the result of the rendered widget (AdeAttwood)
+- Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
+- Bug #16680: Fixed ActiveField 'text' input with maxlength (s1lver)
+- Bug #16687: Add missing translations for `nl-NL` durations used in `yii\i18n\Formatter::asDuration()` (alexeevdv)
+- Bug #16716: The ability to filter by pressing the Enter key when the option `$filterOnFocusOut` off (s1lver)
+- Bug #16748: Fixed params when normalize data (marcelodeandrade)
+- Bug #16752: Fix rotating files under Windows (samdark, nadirvishun)
+- Bug #16766: `yii\filters\ContentNegotiator` was not setting `Vary` header to inform cache recipients (koteq, cebe, samdark)
+- Bug #16822: Create config dir recursively in message/config (Groonya)
+- Bug #16828: `yii\console\controllers\MessageController::translator` recognized object' methods and functions calls as identical sets of tokens (erickskrauch)
+- Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 characters (rob006)
+- Bug #16838: `yii\mutex\Mutex::acquire()` no longer returns `true` if lock is already acquired by the same component in the same process (rob006)
+- Bug #16858: Allow `\yii\console\widgets\Table` to render empty table when headers provided but no columns (damiandziaduch)
+- Bug #16891: Fixed Pagination::totalCount initialized incorrectly (taobig)
+- Bug #16897: Fixed `yii\db\sqlite\Schema` missing primary key constraint detection in case of `INTEGER PRIMARY KEY` (bizley)
+- Bug #16903: Fixed 'yii\validators\NumberValidator' method 'isNotNumber' returns false for true/false value (annechko)
+- Bug #16910: Fix messages sorting on extract (Groonya)
+- Bug #16945: Fixed RBAC DbManager ruleName fetching on the case of PDO::ATTR_ORACLE_NULLS => PDO::NULL_TO_STRING (razonyang)
+- Bug #16959: Fixed typo in if condition inside `yii\web\DbSession::typecastFields()` that caused problems with session overwriting (silverfire)
+- Bug #16966: Fix ArrayExpression support in related tables (GHopperMSK)
+- Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)
+- Bug #16974: Regular Expression Validator to include support for 'u' (UTF-8) modifier (Dzhuneyt)
+- Bug #16991: Removed usage of `utf8_encode()` from `Request::resolvePathInfo()` (GHopperMSK)
+- Bug #17021: Fix to do not remove existing message category files in a subfolder (albertborsos)
+- Bug: Fixed bad instanceof check in `yii\db\Schema::getTableMetadata()` (samdark)
+- Bug: (CVE-2018-14578): Fixed CSRF token check bypassing in `\yii\web\Request::getMethod()` (silverfire)
+- Bug: (CVE-2018-19454): Fixed excess logging of sensitive information in `\yii\log\Target` (silverfire)
+- Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
+- Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
+- Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types for MySQL >= 5.6.4 (konstantin-vl)
+- Enh #16151: `ActiveQuery::getTableNameAndAlias()` is now protected (s1lver)
+- Enh #16151: Change of scope for method `getTableNameAndAlias()` (s1lver)
+- Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
+- Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
+- Enh #16522: Allow jQuery 3.3 (Slamdunk)
+- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
+- Enh #16839: Increase frequency of lock tries for `yii\mutex\FileMutex::acquireLock()` when $timeout is provided (rob006)
+- Enh #16839: Add support for `$timeout` in  `yii\mutex\PgsqlMutex::acquire()` (rob006)
+- Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
+- Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
+- Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
+
+
+2.0.15.1 March 21, 2018
+-----------------------
+
+- Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts column names prefixed with table name (cebe)
+
+
+2.0.15 March 20, 2018
+---------------------
+
+- Bug #15688: (CVE-2018-7269): Fixed possible SQL injection through `yii\db\ActiveRecord::findOne()`, `::findAll()` (analitic1983, silverfire, cebe)
+- Bug #15878: Fixed migration with a comment containing an apostrophe (MarcoMoreno)
+
+
+2.0.14.2 March 13, 2018
+-----------------------
+
+- Bug #15776: Fixed slow MySQL constraints retrieving (MartijnHols, berosoboy, sergeymakinen)
+- Bug #15783: Regenerate CSRF token only when logging in directly (samdark)
+- Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
+- Bug #15801: Fixed `has-error` CSS class assignment in `yii\widgets\ActiveField` when attribute name is prefixed with tabular index (FabrizioCaldarelli)
+- Bug #15804: Fixed `null` values handling for PostgresSQL arrays (silverfire)
+- Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
+- Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
+- Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
+- Bug #15836: Fixed nesting of `yii\db\ArrayExpression`, `yii\db\JsonExpression` (silverfire)
+- Bug #15839: Fixed `yii\db\mysql\JsonExpressionBuilder` to cast JSON explicitly (silverfire)
+- Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
+- Bug #15858: Fixed `Undefined offset` error calling `yii\helpers\Html::errorSummary()` with the same error messages for different model attributes (FabrizioCaldarelli, silverfire)
+- Bug #15863: Fixed saving of `null` attribute value for JSON and Array columns in MySQL and PostgreSQL (silverfire)
+- Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
+- Bug: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
+
+
+2.0.14.1 February 24, 2018
+--------------------------
+
+- Bug #15318: Fixed `session_name(): Cannot change session name when session is active` errors (bscheshirwork, samdark)
+- Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
+- Bug #15692: Fix `yii\validators\ExistValidator` to respect filter when `targetRelation` is used (developeruz)
+- Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
+- Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
+- Bug #15707: Fixed JSON retrieving from MySQL (silverfire)
+- Bug #15708: Fixed `yii\db\Command::upsert()` for Cubrid/MSSQL/Oracle (sergeymakinen)
+- Bug #15724: Changed shortcut in `yii\console\controllers\BaseMigrateController` for `comment` option from `-c` to `-C` due to conflict (Izumi-kun)
+- Bug #15726: Fix ExistValidator is broken for NOSQL (developeruz)
+- Bug #15728, #15731: Fixed BC break in `Query::select()` method (silverfire)
+- Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)
+- Enh #15716: Added `disableJsonSupport` to MySQL and PgSQL `ColumnSchema`, `disableArraySupport` and `deserializeArrayColumnToArrayExpression` to PgSQL `ColumnSchema` (silverfire)
+- Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
+- Enh #15760: Added `ArrayAccess` support as validated value in `yii\validators\EachValidator` (silverfire)
+
+
+2.0.14 February 18, 2018
+------------------------
+
+- Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
+- Bug #9342: Fixed `yii\db\ActiveQueryTrait` to apply `indexBy` after relations population in order to prevent excess queries (sammousa, silverfire)
+- Bug #11401: Fixed `yii\web\DbSession` concurrency issues when writing and regenerating IDs (samdark, andreasanta, cebe)
+- Bug #13034: Fixed `normalizePath` for windows network shares that start with two backslashes (developeruz)
+- Bug #14135: Fixed `yii\web\Request::getBodyParam()` crashes on object type body params (klimov-paul)
+- Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
+- Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14296: Fixed log targets to throw exception in case log can not be properly exported (bizley)
+- Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
+- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
+- Bug #14711: (CVE-2018-6010): Fixed `yii\web\ErrorHandler` displaying exception message in non-debug mode (samdark)
+- Bug #14811: Fixed `yii\filters\HttpCache` to work with PHP 7.2 (samdark)
+- Bug #14859: Fixed OCI DB `defaultSchema` failure when `masterConfig` is used (lovezhl456)
+- Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
+- Bug #14916: Fixed `yii\db\Query::each()` iterator key starts from 1 instead of 0 (Vovan-VE)
+- Bug #14980: Fix looping in `yii\i18n\MessageFormatter` tokenize pattern if pattern is invalid (uaoleg, developeruz)
+- Bug #15031: Fixed incorrect string type length detection for OCI DB schema (Murolike)
+- Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
+- Bug #15122: Fixed `yii\db\Command::getRawSql()` to properly replace expressions (hiscaler, samdark)
+- Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
+- Bug #15169: Fixed translating a string when NULL parameter is passed (developeruz)
+- Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
+- Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
+- Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
+- Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
+- Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
+- Bug #15300: Fixed "Cannot read property 'style' of undefined" error at the error screen (vitorarantes)
+- Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
+- Bug #15302: Fixed `yii\caching\DbCache` so that `getValues` now behaves the same as `getValue` with regards to streams (edwards-sj)
+- Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
+- Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
+- Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
+- Bug #15353: Remove side effect of ActiveQuery::getTablesUsedInFrom() introduced in 2.0.13 (terales)
+- Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84, silverfire, samdark)
+- Bug #15356: Fixed multiple bugs in `yii\db\Query::getTablesUsedInFrom()` (vladis84, samdark)
+- Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
+- Bug #15407: Fixed rendering rows with associative arrays in `yii\console\widgets\Table` (dmrogin)
+- Bug #15432: Fixed wrong value being set in `yii\filters\RateLimiter::checkRateLimit()` resulting in wrong `X-Rate-Limit-Reset` header value (bizley)
+- Bug #15440: Fixed `yii\behaviors\AttributeTypecastBehavior::$attributeTypes` auto-detection fails for rule, which specify attribute with '!' prefix (klimov-paul)
+- Bug #15462: Fixed `accessChecker` configuration error (developeruz)
+- Bug #15494: Fixed missing `WWW-Authenticate` header (developeruz)
+- Bug #15522: Fixed `yii\db\ActiveRecord::refresh()` method does not use an alias in the condition (vladis84)
+- Bug #15523: `yii\web\Session` settings could now be configured after session is started (StalkAlex, rob006, daniel1302, samdark)
+- Bug #15536: Fixed `yii\widgets\ActiveForm::init()` for call `parent::init()` (panchenkodv)
+- Bug #15540: Fixed `yii\db\ActiveRecord::with()` unable to use relation defined via attached behavior in case `asArray` is enabled (klimov-paul)
+- Bug #15553: Fixed `yii\validators\NumberValidator` incorrectly validate resource (developeruz)
+- Bug #15621: Fixed `yii\web\User::getIdentity()` returning `null` if an exception had been thrown when it was called previously (brandonkelly)
+- Bug #15628: Fixed `yii\validators\DateValidator` to respect time when the `format` property is set to UNIX Epoch format (silverfire, gayHacker)
+- Bug #15644: Avoid wrong default selection on a dropdown, checkbox list, and radio list, when a option has a key equals to zero (berosoboy)
+- Bug #15658: Fixed `yii\filters\auth\HttpBasicAuth` not to switch identity, when user is already authenticated and identity does not get changed (silverfire)
+- Bug #15662: Fixed `yii\log\FileTarget` not to create log directory during init process (alexeevdv)
+- Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
+- Enh #3250: Added support for events partial wildcard matching (klimov-paul)
+- Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
+- Enh #6844: `yii\base\ArrayableTrait::toArray()` now allows recursive `$fields` and `$expand` (bboure)
+- Enh #7640: Implemented custom data types support. Added JSON support for MySQL and PostgreSQL, array support for PostgreSQL (silverfire, cebe)
+- Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
+- Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
+- Enh #8092: ExistValidator for relations (developeruz)
+- Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
+- Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
+- Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
+- Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
+- Enh #9771: Assign hidden input with its own set of HTML options via `$hiddenOptions` in activeFileInput `$options` (HanafiAhmat)
+- Enh #10186: Use native `hash_equals` in `yii\base\Security::compareString()` if available, throw exception if non-strings are compared (aotd1, samdark)
+- Enh #11611: Added `BetweenColumnsCondition` to build SQL condition like `value BETWEEN col1 and col2` (silverfire)
+- Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
+- Enh #13019: Support JSON in SchemaBuilderTrait (zhukovra, undefinedor)
+- Enh #13425: Added caching of dynamically added URL rules with `yii\web\UrlManager::addRules()` (scriptcube, silverfire)
+- Enh #13465: Added `yii\helpers\FileHelper::findDirectories()` method (ArsSirek, developeruz)
+- Enh #13618: Active Record now resets related models after corresponding attributes updates (Kolyunya, rob006)
+- Enh #13679: Added `yii\behaviors\CacheableWidgetBehavior` (Kolyunya)
+- Enh #13814: MySQL unique index names can now contain spaces (df2)
+- Enh #13879: Added upsert support for `yii\db\QueryBuilder`, `yii\db\Command`, and `yii\db\Migration` (sergeymakinen)
+- Enh #13919: Added option to add comment for created table to migration console command (mixartemev, developeruz)
+- Enh #13996: Added `yii\web\View::registerJsVar()` method that allows registering JavaScript variables (Eseperio, samdark)
+- Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
+- Enh #14254: add an option to specify whether validator is forced to always use master DB for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri, samdark)
+- Enh #14355: Added ability to pass an empty array as a parameter in console command (developeruz)
+- Enh #14488: Added support for X-Forwarded-Host to `yii\web\Request`, fixed `getServerPort()` usage (si294r, samdark)
+- Enh #14538: Added `yii\behaviors\AttributeTypecastBehavior::typecastAfterSave` property (littlefuntik, silverfire)
+- Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
+- Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
+- Enh #14638: Added `yii\db\SchemaBuilderTrait::tinyInteger()` (rob006)
+- Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
+- Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
+- Enh #14732, #11218, #14810, #10855: It is now possible to pass `yii\db\Query` anywhere, where `yii\db\Expression` was supported (silverfire)
+- Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
+- Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
+- Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
+- Enh #15076: Improve `yii\db\QueryBuilder::buildColumns()` to throw exception on invalid input (hiscaler)
+- Enh #15120: Refactored dynamic caching introducing `DynamicContentAwareInterface` and `DynamicContentAwareTrait` (sergeymakinen)
+- Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
+- Enh #15216: Added `yii\web\ErrorHandler::$traceLine` to allow opening file at line clicked in IDE (vladis84)
+- Enh #15219: Added `yii\filters\auth\HttpHeaderAuth` (bboure)
+- Enh #15221: Added support for specifying `--camelCase` console options in `--kebab-case` (brandonkelly)
+- Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
+- Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
+- Enh #15226: Auto generate placeholder from fields (vladis84)
+- Enh #15272: Removed type attribute from script tag (aleksbelic)
+- Enh #15332: Always check for availability of `openssl_pseudo_random_bytes`, even if LibreSSL is available (sammousa)
+- Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
+- Enh #15340: Test CHANGELOG.md for valid format (sammousa)
+- Enh #15347: Add `Instance` support for object property in DI container (kojit2009)
+- Enh #15357: Added multi statement support for `yii\db\sqlite\Command` (sergeymakinen)
+- Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
+- Enh #15398: Added `yii\db\Query::cache()` (hubeiwei, silverfire)
+- Enh #15415: Added transaction/retry support for `yii\db\Command` (sergeymakinen)
+- Enh #15417: Added `yii\validators\FileValidator::$minFiles` (vladis84)
+- Enh #15422: Added default roles dynamic definition support via closure for `yii\rbac\BaseManager` (deltacube)
+- Enh #15426: Added abilitiy to create and drop database views (igravity, vladis84)
+- Enh #15476: Added `\yii\widgets\ActiveForm::$validationStateOn` to be able to specify where to add class for invalid fields (samdark)
+- Enh #15496: (CVE-2018-6009): CSRF token is now regenerated on changing identity (samdark, rhertogh)
+- Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
+- Enh #15661: Added `yii\db\ExpressionInterface` support to `yii\db\Command::batchInsert()` (silverfire)
+- Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
+- Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
+- Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)
+- Chg #15633: Deprecated `yii\base\BaseObject::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (brandonkelly)
+- Chg #15633: Deprecated XCache and Zend data cache support as caching backends (brandonkelly)
+- Chg #15633: Deprecated `yii\BaseYii::powered()` method (brandonkelly)
+- Chg #15633: Added `yii\base\InvalidArgumentException` and deprecated `yii\base\InvalidParamException` (brandonkelly)
+- Chg #15633: Added `yii\BaseYii::debug()` and deprecated `yii\BaseYii::trace()` (brandonkelly)
+
+
+2.0.13.1 November 14, 2017
+--------------------------
+
+- Bug #15081: Fixed "Undefined offset: 1" in log Target (ischenko)
+- Bug #15086: Fixed jQuery onLoad event handling (alexantr)
+- Bug #15108: Fixed `yii\db\Schema::getSchemaNames()` for MSSQL and added tests for all DBMSes (sergeymakinen)
+- Bug #15117: Fixed DB schema cache did not honor table prefixes (sergeymakinen)
+
+
+2.0.13 November 03, 2017
+------------------------
+
+- Bug #6226: Fix fatal symlink error during assets publishing in multi threaded environment (dynasource)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
+- Bug #6588: Fixed changing array keys after validation of multiple files in `yii\validators\FileValidator` (developeruz)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
+- Bug #11242: Fixed excess escaping in `yii\db\Command::batchInsert()` (silverfire)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 - Bug #12860: Fixed possible race conditions in `yii\mutex\FileMutex` (kidol)
+- Bug #13258: Fixed `yii\mutex\FileMutex::$autoRelease` having no effect due to missing base class initialization (kidol)
+- Bug #13436: Fixed migration for MSSQL DbSession (silverfire)
+- Bug #13564: Fixed `yii\web\Request::getAuthUser()`, `getAuthPassword()` to respect `HTTP_AUTHORIZATION` request header (silverfire)
+- Bug #13720: Improve `yii\helpers\FormatConverter::convertDatePhpToIcu()` to handle escaped chars correctly (rob006)
 - Bug #13757: Fixed ambiguous column error in `BaseActiveRecord::refresh()` when the query adds a JOIN by default (cebe, ivankff)
 - Bug #13779: Fixed `yii\db\ActiveRecord::joinWith()` unable to use relation defined via attached behavior (ElisDN, klimov-paul)
 - Bug #13859: Fixed ambiguous column error in `Query::column()` when `$indexBy` is used with a JOIN (cebe)
 - Bug #13969: Fixed a bug in a `yii\console\controllers\CacheController` when caches defined via a closure were not detected (Kolyunya)
+- Bug #14016: Fixed empty messages marked as unused in PHP and PO sources when extracted with message command when `markUnused` is `false` (samdark)
+- Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
+- Bug #14134: Fixed multiple `validateAttribute()` calls when `scenarios()` returns duplicate attributes (krukru)
 - Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
+- Bug #14186: Forced validation in `yiiActiveForm` do not trigger `afterValidate` event (arogachev)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
 - Bug #14206: `MySqlMutex`, `PgsqlMutex` and `OracleMutex` now use `useMaster()` to ensure lock is aquired on the same DB server (cebe, ryusoft)
@@ -29,24 +772,32 @@ Yii Framework 2 Change Log
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
 - Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)
-- Bug #14492: Fixed error handler not escaping error info debug mode, see CVE-2017-11516 (samdark)
+- Bug #14492: Fixed error handler not escaping error info in debug mode, see CVE-2017-11516 (samdark)
 - Bug #14493: Fixed getting permissions in `yii\rbac\Dbmanger::getPermissionsByUser` by user with id equals 0 (dmirogin)
+- Bug #14510: The state of a form is always "not validated" when using forced validation in `yiiActiveForm` (arogachev)
 - Bug #14523: Added `yii\web\MultipartFormDataParser::$force` option allowing to enforce parsing even on 'POST' request (klimov-paul)
 - Bug #14525: Fixed 2.0.12 regression of loading of global fixtures trough `yii fixture/load` (michaelarnauts)
 - Bug #14533: Fixed `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` throw exception in case they are set for `yii\db\ActiveRecord` with `$targetClass` pointing to NOSQL ActiveRecord (klimov-paul)
 - Bug #14542: Ensured only ASCII characters are in CSRF cookie value since binary data causes issues with ModSecurity and some browsers (samdark)
+- Bug #14543: Throw exception when trying to create migration longer than 180 symbols (dmirogin, cebe)
 - Bug #14596: Fix event call on init in `yii\widgets\BaseListView` (panchenkodv)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
-- Bug: Fixed `yii\mutex\FileMutex::$autoRelease` having no effect due to missing base class initialization (kidol)
+- Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
+- Bug #14921: Fixed bug with replacing numeric keys in `yii\helpers\Url::current()` (rob006)
+- Enh #4479: Implemented REST filters (klimov-paul)
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
+- Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
+- Enh #9703, #9709: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
 - Enh #13254: Made `yii\helpers\StringHelper` and `yii\validators\StringValidator` independent of `Yii::$app` instance (cebe)
-- Enh #13378: Added skipOnEmpty option to SluggableBehaviour (andrewnester)
+- Enh #13378: Added `yii\behaviors\SluggableBehaviour::skipOnEmpty` option (andrewnester)
+- Enh #13403: Added 'permissions' additionally to 'roles' in `yii\filters\AccessRule` in order to be able to specify these separately (thyseus)
+- Enh #13486: Use DI container to instantiate cookies in order to be able to set defaults (samdark)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa, cebe, silverfire)
 - Enh #13787: Added `yii\db\Migration::$maxSqlOutputLength` that allows limiting number of characters for outputting SQL (thiagotalma)
@@ -56,8 +807,10 @@ Yii Framework 2 Change Log
 - Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
 - Enh #14061: Added request scope assignments cache to `yii\rbac\DbManager::checkAccess()` to avoid duplicate queries for user assignments (leandrogehlen, cebe, nineinchnick, ryusoft)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Enh #14087: Added `yii\web\View::registerCsrfMetaTags()` method that registers CSRF tags dynamically ensuring that caching doesn't interfere (RobinKamps)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #14105: Implemented a solution for retrieving DBMS constraints in `yii\db\Schema` (sergeymakinen)
+- Enh #14126: Added variadic parameters support to DI container (SamMousa)
 - Enh #14151: Added `yii\behaviors\AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
 - Enh #14184: Module service locator now falls back to its parent module service locator in case component isn't found (SamMousa)
 - Enh #14188: Add constants and function for sysexits(3) to `ConsoleHelper` (tom--, samdark, cebe)
@@ -69,14 +822,22 @@ Yii Framework 2 Change Log
 - Enh #14417: Added configuration for headers in PHP files generated by `message/extract` command (rob006)
 - Enh #14431: Moved `ActiveQuery::getTablesUsedInFrom()` to `Query` to make the functionality available on the lower layer (cebe)
 - Enh #14620: Updated `yii.activeForm.js` and `yii\web\View` to jQuery 3.0 compatible API (silverfire)
+- Enh #14633: Add miliseconds to log time in `\yii\log\Target` (Ni-san)
 - Enh #14664: Add migrate/fresh command to truncate database and apply migrations again (thyseus)
 - Enh #14765: RBAC: add index on `user_id` column in `auth_assignment` table for performance reasons (bicf)
+- Enh #14864: Ability to use dependencies in constructor of migrations (vtvz)
+- Enh #14877: Disabled profiling on connection opening when profiling is disabled (njasm)
+- Enh #14913: Assset hashing now takes asset linking into account to improve cache busting (schmunk42)
+- Enh #14929: Ensure trailing `;` on combining files with `asset` command to fix compiler failures (tanakahisateru)
+- Enh #14958: Added options to copy stacktrace and search for error message to the exception page (cebe)
+- Enh #14967: Added Armenian Translations (gevorgmansuryan)
+- Enh #15015: Added `StringHelper::floatToString()` to safely cast float values independent of the locale, also fixes some places in the framework that use it now (cebe)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
-- Enh #14864: Ability to use dependencies in constructor of migrations (vtvz)
+
 
 2.0.12 June 05, 2017
 --------------------
@@ -140,8 +901,6 @@ Yii Framework 2 Change Log
 - Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Bug #14094: Fixed bug when single `yii\web\UrlManager::createUrl()` call my result multiple calls of `yii\web\UrlRule::createUrl()` for the same rule (rossoneri)
 - Bug #14133: Fixed bug when calculating timings with mixed nested profile begin and end in `yii\log\Logger::calculateTimings()` (bizley)
-- Bug #14186: Forced validation in `yiiActiveForm` do not trigger `afterValidate` event (arogachev)
-- Bug #14510: The state of a form is always "not validated" when using forced validation in `yiiActiveForm` (arogachev)
 - Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
 - Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
 - Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
@@ -664,7 +1423,7 @@ Yii Framework 2 Change Log
 - Enh #8329: Added support of options for `message` console command (vchenin)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #8649: Added total applied migrations to final report (vernik91)
-- Enh #8687: Added support for non-gregorian calendars, e.g. persian, taiwan, islamic to `yii\i18n\Formatter` (cebe, z-avanes, hooman-pro)
+- Enh #8687: Added support for non-gregorian calendars, e.g. persian, taiwan, islamic to `yii\i18n\Formatter` (cebe, z-avanes, hooman-mirghasemi)
 - Enh #8824: Allow passing a `yii\db\Expression` to `Query::groupBy()` (cebe)
 - Enh #8995: `yii\validators\FileValidator::maxFiles` can be set to `0` to allow unlimited count of files (PowerGamer1, silverfire)
 - Enh #9282: Improved JSON error handling to support PHP 5.5 error codes (freezy-sk)
@@ -705,7 +1464,6 @@ Yii Framework 2 Change Log
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `yii\helpers\FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
-- Enh #9707: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 - Enh: `yii\behaviors\AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
@@ -746,13 +1504,13 @@ Yii Framework 2 Change Log
 - Bug #8684: Formatter ignored explicit decimal number settings when a default value is configured (leandrogehlen, cebe)
 - Bug #8772: `yii\db\ActiveQuery` failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
 - Bug #8844: Added a workaround for an oracle bug when fetching information about table constraints and filtering by `CONSTRAINT_TYPE` (nidgetgod)
-- Bug #8900: Fixed determining active menu item with url-alias in route `yii\widgets\Menu::isItemActive()` (demi)
+- Bug #8900: Fixed determining active menu item with URL-alias in route `yii\widgets\Menu::isItemActive()` (demi)
 - Bug #9006: Fixed bit column always returning true using certain version of PDO MySQL (stratoss, RusAlex, mj4444ru, samdark)
 - Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
 - Bug #9059: Fixed PHP Notice in error handler view (dynasource, andrewnester, samdark)
 - Bug #9063: Workaround for MySQL losing table case when adding index (sebathi)
 - Bug #9076: Fixed `yii\filters\PageCache` not using the configured duration and dependency when caching the response data (kidol)
-- Bug #9091: `yii\web\UrlManager::createUrl()` did not create correct url when defaults were used, internal cache is now skipped in certain situations (cebe)
+- Bug #9091: `yii\web\UrlManager::createUrl()` did not create correct URL when defaults were used, internal cache is now skipped in certain situations (cebe)
 - Bug #9127, #9128: Fixed MSSQL `yii\helpers\mssql\QueryBuilder::renameColumn()` and `yii\helpers\mssql\QueryBuilder::renameTable()` escaping (sitawit)
 - Bug #9161: Fixed `yii\web\Request` ignore `queryParams` when resolve request (zetamen)
 - Bug: Fixed string comparison in `yii\db\BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
@@ -823,7 +1581,7 @@ Yii Framework 2 Change Log
 - Bug #7867: Fixed `findUniqueIndexes()` not to perform any processing on unique index on function for pgsql (nineinchnick)
 - Bug #7868: Fixed fetching columns definition and composite foreign keys for oci (nineinchnick)
 - Bug #7868: Removed column's autoIncrement detection from oci (nineinchnick)
-- Bug #7868: Fixed creating raw sql (for logging) by skipping object and resource params (nineinchnick)
+- Bug #7868: Fixed creating raw SQL (for logging) by skipping object and resource params (nineinchnick)
 - Bug #7868: Fixed `yii\db\Schema::getLastInsertID()`` by quoting sequence name (nineinchnick)
 - Bug #7957: Removed extra `parseFloat()` call for the `compare` js validator (CthulhuDen)
 - Bug #8012: Fixed fetching multiple relations between two tables for pgsql (nineinchnick)
@@ -1037,7 +1795,7 @@ Yii Framework 2 Change Log
 - Bug #6632: `yii\di\Container::get()` did not handle config parameter correctly when it is passed as a constructor parameter (qiangxue)
 - Bug #6648: Added explicit type casting to avoid dblib issues on SQL Server 2014 (o-rey)
 - Bug #6691: Fixed console help description parsing with UTF8 characters (cebe)
-- Bug #6717: Fixed issue with UrlManager not matching a route on url creation when it was prefixed with `/` and pattern was empty (cebe)
+- Bug #6717: Fixed issue with UrlManager not matching a route on URL creation when it was prefixed with `/` and pattern was empty (cebe)
 - Bug #6736: Removed `Content-Transfer-Encoding` from the list of default download headers (DaSourcerer)
 - Enh #4502: Added alias support to URL route when calling `yii\helpers\Url::toRoute()` and `yii\helpers\Url::to()` (qiangxue, lynicidn)
 - Enh #5194: `yii\console\controllers\AssetController` now handles bundle files from external resources properly (klimov-paul)
@@ -1348,7 +2106,7 @@ Yii Framework 2 Change Log
 - Bug #3567: Fixed the bug that smallint was treated as string for PostgreSQL (qiangxue)
 - Bug #3568: When the primary query sets `asArray`, it is not respected by the `via` relational query (qiangxue)
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
-- Bug #3583: Added typecast to auto value of primary key on insert of sql active record (cebe)
+- Bug #3583: Added typecast to auto value of primary key on insert of SQL Active Record (cebe)
 - Bug #3591: Fixed incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
 - Bug #3601: Fixed the bug that the refresh URL was not generated correctly by `Captcha` (qiangxue, klevron)
 - Bug #3638: `yii\filters\HttpCache` does not work as expected when session is started before the filter (qiangxue)
@@ -1375,7 +2133,7 @@ Yii Framework 2 Change Log
 - Bug #4105: `yii\helpers\Html::dropDownlist()` options encodeSpaces was not applied to subgroups (MDMunir)
 - Bug #4123: Trace level in logger had no effect in Targets, traces where not logged (cebe)
 - Bug #4127: `yii\captcha\CaptchaValidator` clientside error message wasn't formed properly (samdark)
-- Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
+- Bug #4162: Fixed bug where schema name was not used in `SHOW CREATE TABLE` query in `yii\db\mysql\Schema` (stevekr)
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
 - Bug #4254: `SqlDataProvider` does not work with Oracle and SQL Server (qiangxue, miramir)
 - Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
@@ -1456,7 +2214,7 @@ Yii Framework 2 Change Log
 - Enh #3459: Added logging of errors, which may occur at `yii\caching\FileCache::gc()` (klimov-paul)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "�" (DaSourcerer)
-- Enh #3520: Added `unlinkAll()` method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
+- Enh #3520: Added `unlinkAll()` method to Active Record to remove all records of a model relation (NmDimas, samdark, cebe)
 - Enh #3521: Added `yii\filters\HttpCache::sessionCacheLimiter` (qiangxue)
 - Enh #3542: Removed requirement to specify `extensions` in application config (samdark)
 - Enh #3562: Adding rotateByCopy to `yii\log\FileTarget` (pawzar)
@@ -1510,7 +2268,7 @@ Yii Framework 2 Change Log
 - Enh #4485: Added support for deferred validation in `yii\widgets\ActiveForm` (Alex-Code)
 - Enh #4520: Added sasl support to `yii\caching\MemCache` (xjflyttp)
 - Enh #4566: Added client validation support for image validator (Skysplit, qiangxue)
-- Enh #4581: Added ability to disable url encoding in `yii\web\UrlRule` (tadaszelvys)
+- Enh #4581: Added ability to disable URL encoding in `yii\web\UrlRule` (tadaszelvys)
 - Enh #4602: Added $key param in `yii\grid\ActionColumn` buttons Closure call (disem)
 - Enh #4607: AR model will throw an exception if it does not have a primary key to avoid updating/deleting data massively (qiangxue)
 - Enh #4630: Added automatic generating of unique slug value to `yii\behaviors\Sluggable` (klimov-paul)
@@ -1623,7 +2381,7 @@ Yii Framework 2 Change Log
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
 - Bug #1504: Debug toolbar isn't loaded successfully in some environments when xdebug is enabled (qiangxue)
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
-- Bug #1545: It was not possible to execute db Query twice, params where missing (cebe)
+- Bug #1545: It was not possible to execute DB Query twice, params where missing (cebe)
 - Bug #1550: fixed the issue that JUI input widgets did not property input IDs.
 - Bug #1654: Fixed the issue that a new message source object is generated for every new message being translated (qiangxue)
 - Bug #1582: Error messages shown via client-side validation should not be double encoded (qiangxue)
@@ -1640,7 +2398,7 @@ Yii Framework 2 Change Log
 - Bug #1812: Hide potential warning message due to race condition occurring to `Session::regenerateID()` call (qiangxue)
 - Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)
 - Bug #1868: Added ability to exclude tables from `yii\console\controllers\FixtureController` apply/clear actions. (Ragazzo)
-- Bug #1869: Fixed tables clearing. `TRUNCATE` changed to `DELETE` to avoid postgresql tables checks (and truncating all tables) (Ragazzo)
+- Bug #1869: Fixed tables clearing. `TRUNCATE` changed to `DELETE` to avoid PostgreSQL tables checks (and truncating all tables) (Ragazzo)
 - Bug #1870: Validation errors weren't properly translated when using clientside validation (samdark)
 - Bug #1930: Fixed domain based URL matching for website root (samdark)
 - Bug #1937: Fixed wrong behavior or advanced app's `init --env` when called without parameter actually specified (samdark)
@@ -1713,13 +2471,13 @@ Yii Framework 2 Change Log
 - Enh #1572: Added `yii\web\Controller::createAbsoluteUrl()` (samdark)
 - Enh #1579: throw exception when the given AR relation name does not match in a case sensitive manner (qiangxue)
 - Enh #1581: Added `yii\db\ActiveQuery::joinWith()` and `yii\db\ActiveQuery::innerJoinWith()` to support joining with relations (qiangxue)
-- Enh #1585: added schema parameter to `createAbsoluteUrl()`` to force 'http' or 'https' (cebe)
+- Enh #1585: added schema parameter to `createAbsoluteUrl()` to force 'http' or 'https' (cebe)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
 - Enh #1611: Added `yii\db\BaseActiveRecord::markAttributeDirty()` (qiangxue)
 - Enh #1633: Advanced project template now works with MongoDB by default (samdark)
 - Enh #1634: Use masked CSRF tokens to prevent BREACH exploits (qiangxue)
 - Enh #1641: Added `BaseActiveRecord::updateAttributes()` (qiangxue)
-- Enh #1646: Added postgresql `yii\db\QueryBuilder::checkIntegrity()` and `yii\db\QueryBuilder::resetSequence()` (Ragazzo)
+- Enh #1646: Added PostgreSQL `yii\db\QueryBuilder::checkIntegrity()` and `yii\db\QueryBuilder::resetSequence()` (Ragazzo)
 - Enh #1645: Added `yii\db\Connection::$pdoClass` property (Ragazzo)
 - Enh #1645: Added support for nested DB transactions (qiangxue)
 - Enh #1681: Added support for automatically adjusting the "for" attribute of label generated by `yii\widgets\ActiveField::label()` (qiangxue)
@@ -1748,7 +2506,7 @@ Yii Framework 2 Change Log
 - Enh #2102: `yii\widgets\DetailView` now allow use custom label in string format like `name:format:label` (creocoder)
 - Enh #2103: Renamed `yii\web\AccessDeniedHttpException` to `yii\web\ForbiddenHttpException`, added new commonly used HTTP exception classes (danschmidt5189)
 - Enh #2124: Added support for UNION ALL queries (Ivan Pomortsev, iworker)
-- Enh #2132: Allow url of CSS and JS files registered in yii\web\View to be url alias (cebe)
+- Enh #2132: Allow URL of CSS and JS files registered in yii\web\View to be URL alias (cebe)
 - Enh #2144: `Html` helper now supports rendering "data" attributes (qiangxue)
 - Enh #2156: `yii migrate` now automatically creates `migrations` directory if it does not exist (samdark)
 - Enh #2211: Added typecast database types into php types (dizews)
@@ -1839,7 +2597,7 @@ Yii Framework 2 Change Log
 - Chg #2161: Added ability to use `return` in `Widget::run` (samdark)
 - Chg #2173: Removed `yii\helpers\StringHelper::diff()`, Moved `phpspec/php-diff` dependency from `yiisoft/yii2` to `yiisoft/yii2-gii` (samdark)
 - Chg #2175: `yii\db\QueryBuilder` will now append UNION statements at the end of the primary SQL (qiangxue)
-- Chg #2210: Mysql driver will now treat `tinyint(1)` as integer instead of boolean (qiangxue)
+- Chg #2210: MySQL driver will now treat `tinyint(1)` as integer instead of boolean (qiangxue)
 - Chg #2248: Renamed `yii\base\Model::DEFAULT_SCENARIO` to `yii\base\Model::SCENARIO_DEFAULT` (samdark)
 - Chg #2281: Renamed `yii\db\ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg #2405: The CSS class of `yii\widgets\MaskedInput` now defaults to `form-control` (qiangxue)

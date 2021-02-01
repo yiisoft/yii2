@@ -51,7 +51,7 @@ class RangeValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -68,7 +68,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -89,7 +89,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -100,7 +100,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -115,7 +115,7 @@ class RangeValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

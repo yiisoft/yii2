@@ -12,10 +12,10 @@ RUN apt-get update \
  && apt-get install -y unixodbc-dev-utf16 php-dev \
  && pecl install sqlsrv pdo_sqlsrv
 
-RUN echo "extension=/usr/lib/php/20151012/sqlsrv.so" >> /etc/php/7.0/apache2/php.ini
-RUN echo "extension=/usr/lib/php/20151012/pdo_sqlsrv.so" >> /etc/php/7.0/apache2/php.ini
-RUN echo "extension=/usr/lib/php/20151012/sqlsrv.so" >> /etc/php/7.0/cli/php.ini
-RUN echo "extension=/usr/lib/php/20151012/pdo_sqlsrv.so" >> /etc/php/7.0/cli/php.ini
+RUN echo ";priority=20\nextension=sqlsrv.so" > /etc/php/7.0/cli/conf.d/20-sqlsrv.ini
+RUN echo ";priority=20\nextension=sqlsrv.so" > /etc/php/7.0/apache2/conf.d/20-sqlsrv.ini
+RUN echo ";priority=30\nextension=pdo_sqlsrv.so" > /etc/php/7.0/cli/conf.d/30-pdo_sqlsrv.ini
+RUN echo ";priority=30\nextension=pdo_sqlsrv.so" > /etc/php/7.0/apache2/conf.d/30-pdo_sqlsrv.ini
 
 # IMPORTANT NOTICE! Install `msodbcsql` after `unixodbc-dev-utf16` and `pdo_sqlsrv`, due to dependency & build issues
 RUN ACCEPT_EULA=Y apt-get install -y msodbcsql

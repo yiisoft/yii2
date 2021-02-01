@@ -12,7 +12,6 @@ W tym poradniku nauczysz się jak:
 * utworzyć [model](structure-models.md) reprezentujący dane wprowadzone przez użytkownika przez formularz,
 * zadeklarować zasady do sprawdzenia wprowadzonych danych,
 * zbudować formularz HTML w [widoku](structure-views.md).
-* build an HTML form in a [view](structure-views.md).
 
 
 Tworzenie modelu <span id="creating-model"></span>

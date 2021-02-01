@@ -171,12 +171,7 @@ class InstanceTest extends TestCase
         $instance = Instance::of('something');
         $export = var_export($instance, true);
 
-        $this->assertRegExp(<<<'PHP'
-@yii\\di\\Instance::__set_state\(array\(
-\s+'id' => 'something',
-\)\)@
-PHP
-        , $export);
+        $this->assertRegExp('~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~', $export);
 
         $this->assertEquals($instance, Instance::__set_state([
             'id' => 'something',
@@ -193,7 +188,8 @@ PHP
 
     public function testExceptionInvalidDataTypeInArray()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure([
             'class' => Connection::className(),
         ], 'yii\base\Widget');

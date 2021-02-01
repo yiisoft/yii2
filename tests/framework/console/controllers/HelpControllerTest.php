@@ -19,7 +19,7 @@ use yiiunit\TestCase;
 class HelpControllerTest extends TestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -53,6 +53,29 @@ class HelpControllerTest extends TestCase
         return $controller->flushStdOutBuffer();
     }
 
+    public function testModuleControllersList()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'modules' => [
+                'magic' => 'yiiunit\data\modules\magic\Module',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertEqualsWithoutLE(<<<'STRING'
+help
+help/index
+help/list
+help/list-action-options
+help/usage
+magic/e-tag/delete
+magic/e-tag/list-e-tags
+magic/subFolder/sub/test
+
+STRING
+            , $result);
+    }
+
     public function testActionList()
     {
         $this->mockApplication([
@@ -63,7 +86,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -99,12 +122,13 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
 --color: whether to enable ANSI color in the output.If not set, ANSI color will only be enabled for terminals that support it.
 --help: whether to display help information about current command.
+--silent-exit-on-exception: if true - script finish with `ExitCode\:\:OK` in case of exception.false - `ExitCode\:\:UNSPECIFIED_ERROR`.Default\: `YII_ENV_TEST`
 
 STRING
         , $result);
@@ -120,7 +144,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING
@@ -161,6 +185,31 @@ STRING
         $this->assertContains('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
+    }
+
+    public function testActionListContainsNoEmptyCommands()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerNamespace' => 'yiiunit\data\console\controllers',
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertNotContains("fake-empty\n", $result);
+        $this->assertNotContains("fake-no-default\n", $result);
+        $this->assertContains("fake-no-default/index\n", $result);
+    }
+
+    public function testActionIndexContainsNoEmptyCommands()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerNamespace' => 'yiiunit\data\console\controllers',
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('index'));
+        $this->assertNotContains("- fake-empty", $result);
+        $this->assertContains("- fake-no-default", $result);
+        $this->assertContains("    fake-no-default/index", $result);
+        $this->assertNotContains("    fake-no-default/index (default)", $result);
     }
 }
 

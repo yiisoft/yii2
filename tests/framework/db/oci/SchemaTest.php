@@ -18,10 +18,13 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'oci';
 
+    protected $expectedSchemas = [];
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
         unset($columns['enum_col']);
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'NUMBER';
         $columns['int_col']['size'] = 22;
         $columns['int_col']['precision'] = null;
@@ -30,11 +33,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['int_col2']['size'] = 22;
         $columns['int_col2']['precision'] = null;
         $columns['int_col2']['scale'] = 0;
+        $columns['tinyint_col']['dbType'] = 'NUMBER';
+        $columns['tinyint_col']['type'] = 'integer';
+        $columns['tinyint_col']['size'] = 22;
+        $columns['tinyint_col']['precision'] = 3;
+        $columns['tinyint_col']['scale'] = 0;
         $columns['smallint_col']['dbType'] = 'NUMBER';
         $columns['smallint_col']['type'] = 'integer';
         $columns['smallint_col']['size'] = 22;
         $columns['smallint_col']['precision'] = null;
         $columns['smallint_col']['scale'] = 0;
+        $columns['char_col']['type'] = 'string';
         $columns['char_col']['dbType'] = 'CHAR';
         $columns['char_col']['precision'] = null;
         $columns['char_col']['size'] = 100;
@@ -165,5 +174,62 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'expression' => '"C_col_2" IS NOT NULL',
         ]);
         return $result;
+    }
+
+    public function testFindUniqueIndexes()
+    {
+        if ($this->driverName === 'sqlsrv') {
+            $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
+        }
+
+        $db = $this->getConnection();
+
+        try {
+            $db->createCommand()->dropTable('uniqueIndex')->execute();
+        } catch (\Exception $e) {
+        }
+        $db->createCommand()->createTable('uniqueIndex', [
+            'somecol' => 'string',
+            'someCol2' => 'string',
+            'someCol3' => 'string',
+        ])->execute();
+
+        /* @var $schema Schema */
+        $schema = $db->schema;
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([], $uniqueIndexes);
+
+        $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+        ], $uniqueIndexes);
+
+        // create another column with upper case letter that fails postgres
+        // see https://github.com/yiisoft/yii2/issues/10613
+        $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+        ], $uniqueIndexes);
+
+        // see https://github.com/yiisoft/yii2/issues/13814
+        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol3', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+            'another unique index' => ['someCol3'],
+        ], $uniqueIndexes);
+    }
+
+    public function testCompositeFk()
+    {
+        $this->markTestSkipped('Should be fixed.');
     }
 }

@@ -141,7 +141,7 @@ class UrlRule extends CompositeUrlRule
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -164,7 +164,7 @@ class UrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createRules()
     {
@@ -205,27 +205,28 @@ class UrlRule extends CompositeUrlRule
         $config['verb'] = $verbs;
         $config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
         $config['route'] = $action;
-        if (!empty($verbs) && !in_array('GET', $verbs)) {
-            $config['mode'] = WebUrlRule::PARSING_ONLY;
-        }
         $config['suffix'] = $this->suffix;
 
         return Yii::createObject($config);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
         $pathInfo = $request->getPathInfo();
+        if ($this->prefix !== '' && strpos($pathInfo . '/', $this->prefix . '/') !== 0) {
+            return false;
+        }
+
         foreach ($this->rules as $urlName => $rules) {
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
                     /* @var $rule WebUrlRule */
                     $result = $rule->parseRequest($manager, $request);
                     if (YII_DEBUG) {
-                        Yii::trace([
+                        Yii::debug([
                             'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                             'match' => $result !== false,
                             'parent' => self::className(),
@@ -242,7 +243,7 @@ class UrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {

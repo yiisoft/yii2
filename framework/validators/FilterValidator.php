@@ -58,7 +58,7 @@ class FilterValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -69,7 +69,7 @@ class FilterValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -80,7 +80,7 @@ class FilterValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -91,11 +91,11 @@ class FilterValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ', value);';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

@@ -16,6 +16,28 @@ use yiiunit\framework\db\DatabaseTestCase;
 class ProfileFixture extends ActiveFixture
 {
     public $modelClass = 'yiiunit\data\ar\Profile';
+
+    public function beforeLoad()
+    {
+        if ($this->db->driverName === 'sqlsrv') {
+            $this->db->createCommand()->truncateTable('profile')->execute();
+        }
+
+        parent::beforeLoad();
+    }
+
+    protected function getData()
+    {
+        $data = parent::getData();
+
+        if ($this->db->driverName === 'sqlsrv') {
+            array_walk($data, static function (&$item) {
+                unset($item['id']);
+            });
+        }
+
+        return $data;
+    }
 }
 
 class CustomerFixture extends ActiveFixture
@@ -25,9 +47,39 @@ class CustomerFixture extends ActiveFixture
     public $depends = [
         'yiiunit\framework\test\ProfileFixture',
     ];
+
+    public function beforeLoad()
+    {
+        if ($this->db->driverName === 'sqlsrv') {
+            $this->db->createCommand()->truncateTable('customer')->execute();
+        }
+
+        parent::beforeLoad();
+    }
 }
 
-class MyDbTestCase
+class CustomDirectoryFixture extends ActiveFixture
+{
+    public $modelClass = 'yiiunit\data\ar\Customer';
+
+    public $dataDirectory = '@app/framework/test/custom';
+
+    public function beforeLoad()
+    {
+        if ($this->db->driverName === 'sqlsrv') {
+            $this->db->createCommand()->truncateTable('customer')->execute();
+        }
+
+        parent::beforeLoad();
+    }
+}
+
+class AnimalFixture extends ActiveFixture
+{
+    public $modelClass = 'yiiunit\data\ar\Animal';
+}
+
+class BaseDbTestCase
 {
     use FixtureTrait;
 
@@ -39,7 +91,10 @@ class MyDbTestCase
     public function tearDown()
     {
     }
+}
 
+class CustomerDbTestCase extends BaseDbTestCase
+{
     public function fixtures()
     {
         return [
@@ -47,6 +102,42 @@ class MyDbTestCase
         ];
     }
 }
+
+class CustomDirectoryDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => CustomDirectoryFixture::className(),
+        ];
+    }
+}
+
+class DataPathDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => [
+                'class' => CustomDirectoryFixture::className(),
+                'dataFile' => '@app/framework/test/data/customer.php'
+            ]
+        ];
+    }
+}
+
+class TruncateTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'animals' => [
+                'class' => AnimalFixture::className(),
+            ]
+        ];
+    }
+}
+
 
 /**
  * @group fixture
@@ -71,7 +162,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testGetData()
     {
-        $test = new MyDbTestCase();
+        $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
@@ -90,7 +181,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testGetModel()
     {
-        $test = new MyDbTestCase();
+        $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
@@ -103,6 +194,43 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
         $this->assertEquals(2, $fixture['customer2']['profile_id']);
 
+        $test->tearDown();
+    }
+
+    public function testDataDirectory()
+    {
+        $test = new CustomDirectoryDbTestCase();
+
+        $test->setUp();
+        $fixture = $test->getFixture('customers');
+        $directory = $fixture->getModel('directory');
+
+        $this->assertEquals(1, $directory->id);
+        $this->assertEquals('directory@example.com', $directory['email']);
+        $test->tearDown();
+
+    }
+
+    public function testDataPath()
+    {
+        $test = new DataPathDbTestCase();
+
+        $test->setUp();
+        $fixture = $test->getFixture('customers');
+        $customer = $fixture->getModel('customer1');
+
+        $this->assertEquals(1, $customer->id);
+        $this->assertEquals('customer1@example.com', $customer['email']);
+        $test->tearDown();
+    }
+
+    public function testTruncate()
+    {
+        $test = new TruncateTestCase();
+
+        $test->setUp();
+        $fixture = $test->getFixture('animals');
+        $this->assertEmpty($fixture->data);
         $test->tearDown();
     }
 }

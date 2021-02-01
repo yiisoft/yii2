@@ -11,7 +11,7 @@ factors and explain how you can improve your application performance by adjustin
 A well configured PHP environment is very important. In order to get maximum performance,
 
 - Use the latest stable PHP version. Major releases of PHP may bring significant performance improvements.
-- Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://php.net/apc) 
+- Enable bytecode caching with [Opcache](https://secure.php.net/opcache) (PHP 5.5 or later) or [APC](https://secure.php.net/apc) 
   (PHP 5.4). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
   incoming request.
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
@@ -217,9 +217,9 @@ The following profiling tools may be useful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
-- [XHProf](http://www.php.net/manual/en/book.xhprof.php)
+- [XHProf](https://secure.php.net/manual/en/book.xhprof.php)
 - [XDebug profiler](http://xdebug.org/docs/profiler)
 
 ## Prepare application for scaling
 
-When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).
+When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md).

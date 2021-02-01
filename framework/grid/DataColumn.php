@@ -98,7 +98,9 @@ class DataColumn extends Column
      * @var string|array|null|false the HTML code representing a filter input (e.g. a text field, a dropdown list)
      * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
      *
-     * - If this property is not set, a text field will be generated as the filter input;
+     * - If this property is not set, a text field will be generated as the filter input with attributes defined
+     *   with [[filterInputOptions]]. See [[\yii\helpers\BaseHtml::activeInput]] for details on how an active
+     *   input tag is generated.
      * - If this property is an array, a dropdown list will be generated that uses this property value as
      *   the list options.
      * - If you don't want a filter for this data column, set this value to be false.
@@ -108,13 +110,34 @@ class DataColumn extends Column
      * @var array the HTML attributes for the filter input fields. This property is used in combination with
      * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
      * render the HTML attributes for the generated filter input fields.
+     *
+     * Empty `id` in the default value ensures that id would not be obtained from the model attribute thus
+     * providing better performance.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterInputOptions = ['class' => 'form-control', 'id' => null];
+    /**
+     * @var string the attribute name of the [[GridView::filterModel]] associated with this column. If not set,
+     * will have the same value as [[attribute]].
+     * @since 2.0.41
+     */
+    public $filterAttribute;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        if($this->filterAttribute === null) {
+            $this->filterAttribute = $this->attribute;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function renderHeaderCellContent()
     {
@@ -136,7 +159,7 @@ class DataColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     protected function getHeaderCellLabel()
@@ -155,7 +178,7 @@ class DataColumn extends Column
                 $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
-                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
+                $label = $this->grid->filterModel->getAttributeLabel($this->filterAttribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
@@ -173,7 +196,7 @@ class DataColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderFilterCellContent()
     {
@@ -183,25 +206,26 @@ class DataColumn extends Column
 
         $model = $this->grid->filterModel;
 
-        if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
-            if ($model->hasErrors($this->attribute)) {
+        if ($this->filter !== false && $model instanceof Model && $this->filterAttribute !== null && $model->isAttributeActive($this->filterAttribute)) {
+            if ($model->hasErrors($this->filterAttribute)) {
                 Html::addCssClass($this->filterOptions, 'has-error');
-                $error = ' ' . Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
+                $error = ' ' . Html::error($model, $this->filterAttribute, $this->grid->filterErrorOptions);
             } else {
                 $error = '';
             }
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
+                return Html::activeDropDownList($model, $this->filterAttribute, $this->filter, $options) . $error;
             } elseif ($this->format === 'boolean') {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($model, $this->attribute, [
-                    $this->grid->formatter->booleanFormat[0],
-                    $this->grid->formatter->booleanFormat[1],
+                return Html::activeDropDownList($model, $this->filterAttribute, [
+                    1 => $this->grid->formatter->booleanFormat[1],
+                    0 => $this->grid->formatter->booleanFormat[0],
                 ], $options) . $error;
             }
+            $options = array_merge(['maxlength' => true], $this->filterInputOptions);
 
-            return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
+            return Html::activeTextInput($model, $this->filterAttribute, $options) . $error;
         }
 
         return parent::renderFilterCellContent();
@@ -230,7 +254,7 @@ class DataColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {

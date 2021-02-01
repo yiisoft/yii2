@@ -45,7 +45,7 @@ class BaseMailerTest extends TestCase
      */
     protected function getTestFilePath()
     {
-        return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(get_class($this)) . '_' . getmypid();
+        return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(str_replace('\\', DIRECTORY_SEPARATOR, get_class($this))) . '_' . getmypid();
     }
 
     /**
@@ -233,7 +233,7 @@ class BaseMailerTest extends TestCase
 
      <a href="http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef">http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef</a>
 
-     </p><script type="text/javascript">alert("hi")</script>
+     </p><script>alert("hi")</script>
 
 <p>Test Lorem ipsum...</p>
 </body>

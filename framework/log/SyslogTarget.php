@@ -27,9 +27,9 @@ class SyslogTarget extends Target
      */
     public $facility = LOG_USER;
     /**
-     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](http://php.net/openlog).
+     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](https://secure.php.net/openlog).
      * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
-     * @see http://php.net/openlog for available options.
+     * @see https://secure.php.net/openlog for available options.
      * @since 2.0.11
      */
     public $options;
@@ -49,7 +49,7 @@ class SyslogTarget extends Target
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -61,18 +61,22 @@ class SyslogTarget extends Target
 
     /**
      * Writes log messages to syslog.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * @throws LogRuntimeException
      */
     public function export()
     {
         openlog($this->identity, $this->options, $this->facility);
         foreach ($this->messages as $message) {
-            syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
+            if (syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message)) === false) {
+                throw new LogRuntimeException('Unable to export log through system log!');
+            }
         }
         closelog();
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function formatMessage($message)
     {

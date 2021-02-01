@@ -44,21 +44,21 @@ class FakedValidationModel extends Model
         ];
     }
 
-    public function inlineVal($attribute, $params = [], $validator)
+    public function inlineVal($attribute, $params, $validator, $current)
     {
-        $this->inlineValArgs = func_get_args();
+        $this->inlineValArgs = \func_get_args();
 
         return true;
     }
 
-    public function clientInlineVal($attribute, $params = [], $validator)
+    public function clientInlineVal($attribute, $params, $validator, $current)
     {
-        return func_get_args();
+        return \func_get_args();
     }
 
     public function __get($name)
     {
-        if (stripos($name, 'attr') === 0) {
+        if (strncasecmp($name, 'attr', 4) === 0) {
             return isset($this->attr[$name]) ? $this->attr[$name] : null;
         }
 
@@ -67,7 +67,7 @@ class FakedValidationModel extends Model
 
     public function __set($name, $value)
     {
-        if (stripos($name, 'attr') === 0) {
+        if (strncasecmp($name, 'attr', 4) === 0) {
             $this->attr[$name] = $value;
         } else {
             parent::__set($name, $value);
@@ -87,5 +87,10 @@ class FakedValidationModel extends Model
     public function getInlineValArgs()
     {
         return $this->inlineValArgs;
+    }
+
+    public function attributes()
+    {
+        return array_keys($this->attr);
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,5 +24,25 @@ class Cat extends Animal
         parent::populateRecord($record, $row);
 
         $record->does = 'meow';
+    }
+
+    /**
+     * This is to test if __isset catches the exception.
+     * @throw DivisionByZeroError
+     * @return float|int
+     */
+    public function getException()
+    {
+        throw new \Exception('no');
+    }
+
+    /**
+     * This is to test if __isset catches the error.
+     * @throw DivisionByZeroError
+     * @return float|int
+     */
+    public function getThrowable()
+    {
+        return 5/0;
     }
 }

@@ -16,7 +16,7 @@ use yii\helpers\Url;
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
  * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
- * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
+ * The name is the [fully qualified class name](https://secure.php.net/manual/en/language.namespaces.rules.php)
  * of the class representing it.
  *
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
@@ -153,10 +153,10 @@ class AssetBundle extends BaseObject
             if (is_array($js)) {
                 $file = array_shift($js);
                 $options = ArrayHelper::merge($this->jsOptions, $js);
-                $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
+                $view->registerJsFile($manager->getActualAssetUrl($this, $file), $options);
             } else {
                 if ($js !== null) {
-                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
+                    $view->registerJsFile($manager->getActualAssetUrl($this, $js), $this->jsOptions);
                 }
             }
         }
@@ -164,10 +164,10 @@ class AssetBundle extends BaseObject
             if (is_array($css)) {
                 $file = array_shift($css);
                 $options = ArrayHelper::merge($this->cssOptions, $css);
-                $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
+                $view->registerCssFile($manager->getActualAssetUrl($this, $file), $options);
             } else {
                 if ($css !== null) {
-                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
+                    $view->registerCssFile($manager->getActualAssetUrl($this, $css), $this->cssOptions);
                 }
             }
         }

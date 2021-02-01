@@ -10,6 +10,7 @@ namespace yii\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -47,7 +48,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -78,14 +79,14 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handleFailure($response)
     {
@@ -104,7 +105,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     {
         $id = $this->getActionId($action);
         foreach ($this->optional as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;
             }
         }

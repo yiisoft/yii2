@@ -13,6 +13,7 @@ use yii\db\Query;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * Manages application migrations.
@@ -74,11 +75,17 @@ use yii\helpers\Console;
 class MigrateController extends BaseMigrateController
 {
     /**
+     * Maximum length of a migration name.
+     * @since 2.0.13
+     */
+    const MAX_NAME_LENGTH = 180;
+
+    /**
      * @var string the name of the table for keeping applied migration information.
      */
     public $migrationTable = '{{%migration}}';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $templateFile = '@yii/views/migration.php';
     /**
@@ -106,7 +113,7 @@ class MigrateController extends BaseMigrateController
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
      */
-    public $useTablePrefix = false;
+    public $useTablePrefix = true;
     /**
      * @var array column definition strings used for creating migration code.
      *
@@ -126,10 +133,15 @@ class MigrateController extends BaseMigrateController
      * for creating the object.
      */
     public $db = 'db';
+    /**
+     * @var string the comment for the table being created.
+     * @since 2.0.14
+     */
+    public $comment = '';
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -137,18 +149,19 @@ class MigrateController extends BaseMigrateController
             parent::options($actionID),
             ['migrationTable', 'db'], // global for all actions
             $actionID === 'create'
-                ? ['templateFile', 'fields', 'useTablePrefix']
+                ? ['templateFile', 'fields', 'useTablePrefix', 'comment']
                 : []
         );
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
     {
         return array_merge(parent::optionAliases(), [
+            'C' => 'comment',
             'f' => 'fields',
             'p' => 'migrationPath',
             't' => 'migrationTable',
@@ -167,10 +180,7 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($action->id !== 'create') {
-                $this->db = Instance::ensure($this->db, Connection::className());
-            }
-
+            $this->db = Instance::ensure($this->db, Connection::className());
             return true;
         }
 
@@ -194,7 +204,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getMigrationHistory($limit)
     {
@@ -258,7 +268,7 @@ class MigrateController extends BaseMigrateController
         $tableName = $this->db->schema->getRawTableName($this->migrationTable);
         $this->stdout("Creating migration history table \"$tableName\"...", Console::FG_YELLOW);
         $this->db->createCommand()->createTable($this->migrationTable, [
-            'version' => 'varchar(180) NOT NULL PRIMARY KEY',
+            'version' => 'varchar(' . static::MAX_NAME_LENGTH . ') NOT NULL PRIMARY KEY',
             'apply_time' => 'integer',
         ])->execute();
         $this->db->createCommand()->insert($this->migrationTable, [
@@ -269,7 +279,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addMigrationHistory($version)
     {
@@ -281,7 +291,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.13
      */
     protected function truncateDatabase()
@@ -301,13 +311,43 @@ class MigrateController extends BaseMigrateController
 
         // Then drop the tables:
         foreach ($schemas as $schema) {
-            $db->createCommand()->dropTable($schema->name)->execute();
-            $this->stdout("Table {$schema->name} dropped.\n");
+            try {
+                $db->createCommand()->dropTable($schema->name)->execute();
+                $this->stdout("Table {$schema->name} dropped.\n");
+            } catch (\Exception $e) {
+                if ($this->isViewRelated($e->getMessage())) {
+                    $db->createCommand()->dropView($schema->name)->execute();
+                    $this->stdout("View {$schema->name} dropped.\n");
+                } else {
+                    $this->stdout("Cannot drop {$schema->name} Table .\n");
+                }
+            }
         }
     }
 
     /**
-     * @inheritdoc
+     * Determines whether the error message is related to deleting a view or not
+     * @param string $errorMessage
+     * @return bool
+     */
+    private function isViewRelated($errorMessage)
+    {
+        $dropViewErrors = [
+            'DROP VIEW to delete view', // SQLite
+            'SQLSTATE[42S02]', // MySQL
+        ];
+
+        foreach ($dropViewErrors as $dropViewError) {
+            if (strpos($errorMessage, $dropViewError) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function removeMigrationHistory($version)
     {
@@ -317,8 +357,47 @@ class MigrateController extends BaseMigrateController
         ])->execute();
     }
 
+    private $_migrationNameLimit;
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     * @since 2.0.13
+     */
+    protected function getMigrationNameLimit()
+    {
+        if ($this->_migrationNameLimit !== null) {
+            return $this->_migrationNameLimit;
+        }
+        $tableSchema = $this->db->schema ? $this->db->schema->getTableSchema($this->migrationTable, true) : null;
+        if ($tableSchema !== null) {
+            return $this->_migrationNameLimit = $tableSchema->columns['version']->size;
+        }
+
+        return static::MAX_NAME_LENGTH;
+    }
+
+    /**
+     * Normalizes table name for generator.
+     * When name is preceded with underscore name case is kept - otherwise it's converted from camelcase to underscored.
+     * Last underscore is always trimmed so if there should be underscore at the end of name use two of them.
+     * @param string $name
+     * @return string
+     */
+    private function normalizeTableName($name)
+    {
+        if (substr($name, -1) === '_') {
+            $name = substr($name, 0, -1);
+        }
+
+        if (strpos($name, '_') === 0) {
+            return substr($name, 1);
+        }
+
+        return Inflector::underscore($name);
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     protected function generateMigrationSourceCode($params)
@@ -328,13 +407,20 @@ class MigrateController extends BaseMigrateController
         $foreignKeys = $parsedFields['foreignKeys'];
 
         $name = $params['name'];
+        if ($params['namespace']) {
+            $name = substr($name, strrpos($name, '\\') + 1);
+        }
 
         $templateFile = $this->templateFile;
         $table = null;
-        if (preg_match('/^create_junction(?:_table_for_|_for_|_)(.+)_and_(.+)_tables?$/', $name, $matches)) {
+        if (preg_match(
+            '/^create_?junction_?(?:table)?_?(?:for)?(.+)_?and(.+)_?tables?$/i',
+            $name,
+            $matches
+        )) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
-            $firstTable = $matches[1];
-            $secondTable = $matches[2];
+            $firstTable = $this->normalizeTableName($matches[1]);
+            $secondTable = $this->normalizeTableName($matches[2]);
 
             $fields = array_merge(
                 [
@@ -362,20 +448,20 @@ class MigrateController extends BaseMigrateController
             $foreignKeys[$firstTable . '_id']['column'] = null;
             $foreignKeys[$secondTable . '_id']['column'] = null;
             $table = $firstTable . '_' . $secondTable;
-        } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
+        } elseif (preg_match('/^add(.+)columns?_?to(.+)table$/i', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
-            $table = $matches[2];
-        } elseif (preg_match('/^drop_(.+)_columns?_from_(.+)_table$/', $name, $matches)) {
+            $table = $this->normalizeTableName($matches[2]);
+        } elseif (preg_match('/^drop(.+)columns?_?from(.+)table$/i', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_column'];
-            $table = $matches[2];
-        } elseif (preg_match('/^create_(.+)_table$/', $name, $matches)) {
+            $table = $this->normalizeTableName($matches[2]);
+        } elseif (preg_match('/^create(.+)table$/i', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['create_table'];
-            $table = $matches[1];
-        } elseif (preg_match('/^drop_(.+)_table$/', $name, $matches)) {
+            $table = $this->normalizeTableName($matches[1]);
+        } elseif (preg_match('/^drop(.+)table$/i', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
-            $table = $matches[1];
+            $table = $this->normalizeTableName($matches[1]);
         }
 
         foreach ($foreignKeys as $column => $foreignKey) {
@@ -415,6 +501,7 @@ class MigrateController extends BaseMigrateController
             'table' => $this->generateTableName($table),
             'fields' => $fields,
             'foreignKeys' => $foreignKeys,
+            'tableComment' => $this->comment,
         ]));
     }
 
@@ -450,11 +537,11 @@ class MigrateController extends BaseMigrateController
         $foreignKeys = [];
 
         foreach ($this->fields as $index => $field) {
-            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $chunks = $this->splitFieldIntoChunks($field);
             $property = array_shift($chunks);
 
             foreach ($chunks as $i => &$chunk) {
-                if (strpos($chunk, 'foreignKey') === 0) {
+                if (strncmp($chunk, 'foreignKey', 10) === 0) {
                     preg_match('/foreignKey\((\w*)\s?(\w*)\)/', $chunk, $matches);
                     $foreignKeys[$property] = [
                         'table' => isset($matches[1])
@@ -483,6 +570,34 @@ class MigrateController extends BaseMigrateController
             'fields' => $fields,
             'foreignKeys' => $foreignKeys,
         ];
+    }
+
+    /**
+     * Splits field into chunks
+     *
+     * @param string $field
+     * @return string[]|false
+     */
+    protected function splitFieldIntoChunks($field)
+    {
+        $hasDoubleQuotes = false;
+        preg_match_all('/defaultValue\(["\'].*?:?.*?["\']\)/', $field, $matches, PREG_SET_ORDER, 0);
+        if (isset($matches[0][0])) {
+            $hasDoubleQuotes = true;
+            $originalDefaultValue = $matches[0][0];
+            $defaultValue = str_replace(':', '{{colon}}', $originalDefaultValue);
+            $field = str_replace($originalDefaultValue, $defaultValue, $field);
+        }
+
+        $chunks = preg_split('/\s?:\s?/', $field);
+
+        if (is_array($chunks) && $hasDoubleQuotes) {
+            foreach ($chunks as $key => $chunk) {
+                $chunks[$key] = str_replace($defaultValue, $originalDefaultValue, $chunk);
+            }
+        }
+
+        return $chunks;
     }
 
     /**

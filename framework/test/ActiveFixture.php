@@ -7,7 +7,6 @@
 
 namespace yii\test;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\TableSchema;
 
@@ -25,7 +24,7 @@ use yii\db\TableSchema;
  *
  * For more details and usage information on ActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
  *
- * @property TableSchema $tableSchema The schema information of the database table associated with this
+ * @property-read TableSchema $tableSchema The schema information of the database table associated with this
  * fixture. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -54,7 +53,7 @@ class ActiveFixture extends BaseActiveFixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -95,17 +94,21 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-            $class = new \ReflectionClass($this);
-            $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
 
-            return is_file($dataFile) ? require $dataFile : [];
+            if ($this->dataDirectory !== null) {
+                $dataFile = $this->getTableSchema()->fullName . '.php';
+            } else {
+                $class = new \ReflectionClass($this);
+                $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
+            }
+
+            return $this->loadData($dataFile, false);
         }
-
         return parent::getData();
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unload()
     {
@@ -122,7 +125,7 @@ class ActiveFixture extends BaseActiveFixture
         $table = $this->getTableSchema();
         $this->db->createCommand()->delete($table->fullName)->execute();
         if ($table->sequenceName !== null) {
-            $this->db->createCommand()->resetSequence($table->fullName, 1)->execute();
+            $this->db->createCommand()->executeResetSequence($table->fullName, 1);
         }
     }
 

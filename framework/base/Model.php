@@ -37,19 +37,20 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
- * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
- * @property array $firstErrors The first errors. The array keys are the attribute names, and the array values
- * are the corresponding error messages. An empty array will be returned if there is no error. This property is
+ * @property-read array $errors An array of errors for all attributes. Empty array is returned if no error.
+ * The result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is
  * read-only.
- * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
+ * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
+ * values are the corresponding error messages. An empty array will be returned if there is no error. This
+ * property is read-only.
+ * @property-read ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
- * This property is read-only.
+ * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
+ * model. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -246,10 +247,15 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @return string the form name of this model class.
      * @see load()
+     * @throws InvalidConfigException when form is defined with anonymous class and `formName()` method is
+     * not overridden.
      */
     public function formName()
     {
         $reflector = new ReflectionClass($this);
+        if (PHP_VERSION_ID >= 70000 && $reflector->isAnonymous()) {
+            throw new InvalidConfigException('The "formName()" method should be explicitly defined for anonymous models');
+        }
         return $reflector->getShortName();
     }
 
@@ -329,12 +335,12 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Errors found during the validation can be retrieved via [[getErrors()]],
      * [[getFirstErrors()]] and [[getFirstError()]].
      *
-     * @param array $attributeNames list of attribute names that should be validated.
+     * @param string[]|string $attributeNames attribute name or list of attribute names that should be validated.
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
      * @return bool whether the validation is successful without any error.
-     * @throws InvalidParamException if the current scenario is unknown.
+     * @throws InvalidArgumentException if the current scenario is unknown.
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
@@ -349,12 +355,14 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
-            throw new InvalidParamException("Unknown scenario: $scenario");
+            throw new InvalidArgumentException("Unknown scenario: $scenario");
         }
 
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
+
+        $attributeNames = (array)$attributeNames;
 
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
@@ -424,10 +432,20 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function getActiveValidators($attribute = null)
     {
-        $validators = [];
+        $activeAttributes = $this->activeAttributes();
+        if ($attribute !== null && !in_array($attribute, $activeAttributes, true)) {
+            return [];
+        }
         $scenario = $this->getScenario();
+        $validators = [];
         foreach ($this->getValidators() as $validator) {
-            if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->getAttributeNames(), true))) {
+            if ($attribute === null) {
+                $validatorAttributes = $validator->getValidationAttributes($activeAttributes);
+                $attributeValid = !empty($validatorAttributes);
+            } else {
+                $attributeValid = in_array($attribute, $validator->getValidationAttributes($attribute), true);
+            }
+            if ($attributeValid && $validator->isActive($scenario)) {
                 $validators[] = $validator;
             }
         }
@@ -609,6 +627,25 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     }
 
     /**
+     * Returns the errors for all attributes as a one-dimensional array.
+     * @param bool $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array errors for all attributes as a one-dimensional array. Empty array is returned if no error.
+     * @see getErrors()
+     * @see getFirstErrors()
+     * @since 2.0.14
+     */
+    public function getErrorSummary($showAllErrors)
+    {
+        $lines = [];
+        $errors = $showAllErrors ? $this->getErrors() : $this->getFirstErrors();
+        foreach ($errors as $es) {
+            $lines = array_merge($lines, (array)$es);
+        }
+        return $lines;
+    }
+
+    /**
      * Adds a new error to the specified attribute.
      * @param string $attribute attribute name
      * @param string $error new error message
@@ -721,7 +758,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function onUnsafeAttribute($name, $value)
     {
         if (YII_DEBUG) {
-            Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+            Yii::debug("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
         }
     }
 
@@ -762,7 +799,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         }
         $attributes = [];
         foreach ($scenarios[$scenario] as $attribute) {
-            if ($attribute[0] !== '!' && !in_array('!' . $attribute, $scenarios[$scenario])) {
+            if (strncmp($attribute, '!', 1) !== 0 && !in_array('!' . $attribute, $scenarios[$scenario])) {
                 $attributes[] = $attribute;
             }
         }
@@ -781,9 +818,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         if (!isset($scenarios[$scenario])) {
             return [];
         }
-        $attributes = $scenarios[$scenario];
+        $attributes = array_keys(array_flip($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
-            if ($attribute[0] === '!') {
+            if (strncmp($attribute, '!', 1) === 0) {
                 $attributes[$i] = substr($attribute, 1);
             }
         }

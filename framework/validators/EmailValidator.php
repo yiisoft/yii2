@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -52,7 +53,7 @@ class EmailValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -66,7 +67,7 @@ class EmailValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -76,8 +77,8 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = idn_to_ascii($matches['local']);
-                $matches['domain'] = idn_to_ascii($matches['domain']);
+                $matches['local'] = $this->idnToAscii($matches['local']);
+                $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
 
@@ -94,9 +95,9 @@ class EmailValidator extends Validator
                 // http://www.rfc-editor.org/errata_search.php?eid=1690
                 $valid = false;
             } else {
-                $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
+                $valid = preg_match($this->pattern, $value) || ($this->allowName && preg_match($this->fullPattern, $value));
                 if ($valid && $this->checkDNS) {
-                    $valid = checkdnsrr($matches['domain'] . '.', 'MX') || checkdnsrr($matches['domain'] . '.', 'A');
+                    $valid = $this->isDNSValid($matches['domain']);
                 }
             }
         }
@@ -105,7 +106,44 @@ class EmailValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * @param string $domain
+     * @return bool if DNS records for domain are valid
+     * @see https://github.com/yiisoft/yii2/issues/17083
+     */
+    protected function isDNSValid($domain)
+    {
+        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false);
+    }
+
+    private function hasDNSRecord($domain, $isMX)
+    {
+        $normalizedDomain = $domain . '.';
+        if (!checkdnsrr($normalizedDomain, ($isMX ? 'MX' : 'A'))) {
+            return false;
+        }
+
+        try {
+            // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
+            $records = dns_get_record($normalizedDomain, ($isMX ? DNS_MX : DNS_A));
+        } catch (ErrorException $exception) {
+            return false;
+        }
+
+        return !empty($records);
+    }
+
+    private function idnToAscii($idn)
+    {
+        if (PHP_VERSION_ID < 50600) {
+            // TODO: drop old PHP versions support
+            return idn_to_ascii($idn);
+        }
+
+        return idn_to_ascii($idn, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -119,7 +157,7 @@ class EmailValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

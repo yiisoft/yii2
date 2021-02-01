@@ -23,17 +23,17 @@ use yii\di\ServiceLocator;
  *
  * For more details and usage information on Module, see the [guide article on modules](guide:structure-modules).
  *
- * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
- * with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
- * This property is write-only.
+ * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must
+ * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
+ * example. This property is write-only.
  * @property string $basePath The root directory of the module.
- * @property string $controllerPath The directory that contains the controller classes. This property is
+ * @property-read string $controllerPath The directory that contains the controller classes. This property is
  * read-only.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
- * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property-read string $uniqueId The unique ID of the module. This property is read-only.
  * @property string $version The version of this module. Note that the type of this property differs in getter
- * and setter. See [[getVersion()]] and [[setVersion()]] for details.
+ * and setter. See [[getVersion()]]  and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -60,11 +60,11 @@ class Module extends ServiceLocator
      */
     public $id;
     /**
-     * @var Module the parent module of this module. `null` if this module does not have a parent.
+     * @var Module|null the parent module of this module. `null` if this module does not have a parent.
      */
     public $module;
     /**
-     * @var string|bool the layout that should be applied for views within this module. This refers to a view name
+     * @var string|bool|null the layout that should be applied for views within this module. This refers to a view name
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
      * will be taken. If this is `false`, layout will be disabled within this module.
      */
@@ -90,7 +90,7 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in.
+     * @var string|null the namespace that controller classes are in.
      * This namespace will be used to load controller classes by prepending it to the controller
      * class name.
      *
@@ -232,7 +232,7 @@ class Module extends ServiceLocator
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -241,7 +241,7 @@ class Module extends ServiceLocator
         if ($p !== false && is_dir($p)) {
             $this->_basePath = $p;
         } else {
-            throw new InvalidParamException("The directory does not exist: $path");
+            throw new InvalidArgumentException("The directory does not exist: $path");
         }
     }
 
@@ -250,7 +250,7 @@ class Module extends ServiceLocator
      * Note that in order for this method to return a value, you must define
      * an alias for the root namespace of [[controllerNamespace]].
      * @return string the directory that contains the controller classes.
-     * @throws InvalidParamException if there is no alias defined for the root namespace of [[controllerNamespace]].
+     * @throws InvalidArgumentException if there is no alias defined for the root namespace of [[controllerNamespace]].
      */
     public function getControllerPath()
     {
@@ -273,7 +273,7 @@ class Module extends ServiceLocator
     /**
      * Sets the directory that contains the view files.
      * @param string $path the root directory of view files.
-     * @throws InvalidParamException if the directory is invalid.
+     * @throws InvalidArgumentException if the directory is invalid.
      */
     public function setViewPath($path)
     {
@@ -296,7 +296,7 @@ class Module extends ServiceLocator
     /**
      * Sets the directory that contains the layout files.
      * @param string $path the root directory or [path alias](guide:concept-aliases) of layout files.
-     * @throws InvalidParamException if the directory is invalid
+     * @throws InvalidArgumentException if the directory is invalid
      */
     public function setLayoutPath($path)
     {
@@ -422,10 +422,10 @@ class Module extends ServiceLocator
             if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
-                Yii::trace("Loading module: $id", __METHOD__);
+                Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
-                $module->setInstance($module);
+                $module::setInstance($module);
                 return $this->_modules[$id] = $module;
             }
         }
@@ -450,6 +450,9 @@ class Module extends ServiceLocator
             unset($this->_modules[$id]);
         } else {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -504,6 +507,9 @@ class Module extends ServiceLocator
     {
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -544,10 +550,10 @@ class Module extends ServiceLocator
      * to resolve the given route:
      *
      * 1. If the route is empty, use [[defaultRoute]];
-     * 2. If the first segment of the route is a valid module ID as declared in [[modules]],
-     *    call the module's `createController()` with the rest part of the route;
-     * 3. If the first segment of the route is found in [[controllerMap]], create a controller
+     * 2. If the first segment of the route is found in [[controllerMap]], create a controller
      *    based on the corresponding configuration found in [[controllerMap]];
+     * 3. If the first segment of the route is a valid module ID as declared in [[modules]],
+     *    call the module's `createController()` with the rest part of the route;
      * 4. The given route is in the format of `abc/def/xyz`. Try either `abc\DefController`
      *    or `abc\def\XyzController` class within the [[controllerNamespace|controller namespace]].
      *
@@ -626,14 +632,13 @@ class Module extends ServiceLocator
             $className = substr($id, $pos + 1);
         }
 
-        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
-            return null;
-        }
-        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+        if ($this->isIncorrectClassNameOrPrefix($className, $prefix)) {
             return null;
         }
 
-        $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
+        $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
+                return ucfirst($matches[1]);
+            }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
@@ -647,6 +652,25 @@ class Module extends ServiceLocator
         }
 
         return null;
+    }
+
+    /**
+     * Checks if class name or prefix is incorrect
+     *
+     * @param string $className
+     * @param string $prefix
+     * @return bool
+     */
+    private function isIncorrectClassNameOrPrefix($className, $prefix)
+    {
+        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
+            return true;
+        }
+        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -723,7 +747,7 @@ class Module extends ServiceLocator
         if (!isset($this->module)) {
             return parent::get($id, $throwException);
         }
-        
+
         $component = parent::get($id, false);
         if ($component === null) {
             $component = $this->module->get($id, $throwException);

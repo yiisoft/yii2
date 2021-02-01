@@ -16,7 +16,7 @@ namespace yii\rbac;
 class Permission extends Item
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $type = self::TYPE_PERMISSION;
 }

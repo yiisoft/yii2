@@ -7,14 +7,19 @@
 
 namespace yiiunit\framework\db;
 
-use yii\caching\FileCache;
+use ArrayObject;
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\DataReader;
+use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\db\Schema;
 
 abstract class CommandTest extends DatabaseTestCase
 {
+    protected $upsertTestCharCast = 'CAST([[address]] AS VARCHAR(255))';
+
     public function testConstruct()
     {
         $db = $this->getConnection(false);
@@ -56,11 +61,11 @@ abstract class CommandTest extends DatabaseTestCase
         $db = $this->getConnection(false);
 
         $command = $db->createCommand('SELECT * FROM {{customer}}');
-        $this->assertEquals(null, $command->pdoStatement);
+        $this->assertNull($command->pdoStatement);
         $command->prepare();
         $this->assertNotNull($command->pdoStatement);
         $command->cancel();
-        $this->assertEquals(null, $command->pdoStatement);
+        $this->assertNull($command->pdoStatement);
     }
 
     public function testExecute()
@@ -143,7 +148,7 @@ abstract class CommandTest extends DatabaseTestCase
 
     public function testBindParamValue()
     {
-        if (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+        if (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
         }
 
@@ -172,26 +177,30 @@ SQL;
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = str_repeat('abc', 33) . 'x'; // a 100 char string
-        $boolCol = false;
         $command->bindParam(':int_col', $intCol, \PDO::PARAM_INT);
         $command->bindParam(':char_col', $charCol);
-        $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         if ($this->driverName === 'oci') {
             // can't bind floats without support from a custom PDO driver
             $floatCol = 2;
             $numericCol = 3;
             // can't use blobs without support from a custom PDO driver
             $blobCol = null;
+            // You can create a table with a column of datatype CHAR(1) and store either “Y” or “N” in that column
+            // to indicate TRUE or FALSE.
+            $boolCol = '0';
             $command->bindParam(':float_col', $floatCol, \PDO::PARAM_INT);
             $command->bindParam(':numeric_col', $numericCol, \PDO::PARAM_INT);
             $command->bindParam(':blob_col', $blobCol);
+            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         } else {
             $floatCol = 1.23;
             $numericCol = '1.23';
             $blobCol = "\x10\x11\x12";
+            $boolCol = false;
             $command->bindParam(':float_col', $floatCol);
             $command->bindParam(':numeric_col', $numericCol);
             $command->bindParam(':blob_col', $blobCol);
+            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         }
         $this->assertEquals(1, $command->execute());
 
@@ -204,15 +213,15 @@ SQL;
         $this->assertEquals($floatCol, $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
-        } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+        } elseif (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
             $this->assertInternalType('resource', $row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
-        if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (defined('HHVM_VERSION') && in_array($this->driverName, ['sqlite', 'pgsql']))) {
-            $this->assertEquals($boolCol, (int) $row['bool_col']);
+        if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
+            $this->assertEquals($boolCol, (int)$row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
         }
@@ -231,7 +240,7 @@ SQL;
 
     public function paramsNonWhereProvider()
     {
-        return[
+        return [
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR(name, :len)'],
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email'],
@@ -265,7 +274,7 @@ SQL;
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
         $result = $command->queryOne();
-        $this->assertTrue(is_array($result) && isset($result['id']));
+        $this->assertTrue(\is_array($result) && isset($result['id']));
 
         // FETCH_OBJ, customized via fetchMode property
         $sql = 'SELECT * FROM {{customer}}';
@@ -278,7 +287,7 @@ SQL;
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
         $result = $command->queryOne([], \PDO::FETCH_NUM);
-        $this->assertTrue(is_array($result) && isset($result[0]));
+        $this->assertTrue(\is_array($result) && isset($result[0]));
     }
 
     public function testBatchInsert()
@@ -306,7 +315,7 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (version_compare(PHP_VERSION, '5.5', '<')) {
+        if (PHP_VERSION_ID < 50500) {
             $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
         } else {
             include __DIR__ . '/testBatchInsertWithYield.php';
@@ -345,7 +354,7 @@ SQL;
             $db->createCommand()->batchInsert('type', $cols, $data)->execute();
 
             $data = $db->createCommand('SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];')->queryAll();
-            $this->assertEquals(3, count($data));
+            $this->assertEquals(3, \count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
             $this->assertEquals(3, $data[2]['int_col']);
@@ -366,6 +375,67 @@ SQL;
             throw $e;
         }
         setlocale(LC_NUMERIC, $locale);
+    }
+
+    public function batchInsertSqlProvider()
+    {
+        return [
+            'issue11242' => [
+                'type',
+                ['int_col', 'float_col', 'char_col'],
+                [['', '', 'Kyiv {{city}}, Ukraine']],
+
+                'expected' => "INSERT INTO `type` (`int_col`, `float_col`, `char_col`) VALUES (NULL, NULL, 'Kyiv {{city}}, Ukraine')",
+                // See https://github.com/yiisoft/yii2/issues/11242
+                // Make sure curly bracelets (`{{..}}`) in values will not be escaped
+            ],
+            'wrongBehavior' => [
+                '{{%type}}',
+                ['{{%type}}.[[int_col]]', '[[float_col]]', 'char_col'],
+                [['', '', 'Kyiv {{city}}, Ukraine']],
+
+                'expected' => "INSERT INTO `type` (`type`.`int_col`, `float_col`, `char_col`) VALUES ('', '', 'Kyiv {{city}}, Ukraine')",
+                /* Test covers potentially wrong behavior and marks it as expected!
+                 * In case table name or table column is passed with curly or square bracelets,
+                 * QueryBuilder can not determine the table schema and typecast values properly.
+                 * TODO: make it work. Impossible without BC breaking for public methods.
+                 */
+            ],
+            'batchInsert binds params from expression' => [
+                '{{%type}}',
+                ['int_col'],
+                [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
+                'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
+                'expectedParams' => [':qp1' => 42]
+            ],
+            'batchIsert empty rows represented by ArrayObject' => [
+                '{{%type}}',
+                ['col'],
+                new ArrayObject(), // See: https://github.com/yiisoft/yii2/issues/14609
+                'expected' => '',
+                'expectedParams' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Make sure that `{{something}}` in values will not be encoded
+     * https://github.com/yiisoft/yii2/issues/11242.
+     *
+     * @dataProvider batchInsertSqlProvider
+     * @param mixed $table
+     * @param mixed $columns
+     * @param mixed $values
+     * @param mixed $expected
+     * @param array $expectedParams
+     */
+    public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
+    {
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert($table, $columns, $values);
+        $command->prepare(false);
+        $this->assertSame($expected, $command->getSql());
+        $this->assertSame($expectedParams, $command->params);
     }
 
     public function testInsert()
@@ -401,13 +471,17 @@ SQL;
         $db->createCommand()->insert(
             '{{customer}}',
             [
-                'id' => 43,
                 'name' => 'Some {{weird}} name',
                 'email' => 'test@example.com',
                 'address' => 'Some {{%weird}} address',
             ]
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        if ($this->driverName === 'pgsql') {
+            $customerId = $db->getLastInsertID('public.customer_id_seq');
+        } else {
+            $customerId = $db->getLastInsertID();
+        }
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{weird}} name', $customer['name']);
         $this->assertEquals('Some {{%weird}} address', $customer['address']);
 
@@ -417,9 +491,9 @@ SQL;
                 'name' => 'Some {{updated}} name',
                 'address' => 'Some {{%updated}} address',
             ],
-            ['id' => 43]
+            ['id' => $customerId]
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=' . $customerId)->queryOne();
         $this->assertEquals('Some {{updated}} name', $customer['name']);
         $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
@@ -444,10 +518,10 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                    '{{customer}}.[[email]] as name',
-                    '[[name]] as email',
-                    '[[address]]',
-                ]
+                '{{customer}}.[[email]] as name',
+                '[[name]] as email',
+                '[[address]]',
+            ]
         )
             ->from('{{customer}}')
             ->where([
@@ -574,16 +648,19 @@ SQL;
         switch ($this->driverName) {
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
-            break;
+                break;
             case 'cubrid':
             case 'mysql':
                 $expression = 'YEAR(NOW())';
-            break;
+                break;
             case 'sqlite':
                 $expression = "strftime('%Y')";
-            break;
+                break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
+                break;
+            case 'oci':
+                $expression = 'EXTRACT(YEAR FROM sysdate)';
         }
 
         $command = $db->createCommand();
@@ -610,29 +687,33 @@ SQL;
 
         $command = $db->createCommand();
         $command->insert('{{order}}', [
-            'id' => 42,
             'customer_id' => 1,
             'created_at' => $time,
             'total' => 42,
         ])->execute();
+        if ($this->driverName === 'pgsql') {
+            $orderId = $db->getLastInsertID('public.order_id_seq');
+        } else {
+            $orderId = $db->getLastInsertID();
+        }
 
         $columnValueQuery = new \yii\db\Query();
-        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => '42']);
+        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();
         $command->insert(
             '{{order_with_null_fk}}',
             [
-                'customer_id' => 42,
+                'customer_id' => $orderId,
                 'created_at' => $columnValueQuery,
                 'total' => 42,
             ]
         )->execute();
 
-        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
+        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId)->queryScalar());
 
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
-        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = 42')->execute();
+        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
     }
 
     public function testCreateTable()
@@ -715,6 +796,260 @@ SQL;
 
         $this->assertNull($db->getSchema()->getTableSchema($fromTableName, true));
         $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
+    }
+
+    public function upsertProvider()
+    {
+        return [
+            'regular values' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Earth',
+                            'status' => 3,
+                        ]
+                    ]
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Universe',
+                            'status' => 1,
+                        ]
+                    ]
+                ],
+            ],
+            'regular values with update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Earth',
+                            'status' => 3,
+                        ],
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Universe',
+                            'status' => 1,
+                        ],
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                    'expected' => [
+                        'email' => 'foo@example.com',
+                        'address' => 'Moon',
+                        'status' => 2,
+                    ],
+                ],
+            ],
+            'regular values without update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Earth',
+                            'status' => 3,
+                        ],
+                        false,
+                    ]
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Universe',
+                            'status' => 1,
+                        ],
+                        false,
+                    ],
+                    'expected' => [
+                        'email' => 'foo@example.com',
+                        'address' => 'Earth',
+                        'status' => 3,
+                    ],
+                ],
+            ],
+            'query' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('1'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1)
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('2'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1)
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 2,
+                    ],
+                ],
+            ],
+            'query with update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('1'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('3'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'Moon',
+                        'status' => 2,
+                    ],
+                ],
+            ],
+            'query without update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('1'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        false,
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('2'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        false,
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider upsertProvider
+     * @param array $firstData
+     * @param array $secondData
+     */
+    public function testUpsert(array $firstData, array $secondData)
+    {
+        $db = $this->getConnection();
+        $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
+        $this->performAndCompareUpsertResult($db, $firstData);
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
+        $this->performAndCompareUpsertResult($db, $secondData);
+    }
+
+    protected function performAndCompareUpsertResult(Connection $db, array $data)
+    {
+        $params = $data['params'];
+        $expected = isset($data['expected']) ? $data['expected'] : $params[1];
+        $command = $db->createCommand();
+        call_user_func_array([$command, 'upsert'], $params);
+        $command->execute();
+        $actual = (new Query())
+            ->select([
+                'email',
+                'address' => new Expression($this->upsertTestCharCast),
+                'status',
+            ])
+            ->from('T_upsert')
+            ->one($db);
+        $this->assertEquals($expected, $actual);
     }
 
     /*
@@ -924,7 +1259,7 @@ SQL;
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $db->queryCache = new ArrayCache();
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
@@ -1025,6 +1360,17 @@ SQL;
                 [':active' => false],
                 'SELECT * FROM customer WHERE active = FALSE',
             ],
+            // https://github.com/yiisoft/yii2/issues/15122
+            [
+                'SELECT * FROM customer WHERE id IN (:ids)',
+                [':ids' => new Expression(implode(', ', [1, 2]))],
+                'SELECT * FROM customer WHERE id IN (\'1, 2\')',
+            ],
+            [
+                'SELECT NOW() = :now',
+                [':now' => new Expression('NOW()')],
+                'SELECT NOW() = \'NOW()\'',
+            ]
         ];
     }
 
@@ -1046,6 +1392,12 @@ SQL;
 
     public function testAutoRefreshTableSchema()
     {
+        if ($this->driverName === 'sqlsrv') {
+
+            // related to https://github.com/yiisoft/yii2/pull/17364
+            $this->markTestSkipped('Should be fixed');
+        }
+
         $db = $this->getConnection(false);
         $tableName = 'test';
         $fkName = 'test_fk';
@@ -1084,5 +1436,88 @@ SQL;
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
+    }
+
+    public function testTransaction()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command transaction')");
+        $this->invokeMethod($command, 'requireTransaction');
+        $command->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command transaction'")->queryScalar());
+    }
+
+    public function testRetryHandler()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command retry')")->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command retry'")->queryScalar());
+
+        $attempts = null;
+        $hitHandler = false;
+        $hitCatch = false;
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[id]], [[description]]) VALUES(1, 'command retry')");
+        $this->invokeMethod($command, 'setRetryHandler', [function ($exception, $attempt) use (&$attempts, &$hitHandler) {
+            $attempts = $attempt;
+            $hitHandler = true;
+            return $attempt <= 2;
+        }]);
+        try {
+            $command->execute();
+        } catch (Exception $e) {
+            $hitCatch = true;
+            $this->assertInstanceOf('yii\db\IntegrityException', $e);
+        }
+        $this->assertNull($connection->transaction);
+        $this->assertSame(3, $attempts);
+        $this->assertTrue($hitHandler);
+        $this->assertTrue($hitCatch);
+    }
+
+    public function testCreateView()
+    {
+        $db = $this->getConnection();
+        $subquery = (new \yii\db\Query())
+            ->select('bar')
+            ->from('testCreateViewTable')
+            ->where(['>', 'bar', '5']);
+        if ($db->getSchema()->getTableSchema('testCreateView')) {
+            $db->createCommand()->dropView('testCreateView')->execute();
+        }
+        if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
+            $db->createCommand()->dropTable('testCreateViewTable')->execute();
+        }
+        $db->createCommand()->createTable('testCreateViewTable', [
+            'id' => Schema::TYPE_PK,
+            'bar' => Schema::TYPE_INTEGER,
+        ])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 1])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 6])->execute();
+        $db->createCommand()->createView('testCreateView', $subquery)->execute();
+        $records = $db->createCommand('SELECT [[bar]] FROM {{testCreateView}};')->queryAll();
+
+        $this->assertEquals([['bar' => 6]], $records);
+    }
+
+    public function testDropView()
+    {
+        $db = $this->getConnection();
+        $viewName = 'animal_view'; // since it already exists in the fixtures
+        $this->assertNotNull($db->getSchema()->getTableSchema($viewName));
+        $db->createCommand()->dropView($viewName)->execute();
+
+        $this->assertNull($db->getSchema()->getTableSchema($viewName));
+    }
+
+    // TODO: Remove in Yii 2.1
+    public function testBindValuesSupportsDeprecatedPDOCastingFormat()
+    {
+        $db = $this->getConnection();
+        $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $this->assertTrue(true);
     }
 }

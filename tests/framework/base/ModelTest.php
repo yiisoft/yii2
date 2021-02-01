@@ -153,6 +153,17 @@ class ModelTest extends TestCase
         $this->assertEquals(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
     }
 
+    public function testActiveAttributesAreUnique()
+    {
+        // by default mass assignment doesn't work at all
+        $speaker = new Speaker();
+        $this->assertEmpty($speaker->activeAttributes());
+
+        $speaker = new Speaker();
+        $speaker->setScenario('duplicates');
+        $this->assertEquals(['firstName', 'underscore_style'], $speaker->activeAttributes());
+    }
+
     public function testIsAttributeSafe()
     {
         // by default mass assignment doesn't work at all
@@ -162,6 +173,18 @@ class ModelTest extends TestCase
         $speaker = new Speaker();
         $speaker->setScenario('test');
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
+    }
+
+    public function testIsAttributeSafeForIntegerAttribute()
+    {
+        $model = new RulesModel();
+        $model->rules = [
+            [
+                [123456], 'safe',
+            ]
+        ];
+
+        $this->assertTrue($model->isAttributeSafe(123456));
     }
 
     public function testSafeScenarios()
@@ -299,6 +322,9 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!'],
         ], $speaker->getErrors());
 
+        $this->assertEquals(['Something is wrong!', 'Totally wrong!', 'Another one!'], $speaker->getErrorSummary(true));
+        $this->assertEquals(['Something is wrong!', 'Another one!'], $speaker->getErrorSummary(false));
+
         $speaker->clearErrors('firstName');
         $this->assertEquals([
             'lastName' => ['Another one!'],
@@ -415,6 +441,18 @@ class ModelTest extends TestCase
         $this->assertEquals($scenarios, $model->scenarios());
     }
 
+    public function testValidatorsWithDifferentScenarios()
+    {
+        $model = new CustomScenariosModel();
+        self::assertCount(3, $model->getActiveValidators());
+        self::assertCount(2, $model->getActiveValidators('name'));
+
+        $model->setScenario('secondScenario');
+        self::assertCount(2, $model->getActiveValidators());
+        self::assertCount(2, $model->getActiveValidators('id'));
+        self::assertCount(0, $model->getActiveValidators('name'), 'This attribute has no validators in current scenario.');
+    }
+
     public function testIsAttributeRequired()
     {
         $singer = new Singer();
@@ -451,10 +489,39 @@ class ModelTest extends TestCase
 
         $this->assertTrue($model->validate());
     }
+
+    public function testValidateAttributeNames()
+    {
+        $model = new ComplexModel1();
+        $model->name = 'Some value';
+        $this->assertTrue($model->validate(['name']), 'Should validate only name attribute');
+        $this->assertTrue($model->validate('name'), 'Should validate only name attribute');
+        $this->assertFalse($model->validate(), 'Should validate all attributes');
+    }
+
+    public function testFormNameWithAnonymousClass()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        $model = require __DIR__ . '/stub/AnonymousModelClass.php';
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "formName()" method should be explicitly defined for anonymous models');
+
+        $model->formName();
+    }
 }
 
 class ComplexModel1 extends Model
 {
+    public $name;
+    public $description;
+    public $id;
+    public $is_disabled;
+
     public function rules()
     {
         return [
@@ -491,5 +558,28 @@ class WriteOnlyModel extends Model
     public function setPassword($pw)
     {
         $this->passwordHash = $pw;
+    }
+}
+
+class CustomScenariosModel extends Model
+{
+    public $id;
+    public $name;
+
+    public function rules()
+    {
+        return [
+            [['id', 'name'], 'required'],
+            ['id', 'integer'],
+            ['name', 'string'],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_DEFAULT => ['id', 'name'],
+            'secondScenario' => ['id'],
+        ];
     }
 }

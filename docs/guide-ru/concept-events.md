@@ -9,7 +9,7 @@
 Обработчики событий <span id="event-handlers"></span>
 --------------
 
-Обработчик события - это [callback-функция PHP](http://www.php.net/manual/ru/language.types.callable.php), которая выполняется при срабатывании события, к которому она присоединена. Можно использовать следующие callback-функции:
+Обработчик события - это [callback-функция PHP](https://secure.php.net/manual/ru/language.types.callable.php), которая выполняется при срабатывании события, к которому она присоединена. Можно использовать следующие callback-функции:
 
 - глобальную функцию PHP, указав строку с именем функции (без скобок), например, `'trim'`;
 - метод объекта, указав массив, содержащий строки с именами объекта и метода (без скобок), например, `[$object, 'methodName']`;
@@ -72,7 +72,7 @@ function function_name($event) {
 Порядок обработки событий
 -------------------
 
-К одному событию можно присоединить несколько обработчиков. При срабатывании события обработчики будут вызываться в том порядке, к котором они присоединялись к событию. Чтобы запретить в обработчике вызов всех следующих за ним обработчиков, необходимо установить свойство [[yii\base\Event::handled]] параметра `$event` в `true`:
+К одному событию можно присоединить несколько обработчиков. При срабатывании события обработчики будут вызываться в том порядке, в котором они присоединялись к событию. Чтобы запретить в обработчике вызов всех следующих за ним обработчиков, необходимо установить свойство [[yii\base\Event::handled]] параметра `$event` в `true`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -188,7 +188,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' добавлен');
+    Yii::debug(get_class($event->sender) . ' добавлен');
 });
 ```
 
@@ -239,7 +239,7 @@ interface DanceEventInterface
 }
 ```
 
-И два класса, которые его реализовывают:
+И два класса, которые его реализуют:
 
 ```php
 class Dog extends Component implements DanceEventInterface
@@ -266,7 +266,7 @@ class Developer extends Component implements DanceEventInterface
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+    Yii::debug(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
 });
 ```
 
@@ -280,7 +280,7 @@ Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
 Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
-Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
+Однако невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
 
 ```php
 // НЕ БУДЕТ РАБОТАТЬ

@@ -141,6 +141,12 @@ class FileCache extends Cache
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
         }
+        // If ownership differs the touch call will fail, so we try to
+        // rebuild the file from scratch by deleting it first
+        // https://github.com/yiisoft/yii2/pull/16120
+        if (is_file($cacheFile) && function_exists('posix_geteuid') && fileowner($cacheFile) !== posix_geteuid()) {
+            @unlink($cacheFile);
+        }
         if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
             if ($this->fileMode !== null) {
                 @chmod($cacheFile, $this->fileMode);
@@ -191,24 +197,31 @@ class FileCache extends Cache
     }
 
     /**
-     * Returns the cache file path given the cache key.
-     * @param string $key cache key
+     * Returns the cache file path given the normalized cache key.
+     * @param string $normalizedKey normalized cache key by [[buildKey]] method
      * @return string the cache file path
      */
-    protected function getCacheFile($key)
+    protected function getCacheFile($normalizedKey)
     {
-        if ($this->directoryLevel > 0) {
-            $base = $this->cachePath;
-            for ($i = 0; $i < $this->directoryLevel; ++$i) {
-                if (($prefix = substr($key, $i + $i, 2)) !== false) {
-                    $base .= DIRECTORY_SEPARATOR . $prefix;
-                }
-            }
+        $cacheKey = $normalizedKey;
 
-            return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
+        if ($this->keyPrefix !== '') {
+            // Remove key prefix to avoid generating constant directory levels
+            $lenKeyPrefix = strlen($this->keyPrefix);
+            $cacheKey = substr_replace($normalizedKey, '', 0, $lenKeyPrefix);
         }
 
-        return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
+        $cachePath = $this->cachePath;
+
+        if ($this->directoryLevel > 0) {
+            for ($i = 0; $i < $this->directoryLevel; ++$i) {
+                if (($subDirectory = substr($cacheKey, $i + $i, 2)) !== false) {
+                    $cachePath .= DIRECTORY_SEPARATOR . $subDirectory;
+                }
+            }
+        }
+
+        return $cachePath . DIRECTORY_SEPARATOR . $normalizedKey . $this->cacheFileSuffix;
     }
 
     /**
@@ -248,7 +261,7 @@ class FileCache extends Cache
     {
         if (($handle = opendir($path)) !== false) {
             while (($file = readdir($handle)) !== false) {
-                if ($file[0] === '.') {
+                if (strpos($file, '.') === 0) {
                     continue;
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;

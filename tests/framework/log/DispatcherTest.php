@@ -18,6 +18,7 @@ namespace yii\log {
 
 namespace yiiunit\framework\log {
 
+    use yiiunit\framework\log\mocks\TargetMock;
     use Yii;
     use yii\base\UserException;
     use yii\log\Dispatcher;
@@ -203,13 +204,33 @@ namespace yiiunit\framework\log {
                 ->withConsecutive(
                     [$this->equalTo('messages'), $this->equalTo(true)],
                     [
-                        [[
-                            'Unable to send log via ' . get_class($target1) . ': Exception: some error',
-                            Logger::LEVEL_WARNING,
-                            'yii\log\Dispatcher::dispatch',
-                            'time data',
-                            [],
-                        ]],
+                        $this->callback(function($arg) use ($target1) {
+                            if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
+                                return false;
+                            }
+
+                            if (strpos($arg[0][0], 'Unable to send log via ' . get_class($target1) . ': Exception (Exception) \'yii\base\UserException\' with message \'some error\'') !== 0) {
+                                return false;
+                            }
+
+                            if ($arg[0][1] !== Logger::LEVEL_WARNING) {
+                                return false;
+                            }
+
+                            if ($arg[0][2] !== 'yii\log\Dispatcher::dispatch') {
+                                return false;
+                            }
+
+                            if ($arg[0][3] !== 'time data') {
+                                return false;
+                            }
+
+                            if ($arg[0][4] !== []) {
+                                return false;
+                            }
+
+                            return true;
+                        }),
                         true,
                     ]
                 );
@@ -261,6 +282,40 @@ namespace yiiunit\framework\log {
                 return forward_static_call(static::$functions[$name], $arguments);
             }
             static::fail("Function '$name' has not implemented yet!");
+        }
+
+        private $targetThrowFirstCount;
+        private $targetThrowSecondOutputs;
+
+        public function testTargetThrow()
+        {
+            $this->targetThrowFirstCount = 0;
+            $this->targetThrowSecondOutputs = [];
+            $targetFirst = new TargetMock([
+                'collectOverride' => function () {
+                    $this->targetThrowFirstCount++;
+                    if (PHP_MAJOR_VERSION < 7) {
+                        throw new \RuntimeException('test');
+                    }
+                    require_once __DIR__ . DIRECTORY_SEPARATOR . 'mocks' . DIRECTORY_SEPARATOR . 'typed_error.php';
+                    typed_error_test_mock([]);
+                }
+            ]);
+            $targetSecond = new TargetMock([
+                'collectOverride' => function ($message, $final) {
+                    $this->targetThrowSecondOutputs[] = array_pop($message);
+                }
+            ]);
+            $dispatcher = new Dispatcher([
+                'logger' => new Logger(),
+                'targets' => [$targetFirst, $targetSecond],
+            ]);
+            $message = 'test' . time();
+            $dispatcher->dispatch([$message], false);
+            $this->assertSame(1, $this->targetThrowFirstCount);
+            $this->assertSame(2, count($this->targetThrowSecondOutputs));
+            $this->assertSame($message, array_shift($this->targetThrowSecondOutputs));
+            $this->assertStringStartsWith('Unable to send log via', array_shift($this->targetThrowSecondOutputs)[0]);
         }
     }
 }

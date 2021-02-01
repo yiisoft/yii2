@@ -129,6 +129,9 @@ class I18NTest extends TestCase
         // target is a different language than source
         $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
         $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru'));
+
+        // language is set to null
+        $this->assertEquals($msg, $i18n->translate('test', $msg, [], null));
     }
 
     public function testTranslateParams()
@@ -274,5 +277,14 @@ class I18NTest extends TestCase
     {
         $message = 'Incorrect password (length must be from {min, number} to {max, number} symbols).';
         $this->assertEquals($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
+    }
+
+    public function testFormatMessageWithDottedParameters()
+    {
+        $message = 'date: {dt.test}';
+        $this->assertEquals('date: 1510147434', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
+
+        $message = 'date: {dt.test,date}';
+        $this->assertEquals('date: Nov 8, 2017', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
     }
 }

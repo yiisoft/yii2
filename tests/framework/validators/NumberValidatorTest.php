@@ -77,6 +77,8 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(-20));
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
+        $this->assertFalse($val->validate(false));
+        $this->assertFalse($val->validate(true));
 
         $this->setPointDecimalLocale();
         $this->assertFalse($val->validate('25,45'));
@@ -94,6 +96,8 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate('020'));
         $this->assertTrue($val->validate(0x14));
         $this->assertFalse($val->validate('0x14')); // todo check this
+        $this->assertFalse($val->validate(false));
+        $this->assertFalse($val->validate(true));
     }
 
     public function testValidateValueAdvanced()
@@ -133,7 +137,8 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator(['min' => 1]);
         $this->assertTrue($val->validate(1));
-        $this->assertFalse($val->validate(-1));
+        $this->assertFalse($val->validate(-1, $error));
+        $this->assertContains('the input value must be no less than 1.', $error);
         $this->assertFalse($val->validate('22e-12'));
         $this->assertTrue($val->validate(PHP_INT_MAX + 1));
         $val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
@@ -296,5 +301,50 @@ class NumberValidatorTest extends TestCase
         $val = new NumberValidator();
         $value = new \stdClass();
         $this->assertFalse($val->validate($value));
+    }
+
+    public function testValidateResource()
+    {
+        $val = new NumberValidator();
+        $fp = fopen('php://stdin', 'r');
+        $this->assertFalse($val->validate($fp));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $fp;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        
+        // the check is here for HHVM that
+        // was losing handler for unknown reason
+        if (is_resource($fp)) {
+            fclose($fp);
+        }
+    }
+
+    public function testValidateToString()
+    {
+        $val = new NumberValidator();
+        $object = new TestClass('10');
+        $this->assertTrue($val->validate($object));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $object;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+    }
+}
+
+class TestClass
+{
+    public $foo;
+
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+
+    public function __toString()
+    {
+        return $this->foo;
     }
 }
