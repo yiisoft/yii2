@@ -111,6 +111,11 @@ class Logger extends Component
      * @var Dispatcher the message dispatcher
      */
     public $dispatcher;
+    /**
+     * @var array of event names used to get statistical results of DB queries.
+     * @since 2.0.41
+     */
+    public $dbEventNames = ['yii\db\Command::query', 'yii\db\Command::execute'];
 
 
     /**
@@ -252,7 +257,7 @@ class Logger extends Component
      */
     public function getDbProfiling()
     {
-        $timings = $this->getProfiling(['yii\db\Command::query', 'yii\db\Command::execute']);
+        $timings = $this->getProfiling($this->dbEventNames);
         $count = count($timings);
         $time = 0;
         foreach ($timings as $timing) {

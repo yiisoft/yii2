@@ -271,24 +271,49 @@ This validator checks if the input value is a valid email address.
 ```php
 [
     // a1 needs to exist in the column represented by the "a1" attribute
+    // i.e. a1 = 1, valid if there is value 1 in column "a1"
     ['a1', 'exist'],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => 'a1'],
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a1']],
 
     // a1 needs to exist, but its value will use a2 to check for the existence
+    // i.e. a1 = 2, valid if there is value 2 in column "a2"
     ['a1', 'exist', 'targetAttribute' => 'a2'],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a2']],
+    
+    // a2 needs to exist, its value will use a2 to check for the existence, a1 will receive error message
+    // i.e. a2 = 2, valid if there is value 2 in column "a2"
+    ['a1', 'exist', 'targetAttribute' => ['a2']],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2']],
 
     // a1 and a2 need to exist together, and they both will receive error message
+    // i.e. a1 = 3, a2 = 4, valid if there is value 3 in column "a1" and value 4 in column "a2"
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
+    // equivalent of
+    [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 and a2 need to exist together, only a1 will receive error message
+    // i.e. a1 = 5, a2 = 6, valid if there is value 5 in column "a1" and value 6 in column "a2"
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
+    // i.e. a1 = 7, a2 = 8, valid if there is value 7 in column "a3" and value 8 in column "a2"
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2', 'a1' => 'a3']],
 
     // a1 needs to exist. If a1 is an array, then every element of it must exist.
+    // i.e. a1 = 9, valid if there is value 9 in column "a1"
+    //      a1 = [9, 10], valid if there are values 9 and 10 in column "a1"
     ['a1', 'exist', 'allowArray' => true],
     
-    // type_id needs to exist in the column "id" in the table defined in ProductType class 
+    // type_id needs to exist in the column "id" in the table defined in ProductType class
+    // i.e. type_id = 1, valid if there is value 1 in column "id" of ProductType's table
     ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],    
     
     // the same as the previous, but using already defined relation "type"
@@ -310,10 +335,19 @@ multiple attribute values should exist).
   of the input value. If not set, it will use the name of the attribute currently being validated.
   You may use an array to validate the existence of multiple columns at the same time. The array values
   are the attributes that will be used to validate the existence, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
+  whose values are to be validated. If the key, and the value are the same, you can just specify the value.  
+  Assuming we have ModelA to be validated and ModelB set as the target class the following `targetAttribute`'s 
+  configurations are taken as:
+    - `null` => value of a currently validated attribute of ModelA will be checked against stored values of ModelB's attribute with the same name
+    - `'a'` => value of a currently validated attribute of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a' => 'a']` => the same as above
+    - `['a', 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB and 
+      at the same time value of attribute "b" of ModelA will be checked against stored values of attribute "b" of ModelB
+    - `['a' => 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "b" of ModelB
 - `targetRelation`: since version 2.0.14 you can use convenient attribute `targetRelation`, which overrides the `targetClass` and `targetAttribute` attributes using specs from the requested relation.  
-- `filter`: additional filter to be applied to the DB query used to check the existence of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
+- `filter`: an additional filter to be applied to the DB query used to check the existence of the input value.
+  This can be a string, or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
   is the [[yii\db\Query|Query]] object that you can modify in the function.
 - `allowArray`: whether to allow the input value to be an array. Defaults to `false`. If this property is `true`
@@ -639,19 +673,34 @@ the input value. Note that if the input value is an array, it will be ignored by
 ```php
 [
     // a1 needs to be unique in the column represented by the "a1" attribute
+    // i.e. a1 = 1, valid if there is no value 1 in column "a1"
     ['a1', 'unique'],
+    // equivalent of
+    ['a1', 'unique', 'targetAttribute' => 'a1'],
+    ['a1', 'unique', 'targetAttribute' => ['a1' => 'a1']],
 
     // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
+    // i.e. a1 = 2, valid if there is no value 2 in column "a2"
     ['a1', 'unique', 'targetAttribute' => 'a2'],
+    // equivalent of
+    ['a1', 'unique', 'targetAttribute' => ['a1' => 'a2']],
 
     // a1 and a2 need to be unique together, and they both will receive error message
+    // i.e. a1 = 3, a2 = 4, valid if there is no value 3 in column "a1" and at the same time no value 4 in column "a2"
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
+    // equivalent of
+    [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 and a2 need to be unique together, only a1 will receive error message
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
+    // i.e. a1 = 5, a2 = 6, valid if there is no value 5 in column "a3" and at the same time no value 6 in column "a2"
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
+    
+    // type_id needs to be unique in the column "id" in the table defined in ProductType class
+    // i.e. type_id = 1, valid if there is no value 1 in column "id" of ProductType's table
+    ['type_id', 'unique', 'targetClass' => ProductType::class, 'targetAttribute' => 'id'],    
 ]
 ```
 
@@ -665,9 +714,18 @@ either a single column or multiple columns.
   of the input value. If not set, it will use the name of the attribute currently being validated.
   You may use an array to validate the uniqueness of multiple columns at the same time. The array values
   are the attributes that will be used to validate the uniqueness, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
-- `filter`: additional filter to be applied to the DB query used to check the uniqueness of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
+  whose values are to be validated. If the key, and the value are the same, you can just specify the value.  
+  Assuming we have ModelA to be validated and ModelB set as the target class the following `targetAttribute`'s
+  configurations are taken as:
+    - `null` => value of a currently validated attribute of ModelA will be checked against stored values of ModelB's attribute with the same name
+    - `'a'` => value of a currently validated attribute of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a' => 'a']` => the same as above
+    - `['a', 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB and
+      at the same time value of attribute "b" of ModelA will be checked against stored values of attribute "b" of ModelB
+    - `['a' => 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "b" of ModelB
+- `filter`: an additional filter to be applied to the DB query used to check the uniqueness of the input value.
+  This can be a string, or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
   is the [[yii\db\Query|Query]] object that you can modify in the function.
 
