@@ -105,17 +105,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         return OrderItemWithNullFK::className();
     }
 
-    /**
-     * @todo: the test should not be here!
-     * https://github.com/yiisoft/yii2/commit/35fb9c624893855317e5fe52e6a21f6518a9a31c changed the way
-     * ArrayHelper works with existing object properties in case of ArrayAccess.
-     */
-    public function testMagic()
-    {
-        $customer = new Customer();
-        $this->assertEquals(42, ArrayHelper::getValue($customer, 'magic'));
-    }
-
     public function testCustomColumns()
     {
         // find custom column

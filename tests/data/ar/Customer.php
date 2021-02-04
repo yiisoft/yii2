@@ -30,13 +30,6 @@ class Customer extends ActiveRecord
 
     public $sumTotal;
 
-    protected $magic;
-
-    public function getMagic()
-    {
-        return 42;
-    }
-
     public static function tableName()
     {
         return 'customer';
