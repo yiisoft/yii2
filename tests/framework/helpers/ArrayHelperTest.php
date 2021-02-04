@@ -10,6 +10,7 @@ namespace yiiunit\framework\helpers;
 use ArrayAccess;
 use Iterator;
 use yii\base\BaseObject;
+use yii\base\Model;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
@@ -119,6 +120,23 @@ class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements 
     {
         $key = $this->getContainerKey($this->position);
         return !(!$key || !$this->offsetExists($key));
+    }
+}
+
+class MagicModel extends Model
+{
+    protected $magic;
+
+    public function getMagic()
+    {
+        return 42;
+    }
+
+    private $moreMagic;
+
+    public function getMoreMagic()
+    {
+        return 'ta-da';
     }
 }
 
@@ -1535,5 +1553,16 @@ class ArrayHelperTest extends TestCase
 
         $this->assertEquals(123, ArrayHelper::getValue($data, 'value'));
         $this->assertEquals('bar1', ArrayHelper::getValue($data, 'name'));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/commit/35fb9c624893855317e5fe52e6a21f6518a9a31c changed the way
+     * ArrayHelper works with existing object properties in case of ArrayAccess.
+     */
+    public function testArrayAccessWithMagicProperty()
+    {
+        $model = new MagicModel();
+        $this->assertEquals(42, ArrayHelper::getValue($model, 'magic'));
+        $this->assertEquals('ta-da', ArrayHelper::getValue($model, 'moreMagic'));
     }
 }
