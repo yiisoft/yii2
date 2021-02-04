@@ -196,6 +196,10 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
+        if (is_object($array) && property_exists($array, $key)) {
+            return $array->$key;
+        }
+
         if (static::keyExists($key, $array)) {
             return $array[$key];
         }
