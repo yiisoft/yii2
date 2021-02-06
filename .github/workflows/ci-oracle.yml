@@ -76,6 +76,16 @@ jobs:
         if: matrix.php == '8.0'
         run: composer update --ignore-platform-reqs --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run tests with phpunit
+      - name: PHP Unit tests for PHP 7.4
+        run: vendor/bin/phpunit --coverage-clover=coverage.clover --group oci --colors=always
+        if: matrix.php == '7.4'
+
+      - name: Run tests with phpunit without coverage
         run: vendor/bin/phpunit --group oci --colors=always
 
+      - name: Code coverage
+        run: |
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+        if: matrix.php == '7.4'
+        continue-on-error: true # if is fork
