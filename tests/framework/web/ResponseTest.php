@@ -17,7 +17,7 @@ use yii\web\Request;
 use yii\web\Response;
 use yii\web\ResponseFormatterInterface;
 use yiiunit\framework\web\mocks\TestRequestComponent;
-use yiiunit\framework\web\stubs\ResponseFormatter;
+use yiiunit\framework\web\stubs\ResponseResult;
 
 /**
  * @group web
@@ -395,7 +395,7 @@ class ResponseTest extends \yiiunit\TestCase
     public function testUsingDataAsResponseFormatter()
     {
         $response = new Response();
-        $response->data = new ResponseFormatter("test");
+        $response->data = new ResponseResult("test");
 
         ob_start();
         $response->send();

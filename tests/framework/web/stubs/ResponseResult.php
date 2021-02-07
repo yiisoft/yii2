@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\web\stubs;
 
-use yii\web\ResponseFormatterInterface;
+use yii\web\DataResponseInterface;
 
-class ResponseFormatter implements ResponseFormatterInterface
+class ResponseResult implements DataResponseInterface
 {
     public $message;
 

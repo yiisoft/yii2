@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -1090,7 +1091,7 @@ class Response extends \yii\base\Response
             return;
         }
 
-        if ($this->data instanceof ResponseFormatterInterface) {
+        if ($this->data instanceof DataResponseInterface) {
             $this->data->format($this);
             return;
         }
