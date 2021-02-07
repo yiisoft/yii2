@@ -11,7 +11,7 @@ namespace yii\web;
  * DataResponseInterface specifies the interface needed to format a response before it is sent out.
  *
  * @author Edin Omeragic <edin.omeragic@gmail.com>
- * @since 2.0
+ * @since 2.42
  */
 interface DataResponseInterface
 {
