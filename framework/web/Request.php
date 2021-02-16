@@ -231,6 +231,9 @@ class Request extends \yii\base\Request
         // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
+
+        // ngrok:
+        'X-Original-Host',
     ];
     /**
      * @var string[] List of headers where proxies store the real client IP.
@@ -744,6 +747,8 @@ class Request extends \yii\base\Request
                 $this->_hostInfo = $http . '://' . $this->getSecureForwardedHeaderTrustedPart('host');
             } elseif ($this->headers->has('X-Forwarded-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
+            } elseif ($this->headers->has('X-Original-Host')) {
+                $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Original-Host'))[0]);
             } elseif ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
