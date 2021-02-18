@@ -555,6 +555,18 @@ EOD;
 
     public function testWidgetOptions()
     {
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $this->assertArraySubset(['data-default' => 'value'], $widget->options);
+
+        $this->activeField->widget(TestInputWidget::className(), ['options' => ['data-default' => 'another']]);
+        $widget = TestInputWidget::$lastInstance;
+        $this->assertArraySubset(['data-default' => 'another'], $widget->options);
+
+        $this->activeField->widget(TestInputWidget::className(), ['options' => ['data-toggle' => 'toggle']]);
+        $widget = TestInputWidget::$lastInstance;
+        $this->assertArraySubset(['data-toggle' => 'toggle', 'data-default' => 'value'], $widget->options);
+
         $this->activeField->form->validationStateOn = ActiveForm::VALIDATION_STATE_ON_INPUT;
         $this->activeField->model->addError('attributeName', 'error');
 
@@ -564,6 +576,7 @@ EOD;
             'class' => 'form-control has-error',
             'aria-invalid' => 'true',
             'id' => 'activefieldtestmodel-attributename',
+            'data-default' => 'value'
         ];
         $this->assertEquals($expectedOptions, $widget->options);
 
@@ -574,6 +587,7 @@ EOD;
             'class' => 'has-error',
             'aria-invalid' => 'true',
             'id' => 'activefieldtestmodel-attributename',
+            'data-default' => 'value'
         ];
         $this->assertEquals($expectedOptions, $widget->options);
     }
@@ -705,6 +719,8 @@ class TestInputWidget extends InputWidget
      * @var static
      */
     public static $lastInstance;
+
+    public $options = ['data-default' => 'value'];
 
     public function init()
     {
