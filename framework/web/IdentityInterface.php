@@ -40,6 +40,17 @@ namespace yii\web;
  *     {
  *         return $this->authKey === $authKey;
  *     }
+ *
+ *     public function updateAuthKey($identity, $token)
+ *     {
+ *         $this->auth_key = $token;
+ *         return $this->save(false, ['auth_key']);
+ *     }
+ *
+ *     public function generateAuthKey()
+ *     {
+ *         return Yii::$app->security->generateRandomString(32);
+ *     }
  * }
  * ```
  *
@@ -102,4 +113,20 @@ interface IdentityInterface
      * @see getAuthKey()
      */
     public function validateAuthKey($authKey);
+
+    /**
+     * Update the "auth key" token for the given user identity.
+     *
+     * @param IdentityInterface $identity
+     * @param string $token
+     * @return void
+     */
+    public function updateAuthKey(IdentityInterface $identity, $token);
+
+    /**
+     * Generates "remember me" authentication key
+     *
+     * @return string
+     */
+    public function generateAuthKey();
 }

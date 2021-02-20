@@ -25,6 +25,8 @@ use yii\rbac\PhpManager;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
 use yii\web\ForbiddenHttpException;
+use yii\web\User;
+use yii\web\UserEvent;
 use yiiunit\TestCase;
 
 /**
@@ -454,6 +456,48 @@ class UserTest extends TestCase
 
         $this->expectException('\yii\base\InvalidValueException');
         Yii::$app->user->setIdentity(new \stdClass());
+    }
+
+    public function testLogout()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ]
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        $beforeLogoutTriggers = 0;
+        $afterLogoutTrigger = 0;
+        UserEvent::on(User::class, User::EVENT_BEFORE_LOGOUT, function () use (&$beforeLogoutTriggers) {
+            $beforeLogoutTriggers++;
+        });
+        UserEvent::on(User::class, User::EVENT_AFTER_LOGOUT, function () use (&$afterLogoutTrigger) {
+            $afterLogoutTrigger++;
+        });
+
+        // user1 has authkey, we wanna cycle authkey
+        $identity = UserIdentity::findIdentity('user1');
+        $this->assertNotEmpty($identity->getAuthKey());
+        $originalAuthKey = $identity->getAuthKey();
+        Yii::$app->user->login($identity);
+        Yii::$app->user->logout();
+        $this->assertEquals(1, $beforeLogoutTriggers);
+        $this->assertEquals(1, $afterLogoutTrigger);
+        $this->assertNull(Yii::$app->user->getIdentity());
+        $this->assertTrue(Yii::$app->user->isGuest);
+        $this->assertNotEquals($originalAuthKey, $identity->getAuthKey());
+
+        // identity user2 does not have auth_key, we dont wanna cycle
+        $identity = UserIdentity::findIdentity('user2');
+        $this->assertNull($identity->getAuthKey());
+        Yii::$app->user->login($identity);
+        Yii::$app->user->logout();
+        $this->assertEquals(2, $beforeLogoutTriggers);
+        $this->assertEquals(2, $afterLogoutTrigger);
+        $this->assertNull($identity->getAuthKey());
     }
 }
 

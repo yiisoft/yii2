@@ -346,6 +346,9 @@ class User extends Component
             if ($destroySession && $this->enableSession) {
                 Yii::$app->getSession()->destroy();
             }
+            if (! empty($identity->getAuthKey())) {
+                $this->cycleAuthKey($identity);
+            }
             $this->afterLogout($identity);
         }
 
@@ -792,5 +795,17 @@ class User extends Component
     protected function getAccessChecker()
     {
         return $this->accessChecker !== null ? $this->accessChecker : $this->getAuthManager();
+    }
+
+    /**
+     * Refresh the "auth key" token for the identity.
+     *
+     * @param IdentityInterface $identity
+     */
+    protected function cycleAuthKey(IdentityInterface $identity)
+    {
+        $token = $identity->generateAuthKey();
+
+        $identity->updateAuthKey($identity, $token);
     }
 }

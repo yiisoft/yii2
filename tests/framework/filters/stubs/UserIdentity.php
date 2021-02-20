@@ -68,4 +68,14 @@ class UserIdentity extends Component implements IdentityInterface
     {
         throw new NotSupportedException();
     }
+
+    public function updateAuthKey(IdentityInterface $identity, $token)
+    {
+        // TODO: Implement updateAuthKey() method.
+    }
+
+    public function generateAuthKey()
+    {
+        // TODO: Implement generateAuthKey() method.
+    }
 }
