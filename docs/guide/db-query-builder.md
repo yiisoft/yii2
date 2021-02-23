@@ -716,6 +716,8 @@ $query = (new \yii\db\Query())
     ->all();
 ```
 
+The column name passed into [[yii\db\Query::indexBy()|indexBy()]] method has to be a part of the `SELECT` fragment of a SQL statement. If [[yii\db\Query::select()|select()]] is not used, all columns are selected and therefore the condition is met. If [[yii\db\Query::select()|select()]] is used with an array in its parameter, Yii handles adding that required SQL fragment for you. This applies when using [[yii\db\Query::indexBy()|indexBy()]] with [[yii\db\Query::all()|all()]] or [[yii\db\Query::column()|column()]]. In other cases, like the following example with an anonymous function, is up to users themselves to take care of it.
+
 To index by expression values, pass an anonymous function to the [[yii\db\Query::indexBy()|indexBy()]] method:
 
 ```php
