@@ -795,4 +795,23 @@ abstract class QueryTest extends DatabaseTestCase
             $newQuery->withQueries
         );
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18499
+     */
+    public function testAllWithAutomaticallyAddedIndexedByColumn()
+    {
+        $db = $this->getConnection();
+
+        $result = (new Query())->from('customer')
+            ->select('name')
+            ->orderBy(['id' => SORT_DESC])
+            ->indexBy('id')
+            ->all($db);
+        $this->assertEquals([
+            3 => ['name' => 'user3', 'id' => 3],
+            2 => ['name' => 'user2', 'id' => 2],
+            1 => ['name' => 'user1', 'id' => 1]
+        ], $result);
+    }
 }
