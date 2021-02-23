@@ -21,23 +21,23 @@ use yii\base\NotSupportedException;
 trait QueryTrait
 {
     /**
-     * @var string|array|ExpressionInterface query condition. This refers to the WHERE clause in a SQL statement.
+     * @var string|array|ExpressionInterface|null query condition. This refers to the WHERE clause in a SQL statement.
      * For example, `['age' => 31, 'team' => 1]`.
      * @see where() for valid syntax on specifying this value.
      */
     public $where;
     /**
-     * @var int|ExpressionInterface maximum number of records to be returned. May be an instance of [[ExpressionInterface]].
+     * @var int|ExpressionInterface|null maximum number of records to be returned. May be an instance of [[ExpressionInterface]].
      * If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var int|ExpressionInterface zero-based offset from where the records are to be returned.
+     * @var int|ExpressionInterface|null zero-based offset from where the records are to be returned.
      * May be an instance of [[ExpressionInterface]]. If not set or less than 0, it means starting from the beginning.
      */
     public $offset;
     /**
-     * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
+     * @var array|null how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
      * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
      * can be either [SORT_ASC](https://secure.php.net/manual/en/array.constants.php#constant.sort-asc)
      * or [SORT_DESC](https://secure.php.net/manual/en/array.constants.php#constant.sort-desc).
@@ -46,7 +46,7 @@ trait QueryTrait
      */
     public $orderBy;
     /**
-     * @var string|callable the name of the column by which the query results should be indexed by.
+     * @var string|callable|null the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
      */
