@@ -202,6 +202,7 @@ class UrlManagerCreateUrlTest extends TestCase
             'post/<id:\d+>' => 'post/view',
             'posts' => 'post/index',
             'book/<id:\d+>/<title>' => 'book/view',
+            'POST posts' => 'post/create',
         ];
         $manager = $this->getUrlManager($config, $showScriptName);
 
@@ -235,6 +236,10 @@ class UrlManagerCreateUrlTest extends TestCase
         // match third rule, ensure encoding of params
         $url = $manager->$method(['book/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals("$prefix/book/1/sample+post", $url);
+
+        // match fourth rule, since 2.0.41 non-GET verbs are allowed
+        $url = $manager->$method(['post/create']);
+        $this->assertEquals("$prefix/posts", $url);
     }
 
     /**

@@ -86,7 +86,7 @@ class LinkSorterTest extends DatabaseTestCase
     public function testShouldTriggerInitEvent()
     {
         $initTriggered = false;
-        $linkSorter = new LinkSorter(
+        new LinkSorter(
             [
                 'sort' => [
                     'attributes' => ['total'],

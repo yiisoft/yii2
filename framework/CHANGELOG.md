@@ -4,9 +4,23 @@ Yii Framework 2 Change Log
 2.0.41 under development
 ------------------------
 
+- Enh #18499: When using `yii\db\Query::all()` and `yii\db\Query::$indexBy`, the `yii\db\Query::$indexBy` is auto inserted into `yii\db\Query::$select` - the same as in `yii\db\Query::column()` (OndrejVasicek, samdark, bizley)
+- Enh #18483: Add `yii\log\Logger::$dbEventNames` that allows specifying event names used to get statistical results (profiling) of DB queries (atiline)
+- Enh #18455: Add ability to use separate attributes for data model and filter model of `yii\grid\GridView` in `yii\grid\DataColumn` (PowerGamer1)
 - Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
 - Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
 - Enh #18460: `compareValue` in `CompareValidator` can now take a closure returning a value (mmonem)
+- Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
+- Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
+- Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
+- Bug #18479: Fix invalid argument type for `preg_split` in `\yii\console\Controller` (gazooz)
+- Bug #18477: Fix detecting availability of Xdebug's stack trace in `yii\base\ErrorException` (bizley)
+- Bug #18480: Transactions are not committed using the dblib driver (bbrunekreeft)
+- Enh #18493: Faster request parsing for REST UrlRule with prefix handling (bizley)
+- Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
+- Bug #8750: Fix MySQL support when running in `ANSI`/`ANSI_QUOTES` modes (brandonkelly)
+- Bug #18505: Fixed `yii\helpers\ArrayHelper::getValue()` for ArrayAccess objects with explicitly defined properties (samdark)
+- Enh #18518: Add support for ngrok’s `X-Original-Host` header (brandonkelly)
 
 
 2.0.40 December 23, 2020
@@ -26,7 +40,7 @@ Yii Framework 2 Change Log
 - Bug #18414: Fix `AssetManager::appendTimestamp()` not appending timestamp for website root in sub-directory (Isitar)
 - Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
 - Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
-- Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
+- Bug #18437: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
 - Bug #18442: Fix calls with array access to string (bizley)
 - Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
 - Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)

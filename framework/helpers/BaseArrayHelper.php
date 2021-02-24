@@ -196,6 +196,10 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
+        if (is_object($array) && property_exists($array, $key)) {
+            return $array->$key;
+        }
+
         if (static::keyExists($key, $array)) {
             return $array[$key];
         }
@@ -520,7 +524,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array
-     * @param int|string|\Closure $name
+     * @param int|string|array|\Closure $name
      * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values
