@@ -246,13 +246,26 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             return [];
         }
 
-        if (is_string($this->indexBy) && $this->indexBy && is_array($this->select) && !in_array($this->indexBy, $this->select)) {
-            if (strpos($this->indexBy, '.') === false && count($tables = $this->getTablesUsedInFrom()) > 0) {
-                $this->select[] = key($tables) . '.' . $this->indexBy;
-            } else {
-                $this->select[] = $this->indexBy;
+        if (is_string($this->indexBy) && $this->indexBy && is_array($this->select)) {
+            $isIndexByAnArray = false;
+            if (strpos($this->indexBy, '.')) {
+                $indexByParts = explode('.', $this->indexBy);
+                foreach ($indexByParts as $indexByPart) {
+                    if (is_numeric($indexByPart)) {
+                        $isIndexByAnArray = true;
+                        break;
+                    }
+                }
+            }
+            if (!$isIndexByAnArray && !in_array($this->indexBy, $this->select, true)) {
+                if (strpos($this->indexBy, '.') === false && count($tables = $this->getTablesUsedInFrom()) > 0) {
+                    $this->select[] = key($tables) . '.' . $this->indexBy;
+                } else {
+                    $this->select[] = $this->indexBy;
+                }
             }
         }
+
         $rows = $this->createCommand($db)->queryAll();
 
         return $this->populate($rows);
