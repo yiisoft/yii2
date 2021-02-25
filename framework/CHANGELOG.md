@@ -4,10 +4,12 @@ Yii Framework 2 Change Log
 2.0.41 under development
 ------------------------
 
+- Enh #18499: When using `yii\db\Query::all()` and `yii\db\Query::$indexBy`, the `yii\db\Query::$indexBy` is auto inserted into `yii\db\Query::$select` - the same as in `yii\db\Query::column()` (OndrejVasicek, samdark, bizley)
 - Enh #18483: Add `yii\log\Logger::$dbEventNames` that allows specifying event names used to get statistical results (profiling) of DB queries (atiline)
 - Enh #18455: Add ability to use separate attributes for data model and filter model of `yii\grid\GridView` in `yii\grid\DataColumn` (PowerGamer1)
 - Enh #18447: Do not use `getLastInsertID` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
 - Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
+- Enh #18460: `compareValue` in `CompareValidator` can now take a closure returning a value (mmonem)
 - Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
 - Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
 - Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
@@ -18,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
 - Bug #8750: Fix MySQL support when running in `ANSI`/`ANSI_QUOTES` modes (brandonkelly)
 - Bug #18505: Fixed `yii\helpers\ArrayHelper::getValue()` for ArrayAccess objects with explicitly defined properties (samdark)
+- Bug #18508: Fix Postgres SQL query for load table indexes with correct column order (insolita)
 - Enh #18518: Add support for ngrok’s `X-Original-Host` header (brandonkelly)
 - Bug #: Invalidate identity cookie on logout
 
