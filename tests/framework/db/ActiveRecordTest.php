@@ -2107,7 +2107,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $category = Category::find()->select([Category::tableName() . '.*'])->joinWith('items')->indexBy('items.0.name');
         $this->assertEquals(['Agile Web Application Development with Yii1.1 and PHP5', 'Ice Age'], array_keys($category->all()));
 
-        $category = Category::find()->select(['*'])->joinWith('items')->indexBy('name');
+        $category = Category::find()->select([Category::tableName() . '.*'])->joinWith('items')->indexBy('name');
         $this->assertEquals(['Books', 'Movies'], array_keys($category->all()));
 
         $category = Category::find()->joinWith('items')->indexBy('item.name');
