@@ -236,6 +236,29 @@ EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
+    public function testRegisterUnpublishedAssetWithTimestamp()
+    {
+        $view = $this->getView(['appendTimestamp' => true]);
+        TestSimpleAsset::register($view);
+
+        $expected = <<<'EOF'
+123<script src="/js/jquery.js"></script>4
+EOF;
+        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+    }
+
+    public function testRegisterPublishedAssetWithTimestamp()
+    {
+        $view = $this->getView(['appendTimestamp' => true]);
+
+        TestSimpleExistingAsset::register($view);
+
+        $this->assertRegExp(
+            '~123<script src="\/assetSources\/js\/jquery\.js\?v=\d+"><\/script>4~',
+            $view->renderFile('@yiiunit/data/views/rawlayout.php')
+        );
+    }
+
     public function testSimpleDependency()
     {
         $view = $this->getView();
@@ -560,6 +583,15 @@ class TestSimpleAsset extends AssetBundle
 {
     public $basePath = '@webroot/js';
     public $baseUrl = '@web/js';
+    public $js = [
+        'jquery.js',
+    ];
+}
+
+class TestSimpleExistingAsset extends AssetBundle
+{
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/assetSources/js';
     public $js = [
         'jquery.js',
     ];
