@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\console;
+namespace yiiunit\framework\console\widgets;
 
 use yii\console\widgets\Table;
 use yii\helpers\Console;
