@@ -316,7 +316,7 @@ class AssetManager extends Component
      * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
-     * @param bool|null $appendTimestamp Whether to override manager's appendTimestamp property
+     * @param bool|null $appendTimestamp Whether to append timestamp to the URL.
      * @return string the actual URL for the specified asset.
      */
     public function getAssetUrl($bundle, $asset, $appendTimestamp = null)
