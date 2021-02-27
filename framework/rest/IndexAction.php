@@ -46,6 +46,16 @@ class IndexAction extends Action
      */
     public $prepareDataProvider;
     /**
+     * ```php
+     * function ($query) {
+     *     $query->andFilterWhere(['id' => 1]);
+     *     ...
+     *     return $query;
+     * }
+     * ```
+     */
+    public $prepareSearchQuery;
+    /**
      * @var DataFilter|null data filter to be used for the search filter composition.
      * You must setup this field explicitly in order to enable filter processing.
      * For example:
@@ -114,6 +124,9 @@ class IndexAction extends Action
         $query = $modelClass::find();
         if (!empty($filter)) {
             $query->andWhere($filter);
+        }
+        if ($this->prepareSearchQuery && is_callable($this->prepareSearchQuery)) {
+            $query = call_user_func($this->prepareSearchQuery, $query);
         }
 
         return Yii::createObject([
