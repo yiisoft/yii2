@@ -47,7 +47,7 @@ class IndexAction extends Action
     public $prepareDataProvider;
     /**
      * ```php
-     * function ($query) {
+     * function ($query, $requestParams) {
      *     $query->andFilterWhere(['id' => 1]);
      *     ...
      *     return $query;
@@ -126,7 +126,7 @@ class IndexAction extends Action
             $query->andWhere($filter);
         }
         if ($this->prepareSearchQuery && is_callable($this->prepareSearchQuery)) {
-            $query = call_user_func($this->prepareSearchQuery, $query);
+            $query = call_user_func($this->prepareSearchQuery, $query, $requestParams);
         }
 
         return Yii::createObject([
