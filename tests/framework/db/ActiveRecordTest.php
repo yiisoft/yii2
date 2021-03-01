@@ -2095,4 +2095,25 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             }
         }
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18525
+     */
+    public function testHasManyWithIndexBy()
+    {
+        $category = Category::find()->joinWith('items')->indexBy('items.0.name');
+        $this->assertEquals(['Agile Web Application Development with Yii1.1 and PHP5', 'Ice Age'], array_keys($category->all()));
+
+        $category = Category::find()->select([Category::tableName() . '.*'])->joinWith('items')->indexBy('items.0.name');
+        $this->assertEquals(['Agile Web Application Development with Yii1.1 and PHP5', 'Ice Age'], array_keys($category->all()));
+
+        $category = Category::find()->select([Category::tableName() . '.*'])->joinWith('items')->indexBy('name');
+        $this->assertEquals(['Books', 'Movies'], array_keys($category->all()));
+
+        $category = Category::find()->joinWith('items')->indexBy('item.name');
+        $this->assertEquals([''], array_keys($category->all()));
+
+        $category = Category::find()->select([Category::tableName() . '.name'])->joinWith('items')->indexBy('id');
+        $this->assertEquals([1, 2], array_keys($category->all()));
+    }
 }
