@@ -47,10 +47,6 @@ class UserTest extends TestCase
 
     public function testLoginExpires()
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test this on travis-ci.');
-        }
-
         $appConfig = [
             'components' => [
                 'user' => [
