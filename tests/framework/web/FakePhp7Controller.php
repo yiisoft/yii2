@@ -20,6 +20,10 @@ class FakePhp7Controller extends Controller
     public function actionAksi1(int $foo, float $bar = null, bool $true, bool $false)
     {
     }
+
+    public function actionStringy(string $foo = null)
+    {
+    }
 }
 
 /**
