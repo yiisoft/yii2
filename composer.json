@@ -102,6 +102,11 @@
             "yii\\cs\\": "cs/src/"
         }
     },
+    "autoload-dev": {
+        "files": [
+            "tests/bootstrap.php"
+        ]
+    },
     "config": {
         "platform": {"php": "5.4"}
     },
