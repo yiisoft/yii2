@@ -1081,7 +1081,7 @@ TEXT;
                 20,
                 '4b007901b765489abead49d926f721d065a429c1',
             ],
-            getenv('TRAVIS') == true ? [
+            getenv('GITHUB_ACTIONS') == true ? [
                 'sha1',
                 'password',
                 'salt',
