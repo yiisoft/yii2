@@ -368,7 +368,7 @@ or
 stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
 ```
 
-Many sources wrongly suggest disabling SSL peer verification. That should not be ever done since it enabled
+Many sources wrongly suggest disabling SSL peer verification. That should not be ever done since it enables
 man-in-the middle type of attacks. Instead, PHP should be configured properly:
 
 1. Download [https://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem).
@@ -377,3 +377,5 @@ man-in-the middle type of attacks. Instead, PHP should be configured properly:
   openssl.cafile="/path/to/cacert.pem"
   curl.cainfo="/path/to/cacert.pem".
   ```
+
+Note that the `cacert.pem` file should be kept up to date.
