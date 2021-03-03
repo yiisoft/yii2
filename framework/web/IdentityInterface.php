@@ -58,6 +58,12 @@ interface IdentityInterface
     public static function findIdentity($id);
 
     /**
+     * Returns an ID that can uniquely identify a user identity.
+     * @return string|int an ID that uniquely identifies a user identity.
+     */
+    public function getId();
+
+    /**
      * Finds an identity by the given token.
      * @param mixed $token the token to be looked for
      * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
@@ -85,12 +91,6 @@ interface IdentityInterface
      * @see validateAuthKey()
      */
     public function getAuthKey();
-
-    /**
-     * Returns an ID that can uniquely identify a user identity.
-     * @return string|int an ID that uniquely identifies a user identity.
-     */
-    public function getId();
 
     /**
      * Validates the given auth key.
