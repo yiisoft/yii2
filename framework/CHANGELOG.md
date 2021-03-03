@@ -1,32 +1,32 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.41 under development
-------------------------
+2.0.41 March 03, 2021
+---------------------
 
-- Enh #18499: When using `yii\db\Query::all()` and `yii\db\Query::$indexBy`, the `yii\db\Query::$indexBy` is auto inserted into `yii\db\Query::$select` - the same as in `yii\db\Query::column()` (OndrejVasicek, samdark, bizley)
-- Enh #18483: Add `yii\log\Logger::$dbEventNames` that allows specifying event names used to get statistical results (profiling) of DB queries (atiline)
-- Enh #18455: Add ability to use separate attributes for data model and filter model of `yii\grid\GridView` in `yii\grid\DataColumn` (PowerGamer1)
-- Enh #18447: Do not use `getLastInsertID()` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
-- Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
-- Enh #18460: `compareValue` in `CompareValidator` can now take a closure returning a value (mmonem)
-- Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
-- Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
-- Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
-- Bug #18479: Fix invalid argument type for `preg_split()` in `\yii\console\Controller` (gazooz)
-- Bug #18477: Fix detecting availability of Xdebug's stack trace in `yii\base\ErrorException` (bizley)
-- Bug #18480: Transactions are not committed using the dblib driver (bbrunekreeft)
-- Enh #18493: Faster request parsing for REST UrlRule with prefix handling (bizley)
-- Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
 - Bug #8750: Fix MySQL support when running in `ANSI`/`ANSI_QUOTES` modes (brandonkelly)
-- Bug #18505: Fix `yii\helpers\ArrayHelper::getValue()` for ArrayAccess objects with explicitly defined properties (samdark)
 - Bug #9718: Fix user staying authorized despite authKey change (kidol, Charlie Jack, Kunal Mhaske, samdark)
-- Bug #18508: Fix Postgres SQL query for load table indexes with correct column order (insolita)
-- Enh #18518: Add support for ngrok’s `X-Original-Host` header (brandonkelly)
-- Bug #18529: Fix asset files path with `appendTimestamp` option for non-root-relative base URLs (bizley)
+- Bug #18448: Fix issues in queries and tests for older MSSQL versions (darkdef)
 - Bug #18450: Allow empty string to be passed as a nullable typed argument to a controller's action (dicrtarasov, bizley)
+- Bug #18464: Fix bug with processing fallback messages when translation language is set to `null` (bizley)
+- Bug #18472: Fix initializing `db` component configuration in `yii\data\ActiveDataProvider` (bizley)
+- Bug #18477: Fix detecting availability of Xdebug's stack trace in `yii\base\ErrorException` (bizley)
+- Bug #18479: Fix invalid argument type for `preg_split()` in `\yii\console\Controller` (gazooz)
+- Bug #18480: Transactions are not committed using the dblib driver (bbrunekreeft)
+- Bug #18505: Fix `yii\helpers\ArrayHelper::getValue()` for ArrayAccess objects with explicitly defined properties (samdark)
+- Bug #18508: Fix Postgres SQL query for load table indexes with correct column order (insolita)
+- Bug #18529: Fix asset files path with `appendTimestamp` option for non-root-relative base URLs (bizley)
 - Bug #18535: Set Cookie SameSite to Lax by default (samdark)
 - Bug #18539: Fix "driver does not support quoting" when using the driver pdo_odbc (xpohoc69)
+- Enh #18447: Do not use `getLastInsertID()` to get PK from insert query to lower collision probability for concurrent inserts (darkdef)
+- Enh #18455: Add ability to use separate attributes for data model and filter model of `yii\grid\GridView` in `yii\grid\DataColumn` (PowerGamer1)
+- Enh #18457: Add `EVENT_RESET` and `EVENT_FINISH` events to `yii\db\BatchQueryResult` (brandonkelly)
+- Enh #18460: `compareValue` in `CompareValidator` can now take a closure returning a value (mmonem)
+- Enh #18483: Add `yii\log\Logger::$dbEventNames` that allows specifying event names used to get statistical results (profiling) of DB queries (atiline)
+- Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
+- Enh #18493: Faster request parsing for REST UrlRule with prefix handling (bizley)
+- Enh #18499: When using `yii\db\Query::all()` and `yii\db\Query::$indexBy`, the `yii\db\Query::$indexBy` is auto inserted into `yii\db\Query::$select` - the same as in `yii\db\Query::column()` (OndrejVasicek, samdark, bizley)
+- Enh #18518: Add support for ngrok’s `X-Original-Host` header (brandonkelly)
 
 
 2.0.40 December 23, 2020

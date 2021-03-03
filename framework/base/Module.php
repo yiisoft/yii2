@@ -33,7 +33,7 @@ use yii\di\ServiceLocator;
  * @property array $modules The modules (indexed by their IDs).
  * @property-read string $uniqueId The unique ID of the module. This property is read-only.
  * @property string $version The version of this module. Note that the type of this property differs in getter
- * and setter. See [[getVersion()]]  and [[setVersion()]] for details.
+ * and setter. See [[getVersion()]] and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

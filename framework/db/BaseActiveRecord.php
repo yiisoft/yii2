@@ -27,7 +27,7 @@ use yii\helpers\ArrayHelper;
  * read-only.
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
- * property differs in getter and setter. See [[getOldAttributes()]]  and [[setOldAttributes()]] for details.
+ * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null). This property is read-only.
