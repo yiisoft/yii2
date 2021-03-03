@@ -53,7 +53,7 @@ use yii\base\ErrorHandler;
  * @property int $flushInterval How many messages should be logged before they are sent to targets. This
  * method returns the value of [[Logger::flushInterval]].
  * @property Logger $logger The logger. If not set, [[\Yii::getLogger()]] will be used. Note that the type of
- * this property differs in getter and setter. See [[getLogger()]] and [[setLogger()]] for details.
+ * this property differs in getter and setter. See [[getLogger()]]  and [[setLogger()]] for details.
  * @property int $traceLevel How many application call stacks should be logged together with each message.
  * This method returns the value of [[Logger::traceLevel]]. Defaults to 0.
  *
@@ -184,24 +184,42 @@ class Dispatcher extends Component
     {
         $targetErrors = [];
         foreach ($this->targets as $target) {
-            if ($target->enabled) {
-                try {
-                    $target->collect($messages, $final);
-                } catch (\Exception $e) {
-                    $target->enabled = false;
-                    $targetErrors[] = [
-                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($e),
-                        Logger::LEVEL_WARNING,
-                        __METHOD__,
-                        microtime(true),
-                        [],
-                    ];
-                }
+            if (!$target->enabled) {
+                continue;
+            }
+            try {
+                $target->collect($messages, $final);
+            } catch (\Throwable $t) {
+                $target->enabled = false;
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $t, __METHOD__);
+            } catch (\Exception $e) {
+                $target->enabled = false;
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $e, __METHOD__);
             }
         }
 
         if (!empty($targetErrors)) {
             $this->dispatch($targetErrors, true);
         }
+    }
+
+    /**
+     * Generate target error message
+     *
+     * @param Target $target log target object
+     * @param \Throwable|\Exception $throwable catched exception
+     * @param string $method full method path
+     * @return array generated error message data
+     * @since 2.0.32
+     */
+    protected function generateTargetFailErrorMessage($target, $throwable, $method)
+    {
+        return [
+            'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($throwable),
+            Logger::LEVEL_WARNING,
+            $method,
+            microtime(true),
+            [],
+        ];
     }
 }

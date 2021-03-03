@@ -183,6 +183,28 @@ describe('yii.activeForm', function () {
                 $activeForm.yiiActiveForm('updateAttribute', inputId);
                 assert.equal('New value', eventData.value);
             });
+
+            // https://github.com/yiisoft/yii2/issues/8225
+
+            it('the value of the checkboxes must be an array', function () {
+                var inputId = 'test_checkbox';
+                var $input = $('#' + inputId);
+
+                $activeForm = $('#w1');
+                $activeForm.yiiActiveForm('destroy');
+                $activeForm.yiiActiveForm([
+                    {
+                        id: inputId,
+                        input: '#' + inputId
+                    }
+                ]).on('afterValidateAttribute', afterValidateAttributeSpy);
+
+                $input.find('input').prop('checked', true);
+                $activeForm.yiiActiveForm('updateAttribute', inputId);
+                var value = eventData.value;
+                assert.isArray(value);
+                assert.deepEqual(['1', '0'], value);
+            });
         });
 
         describe('afterValidate', function () {

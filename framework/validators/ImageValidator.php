@@ -47,7 +47,7 @@ class ImageValidator extends FileValidator
     /**
      * @var int the maximum width in pixels.
      * Defaults to null, meaning no limit.
-     * @see overWidth for the customized message used when image height is too big.
+     * @see overHeight for the customized message used when image height is too big.
      */
     public $maxHeight;
     /**

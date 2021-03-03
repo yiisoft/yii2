@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\di\Instance;
 use yii\rbac\CheckAccessInterface;
 
 /**
@@ -46,13 +47,13 @@ use yii\rbac\CheckAccessInterface;
  * ]
  * ```
  *
- * @property string|int $id The unique identifier for the user. If `null`, it means the user is a guest. This
- * property is read-only.
+ * @property-read string|int $id The unique identifier for the user. If `null`, it means the user is a guest.
+ * This property is read-only.
  * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
  * user. `null` is returned if the user is not logged in (not authenticated).
- * @property bool $isGuest Whether the current user is a guest. This property is read-only.
+ * @property-read bool $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
- * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
+ * of this property differs in getter and setter. See [[getReturnUrl()]]  and [[setReturnUrl()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -105,7 +106,8 @@ class User extends Component
      */
     public $authTimeout;
     /**
-     * @var CheckAccessInterface The access checker to use for checking access.
+     * @var CheckAccessInterface|string|array The access checker object to use for checking access or the application
+     * component ID of the access checker.
      * If not set the application auth manager will be used.
      * @since 2.0.9
      */
@@ -165,8 +167,8 @@ class User extends Component
         if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
-        if (!empty($this->accessChecker) && is_string($this->accessChecker)) {
-            $this->accessChecker = Yii::createObject($this->accessChecker);
+        if ($this->accessChecker !== null) {
+            $this->accessChecker = Instance::ensure($this->accessChecker, '\yii\rbac\CheckAccessInterface');
         }
     }
 

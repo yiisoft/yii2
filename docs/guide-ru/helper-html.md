@@ -101,7 +101,7 @@ echo Html::tag('div', 'Сохранить', $options);
 // выведет '<div class="btn btn-success btn-lg">Сохранить</div>'
 ```
 
-`Html::addCssClass()` предотвращает дублирование классов, поэтому можно не беспокоиться о том, что какой-либо класс
+`Html::addCssClass()` предотвращает дублирование классов, поэтому можно не беспокоиться, что какой-либо класс
 будет добавлен дважды:
 
 ```php
@@ -272,7 +272,7 @@ $decodedUserName = Html::decode($userName);
 <?= Html::activeCheckboxList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-Если же нет, используйте радио-переключатель:
+Если нет, используйте радио-переключатель:
 
 ```php
 <?= Html::radioList('roles', [16, 42], ArrayHelper::map($roleModels, 'id', 'name')) ?>
@@ -282,7 +282,7 @@ $decodedUserName = Html::decode($userName);
 
 ### Тэги label и отображение ошибок <span id="labels-and-errors"></span>
 
-Также как и для полей ввода, есть два метода формирования тэгов label для форм. Есть "active label", считывающий
+Так же как и для полей ввода, есть два метода формирования тэгов label для форм. Есть "active label", считывающий
 данные из модели и обычный тэг "label", принимающий на вход непосредственно сами данные:
 
 ```php
@@ -347,18 +347,18 @@ echo Html::getAttributeName('dates[0]');
 Для формирования встроенных скриптов и стилей есть два метода:
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 Результатом будет:
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Привет!");', ['defer' => true]) ?>
+<?= Html::script('alert("Привет!");') ?>
 
 Результатом будет:
 
-<script defer>alert("Привет!");</script>
+<script>alert("Привет!");</script>
 ```
 
 Если вы хотите подключить внешний CSS-файл:

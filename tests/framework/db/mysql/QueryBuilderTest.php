@@ -367,4 +367,30 @@ MySqlStatement;
         $this->assertNotFalse($commentPos);
         $this->assertLessThan($checkPos, $commentPos);
     }
+
+    /**
+     * Test for issue https://github.com/yiisoft/yii2/issues/14663
+     */
+    public function testInsertInteger()
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $sql = $command->insert(
+            '{{customer}}',
+            [
+                'profile_id' => 22,
+            ]
+        )->getRawSql();
+        $this->assertEquals('INSERT INTO `customer` (`profile_id`) VALUES (22)', $sql);
+
+        $sql = $command->insert(
+            '{{customer}}',
+            [
+                'profile_id' => '1000000000000',
+            ]
+        )->getRawSql();
+        $this->assertEquals('INSERT INTO `customer` (`profile_id`) VALUES (1000000000000)', $sql);
+    }
 }

@@ -51,6 +51,209 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.39.3
+-------------------------
+
+* Priority of processing `yii\base\Arrayable`, and `JsonSerializable` data has been reversed (`Arrayable` data is checked
+  first now) in `yii\base\Model`, and `yii\rest\Serializer`. If your application relies on the previous priority you need 
+  to fix it manually based on the complexity of desired (de)serialization result.
+
+Upgrade from Yii 2.0.38
+-----------------------
+
+* The storage structure of the file cache has been changed when you use `\yii\caching\FileCache::$keyPrefix`.
+It is worth warming up the cache again if there is a logical dependency when working with the file cache.
+
+* `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
+  In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
+  `Session::writeSession()` functions changes might be required:
+  * When in strict mode the `openSession()` function should check if the requested session id exists
+    (and mark it for forced regeneration if not).
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode()) {
+        $id = $this->getId();
+        if (!$this->getReadQuery($id)->exists()) {
+            //This session id does not exist, mark it for forced regeneration
+            $this->_forceRegenerateId = $id;
+        }
+    }
+    // ... normal function continues ...
+    ``` 
+  * When in strict mode the `writeSession()` function should ignore writing the session under the old id.
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
+        //Ignore write when forceRegenerate is active for this id
+        return true;
+    }
+    // ... normal function continues ...
+    ```
+  > Note: The sample code above is specific for the `yii\web\DbSession` class.
+    Make sure you use the correct implementation based on your parent class,
+    e.g. `yii\web\CacheSession`, `yii\redis\Session`, `yii\mongodb\Session`, etc.
+  
+  > Note: In case your custom functions call their `parent` functions, there are probably no changes needed to your 
+    code if those parents implement the `useStrictMode` checks.
+
+  > Warning: in case `openSession()` and/or `writeSession()` functions do not implement the `useStrictMode` code
+    the session could be stored under a malicious id without warning even if `useStrictMode` is enabled.
+
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
+
+Upgrade from Yii 2.0.36
+-----------------------
+
+* `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
+  with an integer value, adjust your code.
+
+Upgrade from Yii 2.0.35
+-----------------------
+
+* Inline validator signature has been updated with 4th parameter `current`:
+
+  ```php
+  /**
+   * @param mixed $current the currently validated value of attribute
+   */
+  function ($attribute, $params, $validator, $current)
+  ```
+
+* Behavior of inline validator used as a rule of `EachValidator` has been changed - `$attribute` now refers to original
+  model's attribute and not its temporary counterpart:
+  
+  ```php
+  public $array_attribute = ['first', 'second'];
+
+  public function rules()
+  {
+      return [
+          ['array_attribute', 'each', 'rule' => ['customValidatingMethod']],
+      ];
+  }
+  
+  public function customValidatingMethod($attribute, $params, $validator, $current)
+  {
+      // $attribute === 'array_attribute' (as before)
+  
+      // now: $this->$attribute === ['first', 'second'] (on every iteration)
+      // previously:
+      // $this->$attribute === 'first' (on first iteration)
+      // $this->$attribute === 'second' (on second iteration)
+  
+      // use now $current instead
+      // $current === 'first' (on first iteration)
+      // $current === 'second' (on second iteration)
+  }
+  ```
+  
+* `$this` in an inline validator defined as closure now refers to model instance. If you need to access the object registering
+  the validator, pass its instance through use statement:
+  
+  ```php
+  $registrar = $this;
+  $validator = function($attribute, $params, $validator, $current) use ($registrar) {
+      // ...
+  }
+  ```
+  
+* Validator closure callbacks should not be declared as static.
+
+* If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
+  the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
+
+Upgrade from Yii 2.0.34
+-----------------------
+
+* `ExistValidator` used as a rule of `EachValidator` now requires providing `targetClass` explicitely and it's not possible to use it with `targetRelation` in
+  that configuration.
+  
+  ```php
+  public function rules()
+  {
+      return [
+          ['attribute', 'each', 'rule' => ['exist', 'targetClass' => static::className(), 'targetAttribute' => 'id']],
+      ];
+  }
+  ```
+
+Upgrade from Yii 2.0.32
+-----------------------
+
+* `yii\helpers\ArrayHelper::filter` now correctly filters data when passing a filter with more than 2 "levels",
+  e.g. `ArrayHelper::filter($myArray, ['A.B.C']`. Until Yii 2.0.32 all data after the 2nd level was returned,
+  please see the following example:
+  
+  ```php
+  $myArray = [
+      'A' => 1,
+      'B' => [
+          'C' => 1,
+          'D' => [
+              'E' => 1,
+              'F' => 2,
+          ]
+      ],
+  ];
+  ArrayHelper::filter($myArray, ['B.D.E']);
+  ```
+  
+  Before Yii 2.0.33 this would return
+  
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+              'F' => 2, //Please note the unexpected inclusion of other elements
+          ],
+      ],
+  ]
+  ```
+
+  Since Yii 2.0.33 this returns
+
+  ```php
+  [
+      'B' => [
+          'D' => [
+              'E' => 1,
+          ],
+      ],
+  ]
+  ```
+  
+  Note: If you are only using up to 2 "levels" (e.g. `ArrayHelper::filter($myArray, ['A.B']`), this change has no impact.
+  
+* `UploadedFile` class `deleteTempFile()` and `isUploadedFile()` methods introduced in 2.0.32 were removed.
+
+* Exception will be thrown if `UrlManager::$cache` configuration is incorrect (previously misconfiguration was silently 
+  ignored and `UrlManager` continue to work without cache). Make sure that `UrlManager::$cache` is correctly configured 
+  or set it to `null` to explicitly disable cache.
+
+Upgrade from Yii 2.0.31
+-----------------------
+
+* `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on
+  content-type negotiation fail.
+
+Upgrade from Yii 2.0.30
+-----------------------
+* `yii\helpers\BaseInflector::slug()` now ensures there is no repeating $replacement string occurrences.
+  In case you rely on Yii 2.0.16 - 2.0.30 behavior, consider replacing `Inflector` with your own implementation.
+  
+  
+Upgrade from Yii 2.0.28
+-----------------------
+
+* `yii\helpers\Html::tag()` now generates boolean attributes
+  [according to HTML specification](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute).
+  For `true` value attribute is present, for `false` value it is absent.  
+
 Upgrade from Yii 2.0.20
 -----------------------
 
@@ -211,7 +414,10 @@ Upgrade from Yii 2.0.13
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
 * In case you aren't using CSRF cookies (REST APIs etc.) you should turn them off explicitly by setting
-  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file. 
+  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file.
+  
+* Previously headers sent after content output was started were silently ignored. This behavior was changed to throwing
+  `\yii\web\HeadersAlreadySentException`.
 
 Upgrade from Yii 2.0.12
 -----------------------

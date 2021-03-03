@@ -25,6 +25,10 @@ class TestClass extends BaseObject
     public $prop2;
 }
 
+class TestSubclass extends TestClass
+{
+}
+
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -66,6 +70,24 @@ class ServiceLocatorTest extends TestCase
         $container->set($className, $object);
         $this->assertSame($container->get($className), $object);
     }
+
+    public function testDi3Compatibility()
+    {
+        $config = [
+            'components' => [
+                'test' => [
+                    'class' => TestClass::className(),
+                ],
+            ],
+        ];
+
+        // User Defined Config
+        $config['components']['test']['__class'] = TestSubclass::className();
+
+        $app = new ServiceLocator($config);
+        $this->assertInstanceOf(TestSubclass::className(), $app->get('test'));
+    }
+
 
     public function testShared()
     {

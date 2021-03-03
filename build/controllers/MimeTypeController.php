@@ -85,7 +85,7 @@ class MimeTypeController extends Controller
         $mimeMap = [];
         foreach (explode("\n", $content) as $line) {
             $line = trim($line);
-            if (empty($line) || $line[0] === '#') { // skip comments and empty lines
+            if (empty($line) || strpos($line, '#') === 0) { // skip comments and empty lines
                 continue;
             }
             $parts = preg_split('/\s+/', $line);

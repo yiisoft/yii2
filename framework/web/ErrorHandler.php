@@ -105,6 +105,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
+            Yii::$app->view->clear();
             $result = Yii::$app->runAction($this->errorAction);
             if ($result instanceof Response) {
                 $response = $result;
@@ -482,7 +483,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Returns human-readable exception name.
      * @param \Exception $exception
-     * @return string human-readable exception name or null if it cannot be determined
+     * @return string|null human-readable exception name or null if it cannot be determined
      */
     public function getExceptionName($exception)
     {

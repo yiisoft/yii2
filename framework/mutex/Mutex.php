@@ -98,6 +98,18 @@ abstract class Mutex extends Component
     }
 
     /**
+     * Checks if a lock is currently acquired
+     *
+     * @param string $name of the lock to check
+     * @return bool Returns true if currently acquired
+     * @since 2.0.36
+     */
+    public function isAcquired($name)
+    {
+        return in_array($name, $this->_locks, true);
+    }
+
+    /**
      * This method should be extended by a concrete Mutex implementations. Acquires lock by name.
      * @param string $name of the lock to be acquired.
      * @param int $timeout time (in seconds) to wait for the lock to be released.

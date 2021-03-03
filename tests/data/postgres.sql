@@ -7,6 +7,7 @@
 DROP TABLE IF EXISTS "composite_fk" CASCADE;
 DROP TABLE IF EXISTS "order_item" CASCADE;
 DROP TABLE IF EXISTS "item" CASCADE;
+DROP SEQUENCE IF EXISTS "item_id_seq_2" CASCADE;
 DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
 DROP TABLE IF EXISTS "order_with_null_fk" CASCADE;
@@ -79,6 +80,7 @@ CREATE TABLE "item" (
   name varchar(128) NOT NULL,
   category_id integer NOT NULL references "category"(id) on UPDATE CASCADE on DELETE CASCADE
 );
+CREATE SEQUENCE "item_id_seq_2";
 
 CREATE TABLE "order" (
   id serial not null primary key,

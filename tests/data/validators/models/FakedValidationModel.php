@@ -44,14 +44,14 @@ class FakedValidationModel extends Model
         ];
     }
 
-    public function inlineVal($attribute, $params = [], $validator)
+    public function inlineVal($attribute, $params, $validator, $current)
     {
         $this->inlineValArgs = \func_get_args();
 
         return true;
     }
 
-    public function clientInlineVal($attribute, $params = [], $validator)
+    public function clientInlineVal($attribute, $params, $validator, $current)
     {
         return \func_get_args();
     }
@@ -87,5 +87,10 @@ class FakedValidationModel extends Model
     public function getInlineValArgs()
     {
         return $this->inlineValArgs;
+    }
+
+    public function attributes()
+    {
+        return array_keys($this->attr);
     }
 }

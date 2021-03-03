@@ -97,6 +97,13 @@ class Formatter extends Component
      */
     public $locale;
     /**
+     * @var string the language code (e.g. `en-US`, `en`) that is used to translate internal messages.
+     * If not set, [[locale]] will be used (without the `@calendar` param, if included).
+     *
+     * @since 2.0.28
+     */
+    public $language;
+    /**
      * @var string the time zone to use for formatting time and date values.
      *
      * This can be any value that may be passed to [date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php)
@@ -208,6 +215,13 @@ class Formatter extends Component
      * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, the default value is '.'.
      */
     public $decimalSeparator;
+    /**
+     * @var string the character displayed as the decimal point when formatting a currency.
+     * If not set, the currency decimal separator corresponding to [[locale]] will be used.
+     * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     * @since 2.0.35
+     */
+    public $currencyDecimalSeparator;
     /**
      * @var string the character displayed as the thousands separator (also called grouping separator) character when formatting a number.
      * If not set, the thousand separator corresponding to [[locale]] will be used.
@@ -385,11 +399,14 @@ class Formatter extends Component
         if ($this->locale === null) {
             $this->locale = Yii::$app->language;
         }
+        if ($this->language === null) {
+            $this->language = strtok($this->locale, '@');
+        }
         if ($this->booleanFormat === null) {
-            $this->booleanFormat = [Yii::t('yii', 'No', [], $this->locale), Yii::t('yii', 'Yes', [], $this->locale)];
+            $this->booleanFormat = [Yii::t('yii', 'No', [], $this->language), Yii::t('yii', 'Yes', [], $this->language)];
         }
         if ($this->nullDisplay === null) {
-            $this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)', [], $this->locale) . '</span>';
+            $this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)', [], $this->language) . '</span>';
         }
         $this->_intlLoaded = extension_loaded('intl');
         if (!$this->_intlLoaded) {
@@ -597,7 +614,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a date.
-     * @param int|string|DateTime $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
@@ -610,7 +627,7 @@ class Formatter extends Component
      * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      * Also no conversion will be performed on values that have no time information, e.g. `"2017-06-05"`.
      *
-     * @param string $format the format used to convert the value into a date string.
+     * @param string|null $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
@@ -635,7 +652,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a time.
-     * @param int|string|DateTime $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
@@ -647,7 +664,7 @@ class Formatter extends Component
      * The formatter will convert date values according to [[timeZone]] before formatting it.
      * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
-     * @param string $format the format used to convert the value into a date string.
+     * @param string|null $format the format used to convert the value into a date string.
      * If null, [[timeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
@@ -672,7 +689,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a datetime.
-     * @param int|string|DateTime $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
@@ -684,7 +701,7 @@ class Formatter extends Component
      * The formatter will convert date values according to [[timeZone]] before formatting it.
      * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
-     * @param string $format the format used to convert the value into a date string.
+     * @param string|null $format the format used to convert the value into a date string.
      * If null, [[datetimeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
@@ -718,7 +735,7 @@ class Formatter extends Component
     ];
 
     /**
-     * @param int|string|DateTime $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -794,7 +811,7 @@ class Formatter extends Component
     /**
      * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
-     * @param int|string|DateTime $value the datetime value to be normalized. The following
+     * @param int|string|DateTime|DateTimeInterface $value the datetime value to be normalized. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -854,7 +871,7 @@ class Formatter extends Component
 
     /**
      * Formats a date, time or datetime in a float number as UNIX timestamp (seconds since 01-01-1970).
-     * @param int|string|DateTime $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -882,7 +899,7 @@ class Formatter extends Component
      * 2. Using a timestamp that is relative to the `$referenceTime`.
      * 3. Using a `DateInterval` object.
      *
-     * @param int|string|DateTime|DateInterval $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|DateInterval $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -891,7 +908,7 @@ class Formatter extends Component
      * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
-     * @param int|string|DateTime $referenceTime if specified the value is used as a reference time instead of `now`
+     * @param int|string|DateTime|DateTimeInterface|null $referenceTime if specified the value is used as a reference time instead of `now`
      * when `$value` is not a `DateInterval` object.
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
@@ -934,47 +951,47 @@ class Formatter extends Component
 
         if ($interval->invert) {
             if ($interval->y >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y], $this->locale);
+                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y], $this->language);
             }
             if ($interval->m >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m], $this->locale);
+                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m], $this->language);
             }
             if ($interval->d >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d], $this->locale);
+                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d], $this->language);
             }
             if ($interval->h >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
+                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h], $this->language);
             }
             if ($interval->i >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
+                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->language);
             }
             if ($interval->s == 0) {
-                return Yii::t('yii', 'just now', [], $this->locale);
+                return Yii::t('yii', 'just now', [], $this->language);
             }
 
-            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
+            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->language);
         }
 
         if ($interval->y >= 1) {
-            return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->locale);
+            return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->language);
         }
         if ($interval->m >= 1) {
-            return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->locale);
+            return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->language);
         }
         if ($interval->d >= 1) {
-            return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->locale);
+            return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->language);
         }
         if ($interval->h >= 1) {
-            return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->locale);
+            return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->language);
         }
         if ($interval->i >= 1) {
-            return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
+            return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->language);
         }
         if ($interval->s == 0) {
-            return Yii::t('yii', 'just now', [], $this->locale);
+            return Yii::t('yii', 'just now', [], $this->language);
         }
 
-        return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
+        return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->language);
     }
 
     /**
@@ -1019,25 +1036,25 @@ class Formatter extends Component
 
         $parts = [];
         if ($interval->y > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->language);
         }
         if ($interval->m > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m], $this->language);
         }
         if ($interval->d > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d], $this->language);
         }
         if ($interval->h > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h], $this->language);
         }
         if ($interval->i > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->language);
         }
         if ($interval->s > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->language);
         }
         if ($interval->s === 0 && empty($parts)) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->language);
             $isNegative = false;
         }
 
@@ -1097,7 +1114,7 @@ class Formatter extends Component
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * If not given, the number of digits depends in the input value and is determined based on
      * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
      * using [[$numberFormatterOptions]].
@@ -1147,7 +1164,7 @@ class Formatter extends Component
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted. It must be a factor e.g. `0.75` will result in `75%`.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * If not given, the number of digits depends in the input value and is determined based on
      * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
      * using [[$numberFormatterOptions]].
@@ -1192,7 +1209,7 @@ class Formatter extends Component
      * Formats the value as a scientific number.
      *
      * @param mixed $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * If not given, the number of digits depends in the input value and is determined based on
      * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
      * using [[$numberFormatterOptions]].
@@ -1238,7 +1255,7 @@ class Formatter extends Component
      * scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
-     * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
+     * @param string|null $currency the 3-letter ISO 4217 currency code indicating the currency to use.
      * If null, [[currencyCode]] will be used.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1357,7 +1374,7 @@ class Formatter extends Component
      * are used in the formatting result.
      *
      * @param string|int|float $value value in bytes to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1376,32 +1393,32 @@ class Formatter extends Component
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
                 case 0:
-                    return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} B', $params, $this->language);
                 case 1:
-                    return Yii::t('yii', '{nFormatted} KiB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} KiB', $params, $this->language);
                 case 2:
-                    return Yii::t('yii', '{nFormatted} MiB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} MiB', $params, $this->language);
                 case 3:
-                    return Yii::t('yii', '{nFormatted} GiB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} GiB', $params, $this->language);
                 case 4:
-                    return Yii::t('yii', '{nFormatted} TiB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} TiB', $params, $this->language);
                 default:
-                    return Yii::t('yii', '{nFormatted} PiB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} PiB', $params, $this->language);
             }
         } else {
             switch ($position) {
                 case 0:
-                    return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} B', $params, $this->language);
                 case 1:
-                    return Yii::t('yii', '{nFormatted} kB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} kB', $params, $this->language);
                 case 2:
-                    return Yii::t('yii', '{nFormatted} MB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} MB', $params, $this->language);
                 case 3:
-                    return Yii::t('yii', '{nFormatted} GB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} GB', $params, $this->language);
                 case 4:
-                    return Yii::t('yii', '{nFormatted} TB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} TB', $params, $this->language);
                 default:
-                    return Yii::t('yii', '{nFormatted} PB', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} PB', $params, $this->language);
             }
         }
     }
@@ -1413,7 +1430,7 @@ class Formatter extends Component
      * are used in the formatting result.
      *
      * @param string|int|float $value value in bytes to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1432,32 +1449,32 @@ class Formatter extends Component
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
                 case 0:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->language);
                 case 1:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{kibibyte} other{kibibytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{kibibyte} other{kibibytes}}', $params, $this->language);
                 case 2:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{mebibyte} other{mebibytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{mebibyte} other{mebibytes}}', $params, $this->language);
                 case 3:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}', $params, $this->language);
                 case 4:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}', $params, $this->language);
                 default:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{pebibyte} other{pebibytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{pebibyte} other{pebibytes}}', $params, $this->language);
             }
         } else {
             switch ($position) {
                 case 0:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->language);
                 case 1:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{kilobyte} other{kilobytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{kilobyte} other{kilobytes}}', $params, $this->language);
                 case 2:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{megabyte} other{megabytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{megabyte} other{megabytes}}', $params, $this->language);
                 case 3:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}', $params, $this->language);
                 case 4:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}', $params, $this->language);
                 default:
-                    return Yii::t('yii', '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}', $params, $this->locale);
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}', $params, $this->language);
             }
         }
     }
@@ -1468,7 +1485,7 @@ class Formatter extends Component
      * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
      *
      * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $numberOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1491,7 +1508,7 @@ class Formatter extends Component
      * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
      *
      * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1512,7 +1529,7 @@ class Formatter extends Component
      * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
      *
      * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1534,7 +1551,7 @@ class Formatter extends Component
      * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
      *
      * @param float|int $value value to be formatted.
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1646,8 +1663,9 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @since 2.0.32
      */
-    private function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
+    protected function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
     {
         $value = $this->normalizeNumericValue($value);
 
@@ -1738,7 +1756,7 @@ class Formatter extends Component
      * @param int $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
      * ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
-     * @param int $decimals the number of digits after the decimal point.
+     * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return NumberFormatter the created formatter instance
@@ -1770,6 +1788,9 @@ class Formatter extends Component
         // set symbols
         if ($this->decimalSeparator !== null) {
             $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
+        }
+        if ($this->currencyDecimalSeparator !== null) {
+            $formatter->setSymbol(NumberFormatter::MONETARY_SEPARATOR_SYMBOL, $this->currencyDecimalSeparator);
         }
         if ($this->thousandSeparator !== null) {
             $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
@@ -2002,7 +2023,7 @@ class Formatter extends Component
      * to the defined decimal digits.
      *
      * @param string|int|float $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point. The default value is `0`.
+     * @param int|null $decimals the number of digits after the decimal point. The default value is `0`.
      * @return string the formatted result.
      * @since 2.0.16
      */
@@ -2042,7 +2063,7 @@ class Formatter extends Component
      * Fallback for formatting value as a currency number.
      *
      * @param string|int|float $value the value to be formatted.
-     * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
+     * @param string|null $currency the 3-letter ISO 4217 currency code indicating the currency to use.
      * If null, [[currencyCode]] will be used.
      * @return string the formatted result.
      * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.

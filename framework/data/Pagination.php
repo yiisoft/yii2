@@ -58,15 +58,15 @@ use yii\web\Request;
  *
  * For more details and usage information on Pagination, see the [guide article on pagination](guide:output-pagination).
  *
- * @property int $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement for
- * fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned. This
- * property is read-only.
- * @property array $links The links for navigational purpose. The array keys specify the purpose of the links
- * (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs. This property is read-only.
- * @property int $offset The offset of the data. This may be used to set the OFFSET value for a SQL statement
- * for fetching the current page of data. This property is read-only.
+ * @property-read int $limit The limit of the data. This may be used to set the LIMIT value for a SQL
+ * statement for fetching the current page of data. Note that if the page size is infinite, a value -1 will be
+ * returned. This property is read-only.
+ * @property-read array $links The links for navigational purpose. The array keys specify the purpose of the
+ * links (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs. This property is read-only.
+ * @property-read int $offset The offset of the data. This may be used to set the OFFSET value for a SQL
+ * statement for fetching the current page of data. This property is read-only.
  * @property int $page The zero-based current page number.
- * @property int $pageCount Number of pages. This property is read-only.
+ * @property-read int $pageCount Number of pages. This property is read-only.
  * @property int $pageSize The number of items per page. If it is less than 1, it means the page size is
  * infinite, and thus a single page contains all items.
  *
@@ -213,7 +213,7 @@ class Pagination extends BaseObject implements Linkable
     public function getPageSize()
     {
         if ($this->_pageSize === null) {
-            if (empty($this->pageSizeLimit)) {
+            if (empty($this->pageSizeLimit) || !isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
                 $pageSize = $this->defaultPageSize;
                 $this->setPageSize($pageSize);
             } else {
@@ -235,7 +235,7 @@ class Pagination extends BaseObject implements Linkable
             $this->_pageSize = null;
         } else {
             $value = (int) $value;
-            if ($validatePageSize && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1]) && count($this->pageSizeLimit) === 2) {
+            if ($validatePageSize && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
                 if ($value < $this->pageSizeLimit[0]) {
                     $value = $this->pageSizeLimit[0];
                 } elseif ($value > $this->pageSizeLimit[1]) {
@@ -319,16 +319,17 @@ class Pagination extends BaseObject implements Linkable
     {
         $currentPage = $this->getPage();
         $pageCount = $this->getPageCount();
-        $links = [
-            Link::REL_SELF => $this->createUrl($currentPage, null, $absolute),
-        ];
-        if ($currentPage > 0) {
+
+        $links = [Link::REL_SELF => $this->createUrl($currentPage, null, $absolute)];
+        if ($pageCount > 0) {
             $links[self::LINK_FIRST] = $this->createUrl(0, null, $absolute);
-            $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, null, $absolute);
-        }
-        if ($currentPage < $pageCount - 1) {
-            $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
             $links[self::LINK_LAST] = $this->createUrl($pageCount - 1, null, $absolute);
+            if ($currentPage > 0) {
+                $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, null, $absolute);
+            }
+            if ($currentPage < $pageCount - 1) {
+                $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
+            }
         }
 
         return $links;

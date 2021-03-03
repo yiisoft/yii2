@@ -564,6 +564,180 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     /**
      * @depends testJoinWith
      */
+    public function testJoinWithDuplicateSimple()
+    {
+        // left join and eager loading
+        $orders = Order::find()
+            ->innerJoinWith('customer')
+            ->joinWith('customer')
+            ->orderBy('customer.id DESC, order.id')
+            ->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateCallbackFiltering()
+    {
+        // inner join filtering and eager loading
+        $orders = Order::find()
+            ->innerJoinWith('customer')
+            ->joinWith([
+                'customer' => function ($query) {
+                    $query->where('{{customer}}.[[id]]=2');
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertCount(2, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateCallbackFilteringConditionsOnPrimary()
+    {
+        // inner join filtering, eager loading, conditions on both primary and relation
+        $orders = Order::find()
+            ->innerJoinWith('customer')
+            ->joinWith([
+                'customer' => function ($query) {
+                    $query->where(['{{customer}}.[[id]]' => 2]);
+                },
+            ])->where(['order.id' => [1, 2]])->orderBy('order.id')->all();
+        $this->assertCount(1, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateWithSubRelation()
+    {
+        // join with sub-relation
+        $orders = Order::find()
+            ->innerJoinWith('items')
+            ->joinWith([
+                'items.category' => function ($q) {
+                    $q->where('{{category}}.[[id]] = 2');
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertCount(1, $orders);
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertCount(3, $orders[0]->items);
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateTableAlias1()
+    {
+        // join with table alias
+        $orders = Order::find()
+            ->innerJoinWith('customer')
+            ->joinWith([
+                'customer' => function ($q) {
+                    $q->from('customer c');
+                },
+            ])->orderBy('c.id DESC, order.id')->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateTableAlias2()
+    {
+        // join with table alias
+        $orders = Order::find()
+            ->innerJoinWith('customer')
+            ->joinWith('customer as c')
+            ->orderBy('c.id DESC, order.id')
+            ->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateTableAliasSubRelation()
+    {
+        // join with table alias sub-relation
+        $orders = Order::find()
+            ->innerJoinWith([
+                'items as t' => function ($q) {
+                    $q->orderBy('t.id');
+                },
+            ])
+            ->joinWith([
+                'items.category as c' => function ($q) {
+                    $q->where('{{c}}.[[id]] = 2');
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertCount(1, $orders);
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertCount(3, $orders[0]->items);
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+    }
+
+    /**
+     * @depends testJoinWith
+     */
+    public function testJoinWithDuplicateSubRelationCalledInsideClosure()
+    {
+        // join with sub-relation called inside Closure
+        $orders = Order::find()
+            ->innerJoinWith('items')
+            ->joinWith([
+                'items' => function ($q) {
+                    $q->orderBy('item.id');
+                    $q->joinWith([
+                        'category' => function ($q) {
+                            $q->where('{{category}}.[[id]] = 2');
+                        },
+                    ]);
+                },
+            ])
+            ->orderBy('order.id')
+            ->all();
+        $this->assertCount(1, $orders);
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertCount(3, $orders[0]->items);
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+    }
+
+    /**
+     * @depends testJoinWith
+     */
     public function testJoinWithAndScope()
     {
         // hasOne inner join
@@ -766,7 +940,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         /** @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
-            $count = $query->count('c.id');
+            $count = $query->count('[[c.id]]');
         } elseif ($aliasMethod === 'querysyntax') {
             $count = $query->count('{{@customer}}.id');
         } elseif ($aliasMethod === 'applyAlias') {
@@ -846,12 +1020,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], false)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], false)
             ->where(['movies.name' => 'Toy Story']);
@@ -863,12 +1037,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], false)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], true)
             ->where(['movies.name' => 'Toy Story']);
@@ -881,15 +1055,15 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], true)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], false)
-            ->where(['movies.name' => 'Toy Story']);
+            ->where(['[[movies.name]]' => 'Toy Story']);
         $orders = $query->all();
         $this->assertCount(1, $orders, $query->createCommand()->rawSql . print_r($orders, true));
         $this->assertEquals(2, $orders[0]->id);
@@ -1719,24 +1893,24 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function illegalValuesForFindByCondition()
     {
         return [
-            [Customer::className(), ['id' => ['`id`=`id` and 1' => 1]]],
-            [Customer::className(), ['id' => [
+            [Customer::className(), [['`id`=`id` and 1' => 1]]],
+            [Customer::className(), [[
                 'legal' => 1,
                 '`id`=`id` and 1' => 1,
             ]]],
-            [Customer::className(), ['id' => [
+            [Customer::className(), [[
                 'nested_illegal' => [
                     'false or 1=' => 1
                 ]
             ]]],
             [Customer::className(), [['true--' => 1]]],
 
-            [CustomerWithAlias::className(), ['csr.id' => ['`csr`.`id`=`csr`.`id` and 1' => 1]]],
-            [CustomerWithAlias::className(), ['csr.id' => [
+            [CustomerWithAlias::className(), [['`csr`.`id`=`csr`.`id` and 1' => 1]]],
+            [CustomerWithAlias::className(), [[
                 'legal' => 1,
                 '`csr`.`id`=`csr`.`id` and 1' => 1,
             ]]],
-            [CustomerWithAlias::className(), ['csr.id' => [
+            [CustomerWithAlias::className(), [[
                 'nested_illegal' => [
                     'false or 1=' => 1
                 ]
@@ -1905,5 +2079,41 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
 
         $this->assertEquals(['1', '01', '001', '001', '2', '2b', '2b', '02'], $alphaIdentifiers);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/16492
+     */
+    public function testEagerLoadingWithTypeCastedCompositeIdentifier()
+    {
+        $aggregation = Order::find()->joinWith('quantityOrderItems', true)->all();
+        foreach ($aggregation as $item) {
+            if ($item->id == 1) {
+                $this->assertEquals(1, $item->quantityOrderItems[0]->order_id);
+            } elseif ($item->id != 1) {
+                $this->assertCount(0, $item->quantityOrderItems);
+            }
+        }
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18525
+     */
+    public function testHasManyWithIndexBy()
+    {
+        $category = Category::find()->joinWith('items')->indexBy('items.0.name');
+        $this->assertEquals(['Agile Web Application Development with Yii1.1 and PHP5', 'Ice Age'], array_keys($category->all()));
+
+        $category = Category::find()->select([Category::tableName() . '.*'])->joinWith('items')->indexBy('items.0.name');
+        $this->assertEquals(['Agile Web Application Development with Yii1.1 and PHP5', 'Ice Age'], array_keys($category->all()));
+
+        $category = Category::find()->select([Category::tableName() . '.*'])->joinWith('items')->indexBy('name');
+        $this->assertEquals(['Books', 'Movies'], array_keys($category->all()));
+
+        $category = Category::find()->joinWith('items')->indexBy('item.name');
+        $this->assertEquals([''], array_keys($category->all()));
+
+        $category = Category::find()->select([Category::tableName() . '.name'])->joinWith('items')->indexBy('id');
+        $this->assertEquals([1, 2], array_keys($category->all()));
     }
 }

@@ -96,6 +96,11 @@ class SecurityTest extends TestCase
         parent::tearDown();
     }
 
+    private function isWindows()
+    {
+        return DIRECTORY_SEPARATOR !== '/';
+    }
+
     // Tests :
 
     public function testHashData()
@@ -943,13 +948,17 @@ TEXT;
             }
         }
         // there is no /dev/urandom on windows so we expect this to fail
-        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
+        if ($this->isWindows() && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
             $this->expectException('yii\base\Exception');
             $this->expectExceptionMessage('Unable to generate a random key');
         }
         // Function mcrypt_create_iv() is deprecated since PHP 7.1
         if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
-            $this->markTestSkipped('Function mcrypt_create_iv() is deprecated as of PHP 7.1');
+            if ($functions['openssl_random_pseudo_bytes'] === false) {
+                $this->markTestSkipped('Function mcrypt_create_iv() is deprecated as of PHP 7.1');
+            } elseif (!$this->security->shouldUseLibreSSL() && !$this->isWindows()) {
+                $this->markTestSkipped('Function openssl_random_pseudo_bytes need LibreSSL version >=2.1.5 or Windows system on server');
+            }
         }
 
         static::$functions = $functions;
@@ -1013,7 +1022,7 @@ TEXT;
             'DIRECTORY_SEPARATOR',
             "ini_get('open_basedir')",
         ];
-        if (DIRECTORY_SEPARATOR === '/') {
+        if ($this->isWindows()) {
             $tests[] = "sprintf('%o', lstat(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom')['mode'] & 0170000)";
             $tests[] = "bin2hex(file_get_contents(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom', false, null, 0, 8))";
         }
@@ -1072,7 +1081,7 @@ TEXT;
                 20,
                 '4b007901b765489abead49d926f721d065a429c1',
             ],
-            getenv('TRAVIS') == true ? [
+            getenv('GITHUB_ACTIONS') == true ? [
                 'sha1',
                 'password',
                 'salt',

@@ -93,7 +93,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on Component, see the [guide article on components](guide:concept-components).
  *
- * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
+ * @property-read Behavior[] $behaviors List of behaviors attached to this component. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -567,7 +568,7 @@ class Component extends BaseObject
             }
             if ($removed) {
                 $this->_events[$name] = array_values($this->_events[$name]);
-                return $removed;
+                return true;
             }
         }
 

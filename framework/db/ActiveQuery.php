@@ -486,6 +486,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
         $this->join = array_values($uniqueJoins);
 
+        // https://github.com/yiisoft/yii2/issues/16092
+        $uniqueJoinsByTableName = [];
+        foreach ($this->join as $config) {
+            $tableName = serialize($config[1]);
+            if (!array_key_exists($tableName, $uniqueJoinsByTableName)) {
+                $uniqueJoinsByTableName[$tableName] = $config;
+            }
+        }
+        $this->join = array_values($uniqueJoinsByTableName);
+
         if (!empty($join)) {
             // append explicit join to joinWith()
             // https://github.com/yiisoft/yii2/issues/2880

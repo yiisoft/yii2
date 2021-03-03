@@ -176,6 +176,7 @@ class ResponseTest extends \yiiunit\TestCase
             ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko', [301 => 200, 302 => 200]],    // IE 11
             ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36', [301 => 301, 302 => 302]],      // Chrome
             ['Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136', [301 => 301, 302 => 302]],    // Edge
+            ['Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.2; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Tablet PC 2.0)', [301 => 200, 302 => 200]],                // special windows versions (for tablets or IoT devices)
         ];
     }
 
@@ -188,6 +189,20 @@ class ResponseTest extends \yiiunit\TestCase
     {
         $this->response->setStatusCodeByException($exception);
         $this->assertEquals($statusCode, $this->response->getStatusCode());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/18290
+     */
+    public function testNonSeekableStream()
+    {
+        $stream = fopen('php://output', 'r+');
+        ob_start();
+        $this->response
+            ->sendStreamAsFile($stream, 'test-stream')
+            ->send();
+        ob_get_clean();
+        static::assertEquals(200, $this->response->statusCode);
     }
 
     public function dataProviderSetStatusCodeByException()
@@ -263,42 +278,44 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testEmptyContentOn204()
     {
-        $response = new Response();
-        $response->setStatusCode(204);
-        $response->content = 'not empty content';
-
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-        $this->assertSame($content, '');
+        $this->assertEmptyContentOn(204);
     }
 
     public function testSettingContentToNullOn204()
     {
-        $response = new Response();
-        $response->setStatusCode(204);
-        $response->content = 'not empty content';
-
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-        $this->assertSame($content, '');
-        $this->assertSame($response->content, '');
+        $this->assertEmptyContentOn(204, function ($response) {
+            /** @var $response Response */
+            $this->assertSame($response->content, '');
+        });
     }
 
     public function testSettingStreamToNullOn204()
     {
-        $response = new Response();
-        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+        $this->assertSettingStreamToNullOn(204);
+    }
 
-        $response->sendFile($dataFile);
-        $response->setStatusCode(204);
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18199
+     */
+    public function testEmptyContentOn304()
+    {
+        $this->assertEmptyContentOn(304);
+    }
 
-        ob_start();
-        $response->send();
-        $content = ob_get_clean();
-        $this->assertSame($content, '');
-        $this->assertNull($response->stream);
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18199
+     */
+    public function testSettingContentToNullOn304()
+    {
+        $this->assertEmptyContentOn(304, function ($response) {
+            /** @var $response Response */
+            $this->assertSame($response->content, '');
+        });
+    }
+
+    public function testSettingStreamToNullOn304()
+    {
+        $this->assertSettingStreamToNullOn(304);
     }
 
     public function testSendFileWithInvalidCharactersInFileName()
@@ -309,5 +326,67 @@ class ResponseTest extends \yiiunit\TestCase
         $response->sendFile($dataFile, "test\x7Ftest.txt");
 
         $this->assertSame("attachment; filename=\"test_test.txt\"; filename*=utf-8''test%7Ftest.txt", $response->headers['content-disposition']);
+    }
+
+    public function testSameSiteCookie()
+    {
+        $response = new Response();
+        $response->cookies->add(new \yii\web\Cookie([
+            'name'     => 'test',
+            'value'    => 'testValue',
+            'sameSite' => \yii\web\Cookie::SAME_SITE_STRICT,
+        ]));
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+
+        // Only way to test is that it doesn't create any errors
+        $this->assertEquals('', $content);
+    }
+
+    /**
+     * Asserts that given a status code, the response will have an empty content body. If the lambda is present, it will
+     * call the lambda what is supposed to handle other assertions.
+     *
+     * @param int $statusCode
+     * @param callable|null $callback lambda in charge to handle other assertions
+     *                                callable(\yii\web\Response $response):void
+     */
+    protected function assertEmptyContentOn($statusCode, $callback = null)
+    {
+        $response = new Response();
+        $response->setStatusCode($statusCode);
+        $response->content = 'not empty content';
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+
+        if ($callback && is_callable($callback)) {
+            $callback($response);
+        }
+    }
+
+    /**
+     * Asserts that given a status code, the response will have an empty content body, no matter
+     * if the response is a stream as file
+     *
+     * @param int $statusCode
+     */
+    protected function assertSettingStreamToNullOn($statusCode)
+    {
+        $response = new Response();
+        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+
+        $response->sendFile($dataFile);
+        $response->setStatusCode($statusCode);
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+        $this->assertNull($response->stream);
     }
 }
