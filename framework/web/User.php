@@ -135,7 +135,7 @@ class User extends Component
      * @var string the session variable name used to store authentication key.
      * @since 2.0.41
      */
-    public $authKeyParam = '_authKey';
+    public $authKeyParam = '__authKey';
     /**
      * @var string the session variable name used to store the value of expiration timestamp of the authenticated state.
      * This is used when [[authTimeout]] is set.
