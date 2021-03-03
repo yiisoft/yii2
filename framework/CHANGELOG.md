@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Enh #18518: Add support for ngrok’s `X-Original-Host` header (brandonkelly)
 - Bug #18529: Fix asset files path with `appendTimestamp` option for non-root-relative base URLs (bizley)
 - Bug #18450: Allow empty string to be passed as a nullable typed argument to a controller's action (dicrtarasov, bizley)
+- Bug #18535: Set Cookie SameSite to Lax by default (samdark)
 - Bug #18539: Fix "driver does not support quoting" when using the driver pdo_odbc (xpohoc69)
 
 
