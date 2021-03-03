@@ -12,16 +12,16 @@ namespace yii\db\mssql;
  * It provides workarounds for improperly implemented functionalities of the DBLIB drivers.
  *
  * @author Bert Brunekreeft <bbrunekreeft@gmail.com>
- * @since 2.0
+ * @since 2.0.41
  */
 class DBLibPDO extends \PDO
 {
     /**
      * Returns value of the last inserted ID.
-     * @param string|null $sequence the sequence name. Defaults to null.
+     * @param string|null $name the sequence name. Defaults to null.
      * @return int last inserted ID value.
      */
-    public function lastInsertId($sequence = null)
+    public function lastInsertId($name = null)
     {
         return $this->query('SELECT CAST(COALESCE(SCOPE_IDENTITY(), @@IDENTITY) AS bigint)')->fetchColumn();
     }
