@@ -451,6 +451,77 @@ class UserTest extends TestCase
         $this->expectException('\yii\base\InvalidValueException');
         Yii::$app->user->setIdentity(new \stdClass());
     }
+
+    public function testSessionAuthWithNonExistingId()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', '1');
+
+        $this->assertNull(Yii::$app->user->getIdentity());
+    }
+
+    public function testSessionAuthWithMissingKey()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', 'user1');
+
+        $this->assertNotNull(Yii::$app->user->getIdentity());
+    }
+
+    public function testSessionAuthWithInvalidKey()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', 'user1');
+        Yii::$app->session->set('__authKey', 'invalid');
+
+
+        $this->assertNull(Yii::$app->user->getIdentity());
+    }
+
+    public function testSessionAuthWithValidKey()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', 'user1');
+        Yii::$app->session->set('__authKey', 'ABCD1234');
+
+        $this->assertNotNull(Yii::$app->user->getIdentity());
+    }
 }
 
 static $cookiesMock;

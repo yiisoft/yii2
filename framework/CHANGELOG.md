@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #18487: Allow creating URLs for non-GET-verb rules (bizley)
 - Bug #8750: Fix MySQL support when running in `ANSI`/`ANSI_QUOTES` modes (brandonkelly)
 - Bug #18505: Fixed `yii\helpers\ArrayHelper::getValue()` for ArrayAccess objects with explicitly defined properties (samdark)
+- Bug #9718: Fix user staying authorized despite authKey change (kidol, Charlie Jack, Kunal Mhaske, samdark)
 - Bug #18508: Fix Postgres SQL query for load table indexes with correct column order (insolita)
 - Enh #18518: Add support for ngrok’s `X-Original-Host` header (brandonkelly)
 - Bug #18529: Fix asset files path with `appendTimestamp` option for non-root-relative base URLs (bizley)
