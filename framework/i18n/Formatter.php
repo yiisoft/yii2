@@ -485,7 +485,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text.
-     * @param string $value the value to be formatted.
+     * @param string|null $value the value to be formatted.
      * @return string the formatted result.
      */
     public function asText($value)
@@ -499,7 +499,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text with newlines converted into breaks.
-     * @param string $value the value to be formatted.
+     * @param string|null $value the value to be formatted.
      * @return string the formatted result.
      */
     public function asNtext($value)
@@ -515,7 +515,7 @@ class Formatter extends Component
      * Formats the value as HTML-encoded text paragraphs.
      * Each text paragraph is enclosed within a `<p>` tag.
      * One or multiple consecutive empty lines divide two paragraphs.
-     * @param string $value the value to be formatted.
+     * @param string|null $value the value to be formatted.
      * @return string the formatted result.
      */
     public function asParagraphs($value)
@@ -531,7 +531,7 @@ class Formatter extends Component
      * Formats the value as HTML text.
      * The value will be purified using [[HtmlPurifier]] to avoid XSS attacks.
      * Use [[asRaw()]] if you do not want any purification of the value.
-     * @param string $value the value to be formatted.
+     * @param string|null $value the value to be formatted.
      * @param array|null $config the configuration for the HTMLPurifier class.
      * @return string the formatted result.
      */
@@ -546,7 +546,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a mailto link.
-     * @param string $value the value to be formatted.
+     * @param string|null $value the value to be formatted.
      * @param array $options the tag options in terms of name-value pairs. See [[Html::mailto()]].
      * @return string the formatted result.
      */
@@ -871,7 +871,7 @@ class Formatter extends Component
 
     /**
      * Formats a date, time or datetime in a float number as UNIX timestamp (seconds since 01-01-1970).
-     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|null $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -997,7 +997,7 @@ class Formatter extends Component
     /**
      * Represents the value as duration in human readable format.
      *
-     * @param DateInterval|string|int $value the value to be formatted. Acceptable formats:
+     * @param DateInterval|string|int|null $value the value to be formatted. Acceptable formats:
      *  - [DateInterval object](https://secure.php.net/manual/ru/class.dateinterval.php)
      *  - integer - number of seconds. For example: value `131` represents `2 minutes, 11 seconds`
      *  - ISO8601 duration format. For example, all of these values represent `1 day, 2 hours, 30 minutes` duration:
@@ -1373,7 +1373,7 @@ class Formatter extends Component
      * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
-     * @param string|int|float $value value in bytes to be formatted.
+     * @param string|int|float|null $value value in bytes to be formatted.
      * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1429,7 +1429,7 @@ class Formatter extends Component
      * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
-     * @param string|int|float $value value in bytes to be formatted.
+     * @param string|int|float|null $value value in bytes to be formatted.
      * @param int|null $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1568,7 +1568,7 @@ class Formatter extends Component
     /**
      * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
      * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
-     * @param float|int $value to be formatted
+     * @param float|int|null $value to be formatted
      * @param float $baseUnit unit of value as the multiplier of the smallest unit. When `null`, property [[baseUnits]]
      * will be used to determine base unit using $unitType and $unitSystem.
      * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
