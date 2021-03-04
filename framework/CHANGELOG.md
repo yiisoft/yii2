@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.41.1 under development
-------------------------
+2.0.41.1 March 04, 2021
+-----------------------
 
 - Bug #18545: Reversed changes made to the `yii\db\Query::all()` and `indexBy` handling (bizley)
 - Bug #18548: Fix bug with REST rules with prefixes containing tokens not being parsed properly (bizley)
