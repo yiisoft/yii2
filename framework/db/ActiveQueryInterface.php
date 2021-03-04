@@ -53,8 +53,6 @@ interface ActiveQueryInterface extends QueryInterface
      *     // return the index value corresponding to $model
      * }
      * ```
-     * The column has to be a part of the `SELECT` fragment of a SQL statement.
-     * If [[yii\db\Query::select()|select()]] is used with an array in its parameter, Yii handles adding that required SQL fragment for you.
      *
      * @return $this the query object itself
      */
