@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18545: Reversed changes made to the `yii\db\Query::all()` and `indexBy` handling (bizley)
+- Bug #18548: Fix bug with REST rules with prefixes containing tokens not being parsed properly (bizley)
 
 
 2.0.41 March 03, 2021
