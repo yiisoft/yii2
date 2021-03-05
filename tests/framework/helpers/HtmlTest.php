@@ -768,7 +768,7 @@ EOD;
                 'label' => 'Test Label'
             ]
         ]));
-        
+
         $expected = <<<'EOD'
 <div><label><input type="checkbox" name="test[]" value="1"> 1</label>
 <label><input type="checkbox" name="test[]" value="1.1" checked> 1.1</label>
@@ -916,7 +916,7 @@ EOD;
                 'label' => 'Test Label'
             ]
         ]));
-        
+
         $expected = <<<'EOD'
 <div><label><input type="radio" name="test" value="1"> 1</label>
 <label><input type="radio" name="test" value="1.1" checked> 1.1</label>
@@ -1060,7 +1060,7 @@ EOD;
             ],
         ];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value1'], $data, $attributes));
-        
+
         $expected = <<<'EOD'
 <option value="1">1</option>
 <option value="1.1" selected>1.1</option>
@@ -1069,7 +1069,7 @@ EOD;
         $data = ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'];
         $attributes = ['strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.1'], $data, $attributes));
-        
+
         $expected = <<<'EOD'
 <option value="1">1</option>
 <option value="1.1">1.1</option>
@@ -1734,22 +1734,15 @@ EOD;
             ['a[0]', 'a'],
             ['[0]a[0]', 'a'],
             ['[0]a.[0]', 'a.'],
+            ['ä', 'ä'],
+            ['ä', 'ä'],
+            ['asdf]öáöio..[asdfasdf', 'öáöio..'],
+            ['öáöio', 'öáöio'],
+            ['[0]test.ööößß.d', 'test.ööößß.d'],
+            ['ИІК', 'ИІК'],
+            [']ИІК[', 'ИІК'],
+            ['[0]ИІК[0]', 'ИІК'],
         ];
-
-        if (getenv('TRAVIS_PHP_VERSION') !== 'nightly') {
-            $data = array_merge($data, [
-                ['ä', 'ä'],
-                ['ä', 'ä'],
-                ['asdf]öáöio..[asdfasdf', 'öáöio..'],
-                ['öáöio', 'öáöio'],
-                ['[0]test.ööößß.d', 'test.ööößß.d'],
-                ['ИІК', 'ИІК'],
-                [']ИІК[', 'ИІК'],
-                ['[0]ИІК[0]', 'ИІК'],
-            ]);
-        } else {
-            $this->markTestIncomplete("Unicode characters check skipped for 'nightly' PHP version because \w does not work with these as expected. Check later with stable version.");
-        }
 
         return $data;
     }
