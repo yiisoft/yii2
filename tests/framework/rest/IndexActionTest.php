@@ -50,10 +50,11 @@ class IndexActionTest extends TestCase
         Yii::$app->controller = new RestController(
             'rest',
             new Module('rest'), [
+            'modelClass' => IndexActionModel::className(),
             'actions' => [
                 'index' => [
-                    'class' => IndexAction::class,
-                    'modelClass' => IndexActionModel::class,
+                    'class' => IndexAction::className(),
+                    'modelClass' => IndexActionModel::className(),
                     'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
                         $this->assertTrue($query instanceof Query);
                         $sql = $query->createCommand()->getRawSql();
@@ -74,7 +75,6 @@ class IndexActionTest extends TestCase
 
 class RestController extends ActiveController
 {
-    public $modelClass = IndexActionModel::class;
     public $actions = [];
 
     public function actions()
