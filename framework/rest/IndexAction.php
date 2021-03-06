@@ -46,6 +46,10 @@ class IndexAction extends Action
      */
     public $prepareDataProvider;
     /**
+     * @var callable a PHP callable that will be called to prepare query in prepareDataProvider
+     * Should return $query
+     * For example:
+     *
      * ```php
      * function ($query, $requestParams) {
      *     $query->andFilterWhere(['id' => 1]);
@@ -53,6 +57,8 @@ class IndexAction extends Action
      *     return $query;
      * }
      * ```
+     *
+     * @since 2.0.41
      */
     public $prepareSearchQuery;
     /**
