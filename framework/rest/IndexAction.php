@@ -58,7 +58,7 @@ class IndexAction extends Action
      * }
      * ```
      *
-     * @since 2.0.41
+     * @since 2.0.42
      */
     public $prepareSearchQuery;
     /**
