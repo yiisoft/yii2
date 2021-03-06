@@ -62,7 +62,6 @@ class UrlRuleTest extends TestCase
         }
     }
 
-
     protected function getTestsForParseRequest()
     {
         // structure of each test
@@ -160,6 +159,13 @@ class UrlRuleTest extends TestCase
                 [
                     ['posts/1337', 'post/leet'],
                     ['posts/1338', 'post/view', ['id' => 1338]],
+                ],
+            ],
+            [
+                'prefix with token',
+                ['controller' => 'post', 'prefix' => 'admin/<name>'],
+                [
+                    ['admin/aaa/posts', 'post/index', ['name' => 'aaa']],
                 ],
             ],
         ];

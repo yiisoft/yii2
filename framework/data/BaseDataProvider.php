@@ -21,10 +21,10 @@ use yii\base\InvalidArgumentException;
  * uniquely identified by the corresponding key value in this array.
  * @property array $models The list of data models in the current page.
  * @property Pagination|false $pagination The pagination object. If this is false, it means the pagination is
- * disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]]  and
+ * disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
  * [[setPagination()]] for details.
  * @property Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled. Note that
- * the type of this property differs in getter and setter. See [[getSort()]]  and [[setSort()]] for details.
+ * the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
  * @property int $totalCount Total number of possible data models.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
