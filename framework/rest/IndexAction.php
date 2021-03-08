@@ -131,7 +131,7 @@ class IndexAction extends Action
         if (!empty($filter)) {
             $query->andWhere($filter);
         }
-        if ($this->prepareSearchQuery && is_callable($this->prepareSearchQuery)) {
+        if (is_callable($this->prepareSearchQuery)) {
             $query = call_user_func($this->prepareSearchQuery, $query, $requestParams);
         }
 
