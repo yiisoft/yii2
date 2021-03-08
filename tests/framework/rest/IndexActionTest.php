@@ -1,8 +1,6 @@
 <?php
 
-
 namespace yiiunit\framework\rest;
-
 
 use Yii;
 use yii\db\ActiveRecord;
@@ -28,12 +26,6 @@ class IndexActionTest extends TestCase
                 ],
                 'user' => [
                     'identityClass' => UserIdentity::className(),
-                ],
-                'request' => [
-                    'cookieValidationKey' => 'test',
-                ],
-                'urlManager' => [
-                    'showScriptName' => false,
                 ],
             ],
         ]);
