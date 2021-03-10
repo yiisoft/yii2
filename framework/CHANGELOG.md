@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.42 under development
 ------------------------
 
-- Bug #18544: Fix `yii\validators\NumberValidator` to not allow non-trimmed values (bizley)
+- Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 
 
 2.0.41.1 March 04, 2021
