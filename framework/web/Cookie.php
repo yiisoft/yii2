@@ -68,7 +68,7 @@ class Cookie extends \yii\base\BaseObject
     /**
      * @var string SameSite prevents the browser from sending this cookie along with cross-site requests.
      *
-     * See https://www.owasp.org/index.php/SameSite for more information about sameSite.
+     * See https://owasp.org/www-community/SameSite for more information about sameSite.
      *
      * @since 2.0.21
      */

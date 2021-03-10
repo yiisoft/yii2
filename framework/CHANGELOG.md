@@ -3,7 +3,9 @@ Yii Framework 2 Change Log
 
 2.0.42 under development
 ------------------------
+
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
+- Bug #18552: Fix bug with `yii\data\SqlDataProvider` not properly handling SQL with `ORDER BY` clause (bizley)
 
 
 2.0.41.1 March 04, 2021
