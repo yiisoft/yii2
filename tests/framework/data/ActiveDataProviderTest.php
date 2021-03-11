@@ -198,4 +198,22 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
         $this->assertEquals(0, $pagination->getPageCount());
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/18557
+     */
+    public function testConnectionClassInit()
+    {
+        $provider = new ActiveDataProvider([
+            'db' => 'yiiunit\framework\data\FakeConnection',
+            'connectionClass' => 'yiiunit\framework\data\FakeConnection',
+        ]);
+
+        $this->assertInstanceOf('yiiunit\framework\data\FakeConnection', $provider->db);
+
+        $this->expectException('yii\base\InvalidConfigException');
+        new ActiveDataProvider(['db' => 'yiiunit\framework\data\FakeConnection']);
+    }
 }
+
+class FakeConnection {}

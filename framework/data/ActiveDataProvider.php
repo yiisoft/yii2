@@ -77,6 +77,12 @@ class ActiveDataProvider extends BaseDataProvider
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db;
+    /**
+     * @var string the DB connection class name appropriate for this ActiveDataProvider.
+     * Extending classes should replace it to match their connection class.
+     * @since 2.0.42
+     */
+    public $connectionClass = 'yii\db\Connection';
 
 
     /**
@@ -88,7 +94,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::init();
         if ($this->db !== null) {
-            $this->db = Instance::ensure($this->db, Connection::className());
+            $this->db = Instance::ensure($this->db, $this->connectionClass);
         }
     }
 
