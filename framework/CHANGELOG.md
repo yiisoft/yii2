@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.42 under development
 ------------------------
 
+- Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 - Bug #18552: Fix bug with `yii\data\SqlDataProvider` not properly handling SQL with `ORDER BY` clause (bizley)
 
