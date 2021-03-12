@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
+- Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 - Bug #18552: Fix bug with `yii\data\SqlDataProvider` not properly handling SQL with `ORDER BY` clause (bizley)
 
 
