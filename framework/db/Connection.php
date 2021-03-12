@@ -881,7 +881,7 @@ class Connection extends Component
      * Obtains the schema information for the named table.
      * @param string $name table name.
      * @param bool $refresh whether to reload the table schema even if it is found in the cache.
-     * @return TableSchema table schema information. Null if the named table does not exist.
+     * @return TableSchema|null table schema information. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
     {
