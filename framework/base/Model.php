@@ -617,7 +617,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the first error of the specified attribute.
      * @param string $attribute attribute name.
-     * @return string the error message. Null is returned if no error.
+     * @return string|null the error message. Null is returned if no error.
      * @see getErrors()
      * @see getFirstErrors()
      */
