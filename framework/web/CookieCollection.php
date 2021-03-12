@@ -83,7 +83,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     /**
      * Returns the cookie with the specified name.
      * @param string $name the cookie name
-     * @return Cookie the cookie with the specified name. Null if the named cookie does not exist.
+     * @return Cookie|null the cookie with the specified name. Null if the named cookie does not exist.
      * @see getValue()
      */
     public function get($name)

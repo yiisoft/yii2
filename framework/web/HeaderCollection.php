@@ -141,7 +141,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     /**
      * Removes a header.
      * @param string $name the name of the header to be removed.
-     * @return array the value of the removed header. Null is returned if the header does not exist.
+     * @return array|null the value of the removed header. Null is returned if the header does not exist.
      */
     public function remove($name)
     {
