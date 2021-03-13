@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecordInterface;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
@@ -1366,13 +1367,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testUnlinkAllViaTable()
     {
-        /* @var $orderClass \yii\db\ActiveRecordInterface */
+        /* @var $orderClass ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
-        /* @var $orderItemClass \yii\db\ActiveRecordInterface */
+        /* @var $orderItemClass ActiveRecordInterface */
         $orderItemClass = $this->getOrderItemClass();
-        /* @var $itemClass \yii\db\ActiveRecordInterface */
+        /* @var $itemClass ActiveRecordInterface */
         $itemClass = $this->getItemClass();
-        /* @var $orderItemsWithNullFKClass \yii\db\ActiveRecordInterface */
+        /* @var $orderItemsWithNullFKClass ActiveRecordInterface */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         // via table with delete
@@ -2094,5 +2095,61 @@ abstract class ActiveRecordTest extends DatabaseTestCase
                 $this->assertCount(0, $item->quantityOrderItems);
             }
         }
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17174
+     */
+    public function testUnlinkOnConditionWithDelete()
+    {
+        /* @var $orderClass ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        $order = $orderClass::findOne(2);
+        $this->assertCount(1, $order->itemsFor8);
+        $order->unlink('itemsFor8', $order->itemsFor8[0], true);
+
+        $order = $orderClass::findOne(2);
+        $this->assertCount(0, $order->itemsFor8);
+        $this->assertCount(2, $order->orderItemsWithNullFK);
+
+        /* @var $orderItemClass ActiveRecordInterface */
+        $orderItemClass = $this->getOrderItemWithNullFKmClass();
+        $this->assertCount(1, $orderItemClass::findAll([
+            'order_id' => 2,
+            'item_id' => 5,
+        ]));
+        $this->assertCount(0, $orderItemClass::findAll([
+            'order_id' => null,
+            'item_id' => null,
+        ]));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17174
+     */
+    public function testUnlinkOnConditionWithoutDelete()
+    {
+        /* @var $orderClass ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        $order = $orderClass::findOne(2);
+        $this->assertCount(1, $order->itemsFor8);
+        $order->unlink('itemsFor8', $order->itemsFor8[0]);
+
+        $order = $orderClass::findOne(2);
+        $this->assertCount(0, $order->itemsFor8);
+        $this->assertCount(2, $order->orderItemsWithNullFK);
+
+        /* @var $orderItemClass ActiveRecordInterface */
+        $orderItemClass = $this->getOrderItemWithNullFKmClass();
+        $this->assertCount(1, $orderItemClass::findAll([
+            'order_id' => 2,
+            'item_id' => 5,
+        ]));
+        $this->assertCount(1, $orderItemClass::findAll([
+            'order_id' => null,
+            'item_id' => null,
+        ]));
     }
 }
