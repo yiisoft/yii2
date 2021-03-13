@@ -7,7 +7,8 @@ Yii Framework 2 Change Log
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
 - Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
-- Bug #18552: Fix bug with `yii\data\SqlDataProvider` not properly handling SQL with `ORDER BY` clause (bizley)
+- Bug #18552: Fix `yii\data\SqlDataProvider` to properly handle SQL with `ORDER BY` clause (bizley)
+- Bug #17174: Fix `yii\db\BaseActiveRecord::unlink()` to not ignore `on` conditions in `via` relations (bizley)
 
 
 2.0.41.1 March 04, 2021
