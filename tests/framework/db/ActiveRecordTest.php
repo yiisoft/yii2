@@ -2097,45 +2097,26 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
     }
 
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/17174
-     */
-    public function testUnlinkOnConditionWithDelete()
+    public function providerForUnlinkDelete()
     {
-        /* @var $orderClass ActiveRecordInterface */
-        $orderClass = $this->getOrderClass();
-
-        $order = $orderClass::findOne(2);
-        $this->assertCount(1, $order->itemsFor8);
-        $order->unlink('itemsFor8', $order->itemsFor8[0], true);
-
-        $order = $orderClass::findOne(2);
-        $this->assertCount(0, $order->itemsFor8);
-        $this->assertCount(2, $order->orderItemsWithNullFK);
-
-        /* @var $orderItemClass ActiveRecordInterface */
-        $orderItemClass = $this->getOrderItemWithNullFKmClass();
-        $this->assertCount(1, $orderItemClass::findAll([
-            'order_id' => 2,
-            'item_id' => 5,
-        ]));
-        $this->assertCount(0, $orderItemClass::findAll([
-            'order_id' => null,
-            'item_id' => null,
-        ]));
+        return [
+            'with delete' => [true, 0],
+            'without delete' => [false, 1],
+        ];
     }
 
     /**
+     * @dataProvider providerForUnlinkDelete
      * @see https://github.com/yiisoft/yii2/issues/17174
      */
-    public function testUnlinkOnConditionWithoutDelete()
+    public function testUnlinkWithViaOnCondition($delete, $count)
     {
         /* @var $orderClass ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
 
         $order = $orderClass::findOne(2);
         $this->assertCount(1, $order->itemsFor8);
-        $order->unlink('itemsFor8', $order->itemsFor8[0]);
+        $order->unlink('itemsFor8', $order->itemsFor8[0], $delete);
 
         $order = $orderClass::findOne(2);
         $this->assertCount(0, $order->itemsFor8);
@@ -2147,7 +2128,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             'order_id' => 2,
             'item_id' => 5,
         ]));
-        $this->assertCount(1, $orderItemClass::findAll([
+        $this->assertCount($count, $orderItemClass::findAll([
             'order_id' => null,
             'item_id' => null,
         ]));
