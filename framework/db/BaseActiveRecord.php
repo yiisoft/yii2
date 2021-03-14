@@ -1384,9 +1384,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * If `false`, the model's foreign key will be set `null` and saved.
      * If `true`, the model containing the foreign key will be deleted.
      * @throws InvalidCallException if the models cannot be unlinked
+     * @throws Exception
+     * @throws StaleObjectException
      */
     public function unlink($name, $model, $delete = false)
     {
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
@@ -1409,6 +1412,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $nulls = [];
             foreach (array_keys($columns) as $a) {
                 $nulls[$a] = null;
+            }
+            if ($viaRelation->on !== null) {
+                $columns = ['and', $columns, $viaRelation->on];
             }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
