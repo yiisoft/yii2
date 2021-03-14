@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 - Bug #18552: Fix bug with `yii\data\SqlDataProvider` not properly handling SQL with `ORDER BY` clause (bizley)
+- Bug #18557: Fix `yii\data\ActiveDataProvider` to handle DB connection configuration of different type than just `yii\db\Connection` (bizley)
 
 
 2.0.41.1 March 04, 2021
