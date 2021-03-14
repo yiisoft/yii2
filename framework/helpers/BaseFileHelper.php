@@ -146,7 +146,7 @@ class BaseFileHelper
      * and this is null, it will use the file specified by [[mimeMagicFile]].
      * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
-     * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
+     * @return string|null the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
      * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)

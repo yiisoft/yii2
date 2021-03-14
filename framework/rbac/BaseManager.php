@@ -37,7 +37,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Returns the named auth item.
      * @param string $name the auth item name.
-     * @return Item the auth item corresponding to the specified name. Null is returned if no such item.
+     * @return Item|null the auth item corresponding to the specified name. Null is returned if no such item.
      */
     abstract protected function getItem($name);
 
