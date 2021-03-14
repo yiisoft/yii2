@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 - Bug #18552: Fix `yii\data\SqlDataProvider` to properly handle SQL with `ORDER BY` clause (bizley)
 - Bug #17174: Fix `yii\db\BaseActiveRecord::unlink()` to not ignore `on` conditions in `via` relations (bizley)
+- Bug #18557: Fix `yii\data\ActiveDataProvider` to handle DB connection configuration of different type than just `yii\db\Connection` (bizley)
 
 
 2.0.41.1 March 04, 2021

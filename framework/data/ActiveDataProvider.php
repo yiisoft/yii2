@@ -88,7 +88,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::init();
         if ($this->db !== null) {
-            $this->db = Instance::ensure($this->db, Connection::className());
+            $this->db = Instance::ensure($this->db);
         }
     }
 
