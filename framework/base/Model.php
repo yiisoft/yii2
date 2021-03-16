@@ -1049,4 +1049,15 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     {
         $this->$offset = null;
     }
+
+    /**
+     * This method is called after the object is created by cloning an existing one.
+     * It removes all behaviors and validators because they are attached to the old object.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_validators = null;
+    }
 }
