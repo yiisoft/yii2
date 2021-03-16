@@ -84,6 +84,7 @@ class DbCache extends Cache
      */
     public $gcProbability = 100;
 
+    protected $isVarbinaryDataField;
 
     /**
      * Initializes the DbCache component.
@@ -302,9 +303,11 @@ class DbCache extends Cache
      */
     protected function isVarbinaryDataField()
     {
-        return (
-            in_array($this->db->getDriverName(), ['sqlsrv', 'dblib']) &&
-            $this->db->getTableSchema('cache')->columns['data']->dbType === 'varbinary');
+        if ($this->isVarbinaryDataField === null) {
+            $this->isVarbinaryDataField = in_array($this->db->getDriverName(), ['sqlsrv', 'dblib']) &&
+                $this->db->getTableSchema('cache')->columns['data']->dbType === 'varbinary';
+        }
+        return $this->isVarbinaryDataField;
     }
 
     /**
