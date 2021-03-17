@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #18552: Fix `yii\data\SqlDataProvider` to properly handle SQL with `ORDER BY` clause (bizley)
 - Bug #17174: Fix `yii\db\BaseActiveRecord::unlink()` to not ignore `on` conditions in `via` relations (bizley)
 - Bug #18557: Fix `yii\data\ActiveDataProvider` to handle DB connection configuration of different type than just `yii\db\Connection` (bizley)
+- Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
 
 
 2.0.41.1 March 04, 2021
