@@ -115,14 +115,10 @@ class ActiveFixtureTest extends DatabaseTestCase
      */
     public function testDifferentModelDb()
     {
-        $originalDb = ActiveRecord::$db;
-        ActiveRecord::$db = new Connection(['dsn' => 'unique-dsn']);
         $fixture = new DifferentDbFixture();
 
         $this->assertSame('unique-dsn', $fixture->db->dsn);
         $this->assertNotSame('unique-dsn', Yii::$app->getDb()->dsn);
-
-        ActiveRecord::$db = $originalDb;
     }
 }
 
@@ -194,7 +190,15 @@ class AnimalFixture extends ActiveFixture
 
 class DifferentDbFixture extends ActiveFixture
 {
-    public $modelClass = 'yiiunit\data\ar\ActiveRecord';
+    public $modelClass = 'yiiunit\framework\test\CustomDb';
+}
+
+class CustomDb extends ActiveRecord
+{
+    public static function getDb()
+    {
+        return new Connection(['dsn' => 'unique-dsn']);
+    }
 }
 
 class BaseDbTestCase
