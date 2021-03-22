@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 
@@ -70,11 +71,6 @@ class EachValidator extends Validator
      */
     public $stopOnFirstError = true;
 
-    /**
-     * @var Validator validator instance.
-     */
-    private $_validator;
-
 
     /**
      * {@inheritdoc}
@@ -88,36 +84,27 @@ class EachValidator extends Validator
     }
 
     /**
-     * Returns the validator declared in [[rule]].
-     * @param Model|null $model model in which context validator should be created.
-     * @return Validator the declared validator.
-     */
-    private function getValidator($model = null)
-    {
-        if ($this->_validator === null) {
-            $this->_validator = $this->createEmbeddedValidator($model);
-        }
-
-        return $this->_validator;
-    }
-
-    /**
      * Creates validator object based on the validation rule specified in [[rule]].
      * @param Model|null $model model in which context validator should be created.
+     * @param mixed|null $current value being currently validated.
      * @throws \yii\base\InvalidConfigException
      * @return Validator validator instance
      */
-    private function createEmbeddedValidator($model)
+    private function createEmbeddedValidator($model = null, $current = null)
     {
         $rule = $this->rule;
         if ($rule instanceof Validator) {
             return $rule;
-        } elseif (is_array($rule) && isset($rule[0])) { // validator type
+        }
+
+        if (is_array($rule) && isset($rule[0])) { // validator type
             if (!is_object($model)) {
                 $model = new Model(); // mock up context model
             }
 
-            return Validator::createValidator($rule[0], $model, $this->attributes, array_slice($rule, 1));
+            $params = array_slice($rule, 1);
+            $params['current'] = $current;
+            return Validator::createValidator($rule[0], $model, $this->attributes, $params);
         }
 
         throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
@@ -128,43 +115,38 @@ class EachValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $value = $model->$attribute;
-        if (!is_array($value) && !$value instanceof \ArrayAccess) {
+        $arrayOfValues = $model->$attribute;
+        if (!is_array($arrayOfValues) && !$arrayOfValues instanceof \ArrayAccess) {
             $this->addError($model, $attribute, $this->message, []);
             return;
         }
 
-        $validator = $this->getValidator($model); // ensure model context while validator creation
+        foreach ($arrayOfValues as $k => $v) {
+            $dynamicModel = new DynamicModel($model->getAttributes());
+            $dynamicModel->setAttributeLabels($model->attributeLabels());
+            $dynamicModel->addRule($attribute, $this->createEmbeddedValidator($model, $v));
+            $dynamicModel->defineAttribute($attribute, $v);
+            $dynamicModel->validate();
 
-        $detectedErrors = $model->getErrors($attribute);
-        $filteredValue = $model->$attribute;
-        foreach ($value as $k => $v) {
-            $model->clearErrors($attribute);
-            $model->$attribute = $v;
-            if (!$validator->skipOnEmpty || !$validator->isEmpty($v)) {
-                $validator->validateAttribute($model, $attribute);
+            $arrayOfValues[$k] = $dynamicModel->$attribute; // filtered values like 'trim'
+
+            if (!$dynamicModel->hasErrors($attribute)) {
+                continue;
             }
-            $filteredValue[$k] = $model->$attribute;
-            if ($model->hasErrors($attribute)) {
-                if ($this->allowMessageFromRule) {
-                    $validationErrors = $model->getErrors($attribute);
-                    $detectedErrors = array_merge($detectedErrors, $validationErrors);
-                } else {
-                    $model->clearErrors($attribute);
-                    $this->addError($model, $attribute, $this->message, ['value' => $v]);
-                    $detectedErrors[] = $model->getFirstError($attribute);
-                }
-                $model->$attribute = $value;
 
-                if ($this->stopOnFirstError) {
-                    break;
-                }
+            if ($this->allowMessageFromRule) {
+                $validationErrors = $dynamicModel->getErrors($attribute);
+                $model->addErrors([$attribute => $validationErrors]);
+            } else {
+                $this->addError($model, $attribute, $this->message, ['value' => $v]);
+            }
+
+            if ($this->stopOnFirstError) {
+                break;
             }
         }
 
-        $model->$attribute = $filteredValue;
-        $model->clearErrors($attribute);
-        $model->addErrors([$attribute => $detectedErrors]);
+        $model->$attribute = $arrayOfValues;
     }
 
     /**
@@ -176,7 +158,7 @@ class EachValidator extends Validator
             return [$this->message, []];
         }
 
-        $validator = $this->getValidator();
+        $validator = $this->createEmbeddedValidator();
         foreach ($value as $v) {
             if ($validator->skipOnEmpty && $validator->isEmpty($v)) {
                 continue;

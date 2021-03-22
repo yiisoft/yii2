@@ -36,8 +36,8 @@ use yii\base\NotSupportedException;
  *   Also messages that are working with the fallback implementation are not necessarily compatible with the
  *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
  *
- * @property string $errorCode Code of the last error. This property is read-only.
- * @property string $errorMessage Description of the last error. This property is read-only.
+ * @property-read string $errorCode Code of the last error. This property is read-only.
+ * @property-read string $errorMessage Description of the last error. This property is read-only.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -423,7 +423,7 @@ class MessageFormatter extends Component
                         $selector = trim(mb_substr($selector, $pos + 1, mb_strlen($selector, $charset), $charset));
                     }
                     if ($message === false && $selector === 'other' ||
-                        $selector[0] === '=' && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
+                        strpos($selector, '=') === 0 && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {
                         $message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));

@@ -114,8 +114,11 @@ class AccessRule extends Component
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
      * For example, '192.168.*' matches all IP addresses in the segment '192.168.'.
+     * It may also contain a pattern/mask like '172.16.0.0/12' which would match all IPs from the
+     * 20-bit private network block in RFC1918.
      * If not set or empty, it means this rule applies to all IP addresses.
      * @see Request::userIP
+     * @see IpHelper::inRange
      */
     public $ips;
     /**

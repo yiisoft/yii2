@@ -221,7 +221,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 ### Примечание
 
 Для обнаружения регрессии как можно раньше, каждое слияние кодовой базы Yii на Github будет подхвачено
-[Travis CI](http://travis-ci.org) для автоматического запуска тестов. Люди из *core team* не хотят нагружать
+[Travis CI](http://travis-ci.com) для автоматического запуска тестов. Люди из *core team* не хотят нагружать
 этот сервис, поэтому добавляют текст [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) в описание
 запроса на слияние, в следующих ситуациях:
 

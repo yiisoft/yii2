@@ -173,7 +173,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!ArrayHelper::isAssociative($condition) && !$condition instanceof ExpressionInterface) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
@@ -289,7 +289,7 @@ class ActiveRecord extends BaseActiveRecord
         $query->where($pk);
 
         /* @var $record BaseActiveRecord */
-        $record = $query->one();
+        $record = $query->noCache()->one();
         return $this->refreshInternal($record);
     }
 

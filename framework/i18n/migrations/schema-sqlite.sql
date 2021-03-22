@@ -20,7 +20,7 @@ CREATE TABLE `source_message`
 
 CREATE TABLE `message`
 (
-   `id`          integer NOT NULL REFERENCES `source_message` (`id`) ON UPDATE CASCADE ON DELETE NO ACTION,
+   `id`          integer NOT NULL REFERENCES `source_message` (`id`) ON UPDATE RESTRICT ON DELETE CASCADE,
    `language`    varchar(16) NOT NULL,
    `translation` text,
    PRIMARY KEY (`id`, `language`)

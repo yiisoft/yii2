@@ -8,7 +8,7 @@
 namespace yiiunit\framework\db;
 
 use ArrayObject;
-use yii\caching\FileCache;
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
@@ -177,26 +177,30 @@ SQL;
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = str_repeat('abc', 33) . 'x'; // a 100 char string
-        $boolCol = false;
         $command->bindParam(':int_col', $intCol, \PDO::PARAM_INT);
         $command->bindParam(':char_col', $charCol);
-        $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         if ($this->driverName === 'oci') {
             // can't bind floats without support from a custom PDO driver
             $floatCol = 2;
             $numericCol = 3;
             // can't use blobs without support from a custom PDO driver
             $blobCol = null;
+            // You can create a table with a column of datatype CHAR(1) and store either “Y” or “N” in that column
+            // to indicate TRUE or FALSE.
+            $boolCol = '0';
             $command->bindParam(':float_col', $floatCol, \PDO::PARAM_INT);
             $command->bindParam(':numeric_col', $numericCol, \PDO::PARAM_INT);
             $command->bindParam(':blob_col', $blobCol);
+            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         } else {
             $floatCol = 1.23;
             $numericCol = '1.23';
             $blobCol = "\x10\x11\x12";
+            $boolCol = false;
             $command->bindParam(':float_col', $floatCol);
             $command->bindParam(':numeric_col', $numericCol);
             $command->bindParam(':blob_col', $blobCol);
+            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         }
         $this->assertEquals(1, $command->execute());
 
@@ -654,6 +658,9 @@ SQL;
                 break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
+                break;
+            case 'oci':
+                $expression = 'EXTRACT(YEAR FROM sysdate)';
         }
 
         $command = $db->createCommand();
@@ -1252,7 +1259,7 @@ SQL;
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $db->queryCache = new ArrayCache();
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
@@ -1357,8 +1364,13 @@ SQL;
             [
                 'SELECT * FROM customer WHERE id IN (:ids)',
                 [':ids' => new Expression(implode(', ', [1, 2]))],
-                'SELECT * FROM customer WHERE id IN (1, 2)',
+                'SELECT * FROM customer WHERE id IN (\'1, 2\')',
             ],
+            [
+                'SELECT NOW() = :now',
+                [':now' => new Expression('NOW()')],
+                'SELECT NOW() = \'NOW()\'',
+            ]
         ];
     }
 

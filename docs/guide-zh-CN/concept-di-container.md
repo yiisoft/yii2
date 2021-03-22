@@ -427,7 +427,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 将按照配置中的描述创建 DocumentReader 对象及其依赖关系
 ```
 
@@ -465,7 +465,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 将与前面示例中的行为完全相同。
 ```
 

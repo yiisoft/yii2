@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\Query;
+
 /**
  * @group db
  * @group mssql
@@ -126,5 +128,28 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         unset($data['batchIsert empty rows represented by ArrayObject']);
 
         return $data;
+    }
+
+    public function testUpsertVarbinary()
+    {
+        $db = $this->getConnection();
+
+        $testData = json_encode(['test' => 'string', 'test2' => 'integer']);
+        $params = [];
+
+        $qb = $db->getQueryBuilder();
+        $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData] , ['blob_col' => $testData], $params);
+
+        $result = $db->createCommand($sql, $params)->execute();
+
+        $this->assertEquals(1, $result);
+
+        $query = (new Query())
+            ->select(['convert(nvarchar(max),blob_col) as blob_col'])
+            ->from('T_upsert_varbinary')
+            ->where(['id' => 1]);
+
+        $resultData = $query->createCommand($db)->queryOne();
+        $this->assertEquals($testData, $resultData['blob_col']);
     }
 }

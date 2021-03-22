@@ -71,8 +71,8 @@ use yii\web\Request;
  * @property array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
  * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. Note that the type of this property
  * differs in getter and setter. See [[getAttributeOrders()]] and [[setAttributeOrders()]] for details.
- * @property array $orders The columns (keys) and their corresponding sort directions (values). This can be
- * passed to [[\yii\db\Query::orderBy()]] to construct a DB query. This property is read-only.
+ * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can
+ * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -185,6 +185,12 @@ class Sort extends BaseObject
      * the `urlManager` application component will be used.
      */
     public $urlManager;
+    /**
+     * @var int Allow to control a value of the fourth parameter which will be
+     * passed to [[ArrayHelper::multisort()]]
+     * @since 2.0.33
+     */
+    public $sortFlags = SORT_REGULAR;
 
 
     /**
@@ -336,7 +342,7 @@ class Sort extends BaseObject
     /**
      * Returns the sort direction of the specified attribute in the current request.
      * @param string $attribute the attribute name
-     * @return bool|null Sort direction of the attribute. Can be either `SORT_ASC`
+     * @return int|null Sort direction of the attribute. Can be either `SORT_ASC`
      * for ascending order or `SORT_DESC` for descending order. Null is returned
      * if the attribute is invalid or does not need to be sorted.
      */

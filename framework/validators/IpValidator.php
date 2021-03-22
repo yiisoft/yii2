@@ -33,7 +33,8 @@ use yii\web\JsExpression;
  * ```
  *
  * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. See [[setRanges()]] for
- * detailed description.
+ * detailed description. Note that the type of this property differs in getter and setter. See [[getRanges()]]
+ * and [[setRanges()]] for details.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
@@ -247,7 +248,7 @@ class IpValidator extends Validator
      *
      * @property array the IPv4 or IPv6 ranges that are allowed or forbidden.
      * See [[setRanges()]] for detailed description.
-     * @param array $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
+     * @param array|string $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
      *
      * When the array is empty, or the option not set, all IP addresses are allowed.
      *

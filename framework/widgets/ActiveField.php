@@ -177,6 +177,9 @@ class ActiveField extends Component
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
             return '';
+        } catch (\Throwable $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
         }
     }
 
@@ -542,6 +545,13 @@ class ActiveField extends Component
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
+        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+            $this->addErrorClassIfNeeded($options);
+        }
+
+        $this->addAriaAttributes($options);
+        $this->adjustLabelFor($options);
+        
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -556,13 +566,6 @@ class ActiveField extends Component
             $options['label'] = null;
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
         }
-
-        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-            $this->addErrorClassIfNeeded($options);
-        }
-
-        $this->addAriaAttributes($options);
-        $this->adjustLabelFor($options);
 
         return $this;
     }
@@ -594,6 +597,13 @@ class ActiveField extends Component
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
+        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+            $this->addErrorClassIfNeeded($options);
+        }
+
+        $this->addAriaAttributes($options);
+        $this->adjustLabelFor($options);
+        
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -608,13 +618,6 @@ class ActiveField extends Component
             $options['label'] = null;
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         }
-
-        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-            $this->addErrorClassIfNeeded($options);
-        }
-
-        $this->addAriaAttributes($options);
-        $this->adjustLabelFor($options);
 
         return $this;
     }

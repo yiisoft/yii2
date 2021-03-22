@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.27-dev';
+        return '2.0.42-dev';
     }
 
     /**
@@ -130,7 +130,7 @@ class BaseYii
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1)) {
+        if (strpos($alias, '@') !== 0) {
             // not an alias
             return $alias;
         }
@@ -278,7 +278,7 @@ class BaseYii
     {
         if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
-            if ($classFile[0] === '@') {
+            if (strpos($classFile, '@') === 0) {
                 $classFile = static::getAlias($classFile);
             }
         } elseif (strpos($className, '\\') !== false) {
@@ -343,17 +343,29 @@ class BaseYii
     {
         if (is_string($type)) {
             return static::$container->get($type, $params);
-        } elseif (is_array($type) && isset($type['class'])) {
+        }
+
+        if (is_callable($type, true)) {
+            return static::$container->invoke($type, $params);
+        }
+
+        if (!is_array($type)) {
+            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        }
+
+        if (isset($type['__class'])) {
+            $class = $type['__class'];
+            unset($type['__class'], $type['class']);
+            return static::$container->get($class, $params, $type);
+        }
+
+        if (isset($type['class'])) {
             $class = $type['class'];
             unset($type['class']);
             return static::$container->get($class, $params, $type);
-        } elseif (is_callable($type, true)) {
-            return static::$container->invoke($type, $params);
-        } elseif (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
         }
 
-        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        throw new InvalidConfigException('Object configuration must be an array containing a "class" or "__class" element.');
     }
 
     private static $_logger;

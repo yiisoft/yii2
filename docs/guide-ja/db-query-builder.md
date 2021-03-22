@@ -230,7 +230,7 @@ $query->where(['id' => $userQuery]);
 ハッシュ形式を使う場合、Yii は内部的にパラメータ・バインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。ただし、Yii はカラム名を決してエスケープしないことに注意して下さい。
 従って、ユーザから取得した変数を何ら追加のチェックをすることなくカラム名として渡すと、SQL インジェクション攻撃に対して脆弱になります。
-アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数をホワイト・リストによってフィルターすることが必要です。
+アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数を許容リストによってフィルターすることが必要です。
 カラム名をユーザから取得する必要がある場合は、ガイドの [データをフィルタリングする](output-data-widgets.md#filtering-data) という記事を読んで下さい。
 例えば、次のコードは脆弱です。
 
@@ -321,7 +321,7 @@ $query->where([$column => $value]);
 演算子形式を使う場合、Yii は値に対して内部的にパラメータ・バインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
 ただし、Yii はカラム名を決してエスケープしないことに注意して下さい。従って、変数をカラム名として渡すと、アプリケーションは SQL インジェクション攻撃に対して脆弱になります。
-アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数をホワイト・リストによってフィルターすることが必要です。
+アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数を許容リストによってフィルターすることが必要です。
 カラム名をユーザから取得する必要がある場合は、ガイドの [データをフィルタリングする](output-data-widgets.md#filtering-data) という記事を読んで下さい。
 例えば、次のコードは脆弱です。
 
@@ -602,6 +602,28 @@ $query1->union($query2);
 
 [[yii\db\Query::union()|union()]] を複数回呼んで、`UNION` 句をさらに追加することが出来ます。
 
+### [[yii\db\Query::withQuery()|withQuery()]] <span id="with-query"></span>
+
+[[yii\db\Query::withQuery()|withQuery()]] メソッドは SQL クエリの `WITH` プレフィックスを指定するものです。サブクエリの代りに `WITH` を使うと読みやすさを向上させ、ユニークな機能(再帰 CTE)を利用することが出来ます。詳細は [modern-sql](https://modern-sql.com/feature/with) を参照して下さい。例えば、次のクエリは `admin` の持つ権限をその子も含めて全て再帰的に取得します。
+
+```php
+$initialQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->where(['parent' => 'admin']);
+
+$recursiveQuery = (new \yii\db\Query())
+    ->select(['aic.parent', 'aic.child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->innerJoin('t1', 't1.child = aic.parent');
+
+$mainQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from('t1')
+    ->withQuery($initialQuery->union($recursiveQuery), 't1', true);
+```
+
+[[yii\db\Query::withQuery()|withQuery()]] を複数回呼び出してさらなる CTE をメイン・クエリに追加することが出来ます。クエリはアタッチされたのと同じ順序でプリペンドされます。クエリのうちの一つが再帰的である場合は CTE 全体が再帰的になります。
 
 ## クエリ・メソッド <span id="query-methods"></span>
 

@@ -37,19 +37,20 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
- * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
- * @property array $firstErrors The first errors. The array keys are the attribute names, and the array values
- * are the corresponding error messages. An empty array will be returned if there is no error. This property is
+ * @property-read array $errors An array of errors for all attributes. Empty array is returned if no error.
+ * The result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is
  * read-only.
- * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
+ * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
+ * values are the corresponding error messages. An empty array will be returned if there is no error. This
+ * property is read-only.
+ * @property-read ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
- * This property is read-only.
+ * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
+ * model. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -616,7 +617,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the first error of the specified attribute.
      * @param string $attribute attribute name.
-     * @return string the error message. Null is returned if no error.
+     * @return string|null the error message. Null is returned if no error.
      * @see getErrors()
      * @see getFirstErrors()
      */
@@ -639,7 +640,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $lines = [];
         $errors = $showAllErrors ? $this->getErrors() : $this->getFirstErrors();
         foreach ($errors as $es) {
-            $lines = array_merge((array)$es, $lines);
+            $lines = array_merge($lines, (array)$es);
         }
         return $lines;
     }
@@ -798,7 +799,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         }
         $attributes = [];
         foreach ($scenarios[$scenario] as $attribute) {
-            if ($attribute[0] !== '!' && !in_array('!' . $attribute, $scenarios[$scenario])) {
+            if (strncmp($attribute, '!', 1) !== 0 && !in_array('!' . $attribute, $scenarios[$scenario])) {
                 $attributes[] = $attribute;
             }
         }
@@ -819,7 +820,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         }
         $attributes = array_keys(array_flip($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
-            if ($attribute[0] === '!') {
+            if (strncmp($attribute, '!', 1) === 0) {
                 $attributes[$i] = substr($attribute, 1);
             }
         }

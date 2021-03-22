@@ -220,6 +220,16 @@ class JsonTest extends TestCase
         $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
         $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
     }
+
+    /**
+     * @link https://github.com/yiisoft/yii2/issues/17760
+     */
+    public function testEncodeDateTime()
+    {
+        $input = new \DateTime('October 12, 2014', new \DateTimeZone('UTC'));
+        $output = Json::encode($input);
+        $this->assertEquals('{"date":"2014-10-12 00:00:00.000000","timezone_type":3,"timezone":"UTC"}', $output);
+    }
 }
 
 class JsonModel extends DynamicModel implements \JsonSerializable
