@@ -5,13 +5,13 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
+- Enh #18566: Throw the original exception when `yii\web\Controller::bindInjectedParams()` catches HttpException (pigochu)
 - Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 - Bug #18552: Fix `yii\data\SqlDataProvider` to properly handle SQL with `ORDER BY` clause (bizley)
 - Bug #17174: Fix `yii\db\BaseActiveRecord::unlink()` to not ignore `on` conditions in `via` relations (bizley)
 - Bug #18557: Fix `yii\data\ActiveDataProvider` to handle DB connection configuration of different type than just `yii\db\Connection` (bizley)
 - Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
-
 
 2.0.41.1 March 04, 2021
 -----------------------
