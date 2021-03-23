@@ -104,7 +104,7 @@ class DbSession extends MultiFieldSession
     {
         if ($this->getUseStrictMode()) {
             $id = $this->getId();
-            if (!$this->getReadQuery($id)->exists()) {
+            if (!$this->getReadQuery($id)->exists($this->db)) {
                 //This session id does not exist, mark it for forced regeneration
                 $this->_forceRegenerateId = $id;
             }
