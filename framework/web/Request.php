@@ -526,6 +526,9 @@ class Request extends \yii\base\Request
     {
         if ($this->_rawBody === null) {
             $this->_rawBody = file_get_contents('php://input');
+            if(!$this->_rawBody && $this->getIsGet() && strpos($this->getQueryString(),'{')===0) {
+                $this->_rawBody = $this->getQueryString();
+            }
         }
 
         return $this->_rawBody;
