@@ -11,6 +11,7 @@ use yii\data\DataProviderInterface;
 use yii\web\Controller;
 use yii\web\Request;
 use yiiunit\framework\web\stubs\VendorImage;
+use yiiunit\framework\web\stubs\ModelBindingStub;
 
 /**
  * @author Sam Mousa<sam@mousa.nl>
@@ -31,5 +32,10 @@ class FakePhp71Controller extends Controller
 
     public function actionModuleServiceInjection(DataProviderInterface $dataProvider)
     {
+    }
+
+    public function actionModelBindingInjection(ModelBindingStub $model)
+    {
+
     }
 }
