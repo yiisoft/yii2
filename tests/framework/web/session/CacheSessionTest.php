@@ -16,6 +16,8 @@ use yii\web\CacheSession;
  */
 class CacheSessionTest extends \yiiunit\TestCase
 {
+    use SessionTestTrait;
+
     protected function setUp()
     {
         parent::setUp();
@@ -50,5 +52,15 @@ class CacheSessionTest extends \yiiunit\TestCase
         $this->assertEquals('bar', $session->get('foo'));
 
         $this->assertTrue($session->destroySession($session->getId()));
+    }
+
+    public function testInitUseStrictMode()
+    {
+        $this->initStrictModeTest(CacheSession::className());
+    }
+
+    public function testUseStrictMode()
+    {
+        $this->useStrictModeTest(CacheSession::className());
     }
 }

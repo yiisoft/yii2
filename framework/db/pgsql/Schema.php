@@ -232,7 +232,7 @@ INNER JOIN "pg_index" AS "i"
 INNER JOIN "pg_class" AS "ic"
     ON "ic"."oid" = "i"."indexrelid"
 INNER JOIN "pg_attribute" AS "ia"
-    ON "ia"."attrelid" = "i"."indrelid" AND "ia"."attnum" = ANY ("i"."indkey")
+    ON "ia"."attrelid" = "i"."indexrelid"
 WHERE "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
 ORDER BY "ia"."attnum" ASC
 SQL;
@@ -443,7 +443,7 @@ SQL;
                 $row = array_change_key_case($row, CASE_LOWER);
             }
             $column = $row['columnname'];
-            if (!empty($column) && $column[0] === '"') {
+            if (strpos($column, '"') === 0) {
                 // postgres will quote names that are not lowercase-only
                 // https://github.com/yiisoft/yii2/issues/10613
                 $column = substr($column, 1, -1);

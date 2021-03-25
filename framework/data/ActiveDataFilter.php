@@ -54,7 +54,7 @@ class ActiveDataFilter extends DataFilter
      *
      * Usually the map can be left empty as filter operator names are consistent with the ones
      * used in [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
-     * For example, when using PosgreSQL you may want to setup the following map:
+     * For example, when using PostgreSQL you may want to setup the following map:
      *
      * ```php
      * [

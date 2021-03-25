@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\BaseObject;
+use yii\base\Component;
 
 /**
  * BatchQueryResult represents a batch query from which you can retrieve data in batches.
@@ -28,8 +28,20 @@ use yii\base\BaseObject;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BatchQueryResult extends BaseObject implements \Iterator
+class BatchQueryResult extends Component implements \Iterator
 {
+    /**
+     * @event Event an event that is triggered when the batch query is reset.
+     * @see reset()
+     * @since 2.0.41
+     */
+    const EVENT_RESET = 'reset';
+    /**
+     * @event Event an event that is triggered when the last batch has been fetched.
+     * @since 2.0.41
+     */
+    const EVENT_FINISH = 'finish';
+
     /**
      * @var Connection the DB connection to be used when performing batch query.
      * If null, the "db" application component will be used.
@@ -95,6 +107,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
         $this->_batch = null;
         $this->_value = null;
         $this->_key = null;
+        $this->trigger(self::EVENT_RESET);
     }
 
     /**
@@ -160,8 +173,14 @@ class BatchQueryResult extends BaseObject implements \Iterator
         $count = 0;
 
         try {
-            while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
-                $rows[] = $row;
+            while ($count++ < $this->batchSize) {
+                if ($row = $this->_dataReader->read()) {
+                    $rows[] = $row;
+                } else {
+                    // we've reached the end
+                    $this->trigger(self::EVENT_FINISH);
+                    break;
+                }
             }
         } catch (\PDOException $e) {
             $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;

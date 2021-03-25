@@ -16,12 +16,12 @@ use yii\di\NotInstantiableException;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
- * @property Module[] $modules All ancestor modules that this controller is located within. This property is
- * read-only.
- * @property string $route The route (module ID, controller ID and action ID) of the current request. This
+ * @property-read Module[] $modules All ancestor modules that this controller is located within. This property
+ * is read-only.
+ * @property-read string $route The route (module ID, controller ID and action ID) of the current request.
+ * This property is read-only.
+ * @property-read string $uniqueId The controller ID that is prefixed with the module ID (if any). This
  * property is read-only.
- * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
- * read-only.
  * @property View|\yii\web\View $view The view object that can be used to render views or view files.
  * @property string $viewPath The directory containing the view files for this controller.
  *
@@ -61,7 +61,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $layout;
     /**
-     * @var Action the action that is currently being executed. This property will be set
+     * @var Action|null the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
@@ -77,11 +77,11 @@ class Controller extends Component implements ViewContextInterface
     public $response = 'response';
 
     /**
-     * @var View the view object that can be used to render views or view files.
+     * @var View|null the view object that can be used to render views or view files.
      */
     private $_view;
     /**
-     * @var string the root directory that contains view files for this controller.
+     * @var string|null the root directory that contains view files for this controller.
      */
     private $_viewPath;
 
@@ -129,6 +129,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
+     * @return array
      */
     public function actions()
     {

@@ -716,6 +716,9 @@ $query = (new \yii\db\Query())
     ->all();
 ```
 
+The column which name is passed into [[yii\db\Query::indexBy()|indexBy()]] method must be present in the result set in order 
+for indexing to work - it is up to the developer to take care of it.
+
 To index by expression values, pass an anonymous function to the [[yii\db\Query::indexBy()|indexBy()]] method:
 
 ```php

@@ -13,10 +13,10 @@ use yii\base\BaseObject;
  * SqlToken represents SQL tokens produced by [[SqlTokenizer]] or its child classes.
  *
  * @property SqlToken[] $children Child tokens.
- * @property bool $hasChildren Whether the token has children. This property is read-only.
- * @property bool $isCollection Whether the token represents a collection of tokens. This property is
+ * @property-read bool $hasChildren Whether the token has children. This property is read-only.
+ * @property-read bool $isCollection Whether the token represents a collection of tokens. This property is
  * read-only.
- * @property string $sql SQL code. This property is read-only.
+ * @property-read string $sql SQL code. This property is read-only.
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13

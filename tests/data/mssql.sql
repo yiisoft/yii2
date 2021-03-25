@@ -25,6 +25,7 @@ IF OBJECT_ID('[T_constraints_2]', 'U') IS NOT NULL DROP TABLE [T_constraints_2];
 IF OBJECT_ID('[T_constraints_1]', 'U') IS NOT NULL DROP TABLE [T_constraints_1];
 IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
 IF OBJECT_ID('[T_upsert_1]', 'U') IS NOT NULL DROP TABLE [T_upsert_1];
+IF OBJECT_ID('[T_upsert_varbinary]', 'U') IS NOT NULL DROP TABLE [T_upsert_varbinary];
 IF OBJECT_ID('[table.with.special.characters]', 'U') IS NOT NULL DROP TABLE [table.with.special.characters];
 IF OBJECT_ID('[stranger ''table]', 'U') IS NOT NULL DROP TABLE [stranger 'table];
 IF OBJECT_ID('[foo1]', 'U') IS NOT NULL DROP TABLE [foo1];
@@ -247,7 +248,7 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 2, 2, 40.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 4, 1, 10.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 15.0);
-INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 3, 1, 8.0);
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 8.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
@@ -395,4 +396,11 @@ CREATE TABLE [dbo].[foo1] (
   [id] [int] IDENTITY NOT NULL,
   [bar] [varchar](32),
   PRIMARY KEY (id)
+);
+
+CREATE TABLE [T_upsert_varbinary]
+(
+    [id] INT NOT NULL,
+    [blob_col] [varbinary](MAX),
+    UNIQUE ([id])
 );
