@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #18557: Fix `yii\data\ActiveDataProvider` to handle DB connection configuration of different type than just `yii\db\Connection` (bizley)
 - Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
 - Bug #14343: Fix `yii\test\ActiveFixture` to use model's DB connection instead of the default one (margori, bizley)
+- Bug #17631: Fix `yii\widgets\BaseListView` to properly render custom summary (sjaakp, bizley)
 
 
 2.0.41.1 March 04, 2021
