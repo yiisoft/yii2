@@ -94,6 +94,26 @@ class DbSession extends MultiFieldSession
     }
 
     /**
+     * Session open handler.
+     * @internal Do not call this method directly.
+     * @param string $savePath session save path
+     * @param string $sessionName session name
+     * @return bool whether session is opened successfully
+     */
+    public function openSession($savePath, $sessionName)
+    {
+        if ($this->getUseStrictMode()) {
+            $id = $this->getId();
+            if (!$this->getReadQuery($id)->exists($this->db)) {
+                //This session id does not exist, mark it for forced regeneration
+                $this->_forceRegenerateId = $id;
+            }
+        }
+
+        return parent::openSession($savePath, $sessionName);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function regenerateID($deleteOldSession = false)
@@ -160,9 +180,7 @@ class DbSession extends MultiFieldSession
      */
     public function readSession($id)
     {
-        $query = new Query();
-        $query->from($this->sessionTable)
-            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
+        $query = $this->getReadQuery($id);
 
         if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
@@ -182,6 +200,11 @@ class DbSession extends MultiFieldSession
      */
     public function writeSession($id, $data)
     {
+        if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
+            //Ignore write when forceRegenerate is active for this id
+            return true;
+        }
+
         // exception must be caught in session write handler
         // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
@@ -238,6 +261,18 @@ class DbSession extends MultiFieldSession
             ->execute();
 
         return true;
+    }
+
+    /**
+     * Generates a query to get the session from db
+     * @param string $id The id of the session
+     * @return Query
+     */
+    protected function getReadQuery($id)
+    {
+        return (new Query())
+            ->from($this->sessionTable)
+            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
     }
 
     /**

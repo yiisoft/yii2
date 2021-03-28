@@ -403,3 +403,4 @@ To use this feature across different PHP versions check the version first. E.g.
 As [noted in PHP manual](https://www.php.net/manual/en/session.security.ini.php), `php.ini` has important
 session security settings. Please ensure recommended settings are applied. Especially `session.use_strict_mode`
 that is not enabled by default in PHP installations.
+This setting can also be set with [[yii\web\Session::useStrictMode]].

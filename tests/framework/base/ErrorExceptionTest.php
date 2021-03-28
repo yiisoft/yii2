@@ -15,10 +15,25 @@ use yiiunit\TestCase;
  */
 class ErrorExceptionTest extends TestCase
 {
-    public function testXdebugTrace()
+    private function isXdebugStackAvailable()
     {
         if (!function_exists('xdebug_get_function_stack')) {
-            $this->markTestSkipped('Xdebug are required.');
+            return false;
+        }
+        $version = phpversion('xdebug');
+        if ($version === false) {
+            return false;
+        }
+        if (version_compare($version, '3.0.0', '<')) {
+            return true;
+        }
+        return false !== strpos(ini_get('xdebug.mode'), 'develop');
+    }
+
+    public function testXdebugTrace()
+    {
+        if (!$this->isXdebugStackAvailable()) {
+            $this->markTestSkipped('Xdebug is required.');
         }
         try {
             throw new ErrorException();

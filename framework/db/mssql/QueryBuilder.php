@@ -122,6 +122,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $sql = preg_replace('/^([\s(])*SELECT(\s+DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ($orderBy),", $sql);
 
         if ($this->hasLimit($limit)) {
+            if ($limit instanceof Expression) {
+                $limit = '('. (string)$limit . ')';
+            }
             $sql = "SELECT TOP $limit * FROM ($sql) sub";
         } else {
             $sql = "SELECT * FROM ($sql) sub";
@@ -483,11 +486,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 if ($column->isComputed) {
                     continue;
                 }
-                $cols[] = $this->db->quoteColumnName($column->name) . ' '
+                $quoteColumnName = $this->db->quoteColumnName($column->name);
+                $cols[] = $quoteColumnName . ' '
                     . $column->dbType
                     . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
                     . ' ' . ($column->allowNull ? "NULL" : "");
-                $columns[] = 'INSERTED.' . $column->name;
+                $columns[] = 'INSERTED.' . $quoteColumnName;
             }
         }
         $countColumns = count($columns);
@@ -512,6 +516,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
+        $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
+
         /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
@@ -534,8 +540,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $on = $this->buildCondition($onCondition, $params);
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+
+        /**
+         * Fix number of select query params for old MSSQL version that does not support offset correctly.
+         * @see QueryBuilder::oldBuildOrderByAndLimit
+         */
+        $insertNamesUsing = $insertNames;
+        if (strstr($values, 'rowNum = ROW_NUMBER()') !== false) {
+            $insertNamesUsing = array_merge(['[rowNum]'], $insertNames);
+        }
+
         $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
-            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNamesUsing) . ') '
             . "ON ($on)";
         $insertValues = [];
         foreach ($insertNames as $name) {
@@ -561,6 +577,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $updateColumns[$name] = new Expression($quotedName);
             }
         }
+        $updateColumns = $this->normalizeTableRowData($table, $updateColumns, $params);
+
         list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
         return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql;";

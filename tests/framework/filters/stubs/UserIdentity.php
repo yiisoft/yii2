@@ -8,7 +8,6 @@
 namespace yiiunit\framework\filters\stubs;
 
 use yii\base\Component;
-use yii\base\NotSupportedException;
 use yii\web\IdentityInterface;
 
 /**
@@ -61,11 +60,11 @@ class UserIdentity extends Component implements IdentityInterface
 
     public function getAuthKey()
     {
-        throw new NotSupportedException();
+        return null;
     }
 
     public function validateAuthKey($authKey)
     {
-        throw new NotSupportedException();
+        return true;
     }
 }
