@@ -6,7 +6,6 @@
     "doc": "docs",
     "test": "tests/js/tests"
   },
-  "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
     "jsdom": "11.11.0",
