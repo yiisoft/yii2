@@ -7,13 +7,12 @@
 
 namespace yiiunit\framework\filters;
 
-use Prophecy\Argument;
 use Yii;
 use yii\filters\RateLimiter;
-use yii\log\Logger;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
+use yiiunit\framework\filters\stubs\ExposedLogger;
 use yiiunit\framework\filters\stubs\RateLimit;
 use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
@@ -27,15 +26,7 @@ class RateLimiterTest extends TestCase
     {
         parent::setUp();
 
-        /* @var $logger Logger|\Prophecy\ObjectProphecy */
-        $logger = $this->prophesize(Logger::className());
-        $logger
-            ->log(Argument::any(), Argument::any(), Argument::any())
-            ->will(function ($parameters, $logger) {
-                $logger->messages = $parameters;
-            });
-
-        Yii::setLogger($logger->reveal());
+        Yii::setLogger(new ExposedLogger());
 
         $this->mockWebApplication();
     }
@@ -170,7 +161,7 @@ class RateLimiterTest extends TestCase
         };
         $rateLimiter->beforeAction('test');
 
-        // testing the evaluation of user closure, which in this case returns not the expect object and therefore 
+        // testing the evaluation of user closure, which in this case returns not the expect object and therefore
         // the log message "does not implement RateLimitInterface" is expected.
         $this->assertInstanceOf(User::className(), $rateLimiter->user);
         $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);

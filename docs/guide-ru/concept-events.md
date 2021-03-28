@@ -280,7 +280,7 @@ Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
 Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
-Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
+Однако невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
 
 ```php
 // НЕ БУДЕТ РАБОТАТЬ

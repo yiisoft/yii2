@@ -17,6 +17,9 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
+ * @property Request $request
+ * @property Response $response
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -139,37 +142,46 @@ class Controller extends \yii\base\Controller
                 } elseif (is_array($params[$name])) {
                     $isValid = false;
                 } elseif (
-                    PHP_VERSION_ID >= 70000 &&
-                    ($type = $param->getType()) !== null &&
-                    $type->isBuiltin() &&
-                    ($params[$name] !== null || !$type->allowsNull())
+                    PHP_VERSION_ID >= 70000
+                    && ($type = $param->getType()) !== null
+                    && $type->isBuiltin()
+                    && ($params[$name] !== null || !$type->allowsNull())
                 ) {
                     $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
-                    switch ($typeName) {
-                        case 'int':
-                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            break;
-                        case 'float':
-                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
-                            break;
-                        case 'bool':
-                            $params[$name] = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                            break;
-                    }
-                    if ($params[$name] === null) {
-                        $isValid = false;
+
+                    if ($params[$name] === '' && $type->allowsNull()) {
+                        if ($typeName !== 'string') { // for old string behavior compatibility
+                            $params[$name] = null;
+                        }
+                    } else {
+                        switch ($typeName) {
+                            case 'int':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                                break;
+                            case 'float':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
+                                break;
+                            case 'bool':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                break;
+                        }
+                        if ($params[$name] === null) {
+                            $isValid = false;
+                        }
                     }
                 }
                 if (!$isValid) {
-                    throw new BadRequestHttpException(Yii::t('yii', 'Invalid data received for parameter "{param}".', [
-                        'param' => $name,
-                    ]));
+                    throw new BadRequestHttpException(
+                        Yii::t('yii', 'Invalid data received for parameter "{param}".', ['param' => $name])
+                    );
                 }
                 $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
             } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
                 try {
                     $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (HttpException $e) {
+                    throw $e;
                 } catch (Exception $e) {
                     throw new ServerErrorHttpException($e->getMessage(), 0, $e);
                 }
@@ -181,16 +193,16 @@ class Controller extends \yii\base\Controller
         }
 
         if (!empty($missing)) {
-            throw new BadRequestHttpException(Yii::t('yii', 'Missing required parameters: {params}', [
-                'params' => implode(', ', $missing),
-            ]));
+            throw new BadRequestHttpException(
+                Yii::t('yii', 'Missing required parameters: {params}', ['params' => implode(', ', $missing)])
+            );
         }
 
         $this->actionParams = $actionParams;
 
         // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
-        if (\Yii::$app->requestedParams === null) {
-            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
+        if (Yii::$app->requestedParams === null) {
+            Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
         }
 
         return $args;

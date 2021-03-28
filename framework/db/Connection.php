@@ -111,24 +111,24 @@ use yii\caching\CacheInterface;
  * ```
  *
  * @property string $driverName Name of the DB driver.
- * @property bool $isActive Whether the DB connection is established. This property is read-only.
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
- * sequence object. This property is read-only.
- * @property Connection $master The currently active master connection. `null` is returned if there is no
+ * @property-read bool $isActive Whether the DB connection is established. This property is read-only.
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
+ * the sequence object. This property is read-only.
+ * @property-read Connection $master The currently active master connection. `null` is returned if there is no
  * master available. This property is read-only.
- * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
+ * @property-read PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
  * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
- * @property Schema $schema The schema information for the database opened by this connection. This property
- * is read-only.
- * @property string $serverVersion Server version as a string. This property is read-only.
- * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
- * available and `$fallbackToMaster` is false. This property is read-only.
- * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
- * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
- * @property Transaction|null $transaction The currently active transaction. Null if no active transaction.
- * This property is read-only.
+ * @property-read Schema $schema The schema information for the database opened by this connection. This
+ * property is read-only.
+ * @property-read string $serverVersion Server version as a string. This property is read-only.
+ * @property-read Connection $slave The currently active slave connection. `null` is returned if there is no
+ * slave available and `$fallbackToMaster` is false. This property is read-only.
+ * @property-read PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned
+ * if no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
+ * @property-read Transaction|null $transaction The currently active transaction. Null if no active
+ * transaction. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -694,8 +694,10 @@ class Connection extends Component
                 $driver = strtolower(substr($this->dsn, 0, $pos));
             }
             if (isset($driver)) {
-                if ($driver === 'mssql' || $driver === 'dblib') {
+                if ($driver === 'mssql') {
                     $pdoClass = 'yii\db\mssql\PDO';
+                } elseif ($driver === 'dblib') {
+                    $pdoClass = 'yii\db\mssql\DBLibPDO';
                 } elseif ($driver === 'sqlsrv') {
                     $pdoClass = 'yii\db\mssql\SqlsrvPDO';
                 }
@@ -879,7 +881,7 @@ class Connection extends Component
      * Obtains the schema information for the named table.
      * @param string $name table name.
      * @param bool $refresh whether to reload the table schema even if it is found in the cache.
-     * @return TableSchema table schema information. Null if the named table does not exist.
+     * @return TableSchema|null table schema information. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
     {
@@ -1139,7 +1141,7 @@ class Connection extends Component
      *
      * If none of the servers are available the status cache is ignored and connection attempts are made to all
      * servers (Since version 2.0.35). This is to avoid downtime when all servers are unavailable for a short time.
-     * After a successful connection attempt the server is marked as avaiable again.
+     * After a successful connection attempt the server is marked as available again.
      *
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.

@@ -28,12 +28,14 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property string $help This property is read-only.
- * @property string $helpSummary This property is read-only.
- * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * @property-read string $help This property is read-only.
+ * @property-read string $helpSummary This property is read-only.
+ * @property-read array $passedOptionValues The properties corresponding to the passed options. This property
+ * is read-only.
+ * @property-read array $passedOptions The names of the options passed during execution. This property is
  * read-only.
- * @property array $passedOptions The names of the options passed during execution. This property is
- * read-only.
+ * @property Request $request
+ * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,7 +56,7 @@ class Controller extends \yii\base\Controller
      */
     public $interactive = true;
     /**
-     * @var bool whether to enable ANSI color in the output.
+     * @var bool|null whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
@@ -62,9 +64,9 @@ class Controller extends \yii\base\Controller
      * @var bool whether to display help information about current command.
      * @since 2.0.10
      */
-    public $help;
+    public $help = false;
     /**
-     * @var bool if true - script finish with `ExitCode::OK` in case of exception.
+     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception.
      * false - `ExitCode::UNSPECIFIED_ERROR`.
      * Default: `YII_ENV_TEST`
      * @since 2.0.36
@@ -77,6 +79,9 @@ class Controller extends \yii\base\Controller
     private $_passedOptions = [];
 
 
+    /**
+     * {@inheritdoc}
+     */
     public function beforeAction($action)
     {
         $silentExit = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
@@ -148,7 +153,7 @@ class Controller extends \yii\base\Controller
 
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
-                    if (is_array($default)) {
+                    if (is_array($default) && is_string($value)) {
                         $this->$name = preg_split('/\s*,\s*(?![^()]*\))/', $value);
                     } elseif ($default !== null) {
                         settype($value, gettype($default));
@@ -555,7 +560,13 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
-            if ($reflection->getClass() !== null) {
+            if (PHP_VERSION_ID >= 80000) {
+                $class = $reflection->getType();
+            } else {
+                $class = $reflection->getClass();
+            }
+
+            if ($class !== null) {
                 continue;
             }
             $name = $reflection->getName();
