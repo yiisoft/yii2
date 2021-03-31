@@ -187,7 +187,7 @@ class EmailValidator extends Validator
         $idnTest = $this->idnToAscii($value);
 
         if ($idnTest === false) {
-            $newPatternExploded = explode('@', $this->pattern);
+            $newPatternExploded = explode('@', $this->pattern, 2);
             $newPattern = $newPatternExploded[0] . "$/";
 
             $newFullPatternExploded = explode('@', $this->fullPattern);
