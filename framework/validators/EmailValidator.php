@@ -77,21 +77,7 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                // https://github.com/yiisoft/yii2/issues/18585
-                $localIDNTest = $this->idnToAscii($matches['local']);
-
-                if ($localIDNTest === false) {
-                    $newPatternExploded = explode('@', $this->pattern);
-                    $newPattern = $newPatternExploded[0] . "$/";
-                    $newFullPatternExploded = explode('@', $this->fullPattern);
-                    $newFullPattern = $newFullPatternExploded[0] . '@' . $newFullPatternExploded[1]  ."$/";
-                    if (!preg_match($newPattern, $matches['local']) || ($this->allowName && preg_match($newFullPattern, $matches['local']))) {
-                        $matches['local'] = $localIDNTest;
-                    }
-                } else {
-                    $matches['local'] = $localIDNTest;
-                }
-
+                $matches['local'] = $this->validateIdnValue($matches['local']);
                 $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
@@ -189,5 +175,29 @@ class EmailValidator extends Validator
         }
 
         return $options;
+    }
+
+    /**
+     * @param string $value
+     * @return string|bool returns string if it is valid and/or can be converted, bool false if it can't be converted and/or is invalid
+     * @see https://github.com/yiisoft/yii2/issues/18585
+     */
+    private function validateIdnValue ($value)
+    {
+        $idnTest = $this->idnToAscii($value);
+
+        if ($idnTest === false) {
+            $newPatternExploded = explode('@', $this->pattern);
+            $newPattern = $newPatternExploded[0] . "$/";
+
+            $newFullPatternExploded = explode('@', $this->fullPattern);
+            $newFullPattern = $newFullPatternExploded[0] . '@' . $newFullPatternExploded[1]  ."$/";
+
+            if (preg_match($newPattern, $value) || ($this->allowName && preg_match($newFullPattern, $value))) {
+                return $value;
+            }
+        }
+
+        return $idnTest;
     }
 }
