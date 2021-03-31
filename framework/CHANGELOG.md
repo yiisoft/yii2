@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.42 under development
 ------------------------
 
+- Bug #18323: Fix client validation of RadioList when there are disabled items (toir427)
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
 - Enh #18566: Throw the original exception when `yii\web\Controller::bindInjectedParams()` catches HttpException (pigochu)
 - Bug #18574: Fix `yii\web\DbSession` to use the correct db if strict mode is used (Mignar)
