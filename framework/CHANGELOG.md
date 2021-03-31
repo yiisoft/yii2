@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
 - Bug #14343: Fix `yii\test\ActiveFixture` to use model's DB connection instead of the default one (margori, bizley)
 - Bug #17631: Fix `yii\widgets\BaseListView` to properly render custom summary (sjaakp, bizley)
+- Bug #17203: Fix `yii\db\Connection` to persist customized `queryBuilder` configuration after the `close()` → `open()` cycle (silverfire)
 - Bug #18325: Fix `yii\db\pgsql\Schema` to respect non-default PgSQL schema name for data types (theonedemon, silverfire)
 
 
