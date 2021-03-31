@@ -424,3 +424,12 @@ CREATE TABLE "T_upsert_1"
 (
     "a" INT NOT NULL PRIMARY KEY
 );
+
+CREATE TYPE "schema2"."my_type" AS enum('VAL1', 'VAL2', 'VAL3');
+CREATE TABLE "schema2"."custom_type_test_table" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "test_type" "schema2"."my_type"[]
+);
+INSERT INTO "schema2"."custom_type_test_table" ("test_type")
+VALUES (array['VAL2']::"schema2"."my_type"[]);
+
