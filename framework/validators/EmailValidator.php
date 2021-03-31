@@ -77,7 +77,21 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = $this->idnToAscii($matches['local']);
+                // https://github.com/yiisoft/yii2/issues/18585
+                $localIDNTest = $this->idnToAscii($matches['local']);
+
+                if ($localIDNTest === false) {
+                    $newPatternExploded = explode('@', $this->pattern);
+                    $newPattern = $newPatternExploded[0] . "$/";
+                    $newFullPatternExploded = explode('@', $this->fullPattern);
+                    $newFullPattern = $newFullPatternExploded[0] . '@' . $newFullPatternExploded[1]  ."$/";
+                    if (!preg_match($newPattern, $matches['local']) || ($this->allowName && preg_match($newFullPattern, $matches['local']))) {
+                        $matches['local'] = $localIDNTest;
+                    }
+                } else {
+                    $matches['local'] = $localIDNTest;
+                }
+
                 $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }

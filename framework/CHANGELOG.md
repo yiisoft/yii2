@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
 - Enh #18566: Throw the original exception when `yii\web\Controller::bindInjectedParams()` catches HttpException (pigochu)
+- Bug #18585: Fix `yii\validators\EmailValidator` to handle an edge case where `IDN` is enabled, but fails ascii conversion for valid email addresses (ihitbuttons)
 - Bug #18574: Fix `yii\web\DbSession` to use the correct db if strict mode is used (Mignar)
 - Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
@@ -15,7 +16,6 @@ Yii Framework 2 Change Log
 - Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
 - Bug #14343: Fix `yii\test\ActiveFixture` to use model's DB connection instead of the default one (margori, bizley)
 - Bug #17631: Fix `yii\widgets\BaseListView` to properly render custom summary (sjaakp, bizley)
-
 
 2.0.41.1 March 04, 2021
 -----------------------
