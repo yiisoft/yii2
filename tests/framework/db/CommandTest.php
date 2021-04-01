@@ -1344,6 +1344,11 @@ SQL;
                 [':ids' => new Expression(implode(', ', [1, 2]))],
                 'SELECT * FROM customer WHERE id IN (1, 2)',
             ],
+            [
+                'SELECT * FROM customer WHERE id  = ? AND active = ?',
+                [1 => 1, 2 => false],
+                'SELECT * FROM customer WHERE id  = 1 AND active = FALSE',
+            ],
         ];
     }
 
