@@ -51,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 DB 接続を構成する <span id="configuring-db-connection"></span>
 -----------------
 
-先に進む前に、[PDO](http://www.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
+先に進む前に、[PDO](https://secure.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
 (例えば、MySQL のための `pdo_mysql`) の両方をインストール済みであることを確認してください。
 アプリケーションがリレーショナル・データベースを使う場合、これは基本的な必要条件です。
 
@@ -178,8 +178,9 @@ class CountryController extends Controller
 
 上記のコードを `controllers/CountryController.php` というファイルに保存します。
 
-`index` アクションは `Country::find()` を呼び出します。このアクティブ・レコードのメソッドは `country` テーブルから全てのデータを読み出すことが可能な DB クエリを構築します。
-一回のリクエストで返される国の数を制限するために、クエリは [[yii\data\Pagination]] オブジェクトの助けを借りてページ付けされます。
+最初に `index` アクションは `Country::find()` を呼び出します。この [find()](https://www.yiiframework.com/doc/api/2.0/yii-db-activerecord#find()-detail) メソッドが `country` テーブルからデータを取得するメソッドを提供する [ActiveQuery](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery) クエリ・オブジェクトオブジェクトを生成します。
+
+一回のリクエストで返される国の数を制限するために、クエリ・オブジェクトは [[yii\data\Pagination]] オブジェクトの助けを借りてページ付けされます。
 `Pagination` オブジェクトは二つの目的に奉仕します。
 
 * クエリによって表現される SQL 文に `offset` 句と `limit` 句をセットして、
@@ -187,8 +188,10 @@ class CountryController extends Controller
 * 次の項で説明されるように、一連のページ・ボタンからなるページャを
   ビューに表示するために使われます。
 
-コードの最後で、`index` アクションは `index` と言う名前のビューをレンダリングしています。
-このとき、国データだけでなく、そのページネーション情報がビューに渡されます。
+次に、[all()](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery#all()-detail) メソッドがクエリ結果に基づいて全ての `country` レコードを返します。
+
+コードの最後で、`index` アクションは `index` と言う名前のビューをレンダリングします。
+このときに、返された国データとそのページネーション情報がビューに渡されます。
 
 
 ビューを作成する <span id="creating-view"></span>

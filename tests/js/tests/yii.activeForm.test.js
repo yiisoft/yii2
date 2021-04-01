@@ -78,7 +78,7 @@ describe('yii.activeForm', function () {
                 assert.isTrue(afterValidateSpy.calledOnce);
             });
         });
-        
+
         describe('with disabled fields', function () {
             var inputTypes = {
                 test_radio: 'radioList',
@@ -103,6 +103,19 @@ describe('yii.activeForm', function () {
                     })();
                 }
             }
+        });
+
+        describe('if at least one of the items is disabled', function () {
+            it('validate radioList', function () {
+                $activeForm = $('#w2');
+                $activeForm.yiiActiveForm({
+                    id: 'radioList',
+                    input: '#radioList'
+                });
+                $activeForm.yiiActiveForm('validate');
+
+                assert.isFalse($activeForm.data('yiiActiveForm').validated);
+            });
         });
     });
 
@@ -182,6 +195,61 @@ describe('yii.activeForm', function () {
                 $input.val('New value');
                 $activeForm.yiiActiveForm('updateAttribute', inputId);
                 assert.equal('New value', eventData.value);
+            });
+
+            // https://github.com/yiisoft/yii2/issues/8225
+
+            it('the value of the checkboxes must be an array', function () {
+                var inputId = 'test_checkbox';
+                var $input = $('#' + inputId);
+
+                $activeForm = $('#w1');
+                $activeForm.yiiActiveForm('destroy');
+                $activeForm.yiiActiveForm([
+                    {
+                        id: inputId,
+                        input: '#' + inputId
+                    }
+                ]).on('afterValidateAttribute', afterValidateAttributeSpy);
+
+                $input.find('input').prop('checked', true);
+                $activeForm.yiiActiveForm('updateAttribute', inputId);
+                var value = eventData.value;
+                assert.isArray(value);
+                assert.deepEqual(['1', '0'], value);
+            });
+        });
+
+        describe('afterValidate', function () {
+            var afterValidateSpy;
+            var eventData = null;
+
+            before(function () {
+                afterValidateSpy = sinon.spy(function (event, data) {
+                    eventData = data;
+                });
+            });
+
+            after(function () {
+                afterValidateSpy.reset();
+            });
+
+            // https://github.com/yiisoft/yii2/issues/12080
+
+            it('afterValidate should trigger when not submitting', function () {
+                var inputId = 'name',
+                    $input = $('#' + inputId);
+
+                $activeForm = $('#w0');
+                $activeForm.yiiActiveForm(
+                    [{
+                        "id": inputId,
+                        "name": "name",
+                        input: '#' + inputId
+                    }], []).on('afterValidate', afterValidateSpy);
+
+                $activeForm.yiiActiveForm('validate');
+                assert.notEqual(null, eventData);
             });
         });
     });

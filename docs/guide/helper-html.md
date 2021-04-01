@@ -2,7 +2,7 @@ Html helper
 ===========
 
 Every web application generates lots of HTML markup. If the markup is static, it can be done efficiently by
-[mixing PHP and HTML in a single file](http://php.net/manual/en/language.basic-syntax.phpmode.php), but when it is
+[mixing PHP and HTML in a single file](https://secure.php.net/manual/en/language.basic-syntax.phpmode.php), but when it is
 generated dynamically it starts to get tricky to handle it without extra help. Yii provides such help in the form
 of an Html helper, which provides a set of static methods for handling commonly used HTML tags, their options, and their content.
 
@@ -147,8 +147,8 @@ method accepts an array of properties to remove. If it's a single property, it c
 ### Encoding and Decoding Content <span id="encoding-and-decoding-content"></span>
 
 In order for content to be displayed properly and securely in HTML, special characters in the content should be encoded.
-In PHP this is done with [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) and
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). The issue with using
+In PHP this is done with [htmlspecialchars](https://secure.php.net/manual/en/function.htmlspecialchars.php) and
+[htmlspecialchars_decode](https://secure.php.net/manual/en/function.htmlspecialchars-decode.php). The issue with using
 these methods directly is that you have to specify encoding and extra flags all the time. Since these flags are the same
 all the time and the encoding should match the one of the application in order to prevent security issues, Yii provides two
 compact and simple-to-use methods:
@@ -327,18 +327,18 @@ echo Html::getAttributeName('dates[0]');
 There are two methods to generate tags wrapping embedded styles and scripts:
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 Gives you
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Hello!");', ['defer' => true]) ?>
+<?= Html::script('alert("Hello!");') ?>
 
 Gives you
 
-<script defer>alert("Hello!");</script>
+<script>alert("Hello!");</script>
 ```
 
 If you want to use an external style in a CSS file:

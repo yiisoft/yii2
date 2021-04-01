@@ -9,7 +9,7 @@ Yii introduit une classe de base appelée [[yii\base\Component]] pour prendre en
 Gestionnaires d'événements <span id="event-handlers"></span>
 --------------------------
 
-Un gestionnaire d'événement est une  [fonction de rappel PHP](http://www.php.net/manual/en/language.types.callable.php) qui est exécutée lorsque l'événement à laquelle elle est attachée est déclenché. Vous pouvez utiliser n'importe laquelle des fonctions de rappel suivantes :
+Un gestionnaire d'événement est une  [fonction de rappel PHP](https://secure.php.net/manual/en/language.types.callable.php) qui est exécutée lorsque l'événement à laquelle elle est attachée est déclenché. Vous pouvez utiliser n'importe laquelle des fonctions de rappel suivantes :
 
 - une fonction PHP globale spécifiée sous forme de chaîne de caractères (sans les parenthèses) p. ex., `'trim'` ;
 - une méthode d'objet spécifiée sous forme de tableau constitué d'un nom d'objet et d'un nom de méthode sous forme de chaîne de caractères (sans les parenthèses), p. ex., `[$object, 'methodName']`;

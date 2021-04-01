@@ -7,7 +7,7 @@ Yii提供了一套数据小部件 [widgets](structure-widgets.md) ，这些小�
 排序和过滤功能的一个列表或者表格。
 
 
-DetailView <a name="detail-view"></a>
+DetailView <span id="detail-view"></span>
 ----------
 
 [[yii\widgets\DetailView|DetailView]] 小部件显示的是单一 [[yii\widgets\DetailView::$model|model]] 数据的详情。
@@ -59,7 +59,7 @@ echo DetailView::widget([
 ]);
 ```
 
-ListView <a name="list-view"></a>
+ListView <span id="list-view"></span>
 --------
 
 [[yii\widgets\ListView|ListView]] 小部件用于显示数据提供者 [data provider](output-data-providers.md) 提供的数据。
@@ -124,7 +124,7 @@ echo ListView::widget([
 在视图中，上述这些附加数据也是可以作为变量来使用的。
 
 
-GridView <a name="grid-view"></a>
+GridView <span id="grid-view"></span>
 --------
 
 数据网格或者说 GridView 小部件是Yii中最强大的部件之一。如果你需要快速建立系统的管理后台，

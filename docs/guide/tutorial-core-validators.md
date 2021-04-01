@@ -82,7 +82,7 @@ is as specified by the `operator` property.
   is being used to validate an attribute, the default value of this property would be the name of
   the attribute suffixed with `_repeat`. For example, if the attribute being validated is `password`,
   then this property will default to `password_repeat`.
-- `compareValue`: a constant value that the input value should be compared with. When both
+- `compareValue`: a constant value (or a closure returning a value) that the input value should be compared with. When both
   of this property and `compareAttribute` are specified, this property will take precedence.
 - `operator`: the comparison operator. Defaults to `==`, meaning checking if the input value is equal
   to that of `compareAttribute` or `compareValue`. The following operators are supported:
@@ -141,7 +141,7 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
 - `format`: the date/time format that the value being validated should be in.
    This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
    Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP
-   `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
+   `Datetime` class. Please refer to <https://secure.php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
    See the [[yii\validators\DateValidator::$format|API documentation]] for more details.
 
@@ -155,7 +155,8 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
   
   Note, that when using `timestampAttribute`, the input value will be converted to a unix timestamp, which by definition is in UTC, so
-  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed.
+  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed (this behavior 
+  can be changed by setting [[yii\validators\DateValidator::$defaultTimeZone|$defaultTimeZone]] since 2.0.39).
 
 - Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
   [[yii\validators\DateValidator::$max|maximum]] timestamp.
@@ -191,8 +192,8 @@ or `1970-01-01` in the input field of a date picker.
 This validator does not validate data. Instead, it assigns a default value to the attributes being validated
 if the attributes are empty.
 
-- `value`: the default value or a PHP callable that returns the default value which will be assigned to
-  the attributes being validated if they are empty. The signature of the PHP callable should be as follows,
+- `value`: the default value or a closure as callback that returns the default value which will be assigned to
+  the attributes being validated if they are empty. The signature of the closure should be as follows,
 
 ```php
 function foo($model, $attribute) {
@@ -270,24 +271,49 @@ This validator checks if the input value is a valid email address.
 ```php
 [
     // a1 needs to exist in the column represented by the "a1" attribute
+    // i.e. a1 = 1, valid if there is value 1 in column "a1"
     ['a1', 'exist'],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => 'a1'],
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a1']],
 
     // a1 needs to exist, but its value will use a2 to check for the existence
+    // i.e. a1 = 2, valid if there is value 2 in column "a2"
     ['a1', 'exist', 'targetAttribute' => 'a2'],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a2']],
+    
+    // a2 needs to exist, its value will use a2 to check for the existence, a1 will receive error message
+    // i.e. a2 = 2, valid if there is value 2 in column "a2"
+    ['a1', 'exist', 'targetAttribute' => ['a2']],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2']],
 
     // a1 and a2 need to exist together, and they both will receive error message
+    // i.e. a1 = 3, a2 = 4, valid if there is value 3 in column "a1" and value 4 in column "a2"
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
+    // equivalent of
+    [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 and a2 need to exist together, only a1 will receive error message
+    // i.e. a1 = 5, a2 = 6, valid if there is value 5 in column "a1" and value 6 in column "a2"
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
+    // i.e. a1 = 7, a2 = 8, valid if there is value 7 in column "a3" and value 8 in column "a2"
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
+    // equivalent of
+    ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2', 'a1' => 'a3']],
 
     // a1 needs to exist. If a1 is an array, then every element of it must exist.
+    // i.e. a1 = 9, valid if there is value 9 in column "a1"
+    //      a1 = [9, 10], valid if there are values 9 and 10 in column "a1"
     ['a1', 'exist', 'allowArray' => true],
     
-    // type_id needs to exist in the column "id" in the table defined in ProductType class 
+    // type_id needs to exist in the column "id" in the table defined in ProductType class
+    // i.e. type_id = 1, valid if there is value 1 in column "id" of ProductType's table
     ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],    
     
     // the same as the previous, but using already defined relation "type"
@@ -309,10 +335,19 @@ multiple attribute values should exist).
   of the input value. If not set, it will use the name of the attribute currently being validated.
   You may use an array to validate the existence of multiple columns at the same time. The array values
   are the attributes that will be used to validate the existence, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
+  whose values are to be validated. If the key, and the value are the same, you can just specify the value.  
+  Assuming we have ModelA to be validated and ModelB set as the target class the following `targetAttribute`'s 
+  configurations are taken as:
+    - `null` => value of a currently validated attribute of ModelA will be checked against stored values of ModelB's attribute with the same name
+    - `'a'` => value of a currently validated attribute of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a' => 'a']` => the same as above
+    - `['a', 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB and 
+      at the same time value of attribute "b" of ModelA will be checked against stored values of attribute "b" of ModelB
+    - `['a' => 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "b" of ModelB
 - `targetRelation`: since version 2.0.14 you can use convenient attribute `targetRelation`, which overrides the `targetClass` and `targetAttribute` attributes using specs from the requested relation.  
-- `filter`: additional filter to be applied to the DB query used to check the existence of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
+- `filter`: an additional filter to be applied to the DB query used to check the existence of the input value.
+  This can be a string, or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
   is the [[yii\db\Query|Query]] object that you can modify in the function.
 - `allowArray`: whether to allow the input value to be an array. Defaults to `false`. If this property is `true`
@@ -389,8 +424,8 @@ back to the attribute being validated.
 > Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.
 
 > Tip: There are many PHP functions that have the signature expected for the `filter` callback.
-> For example to apply type casting (using e.g. [intval](http://php.net/manual/en/function.intval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), ...) to ensure a specific type for an attribute,
+> For example to apply type casting (using e.g. [intval](https://secure.php.net/manual/en/function.intval.php),
+> [boolval](https://secure.php.net/manual/en/function.boolval.php), ...) to ensure a specific type for an attribute,
 > you can simply specify the function names of the filter without the need to wrap them in a closure:
 >
 > ```php
@@ -638,19 +673,34 @@ the input value. Note that if the input value is an array, it will be ignored by
 ```php
 [
     // a1 needs to be unique in the column represented by the "a1" attribute
+    // i.e. a1 = 1, valid if there is no value 1 in column "a1"
     ['a1', 'unique'],
+    // equivalent of
+    ['a1', 'unique', 'targetAttribute' => 'a1'],
+    ['a1', 'unique', 'targetAttribute' => ['a1' => 'a1']],
 
     // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
+    // i.e. a1 = 2, valid if there is no value 2 in column "a2"
     ['a1', 'unique', 'targetAttribute' => 'a2'],
+    // equivalent of
+    ['a1', 'unique', 'targetAttribute' => ['a1' => 'a2']],
 
     // a1 and a2 need to be unique together, and they both will receive error message
+    // i.e. a1 = 3, a2 = 4, valid if there is no value 3 in column "a1" and at the same time no value 4 in column "a2"
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
+    // equivalent of
+    [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 and a2 need to be unique together, only a1 will receive error message
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
+    // i.e. a1 = 5, a2 = 6, valid if there is no value 5 in column "a3" and at the same time no value 6 in column "a2"
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
+    
+    // type_id needs to be unique in the column "id" in the table defined in ProductType class
+    // i.e. type_id = 1, valid if there is no value 1 in column "id" of ProductType's table
+    ['type_id', 'unique', 'targetClass' => ProductType::class, 'targetAttribute' => 'id'],    
 ]
 ```
 
@@ -664,9 +714,18 @@ either a single column or multiple columns.
   of the input value. If not set, it will use the name of the attribute currently being validated.
   You may use an array to validate the uniqueness of multiple columns at the same time. The array values
   are the attributes that will be used to validate the uniqueness, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
-- `filter`: additional filter to be applied to the DB query used to check the uniqueness of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
+  whose values are to be validated. If the key, and the value are the same, you can just specify the value.  
+  Assuming we have ModelA to be validated and ModelB set as the target class the following `targetAttribute`'s
+  configurations are taken as:
+    - `null` => value of a currently validated attribute of ModelA will be checked against stored values of ModelB's attribute with the same name
+    - `'a'` => value of a currently validated attribute of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB
+    - `['a' => 'a']` => the same as above
+    - `['a', 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "a" of ModelB and
+      at the same time value of attribute "b" of ModelA will be checked against stored values of attribute "b" of ModelB
+    - `['a' => 'b']` => value of attribute "a" of ModelA will be checked against stored values of attribute "b" of ModelB
+- `filter`: an additional filter to be applied to the DB query used to check the uniqueness of the input value.
+  This can be a string, or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
   is the [[yii\db\Query|Query]] object that you can modify in the function.
 

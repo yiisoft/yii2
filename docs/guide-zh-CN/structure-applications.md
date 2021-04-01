@@ -356,7 +356,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 该属性提供一种方式修改 PHP 运行环境中的默认时区，配置该属性本质上就是调用 PHP 函数
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)，
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php)，
 例如：
 
 ```php

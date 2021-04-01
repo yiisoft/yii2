@@ -51,7 +51,7 @@ At this point, you have a database named `yii2basic`, and within it a `country` 
 Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
 
-Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
+Before proceeding, make sure you have installed both the [PDO](https://secure.php.net/manual/en/book.pdo.php) PHP extension and
 the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
 if your application uses a relational database.
 
@@ -178,16 +178,19 @@ class CountryController extends Controller
 
 Save the above code in the file `controllers/CountryController.php`.
 
-The `index` action calls `Country::find()`. This Active Record method builds a DB query that can be used to retrieve all of the data from the `country` table.
-To limit the number of countries returned in each request, the query is paginated with the help of a
+First, The `index` action calls `Country::find()`. This [find()](https://www.yiiframework.com/doc/api/2.0/yii-db-activerecord#find()-detail) method creates a [ActiveQuery](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery) query object, which provides methods to access data from the `country` table.
+
+To limit the number of countries returned in each request, the query object is paginated with the help of a
 [[yii\data\Pagination]] object. The `Pagination` object serves two purposes:
 
-* Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
+* Sets the `offset` and `limit` clauses for the SQL statement represented by the query object so that it only
   returns a single page of data at a time (at most 5 rows in a page).
 * It's used in the view to display a pager consisting of a list of page buttons, as will be explained in
   the next subsection.
+  
+Next, [all()](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery#all()-detail) returns all `country` records based on the query results.
 
-At the end of the code, the `index` action renders a view named `index`, and passes the country data as well as the pagination
+At the end of the code, the `index` action renders a view named `index`, and passes the returned country data as well as the pagination
 information to it.
 
 

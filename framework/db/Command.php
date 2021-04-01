@@ -66,7 +66,7 @@ class Command extends Component
     public $pdoStatement;
     /**
      * @var int the default fetch mode for this command.
-     * @see http://www.php.net/manual/en/pdostatement.setfetchmode.php
+     * @see https://secure.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
@@ -90,8 +90,10 @@ class Command extends Component
 
     /**
      * @var array pending parameters to be bound to the current PDO statement.
+     * @since 2.0.33
      */
-    private $_pendingParams = [];
+    protected $pendingParams = [];
+
     /**
      * @var string the SQL statement that this command represents
      */
@@ -205,13 +207,13 @@ class Command extends Component
             if (is_string($name) && strncmp(':', $name, 1)) {
                 $name = ':' . $name;
             }
-            if (is_string($value)) {
-                $params[$name] = $this->db->quoteValue($value);
+            if (is_string($value) || $value instanceof Expression) {
+                $params[$name] = $this->db->quoteValue((string)$value);
             } elseif (is_bool($value)) {
                 $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
                 $params[$name] = 'NULL';
-            } elseif ((!is_object($value) && !is_resource($value)) || $value instanceof Expression) {
+            } elseif (!is_object($value) && !is_resource($value)) {
                 $params[$name] = $value;
             }
         }
@@ -247,6 +249,9 @@ class Command extends Component
         }
 
         $sql = $this->getSql();
+        if ($sql === '') {
+            return;
+        }
 
         if ($this->db->getTransaction()) {
             // master is in a transaction. use the same connection.
@@ -265,6 +270,9 @@ class Command extends Component
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
+            throw new Exception($message, null, (int) $e->getCode(), $e);
         }
     }
 
@@ -288,7 +296,7 @@ class Command extends Component
      * @param int $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
-     * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
+     * @see https://secure.php.net/manual/en/function.PDOStatement-bindParam.php
      */
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
     {
@@ -315,10 +323,10 @@ class Command extends Component
      */
     protected function bindPendingParams()
     {
-        foreach ($this->_pendingParams as $name => $value) {
+        foreach ($this->pendingParams as $name => $value) {
             $this->pdoStatement->bindValue($name, $value[0], $value[1]);
         }
-        $this->_pendingParams = [];
+        $this->pendingParams = [];
     }
 
     /**
@@ -330,14 +338,14 @@ class Command extends Component
      * @param mixed $value The value to bind to the parameter
      * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
-     * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
+     * @see https://secure.php.net/manual/en/function.PDOStatement-bindValue.php
      */
     public function bindValue($name, $value, $dataType = null)
     {
         if ($dataType === null) {
             $dataType = $this->db->getSchema()->getPdoType($value);
         }
-        $this->_pendingParams[$name] = [$value, $dataType];
+        $this->pendingParams[$name] = [$value, $dataType];
         $this->params[$name] = $value;
 
         return $this;
@@ -363,14 +371,14 @@ class Command extends Component
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
             if (is_array($value)) { // TODO: Drop in Yii 2.1
-                $this->_pendingParams[$name] = $value;
+                $this->pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
             } elseif ($value instanceof PdoValue) {
-                $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->pendingParams[$name] = [$value->getValue(), $value->getType()];
                 $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
-                $this->_pendingParams[$name] = [$value, $type];
+                $this->pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
             }
         }
@@ -391,7 +399,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -405,7 +413,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://php.net/manual/en/pdostatement.setfetchmode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -419,7 +427,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */
@@ -1128,7 +1136,7 @@ class Command extends Component
     /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
@@ -1143,8 +1151,7 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $rawSql = $rawSql ?: $this->getRawSql();
-                $cacheKey = $this->getCacheKey($method, $fetchMode, $rawSql);
+                $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
@@ -1188,21 +1195,23 @@ class Command extends Component
      * Returns the cache key for the query.
      *
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes.
-     * @param string $rawSql the raw SQL with parameter values inserted into the corresponding placeholders
      * @return array the cache key
      * @since 2.0.16
      */
     protected function getCacheKey($method, $fetchMode, $rawSql)
     {
+        $params = $this->params;
+        ksort($params);
         return [
             __CLASS__,
             $method,
             $fetchMode,
             $this->db->dsn,
             $this->db->username,
-            $rawSql,
+            $this->getSql(),
+            json_encode($params),
         ];
     }
 
@@ -1311,7 +1320,7 @@ class Command extends Component
     protected function reset()
     {
         $this->_sql = null;
-        $this->_pendingParams = [];
+        $this->pendingParams = [];
         $this->params = [];
         $this->_refreshTableName = null;
         $this->_isolationLevel = false;

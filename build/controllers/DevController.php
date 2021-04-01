@@ -51,6 +51,7 @@ class DevController extends Controller
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
         'bootstrap' => 'git@github.com:yiisoft/yii2-bootstrap.git',
+        'bootstrap4' => 'git@github.com:yiisoft/yii2-bootstrap4.git',
         'codeception' => 'git@github.com:yiisoft/yii2-codeception.git',
         'composer' => 'git@github.com:yiisoft/yii2-composer.git',
         'debug' => 'git@github.com:yiisoft/yii2-debug.git',
@@ -164,7 +165,11 @@ class DevController extends Controller
             }
 
             $this->stdout("cloning application repo '$app' from '$repo'...\n", Console::BOLD);
-            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir);
+            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir, $returnVar);
+            if ($returnVar !== 0) {
+                $this->stdout("Error occurred while cloning repository.\n", Console::BOLD, Console::FG_RED);
+                return 1;
+            }
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
 
@@ -330,7 +335,7 @@ class DevController extends Controller
                 continue;
             }
             // ignore hidden directories
-            if ($file[0] === '.') {
+            if (strpos($file, '.') === 0) {
                 continue;
             }
             if (is_dir("$dir/$file")) {

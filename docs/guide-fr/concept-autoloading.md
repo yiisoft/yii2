@@ -1,7 +1,7 @@
 Chargement automatique des classes
 ==================================
 
-Yii compte sur le [mécanisme de chargement automatique des classes](http://www.php.net/manual/en/language.oop5.autoload.php) pour localiser et inclure tous les fichiers de classes requis. Il fournit un chargeur automatique de classes de haute performance qui est conforme à la [norme PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md). Le chargeur automatique est installé lorsque vous incluez le fichier `Yii.php`.
+Yii compte sur le [mécanisme de chargement automatique des classes](https://secure.php.net/manual/en/language.oop5.autoload.php) pour localiser et inclure tous les fichiers de classes requis. Il fournit un chargeur automatique de classes de haute performance qui est conforme à la [norme PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md). Le chargeur automatique est installé lorsque vous incluez le fichier `Yii.php`.
 
 > Note: pour simplifier la description, dans cette section, nous ne parlerons que du chargement automatique des classes. Néanmoins, gardez présent à l'esprit que le contenu que nous décrivons ici s'applique aussi au chargement automatique des interfaces et des traits. 
 
@@ -11,7 +11,7 @@ Utilisation du chargeur automatique de Yii <span id="using-yii-autoloader"></spa
 
 Pour utiliser le chargeur automatique de classes de Yii, vous devez suivre deux règles simples lorsque vous créez et nommez vos classes :
 
-* Chaque classe doit être placée sous un [espace de noms](http://php.net/manual/en/language.namespaces.php) (p. ex. `foo\bar\MyClass`)
+* Chaque classe doit être placée sous un [espace de noms](https://secure.php.net/manual/en/language.namespaces.php) (p. ex. `foo\bar\MyClass`)
 * Chaque classe doit être sauvegardée sous forme d'un fichier individuel dont le chemin est déterminé par l'algorithme suivant : 
 
 ```php

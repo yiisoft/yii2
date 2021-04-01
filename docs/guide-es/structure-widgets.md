@@ -72,7 +72,7 @@ Hay que tener en cuenta que, a diferencia de [[yii\base\Widget::widget()]] que d
 representación resultante del _widget_, el método [[yii\base\Widget::begin()]] devuelve una
 instancia del _widget_, que se puede usar para generar el contenido del _widget_.
 
-> Nota: Algunos _widgets_ utilizan un [búfer de salida](http://php.net/manual/es/book.outcontrol.php)
+> Nota: Algunos _widgets_ utilizan un [búfer de salida](https://secure.php.net/manual/es/book.outcontrol.php)
 > para ajustar el contenido rodeado al invocar [[yii\base\Widget::end()]].  Por este motivo se espera
 > que las llamadas a [[yii\base\Widget::begin()]] y [[yii\base\Widget::end()]] tengan lugar en el
 > mismo fichero de vista.

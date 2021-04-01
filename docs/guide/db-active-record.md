@@ -473,8 +473,8 @@ If you are interested in the attribute values prior to their most recent modific
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
-> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), etc...
+> [intval()](https://secure.php.net/manual/en/function.intval.php), [floatval()](https://secure.php.net/manual/en/function.floatval.php),
+> [boolval](https://secure.php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -689,7 +689,7 @@ try {
 ```
 
 > Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
@@ -1241,7 +1241,7 @@ Note that this differs from our earlier example which only brings back customers
 
 #### Relation table aliases <span id="relation-table-aliases"></span>
 
-As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
+As noted before, when using JOIN in a query, we need to disambiguate column names. Therefore often an alias is
 defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
 
 ```php
@@ -1567,7 +1567,7 @@ values from received data set.
 You are able to fetch additional columns or values from query and store it inside the Active Record.
 For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
 Each room stores information about its geometrical size using fields `length`, `width`, `height`.
-Imagine we need to retrieve list of all available rooms with their volume in descendant order.
+Imagine we need to retrieve list of all available rooms with their volume in descending order.
 So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
 to be displayed in the list.
 To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:

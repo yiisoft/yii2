@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 
@@ -15,6 +16,9 @@ use yii\helpers\Url;
  * Controller is the base class of web controllers.
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
+ * @property Request $request
+ * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -70,10 +74,9 @@ class Controller extends \yii\base\Controller
      */
     public function asJson($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_JSON;
-        $response->data = $data;
-        return $response;
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->data = $data;
+        return $this->response;
     }
 
     /**
@@ -97,10 +100,9 @@ class Controller extends \yii\base\Controller
      */
     public function asXml($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_XML;
-        $response->data = $data;
-        return $response;
+        $this->response->format = Response::FORMAT_XML;
+        $this->response->data = $data;
+        return $this->response;
     }
 
     /**
@@ -125,19 +127,64 @@ class Controller extends \yii\base\Controller
         $args = [];
         $missing = [];
         $actionParams = [];
+        $requestedParams = [];
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
-                if ($param->isArray()) {
-                    $args[] = $actionParams[$name] = (array) $params[$name];
-                } elseif (!is_array($params[$name])) {
-                    $args[] = $actionParams[$name] = $params[$name];
+                $isValid = true;
+                if (PHP_VERSION_ID >= 80000) {
+                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
                 } else {
-                    throw new BadRequestHttpException(Yii::t('yii', 'Invalid data received for parameter "{param}".', [
-                        'param' => $name,
-                    ]));
+                    $isArray = $param->isArray();
                 }
+                if ($isArray) {
+                    $params[$name] = (array)$params[$name];
+                } elseif (is_array($params[$name])) {
+                    $isValid = false;
+                } elseif (
+                    PHP_VERSION_ID >= 70000
+                    && ($type = $param->getType()) !== null
+                    && $type->isBuiltin()
+                    && ($params[$name] !== null || !$type->allowsNull())
+                ) {
+                    $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
+
+                    if ($params[$name] === '' && $type->allowsNull()) {
+                        if ($typeName !== 'string') { // for old string behavior compatibility
+                            $params[$name] = null;
+                        }
+                    } else {
+                        switch ($typeName) {
+                            case 'int':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                                break;
+                            case 'float':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
+                                break;
+                            case 'bool':
+                                $params[$name] = filter_var($params[$name], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                break;
+                        }
+                        if ($params[$name] === null) {
+                            $isValid = false;
+                        }
+                    }
+                }
+                if (!$isValid) {
+                    throw new BadRequestHttpException(
+                        Yii::t('yii', 'Invalid data received for parameter "{param}".', ['param' => $name])
+                    );
+                }
+                $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (HttpException $e) {
+                    throw $e;
+                } catch (Exception $e) {
+                    throw new ServerErrorHttpException($e->getMessage(), 0, $e);
+                }
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
             } else {
@@ -146,12 +193,17 @@ class Controller extends \yii\base\Controller
         }
 
         if (!empty($missing)) {
-            throw new BadRequestHttpException(Yii::t('yii', 'Missing required parameters: {params}', [
-                'params' => implode(', ', $missing),
-            ]));
+            throw new BadRequestHttpException(
+                Yii::t('yii', 'Missing required parameters: {params}', ['params' => implode(', ', $missing)])
+            );
         }
 
         $this->actionParams = $actionParams;
+
+        // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
+        if (Yii::$app->requestedParams === null) {
+            Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
+        }
 
         return $args;
     }
@@ -162,7 +214,7 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
 
@@ -201,7 +253,7 @@ class Controller extends \yii\base\Controller
     public function redirect($url, $statusCode = 302)
     {
         // calling Url::to() here because Response::redirect() modifies route before calling Url::to()
-        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
+        return $this->response->redirect(Url::to($url), $statusCode);
     }
 
     /**
@@ -218,7 +270,7 @@ class Controller extends \yii\base\Controller
      */
     public function goHome()
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getHomeUrl());
+        return $this->response->redirect(Yii::$app->getHomeUrl());
     }
 
     /**
@@ -241,7 +293,7 @@ class Controller extends \yii\base\Controller
      */
     public function goBack($defaultUrl = null)
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
+        return $this->response->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
     }
 
     /**
@@ -261,6 +313,6 @@ class Controller extends \yii\base\Controller
      */
     public function refresh($anchor = '')
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+        return $this->response->redirect($this->request->getUrl() . $anchor);
     }
 }

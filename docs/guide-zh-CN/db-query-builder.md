@@ -327,7 +327,7 @@ $query->where([$column => $value]);
 ```php
 // 易受攻击的代码：
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value 是安全的，但是 $column 名不会被转义处理！
 ```
@@ -413,7 +413,7 @@ $query->filterWhere([
 
 > Tip: 当一个值为 `null`、空数组、空字符串或者一个只包含空格的字符串时，那么它将被判定为空值。
 
-类似于 [[yii\db\Query::andWhere()|andWhere()]] 和 [[yii\db\Query::orWhere()|orWhere()]],
+类似于 [[yii\db\Query::andWhere()|andWhere()]] 和 [[yii\db\Query::orWhere()|orWhere()]]，
 你可以使用 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] 和 [[yii\db\Query::orFilterWhere()|orFilterWhere()]] 方法
 来追加额外的过滤条件。
 
@@ -771,7 +771,7 @@ foreach ($query->each() as $username => $user) {
 
 #### MySQL中批量查询的局限性（Limitations of batch query in MySQL） <span id="batch-query-mysql"></span>
 
-MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php)，
+MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php)，
 这违背了使用游标（cursor）获取数据的目的，
 因为它不阻止驱动程序将整个结果集加载到客户端的内存中。
 

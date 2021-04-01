@@ -11,10 +11,9 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
-[![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](https://travis-ci.org/yiisoft/yii2)
+[![Build Status](https://github.com/yiisoft/yii2/workflows/build/badge.svg)](https://github.com/yiisoft/yii2/actions)
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
-[![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
 
 Installation
 ------------
@@ -55,6 +54,7 @@ You may join us and:
 - [Translate documentation or messages](docs/internals/translation-workflow.md)
 - [Give us feedback or start a design discussion](https://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
 - [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
+- [Become a sponsor](#sponsoring)
 
 ### Reporting Security issues
 
@@ -91,3 +91,9 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 ```
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 ```
+
+### Sponsoring
+
+Support this project by becoming a sponsor or a backer. 
+
+[![OpenCollective sponsors](https://opencollective.com/yiisoft/sponsors/badge.svg)](https://opencollective.com/yiisoft) [![OpenCollective backers](https://opencollective.com/yiisoft/backers/badge.svg)](https://opencollective.com/yiisoft)

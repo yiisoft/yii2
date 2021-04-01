@@ -1,7 +1,7 @@
 データベース・アクセス・オブジェクト
 ====================================
 
-[PDO](http://www.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベース・アクセス・オブジェクト) は、
+[PDO](https://secure.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベース・アクセス・オブジェクト) は、
 リレーショナル・データベースにアクセスするためのオブジェクト指向 API を提供するものです。
 これは、データベースにアクセスする他のもっと高度な方法、例えば [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) の基礎でもあります。
 
@@ -18,12 +18,6 @@ Yii 2.0 では、DAO は下記の DBMS のサポートを内蔵しています�
 - [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
-
-> Info: Yii 2.1 以降では、CUBRID、Oracle および MSSQL に対する DAO サポートは、フレームワーク内蔵のコア・コンポーネント
-  としては提供されていません。それらは、独立した [エクステンション](structure-extensions.md) としてインストールされる
-  必要があります。[yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) および
-  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) が
-  [公式エクステンション](https://www.yiiframework.com/extensions/official) として提供されています。
 
 > Note: PHP 7 用の pdo_oci の新しいバージョンは、現在、ソース・コードとしてのみ存在します。
   [コミュニティによる説明](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268) に従ってコンパイルするか、
@@ -68,7 +62,7 @@ return [
 
 DB 接続を構成するときは、つねに [[yii\db\Connection::dsn|dsn]] プロパティによってデータ・ソース名 (DSN) を指定しなければなりません。
 DSN の形式はデータベースによってさまざまに異なります。
-詳細は [PHP マニュアル](http://www.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。下記にいくつかの例を挙げます。
+詳細は [PHP マニュアル](https://secure.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。下記にいくつかの例を挙げます。
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -112,6 +106,18 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 >     }
 > ]
 > ```
+
+MS SQL Server でバイナリ・データを正しく処理するためには追加の接続オプションが必要になります。
+
+```php
+'db' => [
+ 'class' => 'yii\db\Connection',
+    'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase',
+    'attributes' => [
+        \PDO::SQLSRV_ATTR_ENCODING => \PDO::SQLSRV_ENCODING_SYSTEM
+    ]
+],
+```
 
 
 ## SQL クエリを実行する <span id="executing-sql-queries"></span>
@@ -184,7 +190,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-パラメータ・バインディングは [プリペアド・ステートメント](http://php.net/manual/ja/mysqli.quickstart.prepared-statements.php) によって実装されています。
+パラメータ・バインディングは [プリペアド・ステートメント](https://secure.php.net/manual/ja/mysqli.quickstart.prepared-statements.php) によって実装されています。
 パラメータ・バインディングには、SQL インジェクション攻撃を防止する以外にも、SQL 文を一度だけ準備して異なるパラメータで複数回実行することにより、
 パフォーマンスを向上させる効果もあります。例えば、
 
@@ -378,7 +384,7 @@ try {
 そして、`throw $e` が、まるでそれをキャッチしなかったかのように、例外を再スローしますので、通常のエラー処理プロセスがその例外の面倒を見ることになります。
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つのcatch ブロックを持っています。
-> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://secure.php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 

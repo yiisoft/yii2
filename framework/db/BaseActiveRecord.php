@@ -23,19 +23,19 @@ use yii\helpers\ArrayHelper;
  *
  * See [[\yii\db\ActiveRecord]] for a concrete implementation.
  *
- * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
+ * @property-read array $dirtyAttributes The changed attribute values (name-value pairs). This property is
  * read-only.
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
  * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
- * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
+ * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null). This property is read-only.
- * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
- * This property is read-only.
- * @property array $relatedRecords An array of related records indexed by relation names. This property is
- * read-only.
+ * @property-read mixed $primaryKey The primary key value. An array (column name => column value) is returned
+ * if the primary key is composite. A string is returned otherwise (null will be returned if the key value is
+ * null). This property is read-only.
+ * @property-read array $relatedRecords An array of related records indexed by relation names. This property
+ * is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -133,7 +133,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!ArrayHelper::isAssociative($condition) && !$condition instanceof ExpressionInterface) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
@@ -1384,9 +1384,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * If `false`, the model's foreign key will be set `null` and saved.
      * If `true`, the model containing the foreign key will be deleted.
      * @throws InvalidCallException if the models cannot be unlinked
+     * @throws Exception
+     * @throws StaleObjectException
      */
     public function unlink($name, $model, $delete = false)
     {
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
@@ -1409,6 +1412,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $nulls = [];
             foreach (array_keys($columns) as $a) {
                 $nulls[$a] = null;
+            }
+            if ($viaRelation->on !== null) {
+                $columns = ['and', $columns, $viaRelation->on];
             }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */

@@ -332,11 +332,6 @@ unset($cookies['language']);
 他のプロパティを定義して、利用可能なクッキー情報の全てを完全に表しています。
 クッキーを準備するときに必要に応じてこれらのプロパティを構成してから、レスポンスのクッキー・コレクションに追加することが出来ます。
 
-> Note: セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] のデフォルト値は `true` に設定されています。
-これは、クライアント・サイド・スクリプトが保護されたクッキーにアクセスする危険を軽減するものです (ブラウザがサポートしていれば)。
-詳細については、[httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) を読んでください。
-
-
 ### クッキー検証 <span id="cookie-validation"></span>
 
 最後の二つの項で示されているように、`request` と `response` のコンポーネントを通じてクッキーを読んだり送信したりする場合には、
@@ -369,3 +364,42 @@ return [
 
 > Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] は、あなたのアプリケーションにとって、決定的に重要なものです。
   これは信頼する人にだけ教えるべきものです。バージョン・コントロール・システムに保存してはいけません。
+
+## セキュリティの設定
+
+[[yii\web\Cookie]] と [[yii\web\Session]] の両者は下記のセキュリティ・フラグをサポートしています。
+
+### httpOnly
+
+セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] および [[yii\web\Session::cookieParams]] の 'httponly' パラメータの
+デフォルト値は `true` に設定されています。
+これによって、クライアント・サイド・スクリプトが保護されたクッキーにアクセスする危険が軽減されます (ブラウザがサポートしていれば)。
+詳細については、[httpOnly の wiki 記事](https://www.owasp.org/index.php/HttpOnly) を読んでください。
+
+### secure
+
+secure フラグの目的は、クッキーが平文で送信されることを防止することです。ブラウザが secure フラグをサポートしている場合、
+リクエストが secure な接続 (TLS) によって送信される場合にのみクッキーがリクエストに含まれます。
+詳細については [Secure フラグの wiki 記事](https://www.owasp.org/index.php/SecureFlag) を参照して下さい。
+
+### sameSite
+
+Yii 2.0.21 以降、[[yii\web\Cookie::sameSite]] 設定がサポートされています。これは PHP バージョン 7.3.0 以降を必要とします。
+`sameSite` 設定の目的は CSRF (Cross-Site Request Forgery) 攻撃を防止することです。
+ブラウザが `sameSite` 設定をサポートしている場合、指定されたポリシー ('Lax' または 'Strict') に従うクッキーだけが送信されます。
+詳細については [SameSite の wiki 記事](https://www.owasp.org/index.php/SameSite) を参照して下さい。
+更なるセキュリティ強化のために、`sameSite` がサポートされていない PHP のバージョンで使われた場合には例外が投げられます。
+この機能を PHP のバージョンに関わりなく使用する場合は、最初にバージョンをチェックして下さい。例えば、
+```php
+[
+    'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
+]
+```
+> Note: 今はまだ `sameSite` 設定をサポートしていないブラウザもありますので、
+  [追加の CSRF 保護](security-best-practices.md#avoiding-csrf) を行うことを強く推奨します。
+
+## セッションに関する php.ini の設定
+
+[PHP マニュアル](https://www.php.net/manual/ja/session.security.ini.php) で示されているように、`php.ini` にはセッションのセキュリティに関する重要な設定があります。
+推奨される設定を必ず適用して下さい。特に、PHP インストールのデフォルトでは有効にされていない
+`session.use_strict_mode` を有効にして下さい。

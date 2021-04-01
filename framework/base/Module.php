@@ -23,15 +23,15 @@ use yii\di\ServiceLocator;
  *
  * For more details and usage information on Module, see the [guide article on modules](guide:structure-modules).
  *
- * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
- * with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
- * This property is write-only.
+ * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must
+ * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
+ * example. This property is write-only.
  * @property string $basePath The root directory of the module.
- * @property string $controllerPath The directory that contains the controller classes. This property is
+ * @property-read string $controllerPath The directory that contains the controller classes. This property is
  * read-only.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
- * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property-read string $uniqueId The unique ID of the module. This property is read-only.
  * @property string $version The version of this module. Note that the type of this property differs in getter
  * and setter. See [[getVersion()]] and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
@@ -60,11 +60,11 @@ class Module extends ServiceLocator
      */
     public $id;
     /**
-     * @var Module the parent module of this module. `null` if this module does not have a parent.
+     * @var Module|null the parent module of this module. `null` if this module does not have a parent.
      */
     public $module;
     /**
-     * @var string|bool the layout that should be applied for views within this module. This refers to a view name
+     * @var string|bool|null the layout that should be applied for views within this module. This refers to a view name
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
      * will be taken. If this is `false`, layout will be disabled within this module.
      */
@@ -90,7 +90,7 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in.
+     * @var string|null the namespace that controller classes are in.
      * This namespace will be used to load controller classes by prepending it to the controller
      * class name.
      *
@@ -425,7 +425,7 @@ class Module extends ServiceLocator
                 Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
-                $module->setInstance($module);
+                $module::setInstance($module);
                 return $this->_modules[$id] = $module;
             }
         }
@@ -450,6 +450,9 @@ class Module extends ServiceLocator
             unset($this->_modules[$id]);
         } else {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -504,6 +507,9 @@ class Module extends ServiceLocator
     {
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -544,10 +550,10 @@ class Module extends ServiceLocator
      * to resolve the given route:
      *
      * 1. If the route is empty, use [[defaultRoute]];
-     * 2. If the first segment of the route is a valid module ID as declared in [[modules]],
-     *    call the module's `createController()` with the rest part of the route;
-     * 3. If the first segment of the route is found in [[controllerMap]], create a controller
+     * 2. If the first segment of the route is found in [[controllerMap]], create a controller
      *    based on the corresponding configuration found in [[controllerMap]];
+     * 3. If the first segment of the route is a valid module ID as declared in [[modules]],
+     *    call the module's `createController()` with the rest part of the route;
      * 4. The given route is in the format of `abc/def/xyz`. Try either `abc\DefController`
      *    or `abc\def\XyzController` class within the [[controllerNamespace|controller namespace]].
      *

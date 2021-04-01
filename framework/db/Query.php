@@ -42,7 +42,7 @@ use yii\base\InvalidConfigException;
  *
  * A more detailed usage guide on how to work with Query can be found in the [guide article on Query Builder](guide:db-query-builder).
  *
- * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ * @property-read string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -110,6 +110,17 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * - `all`: boolean, whether it should be `UNION ALL` or `UNION`
      */
     public $union;
+    /**
+     * @var array this is used to construct the WITH section in a SQL query.
+     * Each array element is an array of the following structure:
+     *
+     * - `query`: either a string or a [[Query]] object representing a query
+     * - `alias`: string, alias of query for further usage
+     * - `recursive`: boolean, whether it should be `WITH RECURSIVE` or `WITH`
+     * @see withQuery()
+     * @since 2.0.35
+     */
+    public $withQueries;
     /**
      * @var array list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
@@ -234,7 +245,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         if ($this->emulateExecution) {
             return [];
         }
+
         $rows = $this->createCommand($db)->queryAll();
+
         return $this->populate($rows);
     }
 
@@ -279,7 +292,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * The value returned will be the first column in the first row of the query results.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
     public function scalar($db = null)
@@ -316,13 +329,21 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
+        $column = null;
+        if (is_string($this->indexBy)) {
+            if (($dotPos = strpos($this->indexBy, '.')) === false) {
+                $column = $this->indexBy;
+            } else {
+                $column = substr($this->indexBy, $dotPos + 1);
+            }
+        }
         foreach ($rows as $row) {
             $value = reset($row);
 
             if ($this->indexBy instanceof \Closure) {
                 $results[call_user_func($this->indexBy, $row)] = $value;
             } else {
-                $results[$row[$this->indexBy]] = $value;
+                $results[$row[$column]] = $value;
             }
         }
 
@@ -453,12 +474,24 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
-            $command = $this->createCommand($db);
+
+            $e = null;
+            try {
+                $command = $this->createCommand($db);
+            } catch (\Exception $e) {
+                // throw it later
+            } catch (\Throwable $e) {
+                // throw it later
+            }
 
             $this->select = $select;
             $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
+
+            if ($e !== null) {
+                throw $e;
+            }
 
             return $command->queryScalar();
         }
@@ -605,15 +638,7 @@ PATTERN;
      */
     public function select($columns, $option = null)
     {
-        if ($columns instanceof ExpressionInterface) {
-            $columns = [$columns];
-        } elseif (!is_array($columns)) {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-        }
-        // this sequantial assignment is needed in order to make sure select is being reset
-        // before using getUniqueColumns() that checks it
-        $this->select = [];
-        $this->select = $this->getUniqueColumns($columns);
+        $this->select = $this->normalizeSelect($columns);
         $this->selectOption = $option;
         return $this;
     }
@@ -635,19 +660,58 @@ PATTERN;
      */
     public function addSelect($columns)
     {
+        if ($this->select === null) {
+            return $this->select($columns);
+        }
+        if (!is_array($this->select)) {
+            $this->select = $this->normalizeSelect($this->select);
+        }
+        $this->select = array_merge($this->select, $this->normalizeSelect($columns));
+
+        return $this;
+    }
+
+    /**
+     * Normalizes the SELECT columns passed to [[select()]] or [[addSelect()]].
+     *
+     * @param string|array|ExpressionInterface $columns
+     * @return array
+     * @since 2.0.21
+     */
+    protected function normalizeSelect($columns)
+    {
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
-        $columns = $this->getUniqueColumns($columns);
-        if ($this->select === null) {
-            $this->select = $columns;
-        } else {
-            $this->select = array_merge($this->select, $columns);
+        $select = [];
+        foreach ($columns as $columnAlias => $columnDefinition) {
+            if (is_string($columnAlias)) {
+                // Already in the normalized format, good for them
+                $select[$columnAlias] = $columnDefinition;
+                continue;
+            }
+            if (is_string($columnDefinition)) {
+                if (
+                    preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $columnDefinition, $matches) &&
+                    !preg_match('/^\d+$/', $matches[2]) &&
+                    strpos($matches[2], '.') === false
+                ) {
+                    // Using "columnName as alias" or "columnName alias" syntax
+                    $select[$matches[2]] = $matches[1];
+                    continue;
+                }
+                if (strpos($columnDefinition, '(') === false) {
+                    // Normal column name, just alias it to itself to ensure it's not selected twice
+                    $select[$columnDefinition] = $columnDefinition;
+                    continue;
+                }
+            }
+            // Either a string calling a function, DB expression, or sub-query
+            $select[] = $columnDefinition;
         }
-
-        return $this;
+        return $select;
     }
 
     /**
@@ -657,6 +721,7 @@ PATTERN;
      * - if column definition without alias already present in SELECT part without alias too
      * @param array $columns the columns to be merged to the select.
      * @since 2.0.14
+     * @deprecated in 2.0.21
      */
     protected function getUniqueColumns($columns)
     {
@@ -687,6 +752,7 @@ PATTERN;
     /**
      * @return array List of columns without aliases from SELECT statement.
      * @since 2.0.14
+     * @deprecated in 2.0.21
      */
     protected function getUnaliasedColumnsFromSelect()
     {
@@ -868,16 +934,18 @@ PATTERN;
      * Appends a JOIN part to the query.
      * The first parameter specifies what type of join it is.
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
@@ -902,16 +970,18 @@ PATTERN;
 
     /**
      * Appends an INNER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -926,16 +996,18 @@ PATTERN;
 
     /**
      * Appends a LEFT OUTER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -950,16 +1022,18 @@ PATTERN;
 
     /**
      * Appends a RIGHT OUTER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -1190,6 +1264,20 @@ PATTERN;
     }
 
     /**
+     * Prepends a SQL statement using WITH syntax.
+     * @param string|Query $query the SQL statement to be prepended using WITH
+     * @param string $alias query alias in WITH construction
+     * @param bool $recursive TRUE if using WITH RECURSIVE and FALSE if using WITH
+     * @return $this the query object itself
+     * @since 2.0.35
+     */
+    public function withQuery($query, $alias, $recursive = false)
+    {
+        $this->withQueries[] = ['query' => $query, 'alias' => $alias, 'recursive' => $recursive];
+        return $this;
+    }
+
+    /**
      * Sets the parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
@@ -1297,6 +1385,7 @@ PATTERN;
             'having' => $from->having,
             'union' => $from->union,
             'params' => $from->params,
+            'withQueries' => $from->withQueries,
         ]);
     }
 

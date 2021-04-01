@@ -17,8 +17,8 @@ use yii\base\InvalidConfigException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  *
- * @method ActiveRecordInterface one()
- * @method ActiveRecordInterface[] all()
+ * @method ActiveRecordInterface one($db = null)
+ * @method ActiveRecordInterface[] all($db = null)
  * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait
@@ -74,7 +74,7 @@ trait ActiveRelationTrait
         if (is_object($this->via)) {
             $this->via = clone $this->via;
         } elseif (is_array($this->via)) {
-            $this->via = [$this->via[0], clone $this->via[1]];
+            $this->via = [$this->via[0], clone $this->via[1], $this->via[2]];
         }
     }
 
@@ -105,7 +105,8 @@ trait ActiveRelationTrait
     public function via($relationName, callable $callable = null)
     {
         $relation = $this->primaryModel->getRelation($relationName);
-        $this->via = [$relationName, $relation];
+        $callableUsed = $callable !== null;
+        $this->via = [$relationName, $relation, $callableUsed];
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
@@ -241,7 +242,7 @@ trait ActiveRelationTrait
                 $viaQuery->asArray($this->asArray);
             }
             $viaQuery->primaryModel = null;
-            $viaModels = $viaQuery->populateRelation($viaName, $primaryModels);
+            $viaModels = array_filter($viaQuery->populateRelation($viaName, $primaryModels));
             $this->filterByModels($viaModels);
         } else {
             $this->filterByModels($primaryModels);
@@ -525,6 +526,8 @@ trait ActiveRelationTrait
                 if (($value = $model[$attribute]) !== null) {
                     if (is_array($value)) {
                         $values = array_merge($values, $value);
+                    } elseif ($value instanceof ArrayExpression && $value->getDimension() === 1) {
+                        $values = array_merge($values, $value->getValue());
                     } else {
                         $values[] = $value;
                     }
@@ -549,7 +552,23 @@ trait ActiveRelationTrait
                 }
             }
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+
+        if (!empty($values)) {
+            $scalarValues = [];
+            $nonScalarValues = [];
+            foreach ($values as $value) {
+                if (is_scalar($value)) {
+                    $scalarValues[] = $value;
+                } else {
+                    $nonScalarValues[] = $value;
+                }
+            }
+
+            $scalarValues = array_unique($scalarValues);
+            $values = array_merge($scalarValues, $nonScalarValues);
+        }
+
+        $this->andWhere(['in', $attributes, $values]);
     }
 
     /**
@@ -566,22 +585,23 @@ trait ActiveRelationTrait
         if (count($key) > 1) {
             return serialize($key);
         }
-        $key = reset($key);
-        return is_scalar($key) ? $key : serialize($key);
+        return reset($key);
     }
 
     /**
-     * @param mixed $value raw key value.
+     * @param mixed $value raw key value. Since 2.0.40 non-string values must be convertable to string (like special
+     * objects for cross-DBMS relations, for example: `|MongoId`).
      * @return string normalized key value.
      */
     private function normalizeModelKey($value)
     {
-        if (is_object($value) && method_exists($value, '__toString')) {
-            // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
-            $value = $value->__toString();
+        try {
+            return (string)$value;
+        } catch (\Exception $e) {
+            throw new InvalidConfigException('Value must be convertable to string.');
+        } catch (\Throwable $e) {
+            throw new InvalidConfigException('Value must be convertable to string.');
         }
-
-        return $value;
     }
 
     /**

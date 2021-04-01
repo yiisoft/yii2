@@ -15,14 +15,14 @@ Dans cette section et quelques-unes de ses suivantes, nous décrirons comment in
 Installer via Composer <span id="installing-via-composer"></span>
 ----------------------
 
-###Installer Composer
+### Installer Composer
 
 Si vous n'avez pas déjà installé Composer, vous pouvez le faire en suivant les instructions du site [getcomposer.org](https://getcomposer.org/download/). 
 Sous Linux et Mac OS X, vous pouvez exécuter les commandes :
 
 ```bash
-    curl -sS https://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
 ```
 
 Sous Windows, téléchargez et exécutez [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -39,12 +39,12 @@ Si Composer était déjà installé auparavant, assurez-vous d'utiliser une vers
 > Reportez-vous à la [documentation de Composer sur les jetons de l'API Github](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > pour savoir comment procéder.
 
-###Installer Yii <span id="installing-from-composer"></span>
-
+### Installer Yii <span id="installing-from-composer"></span>
 
 Avec Composer installé, vous pouvez installer le modèle de projet Yii en exécutant la commande suivante dans un dossier accessible via le Web :
+
 ```bash
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
 Cette commande installera la dernière version stable du modèle de projet Yii dans le dossier `basic`. Vous êtes libre de choisir un autre dossier si vous le désirez.
@@ -53,11 +53,10 @@ Cette commande installera la dernière version stable du modèle de projet Yii d
 > [Troubleshooting (résolution des problèmes) de la documentation de Composer](https://getcomposer.org/doc/articles/troubleshooting.md)
 > pour les erreurs communes. Une fois l'erreur corrigée, vous pouvez reprendre l'installation avortée en exécutant `composer update` dans le dossier  `basic` (ou celui que vous aviez choisi).
 
-
 > Tip: si vous souhaitez installer la dernière version de développement de Yii, vous pouvez utiliser la commande suivante qui ajoutera l'[option stability](https://getcomposer.org/doc/04-schema.md#minimum-stability) :
 >
 >```bash
->    composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+>composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 >```
 >
 > Notez que la version de développement de Yii ne doit pas être utilisée en production, vu qu'elle pourrait *casser* votre code existant.
@@ -73,9 +72,9 @@ Installer Yii depuis une archive se fait en trois étapes :
 3. Modifier le fichier `config/web.php` en entrant une clé secrète pour la configuration de `cookieValidationKey` (cela est fait automatiquement si vous installez Yii avec Composer) :
 
  ```php
-   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-   'cookieValidationKey' => 'enter your secret key here',
-   ```
+ // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+ 'cookieValidationKey' => 'enter your secret key here',
+ ```
 
 
 Autres options d'installation <span id="other-installation-options"></span>
@@ -116,7 +115,7 @@ Afin d'empêcher l'installation des « assets » via Composer, ajoutez les lig
 Vérifier l'installation <span id="verifying-installation"></span>
 -----------------------
 
-Après l'installation, vous pouvez, soit configurer votre serveur Web (voir section suivante), soit utiliser le [serveur PHP web incorporé](https://secure.php.net/manual/fr/features.commandline.webserver.php) en utilisant la commande en console suivante depuis le dossier `web` de votre projet :
+Après l'installation, vous pouvez, soit configurer votre serveur Web (voir section suivante), soit utiliser le [serveur PHP web incorporé](https://secure.php.net/manual/fr/features.commandline.webserver.php) en utilisant la commande en console suivante depuis le dossier racine de votre projet :
  
 ```bash
 php yii serve
@@ -146,7 +145,7 @@ Vous devriez voir dans votre navigateur la page ci-dessus. Sinon, merci de véri
   php requirements.php
   ```
 
-Vous devez configurer votre installation de PHP afin qu'elle réponde aux exigences minimales de Yii. Le plus important étant que vous ayez PHP 5.4 ou plus, idéalement PHP 7. Si votre application a besoin d'une base de données, vous devez également installer l'[extension PHP PDO](http://www.php.net/manual/fr/pdo.installation.php) ainsi qu'un pilote correspondant à votre système de base de données (par exemple `pdo_mysql` pour MySQL).
+Vous devez configurer votre installation de PHP afin qu'elle réponde aux exigences minimales de Yii. Le plus important étant que vous ayez PHP 5.4 ou plus, idéalement PHP 7. Si votre application a besoin d'une base de données, vous devez également installer l'[extension PHP PDO](https://secure.php.net/manual/fr/pdo.installation.php) ainsi qu'un pilote correspondant à votre système de base de données (par exemple `pdo_mysql` pour MySQL).
 
 
 Configuration du serveur Web <span id="configuring-web-servers"></span>
@@ -195,7 +194,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuration Nginx recommandée <span id="recommended-nginx-configuration"></span>
 
-Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](http://php.net/install.fpm).
+Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](https://secure.php.net/install.fpm).
 Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.test` par le nom d'hôte de votre serveur.
 
 ```nginx

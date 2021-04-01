@@ -9,6 +9,7 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\base\DynamicModel;
+use yii\db\ArrayExpression;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yiiunit\TestCase;
@@ -767,6 +768,63 @@ EOD;
                 'label' => 'Test Label'
             ]
         ]));
+
+        $expected = <<<'EOD'
+<div><label><input type="checkbox" name="test[]" value="1"> 1</label>
+<label><input type="checkbox" name="test[]" value="1.1" checked> 1.1</label>
+<label><input type="checkbox" name="test[]" value="1.10"> 1.10</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['1.1'], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'], ['strict' => true]));
+    }
+
+    public function testRadioListWithArrayExpression()
+    {
+        $selection = new ArrayExpression(['first']);
+
+        $output = Html::radioList(
+            'test',
+            $selection,
+            [
+                'first' => 'first',
+                'second' => 'second'
+            ]
+        );
+
+        $this->assertEqualsWithoutLE('<div><label><input type="radio" name="test" value="first" checked> first</label>
+<label><input type="radio" name="test" value="second"> second</label></div>', $output);
+    }
+
+    public function testCheckboxListWithArrayExpression()
+    {
+        $selection = new ArrayExpression(['first']);
+
+        $output = Html::checkboxList(
+            'test',
+            $selection,
+            [
+                'first' => 'first',
+                'second' => 'second'
+            ]
+        );
+
+        $this->assertEqualsWithoutLE('<div><label><input type="checkbox" name="test[]" value="first" checked> first</label>
+<label><input type="checkbox" name="test[]" value="second"> second</label></div>', $output);
+    }
+
+    public function testRenderSelectOptionsWithArrayExpression()
+    {
+        $selection = new ArrayExpression(['first']);
+
+        $output = Html::renderSelectOptions(
+            $selection,
+            [
+                'first' => 'first',
+                'second' => 'second'
+            ]
+        );
+
+        $this->assertEqualsWithoutLE('<option value="first" selected>first</option>
+<option value="second">second</option>', $output);
     }
 
     public function testRadioList()
@@ -858,6 +916,13 @@ EOD;
                 'label' => 'Test Label'
             ]
         ]));
+
+        $expected = <<<'EOD'
+<div><label><input type="radio" name="test" value="1"> 1</label>
+<label><input type="radio" name="test" value="1.1" checked> 1.1</label>
+<label><input type="radio" name="test" value="1.10"> 1.10</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['1.1'], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'], ['strict' => true]));
     }
 
     public function testUl()
@@ -995,6 +1060,26 @@ EOD;
             ],
         ];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value1'], $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="1">1</option>
+<option value="1.1" selected>1.1</option>
+<option value="1.10">1.10</option>
+EOD;
+        $data = ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'];
+        $attributes = ['strict' => true];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.1'], $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="1">1</option>
+<option value="1.1">1.1</option>
+<optgroup label="group">
+<option value="1.10" selected>1.10</option>
+</optgroup>
+EOD;
+        $data = ['1' => '1', '1.1' => '1.1', 'group' => ['1.10' => '1.10']];
+        $attributes = ['strict' => true];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.10'], $data, $attributes));
     }
 
     public function testRenderAttributes()
@@ -1013,6 +1098,29 @@ EOD;
             ],
         ];
         $this->assertEquals(' data-foo=\'[]\'', Html::renderTagAttributes($attributes));
+
+        $attributes = [
+            'data' => [
+                'foo' => true,
+            ],
+        ];
+        $this->assertEquals(' data-foo', Html::renderTagAttributes($attributes));
+
+
+        $attributes = [
+            'data' => [
+                'foo' => false,
+            ],
+        ];
+        $this->assertEquals('', Html::renderTagAttributes($attributes));
+
+
+        $attributes = [
+            'data' => [
+                'foo' => null,
+            ],
+        ];
+        $this->assertEquals('', Html::renderTagAttributes($attributes));
     }
 
     public function testAddCssClass()
@@ -1173,6 +1281,7 @@ EOD;
 
     public function testDataAttributes()
     {
+        $this->assertEquals('<link src="xyz" aria-a="1" aria-b="c">', Html::tag('link', '', ['src' => 'xyz', 'aria' => ['a' => 1, 'b' => 'c']]));
         $this->assertEquals('<link src="xyz" data-a="1" data-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data' => ['a' => 1, 'b' => 'c']]));
         $this->assertEquals('<link src="xyz" ng-a="1" ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'ng' => ['a' => 1, 'b' => 'c']]));
         $this->assertEquals('<link src="xyz" data-ng-a="1" data-ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data-ng' => ['a' => 1, 'b' => 'c']]));
@@ -1409,7 +1518,7 @@ EOD;
         }
         $model->validate(null, false);
 
-        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+        $this->assertEqualsWithoutLE($expectedHtml, Html::errorSummary($model, $options));
     }
 
     public function testError()
@@ -1625,22 +1734,15 @@ EOD;
             ['a[0]', 'a'],
             ['[0]a[0]', 'a'],
             ['[0]a.[0]', 'a.'],
+            ['ä', 'ä'],
+            ['ä', 'ä'],
+            ['asdf]öáöio..[asdfasdf', 'öáöio..'],
+            ['öáöio', 'öáöio'],
+            ['[0]test.ööößß.d', 'test.ööößß.d'],
+            ['ИІК', 'ИІК'],
+            [']ИІК[', 'ИІК'],
+            ['[0]ИІК[0]', 'ИІК'],
         ];
-
-        if (getenv('TRAVIS_PHP_VERSION') !== 'nightly') {
-            $data = array_merge($data, [
-                ['ä', 'ä'],
-                ['ä', 'ä'],
-                ['asdf]öáöio..[asdfasdf', 'öáöio..'],
-                ['öáöio', 'öáöio'],
-                ['[0]test.ööößß.d', 'test.ööößß.d'],
-                ['ИІК', 'ИІК'],
-                [']ИІК[', 'ИІК'],
-                ['[0]ИІК[0]', 'ИІК'],
-            ]);
-        } else {
-            $this->markTestIncomplete("Unicode characters check skipped for 'nightly' PHP version because \w does not work with these as expected. Check later with stable version.");
-        }
 
         return $data;
     }
@@ -1800,6 +1902,11 @@ EOD;
         $expected = '/([a-z0-9-]+)/gim';
         $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/Ugimex');
         $this->assertSame($expected, $actual);
+
+        // Make sure that just allowed REGEX modifiers remain after the escaping
+        $expected = '/([a-z0-9-]+)/ugim';
+        $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/dugimex');
+        $this->assertSame($expected, $actual);
     }
 
     public function testActiveDropDownList()
@@ -1814,7 +1921,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    public function testActiveCheckboxList()
+    public function testActiveRadioList()
     {
         $model = new HtmlTestModel();
 
@@ -1825,7 +1932,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    public function testActiveRadioList()
+    public function testActiveCheckboxList()
     {
         $model = new HtmlTestModel();
 
@@ -1833,6 +1940,17 @@ HTML;
 <input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="HtmlTestModel[types][]" value="0"> foo</label></div>
 HTML;
         $actual = Html::activeCheckboxList($model, 'types', ['foo']);
+        $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
+    public function testActiveCheckboxList_options()
+    {
+        $model = new HtmlTestModel();
+
+        $expected = <<<'HTML'
+<input type="hidden" name="foo" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="foo[]" value="0" checked> foo</label></div>
+HTML;
+        $actual = Html::activeCheckboxList($model, 'types', ['foo'], ['name' => 'foo', 'value' => 0]);
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 

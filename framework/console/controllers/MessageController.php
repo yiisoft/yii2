@@ -98,7 +98,7 @@ class MessageController extends \yii\console\Controller
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
+        '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
      * @var array list of patterns that specify which files (not directories) should be processed.
@@ -386,7 +386,7 @@ EOD;
 
         if (!$removeUnused) {
             foreach ($obsolete as $pk => $msg) {
-                if (mb_substr($msg, 0, 2) === '@@' && mb_substr($msg, -2) === '@@') {
+                if (strpos($msg, '@@') === 0 && substr($msg, -2) === '@@') {
                     unset($obsolete[$pk]);
                 }
             }
@@ -503,7 +503,7 @@ EOD;
         $buffer = [];
         $pendingParenthesisCount = 0;
 
-        foreach ($tokens as $i => $token) {
+        foreach ($tokens as $tokenIndex => $token) {
             // finding out translator call
             if ($matchedTokensCount < $translatorTokensCount) {
                 if ($this->tokensEqual($token, $translatorTokens[$matchedTokensCount])) {
@@ -558,11 +558,18 @@ EOD;
                     }
                 } elseif ($this->tokensEqual('(', $token)) {
                     // count beginning of function call, skipping translator beginning
-                    // Ensure that it's not the call of the object method. See https://github.com/yiisoft/yii2/issues/16828
-                    $previousTokenId = $tokens[$i - $matchedTokensCount - 1][0];
-                    if (in_array($previousTokenId, [T_OBJECT_OPERATOR, T_PAAMAYIM_NEKUDOTAYIM], true)) {
-                        $matchedTokensCount = 0;
-                        continue;
+
+                    // If we are not yet inside the translator, make sure that it's beginning of the real translator.
+                    // See https://github.com/yiisoft/yii2/issues/16828
+                    if ($pendingParenthesisCount === 0) {
+                        $previousTokenIndex = $tokenIndex - $matchedTokensCount - 1;
+                        if (is_array($tokens[$previousTokenIndex])) {
+                            $previousToken = $tokens[$previousTokenIndex][0];
+                            if (in_array($previousToken, [T_OBJECT_OPERATOR, T_PAAMAYIM_NEKUDOTAYIM], true)) {
+                                $matchedTokensCount = 0;
+                                continue;
+                            }
+                        }
                     }
 
                     if ($pendingParenthesisCount > 0) {
@@ -669,7 +676,7 @@ EOD;
         }
 
         if ($removeUnused) {
-            $this->deleteUnusedPhpMessageFiles($dirName, array_keys($messages));
+            $this->deleteUnusedPhpMessageFiles(array_keys($messages), $dirName);
         }
     }
 
@@ -889,13 +896,17 @@ EOD;
         }
     }
 
-    private function deleteUnusedPhpMessageFiles($dirName, $existingCategories)
+    private function deleteUnusedPhpMessageFiles($existingCategories, $dirName)
     {
         $messageFiles = FileHelper::findFiles($dirName);
-        foreach ($messageFiles as $file) {
-            $category = preg_replace('#\.php$#', '', basename($file));
+        foreach ($messageFiles as $messageFile) {
+            $categoryFileName = str_replace($dirName, '', $messageFile);
+            $categoryFileName = ltrim($categoryFileName, DIRECTORY_SEPARATOR);
+            $category = preg_replace('#\.php$#', '', $categoryFileName);
+            $category = str_replace(DIRECTORY_SEPARATOR, '/', $category);
+
             if (!in_array($category, $existingCategories, true)) {
-                unlink($file);
+                unlink($messageFile);
             }
         }
     }

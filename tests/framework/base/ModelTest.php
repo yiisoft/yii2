@@ -175,6 +175,18 @@ class ModelTest extends TestCase
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
     }
 
+    public function testIsAttributeSafeForIntegerAttribute()
+    {
+        $model = new RulesModel();
+        $model->rules = [
+            [
+                [123456], 'safe',
+            ]
+        ];
+
+        $this->assertTrue($model->isAttributeSafe(123456));
+    }
+
     public function testSafeScenarios()
     {
         $model = new RulesModel();
@@ -310,8 +322,8 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!'],
         ], $speaker->getErrors());
 
-        $this->assertEquals(['Another one!', 'Something is wrong!', 'Totally wrong!'], $speaker->getErrorSummary(true));
-        $this->assertEquals(['Another one!', 'Something is wrong!'], $speaker->getErrorSummary(false));
+        $this->assertEquals(['Something is wrong!', 'Totally wrong!', 'Another one!'], $speaker->getErrorSummary(true));
+        $this->assertEquals(['Something is wrong!', 'Another one!'], $speaker->getErrorSummary(false));
 
         $speaker->clearErrors('firstName');
         $this->assertEquals([
@@ -494,7 +506,7 @@ class ModelTest extends TestCase
             return;
         }
 
-        $model = include 'stub/AnonymousModelClass.php';
+        $model = require __DIR__ . '/stub/AnonymousModelClass.php';
 
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('The "formName()" method should be explicitly defined for anonymous models');

@@ -24,8 +24,8 @@ use yii\helpers\ArrayHelper;
 /**
  * Schema is the class for retrieving metadata from an Oracle database.
  *
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
- * sequence object. This property is read-only.
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
+ * the sequence object. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -372,7 +372,7 @@ SQL;
 
     /**
      * @Overrides method in class 'Schema'
-     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
+     * @see https://secure.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
      *
      * Returns the ID of the last inserted row or sequence value.
      * @param string $sequenceName name of the sequence object (required by some DBMS)
@@ -419,10 +419,12 @@ SQL;
                     $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
                 } else {
                     if ($defaultValue !== null) {
-                        if (($len = strlen($defaultValue)) > 2 && $defaultValue[0] === "'"
-                            && $defaultValue[$len - 1] === "'"
+                        if (
+                            strlen($defaultValue) > 2
+                            && strpos($defaultValue, "'") === 0
+                            && substr($defaultValue, -1) === "'"
                         ) {
-                            $defaultValue = substr($column['DATA_DEFAULT'], 1, -1);
+                            $defaultValue = substr($defaultValue, 1, -1);
                         } else {
                             $defaultValue = trim($defaultValue);
                         }
@@ -614,7 +616,7 @@ SQL;
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,
-                    'value' => null,
+                    'value' => '',
                 ];
                 if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
                     $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;

@@ -192,10 +192,16 @@ class FormatterDateTest extends TestCase
         $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($date));
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($date, 'php:Y/m/d h:i:s A'));
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+        if (PHP_VERSION_ID >= 50500) {
             $value = new \DateTimeImmutable();
             $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
             $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
+        }
+
+        if (PHP_VERSION_ID >= 50600) {
+            // DATE_ATOM
+            $value = time();
+            $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
         }
 
         // empty input
@@ -204,10 +210,6 @@ class FormatterDateTest extends TestCase
         $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
-
-        // DATE_ATOM
-        $value = time();
-        $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
     }
 
     public function testIntlAsTimestamp()
@@ -751,6 +753,28 @@ class FormatterDateTest extends TestCase
         // timezone conversion expected with asDatetime() and asDate() with time-only value
         $this->assertNotSame('12:00:00', $this->formatter->asDatetime('12:00:00', 'HH:mm:ss'));
         $this->assertNotSame('12:00:00', $this->formatter->asDate('12:00:00', 'HH:mm:ss'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15286
+     */
+    public function testTimeWithTimezoneInfo()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+        $this->formatter->timeZone = 'Etc/GMT-3';
+
+        $time = '16:22:00.44297+03';
+
+        $this->formatter->timeFormat = 'php:H:i:s';
+        $this->assertSame('16:22:00', $this->formatter->asTime($time));
+
+        $this->formatter->timeFormat = 'HH:mm:ss';
+        $this->assertSame('16:22:00', $this->formatter->asTime($time));
+    }
+
+    public function testIntlTimeWithTimezoneInfo()
+    {
+        $this->testTimeWithTimezoneInfo();
     }
 
     /**

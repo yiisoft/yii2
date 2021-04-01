@@ -285,7 +285,7 @@ class BaseInflector
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
      * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
-     * @see http://php.net/manual/en/transliterator.transliterate.php
+     * @see https://secure.php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
 
@@ -351,9 +351,9 @@ class BaseInflector
      * Converts a word like "send_email" to "SendEmail". It
      * will remove non alphanumeric character from the word, so
      * "who's online" will be converted to "WhoSOnline".
-     * @see variablize()
      * @param string $word the word to CamelCase
      * @return string
+     * @see variablize()
      */
     public static function camelize($word)
     {
@@ -373,7 +373,7 @@ class BaseInflector
             '-',
             '_',
             '.',
-        ], ' ', preg_replace('/(\p{Lu})/u', ' \0', $name))), self::encoding());
+        ], ' ', preg_replace('/(?<!\p{Lu})(\p{Lu})|(\p{Lu})(?=\p{Ll})/u', ' \0', $name))), self::encoding());
 
         return $ucwords ? StringHelper::mb_ucwords($label, self::encoding()) : $label;
     }
@@ -477,14 +477,21 @@ class BaseInflector
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
-        $parts = explode($replacement, static::transliterate($string));
+        if ((string)$replacement !== '') {
+            $parts = explode($replacement, static::transliterate($string));
+        } else {
+            $parts = [static::transliterate($string)];
+        }
 
         $replaced = array_map(function ($element) use ($replacement) {
-            $element = preg_replace('/[^a-zA-Z0-9=\s—–]+/u', '', $element);
-            return preg_replace('/[=\s—–]+/u', $replacement, $element);
+            $element = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $element);
+            return preg_replace('/[=\s—–-]+/u', $replacement, $element);
         }, $parts);
 
         $string = trim(implode($replacement, $replaced), $replacement);
+        if ((string)$replacement !== '') {
+            $string = preg_replace('#' . preg_quote($replacement) . '+#', $replacement, $string);
+        }
 
         return $lowercase ? strtolower($string) : $string;
     }

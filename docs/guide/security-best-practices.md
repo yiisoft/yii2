@@ -2,7 +2,7 @@ Security best practices
 =======================
 
 Below we'll review common security principles and describe how to avoid threats when developing applications using Yii.
-Most of these priciples are not unique to Yii alone but apply to website or software development in general,
+Most of these principles are not unique to Yii alone but apply to website or software development in general,
 so you will also find links for further reading on the general ideas behind these.
 
 
@@ -253,9 +253,14 @@ class ContactAction extends Action
 
 > Warning: Disabling CSRF will allow any site to send POST requests to your site. It is important to implement extra validation such as checking an IP address or a secret token in this case.
 
+> Note: Since version 2.0.21 Yii supports the `sameSite` cookie setting (requires PHP version 7.3.0 or higher).
+  Setting the `sameSite` cookie setting does not make the above obsolete since not all browsers support the setting yet.
+  See the [Sessions and Cookies sameSite option](runtime-sessions-cookies.md#samesite) for more information.
+
 Further reading on the topic:
 
 - <https://www.owasp.org/index.php/CSRF>
+- <https://www.owasp.org/index.php/SameSite>
 
 
 Avoiding file exposure
@@ -301,6 +306,10 @@ provided by the H5BP project:
 - [IIS](https://github.com/h5bp/server-configs-iis).
 - [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
 
+> Note: When TLS is configured it is recommended that (session) cookies are sent over TLS exclusively.
+  This is achieved by setting the `secure` flag for sessions and/or cookies.
+  See the [Sessions and Cookies secure flag](runtime-sessions-cookies.md#secure) for more information.
+
 
 Secure Server configuration
 ---------------------------
@@ -344,3 +353,29 @@ return [
 
 > Note: you should always prefer web server configuration for 'host header attack' protection instead of the filter usage.
   [[yii\filters\HostControl]] should be used only if server configuration setup is unavailable.
+
+### Configuring SSL peer validation
+
+There is a typical misconception about how to solve SSL certificate validation issues such as:
+
+```
+cURL error 60: SSL certificate problem: unable to get local issuer certificate
+```
+
+or
+
+```
+stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
+```
+
+Many sources wrongly suggest disabling SSL peer verification. That should not be ever done since it enables
+man-in-the middle type of attacks. Instead, PHP should be configured properly:
+
+1. Download [https://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem).
+2. Add the following to your php.ini:
+  ```
+  openssl.cafile="/path/to/cacert.pem"
+  curl.cainfo="/path/to/cacert.pem".
+  ```
+
+Note that the `cacert.pem` file should be kept up to date.

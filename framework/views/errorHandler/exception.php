@@ -381,6 +381,14 @@ body.mousedown pre {
 </head>
 
 <body>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" display="none">
+        <symbol id="new-window" viewBox="0 0 24 24">
+            <g transform="scale(0.0234375 0.0234375)">
+                <path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z"></path>
+            </g>
+        </symbol>
+    </svg>
+
     <div class="header">
         <div class="tools">
             <textarea id="clipboard"><?= $handler->htmlEncode($exception) ?></textarea>
@@ -487,7 +495,11 @@ window.onload = function() {
         refreshCallStackItemCode(callStackItems[i]);
 
         // toggle code block visibility
-        callStackItems[i].getElementsByClassName('element-wrap')[0].addEventListener('click', function() {
+        callStackItems[i].getElementsByClassName('element-wrap')[0].addEventListener('click', function(event) {
+            if (event.target.nodeName.toLowerCase() === 'a') {
+                return;
+            }
+
             var callStackItem = this.parentNode,
                 code = callStackItem.getElementsByClassName('code-wrap')[0];
 
@@ -519,8 +531,8 @@ window.onload = function() {
 };
 
     // Highlight lines that have text in them but still support text selection:
-    document.onmousedown = function() { document.getElementsByTagName('body')[0].classList.add('mousedown'); }
-    document.onmouseup = function() { document.getElementsByTagName('body')[0].classList.remove('mousedown'); }
+    document.onmousedown = function() { document.getElementsByTagName('body')[0].classList.add('mousedown'); };
+    document.onmouseup = function() { document.getElementsByTagName('body')[0].classList.remove('mousedown'); };
     </script>
     <?php if (method_exists($this, 'endBody')): ?>
         <?php $this->endBody() // to allow injecting code into body (mostly by Yii Debug Toolbar)?>

@@ -288,6 +288,8 @@ if ($validator->validate($email, $error)) {
 > Note: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
   その一例が [unique](tutorial-core-validators.md#unique) コア・バリデータであり、これはモデルとともに使用されることだけを前提にして設計されています。
 
+> Note: [[yii\base\Validator::skipOnEmpty]] プロパティは [[yii\base\Model]] の検証の場合にのみ使用されます。モデル無しで使っても効果はありません。
+
 いくつかの値に対して複数の検証を実行する必要がある場合は、属性と規則の両方をその場で宣言することが出来る [[yii\base\DynamicModel]] を使うことが出来ます。
 これは、次のような使い方をします。
 
@@ -353,8 +355,10 @@ Yii のリリースに含まれている [コア・バリデータ](tutorial-cor
  * @param mixed $params 規則に与えられる "params" の値
  * @param \yii\validators\InlineValidator $validator 関係する InlineValidator のインスタンス。
  * このパラメータは、バージョン 2.0.11 以降で利用可能。
+ * @param mixed $current 現在検証されている属性の値
+ * このパラメータは、バージョン 2.0.36 以降で利用可能。
  */
-function ($attribute, $params, $validator)
+function ($attribute, $params, $validator, $current)
 ```
 
 属性が検証に失敗した場合は、メソッド/関数 は [[yii\base\Model::addError()]] を呼んでエラー・メッセージをモデルに保存し、

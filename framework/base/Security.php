@@ -55,12 +55,12 @@ class Security extends Component
     ];
     /**
      * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
-     * @see [hash_algos()](http://php.net/manual/en/function.hash-algos.php)
+     * @see [hash_algos()](https://secure.php.net/manual/en/function.hash-algos.php)
      */
     public $kdfHash = 'sha256';
     /**
      * @var string Hash algorithm for message authentication. Recommend sha256, sha384 or sha512.
-     * @see [hash_algos()](http://php.net/manual/en/function.hash-algos.php)
+     * @see [hash_algos()](https://secure.php.net/manual/en/function.hash-algos.php)
      */
     public $macHash = 'sha256';
     /**
@@ -91,6 +91,38 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+    /**
+     * @var boolean if LibreSSL should be used.
+     * The recent (> 2.1.5) LibreSSL RNGs are faster and likely better than /dev/urandom.
+     */
+    private $_useLibreSSL;
+
+
+    /**
+     * @return bool if LibreSSL should be used
+     * Use version is 2.1.5 or higher.
+     * @since 2.0.36
+     */
+    protected function shouldUseLibreSSL()
+    {
+        if ($this->_useLibreSSL === null) {
+            // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
+            // https://bugs.php.net/bug.php?id=71143
+            $this->_useLibreSSL = defined('OPENSSL_VERSION_TEXT')
+                && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
+                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
+        }
+
+        return $this->_useLibreSSL;
+    }
+
+    /**
+     * @return bool if operating system is Windows
+     */
+    private function isWindows()
+    {
+        return DIRECTORY_SEPARATOR !== '/';
+    }
 
     /**
      * Encrypts data using a password.
@@ -104,7 +136,7 @@ class Security extends Component
      * poor-quality or compromised passwords.
      * @param string $data the data to encrypt
      * @param string $password the password to use for encryption
-     * @return string the encrypted data
+     * @return string the encrypted data as byte string
      * @see decryptByPassword()
      * @see encryptByKey()
      */
@@ -123,7 +155,7 @@ class Security extends Component
      * @param string $data the data to encrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
-     * @return string the encrypted data
+     * @return string the encrypted data as byte string
      * @see decryptByKey()
      * @see encryptByPassword()
      */
@@ -166,7 +198,7 @@ class Security extends Component
      * @param string|null $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      *
-     * @return string the encrypted data
+     * @return string the encrypted data as byte string
      * @throws InvalidConfigException on OpenSSL not loaded
      * @throws Exception on OpenSSL error
      * @see decrypt()
@@ -330,7 +362,7 @@ class Security extends Component
      */
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
-        if (function_exists('hash_pbkdf2')) {
+        if (function_exists('hash_pbkdf2') && PHP_VERSION_ID >= 50500) {
             $outputKey = hash_pbkdf2($algo, $password, $salt, $iterations, $length, true);
             if ($outputKey === false) {
                 throw new InvalidArgumentException('Invalid parameters to hash_pbkdf2()');
@@ -439,7 +471,6 @@ class Security extends Component
         return false;
     }
 
-    private $_useLibreSSL;
     private $_randomFile;
 
     /**
@@ -468,22 +499,10 @@ class Security extends Component
         }
 
         // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
-        // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
-        // https://bugs.php.net/bug.php?id=71143
-        if ($this->_useLibreSSL === null) {
-            $this->_useLibreSSL = defined('OPENSSL_VERSION_TEXT')
-                && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
-                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
-        }
-
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
         if (function_exists('openssl_random_pseudo_bytes')
-            && ($this->_useLibreSSL
-            || (
-                DIRECTORY_SEPARATOR !== '/'
-                && substr_compare(PHP_OS, 'win', 0, 3, true) === 0
-            ))
+            && ($this->shouldUseLibreSSL() || $this->isWindows())
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
@@ -506,7 +525,7 @@ class Security extends Component
         }
 
         // If not on Windows, try to open a random device.
-        if ($this->_randomFile === null && DIRECTORY_SEPARATOR === '/') {
+        if ($this->_randomFile === null && !$this->isWindows()) {
             // urandom is a symlink to random on FreeBSD.
             $device = PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom';
             // Check random device for special character device protection mode. Use lstat()
@@ -605,7 +624,7 @@ class Security extends Component
      * compute the hash doubles for every increment by one of $cost.
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
-     * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
+     * might increase in future versions of PHP (https://secure.php.net/manual/en/function.password-hash.php)
      * @throws Exception on bad password parameter or cost parameter.
      * @see validatePassword()
      */
@@ -667,7 +686,7 @@ class Security extends Component
     /**
      * Generates a salt that can be used to generate a password hash.
      *
-     * The PHP [crypt()](http://php.net/manual/en/function.crypt.php) built-in function
+     * The PHP [crypt()](https://secure.php.net/manual/en/function.crypt.php) built-in function
      * requires, for the Blowfish hash algorithm, a salt string in a specific format:
      * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
      * from the alphabet "./0-9A-Za-z".

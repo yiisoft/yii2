@@ -164,6 +164,10 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('123.1', $this->formatter->asDecimal($value, 1));
         $this->assertSame('123', $this->formatter->asDecimal($value, 0));
 
+        // power values
+        $this->assertSame('2,000', $this->formatter->asDecimal(2e3));
+        $this->assertSame('0', $this->formatter->asDecimal(1E-10));
+
         $value = 123;
         $this->assertSame('123', $this->formatter->asDecimal($value));
         $this->assertSame('123.00', $this->formatter->asDecimal($value, 2));
@@ -226,7 +230,9 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('0.00', $this->formatter->asDecimal('0.00'));
         $this->assertSame('0.01', $this->formatter->asDecimal('00000000000000.0100000000000'));
 
+        // power values
         $this->assertSame('2,000.00', $this->formatter->asDecimal(2e3));
+        $this->assertSame('0.00', $this->formatter->asDecimal(1E-10));
 
         $this->formatter->decimalSeparator = ',';
         $this->formatter->thousandSeparator = '.';
@@ -310,6 +316,9 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('$123.20', $this->formatter->asCurrency('123.20'));
         $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
         $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
+
+        // power values
+        $this->assertSame('$0.00', $this->formatter->asCurrency(1E-10));
 
         $this->formatter->locale = 'en-US';
         $this->formatter->currencyCode = 'USD';
@@ -403,6 +412,14 @@ class FormatterNumberTest extends TestCase
         $this->formatter->thousandSeparator = ' ';
         $this->formatter->decimalSeparator = ',';
         $this->assertSame('USD 95 836 208 451 783 051,86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
+
+        // different currency decimal separator
+        $this->formatter->locale = 'ru-RU';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
+        $this->formatter->currencyDecimalSeparator = ',';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
+        $this->formatter->currencyDecimalSeparator = '.';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123.00\xc2\xa0₽", "123.00\xc2\xa0руб."]);
     }
 
     /**
@@ -474,6 +491,9 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency(-123.45));
 
+        // power values
+        $this->assertSame('USD 0.00', $this->formatter->asCurrency(1E-10));
+
         $this->formatter->currencyCode = 'EUR';
         $this->assertSame('EUR 123.00', $this->formatter->asCurrency('123'));
         $this->assertSame('EUR 0.00', $this->formatter->asCurrency('0'));
@@ -502,12 +522,12 @@ class FormatterNumberTest extends TestCase
 
     public function testIntlAsScientific()
     {
-        $value = '123';
-        $this->assertSame('1.23E2', $this->formatter->asScientific($value));
-        $value = '123456';
-        $this->assertSame('1.23456E5', $this->formatter->asScientific($value));
-        $value = '-123456.123';
-        $this->assertSame('-1.23456123E5', $this->formatter->asScientific($value));
+        // see https://github.com/yiisoft/yii2/issues/17708
+        $this->markTestSkipped('The test is unreliable since output depends on ICU version');
+
+        $this->assertSame('1.23E2', $this->formatter->asScientific('123'));
+        $this->assertSame('1.23456E5', $this->formatter->asScientific('123456'));
+        $this->assertSame('-1.23456123E5', $this->formatter->asScientific('-123456.123'));
 
         // empty input
         $this->assertSame('0E0', $this->formatter->asScientific(false));
@@ -521,12 +541,9 @@ class FormatterNumberTest extends TestCase
 
     public function testAsScientific()
     {
-        $value = '123';
-        $this->assertSame('1.23E+2', $this->formatter->asScientific($value, 2));
-        $value = '123456';
-        $this->assertSame('1.234560E+5', $this->formatter->asScientific($value));
-        $value = '-123456.123';
-        $this->assertSame('-1.234561E+5', $this->formatter->asScientific($value));
+        $this->assertSame('1.23E+2', $this->formatter->asScientific('123', 2));
+        $this->assertSame('1.234560E+5', $this->formatter->asScientific('123456'));
+        $this->assertSame('-1.234561E+5', $this->formatter->asScientific('-123456.123'));
 
         // empty input
         $this->assertSame('0.000000E+0', $this->formatter->asScientific(false));
@@ -594,8 +611,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('999 B', $this->formatter->asShortSize(999));
         $this->assertSame('999 B', $this->formatter->asShortSize('999'));
         $this->assertSame('1.05 MB', $this->formatter->asShortSize(1024 * 1024));
-        $this->assertSame('1 KB', $this->formatter->asShortSize(1000));
-        $this->assertSame('1.02 KB', $this->formatter->asShortSize(1023));
+        $this->assertSame('1 kB', $this->formatter->asShortSize(1000));
+        $this->assertSame('1.02 kB', $this->formatter->asShortSize(1023));
         $this->assertNotEquals('3 PB', $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // string values
         $this->assertSame('28.41 GB', $this->formatter->asShortSize(28406984038));
@@ -632,8 +649,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('999 B', $this->formatter->asShortSize('999'));
         $this->assertSame('1.05 MB', $this->formatter->asShortSize(1024 * 1024));
         $this->assertSame('1.0486 MB', $this->formatter->asShortSize(1024 * 1024, 4));
-        $this->assertSame('1.00 KB', $this->formatter->asShortSize(1000));
-        $this->assertSame('1.02 KB', $this->formatter->asShortSize(1023));
+        $this->assertSame('1.00 kB', $this->formatter->asShortSize(1000));
+        $this->assertSame('1.02 kB', $this->formatter->asShortSize(1023));
         $this->assertNotEquals('3 PB', $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // string values
         $this->assertSame('28.41 GB', $this->formatter->asShortSize(28406984038));

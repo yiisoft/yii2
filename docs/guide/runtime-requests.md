@@ -200,3 +200,27 @@ With the above configuration, all headers listed in `secureHeaders` are filtered
 except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is made by the proxy.
 In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
 will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].
+
+Since 2.0.31 [RFC 7239](https://tools.ietf.org/html/rfc7239) `Forwarded` header is supported. In order to enable
+it you need to add header name to `secureHeaders`. Make sure your proxy is setting it, otherwise end user would be
+able to spoof IP and protocol.
+
+### Already resolved user IP <span id="already-respolved-user-ip"></span>
+
+If the user's IP address is resolved before the Yii application (e.g. `ngx_http_realip_module` or similar),
+the `request` component will work correctly with the following configuration:
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '0.0.0.0/0',
+    ],
+    'ipHeaders' => [], 
+],
+```
+
+In this case, the value of [[yii\web\Request::userIP|userIP]] will be equal to `$_SERVER['REMOTE_ADDR']`.
+Also, properties that are resolved from HTTP headers will work correctly (e.g. [[yii\web\Request::getIsSecureConnection()]]).
+
+> Warning: The `trustedHosts=['0.0.0.0/0']` setting assumes that all IPs are trusted.

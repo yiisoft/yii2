@@ -51,6 +51,6 @@ Yii 2.0 nécessite PHP 5.4.0 ou plus. Vous pouvez trouver plus de détails sur l
 en utilisant le script de test de la configuration inclus dans chaque distribution de Yii.
 
 Utiliser Yii requiert des connaissances de base sur la programmation objet (OOP), en effet Yii est un framework basé sur ce type de programmation.
-Yii 2.0 utilise aussi des fonctionnalités récentes de PHP, telles que les [espaces de noms](http://www.php.net/manual/fr/language.namespaces.php) et les [traits](http://www.php.net/manual/fr/language.oop5.traits.php).
+Yii 2.0 utilise aussi des fonctionnalités récentes de PHP, telles que les [espaces de noms](https://secure.php.net/manual/fr/language.namespaces.php) et les [traits](https://secure.php.net/manual/fr/language.oop5.traits.php).
 Comprendre ces concepts vous aidera à mieux prendre en main Yii.
 

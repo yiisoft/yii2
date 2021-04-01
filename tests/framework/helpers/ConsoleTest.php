@@ -214,7 +214,7 @@ class ConsoleTest extends TestCase
         $model->validate(null, false);
         $options = ['showAllErrors' => true];
         $expectedHtml =  "Error message. Here are some chars: < >\nError message. Here are even more chars: \"\"";
-        $this->assertEquals($expectedHtml, Console::errorSummary($model, $options));
+        $this->assertEqualsWithoutLE($expectedHtml, Console::errorSummary($model, $options));
     }
 }
 

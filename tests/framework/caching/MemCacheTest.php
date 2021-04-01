@@ -41,16 +41,16 @@ class MemCacheTest extends CacheTestCase
 
     public function testExpire()
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test memcache expiry on travis-ci.');
+        if (getenv('GITHUB_ACTIONS') == 'true') {
+            $this->markTestSkipped('Can not reliably test memcache expiry on GitHub actions.');
         }
         parent::testExpire();
     }
 
     public function testExpireAdd()
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test memcache expiry on travis-ci.');
+        if (getenv('GITHUB_ACTIONS') == 'true') {
+            $this->markTestSkipped('Can not reliably test memcache expiry on GitHub actions.');
         }
         parent::testExpireAdd();
     }

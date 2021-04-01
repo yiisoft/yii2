@@ -231,7 +231,7 @@ Using the Hash Format, Yii internally applies parameter binding for values, so i
 here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
 a variable obtained from user side as a column name without any additional checks, the application will become vulnerable
 to SQL injection attack. In order to keep the application secure, either do not use variables as column names or
-filter variable against white list. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+filter variable against allowlist. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
 guide article. For example the following code is vulnerable:
 
 ```php
@@ -281,6 +281,7 @@ the operator can be one of the following:
   The method will properly quote the column name and escape values in the range.
   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+  For example, `['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` will generate `(id, name) IN ((1, 'oy'))`.
 
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 
@@ -320,14 +321,14 @@ the operator can be one of the following:
 Using the Operator Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
 here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
 a variable as a column name, the application will likely become vulnerable to SQL injection attack. In order to keep
-application secure, either do not use variables as column names or filter variable against white list.
+application secure, either do not use variables as column names or filter variable against allowlist.
 In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
 guide article. For example the following code is vulnerable:
 
 ```php
 // Vulnerable code:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value is safe, but $column name won't be encoded!
 ```
@@ -601,6 +602,28 @@ $query1->union($query2);
 
 You can call [[yii\db\Query::union()|union()]] multiple times to append more `UNION` fragments. 
 
+### [[yii\db\Query::withQuery()|withQuery()]] <span id="with-query"></span>
+
+The [[yii\db\Query::withQuery()|withQuery()]] method specifies the `WITH` prefix of a SQL query. You can use it instead of subquery for more readability and some unique features (recursive CTE). Read more at [modern-sql](https://modern-sql.com/feature/with). For example, this query will select all nested permissions of `admin` with their children recursively,
+
+```php
+$initialQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->where(['parent' => 'admin']);
+
+$recursiveQuery = (new \yii\db\Query())
+    ->select(['aic.parent', 'aic.child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->innerJoin('t1', 't1.child = aic.parent');
+
+$mainQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from('t1')
+    ->withQuery($initialQuery->union($recursiveQuery), 't1', true);
+```
+
+[[yii\db\Query::withQuery()|withQuery()]] can be called multiple times to prepend more CTE's to main query. Queries will be prepend in same order as they attached. If one of query is recursive then whole CTE become recursive.
 
 ## Query Methods <span id="query-methods"></span>
 
@@ -693,6 +716,9 @@ $query = (new \yii\db\Query())
     ->all();
 ```
 
+The column which name is passed into [[yii\db\Query::indexBy()|indexBy()]] method must be present in the result set in order 
+for indexing to work - it is up to the developer to take care of it.
+
 To index by expression values, pass an anonymous function to the [[yii\db\Query::indexBy()|indexBy()]] method:
 
 ```php
@@ -772,7 +798,7 @@ foreach ($query->each() as $username => $user) {
 #### Limitations of batch query in MySQL <span id="batch-query-mysql"></span>
 
 MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are 
-[`buffered`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
+[`buffered`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
 of using the cursor to get the data, because it doesn't prevent the whole result set from being 
 loaded into the client's memory by the driver.
 

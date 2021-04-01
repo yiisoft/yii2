@@ -48,7 +48,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $expression->getOperator();
+        $operator = strtoupper($expression->getOperator());
         $column = $expression->getColumn();
         $values = $expression->getValue();
         $escape = $expression->getEscapingReplacements();
@@ -66,7 +66,9 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             return $not ? '' : '0=1';
         }
 
-        if (strpos($column, '(') === false) {
+        if ($column instanceof ExpressionInterface) {
+            $column = $this->queryBuilder->buildExpression($column, $params);
+        } elseif (is_string($column) && strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
 

@@ -2,7 +2,7 @@ Html ヘルパ
 ===========
 
 全てのウェブ・アプリケーションは大量の HTML マークアップを生成します。
-マークアップが静的な場合は、[PHP と HTML を一つのファイルに混ぜる](http://php.net/manual/ja/language.basic-syntax.phpmode.php) ことによって効率よく生成することが可能ですが、マークアップを動的にするとなると、何らかの助けが無ければ、処理がトリッキーになってきます。
+マークアップが静的な場合は、[PHP と HTML を一つのファイルに混ぜる](https://secure.php.net/manual/ja/language.basic-syntax.phpmode.php) ことによって効率よく生成することが可能ですが、マークアップを動的にするとなると、何らかの助けが無ければ、処理がトリッキーになってきます。
 Yii はそのような手助けを Html ヘルパの形式で提供します。
 これは、よく使われる HTML タグとそのオプションやコンテントを処理するための一連のスタティック・メソッドを提供するものです。
 
@@ -147,8 +147,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### コンテントをエンコードおよびデコードする <span id="encoding-and-decoding-content"></span>
 
 コンテントが適切かつ安全に HTML として表示されるためには、コンテント内の特殊文字がエンコードされなければなりません。
-特殊文字のエンコードとデコードは、PHP では [htmlspecialchars](http://www.php.net/manual/ja/function.htmlspecialchars.php) と
-[htmlspecialchars_decode](http://www.php.net/manual/ja/function.htmlspecialchars-decode.php) によって行われます。
+特殊文字のエンコードとデコードは、PHP では [htmlspecialchars](https://secure.php.net/manual/ja/function.htmlspecialchars.php) と
+[htmlspecialchars_decode](https://secure.php.net/manual/ja/function.htmlspecialchars-decode.php) によって行われます。
 これらのメソッドを直接使用する場合の問題は、文字エンコーディングと追加のフラグを毎回指定しなければならないことです。
 フラグは毎回同じものであり、文字エンコーディングはセキュリティ問題を防止するためにアプリケーションのそれと一致すべきものですから、
 Yii は二つのコンパクトかつ使いやすいメソッドを用意しました。
@@ -327,18 +327,18 @@ echo Html::getAttributeName('dates[0]');
 埋め込みのスタイルとスクリプトをラップするタグを生成するメソッドが二つあります。
 
 ```php
-<?= Html::style('.danger { color: #f00; }') ?>
+<?= Html::style('.danger { color: #f00; }', ['media' => 'print']) ?>
 
 これは次の HTML を生成します。
 
-<style>.danger { color: #f00; }</style>
+<style media="print">.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("こんにちは!");', ['defer' => true]) ?>
+<?= Html::script('alert("こんにちは!");') ?>
 
 これは次の HTML を生成します。
 
-<script defer>alert("こんにちは!");</script>
+<script>alert("こんにちは!");</script>
 ```
 
 CSS ファイルの外部スタイルをリンクしたい場合は、次のようにします。

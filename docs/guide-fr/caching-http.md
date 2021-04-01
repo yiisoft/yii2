@@ -100,7 +100,7 @@ Cache-Control: public, max-age=3600
 
 ## Propriété "Session Cache Limiter" <span id="session-cache-limiter"></span>
 
-Lorsqu'une page utilise une session, PHP envoie automatiquement quelques entêtes HTTP relatifs à la mise en cache comme spécifié dans la propriété `session.cache_limiter` de PHP INI. Ces entêtes peuvent interférer ou désactiver la mise en cache que vous voulez obtenir de `HttpCache`. Pour éviter ce problème, par défaut, `HttpCache` désactive l'envoi de ces entêtes automatiquement. Si vous désirez modifier ce comportement, vous devez configurer la propriété [[yii\filters\HttpCache::sessionCacheLimiter]]. Cette propriété accepte une chaîne de caractères parmi `public`, `private`, `private_no_expire` et `nocache`. Reportez-vous au manuel de PHP à propos de [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php) pour des explications sur ces valeurs.
+Lorsqu'une page utilise une session, PHP envoie automatiquement quelques entêtes HTTP relatifs à la mise en cache comme spécifié dans la propriété `session.cache_limiter` de PHP INI. Ces entêtes peuvent interférer ou désactiver la mise en cache que vous voulez obtenir de `HttpCache`. Pour éviter ce problème, par défaut, `HttpCache` désactive l'envoi de ces entêtes automatiquement. Si vous désirez modifier ce comportement, vous devez configurer la propriété [[yii\filters\HttpCache::sessionCacheLimiter]]. Cette propriété accepte une chaîne de caractères parmi `public`, `private`, `private_no_expire` et `nocache`. Reportez-vous au manuel de PHP à propos de [session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php) pour des explications sur ces valeurs.
 
 
 ## Implications SEO <span id="seo-implications"></span>

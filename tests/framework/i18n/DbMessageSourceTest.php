@@ -86,23 +86,22 @@ class DbMessageSourceTest extends I18NTest
 
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
 
-        static::$db->createCommand()->batchInsert('source_message', ['id', 'category', 'message'], [
-            [1, 'test', 'Hello world!'],
-            [2, 'test', 'The dog runs fast.'],
-            [3, 'test', 'His speed is about {n} km/h.'],
-            [4, 'test', 'His name is {name} and his speed is about {n, number} km/h.'],
-            [5, 'test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!'],
+        static::$db->createCommand()->truncateTable('source_message');
+        static::$db->createCommand()->batchInsert('source_message', ['category', 'message'], [
+            ['test', 'Hello world!'], // id = 1
+            ['test', 'The dog runs fast.'], // id = 2
+            ['test', 'His speed is about {n} km/h.'], // id = 3
+            ['test', 'His name is {name} and his speed is about {n, number} km/h.'], // id = 4
+            ['test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!'], // id = 5
         ])->execute();
 
-        static::$db->createCommand()->batchInsert('message', ['id', 'language', 'translation'], [
-            [1, 'de', 'Hallo Welt!'],
-            [2, 'de-DE', 'Der Hund rennt schnell.'],
-            [2, 'en-US', 'The dog runs fast (en-US).'],
-            [2, 'ru', 'Собака бегает быстро.'],
-            [3, 'de-DE', 'Seine Geschwindigkeit beträgt {n} km/h.'],
-            [4, 'de-DE', 'Er heißt {name} und ist {n, number} km/h schnell.'],
-            [5, 'ru', 'На диване {n, plural, =0{нет кошек} =1{лежит одна кошка} one{лежит # кошка} few{лежит # кошки} many{лежит # кошек} other{лежит # кошки}}!'],
-        ])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 1, 'language' => 'de', 'translation' => 'Hallo Welt!'])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 2, 'language' => 'de-DE', 'translation' => 'Der Hund rennt schnell.'])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 2, 'language' => 'en-US', 'translation' => 'The dog runs fast (en-US).'])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 2, 'language' => 'ru', 'translation' => 'Собака бегает быстро.'])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 3, 'language' => 'de-DE', 'translation' => 'Seine Geschwindigkeit beträgt {n} km/h.'])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 4, 'language' => 'de-DE', 'translation' => 'Er heißt {name} und ist {n, number} km/h schnell.'])->execute();
+        static::$db->createCommand()->insert('message', ['id' => 5, 'language' => 'ru', 'translation' => 'На диване {n, plural, =0{нет кошек} =1{лежит одна кошка} one{лежит # кошка} few{лежит # кошки} many{лежит # кошек} other{лежит # кошки}}!'])->execute();
     }
 
     public static function tearDownAfterClass()
@@ -116,10 +115,10 @@ class DbMessageSourceTest extends I18NTest
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
+     * @return \yii\db\Connection
      * @throws \yii\db\Exception
      * @throws \yii\base\InvalidConfigException
-     * @return \yii\db\Connection
+     * @throws \yii\base\InvalidParamException
      */
     public static function getConnection()
     {

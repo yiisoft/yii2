@@ -24,12 +24,15 @@ DROP TABLE IF EXISTS `dossier`;
 DROP TABLE IF EXISTS `employee`;
 DROP TABLE IF EXISTS `department`;
 DROP TABLE IF EXISTS `storage`;
+DROP TABLE IF EXISTS `alpha`;
+DROP TABLE IF EXISTS `beta`;
 DROP VIEW IF EXISTS `animal_view`;
 DROP TABLE IF EXISTS `T_constraints_4` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_1` CASCADE;
 DROP TABLE IF EXISTS `T_upsert` CASCADE;
+DROP TABLE IF EXISTS `T_upsert_1`;
 
 CREATE TABLE `constraints`
 (
@@ -209,6 +212,18 @@ CREATE TABLE `storage` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `alpha` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `string_identifier` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `beta` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `alpha_string_identifier` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE VIEW `animal_view` AS SELECT * FROM `animal`;
 
 INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Cat');
@@ -249,7 +264,7 @@ INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VA
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 8.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO `document` (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
@@ -265,6 +280,23 @@ INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (1, 1, 1,
 INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
 INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
+INSERT INTO `alpha` (id, string_identifier) VALUES (1, '1');
+INSERT INTO `alpha` (id, string_identifier) VALUES (2, '1a');
+INSERT INTO `alpha` (id, string_identifier) VALUES (3, '01');
+INSERT INTO `alpha` (id, string_identifier) VALUES (4, '001');
+INSERT INTO `alpha` (id, string_identifier) VALUES (5, '2');
+INSERT INTO `alpha` (id, string_identifier) VALUES (6, '2b');
+INSERT INTO `alpha` (id, string_identifier) VALUES (7, '02');
+INSERT INTO `alpha` (id, string_identifier) VALUES (8, '002');
+
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (1, '1');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (2, '01');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (3, '001');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (4, '001');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (5, '2');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (6, '2b');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (7, '2b');
+INSERT INTO `beta` (id, alpha_string_identifier) VALUES (8, '02');
 
 /**
  * (MySQL-)Database Schema for validator tests
@@ -365,3 +397,8 @@ CREATE TABLE `T_upsert`
     UNIQUE (`email`, `recovery_email`)
 )
 ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `T_upsert_1` (
+  `a` int(11) NOT NULL,
+  PRIMARY KEY (`a`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

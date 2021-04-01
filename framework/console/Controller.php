@@ -28,12 +28,14 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property string $help This property is read-only.
- * @property string $helpSummary This property is read-only.
- * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * @property-read string $help This property is read-only.
+ * @property-read string $helpSummary This property is read-only.
+ * @property-read array $passedOptionValues The properties corresponding to the passed options. This property
+ * is read-only.
+ * @property-read array $passedOptions The names of the options passed during execution. This property is
  * read-only.
- * @property array $passedOptions The names of the options passed during execution. This property is
- * read-only.
+ * @property Request $request
+ * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,7 +56,7 @@ class Controller extends \yii\base\Controller
      */
     public $interactive = true;
     /**
-     * @var bool whether to enable ANSI color in the output.
+     * @var bool|null whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
@@ -62,13 +64,31 @@ class Controller extends \yii\base\Controller
      * @var bool whether to display help information about current command.
      * @since 2.0.10
      */
-    public $help;
+    public $help = false;
+    /**
+     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception.
+     * false - `ExitCode::UNSPECIFIED_ERROR`.
+     * Default: `YII_ENV_TEST`
+     * @since 2.0.36
+     */
+    public $silentExitOnException;
 
     /**
      * @var array the options passed during execution.
      */
     private $_passedOptions = [];
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeAction($action)
+    {
+        $silentExit = $this->silentExitOnException !== null ? $this->silentExitOnException : YII_ENV_TEST;
+        Yii::$app->errorHandler->silentExitOnException = $silentExit;
+
+        return parent::beforeAction($action);
+    }
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -105,7 +125,18 @@ class Controller extends \yii\base\Controller
                     if (array_key_exists($name, $optionAliases)) {
                         $params[$optionAliases[$name]] = $value;
                     } else {
-                        throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
+                        $message = Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]);
+                        if (!empty($optionAliases)) {
+                            $aliasesAvailable = [];
+                            foreach ($optionAliases as $alias => $option) {
+                                $aliasesAvailable[] = '-' . $alias . ' (--' . $option . ')';
+                            }
+
+                            $message .= '. ' . Yii::t('yii', 'Aliases available: {aliases}', [
+                                'aliases' => implode(', ', $aliasesAvailable)
+                            ]);
+                        }
+                        throw new Exception($message);
                     }
                 }
                 unset($params['_aliases']);
@@ -122,7 +153,7 @@ class Controller extends \yii\base\Controller
 
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
-                    if (is_array($default)) {
+                    if (is_array($default) && is_string($value)) {
                         $this->$name = preg_split('/\s*,\s*(?![^()]*\))/', $value);
                     } elseif ($default !== null) {
                         settype($value, gettype($default));
@@ -136,7 +167,12 @@ class Controller extends \yii\base\Controller
                         unset($params[$kebabName]);
                     }
                 } elseif (!is_int($name)) {
-                    throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
+                    $message = Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]);
+                    if (!empty($options)) {
+                        $message .= '. ' . Yii::t('yii', 'Options available: {options}', ['options' => '--' . implode(', --', $options)]);
+                    }
+
+                    throw new Exception($message);
                 }
             }
         }
@@ -166,19 +202,40 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $args = array_values($params);
-
+        $args = [];
         $missing = [];
+        $actionParams = [];
+        $requestedParams = [];
         foreach ($method->getParameters() as $i => $param) {
-            if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = $args[$i] === '' ? [] : preg_split('/\s*,\s*/', $args[$i]);
+            $name = $param->getName();
+            $key = null;
+            if (array_key_exists($i, $params)) {
+                $key = $i;
+            } elseif (array_key_exists($name, $params)) {
+                $key = $name;
             }
-            if (!isset($args[$i])) {
-                if ($param->isDefaultValueAvailable()) {
-                    $args[$i] = $param->getDefaultValue();
+
+            if ($key !== null) {
+                if (PHP_VERSION_ID >= 80000) {
+                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
                 } else {
-                    $missing[] = $param->getName();
+                    $isArray = $param->isArray();
                 }
+                if ($isArray) {
+                    $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
+                }
+                $args[] = $actionParams[$key] = $params[$key];
+                unset($params[$key]);
+            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+                try {
+                    $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (\yii\base\Exception $e) {
+                    throw new Exception($e->getMessage());
+                }
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $actionParams[$i] = $param->getDefaultValue();
+            } else {
+                $missing[] = $name;
             }
         }
 
@@ -186,7 +243,12 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
-        return $args;
+        // We use a different array here, specifically one that doesn't contain service instances but descriptions instead.
+        if (\Yii::$app->requestedParams === null) {
+            \Yii::$app->requestedParams = array_merge($actionParams, $requestedParams);
+        }
+
+        return array_merge($args, $params);
     }
 
     /**
@@ -227,6 +289,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
+     * @param int ...$args additional parameters to decorate the output
      * @return int|bool Number of bytes printed or false on error
      */
     public function stdout($string)
@@ -358,7 +421,7 @@ class Controller extends \yii\base\Controller
     public function options($actionID)
     {
         // $actionId might be used in subclasses to provide options specific to action id
-        return ['color', 'interactive', 'help'];
+        return ['color', 'interactive', 'help', 'silentExitOnException'];
     }
 
     /**
@@ -453,6 +516,10 @@ class Controller extends \yii\base\Controller
      */
     public function getActionHelpSummary($action)
     {
+        if ($action === null) {
+            return $this->ansiFormat(Yii::t('yii', 'Action not found.'), Console::FG_RED);
+        }
+
         return $this->parseDocCommentSummary($this->getActionMethodReflection($action));
     }
 
@@ -493,7 +560,13 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
-            if ($reflection->getClass() !== null) {
+            if (PHP_VERSION_ID >= 80000) {
+                $class = $reflection->getType();
+            } else {
+                $class = $reflection->getClass();
+            }
+
+            if ($class !== null) {
                 continue;
             }
             $name = $reflection->getName();

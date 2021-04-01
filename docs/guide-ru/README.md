@@ -92,6 +92,7 @@ All Rights Reserved.
 * [Загрузка файлов](input-file-upload.md)
 * [Табличный ввод](input-tabular-input.md)
 * [Работа с несколькими моделями](input-multiple-models.md)
+* [Расширение ActiveForm на стороне клиента](input-form-javascript.md)
 
 
 Отображение данных
@@ -102,7 +103,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* Работа с клиентскими скриптами
+* [Работа с клиентскими скриптами](output-client-scripts.md)
 * [Темизация](output-theming.md)
 
 

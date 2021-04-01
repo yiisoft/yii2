@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 You can also access attributes like accessing array elements, thanks to the support for
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) and [Traversable](http://php.net/manual/en/class.traversable.php)
+[ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) and [Traversable](https://secure.php.net/manual/en/class.traversable.php)
 by [[yii\base\Model]]:
 
 ```php
@@ -478,7 +478,7 @@ public function fields()
 }
 
 // filter out some fields, best used when you want to inherit the parent implementation
-// and blacklist some sensitive fields.
+// and exclude some sensitive fields.
 public function fields()
 {
     $fields = parent::fields();

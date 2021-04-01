@@ -14,11 +14,11 @@ use yii\base\InvalidConfigException;
 /**
  * Locale provides various locale information via convenient methods.
  *
- * The class requires [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+ * The class requires [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed.
+ *
+ * @property-read string $currencySymbol This property is read-only.
+ *
  * @since 2.0.14
- *
- * @property string $currencySymbol This property is read-only.
- *
  */
 class Locale extends Component
 {

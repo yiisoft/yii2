@@ -2,10 +2,10 @@
 ===========
 
 在创建资源类和指定资源格输出式化后，
-下一步就是创建控制器操作将资源通过RESTful APIs展现给终端用户。
+下一步就是创建控制器操作将资源通过 RESTful APIs 展现给终端用户。
 
-Yii 提供两个控制器基类来简化创建RESTful 
-操作的工作:[[yii\rest\Controller]] 和 [[yii\rest\ActiveController]]，
+Yii 提供两个控制器基类来简化创建 RESTful 
+操作的工作：[[yii\rest\Controller]] 和 [[yii\rest\ActiveController]]，
 两个类的差别是后者提供一系列将资源处理成 [Active Record](db-active-record.md) 的操作。
 因此如果使用 [Active Record](db-active-record.md) 内置的操作会比较方便，可考虑将控制器类
 继承 [[yii\rest\ActiveController]]，
@@ -31,8 +31,8 @@ Yii 提供两个控制器基类来简化创建RESTful
 例如，提供用户信息的控制器
 可命名为 `UserController`。
 
-创建新的操作和Web应用中创建操作类似，
-唯一的差别是Web应用中调用 `render()` 方法渲染一个视图作为返回值，
+创建新的操作和 Web 应用中创建操作类似，
+唯一的差别是 Web 应用中调用 `render()` 方法渲染一个视图作为返回值，
 对于 RESTful 操作直接返回数据，
 [[yii\rest\Controller::serializer|serializer]] 和 [[yii\web\Response|response object]] 
 会处理原始数据到请求格式的转换，例如
@@ -127,7 +127,7 @@ public function behaviors()
 * [[yii\rest\CreateAction|create]]：创建新的资源；
 * [[yii\rest\UpdateAction|update]]：更新一个存在的资源；
 * [[yii\rest\DeleteAction|delete]]：删除指定的资源；
-* [[yii\rest\OptionsAction|options]]：返回支持的HTTP方法。
+* [[yii\rest\OptionsAction|options]]：返回支持的 HTTP 方法。
 
 所有这些动作通过 [[yii\rest\ActiveController::actions()|actions()]] 方法申明，可覆盖 `actions()` 方法配置或禁用这些动作，
 如下所示：
@@ -137,10 +137,10 @@ public function actions()
 {
     $actions = parent::actions();
 
-    // 禁用"delete" 和 "create" 动作
+    // 禁用 "delete" 和 "create" 动作
     unset($actions['delete'], $actions['create']);
 
-    // 使用"prepareDataProvider()"方法自定义数据provider 
+    // 使用 "prepareDataProvider()" 方法自定义数据 provider 
     $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
     return $actions;
@@ -148,7 +148,7 @@ public function actions()
 
 public function prepareDataProvider()
 {
-    // 为"index"动作准备和返回数据provider
+    // 为 "index" 动作准备和返回数据 provider
 }
 ```
 

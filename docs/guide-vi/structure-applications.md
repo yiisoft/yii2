@@ -355,7 +355,7 @@ Xem thêm trong phần [Quốc tế hóa](tutorial-i18n.md) để hiểu thêm t
 
 Thuộc tính này cung cấp cách khác để thiết lập time zone trong PHP.
 Qua việc cấu hình thuộc tính này, chủ yếu được gọi qua hàm
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Ví dụ:
+[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). Ví dụ:
 
 ```php
 [

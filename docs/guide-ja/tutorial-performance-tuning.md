@@ -11,7 +11,7 @@
 PHP 環境を正しく構成することは非常に重要です。最大のパフォーマンスを得るためには、
 
 - 最新の安定した PHP バージョンを使うこと。使用する PHP のメジャー・リリースを上げると、顕著なパフォーマンスの改善がもたらされることがあります。
-- [Opcache](http://php.net/opcache) (PHP 5.5 以降) または [APC](http://php.net/apc) (PHP 5.4) を使って、
+- [Opcache](https://secure.php.net/opcache) (PHP 5.5 以降) または [APC](https://secure.php.net/apc) (PHP 5.4) を使って、
   バイト・コード・キャッシュを有効にすること。
   バイト・コード・キャッシュによって、リクエストが入ってくるたびに PHP スクリプトを解析してインクルードする時間の浪費を避けることが出来ます。
 - [`realpath()` キャッシュをチューニングする](https://github.com/samdark/realpath_cache_tuner).
@@ -217,9 +217,9 @@ composer dumpautoload -o
 
 - [Yii のデバッグ・ツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
 - [Blackfire](https://blackfire.io/)
-- [XHProf](http://www.php.net/manual/ja/book.xhprof.php)
+- [XHProf](https://secure.php.net/manual/ja/book.xhprof.php)
 - [XDebug プロファイラ](http://xdebug.org/docs/profiler)
 
 ## アプリケーションをスケーラブルなものにする覚悟を決める
 
-何をやっても助けにならないときは、あなたのアプリケーションをスケーラブルにすることを試みましょう。良い導入記事が [Configuring a Yii 2 Application for an Autoscaling Stack (Yii 2 アプリケーションを自動スケール環境のために構成する)](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) の中で提供されています。更に詳しく知りたい場合は [Web apps performance and scaling (ウェブ・アプリのパフォーマンスとスケーリング)](http://thehighload.com/) を参照して下さい。
+何をやっても助けにならないときは、あなたのアプリケーションをスケーラブルにすることを試みましょう。良い導入記事が [Configuring a Yii 2 Application for an Autoscaling Stack (Yii 2 アプリケーションを自動スケール環境のために構成する)](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) の中で提供されています。

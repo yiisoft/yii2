@@ -452,6 +452,53 @@ class FileValidatorTest extends TestCase
         $this->assertNotFalse(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions '));
     }
 
+    public function testValidateEmptyExtension()
+    {
+        $val = new FileValidator([
+            'extensions' => ['txt', ''],
+            'checkExtensionByMimeType' => false,
+        ]);
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_txt' => $this->createTestFiles([['name' => 'one.txt']]),
+                'attr_empty' => $this->createTestFiles([['name' => 'bad.']]),
+                'attr_empty2' => $this->createTestFiles([['name' => 'bad']]),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_txt');
+        $this->assertFalse($m->hasErrors('attr_txt'));
+        $val->validateAttribute($m, 'attr_empty');
+        $this->assertFalse($m->hasErrors('attr_empty'));
+        $val->validateAttribute($m, 'attr_empty2');
+        $this->assertFalse($m->hasErrors('attr_empty2'));
+    }
+
+    public function testValidateAttributeDoubleType()
+    {
+        $val = new FileValidator([
+            'extensions' => 'tar.gz, tar.xz',
+            'checkExtensionByMimeType' => false,
+        ]);
+
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_tar' => $this->createTestFiles([['name' => 'one.tar.gz']]),
+                'attr_bar' => $this->createTestFiles([['name' => 'bad.bar.xz']]),
+                'attr_badtar' => $this->createTestFiles([['name' => 'badtar.xz']]),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_tar');
+        $this->assertFalse($m->hasErrors('attr_tar'));
+
+        $val->validateAttribute($m, 'attr_bar');
+        $this->assertTrue($m->hasErrors('attr_bar'));
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_bar')), 'Only files with these extensions '));
+
+        $val->validateAttribute($m, 'attr_badtar');
+        $this->assertTrue($m->hasErrors('attr_badtar'));
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_badtar')), 'Only files with these extensions '));
+    }
+
     public function testIssue11012()
     {
         $baseName = '飛兒樂團光茫';
@@ -496,6 +543,7 @@ class FileValidatorTest extends TestCase
             ['test.txt', 'text/*', 'txt'],
             ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
+            ['test.tar.xz', 'application/x-xz', 'tar.xz'],
         ]);
     }
 
@@ -588,5 +636,29 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_err_tmp');
         $this->assertTrue($m->hasErrors('attr_err_tmp'));
         $this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_tmp')));
+    }
+
+    /**
+     * @param string $mask
+     * @param string $fileMimeType
+     * @param bool   $expected
+     * @dataProvider mimeTypeCaseInsensitive
+     */
+    public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected) {
+        $validator = $this->getMock('\yii\validators\FileValidator', ['getMimeTypeByFile']);
+        $validator->method('getMimeTypeByFile')->willReturn($fileMimeType);
+        $validator->mimeTypes = [$mask];
+
+        $file = $this->getRealTestFile('test.txt');
+        $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
+    }
+
+    public function mimeTypeCaseInsensitive() {
+        return [
+            ['Image/*', 'image/jp2', true],
+            ['image/*', 'Image/jp2', true],
+            ['application/vnd.ms-word.document.macroEnabled.12', 'application/vnd.ms-word.document.macroenabled.12', true],
+            ['image/jxra', 'image/jxrA', true],
+        ];
     }
 }
