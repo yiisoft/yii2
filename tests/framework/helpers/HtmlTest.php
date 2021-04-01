@@ -1410,6 +1410,8 @@ EOD;
                 'some text',
                 [],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="some text">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="some text">',
             ],
             [
                 '',
@@ -1417,6 +1419,8 @@ EOD;
                     'maxlength' => true,
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="10">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="20">',
             ],
             [
                 '',
@@ -1424,6 +1428,8 @@ EOD;
                     'maxlength' => 99,
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="" maxlength="99">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="99">',
             ],
         ];
     }
@@ -1433,13 +1439,17 @@ EOD;
      *
      * @param string $value
      * @param array $options
-     * @param string $expectedHtml
+     * @param string $expectedHtmlForName
+     * @param string $expectedHtmlForTitle
+     * @param string $expectedHtmlForAlias
      */
-    public function testActiveInput_TypeText($value, array $options, $expectedHtml)
+    public function testActiveInput_TypeText($value, array $options, $expectedHtmlForName, $expectedHtmlForTitle, $expectedHtmlForAlias)
     {
         $model = new HtmlTestModel();
         $model->name = $value;
-        $this->assertEquals($expectedHtml, Html::activeInput('text', $model, 'name', $options));
+        $this->assertEquals($expectedHtmlForName, Html::activeInput('text', $model, 'name', $options));
+        $this->assertEquals($expectedHtmlForTitle, Html::activeInput('text', $model, 'title', $options));
+        $this->assertEquals($expectedHtmlForAlias, Html::activeInput('text', $model, 'alias', $options));
     }
 
     public function errorSummaryDataProvider()
@@ -2052,6 +2062,8 @@ class MyHtml extends Html{
 
 /**
  * @property string name
+ * @property string title
+ * @property string alias
  * @property array types
  * @property string description
  */
@@ -2059,7 +2071,7 @@ class HtmlTestModel extends DynamicModel
 {
     public function init()
     {
-        foreach (['name', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
+        foreach (['name', 'title', 'alias', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
             $this->defineAttribute($attribute);
         }
     }
@@ -2069,6 +2081,8 @@ class HtmlTestModel extends DynamicModel
         return [
             ['name', 'required'],
             ['name', 'string', 'max' => 100],
+            ['title', 'string', 'length' => 10],
+            ['alias', 'string', 'length' => [0, 20]],
             ['description', 'string', 'max' => 500],
             [['radio', 'checkbox'], 'boolean'],
         ];
