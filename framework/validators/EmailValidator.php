@@ -77,7 +77,7 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = $this->validateIdnValue($matches['local']);
+                $matches['local'] = $this->idnToAsciiWithFallback($matches['local']);
                 $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
@@ -182,22 +182,19 @@ class EmailValidator extends Validator
      * @return string|bool returns string if it is valid and/or can be converted, bool false if it can't be converted and/or is invalid
      * @see https://github.com/yiisoft/yii2/issues/18585
      */
-    private function validateIdnValue ($value)
+    private function idnToAsciiWithFallback($value)
     {
-        $idnTest = $this->idnToAscii($value);
-
-        if ($idnTest === false) {
-            $newPatternExploded = explode('@', $this->pattern, 2);
-            $newPattern = $newPatternExploded[0] . "$/";
-
-            $newFullPatternExploded = explode('@', $this->fullPattern);
-            $newFullPattern = $newFullPatternExploded[0] . '@' . $newFullPatternExploded[1]  ."$/";
-
-            if (preg_match($newPattern, $value) || ($this->allowName && preg_match($newFullPattern, $value))) {
+        $ascii = $this->idnToAscii($value);
+        if ($ascii === false) {
+            $parts = explode('@', $this->pattern, 2);
+            $pattern = $parts[0] . "$/";
+            $fullPatternParts = explode('@', $this->fullPattern);
+            $fullPattern = $fullPatternParts[0] . '@' . $fullPatternParts[1]  ."$/";
+            if (preg_match($pattern, $value) || ($this->allowName && preg_match($fullPattern, $value))) {
                 return $value;
             }
         }
 
-        return $idnTest;
+        return $ascii;
     }
 }
