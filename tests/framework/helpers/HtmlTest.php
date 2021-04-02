@@ -1374,7 +1374,7 @@ EOD;
                 [
                     'maxlength' => true,
                 ],
-                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="10">',
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="" maxlength="10">',
                 '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="20">',
             ],
             [
