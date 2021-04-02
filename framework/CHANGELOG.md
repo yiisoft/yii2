@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #17631: Fix `yii\widgets\BaseListView` to properly render custom summary (sjaakp, bizley)
 - Bug #17203: Fix `yii\db\Connection` to persist customized `queryBuilder` configuration after the `close()` → `open()` cycle (silverfire)
 - Bug #18325: Fix `yii\db\pgsql\Schema` to respect non-default PgSQL schema name for data types (theonedemon, silverfire)
+- Enh #18593: Improve support to automatically set the `maxlength` attribute for `Html::activeInput()` and `Html::activeTextArea()` (BSCheshir)
 
 
 2.0.41.1 March 04, 2021
