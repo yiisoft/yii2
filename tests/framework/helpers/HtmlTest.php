@@ -1357,6 +1357,56 @@ EOD;
     }
 
     /**
+     * Data provider for [[testActiveTextInputMaxLength]].
+     * @return array test data
+     */
+    public function dataProviderActiveTextInputMaxLength()
+    {
+        return [
+            [
+                'some text',
+                [],
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="some text">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="some text">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => true,
+                ],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="10">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="20">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => 99,
+                ],
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="" maxlength="99">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="99">',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActiveTextInputMaxLength
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtmlForTitle
+     * @param string $expectedHtmlForAlias
+     */
+    public function testActiveTextInputMaxLength($value, array $options, $expectedHtmlForTitle, $expectedHtmlForAlias)
+    {
+        $model = new HtmlTestModel();
+        $model->title = $value;
+        $model->alias = $value;
+        $this->assertEquals($expectedHtmlForTitle, Html::activeInput('text', $model, 'title', $options));
+        $this->assertEquals($expectedHtmlForAlias, Html::activeInput('text', $model, 'alias', $options));
+    }
+
+
+    /**
      * Data provider for [[testActivePasswordInput()]].
      * @return array test data
      */
@@ -1410,8 +1460,6 @@ EOD;
                 'some text',
                 [],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
-                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="some text">',
-                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="some text">',
             ],
             [
                 '',
@@ -1419,8 +1467,6 @@ EOD;
                     'maxlength' => true,
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
-                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="10">',
-                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="20">',
             ],
             [
                 '',
@@ -1428,8 +1474,6 @@ EOD;
                     'maxlength' => 99,
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
-                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="" maxlength="99">',
-                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="99">',
             ],
         ];
     }
@@ -1439,17 +1483,13 @@ EOD;
      *
      * @param string $value
      * @param array $options
-     * @param string $expectedHtmlForName
-     * @param string $expectedHtmlForTitle
-     * @param string $expectedHtmlForAlias
+     * @param string $expectedHtml
      */
-    public function testActiveInput_TypeText($value, array $options, $expectedHtmlForName, $expectedHtmlForTitle, $expectedHtmlForAlias)
+    public function testActiveInput_TypeText($value, array $options, $expectedHtml)
     {
         $model = new HtmlTestModel();
         $model->name = $value;
-        $this->assertEquals($expectedHtmlForName, Html::activeInput('text', $model, 'name', $options));
-        $this->assertEquals($expectedHtmlForTitle, Html::activeInput('text', $model, 'title', $options));
-        $this->assertEquals($expectedHtmlForAlias, Html::activeInput('text', $model, 'alias', $options));
+        $this->assertEquals($expectedHtml, Html::activeInput('text', $model, 'name', $options));
     }
 
     public function errorSummaryDataProvider()
