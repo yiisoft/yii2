@@ -1367,10 +1367,15 @@ SQL;
                 'SELECT * FROM customer WHERE id IN (\'1, 2\')',
             ],
             [
+                'SELECT * FROM customer WHERE id  = ? AND active = ?',
+                [1 => 1, 2 => false],
+                'SELECT * FROM customer WHERE id  = 1 AND active = FALSE',
+            ],
+            [
                 'SELECT NOW() = :now',
                 [':now' => new Expression('NOW()')],
                 'SELECT NOW() = \'NOW()\'',
-            ]
+            ],
         ];
     }
 

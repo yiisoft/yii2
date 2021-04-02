@@ -77,6 +77,17 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
     }
 
+    public function dataProviderGetRawSql()
+    {
+        return array_merge(parent::dataProviderGetRawSql(), [
+            [
+                'SELECT * FROM customer WHERE id::integer IN (:in, :out)',
+                [':in' => 1, ':out' => 2],
+                'SELECT * FROM customer WHERE id::integer IN (1, 2)',
+            ],
+        ]);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/11498
      */
