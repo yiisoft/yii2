@@ -7,6 +7,7 @@
 
 namespace yii\data;
 
+use Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -75,6 +76,7 @@ class ArrayDataProvider extends BaseDataProvider
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     protected function prepareModels()
     {
@@ -106,7 +108,11 @@ class ArrayDataProvider extends BaseDataProvider
             $keys = [];
             foreach ($models as $model) {
                 if (is_string($this->key)) {
-                    $keys[] = $model[$this->key];
+                    if((method_exists($model, 'hasAttribute') && $model->hasAttribute($this->key)) || property_exists($model, $this->key)){
+                        $keys[] = $model->{$this->key};
+                    }else{
+                        $keys[] = $model[$this->key];
+                    }
                 } else {
                     $keys[] = call_user_func($this->key, $model);
                 }
@@ -131,6 +137,7 @@ class ArrayDataProvider extends BaseDataProvider
      * @param array $models the models to be sorted
      * @param Sort $sort the sort definition
      * @return array the sorted data models
+     * @throws Exception
      */
     protected function sortModels($models, $sort)
     {
