@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use ArrayAccess;
+use Exception;
 use Traversable;
 use Yii;
 use yii\base\Arrayable;
@@ -57,6 +58,7 @@ class BaseArrayHelper
      *
      * @param bool $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
+     * @throws Exception
      */
     public static function toArray($object, $properties = [], $recursive = true)
     {
@@ -181,6 +183,7 @@ class BaseArrayHelper
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
+     * @throws Exception
      */
     public static function getValue($array, $key, $default = null)
     {
@@ -213,7 +216,7 @@ class BaseArrayHelper
             // it is not reliably possible to check whether a property is accessible beforehand
             try {
                 return $array->$key;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 if ($array instanceof ArrayAccess) {
                     return $default;
                 }
@@ -463,6 +466,7 @@ class BaseArrayHelper
      * defined, the array element will be discarded. Otherwise, if $groups is specified, array element will be added
      * to the result array without any key. This parameter is available since version 2.0.8.
      * @return array the indexed and/or grouped array
+     * @throws Exception
      */
     public static function index($array, $key, $groups = [])
     {
@@ -524,6 +528,7 @@ class BaseArrayHelper
      * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values
+     * @throws Exception
      */
     public static function getColumn($array, $name, $keepKeys = true)
     {
@@ -581,6 +586,7 @@ class BaseArrayHelper
      * @param string|\Closure $to
      * @param string|\Closure $group
      * @return array
+     * @throws Exception
      */
     public static function map($array, $from, $to, $group = null)
     {
@@ -647,6 +653,7 @@ class BaseArrayHelper
      * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
      * @throws InvalidArgumentException if the $direction or $sortFlag parameters do not have
      * correct number of elements as that of $key.
+     * @throws Exception
      */
     public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
     {
