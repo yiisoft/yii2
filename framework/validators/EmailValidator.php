@@ -33,6 +33,17 @@ class EmailValidator extends Validator
      */
     public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
     /**
+     * @var string the regular expression used to validate the part before the @ symbol, used if ASCII conversion fails to validate the address.
+     * @see http://www.regular-expressions.info/email.html
+     */
+    public $patternASCII = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
+    /**
+     * @var string the regular expression used to validate email addresses with the name part before the @ symbol, used if ASCII conversion fails to validate the address.
+     * This property is used only when [[allowName]] is true.
+     * @see allowName
+     */
+    public $fullPatternASCII = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
+    /**
      * @var bool whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
      * @see fullPattern
      */
@@ -186,11 +197,7 @@ class EmailValidator extends Validator
     {
         $ascii = $this->idnToAscii($value);
         if ($ascii === false) {
-            $parts = explode('@', $this->pattern, 2);
-            $pattern = $parts[0] . "$/";
-            $fullPatternParts = explode('@', $this->fullPattern);
-            $fullPattern = $fullPatternParts[0] . '@' . $fullPatternParts[1]  ."$/";
-            if (preg_match($pattern, $value) || ($this->allowName && preg_match($fullPattern, $value))) {
+            if (preg_match($this->patternASCII, $value) || ($this->allowName && preg_match($this->fullPatternASCII, $value))) {
                 return $value;
             }
         }
