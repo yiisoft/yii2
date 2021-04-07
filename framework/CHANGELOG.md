@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #18323: Fix client validation of RadioList when there are disabled items (toir427)
 - Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
 - Enh #18566: Throw the original exception when `yii\web\Controller::bindInjectedParams()` catches HttpException (pigochu)
+- Bug #18585: Fix `yii\validators\EmailValidator` to handle an edge case where `IDN` is enabled, but fails ascii conversion for valid email addresses (ihitbuttons)
 - Bug #18574: Fix `yii\web\DbSession` to use the correct db if strict mode is used (Mignar)
 - Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
@@ -19,7 +20,6 @@ Yii Framework 2 Change Log
 - Bug #17203: Fix `yii\db\Connection` to persist customized `queryBuilder` configuration after the `close()` → `open()` cycle (silverfire)
 - Bug #18325: Fix `yii\db\pgsql\Schema` to respect non-default PgSQL schema name for data types (theonedemon, silverfire)
 - Bug #18592: Fix `yii\db\Command::getRawSql()` to not replace query params in invalid places (sartor)
-
 
 2.0.41.1 March 04, 2021
 -----------------------
