@@ -185,17 +185,10 @@ class UrlManager extends Component
         if (!$this->enablePrettyUrl) {
             return;
         }
-        if ($this->cache !== false && $this->cache !== null) {
-            try {
-                $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
-            } catch (InvalidConfigException $e) {
-                Yii::warning('Unable to use cache for URL manager: ' . $e->getMessage());
-            }
+
+        if (!empty($this->rules)) {
+            $this->rules = $this->buildRules($this->rules);
         }
-        if (empty($this->rules)) {
-            return;
-        }
-        $this->rules = $this->buildRules($this->rules);
     }
 
     /**
@@ -263,6 +256,25 @@ class UrlManager extends Component
         return $builtRules;
     }
 
+    private function isCacheAvailable()
+    {
+        if (!$this->cache instanceof CacheInterface) {
+            if ($this->cache !== false && $this->cache !== null) {
+                try {
+                    $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+
+                    return true;
+                } catch (InvalidConfigException $e) {
+                    Yii::warning('Unable to use cache for URL manager: ' . $e->getMessage());
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Stores $builtRules to cache, using $rulesDeclaration as a part of cache key.
      *
@@ -274,7 +286,7 @@ class UrlManager extends Component
      */
     protected function setBuiltRulesCache($ruleDeclarations, $builtRules)
     {
-        if (!$this->cache instanceof CacheInterface) {
+        if (!$this->isCacheAvailable()) {
             return false;
         }
 
@@ -292,7 +304,7 @@ class UrlManager extends Component
      */
     protected function getBuiltRulesFromCache($ruleDeclarations)
     {
-        if (!$this->cache instanceof CacheInterface) {
+        if (!$this->isCacheAvailable()) {
             return false;
         }
 

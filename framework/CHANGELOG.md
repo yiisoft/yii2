@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #17203: Fix `yii\db\Connection` to persist customized `queryBuilder` configuration after the `close()` → `open()` cycle (silverfire)
 - Bug #18325: Fix `yii\db\pgsql\Schema` to respect non-default PgSQL schema name for data types (theonedemon, silverfire)
 - Bug #18592: Fix `yii\db\Command::getRawSql()` to not replace query params in invalid places (sartor)
+- Bug #18590: Fix `yii\web\UrlManager` to instantiate cache only when it's actually needed (bizley)
 
 
 2.0.41.1 March 04, 2021
