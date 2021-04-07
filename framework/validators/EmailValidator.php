@@ -35,12 +35,14 @@ class EmailValidator extends Validator
     /**
      * @var string the regular expression used to validate the part before the @ symbol, used if ASCII conversion fails to validate the address.
      * @see http://www.regular-expressions.info/email.html
+     * @since 2.0.42
      */
     public $patternASCII = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
     /**
      * @var string the regular expression used to validate email addresses with the name part before the @ symbol, used if ASCII conversion fails to validate the address.
      * This property is used only when [[allowName]] is true.
      * @see allowName
+     * @since 2.0.42
      */
     public $fullPatternASCII = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
     /**
