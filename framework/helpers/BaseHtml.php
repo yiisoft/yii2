@@ -1408,7 +1408,7 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
      *   and [[\yii\validators\StringValidator::length].
-     *   This is available since version 2.0.3 and improve with `length` since version 2.0.42.
+     *   This is available since version 2.0.3 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1469,7 +1469,7 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
      *   and [[\yii\validators\StringValidator::length].
-     *   This option is available since version 2.0.6 and improve with `length` since version 2.0.42.
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1531,7 +1531,7 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
      *   and [[\yii\validators\StringValidator::length].
-     *   This option is available since version 2.0.6 and improve with `length` since version 2.0.42.
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
