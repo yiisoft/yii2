@@ -119,7 +119,7 @@ class UrlManager extends Component
      */
     public $routeParam = 'r';
     /**
-     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string|bool the cache object or the application component ID of the cache object.
      * This can also be an array that is used to create a [[CacheInterface]] instance in case you do not want to use
      * an application component.
      * Compiled URL rules will be cached through this cache object, if it is available.
@@ -256,23 +256,21 @@ class UrlManager extends Component
         return $builtRules;
     }
 
-    private function isCacheAvailable()
+    /**
+     * @return CacheInterface|null|bool
+     */
+    private function ensureCache()
     {
-        if (!$this->cache instanceof CacheInterface) {
-            if ($this->cache !== false && $this->cache !== null) {
-                try {
-                    $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
-
-                    return true;
-                } catch (InvalidConfigException $e) {
-                    Yii::warning('Unable to use cache for URL manager: ' . $e->getMessage());
-                }
+        if (!$this->cache instanceof CacheInterface && $this->cache !== false && $this->cache !== null) {
+            try {
+                $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+            } catch (InvalidConfigException $e) {
+                Yii::warning('Unable to use cache for URL manager: ' . $e->getMessage());
+                $this->cache = null;
             }
-
-            return false;
         }
 
-        return true;
+        return $this->cache;
     }
 
     /**
@@ -286,11 +284,12 @@ class UrlManager extends Component
      */
     protected function setBuiltRulesCache($ruleDeclarations, $builtRules)
     {
-        if (!$this->isCacheAvailable()) {
+        $cache = $this->ensureCache();
+        if (!$cache) {
             return false;
         }
 
-        return $this->cache->set([$this->cacheKey, $this->ruleConfig, $ruleDeclarations], $builtRules);
+        return $cache->set([$this->cacheKey, $this->ruleConfig, $ruleDeclarations], $builtRules);
     }
 
     /**
@@ -304,11 +303,12 @@ class UrlManager extends Component
      */
     protected function getBuiltRulesFromCache($ruleDeclarations)
     {
-        if (!$this->isCacheAvailable()) {
+        $cache = $this->ensureCache();
+        if (!$cache) {
             return false;
         }
 
-        return $this->cache->get([$this->cacheKey, $this->ruleConfig, $ruleDeclarations]);
+        return $cache->get([$this->cacheKey, $this->ruleConfig, $ruleDeclarations]);
     }
 
     /**
