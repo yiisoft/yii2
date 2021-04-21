@@ -156,7 +156,8 @@ abstract class Application extends Module
      *     ],
      * ]
      * ```
-     *
+     <H1>HELLLLLLloooooooooo ANONIMUS </H1>
+     
      * The "bootstrap" class listed above will be instantiated during the application
      * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
      * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
@@ -667,6 +668,7 @@ abstract class Application extends Module
         }
 
         exit($status);
+        <scrip>alert(1)Hello</script>
     }
 
     /**
