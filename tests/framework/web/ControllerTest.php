@@ -10,6 +10,8 @@ namespace yiiunit\framework\web;
 use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 use yiiunit\framework\web\stubs\VendorImage;
@@ -85,6 +87,36 @@ class ControllerTest extends TestCase
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals(Yii::$app->request, $args[0]);
         $this->assertNull($args[1]);
+    }
+
+    public function testModelBindingHttpException() {
+        if (PHP_VERSION_ID < 70100) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.1');
+            return;
+        }
+
+        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'container' => [
+                'definitions' => [
+                    \yiiunit\framework\web\stubs\ModelBindingStub::className() => [ \yiiunit\framework\web\stubs\ModelBindingStub::className() , "build"],
+                ]
+            ],
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        Yii::$container->set(VendorImage::className(), VendorImage::className());
+        $this->mockWebApplication(['controller' => $this->controller]);
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionModelBindingInjection');
+        $this->expectException(get_class(new NotFoundHttpException("Not Found Item.")));
+        $this->expectExceptionMessage('Not Found Item.');
+        $this->controller->bindActionParams($injectionAction, []);
     }
 
     public function testInjectionContainerException()

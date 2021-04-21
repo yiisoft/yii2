@@ -837,4 +837,25 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
         $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
     }
+
+    public function testNotEnsuringCacheForEmptyRuleset()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'cache' => ArrayCache::className(),
+            ],
+        ]);
+        // no rules - don't ensure cache
+        $urlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'rules' => [],
+        ]);
+        $this->assertSame('cache', $urlManager->cache);
+        // with rules - ensure cache
+        $urlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'rules' => ['/' => 'site/index'],
+        ]);
+        $this->assertInstanceOf(ArrayCache::className(), $urlManager->cache);
+    }
 }

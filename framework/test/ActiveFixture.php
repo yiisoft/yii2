@@ -8,6 +8,7 @@
 namespace yii\test;
 
 use yii\base\InvalidConfigException;
+use yii\db\ActiveRecord;
 use yii\db\TableSchema;
 
 /**
@@ -58,8 +59,13 @@ class ActiveFixture extends BaseActiveFixture
     public function init()
     {
         parent::init();
-        if ($this->modelClass === null && $this->tableName === null) {
-            throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
+        if ($this->tableName === null) {
+            if ($this->modelClass === null) {
+                throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
+            }
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
+            $this->db = $modelClass::getDb();
         }
     }
 

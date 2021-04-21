@@ -313,7 +313,7 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = $fp;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-        
+
         // the check is here for HHVM that
         // was losing handler for unknown reason
         if (is_resource($fp)) {
@@ -331,6 +331,28 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = $object;
         $val->validateAttribute($model, 'attr_number');
         $this->assertFalse($model->hasErrors('attr_number'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18544
+     */
+    public function testNotTrimmedStrings()
+    {
+        $val = new NumberValidator(['integerOnly' => true]);
+        $this->assertFalse($val->validate(' 1 '));
+        $this->assertFalse($val->validate(' 1'));
+        $this->assertFalse($val->validate('1 '));
+        $this->assertFalse($val->validate("\t1\t"));
+        $this->assertFalse($val->validate("\t1"));
+        $this->assertFalse($val->validate("1\t"));
+
+        $val = new NumberValidator();
+        $this->assertFalse($val->validate(' 1.1 '));
+        $this->assertFalse($val->validate(' 1.1'));
+        $this->assertFalse($val->validate('1.1 '));
+        $this->assertFalse($val->validate("\t1.1\t"));
+        $this->assertFalse($val->validate("\t1.1"));
+        $this->assertFalse($val->validate("1.1\t"));
     }
 }
 
