@@ -50,7 +50,7 @@ class Action extends Component
 
     /**
      * @var mixed the result of the action, derived class may set or get action result in the afterRun method.
-     * @since 2.0.41
+     * @since 2.0.42
      */
     protected $result = null;
 
