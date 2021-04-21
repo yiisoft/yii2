@@ -1373,7 +1373,8 @@ class BaseHtml
 
     /**
      * If `maxlength` option is set true and the model attribute is validated by a string validator,
-     * the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     * the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]] and
+     * [[\yii\validators\StringValidator::length]].
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression.
      * @param array $options the tag options in terms of name-value pairs.
@@ -1384,8 +1385,8 @@ class BaseHtml
             unset($options['maxlength']);
             $attrName = static::getAttributeName($attribute);
             foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
+                if ($validator instanceof StringValidator && ($validator->max !== null || $validator->length !== null)) {
+                    $options['maxlength'] = max($validator->max, $validator->length);
                     break;
                 }
             }
@@ -1405,8 +1406,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.3.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.3 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1465,8 +1467,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This option is available since version 2.0.6.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1526,8 +1529,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This option is available since version 2.0.6.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *

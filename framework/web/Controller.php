@@ -180,6 +180,8 @@ class Controller extends \yii\base\Controller
             } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
                 try {
                     $this->bindInjectedParams($type, $name, $args, $requestedParams);
+                } catch (HttpException $e) {
+                    throw $e;
                 } catch (Exception $e) {
                     throw new ServerErrorHttpException($e->getMessage(), 0, $e);
                 }

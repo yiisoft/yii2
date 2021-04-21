@@ -10,6 +10,9 @@ namespace yiiunit\framework\db;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\ArrayCache;
+use yii\db\conditions\AndCondition;
+use yii\db\conditions\ExistsConditionBuilder;
+use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;
 
@@ -44,6 +47,50 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->dsn = 'unknown::memory:';
         $this->expectException('yii\db\Exception');
         $connection->open();
+    }
+
+    public function testQueryBuilderConfigurationAfterOpenClose()
+    {
+        $connection = $this->getConnection(false, false);
+        $connection->setQueryBuilder([
+            'expressionBuilders' => [
+                // Just a dumb mapping to make sure it's applied
+                'yii\db\conditions\OrCondition' => 'yii\db\conditions\ExistsConditionBuilder'
+            ],
+        ]);
+        // Second call to make sure that consecutive calls are handled correctly
+        $connection->setQueryBuilder([
+            'expressionBuilders' => [
+                'yii\db\conditions\AndCondition' => 'yii\db\conditions\InConditionBuilder'
+            ],
+        ]);
+
+        $orCondition = new OrCondition(['dumb']);
+        $andCondition = new AndCondition(['dumb']);
+
+        $connection->open();
+
+        $this->assertInstanceOf(
+            '\yii\db\conditions\ExistsConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($orCondition)
+        );
+        $this->assertInstanceOf(
+            '\yii\db\conditions\InConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($andCondition)
+        );
+
+        $connection->close();
+        $this->assertNull($connection->pdo);
+        $connection->open();
+
+        $this->assertInstanceOf(
+            '\yii\db\conditions\ExistsConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($orCondition)
+        );
+        $this->assertInstanceOf(
+            '\yii\db\conditions\InConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($andCondition)
+        );
     }
 
     public function testSerialize()

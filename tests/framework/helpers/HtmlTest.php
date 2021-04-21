@@ -1357,6 +1357,56 @@ EOD;
     }
 
     /**
+     * Data provider for [[testActiveTextInputMaxLength]].
+     * @return array test data
+     */
+    public function dataProviderActiveTextInputMaxLength()
+    {
+        return [
+            [
+                'some text',
+                [],
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="some text">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="some text">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => true,
+                ],
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="" maxlength="10">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="20">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => 99,
+                ],
+                '<input type="text" id="htmltestmodel-title" name="HtmlTestModel[title]" value="" maxlength="99">',
+                '<input type="text" id="htmltestmodel-alias" name="HtmlTestModel[alias]" value="" maxlength="99">',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActiveTextInputMaxLength
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtmlForTitle
+     * @param string $expectedHtmlForAlias
+     */
+    public function testActiveTextInputMaxLength($value, array $options, $expectedHtmlForTitle, $expectedHtmlForAlias)
+    {
+        $model = new HtmlTestModel();
+        $model->title = $value;
+        $model->alias = $value;
+        $this->assertEquals($expectedHtmlForTitle, Html::activeInput('text', $model, 'title', $options));
+        $this->assertEquals($expectedHtmlForAlias, Html::activeInput('text', $model, 'alias', $options));
+    }
+
+
+    /**
      * Data provider for [[testActivePasswordInput()]].
      * @return array test data
      */
@@ -2052,6 +2102,8 @@ class MyHtml extends Html{
 
 /**
  * @property string name
+ * @property string title
+ * @property string alias
  * @property array types
  * @property string description
  */
@@ -2059,7 +2111,7 @@ class HtmlTestModel extends DynamicModel
 {
     public function init()
     {
-        foreach (['name', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
+        foreach (['name', 'title', 'alias', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
             $this->defineAttribute($attribute);
         }
     }
@@ -2069,6 +2121,8 @@ class HtmlTestModel extends DynamicModel
         return [
             ['name', 'required'],
             ['name', 'string', 'max' => 100],
+            ['title', 'string', 'length' => 10],
+            ['alias', 'string', 'length' => [0, 20]],
             ['description', 'string', 'max' => 500],
             [['radio', 'checkbox'], 'boolean'],
         ];

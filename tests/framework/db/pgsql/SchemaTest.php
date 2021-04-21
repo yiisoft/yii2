@@ -10,6 +10,7 @@ namespace yiiunit\framework\db\pgsql;
 use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
 
 /**
@@ -348,5 +349,21 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['3: foreign key'][2][0]->foreignSchemaName = 'public';
         $result['3: index'][2] = [];
         return $result;
+    }
+
+    public function testCustomTypeInNonDefaultSchema()
+    {
+        $connection = $this->getConnection();
+        ActiveRecord::$db = $this->getConnection();
+
+        $schema = $connection->schema->getTableSchema('schema2.custom_type_test_table');
+        $model = EnumTypeInCustomSchema::find()->one();
+        $this->assertSame(['VAL2'], $model->test_type->getValue());
+
+        $model->test_type = ['VAL1'];
+        $model->save();
+
+        $modelAfterUpdate = EnumTypeInCustomSchema::find()->one();
+        $this->assertSame(['VAL1'], $modelAfterUpdate->test_type->getValue());
     }
 }
