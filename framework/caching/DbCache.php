@@ -58,12 +58,20 @@ class DbCache extends Cache
      * );
      * ```
      *
+     * For MSSQL:
+     * ```php
+     * CREATE TABLE cache (
+     *     id VARCHAR(128) NOT NULL PRIMARY KEY,
+     *     expire INT(11),
+     *     data VARBINARY(MAX)
+     * );
+     * ```
+     *
      * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
      * that can be used for some popular DBMS:
      *
      * - MySQL: LONGBLOB
      * - PostgreSQL: BYTEA
-     * - MSSQL: BLOB
      *
      * When using DbCache in a production server, we recommend you create a DB index for the 'expire'
      * column in the cache table to improve the performance.
@@ -76,6 +84,7 @@ class DbCache extends Cache
      */
     public $gcProbability = 100;
 
+    protected $isVarbinaryDataField;
 
     /**
      * Initializes the DbCache component.
@@ -127,7 +136,7 @@ class DbCache extends Cache
     protected function getValue($key)
     {
         $query = new Query();
-        $query->select(['data'])
+        $query->select([$this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
         if ($this->db->enableQueryCache) {
@@ -153,7 +162,7 @@ class DbCache extends Cache
             return [];
         }
         $query = new Query();
-        $query->select(['id', 'data'])
+        $query->select(['id', $this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
             ->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
@@ -197,7 +206,7 @@ class DbCache extends Cache
                 $db->createCommand()->upsert($this->cacheTable, [
                     'id' => $key,
                     'expire' => $duration > 0 ? $duration + time() : 0,
-                    'data' => new PdoValue($value, \PDO::PARAM_LOB),
+                    'data' => $this->getDataFieldValue($value),
                 ])->execute();
             });
 
@@ -230,7 +239,7 @@ class DbCache extends Cache
                     ->insert($this->cacheTable, [
                         'id' => $key,
                         'expire' => $duration > 0 ? $duration + time() : 0,
-                        'data' => new PdoValue($value, \PDO::PARAM_LOB),
+                        'data' => $this->getDataFieldValue($value),
                     ])->execute();
             });
 
@@ -285,5 +294,39 @@ class DbCache extends Cache
             ->execute();
 
         return true;
+    }
+
+    /**
+     * @return bool
+     *
+     * Checking Mssql: if field is varbinary - return true
+     */
+    protected function isVarbinaryDataField()
+    {
+        if ($this->isVarbinaryDataField === null) {
+            $this->isVarbinaryDataField = in_array($this->db->getDriverName(), ['sqlsrv', 'dblib']) &&
+                $this->db->getTableSchema('cache')->columns['data']->dbType === 'varbinary';
+        }
+        return $this->isVarbinaryDataField;
+    }
+
+    /**
+     * @return string
+     * Returning `data` field name with converting for usage in MSSQL (if needs)
+     */
+    protected function getDataFieldName()
+    {
+        return $this->isVarbinaryDataField() ? 'convert(nvarchar(max),[data]) data' : 'data';
+    }
+
+    /**
+     * @param $value
+     * @return PdoValue
+     *
+     * Return PdoValue or direct $value for usage in MSSQL
+     */
+    protected function getDataFieldValue($value)
+    {
+        return $this->isVarbinaryDataField() ? $value : new PdoValue($value, \PDO::PARAM_LOB);
     }
 }
