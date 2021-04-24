@@ -22,7 +22,7 @@ Yii Framework 2 Change Log
 - Bug #18593: Fix setting the `maxlength` attribute for `Html::activeInput()` and `Html::activeTextArea()` based on `length` parameter of validator (BSCheshir)
 - Bug #18592: Fix `yii\db\Command::getRawSql()` to not replace query params in invalid places (sartor)
 - Bug #18590: Fix `yii\web\UrlManager` to instantiate cache only when it's actually needed (bizley)
-- Bug #18613: Do not call static `BaseActiveRecord::getOldPrimaryKey()` non-statically (samdark) 
+- Bug #18613: Do not call static methods non-statically in `BaseActiveRecord` (samdark) 
 
 2.0.41.1 March 04, 2021
 -----------------------
