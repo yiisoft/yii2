@@ -98,10 +98,11 @@ abstract class Mutex extends Component
     }
 
     /**
-     * Checks if a lock is currently acquired
+     * Checks if a lock is acquired by the current process.
+     * Note that it returns false if the mutex is acquired in another process.
      *
-     * @param string $name of the lock to check
-     * @return bool Returns true if currently acquired
+     * @param string $name of the lock to check.
+     * @return bool Returns true if currently acquired.
      * @since 2.0.36
      */
     public function isAcquired($name)
