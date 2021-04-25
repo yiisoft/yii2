@@ -184,9 +184,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $type = $this->getColumnType($type);
 
         if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
+            $value = strtolower($matches[1]) === 'null' ? null : $matches[1];
             $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
             $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
-            $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $matches[1]);
+            $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $value);
         } else {
             $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
         }
@@ -213,7 +214,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addDefaultValue($name, $table, $column, $value)
     {
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . ($value === null ? 'NULL' : $this->db->quoteValue($value)) . ' FOR '
             . $this->db->quoteColumnName($column);
     }
 
