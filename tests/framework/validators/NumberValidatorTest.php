@@ -100,6 +100,48 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->validate(true));
     }
 
+    public function testValidateValueArraySimple()
+    {
+        $val = new NumberValidator();
+        $this->assertFalse($val->validate([20]));
+        $this->assertFalse($val->validate([0]));
+        $this->assertFalse($val->validate([-20]));
+        $this->assertFalse($val->validate(['20']));
+        $this->assertFalse($val->validate([25.45]));
+        $this->assertFalse($val->validate([false]));
+        $this->assertFalse($val->validate([true]));
+
+        $val = new NumberValidator();
+        $val->allowArray = true;
+        $this->assertTrue($val->validate([20]));
+        $this->assertTrue($val->validate([0]));
+        $this->assertTrue($val->validate([-20]));
+        $this->assertTrue($val->validate(['20']));
+        $this->assertTrue($val->validate([25.45]));
+        $this->assertFalse($val->validate([false]));
+        $this->assertFalse($val->validate([true]));
+
+        $this->setPointDecimalLocale();
+        $this->assertFalse($val->validate(['25,45']));
+        $this->setCommaDecimalLocale();
+        $this->assertTrue($val->validate(['25,45']));
+        $this->restoreLocale();
+
+        $this->assertFalse($val->validate(['12:45']));
+        $val = new NumberValidator(['integerOnly' => true]);
+        $val->allowArray = true;
+        $this->assertTrue($val->validate([20]));
+        $this->assertTrue($val->validate([0]));
+        $this->assertFalse($val->validate([25.45]));
+        $this->assertTrue($val->validate(['20']));
+        $this->assertFalse($val->validate(['25,45']));
+        $this->assertTrue($val->validate(['020']));
+        $this->assertTrue($val->validate([0x14]));
+        $this->assertFalse($val->validate(['0x14'])); // todo check this
+        $this->assertFalse($val->validate([false]));
+        $this->assertFalse($val->validate([true]));
+    }
+
     public function testValidateValueAdvanced()
     {
         $val = new NumberValidator();
@@ -212,6 +254,101 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_number'));
         $val = new NumberValidator(['min' => 1]);
         $model = FakedValidationModel::createWithAttributes(['attr_num' => [1, 2, 3]]);
+        $val->validateAttribute($model, 'attr_num');
+        $this->assertTrue($model->hasErrors('attr_num'));
+
+        // @see https://github.com/yiisoft/yii2/issues/11672
+        $model = new FakedValidationModel();
+        $model->attr_number = new \stdClass();
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+    }
+
+    public function testValidateAttributeArray()
+    {
+        $val = new NumberValidator();
+        $val->allowArray = true;
+        $model = new FakedValidationModel();
+        $model->attr_number = ['5.5e1'];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+        $model->attr_number = ['43^32']; //expression
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['min' => 10]);
+        $val->allowArray = true;
+        $model = new FakedValidationModel();
+        $model->attr_number = [10];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+        $model->attr_number = [5];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['max' => 10]);
+        $val->allowArray = true;
+        $model = new FakedValidationModel();
+        $model->attr_number = [10];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+        $model->attr_number = [15];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['max' => 10, 'integerOnly' => true]);
+        $val->allowArray = true;
+        $model = new FakedValidationModel();
+        $model->attr_number = [10];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+        $model->attr_number = [3.43];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['min' => 1]);
+        $val->allowArray = true;
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => [[1], [2], [3]]]);
+        $val->validateAttribute($model, 'attr_num');
+        $this->assertTrue($model->hasErrors('attr_num'));
+
+        // @see https://github.com/yiisoft/yii2/issues/11672
+        $model = new FakedValidationModel();
+        $model->attr_number = new \stdClass();
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+
+
+        $val = new NumberValidator();
+        $model = new FakedValidationModel();
+        $model->attr_number = ['5.5e1'];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $model->attr_number = ['43^32']; //expression
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['min' => 10]);
+        $model = new FakedValidationModel();
+        $model->attr_number = [10];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $model->attr_number = [5];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['max' => 10]);
+        $model = new FakedValidationModel();
+        $model->attr_number = [10];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $model->attr_number = [15];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['max' => 10, 'integerOnly' => true]);
+        $model = new FakedValidationModel();
+        $model->attr_number = [10];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $model->attr_number = [3.43];
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        $val = new NumberValidator(['min' => 1]);
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => [[1], [2], [3]]]);
         $val->validateAttribute($model, 'attr_num');
         $this->assertTrue($model->hasErrors('attr_num'));
 
