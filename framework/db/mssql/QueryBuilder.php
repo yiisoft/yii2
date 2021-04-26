@@ -174,32 +174,28 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function alterColumn($table, $column, $type)
     {
-        $sqlAfter = [];
+        $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
 
-        $columnName = $this->db->quoteColumnName($column);
-        $tableName = $this->db->quoteTableName($table);
+        if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
+            $type->isAlterColumn();
 
-        $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
+            $columnName = $this->db->quoteColumnName($column);
+            $tableName = $this->db->quoteTableName($table);
+            $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
 
-        $type = $this->getColumnType($type);
+            $defaultValue = $type->getDefaultValue();
+            if ($defaultValue !== null) {
+                $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $defaultValue instanceof Expression ?  $defaultValue : new Expression($defaultValue));
+            }
 
-        if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
-            $value = strtolower($matches[1]) === 'null' ? null : $matches[1];
-            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
-            $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
-            $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $value);
-        } else {
-            $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
-        }
+            $checkValue = $type->getCheckValue();
+            if ($checkValue !== null) {
+                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("CK_{$constraintBase}") . " CHECK ({$checkValue})";
+            }
 
-        if (preg_match('/\s+CHECK\s+\((.+)\)/i', $type, $matches)) {
-            $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
-            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("CK_{$constraintBase}") . " CHECK ({$matches[1]})";
-        }
-
-        $type = preg_replace('/\s+UNIQUE/i', '', $type, -1, $count);
-        if ($count) {
-            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
+            if ($type->isUnique()) {
+                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
+            }
         }
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
@@ -214,7 +210,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addDefaultValue($name, $table, $column, $value)
     {
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . ' DEFAULT ' . ($value === null ? 'NULL' : $this->db->quoteValue($value)) . ' FOR '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
             . $this->db->quoteColumnName($column);
     }
 
@@ -662,5 +658,4 @@ END";
         return $this->dropConstraintsForColumn($table, $column) . "\nALTER TABLE " . $this->db->quoteTableName($table)
             . " DROP COLUMN " . $this->db->quoteColumnName($column);
     }
-
 }
