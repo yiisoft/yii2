@@ -26,6 +26,7 @@ class NumberValidator extends Validator
 {
     /**
      * @var bool whether to allow array type attribute. Defaults to false.
+     * @since 2.0.42
      */
     public $allowArray = false;
 
