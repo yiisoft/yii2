@@ -13,8 +13,8 @@ use yii\db\Expression;
 /**
  * ColumnSchemaBuilder is the schema builder for MSSQL databases.
  *
- * @author Chris Harris <chris@buckshotsoftware.com>
- * @since 2.0.8
+ * @author Valerii Gorbachev <darkdef@gmail.com>
+ * @since 2.0.42
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -64,7 +64,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     public function getCheckValue()
     {
-        return $this->check !== null ? "{$this->check}" : null;
+        return $this->check !== null ? (string) $this->check : null;
     }
 
     /**

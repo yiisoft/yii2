@@ -176,12 +176,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $sqlAfter = [$this->dropConstraintsForColumn($table, $column, 'D')];
 
+        $columnName = $this->db->quoteColumnName($column);
+        $tableName = $this->db->quoteTableName($table);
+        $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
+
         if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
             $type->setAlterColumnFormat();
 
-            $columnName = $this->db->quoteColumnName($column);
-            $tableName = $this->db->quoteTableName($table);
-            $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
 
             $defaultValue = $type->getDefaultValue();
             if ($defaultValue !== null) {
@@ -195,7 +196,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             $checkValue = $type->getCheckValue();
             if ($checkValue !== null) {
-                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("CK_{$constraintBase}") . " CHECK ({$checkValue})";
+                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " .
+                    $this->db->quoteColumnName("CK_{$constraintBase}") .
+                    " CHECK (" . ($defaultValue instanceof Expression ?  $checkValue : new Expression($checkValue)) . ")";
             }
 
             if ($type->isUnique()) {
