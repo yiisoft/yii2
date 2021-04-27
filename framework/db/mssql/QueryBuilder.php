@@ -185,7 +185,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             $defaultValue = $type->getDefaultValue();
             if ($defaultValue !== null) {
-                $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $defaultValue instanceof Expression ?  $defaultValue : new Expression($defaultValue));
+                $sqlAfter[] = $this->addDefaultValue(
+                    "DF_{$constraintBase}",
+                    $table,
+                    $column,
+                    $defaultValue instanceof Expression ?  $defaultValue : new Expression($defaultValue)
+                );
             }
 
             $checkValue = $type->getCheckValue();
