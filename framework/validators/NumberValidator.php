@@ -25,6 +25,12 @@ use yii\web\JsExpression;
 class NumberValidator extends Validator
 {
     /**
+     * @var bool whether to allow array type attribute. Defaults to false.
+     * @since 2.0.42
+     */
+    public $allowArray = false;
+
+    /**
      * @var bool whether the attribute value can only be an integer. Defaults to false.
      */
     public $integerOnly = false;
@@ -81,20 +87,27 @@ class NumberValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if ($this->isNotNumber($value)) {
+        if (is_array($value) && !$this->allowArray) {
             $this->addError($model, $attribute, $this->message);
             return;
         }
-        $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
+        $values = !is_array($value) ? [$value] : $value;
+        foreach ($values as $value) {
+            if ($this->isNotNumber($value)) {
+                $this->addError($model, $attribute, $this->message);
+                return;
+            }
+            $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
 
-        if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
-            $this->addError($model, $attribute, $this->message);
-        }
-        if ($this->min !== null && $value < $this->min) {
-            $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->min]);
-        }
-        if ($this->max !== null && $value > $this->max) {
-            $this->addError($model, $attribute, $this->tooBig, ['max' => $this->max]);
+            if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
+                $this->addError($model, $attribute, $this->message);
+            }
+            if ($this->min !== null && $value < $this->min) {
+                $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->min]);
+            }
+            if ($this->max !== null && $value > $this->max) {
+                $this->addError($model, $attribute, $this->tooBig, ['max' => $this->max]);
+            }
         }
     }
 
@@ -103,16 +116,22 @@ class NumberValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if ($this->isNotNumber($value)) {
+        if (is_array($value) && !$this->allowArray) {
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
-        $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
-            return [$this->message, []];
-        } elseif ($this->min !== null && $value < $this->min) {
-            return [$this->tooSmall, ['min' => $this->min]];
-        } elseif ($this->max !== null && $value > $this->max) {
-            return [$this->tooBig, ['max' => $this->max]];
+        $values = !is_array($value) ? [$value] : $value;
+        foreach ($values as $value) {
+            if ($this->isNotNumber($value)) {
+                return [Yii::t('yii', '{attribute} is invalid.'), []];
+            }
+            $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
+            if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
+                return [$this->message, []];
+            } elseif ($this->min !== null && $value < $this->min) {
+                return [$this->tooSmall, ['min' => $this->min]];
+            } elseif ($this->max !== null && $value > $this->max) {
+                return [$this->tooBig, ['max' => $this->max]];
+            }
         }
 
         return null;
