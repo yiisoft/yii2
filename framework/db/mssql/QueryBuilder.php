@@ -174,7 +174,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function alterColumn($table, $column, $type)
     {
-        $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
+        $sqlAfter = [$this->dropConstraintsForColumn($table, $column, 'D')];
 
         if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
             $type->isAlterColumn();
