@@ -40,7 +40,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * Changes default format string to MSSQL ALTER COMMAND
      */
-    public function isAlterColumn()
+    public function setAlterColumnFormat()
     {
         $this->format = '{type}{length}{notnull}{append}';
     }
