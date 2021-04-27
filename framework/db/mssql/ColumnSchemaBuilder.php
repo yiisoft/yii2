@@ -11,7 +11,7 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 use yii\db\Expression;
 
 /**
- * ColumnSchemaBuilder is the schema builder for MySQL databases.
+ * ColumnSchemaBuilder is the schema builder for MSSQL databases.
  *
  * @author Chris Harris <chris@buckshotsoftware.com>
  * @since 2.0.8
