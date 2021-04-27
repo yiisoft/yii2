@@ -177,7 +177,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $sqlAfter = [$this->dropConstraintsForColumn($table, $column, 'D')];
 
         if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
-            $type->isAlterColumn();
+            $type->setAlterColumnFormat();
 
             $columnName = $this->db->quoteColumnName($column);
             $tableName = $this->db->quoteTableName($table);
