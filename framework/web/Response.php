@@ -420,10 +420,11 @@ class Response extends \yii\base\Response
             } else {
                 // Work around for setting sameSite cookie prior PHP 7.3
                 // https://stackoverflow.com/questions/39750906/php-setcookie-samesite-strict/46971326#46971326
+                $cookiePath = $cookie->path;
                 if (!is_null($cookie->sameSite)) {
-                    $cookie->path .= '; samesite=' . $cookie->sameSite;
+                    $cookiePath .= '; samesite=' . $cookie->sameSite;
                 }
-                setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+                setcookie($cookie->name, $value, $cookie->expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
         }
     }
