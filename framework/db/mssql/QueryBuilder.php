@@ -206,8 +206,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
 
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-            . $this->db->quoteColumnName($column) . ' '
+        return 'ALTER TABLE ' . $tableName . ' ALTER COLUMN '
+            . $columnName . ' '
             . $this->getColumnType($type) . "\n"
             . implode("\n", $sqlAfter);
     }
