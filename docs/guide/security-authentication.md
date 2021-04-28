@@ -49,7 +49,9 @@ the following methods:
 
 If a particular method is not needed, you may implement it with an empty body. For example, if your application
 is a pure stateless RESTful application, you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
-and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body.
+and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body. Or if your 
+application uses session only authentication, you would need to implement only the methods [[yii\web\IdentityInterface::findIdentity()|findIdentity()]] and 
+[[yii\web\IdentityInterface::getId()|getId()]], while leaving the rest of the methods with an empty body.
 
 In the following example, an [[yii\web\User::identityClass|identity class]] is implemented as
 an [Active Record](db-active-record.md) class associated with the `user` database table.
@@ -90,7 +92,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return int|string current user ID
+     * Get thecurrent user's ID
+     * 
+     * @return int|string 
      */
     public function getId()
     {
@@ -98,7 +102,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return string current user auth key
+     * Get the current user's auth key
+     * 
+     * @return string|null
      */
     public function getAuthKey()
     {
@@ -106,8 +112,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Checks if the provided auth key is valid for the current user
+     * 
      * @param string $authKey
-     * @return bool if auth key is valid for current user
+     * @return bool|null
      */
     public function validateAuthKey($authKey)
     {
@@ -117,7 +125,7 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 You may use the following code to generate an auth key for each
-user and store it in the `user` table:
+user and then store it in the `user` table:
 
 ```php
 class User extends ActiveRecord implements IdentityInterface
