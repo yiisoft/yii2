@@ -215,7 +215,7 @@ class ContainerTest extends TestCase
                 ],
             ],
         ]);
-        $closure = function ($a, $x = 5, $b) {
+        $closure = function ($a, $b, $x = 5) {
             return $a > $b;
         };
         $this->assertFalse(Yii::$container->invoke($closure, ['b' => 5, 'a' => 1]));
