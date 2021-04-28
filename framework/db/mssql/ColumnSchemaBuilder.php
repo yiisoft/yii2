@@ -26,12 +26,10 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     public function __toString()
     {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}{append}';
-                break;
-            default:
-                $format = $this->format;
+        if ($this->getTypeCategory() === self::CATEGORY_PK) {
+            $format = '{type}{check}{comment}{append}';
+        } else {
+            $format = $this->format;
         }
 
         return $this->buildCompleteString($format);
