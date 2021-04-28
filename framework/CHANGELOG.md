@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #18590: Fix `yii\web\UrlManager` to instantiate cache only when it's actually needed (bizley)
 - Enh #18569: Add `NumberValidator::$allowArray` (raidkon)
 - Bug #18613: Do not call static methods non-statically in `BaseActiveRecord` (samdark)
+- Bug #18619: Do not modify `yii\web\Cookie::$path` on `yii\web\Response::sendCookies()` (mikk150)
 
 
 2.0.41.1 March 04, 2021
