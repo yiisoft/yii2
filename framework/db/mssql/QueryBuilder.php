@@ -190,7 +190,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     "DF_{$constraintBase}",
                     $table,
                     $column,
-                    $defaultValue instanceof Expression ?  $defaultValue : new Expression($defaultValue)
+                    $defaultValue instanceof Expression ? $defaultValue : new Expression($defaultValue)
                 );
             }
 
