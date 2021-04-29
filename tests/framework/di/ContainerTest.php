@@ -26,6 +26,9 @@ use yiiunit\framework\di\stubs\Kappa;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\QuxFactory;
+use yiiunit\framework\di\stubs\UnionTypeNotNull;
+use yiiunit\framework\di\stubs\UnionTypeNull;
+use yiiunit\framework\di\stubs\UnionTypeWithClass;
 use yiiunit\framework\di\stubs\Zeta;
 use yiiunit\TestCase;
 
@@ -620,5 +623,54 @@ class ContainerTest extends TestCase
         $this->assertNull($zeta->quxNull);
         $this->assertNull($zeta->unknown);
         $this->assertNull($zeta->unknownNull);
+    }
+
+    public function testUnionTypeWithNullConstructorParameters()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        $unionType = (new Container())->get(UnionTypeNull::class);
+        $this->assertInstanceOf(UnionTypeNull::class, $unionType);
+    }
+
+    public function testUnionTypeWithoutNullConstructorParameters()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 'a']);
+        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+
+        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 1]);
+        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+
+        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 2.3]);
+        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+
+        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => true]);
+        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+
+        $this->expectException(\TypeError::class);
+        (new Container())->get(UnionTypeNotNull::class);
+    }
+
+    public function testUnionTypeWithClassConstructorParameters()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        $unionType = (new Container())->get(UnionTypeWithClass::class, ['value' => new Beta()]);
+        $this->assertInstanceOf(UnionTypeWithClass::class, $unionType);
+        $this->assertInstanceOf(Beta::class, $unionType->value);
+
+        $this->expectException(\TypeError::class);
+        (new Container())->get(UnionTypeNotNull::class);
     }
 }

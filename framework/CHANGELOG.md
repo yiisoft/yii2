@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Enh #18569: Add `NumberValidator::$allowArray` (raidkon)
 - Bug #18613: Do not call static methods non-statically in `BaseActiveRecord` (samdark)
 - Bug #18619: Do not modify `yii\web\Cookie::$path` on `yii\web\Response::sendCookies()` (mikk150)
+- Bug #18624: Fix `yii\di\Container` to properly resolve dependencies in case of PHP 8 union types (bizley)
 
 
 2.0.41.1 March 04, 2021
