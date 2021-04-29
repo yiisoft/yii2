@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\di\stubs;
 
-class UnionTypeNull
+use yii\base\BaseObject;
+
+class UnionTypeNull extends BaseObject
 {
     public function __construct(protected string|int|float|bool|null $value)
     {

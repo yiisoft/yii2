@@ -632,8 +632,8 @@ class ContainerTest extends TestCase
             return;
         }
 
-        $unionType = (new Container())->get(UnionTypeNull::class);
-        $this->assertInstanceOf(UnionTypeNull::class, $unionType);
+        $unionType = (new Container())->get(UnionTypeNull::className());
+        $this->assertInstanceOf(UnionTypeNull::className(), $unionType);
     }
 
     public function testUnionTypeWithoutNullConstructorParameters()
@@ -643,20 +643,20 @@ class ContainerTest extends TestCase
             return;
         }
 
-        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 'a']);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $unionType = (new Container())->get(UnionTypeNotNull::className(), ['value' => 'a']);
+        $this->assertInstanceOf(UnionTypeNotNull::className(), $unionType);
 
-        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 1]);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $unionType = (new Container())->get(UnionTypeNotNull::className(), ['value' => 1]);
+        $this->assertInstanceOf(UnionTypeNotNull::className(), $unionType);
 
-        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 2.3]);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $unionType = (new Container())->get(UnionTypeNotNull::className(), ['value' => 2.3]);
+        $this->assertInstanceOf(UnionTypeNotNull::className(), $unionType);
 
-        $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => true]);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $unionType = (new Container())->get(UnionTypeNotNull::className(), ['value' => true]);
+        $this->assertInstanceOf(UnionTypeNotNull::className(), $unionType);
 
-        $this->expectException(\TypeError::class);
-        (new Container())->get(UnionTypeNotNull::class);
+        $this->expectException('TypeError');
+        (new Container())->get(UnionTypeNotNull::className());
     }
 
     public function testUnionTypeWithClassConstructorParameters()
@@ -666,11 +666,11 @@ class ContainerTest extends TestCase
             return;
         }
 
-        $unionType = (new Container())->get(UnionTypeWithClass::class, ['value' => new Beta()]);
-        $this->assertInstanceOf(UnionTypeWithClass::class, $unionType);
+        $unionType = (new Container())->get(UnionTypeWithClass::className(), ['value' => new Beta()]);
+        $this->assertInstanceOf(UnionTypeWithClass::className(), $unionType);
         $this->assertInstanceOf(Beta::class, $unionType->value);
 
-        $this->expectException(\TypeError::class);
-        (new Container())->get(UnionTypeNotNull::class);
+        $this->expectException('TypeError');
+        (new Container())->get(UnionTypeNotNull::className());
     }
 }

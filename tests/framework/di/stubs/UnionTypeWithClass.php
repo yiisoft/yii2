@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\di\stubs;
 
-class UnionTypeWithClass
+use yii\base\BaseObject;
+
+class UnionTypeWithClass extends BaseObject
 {
     public function __construct(public string|Beta $value)
     {
