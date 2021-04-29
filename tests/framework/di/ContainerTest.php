@@ -668,7 +668,7 @@ class ContainerTest extends TestCase
 
         $unionType = (new Container())->get(UnionTypeWithClass::className(), ['value' => new Beta()]);
         $this->assertInstanceOf(UnionTypeWithClass::className(), $unionType);
-        $this->assertInstanceOf(Beta::class, $unionType->value);
+        $this->assertInstanceOf(Beta::className(), $unionType->value);
 
         $this->expectException('TypeError');
         (new Container())->get(UnionTypeNotNull::className());
