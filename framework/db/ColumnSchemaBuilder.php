@@ -331,35 +331,46 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
+     * Return the default value for the column.
+     * @return string|null string with default value of column.
+     */
+    protected function buildDefaultValue()
+    {
+        if ($this->default === null) {
+            return $this->isNotNull === false ? 'NULL' : null;
+        }
+
+        switch (gettype($this->default)) {
+            case 'double':
+                // ensure type cast always has . as decimal separator in all locales
+                $defaultValue = StringHelper::floatToString($this->default);
+                break;
+            case 'boolean':
+                $defaultValue = $this->default ? 'TRUE' : 'FALSE';
+                break;
+            case 'integer':
+            case 'object':
+                $defaultValue = (string) $this->default;
+                break;
+            default:
+                $defaultValue = "'{$this->default}'";
+        }
+
+        return $defaultValue;
+    }
+
+    /**
      * Builds the default value specification for the column.
      * @return string string with default value of column.
      */
     protected function buildDefaultString()
     {
-        if ($this->default === null) {
-            return $this->isNotNull === false ? ' DEFAULT NULL' : '';
+        $defaultValue = $this->buildDefaultValue();
+        if ($defaultValue === null) {
+            return '';
         }
 
-        $string = ' DEFAULT ';
-        switch (gettype($this->default)) {
-            case 'integer':
-                $string .= (string) $this->default;
-                break;
-            case 'double':
-                // ensure type cast always has . as decimal separator in all locales
-                $string .= StringHelper::floatToString($this->default);
-                break;
-            case 'boolean':
-                $string .= $this->default ? 'TRUE' : 'FALSE';
-                break;
-            case 'object':
-                $string .= (string) $this->default;
-                break;
-            default:
-                $string .= "'{$this->default}'";
-        }
-
-        return $string;
+        return ' DEFAULT ' . $defaultValue;
     }
 
     /**

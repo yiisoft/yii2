@@ -552,7 +552,7 @@ WHILE 1=1 BEGIN
     IF @constraintName IS NULL BREAK
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
 END
-ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT '''''' FOR [bar]";
+ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT '' FOR [bar]";
         $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue(''));
         $this->assertEquals($expected, $sql);
 
@@ -579,7 +579,7 @@ WHILE 1=1 BEGIN
     IF @constraintName IS NULL BREAK
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
 END
-ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT '''AbCdE''' FOR [bar]";
+ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT 'AbCdE' FOR [bar]";
         $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue('AbCdE'));
         $this->assertEquals($expected, $sql);
 
@@ -606,7 +606,7 @@ WHILE 1=1 BEGIN
     IF @constraintName IS NULL BREAK
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
 END
-ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT 'CURRENT_TIMESTAMP' FOR [bar]";
+ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT CURRENT_TIMESTAMP FOR [bar]";
         $sql = $qb->alterColumn('foo1', 'bar', $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'));
         $this->assertEquals($expected, $sql);
 
@@ -654,6 +654,70 @@ ALTER TABLE [foo1] ADD CONSTRAINT [UQ_foo1_bar] UNIQUE ([bar])";
         $schema = $connection->getTableSchema('[foo1]', true);
         $this->assertEquals("nvarchar(128)", $schema->getColumn('bar')->dbType);
         $this->assertEquals(false, $schema->getColumn('bar')->allowNull);
+    }
+
+    public function testAlterColumnWithNull()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE [foo1] ALTER COLUMN [bar] int NULL
+DECLARE @tableName VARCHAR(MAX) = '[foo1]'
+DECLARE @columnName VARCHAR(MAX) = 'bar'
+
+WHILE 1=1 BEGIN
+    DECLARE @constraintName NVARCHAR(128)
+    SET @constraintName = (SELECT TOP 1 OBJECT_NAME(cons.[object_id])
+        FROM (
+            SELECT sc.[constid] object_id
+            FROM [sys].[sysconstraints] sc
+            JOIN [sys].[columns] c ON c.[object_id]=sc.[id] AND c.[column_id]=sc.[colid] AND c.[name]=@columnName
+            WHERE sc.[id] = OBJECT_ID(@tableName)
+            UNION
+            SELECT object_id(i.[name]) FROM [sys].[indexes] i
+            JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
+            JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
+            WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
+        ) cons
+        JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
+         WHERE so.[type]='D')
+    IF @constraintName IS NULL BREAK
+    EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
+END
+ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT NULL FOR [bar]";
+        $sql = $qb->alterColumn('foo1', 'bar', $this->integer()->null()->defaultValue(NULL));
+        $this->assertEquals($expected, $sql);
+    }
+
+    public function testAlterColumnWithExpression()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE [foo1] ALTER COLUMN [bar] int NULL
+DECLARE @tableName VARCHAR(MAX) = '[foo1]'
+DECLARE @columnName VARCHAR(MAX) = 'bar'
+
+WHILE 1=1 BEGIN
+    DECLARE @constraintName NVARCHAR(128)
+    SET @constraintName = (SELECT TOP 1 OBJECT_NAME(cons.[object_id])
+        FROM (
+            SELECT sc.[constid] object_id
+            FROM [sys].[sysconstraints] sc
+            JOIN [sys].[columns] c ON c.[object_id]=sc.[id] AND c.[column_id]=sc.[colid] AND c.[name]=@columnName
+            WHERE sc.[id] = OBJECT_ID(@tableName)
+            UNION
+            SELECT object_id(i.[name]) FROM [sys].[indexes] i
+            JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
+            JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
+            WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
+        ) cons
+        JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
+         WHERE so.[type]='D')
+    IF @constraintName IS NULL BREAK
+    EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
+END
+ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT CAST(GETDATE() AS INT) FOR [bar]";
+        $sql = $qb->alterColumn('foo1', 'bar', $this->integer()->null()->defaultValue(new Expression('CAST(GETDATE() AS INT)')));
+        $this->assertEquals($expected, $sql);
     }
 
     public function testAlterColumnWithCheckConstraintOnDb()
