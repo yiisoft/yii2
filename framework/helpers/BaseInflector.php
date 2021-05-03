@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -219,6 +220,10 @@ class BaseInflector
         'whiting' => 'whiting',
         'wildebeest' => 'wildebeest',
         'Yengeese' => 'Yengeese',
+        'software' => 'software',
+        'Software' => 'Software',
+        'hardware' => 'hardware',
+        'Hardware' => 'Hardware',
     ];
     /**
      * @var array fallback map for transliteration used by [[transliterate()]] when intl isn't available.
@@ -619,5 +624,4 @@ class BaseInflector
     {
         return isset(Yii::$app) ? Yii::$app->charset : 'UTF-8';
     }
-
 }

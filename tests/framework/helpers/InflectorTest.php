@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -44,6 +45,8 @@ class InflectorTest extends TestCase
             'car' => 'cars',
             'netherlands' => 'netherlands',
             'currency' => 'currencies',
+            'software' => 'software',
+            'hardware' => 'hardware',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -73,6 +76,8 @@ class InflectorTest extends TestCase
             'cars' => 'car',
             'Netherlands' => 'Netherlands',
             'currencies' => 'currency',
+            'software' => 'software',
+            'hardware' => 'hardware',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));
