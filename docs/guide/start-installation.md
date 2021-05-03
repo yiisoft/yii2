@@ -79,6 +79,8 @@ You can choose a different directory name if you want.
 >
 > Note that the development version of Yii should not be used for production as it may break your running code.
 
+> Note: Installing Yii framework directly requires having `patch` command available on your system. It can be found 
+> usually within `git` package so there is a good chance you already have it.
 
 Installing from an Archive File <span id="installing-from-archive-file"></span>
 -------------------------------
