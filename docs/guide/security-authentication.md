@@ -50,8 +50,8 @@ the following methods:
 If a particular method is not needed, you may implement it with an empty body. For example, if your application
 is a pure stateless RESTful application, you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
 and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body. Or if your 
-application uses session only authentication, you would need to implement only the methods [[yii\web\IdentityInterface::findIdentity()|findIdentity()]] and 
-[[yii\web\IdentityInterface::getId()|getId()]], while leaving the rest of the methods with an empty body.
+application uses session only authentication, you would need to implement all the methods except
+[[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
 
 In the following example, an [[yii\web\User::identityClass|identity class]] is implemented as
 an [Active Record](db-active-record.md) class associated with the `user` database table.
