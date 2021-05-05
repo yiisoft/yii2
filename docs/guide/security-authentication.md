@@ -49,7 +49,9 @@ the following methods:
 
 If a particular method is not needed, you may implement it with an empty body. For example, if your application
 is a pure stateless RESTful application, you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
-and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body.
+and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body. Or if your 
+application uses session only authentication, you would need to implement all the methods except
+[[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
 
 In the following example, an [[yii\web\User::identityClass|identity class]] is implemented as
 an [Active Record](db-active-record.md) class associated with the `user` database table.
@@ -98,7 +100,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return string current user auth key
+     * @return string|null current user auth key
      */
     public function getAuthKey()
     {
@@ -107,7 +109,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $authKey
-     * @return bool if auth key is valid for current user
+     * @return bool|null if auth key is valid for current user
      */
     public function validateAuthKey($authKey)
     {
@@ -117,7 +119,7 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 You may use the following code to generate an auth key for each
-user and store it in the `user` table:
+user and then store it in the `user` table:
 
 ```php
 class User extends ActiveRecord implements IdentityInterface
