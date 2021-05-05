@@ -1,31 +1,38 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.42 under development
+2.0.43 under development
 ------------------------
 
-- Bug #18323: Fix client validation of RadioList when there are disabled items (toir427)
-- Enh #18534: Added `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
-- Enh #18566: Throw the original exception when `yii\web\Controller::bindInjectedParams()` catches HttpException (pigochu)
-- Bug #18585: Fix `yii\validators\EmailValidator` to handle an edge case where `IDN` is enabled, but fails ascii conversion for valid email addresses (ihitbuttons)
-- Bug #18574: Fix `yii\web\DbSession` to use the correct db if strict mode is used (Mignar)
+- no changes in this release.
+
+
+2.0.42 May 05, 2021
+-------------------
+
+- Bug #14343: Fix `yii\test\ActiveFixture` to use model's DB connection instead of the default one (margori, bizley)
+- Bug #17174: Fix `yii\db\BaseActiveRecord::unlink()` to not ignore `on` conditions in `via` relations (bizley)
+- Bug #17203: Fix `yii\db\Connection` to persist customized `queryBuilder` configuration after the `close()` → `open()` cycle (silverfire)
 - Bug #17479: Fix `yii\grid\ActionColumn` to render icons when no glyphicons are available (simialbi)
+- Bug #17631: Fix `yii\widgets\BaseListView` to properly render custom summary (sjaakp, bizley)
+- Bug #18323: Fix client validation of RadioList when there are disabled items (toir427)
+- Bug #18325: Fix `yii\db\pgsql\Schema` to respect non-default PgSQL schema name for data types (theonedemon, silverfire)
+- Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
 - Bug #18544: Fix `yii\validators\NumberValidator` to disallow values with whitespaces (bizley)
 - Bug #18552: Fix `yii\data\SqlDataProvider` to properly handle SQL with `ORDER BY` clause (bizley)
-- Bug #17174: Fix `yii\db\BaseActiveRecord::unlink()` to not ignore `on` conditions in `via` relations (bizley)
 - Bug #18557: Fix `yii\data\ActiveDataProvider` to handle DB connection configuration of different type than just `yii\db\Connection` (bizley)
-- Bug #18526: Fix `yii\caching\DbCache` to work with MSSQL, add `normalizeTableRowData()` to `yii\db\mssql\QueryBuilder::upsert()` (darkdef)
-- Bug #14343: Fix `yii\test\ActiveFixture` to use model's DB connection instead of the default one (margori, bizley)
-- Bug #17631: Fix `yii\widgets\BaseListView` to properly render custom summary (sjaakp, bizley)
-- Bug #17203: Fix `yii\db\Connection` to persist customized `queryBuilder` configuration after the `close()` → `open()` cycle (silverfire)
-- Bug #18325: Fix `yii\db\pgsql\Schema` to respect non-default PgSQL schema name for data types (theonedemon, silverfire)
-- Bug #18593: Fix setting the `maxlength` attribute for `Html::activeInput()` and `Html::activeTextArea()` based on `length` parameter of validator (BSCheshir)
-- Bug #18592: Fix `yii\db\Command::getRawSql()` to not replace query params in invalid places (sartor)
+- Bug #18574: Fix `yii\web\DbSession` to use the correct db if strict mode is used (Mignar)
+- Bug #18585: Fix `yii\validators\EmailValidator` to handle an edge case where `IDN` is enabled, but fails ascii conversion for valid email addresses (ihitbuttons)
 - Bug #18590: Fix `yii\web\UrlManager` to instantiate cache only when it's actually needed (bizley)
-- Enh #18569: Add `NumberValidator::$allowArray` (raidkon)
+- Bug #18592: Fix `yii\db\Command::getRawSql()` to not replace query params in invalid places (sartor)
+- Bug #18593: Fix setting the `maxlength` attribute for `Html::activeInput()` and `Html::activeTextArea()` based on `length` parameter of validator (BSCheshir)
+- Bug #18604: Function alterColumn for MSSQL build incorrect query with default values `NULL` and other expressions (darkdef)
 - Bug #18613: Do not call static methods non-statically in `BaseActiveRecord` (samdark)
 - Bug #18619: Do not modify `yii\web\Cookie::$path` on `yii\web\Response::sendCookies()` (mikk150)
-- Bug #18604: Function alterColumn for MSSQL build incorrect query with default values `NULL` and other expressions (darkdef)
+- Bug #18624: Fix `yii\di\Container` to properly resolve dependencies in case of PHP 8 union types (bizley)
+- Enh #18534: Add `prepareSearchQuery` property in `yii\rest\IndexAction` (programmis)
+- Enh #18566: Throw the original exception when `yii\web\Controller::bindInjectedParams()` catches HttpException (pigochu)
+- Enh #18569: Add `NumberValidator::$allowArray` (raidkon)
 
 
 2.0.41.1 March 04, 2021
