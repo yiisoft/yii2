@@ -92,9 +92,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Get thecurrent user's ID
-     * 
-     * @return int|string 
+     * @return int|string current user ID
      */
     public function getId()
     {
@@ -102,20 +100,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Get the current user's auth key
-     * 
-     * @return string|null
+     * @return string|null current user auth key
      */
     public function getAuthKey()
     {
         return $this->auth_key;
     }
 
-    /**
-     * Checks if the provided auth key is valid for the current user
-     * 
+    /** 
      * @param string $authKey
-     * @return bool|null
+     * @return bool|null if auth key is valid for current user
      */
     public function validateAuthKey($authKey)
     {
