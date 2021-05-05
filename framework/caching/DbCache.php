@@ -297,9 +297,8 @@ class DbCache extends Cache
     }
 
     /**
-     * @return bool
-     *
-     * Checking Mssql: if field is varbinary - return true
+     * @return bool whether field is MSSQL varbinary
+     * @since 2.0.42
      */
     protected function isVarbinaryDataField()
     {
@@ -311,8 +310,8 @@ class DbCache extends Cache
     }
 
     /**
-     * @return string
-     * Returning `data` field name with converting for usage in MSSQL (if needs)
+     * @return string `data` field name converted for usage in MSSQL (if needed)
+     * @since 2.0.42
      */
     protected function getDataFieldName()
     {
@@ -320,10 +319,8 @@ class DbCache extends Cache
     }
 
     /**
-     * @param $value
-     * @return PdoValue
-     *
-     * Return PdoValue or direct $value for usage in MSSQL
+     * @return PdoValue PdoValue or direct $value for usage in MSSQL
+     * @since 2.0.42
      */
     protected function getDataFieldValue($value)
     {

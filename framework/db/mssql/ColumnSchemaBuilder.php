@@ -36,7 +36,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * Changes default format string to MSSQL ALTER COMMAND
+     * Changes default format string to MSSQL ALTER COMMAND.
      */
     public function setAlterColumnFormat()
     {
@@ -45,7 +45,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 
     /**
      * Getting the `Default` value for constraint
-     * @return string|Expression|null
+     * @return string|Expression|null default value of the column.
      */
     public function getDefaultValue()
     {
@@ -58,7 +58,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 
     /**
      * Get the `Check` value for constraint
-     * @return string|null
+     * @return string|null the `CHECK` constraint for the column.
      */
     public function getCheckValue()
     {
@@ -66,7 +66,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * @return bool
+     * @return bool whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
     public function isUnique()
     {

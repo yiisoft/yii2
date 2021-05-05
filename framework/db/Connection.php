@@ -429,7 +429,6 @@ class Connection extends Component
      * Is used to restore a QueryBuilder configuration after the connection close/open cycle.
      *
      * @see restoreQueryBuilderConfiguration()
-     * @since 2.0.42
      */
     private $_queryBuilderConfigurations = [];
 
@@ -892,8 +891,6 @@ class Connection extends Component
 
     /**
      * Restores custom QueryBuilder configuration after the connection close/open cycle
-     *
-     * @since 2.0.42
      */
     private function restoreQueryBuilderConfiguration()
     {
