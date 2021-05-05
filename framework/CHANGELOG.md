@@ -22,6 +22,12 @@ Yii Framework 2 Change Log
 - Bug #18593: Fix setting the `maxlength` attribute for `Html::activeInput()` and `Html::activeTextArea()` based on `length` parameter of validator (BSCheshir)
 - Bug #18592: Fix `yii\db\Command::getRawSql()` to not replace query params in invalid places (sartor)
 - Bug #18590: Fix `yii\web\UrlManager` to instantiate cache only when it's actually needed (bizley)
+- Enh #18569: Add `NumberValidator::$allowArray` (raidkon)
+- Bug #18613: Do not call static methods non-statically in `BaseActiveRecord` (samdark)
+- Bug #18619: Do not modify `yii\web\Cookie::$path` on `yii\web\Response::sendCookies()` (mikk150)
+- Bug #18624: Fix `yii\di\Container` to properly resolve dependencies in case of PHP 8 union types (bizley)
+- Bug #18604: Function alterColumn for MSSQL build incorrect query with default values `NULL` and other expressions (darkdef)
+
 
 2.0.41.1 March 04, 2021
 -----------------------
