@@ -13,12 +13,17 @@ use yii\db\Expression;
 /**
  * ColumnSchemaBuilder is the schema builder for MSSQL databases.
  *
+ * @property-read string|null $checkValue The `CHECK` constraint for the column. This property is read-only.
+ * @property-read string|Expression|null $defaultValue Default value of the column. This property is
+ * read-only.
+ *
  * @author Valerii Gorbachev <darkdef@gmail.com>
  * @since 2.0.42
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
     protected $format = '{type}{length}{notnull}{unique}{default}{check}{append}';
+
 
     /**
      * Builds the full string for the column's schema.

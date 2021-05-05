@@ -431,7 +431,6 @@ class Connection extends Component
      * @see restoreQueryBuilderConfiguration()
      */
     private $_queryBuilderConfigurations = [];
-
     /**
      * @var Transaction the currently active transaction
      */

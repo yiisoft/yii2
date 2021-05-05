@@ -36,7 +36,7 @@ use yii\validators\IpValidator;
  * is not given. This property is read-only.
  * @property-read string|null $authUser The username sent via HTTP authentication, `null` if the username is
  * not given. This property is read-only.
- * @property string $baseUrl The relative URL for the application (usually with a leading slash).
+ * @property string $baseUrl The relative URL for the application.
  * @property array $bodyParams The request parameters given in the request body.
  * @property-read string $contentType Request content-type. Null is returned if this information is not
  * available. This property is read-only.
