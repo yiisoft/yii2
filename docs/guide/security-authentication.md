@@ -107,7 +107,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->auth_key;
     }
 
-    /** 
+    /**
      * @param string $authKey
      * @return bool|null if auth key is valid for current user
      */

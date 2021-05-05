@@ -42,13 +42,14 @@ namespace yii\web;
  *     }
  * }
  * ```
- * In some situations not all of these methods are required to be implemented. 
- * For example, if your application is a pure stateless RESTful application, 
- * you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] 
- * and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body. 
+ *
+ * In some situations not all of these methods are required to be implemented.
+ * For example, if your application is a pure stateless RESTful application,
+ * you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
+ * and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body.
  * Or if your application uses session only authentication, you would need to implement all the methods
  * except [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
