@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.43 under development
-------------------------
+2.0.42.1 under development
+--------------------------
 
 - Bug #18634: Fix `yii\db\BaseActiveRecord::unlink()` and `unlinkAll()` to omit condition for `on` property when it doesn't exist (bizley)
 
