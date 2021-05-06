@@ -1413,7 +1413,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             foreach (array_keys($columns) as $a) {
                 $nulls[$a] = null;
             }
-            if ($viaRelation->on !== null) {
+            if (property_exists($viaRelation, 'on') && $viaRelation->on !== null) {
                 $columns = ['and', $columns, $viaRelation->on];
             }
             if (is_array($relation->via)) {
@@ -1513,7 +1513,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (!empty($viaRelation->where)) {
                 $condition = ['and', $condition, $viaRelation->where];
             }
-            if (!empty($viaRelation->on)) {
+            if (property_exists($viaRelation, 'on') && !empty($viaRelation->on)) {
                 $condition = ['and', $condition, $viaRelation->on];
             }
             if (is_array($relation->via)) {
@@ -1550,7 +1550,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 if (!empty($relation->where)) {
                     $condition = ['and', $condition, $relation->where];
                 }
-                if (!empty($relation->on)) {
+                if (property_exists($relation, 'on') && !empty($relation->on)) {
                     $condition = ['and', $condition, $relation->on];
                 }
                 if ($delete) {
