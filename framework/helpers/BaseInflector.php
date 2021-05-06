@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -624,4 +623,5 @@ class BaseInflector
     {
         return isset(Yii::$app) ? Yii::$app->charset : 'UTF-8';
     }
+
 }
