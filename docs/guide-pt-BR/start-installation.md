@@ -120,7 +120,7 @@ No entanto, existem outras opções de instalação disponíveis:
 Instalando Recursos Estáticos (Assets) <span id="installing-assets"></span>
 -----------------
 
-Yii utiliza os pacotes [Bower](http://bower.io/) e/ou [NPM](https://www.npmjs.org/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
+Yii utiliza os pacotes [Bower](http://bower.io/) e/ou [NPM](https://www.npmjs.com/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
 Ele usa composer para obter essa bibliotecas, permitindo que versões de pacotes PHP, CSS e Javascrtip possam ser definidas/instaladas ao mesmo tempo.
 Isto é possível por usar ou [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
 Por favor, consulta a [documentação sobre Assets](structure-assets.md) para mais detalhes.

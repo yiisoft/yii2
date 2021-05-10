@@ -207,7 +207,7 @@ la opción de publicación `beforeCopy`, solo los subdirectorios `fonts` y `css`
 
 ### Bower y NPM Assets <span id="bower-npm-assets"></span>
 
-La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.org/).
+La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/).
 Si tu aplicación o extensión usa estos paquetes, se recomienda seguir los siguientes pasos para gestionar los assets en
  la librería:
 
