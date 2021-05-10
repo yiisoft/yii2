@@ -113,7 +113,7 @@ $cache = new FileCache([
 - `@web`, базовий URL поточного додатку. Має таке ж значення, як і [[yii\web\Request::baseUrl]].
 - `@vendor`, [[yii\base\Application::vendorPath|директорія vendor Composer]]. За замовчуванням `@app/vendor`.
 - `@bower`, директорія, що містить [пакунки Bower](http://bower.io/). За замовчуванням `@vendor/bower`.
-- `@npm`, директорія, що містить [пакунки NPM](https://www.npmjs.org/). За замовчуванням `@vendor/npm`.
+- `@npm`, директорія, що містить [пакунки NPM](https://www.npmjs.com/). За замовчуванням `@vendor/npm`.
 
 Псевдонім `@yii` задається в момент підключення файлу `Yii.php` у [вхідному скрипті](structure-entry-scripts.md).
 Решта псевдонімів задаються в конструкторі додатка в момент застосування [конфигурації](concept-configurations.md).

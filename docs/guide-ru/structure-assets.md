@@ -166,7 +166,7 @@ class FontAwesomeAsset extends AssetBundle
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
-Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.org/).
+Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.com/).
 В мире PHP мы испольуем Composer для управления зависимостями, но он не позволяет устанавливать пакеты Bower и NPM, просто указывая их в `composer.json`.
 
 Чтобы получить такую возможность, нужно немного настроить Composer. Существует два варианта:
