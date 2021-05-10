@@ -4,8 +4,6 @@ Yii Framework 2 Change Log
 2.0.43 under development
 ------------------------
 
-- Enh: Added strings "software, hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
-
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 
 
@@ -14,11 +12,6 @@ Yii Framework 2 Change Log
 
 - Bug #18634: Fix `yii\db\BaseActiveRecord::unlink()` and `unlinkAll()` to omit condition for `on` property when it doesn't exist (bizley)
 
-
-2.0.42.1 May 06, 2021
----------------------
-
-- Bug #18634: Fix `yii\db\BaseActiveRecord::unlink()` and `unlinkAll()` to omit condition for `on` property when it doesn't exist (bizley)
 
 2.0.42 May 05, 2021
 -------------------
