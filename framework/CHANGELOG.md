@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.43 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 
 
 2.0.42.1 May 06, 2021
