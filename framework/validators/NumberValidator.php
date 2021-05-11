@@ -29,7 +29,6 @@ class NumberValidator extends Validator
      * @since 2.0.42
      */
     public $allowArray = false;
-
     /**
      * @var bool whether the attribute value can only be an integer. Defaults to false.
      */

@@ -207,7 +207,7 @@ the `only` publishing option, only the `fonts` and `css` subdirectories will be 
 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
-Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) package 
+Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/) package 
 managers. In PHP world we have Composer, that manages PHP dependencies, but it is possible to load
 both Bower and NPM packages using `composer.json` just as PHP packages.
 
