@@ -329,7 +329,9 @@
                 this.$form = $form;
                 var $input = findInput($form, this);
 
-                var disabled = $input.toArray().reduce((result, next) => result && $(next).is(':disabled'), true);
+                var disabled = $input.toArray().reduce(function(result, next) {
+                    return result && $(next).is(':disabled');
+                }, true);
                 if (disabled) {
                     return true;
                 }
