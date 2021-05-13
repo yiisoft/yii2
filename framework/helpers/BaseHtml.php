@@ -2318,7 +2318,7 @@ class BaseHtml
     {
         $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         $name = mb_strtolower($name, $charset);
-        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+        return str_replace(['[]', '][', '[', ']', ' ', '.', '--'], ['', '-', '-', '', '-', '-', '-'], $name);
     }
 
     /**
