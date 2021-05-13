@@ -52,6 +52,7 @@ class ServeController extends Controller
     public function actionIndex($address = 'localhost')
     {
         $documentRoot = Yii::getAlias($this->docroot);
+        $router = Yii::getAlias($this->router);
 
         if (strpos($address, ':') === false) {
             $address = $address . ':' . $this->port;
@@ -67,19 +68,19 @@ class ServeController extends Controller
             return self::EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS;
         }
 
-        if ($this->router !== null && !file_exists($this->router)) {
-            $this->stdout("Routing file \"$this->router\" does not exist.\n", Console::FG_RED);
+        if ($this->router !== null && !file_exists($router)) {
+            $this->stdout("Routing file \"$router\" does not exist.\n", Console::FG_RED);
             return self::EXIT_CODE_NO_ROUTING_FILE;
         }
 
         $this->stdout("Server started on http://{$address}/\n");
         $this->stdout("Document root is \"{$documentRoot}\"\n");
         if ($this->router) {
-            $this->stdout("Routing file is \"$this->router\"\n");
+            $this->stdout("Routing file is \"$router\"\n");
         }
         $this->stdout("Quit the server with CTRL-C or COMMAND-C.\n");
 
-        passthru('"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\" $this->router");
+        passthru('"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\" $router");
     }
 
     /**
