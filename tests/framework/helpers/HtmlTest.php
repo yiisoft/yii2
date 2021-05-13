@@ -1944,11 +1944,14 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdDataProvider
+     * @dataProvider testGetInputIdByNameDataProvider
      */
     public function testGetInputIdByName($attributeName, $inputIdExpected)
     {
-        $inputIdActual = Html::getInputIdByName($attributeName);
+        $model = new DynamicModel();
+        $model->defineAttribute($attributeName);
+        $inputNameActual = Html::getInputName($model, $attributeName);
+        $inputIdActual = Html::getInputIdByName($inputNameActual);
 
         $this->assertSame($inputIdExpected, $inputIdActual);
     }
@@ -2051,6 +2054,45 @@ HTML;
     }
 
     public function testGetInputIdDataProvider()
+    {
+        return [
+            [
+                'foo',
+                'dynamicmodel-foo',
+            ],
+            [
+                'FooBar',
+                'dynamicmodel-foobar',
+            ],
+            [
+                'Foo_Bar',
+                'dynamicmodel-foo_bar',
+            ],
+            [
+                'foo[]',
+                'dynamicmodel-foo',
+            ],
+            [
+                'foo[bar][baz]',
+                'dynamicmodel-foo-bar-baz',
+            ],
+
+            [
+                'foo.bar',
+                'dynamicmodel-foo-bar',
+            ],
+            [
+                'bild_groß_dateiname',
+                'dynamicmodel-bild_groß_dateiname',
+            ],
+            [
+                'ФуБарБаз',
+                'dynamicmodel-фубарбаз',
+            ],
+        ];
+    }
+
+    public function testGetInputIdByNameDataProvider()
     {
         return [
             [
