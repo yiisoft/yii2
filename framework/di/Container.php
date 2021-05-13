@@ -485,6 +485,10 @@ class Container extends Component
 
         $ps = $this->_params[$class];
         foreach ($params as $index => $value) {
+            // Merges parameter values passed as associative arrays
+            if (!empty($ps[$index]) && is_array($ps[$index]) && is_array($value) && !isset($ps[$index][0])) {
+                $value += $ps[$index];
+            }
             $ps[$index] = $value;
         }
 
