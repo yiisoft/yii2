@@ -61,6 +61,7 @@ class Validator extends Component
      */
     public static $builtInValidators = [
         'boolean' => 'yii\validators\BooleanValidator',
+        'bool' => 'yii\validators\BooleanValidator',
         'captcha' => 'yii\captcha\CaptchaValidator',
         'compare' => 'yii\validators\CompareValidator',
         'date' => 'yii\validators\DateValidator',
@@ -73,7 +74,6 @@ class Validator extends Component
             'type' => DateValidator::TYPE_TIME,
         ],
         'default' => 'yii\validators\DefaultValueValidator',
-        'double' => 'yii\validators\NumberValidator',
         'each' => 'yii\validators\EachValidator',
         'email' => 'yii\validators\EmailValidator',
         'exist' => 'yii\validators\ExistValidator',
@@ -81,12 +81,20 @@ class Validator extends Component
         'filter' => 'yii\validators\FilterValidator',
         'image' => 'yii\validators\ImageValidator',
         'in' => 'yii\validators\RangeValidator',
+        'range' => 'yii\validators\RangeValidator',
+        'number' => 'yii\validators\NumberValidator',
+        'float' => 'yii\validators\NumberValidator',
+        'double' => 'yii\validators\NumberValidator',
         'integer' => [
             'class' => 'yii\validators\NumberValidator',
             'integerOnly' => true,
         ],
+        'int' => [
+            'class' => 'yii\validators\NumberValidator',
+            'integerOnly' => true,
+        ],
         'match' => 'yii\validators\RegularExpressionValidator',
-        'number' => 'yii\validators\NumberValidator',
+        'regex' => 'yii\validators\RegularExpressionValidator',
         'required' => 'yii\validators\RequiredValidator',
         'safe' => 'yii\validators\SafeValidator',
         'string' => 'yii\validators\StringValidator',
@@ -159,11 +167,11 @@ class Validator extends Component
      * This property is mainly provided to support conditional validation on the server-side.
      * If this property is not set, this validator will be always applied on the server-side.
      *
-     * The following example will enable the validator only when the country currently selected is USA:
+     * The following example will enable the validator only when the attribute is 'USA':
      *
      * ```php
-     * function ($model) {
-     *     return $model->country == Country::USA;
+     * function ($model, $attribute) {
+     *     return $model->{$attribute} === 'USA';
      * }
      * ```
      *
@@ -179,11 +187,11 @@ class Validator extends Component
      * This property is mainly provided to support conditional validation on the client-side.
      * If this property is not set, this validator will be always applied on the client-side.
      *
-     * The following example will enable the validator only when the country currently selected is USA:
+     * The following example will enable the validator only when the attribute 'country' currently selected is 'USA':
      *
      * ```javascript
      * function (attribute, value) {
-     *     return $('#country').val() === 'USA';
+     *     return attribute.name === 'country' && value === 'USA';
      * }
      * ```
      *
