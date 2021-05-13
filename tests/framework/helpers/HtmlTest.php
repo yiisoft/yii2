@@ -1943,6 +1943,16 @@ EOD;
         $this->assertSame($inputIdExpected, $inputIdActual);
     }
 
+    /**
+     * @dataProvider testGetInputIdDataProvider
+     */
+    public function testGetInputIdByName($attributeName, $inputIdExpected)
+    {
+        $inputIdActual = Html::getInputIdByName($attributeName);
+
+        $this->assertSame($inputIdExpected, $inputIdActual);
+    }
+
     public function testEscapeJsRegularExpression()
     {
         $expected = '/[a-z0-9-]+/';
