@@ -2313,6 +2313,7 @@ class BaseHtml
      *
      * @param string $name the input name
      * @return string the generated input ID
+     * @since 2.0.43
      */
     public static function getInputIdByName($name)
     {
