@@ -2307,20 +2307,33 @@ class BaseHtml
     }
 
     /**
+     * Converts input name to ID.
+     *
+     * For example, if `$name` is `Post[content]`, this method will return `post-content`.
+     *
+     * @param string $name the input name
+     * @return string the generated input ID
+     * @since 2.0.43
+     */
+    public static function getInputIdByName($name)
+    {
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        $name = mb_strtolower($name, $charset);
+        return str_replace(['[]', '][', '[', ']', ' ', '.', '--'], ['', '-', '-', '', '-', '-', '-'], $name);
+    }
+
+    /**
      * Generates an appropriate input ID for the specified attribute name or expression.
      *
-     * This method converts the result [[getInputName()]] into a valid input ID.
-     * For example, if [[getInputName()]] returns `Post[content]`, this method will return `post-content`.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
-     * @return string the generated input ID
+     * @return string the generated input ID.
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputId($model, $attribute)
     {
-        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
-        $name = mb_strtolower(static::getInputName($model, $attribute), $charset);
-        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+        $name = static::getInputName($model, $attribute);
+        return static::getInputIdByName($name);
     }
 
     /**
