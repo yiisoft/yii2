@@ -512,7 +512,7 @@ User та IdentityInterface
 Замість цього, необхідно реалізувати інтерфейс [[yii\web\IdentityInterface]], що набагато простіше у використанні.
 
 Більш детальна інформація представлена у розділах [Аутентифікація](security-authentication.md),
-[Авторизація](security-authorization.md) та [Розширений шаблон додатка](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-uk/README.md).
+[Авторизація](security-authorization.md) та [Розширений шаблон додатка](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide).
 
 
 Керування URL
