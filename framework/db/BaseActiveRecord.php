@@ -226,7 +226,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *    Or add [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] to your model
      *    class in order to automate the process.
      * 3. In the Web form that collects the user input, add a hidden field that stores
-     *    the lock version of the recording being updated.
+     *    the lock version of the record being updated.
      * 4. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
      *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
      *    to resolve the conflict.
