@@ -506,7 +506,7 @@ Kelas `CUserIdentity`. Sebaliknya, Anda harus menerapkan [[yii\web\IdentityInter
 jauh lebih mudah untuk digunakan. Template proyek lanjutan memberikan contoh seperti itu.
 
 Silakan merujuk ke bagian [Otentikasi](security-authentication.md), [Otorisasi](security-authorization.md), 
-dan [Template Proyek Lanjutan](https://github.com/yiisoft/yii2-app-advanced/blob /master/docs/guide/README.md) untuk lebih jelasnya.
+dan [Template Proyek Lanjutan](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) untuk lebih jelasnya.
 
 
 Manajemen URL
