@@ -68,7 +68,7 @@ Seguindo essas orientações fará com que seus componentes sejam [configurávei
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
 // alternatively
 $component = \Yii::createObject([
-   'class' => MyClass::className(),
+   'class' => MyClass::class,
    'prop1' => 3,
    'prop2' => 4,
 ], [1, 2]);
