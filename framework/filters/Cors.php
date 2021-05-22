@@ -26,7 +26,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::className(),
+ *             'class' => \yii\filters\Cors::class,
  *         ],
  *     ];
  * }
@@ -40,7 +40,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::className(),
+ *             'class' => \yii\filters\Cors::class,
  *             'cors' => [
  *                 // restrict access to
  *                 'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
@@ -197,7 +197,7 @@ class Cors extends ActionFilter
         if (isset($this->cors['Access-Control-Expose-Headers'])) {
             $responseHeaders['Access-Control-Expose-Headers'] = implode(', ', $this->cors['Access-Control-Expose-Headers']);
         }
-        
+
         if (isset($this->cors['Access-Control-Allow-Headers'])) {
             $responseHeaders['Access-Control-Allow-Headers'] = implode(', ', $this->cors['Access-Control-Allow-Headers']);
         }

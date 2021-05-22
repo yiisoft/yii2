@@ -87,11 +87,11 @@ trait ActiveRelationTrait
      * class Order extends ActiveRecord
      * {
      *    public function getOrderItems() {
-     *        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+     *        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
      *    }
      *
      *    public function getItems() {
-     *        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *        return $this->hasMany(Item::class, ['id' => 'item_id'])
      *                    ->via('orderItems');
      *    }
      * }
@@ -126,7 +126,7 @@ trait ActiveRelationTrait
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+     *     return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
      * }
      * ```
      *
@@ -135,7 +135,7 @@ trait ActiveRelationTrait
      * ```php
      * public function getCustomer()
      * {
-     *     return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->inverseOf('orders');
+     *     return $this->hasOne(Customer::class, ['id' => 'customer_id'])->inverseOf('orders');
      * }
      * ```
      *

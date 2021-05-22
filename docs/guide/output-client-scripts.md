@@ -56,7 +56,7 @@ An external script can be added like the following:
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 
@@ -95,7 +95,7 @@ A CSS file can be registered using the following:
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```
