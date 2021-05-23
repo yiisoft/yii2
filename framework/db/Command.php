@@ -218,7 +218,10 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return strtr($this->_sql, $params);
+            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+                $m = $matches[1];
+                return isset($params[$m]) ? $params[$m] : $m;
+            }, $this->_sql);
         }
         $sql = '';
         foreach (explode('?', $this->_sql) as $i => $part) {
@@ -424,7 +427,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */

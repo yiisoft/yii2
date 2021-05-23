@@ -1373,7 +1373,8 @@ class BaseHtml
 
     /**
      * If `maxlength` option is set true and the model attribute is validated by a string validator,
-     * the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     * the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]] and
+     * [[\yii\validators\StringValidator::length]].
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression.
      * @param array $options the tag options in terms of name-value pairs.
@@ -1384,8 +1385,8 @@ class BaseHtml
             unset($options['maxlength']);
             $attrName = static::getAttributeName($attribute);
             foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
+                if ($validator instanceof StringValidator && ($validator->max !== null || $validator->length !== null)) {
+                    $options['maxlength'] = max($validator->max, $validator->length);
                     break;
                 }
             }
@@ -1405,8 +1406,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.3.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.3 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1465,8 +1467,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This option is available since version 2.0.6.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1526,8 +1529,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This option is available since version 2.0.6.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1942,7 +1946,7 @@ class BaseHtml
      * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
-     * in a tag. If there is no attribute, an empty string will be returned.
+     * in a tag). If there is no attribute, an empty string will be returned.
      * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
@@ -2303,20 +2307,33 @@ class BaseHtml
     }
 
     /**
+     * Converts input name to ID.
+     *
+     * For example, if `$name` is `Post[content]`, this method will return `post-content`.
+     *
+     * @param string $name the input name
+     * @return string the generated input ID
+     * @since 2.0.43
+     */
+    public static function getInputIdByName($name)
+    {
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        $name = mb_strtolower($name, $charset);
+        return str_replace(['[]', '][', '[', ']', ' ', '.', '--'], ['', '-', '-', '', '-', '-', '-'], $name);
+    }
+
+    /**
      * Generates an appropriate input ID for the specified attribute name or expression.
      *
-     * This method converts the result [[getInputName()]] into a valid input ID.
-     * For example, if [[getInputName()]] returns `Post[content]`, this method will return `post-content`.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
-     * @return string the generated input ID
+     * @return string the generated input ID.
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputId($model, $attribute)
     {
-        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
-        $name = mb_strtolower(static::getInputName($model, $attribute), $charset);
-        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+        $name = static::getInputName($model, $attribute);
+        return static::getInputIdByName($name);
     }
 
     /**

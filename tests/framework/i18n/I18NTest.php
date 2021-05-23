@@ -129,6 +129,9 @@ class I18NTest extends TestCase
         // target is a different language than source
         $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
         $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru'));
+
+        // language is set to null
+        $this->assertEquals($msg, $i18n->translate('test', $msg, [], null));
     }
 
     public function testTranslateParams()

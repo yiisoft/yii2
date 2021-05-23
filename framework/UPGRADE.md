@@ -51,17 +51,36 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.41
+-----------------------
+
+* `NumberValidator` (`number`, `double`, `integer`) does not allow values with leading or terminating (non-trimmed) 
+  white spaces anymore. If your application expects non-trimmed values provided to this validator make sure to trim 
+  them first (i.e. by using `trim` / `filter` "validators").
+
+Upgrade from Yii 2.0.40
+-----------------------
+
+* The methods `getAuthKey()` and `validateAuthKey()` of `yii\web\IdentityInterface` are now also used to validate active
+  sessions (previously these methods were only used for cookie-based login). If your identity class does not properly
+  implement these methods yet, you should update it accordingly (an example can be found in the guide under
+  `Security` -> `Authentication`). Alternatively, you can simply return `null` in the `getAuthKey()` method to keep
+  the old behavior (that is, no validation of active sessions). Applications that change the underlying `authKey` of
+  an authenticated identity, should now call `yii\web\User::switchIdentity()`, `yii\web\User::login()`
+  or `yii\web\User::logout()` to recreate the active session with the new `authKey`.
+
+Upgrade from Yii 2.0.39.3
+-------------------------
+
+* Priority of processing `yii\base\Arrayable`, and `JsonSerializable` data has been reversed (`Arrayable` data is checked
+  first now) in `yii\base\Model`, and `yii\rest\Serializer`. If your application relies on the previous priority you need 
+  to fix it manually based on the complexity of desired (de)serialization result.
+
 Upgrade from Yii 2.0.38
 -----------------------
 
 * The storage structure of the file cache has been changed when you use `\yii\caching\FileCache::$keyPrefix`.
 It is worth warming up the cache again if there is a logical dependency when working with the file cache.
-
-Upgrade from Yii 2.0.37
------------------------
-
-* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
-  to turn it on, set `resolveArrays` of container instance to `true`.
 
 * `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
   In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
@@ -96,7 +115,13 @@ Upgrade from Yii 2.0.37
     code if those parents implement the `useStrictMode` checks.
 
   > Warning: in case `openSession()` and/or `writeSession()` functions do not implement the `useStrictMode` code
-    the session could be stored under the forced id without warning even if `useStrictMode` is enabled.
+    the session could be stored under a malicious id without warning even if `useStrictMode` is enabled.
+
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
 
 Upgrade from Yii 2.0.36
 -----------------------

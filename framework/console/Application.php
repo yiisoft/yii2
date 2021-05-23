@@ -50,9 +50,10 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * yii help
  * ```
  *
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
- * @property Request $request The request component. This property is read-only.
- * @property Response $response The response component. This property is read-only.
+ * @property-read ErrorHandler $errorHandler The error handler application component. This property is
+ * read-only.
+ * @property-read Request $request The request component. This property is read-only.
+ * @property-read Response $response The response component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -171,7 +172,7 @@ class Application extends \yii\base\Application
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
      * @return int|Response the result of the action. This can be either an exit code or Response object.
-     * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treaded as `0` as well.
+     * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treated as `0` as well.
      * @throws Exception if the route is invalid
      */
     public function runAction($route, $params = [])

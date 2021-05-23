@@ -329,7 +329,10 @@
                 this.$form = $form;
                 var $input = findInput($form, this);
 
-                if ($input.is(':disabled')) {
+                var disabled = $input.toArray().reduce(function(result, next) {
+                    return result && $(next).is(':disabled');
+                }, true);
+                if (disabled) {
                     return true;
                 }
                 // validate markup for select input
@@ -569,7 +572,13 @@
             $.each(data.attributes, function () {
                 if (this.status === 2) {
                     this.status = 3;
-                    $form.find(this.container).addClass(data.settings.validatingCssClass);
+
+                    var $container = $form.find(this.container),
+                        $input = findInput($form, this);
+
+                    var $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
+
+                    $errorElement.addClass(data.settings.validatingCssClass);
                 }
             });
             methods.validate.call($form);

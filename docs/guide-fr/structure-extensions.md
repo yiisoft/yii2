@@ -148,7 +148,7 @@ Losqu'un utilisateur exécute `composer install` pour installer une extension, l
 
 Bien sûr, votre extension dépend de Yii. C'est pourquoi, vous devez lister  (`yiisoft/yii2`) dans l'entrée `require` dans `composer.json`. Si votre extension dépend aussi d'autres extensions ou bibliothèques de tierces parties, vous devez les lister également. Assurez-vous que vous de lister également les contraintes de versions appropriées (p. ex. `1.*`, `@stable`) pour chacun des paquets dont votre extension dépend. Utilisez des dépendances stables lorsque votre extension est publiée dans une version stable. 
 
-La plupart des paquets JavaScript/CSS sont gérés par [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.org/),
+La plupart des paquets JavaScript/CSS sont gérés par [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.com/),
 plutôt que par Composer. Yii utilise le [greffon *assets* de Composer(https://github.com/francoispluchino/composer-asset-plugin) pour activer la gestion de ce genre de paquets par Composer. Si votre extension dépend d'un paquet Bower, vous pouvez simplement lister la dépendance dans  `composer.json` comme ceci : 
 
 ```json

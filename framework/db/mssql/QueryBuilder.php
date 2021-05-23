@@ -122,6 +122,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $sql = preg_replace('/^([\s(])*SELECT(\s+DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ($orderBy),", $sql);
 
         if ($this->hasLimit($limit)) {
+            if ($limit instanceof Expression) {
+                $limit = '('. (string)$limit . ')';
+            }
             $sql = "SELECT TOP $limit * FROM ($sql) sub";
         } else {
             $sql = "SELECT * FROM ($sql) sub";
@@ -171,35 +174,40 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function alterColumn($table, $column, $type)
     {
-        $sqlAfter = [];
+        $sqlAfter = [$this->dropConstraintsForColumn($table, $column, 'D')];
 
         $columnName = $this->db->quoteColumnName($column);
         $tableName = $this->db->quoteTableName($table);
-
         $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
 
-        $type = $this->getColumnType($type);
+        if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
+            $type->setAlterColumnFormat();
 
-        if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
-            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
-            $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
-            $sqlAfter[] = $this->addDefaultValue("DF_{$constraintBase}", $table, $column, $matches[1]);
-        } else {
-            $sqlAfter[] = $this->dropConstraintsForColumn($table, $column, 'D');
+
+            $defaultValue = $type->getDefaultValue();
+            if ($defaultValue !== null) {
+                $sqlAfter[] = $this->addDefaultValue(
+                    "DF_{$constraintBase}",
+                    $table,
+                    $column,
+                    $defaultValue instanceof Expression ? $defaultValue : new Expression($defaultValue)
+                );
+            }
+
+            $checkValue = $type->getCheckValue();
+            if ($checkValue !== null) {
+                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " .
+                    $this->db->quoteColumnName("CK_{$constraintBase}") .
+                    " CHECK (" . ($defaultValue instanceof Expression ?  $checkValue : new Expression($checkValue)) . ")";
+            }
+
+            if ($type->isUnique()) {
+                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
+            }
         }
 
-        if (preg_match('/\s+CHECK\s+\((.+)\)/i', $type, $matches)) {
-            $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
-            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("CK_{$constraintBase}") . " CHECK ({$matches[1]})";
-        }
-
-        $type = preg_replace('/\s+UNIQUE/i', '', $type, -1, $count);
-        if ($count) {
-            $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
-        }
-
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-            . $this->db->quoteColumnName($column) . ' '
+        return 'ALTER TABLE ' . $tableName . ' ALTER COLUMN '
+            . $columnName . ' '
             . $this->getColumnType($type) . "\n"
             . implode("\n", $sqlAfter);
     }
@@ -483,11 +491,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 if ($column->isComputed) {
                     continue;
                 }
-                $cols[] = $this->db->quoteColumnName($column->name) . ' '
+                $quoteColumnName = $this->db->quoteColumnName($column->name);
+                $cols[] = $quoteColumnName . ' '
                     . $column->dbType
                     . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
                     . ' ' . ($column->allowNull ? "NULL" : "");
-                $columns[] = 'INSERTED.' . $column->name;
+                $columns[] = 'INSERTED.' . $quoteColumnName;
             }
         }
         $countColumns = count($columns);
@@ -512,6 +521,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
+        $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
+
         /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
@@ -534,8 +545,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $on = $this->buildCondition($onCondition, $params);
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+
+        /**
+         * Fix number of select query params for old MSSQL version that does not support offset correctly.
+         * @see QueryBuilder::oldBuildOrderByAndLimit
+         */
+        $insertNamesUsing = $insertNames;
+        if (strstr($values, 'rowNum = ROW_NUMBER()') !== false) {
+            $insertNamesUsing = array_merge(['[rowNum]'], $insertNames);
+        }
+
         $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
-            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNamesUsing) . ') '
             . "ON ($on)";
         $insertValues = [];
         foreach ($insertNames as $name) {
@@ -561,6 +582,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $updateColumns[$name] = new Expression($quotedName);
             }
         }
+        $updateColumns = $this->normalizeTableRowData($table, $updateColumns, $params);
+
         list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
         return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql;";
@@ -643,5 +666,4 @@ END";
         return $this->dropConstraintsForColumn($table, $column) . "\nALTER TABLE " . $this->db->quoteTableName($table)
             . " DROP COLUMN " . $this->db->quoteColumnName($column);
     }
-
 }

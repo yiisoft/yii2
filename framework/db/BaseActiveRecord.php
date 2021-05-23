@@ -23,19 +23,19 @@ use yii\helpers\ArrayHelper;
  *
  * See [[\yii\db\ActiveRecord]] for a concrete implementation.
  *
- * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
+ * @property-read array $dirtyAttributes The changed attribute values (name-value pairs). This property is
  * read-only.
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
  * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
- * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
+ * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null). This property is read-only.
- * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
- * This property is read-only.
- * @property array $relatedRecords An array of related records indexed by relation names. This property is
- * read-only.
+ * @property-read mixed $primaryKey The primary key value. An array (column name => column value) is returned
+ * if the primary key is composite. A string is returned otherwise (null will be returned if the key value is
+ * null). This property is read-only.
+ * @property-read array $relatedRecords An array of related records indexed by relation names. This property
+ * is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -226,7 +226,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *    Or add [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] to your model
      *    class in order to automate the process.
      * 3. In the Web form that collects the user input, add a hidden field that stores
-     *    the lock version of the recording being updated.
+     *    the lock version of the record being updated.
      * 4. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
      *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
      *    to resolve the conflict.
@@ -376,7 +376,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getCountry()
      * {
-     *     return $this->hasOne(Country::className(), ['id' => 'country_id']);
+     *     return $this->hasOne(Country::class, ['id' => 'country_id']);
      * }
      * ```
      *
@@ -411,7 +411,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+     *     return $this->hasMany(Order::class, ['customer_id' => 'id']);
      * }
      * ```
      *
@@ -1121,7 +1121,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getPrimaryKey($asArray = false)
     {
-        $keys = $this->primaryKey();
+        $keys = static::primaryKey();
         if (!$asArray && count($keys) === 1) {
             return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
         }
@@ -1152,7 +1152,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getOldPrimaryKey($asArray = false)
     {
-        $keys = $this->primaryKey();
+        $keys = static::primaryKey();
         if (empty($keys)) {
             throw new Exception(get_class($this) . ' does not have a primary key. You should either define a primary key for the corresponding table or override the primaryKey() method.');
         }
@@ -1384,9 +1384,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * If `false`, the model's foreign key will be set `null` and saved.
      * If `true`, the model containing the foreign key will be deleted.
      * @throws InvalidCallException if the models cannot be unlinked
+     * @throws Exception
+     * @throws StaleObjectException
      */
     public function unlink($name, $model, $delete = false)
     {
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
@@ -1409,6 +1412,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $nulls = [];
             foreach (array_keys($columns) as $a) {
                 $nulls[$a] = null;
+            }
+            if (property_exists($viaRelation, 'on') && $viaRelation->on !== null) {
+                $columns = ['and', $columns, $viaRelation->on];
             }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
@@ -1507,7 +1513,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (!empty($viaRelation->where)) {
                 $condition = ['and', $condition, $viaRelation->where];
             }
-            if (!empty($viaRelation->on)) {
+            if (property_exists($viaRelation, 'on') && !empty($viaRelation->on)) {
                 $condition = ['and', $condition, $viaRelation->on];
             }
             if (is_array($relation->via)) {
@@ -1544,7 +1550,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 if (!empty($relation->where)) {
                     $condition = ['and', $condition, $relation->where];
                 }
-                if (!empty($relation->on)) {
+                if (property_exists($relation, 'on') && !empty($relation->on)) {
                     $condition = ['and', $condition, $relation->on];
                 }
                 if ($delete) {

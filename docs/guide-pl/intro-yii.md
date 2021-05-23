@@ -30,7 +30,7 @@ oraz ActiveRecord dla baz danych relacyjnych i NoSQL, wsparcia dla tworzenia RES
 Dodatkowo Yii wykorzystuje architekturę rozszerzeń, dzięki czemu możesz w prosty sposób stworzyć i opublikować swoje własne moduły i widżety.
 * Podstawowym celem, do którego Yii zawsze dąży, jest wysoka wydajność.
 
-Yii nie jest efektem pracy pojedynczego programisty - projekt wspiera zarówno [grupa doświadczonych deweloperów][http://www.yiiframework.com/team/], jak i ogromna społeczność programistyczna, nieustannie 
+Yii nie jest efektem pracy pojedynczego programisty - projekt wspiera zarówno [grupa doświadczonych deweloperów](http://www.yiiframework.com/team/), jak i ogromna społeczność programistyczna, nieustannie 
 przyczyniając się do jego rozwoju. Deweloperzy trzymają rękę na pulsie najnowszych trendów Internetu, za pomocą prostych i eleganckich interfejsów wzbogacając Yii w najlepsze sprawdzone 
 rozwiązania i funkcjonalności, dostępne w innych frameworkach i projektach.
 

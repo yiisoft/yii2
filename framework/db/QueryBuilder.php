@@ -22,10 +22,10 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
- * @property string[] $conditionClasses Map of condition aliases to condition classes. For example: ```php
- * ['LIKE' => yii\db\condition\LikeCondition::class] ``` . This property is write-only.
- * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones in
- * [[expressionBuilders]] property. This property is write-only.
+ * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
+ * ```php ['LIKE' => yii\db\condition\LikeCondition::class] ``` . This property is write-only.
+ * @property-write string[] $expressionBuilders Array of builders that should be merged with the pre-defined
+ * ones in [[expressionBuilders]] property. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

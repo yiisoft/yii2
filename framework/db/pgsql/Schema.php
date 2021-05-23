@@ -232,7 +232,7 @@ INNER JOIN "pg_index" AS "i"
 INNER JOIN "pg_class" AS "ic"
     ON "ic"."oid" = "i"."indexrelid"
 INNER JOIN "pg_attribute" AS "ia"
-    ON "ia"."attrelid" = "i"."indrelid" AND "ia"."attnum" = ANY ("i"."indkey")
+    ON "ia"."attrelid" = "i"."indexrelid"
 WHERE "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
 ORDER BY "ia"."attnum" ASC
 SQL;
@@ -443,7 +443,7 @@ SQL;
                 $row = array_change_key_case($row, CASE_LOWER);
             }
             $column = $row['columnname'];
-            if (!empty($column) && $column[0] === '"') {
+            if (strpos($column, '"') === 0) {
                 // postgres will quote names that are not lowercase-only
                 // https://github.com/yiisoft/yii2/issues/10613
                 $column = substr($column, 1, -1);
@@ -476,6 +476,7 @@ SELECT
     a.attname AS column_name,
     COALESCE(td.typname, tb.typname, t.typname) AS data_type,
     COALESCE(td.typtype, tb.typtype, t.typtype) AS type_type,
+    (SELECT nspname FROM pg_namespace WHERE oid = COALESCE(td.typnamespace, tb.typnamespace, t.typnamespace)) AS type_scheme,
     a.attlen AS character_maximum_length,
     pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
     a.atttypmod AS modifier,
@@ -592,7 +593,12 @@ SQL;
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];
-        $column->dbType = $info['data_type'];
+        if ($info['type_scheme'] !== null && !in_array($info['type_scheme'], [$this->defaultSchema, 'pg_catalog'], true)
+        ) {
+            $column->dbType = $info['type_scheme'] . '.' . $info['data_type'];
+        } else {
+            $column->dbType = $info['data_type'];
+        }
         $column->defaultValue = $info['column_default'];
         $column->enumValues = ($info['enum_values'] !== null) ? explode(',', str_replace(["''"], ["'"], $info['enum_values'])) : null;
         $column->unsigned = false; // has no meaning in PG

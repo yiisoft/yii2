@@ -551,7 +551,7 @@ class ActiveField extends Component
 
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
-        
+
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -603,7 +603,7 @@ class ActiveField extends Component
 
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
-        
+
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -756,7 +756,7 @@ class ActiveField extends Component
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
      * ```php
-     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::className(), [
+     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);
      * ```

@@ -14,15 +14,23 @@ use yii\base\Model;
  */
 class Singer extends Model
 {
+    public static $tableName;
+
     public $firstName;
     public $lastName;
     public $test;
+
+    public static function tableName()
+    {
+        return static::$tableName ?: 'singer';
+    }
 
     public function rules()
     {
         return [
             [['lastName'], 'default', 'value' => 'Lennon'],
             [['lastName'], 'required'],
+            [['lastName'], 'string', 'max' => 25],
             [['underscore_style'], 'yii\captcha\CaptchaValidator'],
             [['test'], 'required', 'when' => function ($model) { return $model->firstName === 'cebe'; }],
         ];

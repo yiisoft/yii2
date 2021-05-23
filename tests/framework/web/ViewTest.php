@@ -185,6 +185,24 @@ class ViewTest extends TestCase
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
 
+        // test append timestamp when @web is prefixed in url
+        \Yii::setAlias('@web', '/test-app');
+        $view = new View();
+        $view->registerJsFile(\Yii::getAlias('@web/assetSources/js/jquery.js'),
+            ['depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // test append timestamp when @web has the same name as the asset-source folder
+        \Yii::setAlias('@web', '/assetSources/');
+        $view = new View();
+        $view->registerJsFile(\Yii::getAlias('@web/assetSources/js/jquery.js'),
+            ['depends' => 'yii\web\AssetBundle']); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+        // reset aliases
+        $this->setUpAliases();
+
         // won't be used AssetManager but the timestamp will be
         $view = new View();
         $view->registerJsFile('/assetSources/js/jquery.js'); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
@@ -330,6 +348,24 @@ class ViewTest extends TestCase
             ['depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertRegExp($pattern, $html);
+
+        // test append timestamp when @web is prefixed in url
+        \Yii::setAlias('@web', '/test-app');
+        $view = new View();
+        $view->registerCssFile(\Yii::getAlias('@web/assetSources/css/stub.css'),
+            ['depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+
+        // test append timestamp when @web has the same name as the asset-source folder
+        \Yii::setAlias('@web', '/assetSources/');
+        $view = new View();
+        $view->registerCssFile(\Yii::getAlias('@web/assetSources/css/stub.css'),
+            ['depends' => 'yii\web\AssetBundle']); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($pattern, $html);
+        // reset aliases
+        $this->setUpAliases();
 
         // won't be used AssetManager but the timestamp will be
         $view = new View();
