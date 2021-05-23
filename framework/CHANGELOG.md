@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
 - Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
-- Enh #18676: Added method `helpers\BaseFileHelper::changeOwnership()` and properties `fileMode`/`fileOwnership` in `console/controllers/BaseMigrateController` (rhertogh)
+- Enh #18676: Added method `helpers\BaseFileHelper::changeOwnership()` and properties `newFileMode`/`newFileOwnership` in `console/controllers/BaseMigrateController` (rhertogh)
 
 
 2.0.42.1 May 06, 2021

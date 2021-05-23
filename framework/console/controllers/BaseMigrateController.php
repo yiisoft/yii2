@@ -89,13 +89,13 @@ abstract class BaseMigrateController extends Controller
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
-    public $fileMode;
+    public $newFileMode;
     /**
      * @var string|int the user and/or group ownership to be set for newly generated migration files.
      * If not set, the permission will be determined by the current environment.
      * @see FileHelper::changeOwnership()
      */
-    public $fileOwnership;
+    public $newFileOwnership;
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -675,11 +675,11 @@ abstract class BaseMigrateController extends Controller
                 return ExitCode::IOERR;
             }
 
-            if ($this->fileMode !== null) {
-                @chmod($file, $this->fileMode);
+            if ($this->newFileMode !== null) {
+                @chmod($file, $this->newFileMode);
             }
-            if ($this->fileOwnership !== null) {
-                FileHelper::changeOwnership($file, $this->fileOwnership);
+            if ($this->newFileOwnership !== null) {
+                FileHelper::changeOwnership($file, $this->newFileOwnership);
             }
 
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
