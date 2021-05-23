@@ -874,4 +874,54 @@ class BaseFileHelper
 
         return $options;
     }
+
+    /**
+     * @param string $path the path to the file or directory.
+     * @param string|int $ownership the user and/or group ownership for the file or directory.
+     * When $owners is a string the format is 'user:group' where both are optional. E.g.
+     * 'user' or 'user:' will only change the user,
+     * ':group' will only change the group,
+     * 'user:group' will change both.
+     * In case $owners is an integer it will be used as user id.
+     * @return bool|null The function returns `true` when the ownership is successfully changed, and `false` on failure;
+     * When no path or ownership is specified `null` will be returned.
+     *
+     * @since 2.0.43
+     */
+    public static function changeOwnership($path, $ownership)
+    {
+        if (empty($path) || empty($ownership)) {
+            return null;
+        }
+
+        if (is_int($ownership)) {
+            $user = $ownership;
+        } else {
+            $ownerParts = explode(':', $ownership);
+            $user = $ownerParts[0];
+            if (count($ownerParts) > 1) {
+                $group = $ownerParts[1];
+            }
+        }
+
+        if (empty($user) && empty($group)) {
+            return null;
+        }
+
+        $success = true;
+        if (!empty($user)) {
+            if (is_numeric($user)) {
+                $user = (int)$user;
+            }
+            $success &= chown($path, $user);
+        }
+        if (!empty($group)) {
+            if (is_numeric($group)) {
+                $group = (int)$group;
+            }
+            $success &= chgrp($path, $group);
+        }
+
+        return $success;
+    }
 }
