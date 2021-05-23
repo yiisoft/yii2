@@ -76,7 +76,7 @@ class MyClass extends BaseObject
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
 // あるいは、また
 $component = \Yii::createObject([
-    'class' => MyClass::className(),
+    'class' => MyClass::class,
     'prop1' => 3,
     'prop2' => 4,
 ], [1, 2]);
