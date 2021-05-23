@@ -19,7 +19,7 @@
 			<blacklist>
 				<file>framework/i18n/GettextFile.php</file>
 				<file>framework/web/ResponseFormatterInterface.php</file>
-                <file>framework/.phpstorm.meta.php</file>
+				<file>framework/.phpstorm.meta.php</file>
 				<directory suffix="Exception.php">framework/base</directory>
 				<directory suffix=".php">framework/db/mssql</directory>
 				<directory suffix=".php">framework/bootstrap</directory>
