@@ -112,8 +112,6 @@ You may also want to write code in the `down()` method to revert the changes mad
 when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
 The following code shows how you may implement the migration class to create a `news` table:
 
-
-
 ```php
 <?php
 
