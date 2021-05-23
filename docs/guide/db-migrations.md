@@ -112,6 +112,8 @@ You may also want to write code in the `down()` method to revert the changes mad
 when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
 The following code shows how you may implement the migration class to create a `news` table:
 
+
+
 ```php
 <?php
 
@@ -187,6 +189,22 @@ class m150101_185401_create_news_table extends Migration
 
 A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
+> Info: The generated file permissions and ownership will be determined by the current environment. This might lead to
+  inaccessible files. This could, for example, happen when the migration is created within a docker container
+  and the files are edited on the host. In this case the `fileMode` and/or `fileOwnership` of the MigrateController
+  can be changed. E.g. in the application config:
+  ```php
+  <?php
+  return [
+      'controllerMap' => [
+          'migrate' => [
+              'class' => 'yii\console\controllers\MigrateController',
+              'fileOwnership' => '1000:1000', # Default WSL user id
+              'fileMode' => 0660,
+          ],
+      ],
+  ];
+  ```
 
 ## Generating Migrations <span id="generating-migrations"></span>
 
