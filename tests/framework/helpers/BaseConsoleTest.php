@@ -84,7 +84,6 @@ class BaseConsoleTest extends TestCase
     public function testAnsiStrlen()
     {
         $this->assertSame(3, BaseConsole::ansiStrlen('Foo'));
-        $this->assertSame(3, BaseConsole::ansiStrlen('Pół'));
         $this->assertSame(3, BaseConsole::ansiStrlen(BaseConsole::renderColoredString('Bar%y')));
     }
 }

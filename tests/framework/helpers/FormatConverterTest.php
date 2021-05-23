@@ -60,7 +60,10 @@ class FormatConverterTest extends TestCase
     public function testIntlIcuToPhpShortFormDateTime()
     {
         $this->assertEquals('n/j/y, g:i A', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'en-US'));
-        $this->assertEquals('d.m.y, H:i', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'de-DE'));
+        $this->assertEquals(
+            PHP_VERSION_ID < 56000 ? 'd.m.y, H:i' : 'd.m.y H:i',
+            FormatConverter::convertDateIcuToPhp('short', 'datetime', 'de-DE')
+        );
     }
 
     public function testEscapedIcuToPhpMixedPatterns()
@@ -212,7 +215,10 @@ class FormatConverterTest extends TestCase
     public function testIntlIcuToJuiShortFormDateTime()
     {
         $this->assertEquals('m/d/y, : ', FormatConverter::convertDateIcuToJui('short', 'datetime', 'en-US'));
-        $this->assertEquals('dd.mm.y, :', FormatConverter::convertDateIcuToJui('short', 'datetime', 'de-DE'));
+        $this->assertEquals(
+            PHP_VERSION_ID < 56000 ? 'dd.mm.y, :' : 'dd.mm.y :',
+            FormatConverter::convertDateIcuToJui('short', 'datetime', 'de-DE')
+        );
     }
 
     public function providerForICU2JUIPatterns()
