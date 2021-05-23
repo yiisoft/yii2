@@ -309,6 +309,6 @@ class UrlTest extends TestCase
         Yii::$app->getUser()->login(UserIdentity::findIdentity('user1'));
 
         Url::remember('test');
-        //$this->assertSame('test', Yii::$app->getUser()->getReturnUrl());
+        $this->assertSame('test', Yii::$app->getUser()->getReturnUrl());
     }
 }
