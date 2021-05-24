@@ -913,13 +913,13 @@ class BaseFileHelper
             if (is_numeric($user)) {
                 $user = (int)$user;
             }
-            $success &= chown($path, $user);
+            $success = $success && chown($path, $user);
         }
         if (!empty($group)) {
             if (is_numeric($group)) {
                 $group = (int)$group;
             }
-            $success &= chgrp($path, $group);
+            $success = $success && chgrp($path, $group);
         }
 
         return $success;
