@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
 - Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
+- Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 
 2.0.42.1 May 06, 2021
 ---------------------
