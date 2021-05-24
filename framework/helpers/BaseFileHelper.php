@@ -876,6 +876,10 @@ class BaseFileHelper
     }
 
     /**
+     * Changes the Unix user and/or group ownership of a file or directory.
+     * Note: This function will not work on remote files as the file to be examined must be accessible
+     * via the server's filesystem.
+     * Note: On Windows, this function fails silently when applied on a regular file.
      * @param string $path the path to the file or directory.
      * @param string|int $ownership the user and/or group ownership for the file or directory.
      * When $owners is a string the format is 'user:group' where both are optional. E.g.
