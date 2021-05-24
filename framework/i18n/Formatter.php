@@ -1705,7 +1705,7 @@ class Formatter extends Component
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
         if ($this->_intlLoaded && !isset($options[NumberFormatter::GROUPING_USED])) {
-            $options[NumberFormatter::GROUPING_USED] = false;
+            $options[NumberFormatter::GROUPING_USED] = 0;
         }
         // format the size value
         $params = [
