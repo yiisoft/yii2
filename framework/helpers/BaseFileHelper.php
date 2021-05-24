@@ -9,6 +9,7 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 
@@ -876,56 +877,80 @@ class BaseFileHelper
     }
 
     /**
-     * Changes the Unix user and/or group ownership of a file or directory.
+     * Changes the Unix user and/or group ownership of a file or directory, and optionally the mode.
      * Note: This function will not work on remote files as the file to be examined must be accessible
      * via the server's filesystem.
      * Note: On Windows, this function fails silently when applied on a regular file.
      * @param string $path the path to the file or directory.
-     * @param string|int $ownership the user and/or group ownership for the file or directory.
-     * When $owners is a string the format is 'user:group' where both are optional. E.g.
+     * @param string|array|int|null $ownership the user and/or group ownership for the file or directory.
+     * When $ownership is a string, the format is 'user:group' where both are optional. E.g.
      * 'user' or 'user:' will only change the user,
      * ':group' will only change the group,
      * 'user:group' will change both.
+     * When $owners is an index array the format is [0 => user, 1 => group], e.g. `[$myUser, $myGroup]`.
+     * It is also possible to pass an assosiative array, e.g. ['user' => $myUser, 'group' => $myGroup].
      * In case $owners is an integer it will be used as user id.
-     * @return bool|null The function returns `true` when the ownership is successfully changed, and `false` on failure;
-     * When no path or ownership is specified `null` will be returned.
+     * If `null`, an empty array or an empty string is passed, the ownership will not be changed.
+     * @param int|null $mode the permission to be set for the file or directory.
+     * If `null` is passed, the mode will not be changed.
      *
      * @since 2.0.43
      */
-    public static function changeOwnership($path, $ownership)
+    public static function changeOwnership($path, $ownership, $mode = null)
     {
-        if (empty($path) || empty($ownership)) {
-            return null;
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException('Unable to change ownerhip, "' . $path . '" is not a file or directory');
         }
 
-        if (is_int($ownership)) {
-            $user = $ownership;
-        } else {
-            $ownerParts = explode(':', $ownership);
-            $user = $ownerParts[0];
-            if (count($ownerParts) > 1) {
-                $group = $ownerParts[1];
+        if (empty($ownership) && $ownership !== 0 && $mode === null) {
+            return;
+        }
+
+        if (!empty($ownership) || $ownership === 0) {
+            if (is_int($ownership)) {
+                $user = $ownership;
+            } elseif (is_string($ownership)) {
+                $ownerParts = explode(':', $ownership);
+                $user = $ownerParts[0];
+                if (count($ownerParts) > 1) {
+                    $group = $ownerParts[1];
+                }
+            } elseif (is_array($ownership)) {
+                $ownershipIsIndexed = ArrayHelper::isIndexed($ownership);
+                $user = ArrayHelper::getValue($ownership, $ownershipIsIndexed ? 0 : 'user');
+                $group = ArrayHelper::getValue($ownership, $ownershipIsIndexed ? 1 : 'group');
+            } else {
+                throw new InvalidArgumentException('$ownership must be a integer, string, array or null');
             }
         }
 
-        if (empty($user) && empty($group)) {
-            return null;
+        if ($mode !== null) {
+            if (!is_int($mode)) {
+                throw new InvalidArgumentException('$mode must be a integer or null');
+            }
+            if (!chmod($path, $mode)) {
+                throw new Exception('Unable to change mode of "' . $path . '" to "0' . decoct($mode) . '"');
+            }
         }
-
-        $success = true;
-        if (!empty($user)) {
+        if (!empty($user) || $user === 0) {
             if (is_numeric($user)) {
                 $user = (int)$user;
+            } elseif (!is_string($user)) {
+                throw new InvalidArgumentException('The user part of $ownership must be a integer, string or null');
             }
-            $success = $success && chown($path, $user);
+            if (!chown($path, $user)) {
+                throw new Exception('Unable to change user ownership of "' . $path . '" to "' . $user . '"');
+            }
         }
-        if (!empty($group)) {
+        if (!empty($group) || $group === 0) {
             if (is_numeric($group)) {
                 $group = (int)$group;
+            } elseif (!is_string($group)) {
+                throw new InvalidArgumentException('The group part of $ownership must be a integer, string or null');
             }
-            $success = $success && chgrp($path, $group);
+            if (!chgrp($path, $group)) {
+                throw new Exception('Unable to change group ownership of "' . $path . '" to "' . $group . '"');
+            }
         }
-
-        return $success;
     }
 }

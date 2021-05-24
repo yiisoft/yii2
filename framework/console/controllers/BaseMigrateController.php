@@ -677,16 +677,7 @@ abstract class BaseMigrateController extends Controller
                 return ExitCode::IOERR;
             }
 
-            if ($this->newFileMode !== null) {
-                if (!@chmod($file, $this->newFileMode)) {
-                    throw new Exception('Unable to change file mode of "' . $file . '" to "' . $this->newFileMode . '"');
-                }
-            }
-            if ($this->newFileOwnership !== null) {
-                if (!@FileHelper::changeOwnership($file, $this->newFileOwnership)) {
-                    throw new Exception('Unable to change file ownership of "' . $file . '" to "' . $this->newFileOwnership . '"');
-                }
-            }
+            FileHelper::changeOwnership($file, $this->newFileOwnership, $this->newFileMode);
 
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
