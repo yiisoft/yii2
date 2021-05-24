@@ -906,7 +906,8 @@ class BaseFileHelper
             return;
         }
 
-        if (!empty($ownership) || $ownership === 0) {
+        $user = $group = null;
+        if (!empty($ownership) || $ownership === 0 || $ownership === '0') {
             if (is_int($ownership)) {
                 $user = $ownership;
             } elseif (is_string($ownership)) {
@@ -932,7 +933,7 @@ class BaseFileHelper
                 throw new Exception('Unable to change mode of "' . $path . '" to "0' . decoct($mode) . '"');
             }
         }
-        if (!empty($user) || $user === 0) {
+        if ($user !== null && $user !== '') {
             if (is_numeric($user)) {
                 $user = (int)$user;
             } elseif (!is_string($user)) {
@@ -942,7 +943,7 @@ class BaseFileHelper
                 throw new Exception('Unable to change user ownership of "' . $path . '" to "' . $user . '"');
             }
         }
-        if (!empty($group) || $group === 0) {
+        if ($group !== null && $group !== '') {
             if (is_numeric($group)) {
                 $group = (int)$group;
             } elseif (!is_string($group)) {
