@@ -80,4 +80,10 @@ class BaseConsoleTest extends TestCase
             ['Foo%yBar%nYes', 5, 3, '%yr%nYe'],
         ];
     }
+
+    public function testAnsiStrlen()
+    {
+        $this->assertSame(3, BaseConsole::ansiStrlen('Foo'));
+        $this->assertSame(3, BaseConsole::ansiStrlen(BaseConsole::renderColoredString('Bar%y')));
+    }
 }
