@@ -844,6 +844,7 @@ class Order extends ActiveRecord
   указывается сразу после указания самого класса Active Record. Вы видите, что `customer_id` - это свойство класса
   `Order`, а `id` - свойство класса `Customer`.
   
+> Warning: Имя связи `relation` зарезервировано. Его использование приведёт к ошбике `ArgumentCountError`.
 
 ### Доступ к связным данным <span id="accessing-relational-data"></span>
 
