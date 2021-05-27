@@ -122,7 +122,7 @@ class FixtureController extends Controller
             $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
 
-            if (!empty($notFoundFixtures)) {
+            if ($notFoundFixtures !== []) {
                 $this->notifyNotFound($notFoundFixtures);
             }
         } else {
