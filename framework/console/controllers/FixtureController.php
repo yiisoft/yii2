@@ -225,7 +225,7 @@ class FixtureController extends Controller
 
         $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToUnload));
 
-        if (empty($fixtures)) {
+        if ($fixtures === []) {
             throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
         }
 
