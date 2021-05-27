@@ -214,7 +214,7 @@ class FixtureController extends Controller
 
         $fixturesToUnload = array_diff($foundFixtures, $except);
 
-        if (empty($fixturesToUnload)) {
+        if ($fixturesToUnload === []) {
             $this->notifyNothingToUnload($foundFixtures, $except);
             return ExitCode::OK;
         }
