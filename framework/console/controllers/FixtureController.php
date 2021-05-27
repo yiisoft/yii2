@@ -138,7 +138,7 @@ class FixtureController extends Controller
             );
         }
 
-        if (empty($fixturesToLoad)) {
+        if ($fixturesToLoad === []) {
             $this->notifyNothingToLoad($foundFixtures, $except);
             return ExitCode::OK;
         }
