@@ -240,7 +240,7 @@ The names of the action methods are derived from action IDs according to the fol
 
 1. Turn the first letter in each word of the action ID into upper case.
 2. Remove hyphens.
-3. Prepend the prefix `action`.
+3. Pretend the prefix `action`.
 
 For example, `index` becomes `actionIndex`, and `hello-world` becomes `actionHelloWorld`.
 
