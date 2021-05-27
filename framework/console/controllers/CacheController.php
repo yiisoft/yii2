@@ -84,11 +84,11 @@ class CacheController extends Controller
         $foundCaches = array_keys($caches);
         $notFoundCaches = array_diff($cachesInput, array_keys($caches));
 
-        if ($notFoundCaches) {
+        if (!empty($notFoundCaches)) {
             $this->notifyNotFoundCaches($notFoundCaches);
         }
 
-        if (!$foundCaches) {
+        if (empty($foundCaches)) {
             $this->notifyNoCachesFound();
             return ExitCode::OK;
         }
