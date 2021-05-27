@@ -105,7 +105,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     private $_cookieParams = ['httponly' => true];
     /**
-     * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
+     * @var array|null is used for saving session between recreations due to session parameters update.
      */
     private $frozenSessionData;
 
