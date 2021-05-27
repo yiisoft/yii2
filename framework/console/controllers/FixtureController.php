@@ -205,7 +205,7 @@ class FixtureController extends Controller
             $foundFixtures = $this->findFixtures();
         }
 
-        if (empty($foundFixtures)) {
+        if ($foundFixtures === []) {
             throw new Exception(
                 'No files were found for: "' . implode(', ', $fixturesInput) . "\".\n" .
                 "Check that files exist under fixtures path: \n\"" . $this->getFixturePath() . '".'
