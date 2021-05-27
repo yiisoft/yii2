@@ -305,7 +305,7 @@ class DbCache extends Cache
     {
         if ($this->isVarbinaryDataField === null) {
             $this->isVarbinaryDataField = in_array($this->db->getDriverName(), ['sqlsrv', 'dblib']) &&
-                $this->db->getTableSchema('cache')->columns['data']->dbType === 'varbinary';
+                $this->db->getTableSchema($this->cacheTable)->columns['data']->dbType === 'varbinary';
         }
         return $this->isVarbinaryDataField;
     }
