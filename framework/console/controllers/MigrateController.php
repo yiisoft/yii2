@@ -301,11 +301,9 @@ class MigrateController extends BaseMigrateController
 
         // First drop all foreign keys,
         foreach ($schemas as $schema) {
-            if ($schema->foreignKeys) {
-                foreach ($schema->foreignKeys as $name => $foreignKey) {
-                    $db->createCommand()->dropForeignKey($name, $schema->name)->execute();
-                    $this->stdout("Foreign key $name dropped.\n");
-                }
+            foreach ($schema->foreignKeys as $name => $foreignKey) {
+                $db->createCommand()->dropForeignKey($name, $schema->name)->execute();
+                $this->stdout("Foreign key $name dropped.\n");
             }
         }
 
