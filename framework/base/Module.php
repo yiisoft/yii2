@@ -238,7 +238,7 @@ class Module extends ServiceLocator
     {
         $path = Yii::getAlias($path);
         $p = strncmp($path, 'phar://', 7) === 0 ? $path : realpath($path);
-        if ($p !== false && is_dir($p)) {
+        if (is_string($p) && is_dir($p)) {
             $this->_basePath = $p;
         } else {
             throw new InvalidArgumentException("The directory does not exist: $path");
