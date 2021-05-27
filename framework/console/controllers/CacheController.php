@@ -88,7 +88,7 @@ class CacheController extends Controller
             $this->notifyNotFoundCaches($notFoundCaches);
         }
 
-        if (empty($foundCaches)) {
+        if ($foundCaches === []) {
             $this->notifyNoCachesFound();
             return ExitCode::OK;
         }
