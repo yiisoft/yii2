@@ -15,131 +15,6 @@ use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
 
-class Post1
-{
-    public $id = 23;
-    public $title = 'tt';
-}
-
-class Post2 extends BaseObject
-{
-    public $id = 123;
-    public $content = 'test';
-    private $secret = 's';
-    public function getSecret()
-    {
-        return $this->secret;
-    }
-}
-
-class Post3 extends BaseObject
-{
-    public $id = 33;
-    /** @var BaseObject */
-    public $subObject;
-
-    public function init()
-    {
-        $this->subObject = new Post2();
-    }
-}
-
-class ArrayAccessibleObject implements ArrayAccess
-{
-    public $name = 'bar1';
-    protected $container = [];
-
-    public function __construct($container)
-    {
-        $this->container = $container;
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        if (is_null($offset)) {
-            $this->container[] = $value;
-        } else {
-            $this->container[$offset] = $value;
-        }
-    }
-
-    public function offsetExists($offset)
-    {
-        return array_key_exists($offset, $this->container);
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->container[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->offsetExists($offset) ? $this->container[$offset] : null;
-    }
-}
-
-class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements Iterator
-{
-    private $position = 0;
-
-    public function __construct($container)
-    {
-        $this->position = 0;
-
-        parent::__construct($container);
-    }
-
-    protected function getContainerKey($keyIndex)
-    {
-        $keys = array_keys($this->container);
-        return array_key_exists($keyIndex, $keys) ? $keys[$keyIndex] : false;
-    }
-
-    public function rewind()
-    {
-        $this->position = 0;
-    }
-
-    public function current()
-    {
-        return $this->offsetGet($this->getContainerKey($this->position));
-    }
-
-    public function key()
-    {
-        return $this->getContainerKey($this->position);
-    }
-
-    public function next()
-    {
-        ++$this->position;
-    }
-
-    public function valid()
-    {
-        $key = $this->getContainerKey($this->position);
-        return !(!$key || !$this->offsetExists($key));
-    }
-}
-
-class MagicModel extends Model
-{
-    protected $magic;
-
-    public function getMagic()
-    {
-        return 42;
-    }
-
-    private $moreMagic;
-
-    public function getMoreMagic()
-    {
-        return 'ta-da';
-    }
-}
-
 /**
  * @group helpers
  */
@@ -181,7 +56,7 @@ class ArrayHelperTest extends TestCase
             '_content' => 'test',
             'length' => 4,
         ], ArrayHelper::toArray($object, [
-            $object->className() => [
+            $object::className() => [
                 'id', 'secret',
                 '_content' => 'content',
                 'length' => function ($post) {
@@ -200,7 +75,8 @@ class ArrayHelperTest extends TestCase
             ],
         ], ArrayHelper::toArray($object));
 
-        //recursive with attributes of object and subobject
+        //recursive with attributes of object and sub-object
+        $subObject = $object->subObject;
         $this->assertEquals([
             'id' => 33,
             'id_plus_1' => 34,
@@ -209,13 +85,13 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->className() => [
+            $object::className() => [
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
                 },
             ],
-            $object->subObject->className() => [
+            $subObject::className() => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -231,7 +107,7 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->subObject->className() => [
+            $subObject::className() => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -442,20 +318,16 @@ class ArrayHelperTest extends TestCase
         ], $changelog);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMultisortInvalidParamExceptionDirection()
     {
+        $this->expectException('yii\base\InvalidParamException');
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], []);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMultisortInvalidParamExceptionSortFlag()
     {
+        $this->expectException('yii\base\InvalidParamException');
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], ['foo'], []);
     }
@@ -857,12 +729,10 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::keyExists('c', $array));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Second parameter($array) cannot be ArrayAccess in case insensitive mode
-     */
     public function testKeyExistsArrayAccessCaseInsensitiveThrowsError()
     {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Second parameter($array) cannot be ArrayAccess in case insensitive mode');
         $array = new TraversableArrayAccessibleObject([
             'a' => 1,
             'B' => 2,
@@ -945,26 +815,21 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(23, ArrayHelper::getValue($object, 'id'));
     }
 
-    /**
-     * This is expected to result in a PHP error.
-     * @requires PHPUnit 6.0
-     */
     public function testGetValueNonexistingProperties1()
     {
-        $this->expectException('PHPUnit\Framework\Error\Notice');
+        if (PHP_VERSION_ID < 80000) {
+            $this->expectException('PHPUnit_Framework_Error_Notice');
+        } else {
+            $this->expectException('PHPUnit_Framework_Error_Warning');
+        }
         $object = new Post1();
-        $this->assertNull(ArrayHelper::getValue($object, 'nonExisting'));
+        ArrayHelper::getValue($object, 'nonExisting');
     }
 
-    /**
-     * This is expected to result in a PHP error.
-     * @requires PHPUnit 6.0
-     */
-    public function testGetValueNonexistingProperties2()
+    public function testGetValueNonexistingPropertiesForArrayObject()
     {
-        $this->expectException('PHPUnit\Framework\Error\Notice');
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
-        $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
+        $this->assertNull(ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
 
     public function testGetValueFromArrayAccess()
@@ -1364,12 +1229,10 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isIn('1', [1, 'a'], true));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
-     */
     public function testInException()
     {
+        $this->expectException('yii\base\InvalidParamException');
+        $this->expectExceptionMessage('Argument $haystack must be an array or implement Traversable');
         ArrayHelper::isIn('value', null);
     }
 
@@ -1385,12 +1248,10 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b'], true));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
-     */
     public function testIsSubsetException()
     {
+        $this->expectException('yii\base\InvalidParamException');
+        $this->expectExceptionMessage('Argument $needles must be an array or implement Traversable');
         ArrayHelper::isSubset('a', new \ArrayObject(['a', 'b']));
     }
 
@@ -1504,6 +1365,9 @@ class ArrayHelperTest extends TestCase
                 'C' => 2,
             ],
         ], ArrayHelper::filter($array, ['A', '!A.D']));
+        $this->assertEquals([
+            'G' => 1
+        ], ArrayHelper::filter($array, ['G', '!Z', '!X.A']));
 
         //Non existing keys tests
         $this->assertEquals([], ArrayHelper::filter($array, ['X']));
@@ -1564,5 +1428,130 @@ class ArrayHelperTest extends TestCase
         $model = new MagicModel();
         $this->assertEquals(42, ArrayHelper::getValue($model, 'magic'));
         $this->assertEquals('ta-da', ArrayHelper::getValue($model, 'moreMagic'));
+    }
+}
+
+class Post1
+{
+    public $id = 23;
+    public $title = 'tt';
+}
+
+class Post2 extends BaseObject
+{
+    public $id = 123;
+    public $content = 'test';
+    private $secret = 's';
+    public function getSecret()
+    {
+        return $this->secret;
+    }
+}
+
+class Post3 extends BaseObject
+{
+    public $id = 33;
+    /** @var BaseObject */
+    public $subObject;
+
+    public function init()
+    {
+        $this->subObject = new Post2();
+    }
+}
+
+class ArrayAccessibleObject implements ArrayAccess
+{
+    public $name = 'bar1';
+    protected $container = [];
+
+    public function __construct($container)
+    {
+        $this->container = $container;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->container);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->container[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->offsetExists($offset) ? $this->container[$offset] : null;
+    }
+}
+
+class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements Iterator
+{
+    private $position = 0;
+
+    public function __construct($container)
+    {
+        $this->position = 0;
+
+        parent::__construct($container);
+    }
+
+    protected function getContainerKey($keyIndex)
+    {
+        $keys = array_keys($this->container);
+        return array_key_exists($keyIndex, $keys) ? $keys[$keyIndex] : false;
+    }
+
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    public function current()
+    {
+        return $this->offsetGet($this->getContainerKey($this->position));
+    }
+
+    public function key()
+    {
+        return $this->getContainerKey($this->position);
+    }
+
+    public function next()
+    {
+        ++$this->position;
+    }
+
+    public function valid()
+    {
+        $key = $this->getContainerKey($this->position);
+        return !(!$key || !$this->offsetExists($key));
+    }
+}
+
+class MagicModel extends Model
+{
+    protected $magic;
+
+    public function getMagic()
+    {
+        return 42;
+    }
+
+    private $moreMagic;
+
+    public function getMoreMagic()
+    {
+        return 'ta-da';
     }
 }
