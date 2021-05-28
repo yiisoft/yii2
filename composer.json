@@ -81,6 +81,7 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
+        "ext-posix": "*",
         "cweagans/composer-patches": "^1.7",
         "phpunit/phpunit": "4.8.34",
         "cebe/indent": "~1.0.2",
