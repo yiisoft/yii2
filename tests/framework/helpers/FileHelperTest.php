@@ -942,7 +942,7 @@ class FileHelperTest extends TestCase
     public function testChangeOwnership()
     {
         if (DIRECTORY_SEPARATOR !== '/') {
-            return; // FileHelper::changeOwnership() fails silently on Windows, nothing to test.
+            $this->markTestSkipped('FileHelper::changeOwnership() fails silently on Windows, nothing to test.');
         }
 
         $this->assertEquals(true, extension_loaded ( 'posix' ), 'Expected posix extension to be loaded.');
@@ -987,6 +987,10 @@ class FileHelperTest extends TestCase
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
         $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
+
+        if (getmyuid() !== 0) {
+            $this->markTestInComplete(__METHOD__ . ' could only run partially, chown() can only to be tested as root user. Current user: ' . $currentUserName);
+        }
 
         //////////////////////
         /// User Ownership ///
