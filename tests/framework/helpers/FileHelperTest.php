@@ -945,7 +945,7 @@ class FileHelperTest extends TestCase
             $this->markTestSkipped('FileHelper::changeOwnership() fails silently on Windows, nothing to test.');
         }
 
-        if (extension_loaded('posix')) {
+        if (!extension_loaded('posix')) {
             $this->markTestSkipped('posix extension is required.');
         }
 
