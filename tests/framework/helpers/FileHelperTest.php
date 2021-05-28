@@ -1207,21 +1207,15 @@ class FileHelperTest extends TestCase
 
     /**
      * @dataProvider changeOwnershipInvalidArgumentsProvider
-     * @param string $file
+     * @param bool $useFile
      * @param mixed $ownership
      * @param mixed $mode
      */
-    public function testChangeOwnershipInvalidArguments($file, $ownership, $mode)
-    {
-        $this->expectException('yii\base\InvalidArgumentException');
-        FileHelper::changeOwnership($file, $ownership, $mode);
-    }
-
-    public function changeOwnershipInvalidArgumentsProvider()
+    public function testChangeOwnershipInvalidArguments($useFile, $ownership, $mode)
     {
         $dirName = 'change_ownership_invalid_arguments';
         $fileName = 'file_1.txt';
-        $testFile = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $fileName;
+        $file = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $fileName;
 
         $this->createFileStructure([
             $dirName => [
@@ -1229,12 +1223,18 @@ class FileHelperTest extends TestCase
             ],
         ]);
 
+        $this->expectException('yii\base\InvalidArgumentException');
+        FileHelper::changeOwnership($useFile ? $file : null, $ownership, $mode);
+    }
+
+    public function changeOwnershipInvalidArgumentsProvider()
+    {
         return [
-            [null, '123:123', null],
-            [$testFile, new stdClass(), null],
-            [$testFile, ['user' => new stdClass()], null],
-            [$testFile, ['group' => new stdClass()], null],
-            [$testFile, null, 'test'],
+            [false, '123:123', null],
+            [true, new stdClass(), null],
+            [true, ['user' => new stdClass()], null],
+            [true, ['group' => new stdClass()], null],
+            [true, null, 'test'],
         ];
     }
 }
