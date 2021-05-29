@@ -888,7 +888,7 @@ class BaseFileHelper
      * ':group' will only change the group,
      * 'user:group' will change both.
      * When $owners is an index array the format is [0 => user, 1 => group], e.g. `[$myUser, $myGroup]`.
-     * It is also possible to pass an assosiative array, e.g. ['user' => $myUser, 'group' => $myGroup].
+     * It is also possible to pass an associative array, e.g. ['user' => $myUser, 'group' => $myGroup].
      * In case $owners is an integer it will be used as user id.
      * If `null`, an empty array or an empty string is passed, the ownership will not be changed.
      * @param int|null $mode the permission to be set for the file or directory.
@@ -899,7 +899,7 @@ class BaseFileHelper
     public static function changeOwnership($path, $ownership, $mode = null)
     {
         if (!file_exists($path)) {
-            throw new InvalidArgumentException('Unable to change ownerhip, "' . $path . '" is not a file or directory');
+            throw new InvalidArgumentException('Unable to change ownerhip, "' . $path . '" is not a file or directory.');
         }
 
         if (empty($ownership) && $ownership !== 0 && $mode === null) {
@@ -921,23 +921,23 @@ class BaseFileHelper
                 $user = ArrayHelper::getValue($ownership, $ownershipIsIndexed ? 0 : 'user');
                 $group = ArrayHelper::getValue($ownership, $ownershipIsIndexed ? 1 : 'group');
             } else {
-                throw new InvalidArgumentException('$ownership must be a integer, string, array or null');
+                throw new InvalidArgumentException('$ownership must be an integer, string, array, or null.');
             }
         }
 
         if ($mode !== null) {
             if (!is_int($mode)) {
-                throw new InvalidArgumentException('$mode must be a integer or null');
+                throw new InvalidArgumentException('$mode must be an integer or null.');
             }
             if (!chmod($path, $mode)) {
-                throw new Exception('Unable to change mode of "' . $path . '" to "0' . decoct($mode) . '"');
+                throw new Exception('Unable to change mode of "' . $path . '" to "0' . decoct($mode) . '".');
             }
         }
         if ($user !== null && $user !== '') {
             if (is_numeric($user)) {
-                $user = (int)$user;
+                $user = (int) $user;
             } elseif (!is_string($user)) {
-                throw new InvalidArgumentException('The user part of $ownership must be a integer, string or null');
+                throw new InvalidArgumentException('The user part of $ownership must be an integer, string or null.');
             }
             if (!chown($path, $user)) {
                 throw new Exception('Unable to change user ownership of "' . $path . '" to "' . $user . '"');
@@ -945,12 +945,12 @@ class BaseFileHelper
         }
         if ($group !== null && $group !== '') {
             if (is_numeric($group)) {
-                $group = (int)$group;
+                $group = (int) $group;
             } elseif (!is_string($group)) {
-                throw new InvalidArgumentException('The group part of $ownership must be a integer, string or null');
+                throw new InvalidArgumentException('The group part of $ownership must be an integer, string or null.');
             }
             if (!chgrp($path, $group)) {
-                throw new Exception('Unable to change group ownership of "' . $path . '" to "' . $group . '"');
+                throw new Exception('Unable to change group ownership of "' . $path . '" to "' . $group . '".');
             }
         }
     }
