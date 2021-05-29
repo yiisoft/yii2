@@ -937,10 +937,10 @@ class BaseFileHelper
             if (is_numeric($user)) {
                 $user = (int) $user;
             } elseif (!is_string($user)) {
-                throw new InvalidArgumentException('The user part of $ownership must be an integer, string or null.');
+                throw new InvalidArgumentException('The user part of $ownership must be an integer, string, or null.');
             }
             if (!chown($path, $user)) {
-                throw new Exception('Unable to change user ownership of "' . $path . '" to "' . $user . '"');
+                throw new Exception('Unable to change user ownership of "' . $path . '" to "' . $user . '".');
             }
         }
         if ($group !== null && $group !== '') {

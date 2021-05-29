@@ -953,9 +953,9 @@ class FileHelperTest extends TestCase
         $fileName = 'file_1.txt';
         $testFile = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $fileName;
 
-        $currentUserId = getmyuid();
+        $currentUserId = posix_getuid();
         $currentUserName = posix_getpwuid($currentUserId)['name'];
-        $currentGroupId = getmygid();
+        $currentGroupId = posix_getgid();
         $currentGroupName = posix_getgrgid($currentGroupId)['name'];
 
         /////////////
@@ -990,7 +990,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
         $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
 
-        if (getmyuid() !== 0) {
+        if ($currentUserId !== 0) {
             $this->markTestInComplete(__METHOD__ . ' could only run partially, chown() can only to be tested as root user. Current user: ' . $currentUserName);
         }
 
