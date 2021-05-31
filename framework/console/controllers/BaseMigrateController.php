@@ -587,9 +587,7 @@ abstract class BaseMigrateController extends Controller
      */
     public function actionNew($limit = 10)
     {
-        if ($limit === 'all') {
-            $limit = null;
-        } else {
+        if ($limit !== 'all') {
             $limit = (int) $limit;
             if ($limit < 1) {
                 throw new Exception('The limit must be greater than 0.');
@@ -602,7 +600,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("No new migrations found. Your system is up-to-date.\n", Console::FG_GREEN);
         } else {
             $n = count($migrations);
-            if ($limit && $n > $limit) {
+            if ($limit !== 'all' && $n > $limit) {
                 $migrations = array_slice($migrations, 0, $limit);
                 $this->stdout("Showing $limit out of $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n", Console::FG_YELLOW);
             } else {

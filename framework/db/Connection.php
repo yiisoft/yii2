@@ -694,20 +694,24 @@ class Connection extends Component
     {
         $pdoClass = $this->pdoClass;
         if ($pdoClass === null) {
-            $pdoClass = 'PDO';
+            $driver = null;
             if ($this->_driverName !== null) {
                 $driver = $this->_driverName;
             } elseif (($pos = strpos($this->dsn, ':')) !== false) {
                 $driver = strtolower(substr($this->dsn, 0, $pos));
             }
-            if (isset($driver)) {
-                if ($driver === 'mssql') {
+            switch ($driver) {
+                case 'mssql':
                     $pdoClass = 'yii\db\mssql\PDO';
-                } elseif ($driver === 'dblib') {
+                    break;
+                case 'dblib':
                     $pdoClass = 'yii\db\mssql\DBLibPDO';
-                } elseif ($driver === 'sqlsrv') {
+                    break;
+                case 'sqlsrv':
                     $pdoClass = 'yii\db\mssql\SqlsrvPDO';
-                }
+                    break;
+                default:
+                    $pdoClass = 'PDO';
             }
         }
 
