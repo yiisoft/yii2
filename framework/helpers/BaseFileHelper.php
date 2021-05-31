@@ -596,19 +596,15 @@ class BaseFileHelper
 
         $path = str_replace('\\', '/', $path);
 
-        if (!empty($options['except'])) {
-            if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['except'])) !== null) {
-                return $except['flags'] & self::PATTERN_NEGATIVE;
-            }
+        if (
+            !empty($options['except'])
+            && ($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['except'])) !== null
+        ) {
+            return $except['flags'] & self::PATTERN_NEGATIVE;
         }
 
         if (!empty($options['only']) && !is_dir($path)) {
-            if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
-                // don't check PATTERN_NEGATIVE since those entries are not prefixed with !
-                return true;
-            }
-
-            return false;
+            return self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only']) !== null;
         }
 
         return true;
