@@ -187,13 +187,13 @@ trait ActiveRecordTestTrait
 
         /* @var $this TestCase|ActiveRecordTestTrait */
         // query scalar
-        $customerName = $customerClass::find()->where(['id' => 2])->scalar('name');
+        $customerName = $customerClass::find()->where(['id' => 2])->select('name')->scalar();
         $this->assertEquals('user2', $customerName);
-        $customerName = $customerClass::find()->where(['status' => 2])->scalar('name');
+        $customerName = $customerClass::find()->where(['status' => 2])->select('name')->scalar();
         $this->assertEquals('user3', $customerName);
-        $customerName = $customerClass::find()->where(['status' => 2])->scalar('noname');
+        $customerName = $customerClass::find()->where(['status' => 2])->select('noname')->scalar();
         $this->assertNull($customerName);
-        $customerId = $customerClass::find()->where(['status' => 2])->scalar('id');
+        $customerId = $customerClass::find()->where(['status' => 2])->select('id')->scalar();
         $this->assertEquals(3, $customerId);
     }
 
