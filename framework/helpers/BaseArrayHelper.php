@@ -532,6 +532,9 @@ class BaseArrayHelper
     public static function getColumn($array, $name, $keepKeys = true)
     {
         $result = [];
+        if(!is_array($array)) {
+            return $result;   
+        }
         if ($keepKeys) {
             foreach ($array as $k => $element) {
                 $result[$k] = static::getValue($element, $name);
