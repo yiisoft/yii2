@@ -670,6 +670,9 @@ class ArrayHelperTest extends TestCase
             return $element['data'];
         }, false);
         $this->assertEquals(['abc', 'def'], $result);
+        
+        $result = ArrayHelper::getColumn(null,'aaa');
+        $this->assertEquals($result, []);
     }
 
     public function testMap()
