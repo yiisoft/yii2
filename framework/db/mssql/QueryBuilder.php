@@ -11,6 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\TableSchema;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -483,10 +484,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        $cols = [];
+        $columns = [];
         if ($version2005orLater) {
+            /* @var $schema TableSchema */
             $schema = $this->db->getTableSchema($table);
-            $cols = [];
-            $columns = [];
             foreach ($schema->columns as $column) {
                 if ($column->isComputed) {
                     continue;

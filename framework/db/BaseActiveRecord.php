@@ -1294,6 +1294,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function link($name, $model, $extraColumns = [])
     {
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
@@ -1330,16 +1331,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $record->insert(false);
             } else {
                 /* @var $viaTable string */
-                static::getDb()->createCommand()
-                    ->insert($viaTable, $columns)->execute();
+                static::getDb()->createCommand()->insert($viaTable, $columns)->execute();
             }
         } else {
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
             $p2 = static::isPrimaryKey(array_values($relation->link));
             if ($p1 && $p2) {
-                if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-                    throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
-                } elseif ($this->getIsNewRecord()) {
+                if ($this->getIsNewRecord()) {
+                    if ($model->getIsNewRecord()) {
+                        throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
+                    }
                     $this->bindModels(array_flip($relation->link), $this, $model);
                 } else {
                     $this->bindModels($relation->link, $model, $this);
@@ -1492,6 +1493,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function unlinkAll($name, $delete = false)
     {
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {

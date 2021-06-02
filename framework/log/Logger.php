@@ -218,11 +218,15 @@ class Logger extends Component
             return $timings;
         }
 
-        foreach ($timings as $i => $timing) {
+        foreach ($timings as $outerIndex => $outerTimingItem) {
+            $currentIndex = $outerIndex;
             $matched = empty($categories);
             foreach ($categories as $category) {
                 $prefix = rtrim($category, '*');
-                if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
+                if (
+                    ($outerTimingItem['category'] === $category || $prefix !== $category)
+                    && strpos($outerTimingItem['category'], $prefix) === 0
+                ) {
                     $matched = true;
                     break;
                 }
@@ -231,8 +235,12 @@ class Logger extends Component
             if ($matched) {
                 foreach ($excludeCategories as $category) {
                     $prefix = rtrim($category, '*');
-                    foreach ($timings as $i => $timing) {
-                        if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
+                    foreach ($timings as $innerIndex => $innerTimingItem) {
+                        $currentIndex = $innerIndex;
+                        if (
+                            ($innerTimingItem['category'] === $category || $prefix !== $category)
+                            && strpos($innerTimingItem['category'], $prefix) === 0
+                        ) {
                             $matched = false;
                             break;
                         }
@@ -241,7 +249,7 @@ class Logger extends Component
             }
 
             if (!$matched) {
-                unset($timings[$i]);
+                unset($timings[$currentIndex]);
             }
         }
 

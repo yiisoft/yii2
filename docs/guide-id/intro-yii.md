@@ -24,13 +24,13 @@ Jika Anda sudah akrab dengan framework lain, Anda mungkin menghargai pengetahuan
 - Yii sangat extensible. Anda dapat menyesuaikan atau mengganti hampir setiap bagian dari kode inti Yii. Anda juga bisa mengambil keuntungan dari arsitektur ekstensi Yii yang solid untuk menggunakan atau mengembangkan ekstensi untuk disebarkan kembali.
 - Kinerja tinggi selalu menjadi tujuan utama dari Yii.
 
-Yii tidak dikerjakan oleh satu orang, Yii didukung oleh [tim pengembang inti yang kuat][about_yii], serta komunitas besar
+Yii tidak dikerjakan oleh satu orang, Yii didukung oleh [tim pengembang inti yang kuat][yii_team], serta komunitas besar
 profesional yang terus memberikan kontribusi bagi pengembangan Yii. Tim pengembang Yii
 terus mengamati perkembangan tren terbaru Web, pada penerapan terbaik serta fitur yang
 ditemukan dalam framework dan proyek lain. Penerapan terbaik yang paling relevan dan fitur yang ditemukan di tempat lain secara teratur
 dimasukkan ke dalam kerangka inti dan menampakkannya melalui antarmuka yang sederhana dan elegan.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Versi Yii
 ----------
