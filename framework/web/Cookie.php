@@ -39,6 +39,7 @@ class Cookie extends \yii\base\BaseObject
      * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will include the cookie.
      * Note: If `sameSite` is set to None, the `secure` attribute must be set to `true` (otherwise the cookie will be blocked by the browser).
      * @see $sameSite
+     * @see $secure
      */
     const SAME_SITE_NONE = 'None';
 
