@@ -113,7 +113,7 @@ class GettextMessageSource extends MessageSource
         } elseif (!empty($fallbackMessages)) {
             foreach ($fallbackMessages as $key => $value) {
                 if (!empty($value) && empty($messages[$key])) {
-                    $messages[$key] = $fallbackMessages[$key];
+                    $messages[$key] = $value;
                 }
             }
         }
