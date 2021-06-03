@@ -19,9 +19,9 @@ Yii ni boshqa freymvorklar bilan solishtirish
 - Yii juda yaxhsi kengayishi mumkin. Siz asosiy kodni ixtiyoriy qismini almashtirishingiz yoki sozlashingiz mumkin. Kengaytirish arxitekturasiga bo'ysunib kodni boshqalar bilan ulashish yoki jamoatning kodidan foydalanish mumkin.
 - Yii ning asosiy maqsadlaridan biri - ishlash tezligi.
 
-Yii — bir odamning loyihasi emas. U unga yordam berayotgan ishlab chiquvchilar [katta jamoa][about_yii]si  tomonidan qo'llab quvvatlanadi va rivojlantiriladi. Freymvork ishlab chiquvchilari web ishlab chiqish va boshqa ilovalarni maromini kuzatishadi. Ko'proq mos keluvchi imkoniyatlar va eng yaxshi sinalgan amaliyotlar freymvork sodda va elegantli interfeysi tarzida qo'llaniladi.
+Yii — bir odamning loyihasi emas. U unga yordam berayotgan ishlab chiquvchilar [katta jamoa][yii_team]si  tomonidan qo'llab quvvatlanadi va rivojlantiriladi. Freymvork ishlab chiquvchilari web ishlab chiqish va boshqa ilovalarni maromini kuzatishadi. Ko'proq mos keluvchi imkoniyatlar va eng yaxshi sinalgan amaliyotlar freymvork sodda va elegantli interfeysi tarzida qo'llaniladi.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Yii talqinlari
 --------------
