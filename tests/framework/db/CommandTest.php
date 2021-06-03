@@ -221,7 +221,7 @@ SQL;
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
-            $this->assertEquals($boolCol, (int)$row['bool_col']);
+            $this->assertEquals($boolCol, (int) $row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
         }

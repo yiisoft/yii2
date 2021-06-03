@@ -606,7 +606,7 @@ abstract class QueryTest extends DatabaseTestCase
             ->where($whereCondition)
             ->count('*', $db);
         if (is_numeric($result)) {
-            $result = (int)$result;
+            $result = (int) $result;
         }
 
         return $result;

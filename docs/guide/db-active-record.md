@@ -859,6 +859,7 @@ While declaring a relation, you should specify the following information:
   Active Record directly next to it. You see there that `customer_id` is a property of `Order` and `id` is a property
   of `Customer`.
   
+> Warning: Relation name `relation` is reserved. When used it will produce `ArgumentCountError`.
 
 ### Accessing Relational Data <span id="accessing-relational-data"></span>
 
