@@ -30,13 +30,13 @@ use yii\base\Component;
  * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
  * or [[DbTarget|database]], with the help of the [[dispatcher]].
  *
- * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
- * second element the total time spent in SQL execution. This property is read-only.
- * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
+ * @property-read array $dbProfiling The first element indicates the number of SQL statements executed, and
+ * the second element the total time spent in SQL execution. This property is read-only.
+ * @property-read float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
- * @property array $profiling The profiling results. Each element is an array consisting of these elements:
- * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory` and
- * `memoryDiff` values are available since version 2.0.11. This property is read-only.
+ * @property-read array $profiling The profiling results. Each element is an array consisting of these
+ * elements: `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory`
+ * and `memoryDiff` values are available since version 2.0.11. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -111,6 +111,11 @@ class Logger extends Component
      * @var Dispatcher the message dispatcher
      */
     public $dispatcher;
+    /**
+     * @var array of event names used to get statistical results of DB queries.
+     * @since 2.0.41
+     */
+    public $dbEventNames = ['yii\db\Command::query', 'yii\db\Command::execute'];
 
 
     /**
@@ -213,11 +218,15 @@ class Logger extends Component
             return $timings;
         }
 
-        foreach ($timings as $i => $timing) {
+        foreach ($timings as $outerIndex => $outerTimingItem) {
+            $currentIndex = $outerIndex;
             $matched = empty($categories);
             foreach ($categories as $category) {
                 $prefix = rtrim($category, '*');
-                if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
+                if (
+                    ($outerTimingItem['category'] === $category || $prefix !== $category)
+                    && strpos($outerTimingItem['category'], $prefix) === 0
+                ) {
                     $matched = true;
                     break;
                 }
@@ -226,8 +235,12 @@ class Logger extends Component
             if ($matched) {
                 foreach ($excludeCategories as $category) {
                     $prefix = rtrim($category, '*');
-                    foreach ($timings as $i => $timing) {
-                        if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
+                    foreach ($timings as $innerIndex => $innerTimingItem) {
+                        $currentIndex = $innerIndex;
+                        if (
+                            ($innerTimingItem['category'] === $category || $prefix !== $category)
+                            && strpos($innerTimingItem['category'], $prefix) === 0
+                        ) {
                             $matched = false;
                             break;
                         }
@@ -236,7 +249,7 @@ class Logger extends Component
             }
 
             if (!$matched) {
-                unset($timings[$i]);
+                unset($timings[$currentIndex]);
             }
         }
 
@@ -252,7 +265,7 @@ class Logger extends Component
      */
     public function getDbProfiling()
     {
-        $timings = $this->getProfiling(['yii\db\Command::query', 'yii\db\Command::execute']);
+        $timings = $this->getProfiling($this->dbEventNames);
         $count = count($timings);
         $time = 0;
         foreach ($timings as $timing) {

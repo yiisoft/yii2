@@ -17,9 +17,9 @@ use yii\base\InvalidCallException;
  *
  * For more details and usage information on CookieCollection, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
  *
- * @property int $count The number of cookies in the collection. This property is read-only.
- * @property ArrayIterator $iterator An iterator for traversing the cookies in the collection. This property
- * is read-only.
+ * @property-read int $count The number of cookies in the collection. This property is read-only.
+ * @property-read ArrayIterator $iterator An iterator for traversing the cookies in the collection. This
+ * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -83,7 +83,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     /**
      * Returns the cookie with the specified name.
      * @param string $name the cookie name
-     * @return Cookie the cookie with the specified name. Null if the named cookie does not exist.
+     * @return Cookie|null the cookie with the specified name. Null if the named cookie does not exist.
      * @see getValue()
      */
     public function get($name)

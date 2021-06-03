@@ -91,6 +91,38 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+    /**
+     * @var boolean if LibreSSL should be used.
+     * The recent (> 2.1.5) LibreSSL RNGs are faster and likely better than /dev/urandom.
+     */
+    private $_useLibreSSL;
+
+
+    /**
+     * @return bool if LibreSSL should be used
+     * Use version is 2.1.5 or higher.
+     * @since 2.0.36
+     */
+    protected function shouldUseLibreSSL()
+    {
+        if ($this->_useLibreSSL === null) {
+            // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
+            // https://bugs.php.net/bug.php?id=71143
+            $this->_useLibreSSL = defined('OPENSSL_VERSION_TEXT')
+                && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
+                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
+        }
+
+        return $this->_useLibreSSL;
+    }
+
+    /**
+     * @return bool if operating system is Windows
+     */
+    private function isWindows()
+    {
+        return DIRECTORY_SEPARATOR !== '/';
+    }
 
     /**
      * Encrypts data using a password.
@@ -439,7 +471,6 @@ class Security extends Component
         return false;
     }
 
-    private $_useLibreSSL;
     private $_randomFile;
 
     /**
@@ -468,22 +499,10 @@ class Security extends Component
         }
 
         // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
-        // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
-        // https://bugs.php.net/bug.php?id=71143
-        if ($this->_useLibreSSL === null) {
-            $this->_useLibreSSL = defined('OPENSSL_VERSION_TEXT')
-                && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
-                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
-        }
-
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
         if (function_exists('openssl_random_pseudo_bytes')
-            && ($this->_useLibreSSL
-            || (
-                DIRECTORY_SEPARATOR !== '/'
-                && substr_compare(PHP_OS, 'win', 0, 3, true) === 0
-            ))
+            && ($this->shouldUseLibreSSL() || $this->isWindows())
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
@@ -506,7 +525,7 @@ class Security extends Component
         }
 
         // If not on Windows, try to open a random device.
-        if ($this->_randomFile === null && DIRECTORY_SEPARATOR === '/') {
+        if ($this->_randomFile === null && !$this->isWindows()) {
             // urandom is a symlink to random on FreeBSD.
             $device = PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom';
             // Check random device for special character device protection mode. Use lstat()

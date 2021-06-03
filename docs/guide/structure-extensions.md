@@ -184,7 +184,7 @@ If your extension also depends on other extensions or third-party libraries, you
 Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
 dependencies when your extension is released in a stable version.
 
-Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/),
+Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/),
 instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
 to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
 simply list the dependency in `composer.json` like the following:

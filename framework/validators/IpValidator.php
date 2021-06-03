@@ -33,7 +33,8 @@ use yii\web\JsExpression;
  * ```
  *
  * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. See [[setRanges()]] for
- * detailed description.
+ * detailed description. Note that the type of this property differs in getter and setter. See [[getRanges()]]
+ * and [[setRanges()]] for details.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7

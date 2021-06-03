@@ -7,6 +7,7 @@
 
 namespace yii\helpers;
 
+use Yii;
 use yii\console\Markdown as ConsoleMarkdown;
 use yii\base\Model;
 
@@ -330,7 +331,7 @@ class BaseConsole
      */
     public static function stripAnsiFormat($string)
     {
-        return preg_replace('/\033\[[\d;?]*\w/', '', $string);
+        return preg_replace(self::ansiCodesPattern(), '', $string);
     }
 
     /**
@@ -341,6 +342,78 @@ class BaseConsole
     public static function ansiStrlen($string)
     {
         return mb_strlen(static::stripAnsiFormat($string));
+    }
+
+    /**
+     * Returns the width of the string without ANSI color codes.
+     * @param string $string the string to measure
+     * @return int the width of the string not counting ANSI format characters
+     * @since 2.0.36
+     */
+    public static function ansiStrwidth($string)
+    {
+        return mb_strwidth(static::stripAnsiFormat($string), Yii::$app->charset);
+    }
+
+    /**
+     * Returns the portion with ANSI color codes of string specified by the start and length parameters.
+     * If string has color codes, then will be return "TEXT_COLOR + TEXT_STRING + DEFAULT_COLOR",
+     * else will be simple "TEXT_STRING".
+     * @param string $string
+     * @param int $start
+     * @param int $length
+     * @return string
+     */
+    public static function ansiColorizedSubstr($string, $start, $length)
+    {
+        if ($start < 0 || $length <= 0) {
+            return '';
+        }
+
+        $textItems = preg_split(self::ansiCodesPattern(), $string);
+
+        preg_match_all(self::ansiCodesPattern(), $string, $colors);
+        $colors = count($colors) ? $colors[0] : [];
+        array_unshift($colors, '');
+
+        $result = '';
+        $curPos = 0;
+        $inRange = false;
+
+        foreach ($textItems as $k => $textItem) {
+            $color = $colors[$k];
+
+            if ($curPos <= $start && $start < $curPos + Console::ansiStrwidth($textItem)) {
+                $text = mb_substr($textItem, $start - $curPos, null, Yii::$app->charset);
+                $inRange = true;
+            } else {
+                $text = $textItem;
+            }
+
+            if ($inRange) {
+                $result .= $color . $text;
+                $diff = $length - Console::ansiStrwidth($result);
+                if ($diff <= 0) {
+                    if ($diff < 0) {
+                        $result = mb_substr($result, 0, $diff, Yii::$app->charset);
+                    }
+                    $defaultColor = static::renderColoredString('%n');
+                    if ($color && $color != $defaultColor) {
+                        $result .= $defaultColor;
+                    }
+                    break;
+                }
+            }
+
+            $curPos += mb_strlen($textItem, Yii::$app->charset);
+        }
+
+        return $result;
+    }
+
+    private static function ansiCodesPattern()
+    {
+        return /** @lang PhpRegExp */ '/\033\[[\d;?]*\w/';
     }
 
     /**

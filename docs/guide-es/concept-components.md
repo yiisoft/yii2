@@ -67,7 +67,7 @@ Siguiendo esas directrices hará que tus componentes sean [configurables](concep
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
 // alternativamente
 $component = \Yii::createObject([
-    'class' => MyClass::className(),
+    'class' => MyClass::class,
     'prop1' => 3,
     'prop2' => 4,
 ], [1, 2]);

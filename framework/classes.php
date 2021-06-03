@@ -174,6 +174,8 @@ return [
   'yii\db\cubrid\Schema' => YII2_PATH . '/db/cubrid/Schema.php',
   'yii\db\cubrid\conditions\LikeConditionBuilder' => YII2_PATH . '/db/cubrid/conditions/LikeConditionBuilder.php',
   'yii\db\mssql\ColumnSchema' => YII2_PATH . '/db/mssql/ColumnSchema.php',
+  'yii\db\mssql\ColumnSchemaBuilder' => YII2_PATH . '/db/mssql/ColumnSchemaBuilder.php',
+  'yii\db\mssql\DBLibPDO' => YII2_PATH . '/db/mssql/DBLibPDO.php',
   'yii\db\mssql\PDO' => YII2_PATH . '/db/mssql/PDO.php',
   'yii\db\mssql\QueryBuilder' => YII2_PATH . '/db/mssql/QueryBuilder.php',
   'yii\db\mssql\Schema' => YII2_PATH . '/db/mssql/Schema.php',
