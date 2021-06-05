@@ -72,7 +72,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
-use app\models\EntryForm;
+use frontend\models\EntryForm;
 
 class SiteController extends Controller
 {
