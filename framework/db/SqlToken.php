@@ -267,10 +267,8 @@ class SqlToken extends BaseObject implements \ArrayAccess
 
                 if ($firstMatchIndex === null) {
                     $firstMatchIndex = $offset;
-                    $lastMatchIndex = $offset;
-                } else {
-                    $lastMatchIndex = $offset;
                 }
+                $lastMatchIndex = $offset;
                 $wildcard = false;
                 $offset++;
                 continue 2;

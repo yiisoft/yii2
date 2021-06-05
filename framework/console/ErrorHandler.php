@@ -9,7 +9,6 @@ namespace yii\console;
 
 use Yii;
 use yii\base\ErrorException;
-use yii\base\UserException;
 use yii\helpers\Console;
 
 /**
@@ -39,7 +38,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             } elseif (count($alternatives) > 1) {
                 $message .= "\n\nDid you mean one of these?\n    - " . implode("\n    - ", $alternatives);
             }
-        } elseif ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
+        } elseif ($exception instanceof Exception || !YII_DEBUG) {
             $message = $this->formatMessage($exception->getName() . ': ') . $exception->getMessage();
         } elseif (YII_DEBUG) {
             if ($exception instanceof Exception) {
