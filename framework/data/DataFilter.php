@@ -355,7 +355,7 @@ class DataFilter extends Model
     /**
      * Detect attribute type from given validator.
      *
-     * @param Validator validator from which to detect attribute type.
+     * @param Validator $validator validator from which to detect attribute type.
      * @return string|null detected attribute type.
      * @since 2.0.14
      */
