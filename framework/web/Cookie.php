@@ -40,6 +40,7 @@ class Cookie extends \yii\base\BaseObject
      * Note: If `sameSite` is set to None, the `secure` attribute must be set to `true` (otherwise the cookie will be blocked by the browser).
      * @see $sameSite
      * @see $secure
+     * @since 2.0.43
      */
     const SAME_SITE_NONE = 'None';
 
