@@ -1328,7 +1328,7 @@ class Request extends \yii\base\Request
          * Apache with php-cgi does not pass HTTP Basic authentication to PHP by default.
          * To make it work, add one of the following lines to to your .htaccess file:
          *
-         * SetEnvIf Authorization .+ HTTP_HTTP_AUTHORIZATION=$0
+         * SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
          * --OR--
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
