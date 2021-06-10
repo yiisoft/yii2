@@ -379,7 +379,6 @@ class Request extends \yii\base\Request
                         $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 14)))));
                         $this->_headers->add($name, $value);
                     }
-                    
                 }
             }
             $this->filterHeaders($this->_headers);
