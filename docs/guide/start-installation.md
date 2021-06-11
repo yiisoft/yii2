@@ -378,5 +378,5 @@ It's recommended to host the application in a virtual host (Web site) where docu
 </configuration>
 ```
 Also the following list of Microsoft's official resources could be useful in order to configure PHP on IIS:
- 1. [How to set up your first IIS Web site](https://support.microsoft.com/en-us/help/323972/how-to-set-up-your-first-iis-web-site)
+ 1. [How to set up your first IIS Web site](https://docs.microsoft.com/en-us/iis/manage/creating-websites/scenario-build-a-static-website-on-iis)
  2. [Configure a PHP Website on IIS](https://docs.microsoft.com/en-us/iis/application-frameworks/scenario-build-a-php-website-on-iis/configure-a-php-website-on-iis)
