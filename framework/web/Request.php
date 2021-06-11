@@ -262,6 +262,14 @@ class Request extends \yii\base\Request
     ];
 
     /**
+     * @var array list of the key prefixes used to obtain HTTP headers from $_SERVER variable.
+     */
+    public $headerPrefixes = [
+        'HTTP_',
+        'REDIRECT_HTTP_',
+    ];
+
+    /**
      * @var CookieCollection Collection of request cookies.
      */
     private $_cookies;
@@ -371,13 +379,16 @@ class Request extends \yii\base\Request
                     $this->_headers->add($name, $value);
                 }
             } else {
+                $prefixes = array_flip($this->headerPrefixes);
+                array_walk($prefixes, function(&$v, $k) { $v = strlen($k); });
+
                 foreach ($_SERVER as $name => $value) {
-                    if (strncmp($name, 'HTTP_', 5) === 0) {
-                        $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
-                        $this->_headers->add($name, $value);
-                    } elseif (strncmp($name, 'REDIRECT_HTTP_', 14) === 0) {
-                        $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 14)))));
-                        $this->_headers->add($name, $value);
+                    foreach ($prefixes as $prefix => $length) {
+                        if (strncmp($name, $prefix, $length) === 0) {
+                            $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, $length)))));
+                            $this->_headers->add($name, $value);
+                            continue 2;
+                        }
                     }
                 }
             }
