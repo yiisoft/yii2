@@ -577,7 +577,8 @@ class Formatter extends Component
      * Formats the value as a hyperlink.
      * @param mixed $value the value to be formatted.
      * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]].
-     * @param bool $secureProtocol whether to use secure version of HTTP protocol when URL does not contain the protocol part.
+     * @param bool $secureProtocol whether to use secure version of HTTP protocol when URL does not contain
+     * the protocol part (available since 2.0.43).
      * @return string the formatted result.
      */
     public function asUrl($value, $options = [], $secureProtocol = false)
