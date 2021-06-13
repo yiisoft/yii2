@@ -804,9 +804,7 @@ class Formatter extends Component
                     $format
                 );
             }
-            if ($formatter === null) {
-                throw new InvalidConfigException(intl_get_error_message());
-            }
+
             // make IntlDateFormatter work with DateTimeImmutable
             if ($timestamp instanceof \DateTimeImmutable) {
                 $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
@@ -847,7 +845,7 @@ class Formatter extends Component
      * timestamp, the second a boolean indicating whether the timestamp has time information and third a boolean indicating
      * whether the timestamp has date information.
      * This parameter is available since version 2.0.1.
-     * @return DateTime|array|false the normalized datetime value or false in case DateTime object cannot be created from given format
+     * @return DateTime|array the normalized datetime value
      * Since version 2.0.1 this may also return an array if `$checkDateTimeInfo` is true.
      * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
      * the timestamp has time information or it is just a date value.
@@ -871,12 +869,20 @@ class Formatter extends Component
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat('Y-m-d|', $value, new DateTimeZone($this->defaultTimeZone))) !== false
+                ($timestamp = DateTime::createFromFormat(
+                    'Y-m-d|',
+                    $value,
+                    new DateTimeZone($this->defaultTimeZone))
+                ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false
+                ($timestamp = DateTime::createFromFormat(
+                    'Y-m-d H:i:s',
+                    $value,
+                    new DateTimeZone($this->defaultTimeZone))
+                ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
@@ -952,29 +958,17 @@ class Formatter extends Component
             $interval = $value;
         } else {
             $timestamp = $this->normalizeDatetimeValue($value);
+            $timeZone = new DateTimeZone($this->timeZone);
 
-            if ($timestamp === false) {
-                // $value is not a valid date/time value, so we try to create a DateInterval with it
-                try {
-                    $interval = new DateInterval($value);
-                } catch (\Exception $e) {
-                    // invalid date/time and invalid interval
-                    return $this->nullDisplay;
-                }
+            if ($referenceTime === null) {
+                $dateNow = new DateTime('now', $timeZone);
             } else {
-                $timeZone = new DateTimeZone($this->timeZone);
-
-                if ($referenceTime === null) {
-                    $dateNow = new DateTime('now', $timeZone);
-                } else {
-                    $dateNow = $this->normalizeDatetimeValue($referenceTime);
-                    $dateNow->setTimezone($timeZone);
-                }
-
-                $dateThen = $timestamp->setTimezone($timeZone);
-
-                $interval = $dateThen->diff($dateNow);
+                $dateNow = $this->normalizeDatetimeValue($referenceTime);
+                $dateNow->setTimezone($timeZone);
             }
+
+            $dateThen = $timestamp->setTimezone($timeZone);
+            $interval = $dateThen->diff($dateNow);
         }
 
         if ($interval->invert) {
@@ -1096,7 +1090,7 @@ class Formatter extends Component
     /**
      * Formats the value as an integer number by removing any decimal digits without rounding.
      *
-     * Since 2.0.16 numbers that are misrepresented after normalization are formatted as strings using fallback function
+     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) support. For very big numbers it's
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
@@ -1137,7 +1131,7 @@ class Formatter extends Component
      * Property [[decimalSeparator]] will be used to represent the decimal point. The
      * value is rounded automatically to the defined decimal digits.
      *
-     * Since 2.0.16 numbers that are misrepresented after normalization are formatted as strings using fallback function
+     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) support. For very big numbers it's
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
@@ -1187,7 +1181,7 @@ class Formatter extends Component
     /**
      * Formats the value as a percent number with "%" sign.
      *
-     * Since 2.0.16 numbers that are misrepresented after normalization are formatted as strings using fallback function
+     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) support. For very big numbers it's
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
@@ -1279,7 +1273,7 @@ class Formatter extends Component
      * This function does not require the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed
      * to work, but it is highly recommended to install it to get good formatting results.
      *
-     * Since 2.0.16 numbers that are misrepresented after normalization are formatted as strings using fallback function
+     * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without PHP intl extension support. For very big numbers it's recommended to pass them as strings and not use
      * scientific notation otherwise the output might be wrong.
      *
