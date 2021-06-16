@@ -77,6 +77,10 @@ abstract class CacheTestCase extends TestCase
         $cache->set('string_test', 'string_test');
         $cache->set('number_test', 42);
         $cache->set('array_test', ['array_test' => 'array_test']);
+        $cache->set(['array', 'member', 'number', 42], 'array_cache_key_with_integer');
+        $cache->set(['array', 'member', 'boolean', true], 'array_cache_key_with_boolean');
+        $cache->set(['array', 'member', 'object', new \stdClass()], 'array_cache_key_with_object');
+
         $cache['arrayaccess_test'] = new \stdClass();
 
         return $cache;
@@ -89,6 +93,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->set('string_test', 'string_test'));
         $this->assertTrue($cache->set('number_test', 42));
         $this->assertTrue($cache->set('array_test', ['array_test' => 'array_test']));
+        $this->assertTrue($cache->set('object_test', new \stdClass()));
     }
 
     public function testGet()
@@ -98,6 +103,11 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals('string_test', $cache->get('string_test'));
 
         $this->assertEquals(42, $cache->get('number_test'));
+        $this->assertEquals('array_cache_key_with_integer', $cache->get(['array', 'member', 'number', 42]));
+        $this->assertEquals('array_cache_key_with_integer', $cache->get(['array', 'member', 'number', '42']));
+        $this->assertEquals('array_cache_key_with_boolean', $cache->get(['array', 'member', true]));
+        $this->assertEquals('array_cache_key_with_boolean', $cache->get(['array', 'member', 'true']));
+        $this->assertEquals('array_cache_key_with_object', $cache->get(['array', 'member', new \stdClass()]));
 
         $array = $cache->get('array_test');
         $this->assertArrayHasKey('array_test', $array);

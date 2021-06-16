@@ -109,6 +109,7 @@ abstract class Cache extends Component implements CacheInterface
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
+            $key = $this->convertArrayValuesToString((array) $key);
             if ($this->_igbinaryAvailable) {
                 $serializedKey = igbinary_serialize($key);
             } else {
@@ -119,6 +120,32 @@ abstract class Cache extends Component implements CacheInterface
         }
 
         return $this->keyPrefix . $key;
+    }
+
+    /**
+     * Normalizes every cache array key element into strings
+     * 
+     * @param array $array cache array key
+     * 
+     * @return array normalized cache array
+     */
+    private function convertArrayValuesToString($array)
+    {
+        return array_map(function ($element) {
+            if (is_array($element)) {
+                return $this->convertArrayValuesToString($element);
+            }
+            if (is_bool($element)) {
+                if ($element) {
+                    return '1';
+                }
+                return '0';
+            }
+            if (is_object($element)) {
+                return $element;
+            }
+            return (string) $element;
+        }, $array);
     }
 
     /**
