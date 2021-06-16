@@ -124,9 +124,8 @@ abstract class Cache extends Component implements CacheInterface
 
     /**
      * Normalizes every cache array key element into strings
-     * 
+     *
      * @param array $array cache array key
-     * 
      * @return array normalized cache array
      */
     private function convertArrayValuesToString($array)
