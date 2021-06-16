@@ -105,9 +105,9 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(42, $cache->get('number_test'));
         $this->assertEquals('array_cache_key_with_integer', $cache->get(['array', 'member', 'number', 42]));
         $this->assertEquals('array_cache_key_with_integer', $cache->get(['array', 'member', 'number', '42']));
-        $this->assertEquals('array_cache_key_with_boolean', $cache->get(['array', 'member', true]));
-        $this->assertEquals('array_cache_key_with_boolean', $cache->get(['array', 'member', 'true']));
-        $this->assertEquals('array_cache_key_with_object', $cache->get(['array', 'member', new \stdClass()]));
+        $this->assertEquals('array_cache_key_with_boolean', $cache->get(['array', 'member', 'boolean', true]));
+        $this->assertEquals('array_cache_key_with_boolean', $cache->get(['array', 'member', 'boolean', '1']));
+        $this->assertEquals('array_cache_key_with_object', $cache->get(['array', 'member', 'object', new \stdClass()]));
 
         $array = $cache->get('array_test');
         $this->assertArrayHasKey('array_test', $array);
