@@ -97,7 +97,7 @@ usuli ishlatilayapti.
 Agar hammasi yaxshi o'tsa, amal `entry-confirm` ko'rinishini qaytaradi, u esa foydalanuvchi tomonidan kiritilgan ma'lumotlarini ko'rsatadi.
 Aks holda esa `entry` ko'rinishi qaytariladi, u esa HTML-shaklni va xatolarni chiqarib beradi, agar ular bor bo'lsa.
 
-> Ma'lumot uchun: `Yii::$app` yagona global xossasi Yiining nusxasini o'z ichiga oladi
+> Info: `Yii::$app` yagona global xossasi Yiining nusxasini o'z ichiga oladi
 [ilova](structure-applications.md) (singleton). Bir vaqtni o'zida u [Service Locator](concept-service-locator.md) ham hisoblanadi,
 undan esa quydagi komponentlar bilan foydalanish mumkin  `request`, `response`, `db` va boshqa. Yuqorida ko'rsatilgan kodda `$_POST`
 massivini qabul qilish uchun biz `request` komponentini ishlatdik.
@@ -186,7 +186,7 @@ Moydonlar uchun yasalgan yorlig'lar xossalar nomlari assosida quydagi usul `fiel
 <?= $form->field($model, 'email')->label('Sizning elektron qutingiz') ?>
 ```
 
-> Ma'lumot uchun: Yiida juda ham ko'p vidjetlar bor, ular sizga tez va murakkab ko'rinishlarni yasashga yordam beradi.
+> Info: Yiida juda ham ko'p vidjetlar bor, ular sizga tez va murakkab ko'rinishlarni yasashga yordam beradi.
   Vijetlarni yasash judda oson va sodda ekanligini keyin (oldinda) bilishingiz mumkin. Ko'rinishdagi narsalarni ko'p narsani vijetlarga chiqarsa bo'ladi, 
   nimaga? keyinchalik ham boshqa joylarda ishlatish uchun, bu esa ishni soddalashtiradi.
 
