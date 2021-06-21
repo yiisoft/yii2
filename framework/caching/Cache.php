@@ -80,18 +80,11 @@ abstract class Cache extends Component implements CacheInterface
     public $defaultDuration = 0;
 
     /**
-     * @var bool whether [igbinary serialization](https://pecl.php.net/package/igbinary) is available or not.
-     */
-    private $_igbinaryAvailable = false;
-
-
-    /**
      * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        $this->_igbinaryAvailable = \extension_loaded('igbinary');
     }
 
     /**
@@ -109,42 +102,10 @@ abstract class Cache extends Component implements CacheInterface
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
-            $key = $this->convertArrayValuesToString((array) $key);
-            if ($this->_igbinaryAvailable) {
-                $serializedKey = igbinary_serialize($key);
-            } else {
-                $serializedKey = serialize($key);
-            }
-
-            $key = md5($serializedKey);
+            $key = md5(print_r($key, true));
         }
 
         return $this->keyPrefix . $key;
-    }
-
-    /**
-     * Normalizes every cache array key element into strings
-     *
-     * @param array $array cache array key
-     * @return array normalized cache array
-     */
-    protected function convertArrayValuesToString($array)
-    {
-        return array_map(function ($element) {
-            if (is_array($element)) {
-                return $this->convertArrayValuesToString($element);
-            }
-            if (is_bool($element)) {
-                if ($element) {
-                    return '1';
-                }
-                return '0';
-            }
-            if (is_object($element)) {
-                return $element;
-            }
-            return (string) $element;
-        }, $array);
     }
 
     /**
