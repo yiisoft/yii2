@@ -39,7 +39,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Ushbu buyruq Yining oxirgi ishlaydigan versiyasini `basic` katalogiga o'rnatadi. Agar xohlasangiz, boshqa katalog nomini tanlashingiz mumkin. 
 
-> Ma'lumot uchun: Agar `composer create-project` buyrug'i yaxshi ishlamasa , Composer hujjatining ["Muammo bartaraf qilish"](https://getcomposer.org/doc/articles/troubleshooting.md) bo'limiga murojaat qiling . Yozib otilgan boshqa odatiy xatolar mavjud. Xatolikni bartaraf qilganingizdan so'ng, `basic` katalogda `composer update` ishga tushiring.
+> Info: Agar `composer create-project` buyrug'i yaxshi ishlamasa , Composer hujjatining ["Muammo bartaraf qilish"](https://getcomposer.org/doc/articles/troubleshooting.md) bo'limiga murojaat qiling . Yozib otilgan boshqa odatiy xatolar mavjud. Xatolikni bartaraf qilganingizdan so'ng, `basic` katalogda `composer update` ishga tushiring.
 
 > Maslahat: Agar siz Yii ning eng so`ngi tekshirilmagan taxririni o'rnatmoqchi bo'lsangiz, [stability](https://getcomposer.org/doc/04-schema.md#minimum-stability) sozlamasini ozgartirib quydagi quyidagi buyruqni ishlatishingiz mumkin::
 >
@@ -103,16 +103,16 @@ Freymvork to'g'ri ishlashi uchun PHPni minimal talablarga javob beradigan tarzda
 Web-server sozlamasi<span id="configuring-web-servers"></span>
 -----------------------
 
-> Ma'lumot uchun:Agar siz faqatgina freymvork bilan tanishishni boshlagan bo'lsangiz va uni ish  serveriga joylashtirmagan bo'lsangiz, ushbu bo'limni o'tkazib yuborishingiz mumkin. 
+> Info: Agar siz faqatgina freymvork bilan tanishishni boshlagan bo'lsangiz va uni ish  serveriga joylashtirmagan bo'lsangiz, ushbu bo'limni o'tkazib yuborishingiz mumkin. 
 
 Yuqoridagi ko'rsatmalarga muvofiq o'rnatilgan ilovalar Windows va Linux ostida PHP 5.4 va undan yuqori taxrirlarda o'rnatilgan [Apache](http://httpd.apache.org/) va [Nginx](http://nginx.org/) bilan ishlaydi.Yii 2.0 [HHVM](http://hhvm.com/) bilan ham mos keladi. Etiborli bo'ling, ba'zi hollarda, HHVM bilan ishlashda odatdagi PHPdan farq qiladi.
 
 Ish serverida siz `http://www.example.com/basic/web/index.php` dan `http://www.example.com/index.php` manziliga dastur URL manzilini o'zgartirishni xohlasangiz. 
 Buni amalga oshirish uchun veb-server parametrlarida ildiz katalogini `basic/web` ga o'zgartiring. Bundan tashqari, ["URL sozlamalari"](runtime-routing.md) qismidagi malumotga ko'ra, `index.php` yashirishi mumkin. Keyinchalik Apache va Nginx ni qanday sozlashni ko'rsatamiz.
 
-> Ma'lumot uchun: Veb-serverning `basic/web` ildiz katalogini o'rnatib, siz ruxsat berilmagan kirish kodidan va `basic/web` sahifadagi ma'lumotlardan himoya qilasiz. Bu ilovani yanada xavfsiz holga keltiradi. 
+> Info: Veb-serverning `basic/web` ildiz katalogini o'rnatib, siz ruxsat berilmagan kirish kodidan va `basic/web` sahifadagi ma'lumotlardan himoya qilasiz. Bu ilovani yanada xavfsiz holga keltiradi. 
 
-> Ma'lumot uchun: Agar dastur veb-server sozlamalariga kirish imkoni bo'lmagan hosting bilan ishlayotgan bo'lsa, siz ["Birgalikda Hosting ustida ishlash"](tutorial-shared-hosting.md) bo'limida ko'rsatilganidek, ilovaning tuzilishini o'zgartirishingiz mumkin.
+> Info: Agar dastur veb-server sozlamalariga kirish imkoni bo'lmagan hosting bilan ishlayotgan bo'lsa, siz ["Birgalikda Hosting ustida ishlash"](tutorial-shared-hosting.md) bo'limida ko'rsatilganidek, ilovaning tuzilishini o'zgartirishingiz mumkin.
 
 
 ### Ta'vsiya etilgan Apache sozlamalari <span id="recommended-apache-configuration"></span>
