@@ -236,7 +236,7 @@ class JsonTest extends TestCase
         $defaultValue = Json::$prettyPrint;
         $input = ['a' => 1, 'b' => 2];
         $defOutput = '{"a":1,"b":2}';
-        $ppOutput = '{' . PHP_EOL . '    "a": 1,' . PHP_EOL . '    "b": 2' . PHP_EOL . '}';
+        $ppOutput = "{\n    \"a\": 1,\n    \"b\": 2\n}";
 
         // Test unchanged options
         Json::$prettyPrint = null;
