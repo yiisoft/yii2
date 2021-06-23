@@ -23,6 +23,12 @@ use yii\base\Model;
 class BaseJson
 {
     /**
+     * @var bool|null Enables human readable output a.k.a. Pretty Print.
+     * This could useful for debugging during development but should not be enabled in production!
+     * In case `prettyPrint` is `null` (default) the `options` passed to `encode` functions will not be changed.
+     */
+    public static $prettyPrint = null;
+    /**
      * List of JSON Error messages assigned to constant names for better handling of version differences.
      * @var array
      * @since 2.0.7
@@ -62,6 +68,13 @@ class BaseJson
         set_error_handler(function () {
             static::handleJsonError(JSON_ERROR_SYNTAX);
         }, E_WARNING);
+
+        if (static::$prettyPrint === true) {
+            $options |= JSON_PRETTY_PRINT;
+        } elseif (static::$prettyPrint === false) {
+            $options &= ~JSON_PRETTY_PRINT;
+        }
+
         $json = json_encode($value, $options);
         restore_error_handler();
         static::handleJsonError(json_last_error());
