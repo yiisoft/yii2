@@ -42,7 +42,7 @@ Application Structure <span id="application-structure"></span>
 
 The most important directories and files in your application are (assuming the application's root directory is `basic`):
 
-```
+```javascript
 basic/                  application base path
     composer.json       used by Composer, describes package information
     config/             contains application and other configurations
