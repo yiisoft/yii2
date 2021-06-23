@@ -24,8 +24,9 @@ class BaseJson
 {
     /**
      * @var bool|null Enables human readable output a.k.a. Pretty Print.
-     * This could useful for debugging during development but should not be enabled in production!
+     * This can useful for debugging during development but is not recommended in a production environment!
      * In case `prettyPrint` is `null` (default) the `options` passed to `encode` functions will not be changed.
+     * @since 2.0.43
      */
     public static $prettyPrint = null;
     /**
