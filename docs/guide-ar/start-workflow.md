@@ -51,7 +51,7 @@
     أكثر المسارات والملفات أهمية الموجودة داخل التطبيق (بافتراض أن ال application's root directory هو <code>basic</code>) هي:  
 </p>
 
-```
+```javascript
 basic/                  application base path
     composer.json       used by Composer, describes package information
     config/             contains application and other configurations
