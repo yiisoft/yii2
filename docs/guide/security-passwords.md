@@ -3,7 +3,7 @@ Working with Passwords
 
 Most developers know that passwords cannot be stored in plain text, but many developers believe it's still safe to hash
 passwords using `md5` or `sha1`. There was a time when using the aforementioned hashing algorithms was sufficient,
-but modern hardware makes it possible to reverse such hashes and even stronger ones very quickly using brute force attacks.
+but modern hardware makes it possible to cracked such hashes and even stronger ones very quickly using brute force attacks.
 
 In order to provide increased security for user passwords, even in the worst case scenario (your application is breached),
 you need to use a hashing algorithm that is resilient against brute force attacks. The best current choice is `bcrypt`.
