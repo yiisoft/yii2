@@ -577,18 +577,30 @@ class Formatter extends Component
      * Formats the value as a hyperlink.
      * @param mixed $value the value to be formatted.
      * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]].
-     * @param bool $secureProtocol whether to use secure version of HTTP protocol when URL does not contain
-     * the protocol part (available since 2.0.43).
+     * @param bool|string $scheme the URI scheme to use in the formatted hyperlink (available since 2.0.43):
+     *
+     * - `false (default)`: adding non-secure protocol scheme if there is none added already
+     * - `true`: adding secure protocol scheme if there is none added already
+     * - string: adding the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL) if there is none added already
+     *
      * @return string the formatted result.
      */
-    public function asUrl($value, $options = [], $secureProtocol = false)
+    public function asUrl($value, $options = [], $scheme = false)
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
         $url = $value;
+
         if (strpos($url, '://') === false) {
-            $url = ($secureProtocol ? 'https://' : 'http://') . $url;
+            if ($scheme === false || $scheme === 'http') {
+                $url = 'http://' . $url;
+            } elseif ($scheme === true || $scheme === 'https') {
+                $url = 'https://' . $url;
+            } elseif ($scheme === '') {
+                $url = '//' . $url;
+            }
         }
 
         return Html::a(Html::encode($value), $url, $options);
