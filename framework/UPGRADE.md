@@ -51,15 +51,18 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.42
+-----------------------
+
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitely anymore. If your application still expects
+  the presence of the information you can set `YII_DEBUG` to true.
+
 Upgrade from Yii 2.0.41
 -----------------------
 
 * `NumberValidator` (`number`, `double`, `integer`) does not allow values with leading or terminating (non-trimmed) 
   white spaces anymore. If your application expects non-trimmed values provided to this validator make sure to trim 
   them first (i.e. by using `trim` / `filter` "validators").
-
-* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitely anymore. If your application still expects
-  the presence of the information you can set `YII_DEBUG` to true.
 
 Upgrade from Yii 2.0.40
 -----------------------
