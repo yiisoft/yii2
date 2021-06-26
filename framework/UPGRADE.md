@@ -54,8 +54,7 @@ for both A and B.
 Upgrade from Yii 2.0.42
 -----------------------
 
-* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitely anymore. If your application still expects
-  the presence of the information you can set `YII_DEBUG` to true.
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitely anymore.
 
 Upgrade from Yii 2.0.41
 -----------------------
