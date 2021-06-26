@@ -19,7 +19,7 @@ Trong phần này sẽ tổng hợp những tài nguyên về tìm hiểu Yii fr
       Các bài hướng dẫn được viết bởi những người có kinh nghiệm về lập trình Yii. Hầu hết trong số đó, được viết theo những kinh nghiệm lập trình lâu năm.
       , và đưa ra các giải pháp về từng phần, vấn đề khi lập trình Yii. Các bài viết có thể không chi tiết và dễ hiểu như phần giới thiệu, tuy nhiên các bài viết có
       những chủ đề rộng hơn và thường có những ví dụ và giải pháp với các vấn đề lập trình.
-    - [Sách](http://www.yiiframework.com/doc/)
+    - [Sách](https://www.yiiframework.com/books)
 * [Extensions](http://www.yiiframework.com/extensions/):
   Yii tự hào có một thư viện của hàng ngàn các phần mở rộng với sự đóng góp lớn của cộng động, bạn có thể dễ dàng tích hợp vào các ứng dụng của bạn, do đó làm cho phát triển ứng dụng của bạn nhanh hơn và dễ dàng hơn.
 * Cộng dồng

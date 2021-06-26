@@ -21,7 +21,7 @@ This section will summarize the Yii resources available to help you be more prod
       like cookbook recipes, and show how to solve particular problems using Yii. While the quality of these
       articles may not be as good as the Definitive Guide, they are useful in that they cover broader topics
       and can often provide ready-to-use solutions.
-    - [Books](http://www.yiiframework.com/doc/)
+    - [Books](https://www.yiiframework.com/books)
 * [Extensions](http://www.yiiframework.com/extensions/):
   Yii boasts a library of thousands of user-contributed extensions that can be easily plugged into your applications, thereby making your application development even faster and easier.
 * Community
