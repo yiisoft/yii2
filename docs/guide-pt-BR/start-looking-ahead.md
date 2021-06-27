@@ -22,7 +22,7 @@ Esta seção resume recursos Yii disponíveis que o ajudarão a ser mais produti
       Os artigos wiki são escritos por usuários do Yii baseados em suas próprias experiências. A maioria deles são escritos como receitas de bolo e mostram
       como resolver problemas específicos usando o Yii. Ainda que a qualidade desses artigos possa não ser tão boa quanto a do Guia Definitivo, eles são úteis porque são abrangem assuntos adicionais e frequentemente fornecem
       soluções prontas para serem usadas.
-    - [Livros](http://www.yiiframework.com/doc/)
+    - [Livros](https://www.yiiframework.com/books)
 * [Extensões](http://www.yiiframework.com/extensions/):
   O Yii ostenta uma biblioteca de milhares de extensões contribuídas por usuários que podem facilmente ser plugadas em suas aplicações, tornando
   o seu desenvolvimento ainda mais rápido e mais fácil.
