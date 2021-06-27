@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #18676: Added method `yii\helpers\BaseFileHelper::changeOwnership()` and properties `newFileMode`/`newFileOwnership` in `yii\console\controllers\BaseMigrateController` (rhertogh)
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 - Enh #18695: Added `yii\web\Cookie::SAME_SITE_NONE` constant (rhertogh)
+- Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
 
 
 2.0.42.1 May 06, 2021
