@@ -230,6 +230,37 @@ class JsonTest extends TestCase
         $output = Json::encode($input);
         $this->assertEquals('{"date":"2014-10-12 00:00:00.000000","timezone_type":3,"timezone":"UTC"}', $output);
     }
+
+    public function testPrettyPrint()
+    {
+        $defaultValue = Json::$prettyPrint;
+        $input = ['a' => 1, 'b' => 2];
+        $defOutput = '{"a":1,"b":2}';
+        $ppOutput = "{\n    \"a\": 1,\n    \"b\": 2\n}";
+
+        // Test unchanged options
+        Json::$prettyPrint = null;
+        $output = Json::encode($input, 320);
+        $this->assertEquals($defOutput, $output);
+        $output = Json::encode($input, 448);
+        $this->assertEquals($ppOutput, $output);
+
+        // Test pretty print enabled
+        Json::$prettyPrint = true;
+        $output = Json::encode($input, 320);
+        $this->assertEquals($ppOutput, $output);
+        $output = Json::encode($input, 448);
+        $this->assertEquals($ppOutput, $output);
+
+        // Test pretty print disabled
+        Json::$prettyPrint = false;
+        $output = Json::encode($input, 320);
+        $this->assertEquals($defOutput, $output);
+        $output = Json::encode($input, 448);
+        $this->assertEquals($defOutput, $output);
+
+        Json::$prettyPrint = $defaultValue;
+    }
 }
 
 class JsonModel extends DynamicModel implements \JsonSerializable
