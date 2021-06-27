@@ -42,7 +42,7 @@
 
 应用中最重要的目录和文件（假设应用根目录是 `basic`）：
 
-```javascript
+```js
 basic/                  应用根目录
     composer.json       Composer 配置文件, 描述包信息
     config/             包含应用配置及其它配置

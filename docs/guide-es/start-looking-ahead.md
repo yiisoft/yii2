@@ -21,7 +21,7 @@ Esta sección resumirá los recursos disponibles de Yii que te ayudarán a ser m
       como recetas de cocina, y muestran cómo resolver problemas particulares utilizando Yii. Si bien la calidad de estos
       puede no ser tan buena como la de la Guía Definitiva, son útiles ya que cubren un espectro muy amplio
       de temas y puede proveer a menudo soluciones listas para usar.
-    - [Libros](http://www.yiiframework.com/doc/)
+    - [Libros](https://www.yiiframework.com/books)
 * [Extensiones](http://www.yiiframework.com/extensions/):
   Yii puede hacer alarde de una librería de miles de extensiones contribuidas por usuarios, que pueden fácilmente conectadas a tu aplicación, haciendo que el desarrollo de la misma sea todavía más fácil y rápido.
 * Comunidad
