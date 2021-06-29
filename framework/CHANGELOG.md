@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 - Enh #18695: Added `yii\web\Cookie::SAME_SITE_NONE` constant (rhertogh)
 - Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
+- Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
 
 
 2.0.42.1 May 06, 2021
