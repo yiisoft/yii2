@@ -28,7 +28,7 @@ Esta seção resume recursos Yii disponíveis que o ajudarão a ser mais produti
   o seu desenvolvimento ainda mais rápido e mais fácil.
 * Comunidade
     - Fórum: <http://www.yiiframework.com/forum/>
-    - Chat IRC: O canal #yii na rede freenode (<irc://irc.freenode.net/yii>)
+    - Chat IRC: O canal #yii na rede Libera (<ircs://irc.libera.chat:6697/yii>)
     - Canal Slack: <https://yii.slack.com>
     - Chat Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>

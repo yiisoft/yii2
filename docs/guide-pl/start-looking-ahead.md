@@ -26,7 +26,7 @@ Ta sekcja podsumuje dostępne zasoby Yii, które pomogą Ci być bardziej produk
   i szybsze.
 * Społeczność
     - Forum: <http://www.yiiframework.com/forum/>
-    - IRC chat: Kanał #yii w sieci freenode (<irc://irc.freenode.net/yii>)
+    - IRC chat: Kanał #yii w sieci Libera (<ircs://irc.libera.chat:6697/yii>)
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>
