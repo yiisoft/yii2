@@ -26,7 +26,7 @@
   使你的应用开发过程更加方便快捷。
 * 社区
     - 官方论坛：<http://www.yiiframework.com/forum/>
-    - IRC 聊天室：Freenode 网络上的 #yii 频道 (<irc://irc.freenode.net/yii>)
+    - IRC 聊天室：Libera 网络上的 #yii 频道 (<ircs://irc.libera.chat:6697>)
     - Slack chanel：<https://yii.slack.com>
     - Gitter chat：<https://gitter.im/yiisoft/yii2>
     - GitHub：<https://github.com/yiisoft/yii2>

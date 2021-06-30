@@ -24,7 +24,7 @@ Trong phần này sẽ tổng hợp những tài nguyên về tìm hiểu Yii fr
   Yii tự hào có một thư viện của hàng ngàn các phần mở rộng với sự đóng góp lớn của cộng động, bạn có thể dễ dàng tích hợp vào các ứng dụng của bạn, do đó làm cho phát triển ứng dụng của bạn nhanh hơn và dễ dàng hơn.
 * Cộng dồng
     - Diễn đàn: <http://www.yiiframework.com/forum/>
-    - IRC chat: The #yii channel on the freenode network (<irc://irc.freenode.net/yii>)
+    - IRC chat: The #yii channel on the Libera (<ircs://irc.libera.chat:6697/yii>)
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>
