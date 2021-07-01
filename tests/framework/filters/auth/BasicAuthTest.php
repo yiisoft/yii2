@@ -27,10 +27,13 @@ class BasicAuthTest extends AuthTest
      */
     public function testHttpBasicAuth($token, $login)
     {
+        $original = $_SERVER;
+
         $_SERVER['PHP_AUTH_USER'] = $token;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
         $filter = ['class' => HttpBasicAuth::className()];
         $this->ensureFilterApplies($token, $login, $filter);
+        $_SERVER = $original;
     }
 
     /**
@@ -40,9 +43,12 @@ class BasicAuthTest extends AuthTest
      */
     public function testHttpBasicAuthWithHttpAuthorizationHeader($token, $login)
     {
-        Yii::$app->request->headers->set('HTTP_AUTHORIZATION', 'Basic ' . base64_encode($token . ':' . 'mypw'));
+        $original = $_SERVER;
+
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($token . ':' . 'mypw');
         $filter = ['class' => HttpBasicAuth::className()];
         $this->ensureFilterApplies($token, $login, $filter);
+        $_SERVER = $original;
     }
 
     /**
@@ -52,9 +58,12 @@ class BasicAuthTest extends AuthTest
      */
     public function testHttpBasicAuthWithRedirectHttpAuthorizationHeader($token, $login)
     {
-        Yii::$app->request->headers->set('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . base64_encode($token . ':' . 'mypw'));
+        $original = $_SERVER;
+
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($token . ':' . 'mypw');
         $filter = ['class' => HttpBasicAuth::className()];
         $this->ensureFilterApplies($token, $login, $filter);
+        $_SERVER = $original;
     }
 
     /**
