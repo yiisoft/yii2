@@ -20,13 +20,13 @@ Ta sekcja podsumuje dostępne zasoby Yii, które pomogą Ci być bardziej produk
       Artykuły w Wiki są pisane przez użytkowników Yii i są oparte na ich doświadczeniu. Większość z nich jest pisana w stylu przepisów kucharskich, pokazując jak rozwiązać poszczególne 
       problemy używając Yii.
       Chociaż jakość tych artykułów może nie być tak dobra jak przewodnik, są one bardzo użyteczne oraz mogą dostarczać gotowych do użycia rozwiązań.
-    - [Książki](http://www.yiiframework.com/doc/)
+    - [Książki](https://www.yiiframework.com/books)
 * [Rozszerzenia](http://www.yiiframework.com/extensions/):
   Yii może pochwalić się biblioteką tysięcy rozszerzeń użytkowników, które mogą być łatwo zainstalowane w Twojej aplikacji, dzięki czemu tworzenie Twojej aplikacji jest jeszcze prostsze 
   i szybsze.
 * Społeczność
     - Forum: <http://www.yiiframework.com/forum/>
-    - IRC chat: Kanał #yii w sieci freenode (<irc://irc.freenode.net/yii>)
+    - IRC chat: Kanał #yii w sieci Libera (<ircs://irc.libera.chat:6697/yii>)
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>

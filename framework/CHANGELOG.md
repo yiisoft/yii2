@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
+- Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
 - Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
@@ -12,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 - Enh #18695: Added `yii\web\Cookie::SAME_SITE_NONE` constant (rhertogh)
 - Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
+- Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
 
 
 2.0.42.1 May 06, 2021
