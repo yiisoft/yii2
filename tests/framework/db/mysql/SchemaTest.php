@@ -121,9 +121,9 @@ SQL;
 
     public function getExpectedColumns()
     {
-        $version = $this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $version = $this->getConnection()->getSchema()->getServerVersion();
 
-        return array_merge(
+        $columns = array_merge(
             parent::getExpectedColumns(),
             [
                 'int_col' => [
@@ -176,5 +176,13 @@ SQL;
                 ],
             ]
         );
+
+        if (version_compare($version, '5.7', '<')) {
+            $columns['json_col']['type'] = 'text';
+            $columns['json_col']['dbType'] = 'longtext';
+            $columns['json_col']['phpType'] = 'string';
+        }
+
+        return $columns;
     }
 }
