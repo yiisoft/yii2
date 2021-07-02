@@ -140,6 +140,7 @@ CREATE TABLE `type` (
   `int_col2` integer DEFAULT '1',
   `tinyint_col` tinyint(3) DEFAULT '1',
   `smallint_col` smallint(1) DEFAULT '1',
+  `bigint_col` bigint unsigned,
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',
   `char_col3` text,

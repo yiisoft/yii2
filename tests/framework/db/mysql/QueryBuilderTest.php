@@ -378,19 +378,28 @@ MySqlStatement;
         $command = $db->createCommand();
 
         $sql = $command->insert(
-            '{{customer}}',
+            '{{type}}',
             [
-                'profile_id' => 22,
+                'int_col' => 22,
             ]
         )->getRawSql();
-        $this->assertEquals('INSERT INTO `customer` (`profile_id`) VALUES (22)', $sql);
+        $this->assertEquals('INSERT INTO `type` (`int_col`) VALUES (22)', $sql);
 
         $sql = $command->insert(
-            '{{customer}}',
+            '{{type}}',
             [
-                'profile_id' => '1000000000000',
+                'bigint_col' => 22,
             ]
         )->getRawSql();
-        $this->assertEquals('INSERT INTO `customer` (`profile_id`) VALUES (1000000000000)', $sql);
+
+        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES (22)", $sql);
+
+        $sql = $command->insert(
+            '{{type}}',
+            [
+                'bigint_col' => '1000000000000',
+            ]
+        )->getRawSql();
+        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES ('1000000000000')", $sql);
     }
 }

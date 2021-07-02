@@ -174,6 +174,18 @@ SQL;
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
+                'bigint_col' => [
+                    'type' => 'bigint',
+                    'dbType' => 'bigint(20) unsigned',
+                    'phpType' => 'string',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => 20,
+                    'precision' => 20,
+                    'scale' => null,
+                    'defaultValue' => null,
+                ],
             ]
         );
 
