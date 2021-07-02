@@ -21,12 +21,12 @@ Esta sección resumirá los recursos disponibles de Yii que te ayudarán a ser m
       como recetas de cocina, y muestran cómo resolver problemas particulares utilizando Yii. Si bien la calidad de estos
       puede no ser tan buena como la de la Guía Definitiva, son útiles ya que cubren un espectro muy amplio
       de temas y puede proveer a menudo soluciones listas para usar.
-    - [Libros](http://www.yiiframework.com/doc/)
+    - [Libros](https://www.yiiframework.com/books)
 * [Extensiones](http://www.yiiframework.com/extensions/):
   Yii puede hacer alarde de una librería de miles de extensiones contribuidas por usuarios, que pueden fácilmente conectadas a tu aplicación, haciendo que el desarrollo de la misma sea todavía más fácil y rápido.
 * Comunidad
     - Foro: <http://www.yiiframework.com/forum/>
-    - Chat IRC: El canal #yii en la red freenode (<irc://irc.freenode.net/yii>)
+    - Chat IRC: El canal #yii en la red Libera (<ircs://irc.libera.chat:6697/yii>)
     - Chat Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
