@@ -21,12 +21,12 @@ Bagian ini akan merangkum bacaan Yii yang tersedia untuk membantu anda menjadi l
       seperti layaknya panduan memasak, dan menunjukkan bagaimana menyelesaikan beberapa masalah dengan menggunakan Yii. Walaupun kualitas artikel-artikel ini
       mungkin tidak selengkap Panduan Definitif, tetapi artikel ini terkadang lebih bermanfaat karna membahas topik yang cukup luas
       dan mungkin mampu menyediakan solusi-solusi yang sederhana.
-    - [Buku](http://www.yiiframework.com/doc/)
+    - [Buku](https://www.yiiframework.com/books)
 * [Extensions](http://www.yiiframework.com/extensions/):
   Yang harus dibanggakan adalah Yii memiliki ribuan library extension yang dibuat oleh pengguna yang dapat dipasang di aplikasi anda dengan mudah, dan akan membuat pengembangan aplikasi anda lebih mudah dan cepat.
 * Komunitas
     - Forum: <http://www.yiiframework.com/forum/>
-    - IRC: Kanal #yii di freenode (<irc://irc.freenode.net/yii>)
+    - IRC: Kanal #yii di Libera (<ircs://irc.libera.chat:6697/yii>)
     - Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>

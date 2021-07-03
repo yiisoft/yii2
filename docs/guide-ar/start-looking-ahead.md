@@ -23,7 +23,7 @@
         المجتمع
         <ul>
             <li>المنتدى: <a href="http://www.yiiframework.com/forum/">http://www.yiiframework.com/forum/</a></li>
-            <li>IRC chat: The #yii channel on the freenode network (irc://irc.freenode.net/yii)</li>
+            <li>IRC chat: The #yii channel on the Libera (ircs://irc.libera.chat:6697/yii)</li>
             <li>Slack chanel: <a href="https://yii.slack.com">https://yii.slack.com</a></li>
             <li>Gitter chat: <a href="https://gitter.im/yiisoft/yii2">https://gitter.im/yiisoft/yii2</a></li>
             <li>GitHub: <a href="https://github.com/yiisoft/yii2">https://github.com/yiisoft/yii2</a></li>

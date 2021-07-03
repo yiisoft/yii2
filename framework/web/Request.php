@@ -371,10 +371,16 @@ class Request extends \yii\base\Request
                     $this->_headers->add($name, $value);
                 }
             } else {
+                // ['prefix' => length]
+                $headerPrefixes = ['HTTP_' => 5, 'REDIRECT_HTTP_' => 14];
+
                 foreach ($_SERVER as $name => $value) {
-                    if (strncmp($name, 'HTTP_', 5) === 0) {
-                        $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
-                        $this->_headers->add($name, $value);
+                    foreach ($headerPrefixes as $prefix => $length) {
+                        if (strncmp($name, $prefix, $length) === 0) {
+                            $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, $length)))));
+                            $this->_headers->add($name, $value);
+                            continue 2;
+                        }
                     }
                 }
             }
@@ -1321,13 +1327,16 @@ class Request extends \yii\base\Request
             return [$username, $password];
         }
 
-        /*
+        /**
          * Apache with php-cgi does not pass HTTP Basic authentication to PHP by default.
-         * To make it work, add the following line to to your .htaccess file:
+         * To make it work, add one of the following lines to to your .htaccess file:
          *
+         * SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
+         * --OR--
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
-        $auth_token = $this->getHeaders()->get('HTTP_AUTHORIZATION') ?: $this->getHeaders()->get('REDIRECT_HTTP_AUTHORIZATION');
+        $auth_token = $this->getHeaders()->get('Authorization');
+
         if ($auth_token !== null && strncasecmp($auth_token, 'basic', 5) === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;

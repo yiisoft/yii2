@@ -20,13 +20,13 @@ Gii をコード生成に使うと、ウェブ開発のプロセスの大部分�
       Wiki の記事は、Yii のユーザが自身の経験に基づいて書いたものです。
       ほとんどの記事は、料理本のレシピのように書かれており、特定の問題を Yii を使って解決する方法を示しています。
       これらの記事の品質は決定版ガイドほどには良くないかもしれませんが、より広範なトピックをカバーしていることと、たいていは即座に使えるソリューションを提供してくれることにおいて有用なものです。
-    - [書籍](http://www.yiiframework.com/doc/)
+    - [書籍](https://www.yiiframework.com/books/)
 * [エクステンション](http://www.yiiframework.com/extensions/):
   Yii は、ユーザによって作られた数千におよぶエクステンションのライブラリを誇りとしています。
   エクステンションはあなたのアプリケーションに簡単に組み込むことが出来、そうすることでアプリケーションの開発作業をより一層速くて簡単なものにします。
 * コミュニティ
     - フォーラム: <http://www.yiiframework.com/forum/>
-    - IRC チャット: freenode ネットワーク (<irc://irc.freenode.net/yii>) の #yii チャンネル
+    - IRC チャット: Libera ネットワーク (<ircs://irc.libera.chat:6697/yii>) の #yii チャンネル
     - Slack チャンネル:  <https://join.slack.com/t/yii/shared_invite/enQtMzQ4MDExMDcyNTk2LTc0NDQ2ZTZhNjkzZDgwYjE4YjZlNGQxZjFmZDBjZTU3NjViMDE4ZTMxNDRkZjVlNmM1ZTA1ODVmZGUwY2U3NDA>
     - Gitter チャット: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
