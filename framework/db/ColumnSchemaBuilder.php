@@ -304,6 +304,7 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * @param array $categoryMap mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.43
      */
     public function setCategoryMap($categoryMap)
     {
