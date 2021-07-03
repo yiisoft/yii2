@@ -24,7 +24,8 @@
     var defaults = {
         filterUrl: undefined,
         filterSelector: undefined,
-        filterOnFocusOut: true
+        filterOnFocusOut: true,
+        filterAllowedEmpty: true
     };
 
     var gridData = {};
@@ -119,12 +120,15 @@
         applyFilter: function () {
             var $grid = $(this);
             var settings = gridData[$grid.attr('id')].settings;
+            var allowedEmpty = $(settings.filterAllowedEmpty) || true;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
                 if (!(this.name in data)) {
                     data[this.name] = [];
                 }
-                data[this.name].push(this.value);
+                if (allowedEmpty || (!allowedEmpty && this.value)) {
+                    data[this.name].push(this.value);
+                }
             });
 
             var namesInFilter = Object.keys(data);
@@ -135,11 +139,15 @@
                         value = [value];
                     }
                     if (!(name in data)) {
-                        data[name] = value;
+                        if (allowedEmpty || (!allowedEmpty && value)) {
+                            data[name] = value;
+                        }
                     } else {
                         $.each(value, function (i, val) {
                             if ($.inArray(val, data[name])) {
-                                data[name].push(val);
+                                if (allowedEmpty || (!allowedEmpty && val)) {
+                                    data[name].push(val);
+                                }
                             }
                         });
                     }
