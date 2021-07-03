@@ -169,10 +169,10 @@ abstract class ErrorHandler extends Component
             } else {
                 echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
             }
+            $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
             echo 'An internal server error occurred.';
         }
-        $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         error_log($msg);
         if (defined('HHVM_VERSION')) {
             flush();
