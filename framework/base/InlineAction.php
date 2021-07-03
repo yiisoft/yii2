@@ -26,7 +26,7 @@ class InlineAction extends Action
      * @var string the controller method that this inline action is associated with
      */
     public $actionMethod;
-
+    
 
     /**
      * @param string $id the ID of this action
@@ -41,19 +41,16 @@ class InlineAction extends Action
     }
 
     /**
-     * Runs this action with the specified parameters.
-     * This method is mainly invoked by the controller.
-     * @param array $params action parameters
-     * @return mixed the result of the action
+     * Executes action handler using resolved action arguments
+     *
+     * @param array $args the action handler arguments
+     * @return mixed the result of action handler invocation
      */
-    public function runWithParams($params)
+    protected function executeAction($args)
     {
-        $args = $this->controller->bindActionParams($this, $params);
         Yii::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
-
-        return call_user_func_array([$this->controller, $this->actionMethod], $args);
+        $this->result = call_user_func_array([$this->controller, $this->actionMethod], $args);
+        
     }
+
 }

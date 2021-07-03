@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\web\BadRequestHttpException;
 
 /**
  * Action is the base class for all controller action classes.
@@ -47,6 +48,11 @@ class Action extends Component
      */
     public $controller;
 
+    /**
+     * @var mixed the result of the action, derived class may set or get action result in the afterRun method.
+     * @since 2.0.42
+     */
+    protected $result = null;
 
     /**
      * Constructor.
@@ -76,28 +82,40 @@ class Action extends Component
      * Runs this action with the specified parameters.
      * This method is mainly invoked by the controller.
      *
-     * @param array $params the parameters to be bound to the action's run() method.
+     * @param array $params the parameters to be bound to the action's run() or $this->actionMethod method.
      * @return mixed the result of the action
-     * @throws InvalidConfigException if the action class does not have a run() method
+     * @throws InvalidConfigException if the action or controller class does not have a run() or $this->actionMethod method
      */
     public function runWithParams($params)
     {
-        if (!method_exists($this, 'run')) {
-            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
-        }
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
-        if ($this->beforeRun()) {
-            $result = call_user_func_array([$this, 'run'], $args);
-            $this->afterRun();
+        $arguments = $this->resolveActionArguments($params);
 
-            return $result;
+        $modules = [];
+        $runAction = true;
+
+        // call beforeAction on modules
+        foreach ($this->controller->getModules() as $module) {
+            if ($module->beforeAction($this)) {
+                array_unshift($modules, $module);
+            } else {
+                $runAction = false;
+                break;
+            }
+        }
+        $this->result = null;
+        if ($runAction && $this->controller->beforeAction($this)) {
+            // run the action
+            $this->executeAction($arguments);
+            $this->result = $this->controller->afterAction($this, $this->result);
+
+            // call afterAction on modules
+            foreach ($modules as $module) {
+                /* @var $module Module */
+                $this->result = $module->afterAction($this, $this->result);
+            }
         }
 
-        return null;
+        return $this->result;
     }
 
     /**
@@ -115,8 +133,72 @@ class Action extends Component
     /**
      * This method is called right after `run()` is executed.
      * You may override this method to do post-processing work for the action run.
+     * @return mixed the processed action result got from `$this->result`.
      */
     protected function afterRun()
     {
     }
+
+    /**
+     * Resolves action arguments, derived class my override this method to provide custom argument resolver
+     *
+     * @return array
+     */
+    public function resolveActionArguments(array $params)
+    {
+        $args = $this->controller->bindActionParams($this, $params);
+        if (Yii::$app->requestedParams === null) {
+            Yii::$app->requestedParams = $args;
+        }
+        return $args;
+    }
+
+    /**
+     * Executes action handler using resolved action arguments
+     *
+     * @param array $args the action handler arguments
+     */
+    protected function executeAction($args)
+    {
+        if (!method_exists($this, 'run')) {
+            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
+        }
+        
+        if ($this->beforeRun()) {
+            Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
+            $this->result = call_user_func_array([$this, 'run'], $args);
+            $this->afterRun();
+        }        
+    }
+    
+    /**
+     * Get argument passed to the specified parameter
+     *
+     * @param string $paramName name of declared parameter in inlineAction actionMethod/ Action::run().
+     * @return mixed value bound to the parameter `$paramName`
+     * @throws BadRequestHttpException if the parameter `$paramName` is not defined or argument not yet bound to it.
+     * @since 2.0.41
+     */
+    public function getRequestedParam($paramName)
+    { 
+        if (array_key_exists($paramName, (array) Yii::$app->requestedParams)) {
+                    
+            if (!isset($this->controller->actionInjectionsMeta[$paramName])) {                               
+                 return Yii::$app->requestedParams[$paramName];
+            }
+
+            $injectionMeta = $this->controller->actionInjectionsMeta[$paramName];
+            if ($injectionMeta['injector'] === 'ServiceLocator') {
+                return $this->controller->module->get($injectionMeta['type']);
+            }
+            if ($injectionMeta['injector'] === 'Container' ) {
+                return \Yii::$container->get($injectionMeta['type']);
+            }
+
+            return null; 
+           
+        }
+
+        throw new BadRequestHttpException("Parameter: {$paramName} does not exist or no argument yet bound to it");
+    }    
 }
