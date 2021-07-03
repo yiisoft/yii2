@@ -18,9 +18,11 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\FormatConverter;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
+use yii\helpers\Url;
 
 /**
  * Formatter provides a set of commonly used data formatting methods.
@@ -576,31 +578,26 @@ class Formatter extends Component
     /**
      * Formats the value as a hyperlink.
      * @param mixed $value the value to be formatted.
-     * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]].
-     * @param bool|string $scheme the URI scheme to use in the formatted hyperlink (available since 2.0.43):
-     *
-     * - `false (default)`: adding non-secure protocol scheme if there is none added already
-     * - `true`: adding secure protocol scheme if there is none added already
-     * - string: adding the specified scheme (either `http`, `https` or empty string
-     *   for protocol-relative URL) if there is none added already
-     *
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]]. Since 2.0.43 there is
+     * a special option available `scheme` - if set it won't be passed to [[Html::a()]] but it will control the URL
+     * protocol part of the link by normalizing URL and ensuring that it uses specified scheme. See [[Url::ensureScheme()]].
+     * If `scheme` is not set the original behavior is preserved which is to add "http://" prefix when "://" string is
+     * not found in the $value.
      * @return string the formatted result.
      */
-    public function asUrl($value, $options = [], $scheme = false)
+    public function asUrl($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
         $url = $value;
-
-        if (strpos($url, '://') === false) {
-            if ($scheme === false || $scheme === 'http') {
+        $scheme = ArrayHelper::remove($options, 'scheme');
+        if ($scheme === null) {
+            if (strpos($url, '://') === false) {
                 $url = 'http://' . $url;
-            } elseif ($scheme === true || $scheme === 'https') {
-                $url = 'https://' . $url;
-            } elseif ($scheme === '') {
-                $url = '//' . $url;
             }
+        } else {
+            $url = Url::ensureScheme($url, $scheme);
         }
 
         return Html::a(Html::encode($value), $url, $options);

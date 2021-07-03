@@ -232,12 +232,12 @@ class BaseUrl
     }
 
     /**
-     * Normalize URL by ensuring that it use specified scheme.
+     * Normalize the URL by ensuring it uses specified scheme.
      *
-     * If URL is relative or scheme is not string, normalization is skipped.
+     * If the URL is relative or the scheme is not a string, normalization is skipped.
      *
      * @param string $url the URL to process
-     * @param string $scheme the URI scheme used in URL (e.g. `http` or `https`). Use empty string to
+     * @param string $scheme the URI scheme used in the URL (e.g. `http` or `https`). Use an empty string to
      * create protocol-relative URL (e.g. `//example.com/path`)
      * @return string the processed URL
      * @since 2.0.11
