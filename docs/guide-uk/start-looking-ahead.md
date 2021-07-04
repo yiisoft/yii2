@@ -24,7 +24,7 @@
 * [Розширення](http://www.yiiframework.com/extensions/):
   Yii пишається бібліотекою із тисяч розширень, внесених користувачами, які можуть бути легко підключені у ваші додатки та зробити розробку додатків ще швидшим і простішим.
 * Спільнота
-    - Форум: <http://www.yiiframework.com/forum/>
+    - Форум: <https://forum.yiiframework.com/>
     - Чат IRC: Канал #yii мережі Libera (<ircs://irc.libera.chat:6697/yii>)
     - Чат Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
