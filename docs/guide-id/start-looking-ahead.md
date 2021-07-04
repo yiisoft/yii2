@@ -25,7 +25,7 @@ Bagian ini akan merangkum bacaan Yii yang tersedia untuk membantu anda menjadi l
 * [Extensions](http://www.yiiframework.com/extensions/):
   Yang harus dibanggakan adalah Yii memiliki ribuan library extension yang dibuat oleh pengguna yang dapat dipasang di aplikasi anda dengan mudah, dan akan membuat pengembangan aplikasi anda lebih mudah dan cepat.
 * Komunitas
-    - Forum: <http://www.yiiframework.com/forum/>
+    - Forum: <https://forum.yiiframework.com/>
     - IRC: Kanal #yii di Libera (<ircs://irc.libera.chat:6697/yii>)
     - Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>

@@ -25,7 +25,7 @@ Esta sección resumirá los recursos disponibles de Yii que te ayudarán a ser m
 * [Extensiones](http://www.yiiframework.com/extensions/):
   Yii puede hacer alarde de una librería de miles de extensiones contribuidas por usuarios, que pueden fácilmente conectadas a tu aplicación, haciendo que el desarrollo de la misma sea todavía más fácil y rápido.
 * Comunidad
-    - Foro: <http://www.yiiframework.com/forum/>
+    - Foro: <https://forum.yiiframework.com/>
     - Chat IRC: El canal #yii en la red Libera (<ircs://irc.libera.chat:6697/yii>)
     - Chat Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
