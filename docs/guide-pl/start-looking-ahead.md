@@ -25,7 +25,7 @@ Ta sekcja podsumuje dostępne zasoby Yii, które pomogą Ci być bardziej produk
   Yii może pochwalić się biblioteką tysięcy rozszerzeń użytkowników, które mogą być łatwo zainstalowane w Twojej aplikacji, dzięki czemu tworzenie Twojej aplikacji jest jeszcze prostsze 
   i szybsze.
 * Społeczność
-    - Forum: <http://www.yiiframework.com/forum/>
+    - Forum: <https://forum.yiiframework.com/>
     - IRC chat: Kanał #yii w sieci Libera (<ircs://irc.libera.chat:6697/yii>)
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
