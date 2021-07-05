@@ -63,6 +63,12 @@ class EmailValidator extends Validator
      * otherwise an exception would be thrown.
      */
     public $enableIDN = false;
+    /**
+     * @var bool whether [[enableIDN]] should apply to the local part of the email (left side
+     * of the `@`). Only applies if [[enableIDN]] is `true`.
+     * @since 2.0.43
+     */
+    public $enableLocalIDN = true;
 
 
     /**
@@ -90,7 +96,9 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = $this->idnToAsciiWithFallback($matches['local']);
+                if ($this->enableLocalIDN) {
+                    $matches['local'] = $this->idnToAsciiWithFallback($matches['local']);
+                }
                 $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
