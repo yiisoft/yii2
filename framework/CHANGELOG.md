@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Enh #18707: Changed the base error handler to not expose `$_SERVER` details unless `YII_DEBUG` is enabled (coolgoose)
 - Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
 - Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
+- Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
 
 
 2.0.42.1 May 06, 2021
