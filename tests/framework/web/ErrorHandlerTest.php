@@ -79,6 +79,61 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
+
+    public function dataHtmlEncode()
+    {
+        return [
+            [
+                "a \t=<>&\"'\x80`\n",
+                "a \t=&lt;&gt;&amp;\"'�`\n",
+            ],
+            [
+                '<b>test</b>',
+                '&lt;b&gt;test&lt;/b&gt;',
+            ],
+            [
+                '"hello"',
+                '"hello"',
+            ],
+            [
+                "'hello world'",
+                "'hello world'",
+            ],
+            [
+                'Chip&amp;Dale',
+                'Chip&amp;amp;Dale',
+            ],
+            [
+                "\t\$x=24;",
+                "\t\$x=24;",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataHtmlEncode
+     */
+    public function testHtmlEncode($text, $expected)
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame($expected, $handler->htmlEncode($text));
+    }
+
+    public function testHtmlEncodeWithUnicodeSequence()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";
+        $expected = "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}";
+
+        $this->assertSame($expected, $handler->htmlEncode($text));
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler
