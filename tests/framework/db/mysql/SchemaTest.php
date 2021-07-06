@@ -153,7 +153,7 @@ SQL;
                 'int_col3' => [
                     'type' => 'integer',
                     'dbType' => \version_compare($version, '8.0.17', '>') ? 'int unsigned' : 'int(11) unsigned',
-                    'phpType' => 'string',
+                    'phpType' => \version_compare($version, '8.0.17', '>') ? 'integer' : 'string',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
