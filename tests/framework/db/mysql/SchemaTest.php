@@ -150,6 +150,18 @@ SQL;
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
+                'int_col3' => [
+                    'type' => 'integer',
+                    'dbType' => \version_compare($version, '8.0.17', '>') ? 'int unsigned' : 'int(11) unsigned',
+                    'phpType' => 'integer',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'scale' => null,
+                    'defaultValue' => 1,
+                ],
                 'tinyint_col' => [
                     'type' => 'tinyint',
                     'dbType' => \version_compare($version, '8.0.17', '>') ? 'tinyint' : 'tinyint(3)',
@@ -174,10 +186,24 @@ SQL;
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
+                'bigint_col' => [
+                    'type' => 'bigint',
+                    'dbType' => \version_compare($version, '8.0.17', '>') ? 'bigint unsigned' : 'bigint(20) unsigned',
+                    'phpType' => 'string',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 20,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 20,
+                    'scale' => null,
+                    'defaultValue' => null,
+                ],
             ]
         );
 
         if (version_compare($version, '5.7', '<')) {
+            $columns['int_col3']['phpType'] = 'string';
+
             $columns['json_col']['type'] = 'text';
             $columns['json_col']['dbType'] = 'longtext';
             $columns['json_col']['phpType'] = 'string';
