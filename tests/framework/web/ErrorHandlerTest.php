@@ -84,8 +84,8 @@ Exception: yii\web\NotFoundHttpException', $out);
     {
         return [
             [
-                "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}",
-                "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}",
+                "a \t=<>&\"'\x80`\n",
+                "a \t=&lt;&gt;&amp;\"'�`\n",
             ],
             [
                 '<b>test</b>',
@@ -116,6 +116,21 @@ Exception: yii\web\NotFoundHttpException', $out);
     public function testHtmlEncode($text, $expected)
     {
         $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame($expected, $handler->htmlEncode($text));
+    }
+
+    public function testHtmlEncodeWithUnicodeSequence()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";
+        $expected = "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}";
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }
