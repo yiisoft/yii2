@@ -21,7 +21,7 @@ use yii\helpers\Url;
  * @property string $homeUrl The homepage URL.
  * @property-read Request $request The request component. This property is read-only.
  * @property-read Response $response The response component. This property is read-only.
- * @property-read Session $session The session component. This property is read-only.
+ * @property Session $session The session component.
  * @property-read User $user The user component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
