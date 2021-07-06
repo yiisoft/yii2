@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #14663: Do not convert int to string if database type of a column is numeric (egorrishe)
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
+- Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
 - Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
