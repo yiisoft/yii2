@@ -374,23 +374,22 @@ MySqlStatement;
     public function testInsertInteger()
     {
         $db = $this->getConnection();
-
         $command = $db->createCommand();
 
-        $sql = $command->insert(
-            '{{customer}}',
-            [
-                'profile_id' => 22,
-            ]
-        )->getRawSql();
-        $this->assertEquals('INSERT INTO `customer` (`profile_id`) VALUES (22)', $sql);
+        // int value should not be converted to string, when column is `int`
+        $sql = $command->insert('{{type}}', ['int_col' => 22])->getRawSql();
+        $this->assertEquals('INSERT INTO `type` (`int_col`) VALUES (22)', $sql);
 
-        $sql = $command->insert(
-            '{{customer}}',
-            [
-                'profile_id' => '1000000000000',
-            ]
-        )->getRawSql();
-        $this->assertEquals('INSERT INTO `customer` (`profile_id`) VALUES (1000000000000)', $sql);
+        // int value should not be converted to string, when column is `int unsigned`
+        $sql = $command->insert('{{type}}', ['int_col3' => 22])->getRawSql();
+        $this->assertEquals('INSERT INTO `type` (`int_col3`) VALUES (22)', $sql);
+
+        // int value should not be converted to string, when column is `bigint unsigned`
+        $sql = $command->insert('{{type}}', ['bigint_col' => 22])->getRawSql();
+        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES (22)", $sql);
+
+        // string value should not be converted
+        $sql = $command->insert('{{type}}', ['bigint_col' => '1000000000000'])->getRawSql();
+        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES ('1000000000000')", $sql);
     }
 }
