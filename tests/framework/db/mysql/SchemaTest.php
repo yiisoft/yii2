@@ -153,7 +153,7 @@ SQL;
                 'int_col3' => [
                     'type' => 'integer',
                     'dbType' => \version_compare($version, '8.0.17', '>') ? 'int unsigned' : 'int(11) unsigned',
-                    'phpType' => \version_compare($version, '8.0.17', '>') ? 'integer' : 'string',
+                    'phpType' => 'integer',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
@@ -202,6 +202,8 @@ SQL;
         );
 
         if (version_compare($version, '5.7', '<')) {
+            $columns['int_col3']['phpType'] = 'string';
+
             $columns['json_col']['type'] = 'text';
             $columns['json_col']['dbType'] = 'longtext';
             $columns['json_col']['phpType'] = 'string';
