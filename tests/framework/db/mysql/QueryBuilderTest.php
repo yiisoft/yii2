@@ -380,6 +380,10 @@ MySqlStatement;
         $sql = $command->insert('{{type}}', ['int_col' => 22])->getRawSql();
         $this->assertEquals('INSERT INTO `type` (`int_col`) VALUES (22)', $sql);
 
+        // int value should not be converted to string, when column is `int unsigned`
+        $sql = $command->insert('{{type}}', ['int_col3' => 22])->getRawSql();
+        $this->assertEquals('INSERT INTO `type` (`int_col3`) VALUES (22)', $sql);
+
         // int value should not be converted to string, when column is `bigint unsigned`
         $sql = $command->insert('{{type}}', ['bigint_col' => 22])->getRawSql();
         $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES (22)", $sql);

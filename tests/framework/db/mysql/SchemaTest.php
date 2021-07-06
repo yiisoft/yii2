@@ -150,6 +150,18 @@ SQL;
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
+                'int_col3' => [
+                    'type' => 'integer',
+                    'dbType' => \version_compare($version, '8.0.17', '>') ? 'int unsigned' : 'int(11) unsigned',
+                    'phpType' => 'string',
+                    'allowNull' => true,
+                    'autoIncrement' => false,
+                    'enumValues' => null,
+                    'size' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'precision' => \version_compare($version, '8.0.17', '>') ? null : 11,
+                    'scale' => null,
+                    'defaultValue' => 1,
+                ],
                 'tinyint_col' => [
                     'type' => 'tinyint',
                     'dbType' => \version_compare($version, '8.0.17', '>') ? 'tinyint' : 'tinyint(3)',
