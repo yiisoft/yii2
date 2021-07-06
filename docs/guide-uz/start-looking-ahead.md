@@ -22,7 +22,7 @@ avtomatik tarzda kod yaratishni o'rgandingiz, bu esa HTML-shaklni to'ldirishdek 
   Yiining foydalanuvchilar tomonidan yaratilgan minglab kengaytmalar ombori bor 
   ular ilovangizga ulashingiz va ishlanmani juda ham tez oborishingizga yordam beradi
 * Jamoa
-    - [Forum](http://www.yiiframework.com/forum/)
+    - [Forum](https://forum.yiiframework.com/)
     - [Chat Gitter](https://gitter.im/yiisoft/yii2/rus)
     - [GitHub](https://github.com/yiisoft/yii2)
     - [Facebook](https://www.facebook.com/groups/yiitalk/)

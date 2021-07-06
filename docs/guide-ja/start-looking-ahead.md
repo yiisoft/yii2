@@ -25,7 +25,7 @@ Gii をコード生成に使うと、ウェブ開発のプロセスの大部分�
   Yii は、ユーザによって作られた数千におよぶエクステンションのライブラリを誇りとしています。
   エクステンションはあなたのアプリケーションに簡単に組み込むことが出来、そうすることでアプリケーションの開発作業をより一層速くて簡単なものにします。
 * コミュニティ
-    - フォーラム: <http://www.yiiframework.com/forum/>
+    - フォーラム: <https://forum.yiiframework.com/>
     - IRC チャット: Libera ネットワーク (<ircs://irc.libera.chat:6697/yii>) の #yii チャンネル
     - Slack チャンネル:  <https://join.slack.com/t/yii/shared_invite/enQtMzQ4MDExMDcyNTk2LTc0NDQ2ZTZhNjkzZDgwYjE4YjZlNGQxZjFmZDBjZTU3NjViMDE4ZTMxNDRkZjVlNmM1ZTA1ODVmZGUwY2U3NDA>
     - Gitter チャット: <https://gitter.im/yiisoft/yii2>
