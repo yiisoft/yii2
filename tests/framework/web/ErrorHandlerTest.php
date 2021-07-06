@@ -79,6 +79,46 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
+
+    public function dataHtmlEncode()
+    {
+        return [
+            [
+                "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}",
+                "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}",
+            ],
+            [
+                '<b>test</b>',
+                '&lt;b&gt;test&lt;/b&gt;',
+            ],
+            [
+                '"hello"',
+                '"hello"',
+            ],
+            [
+                "'hello world'",
+                "'hello world'",
+            ],
+            [
+                'Chip&amp;Dale',
+                'Chip&amp;amp;Dale',
+            ],
+            [
+                "\t\$x=24;",
+                "\t\$x=24;",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataHtmlEncode
+     */
+    public function testHtmlEncode($text, $expected)
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame($expected, $handler->htmlEncode($text));
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler
