@@ -13,7 +13,7 @@
 
 **Не сообщайте о проблеме, если:**
 
-* Вы хотите спросить как использовать ту или иную возможность Yii. Для этого пользуйтесь [форумом](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) или [чатом](http://www.yiiframework.com/chat/).
+* Вы хотите спросить как использовать ту или иную возможность Yii. Для этого пользуйтесь [форумом](https://forum.yiiframework.com/index.php/forum/42-general-discussions-for-yii-20/) или [чатом](http://www.yiiframework.com/chat/).
 * Проблема касается безопасности. Пожалуйста, [обращайтесь непосредственно к разработчикам](http://www.yiiframework.com/security/) для сообщения о проблемах с безопасностью.
 
 **Избегайте дублирования вопросов**
