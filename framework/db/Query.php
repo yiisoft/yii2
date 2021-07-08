@@ -145,7 +145,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return Command the created DB command instance.
      */
@@ -476,8 +476,11 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             $this->limit = null;
             $this->offset = null;
 
+            $e = null;
             try {
                 $command = $this->createCommand($db);
+            } catch (\Exception $e) {
+                // throw it later (for PHP < 7.0)
             } catch (\Throwable $e) {
                 // throw it later
             }
@@ -487,7 +490,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             $this->limit = $limit;
             $this->offset = $offset;
 
-            if (isset($e)) {
+            if ($e !== null) {
                 throw $e;
             }
 
