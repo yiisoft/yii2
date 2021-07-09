@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
 - Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
+- Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
 - Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
 - Enh #18676: Added method `yii\helpers\BaseFileHelper::changeOwnership()` and properties `newFileMode`/`newFileOwnership` in `yii\console\controllers\BaseMigrateController` (rhertogh)
