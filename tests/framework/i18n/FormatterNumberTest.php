@@ -823,4 +823,117 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1023 bytes', $this->formatter->asSize(1023));
         $this->assertSame('1023 B', $this->formatter->asShortSize(1023));
     }
+
+    public function providerForDirectWrongTypeAttributes()
+    {
+        return [
+            'not-int key for int options' => [
+                ['a' => 1],
+                [],
+                'The $options array keys must be integers recognizable by NumberFormatter::setAttribute(). "string" provided instead.'
+            ],
+            'string value for int options' => [
+                [1 => 'a'],
+                [],
+                'The $options array values must be integers. Did you mean to use $textOptions?'
+            ],
+            'non-string-int value for int options' => [
+                [1 => 1.1],
+                [],
+                'The $options array values must be integers. "double" provided instead.'
+            ],
+            'not-int key for text options' => [
+                [],
+                ['a' => 1],
+                'The $textOptions array keys must be integers recognizable by NumberFormatter::setTextAttribute(). "string" provided instead.'
+            ],
+            'int value for text options' => [
+                [],
+                [1 => 1],
+                'The $textOptions array values must be strings. Did you mean to use $options?'
+            ],
+            'non-string-int value for text options' => [
+                [],
+                [1 => 1.1],
+                'The $textOptions array values must be strings. "double" provided instead.'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForDirectWrongTypeAttributes
+     */
+    public function testIntlAsIntegerDirectWrongTypeAttributes($intOptions, $textOptions, $message)
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage($message);
+        $this->formatter->asInteger(1, $intOptions, $textOptions);
+    }
+
+    public function providerForConfiguredWrongTypeAttributes()
+    {
+        return [
+            'not-int key for int options' => [
+                ['a' => 1],
+                [],
+                [],
+                'The numberFormatterOptions array keys must be integers recognizable by NumberFormatter::setAttribute(). "string" provided instead.'
+            ],
+            'string value for int options' => [
+                [1 => 'a'],
+                [],
+                [],
+                'The numberFormatterOptions array values must be integers. Did you mean to use numberFormatterTextOptions?'
+            ],
+            'non-string-int value for int options' => [
+                [1 => 1.1],
+                [],
+                [],
+                'The numberFormatterOptions array values must be integers. "double" provided instead.'
+            ],
+            'not-int key for text options' => [
+                [],
+                ['a' => 1],
+                [],
+                'The numberFormatterTextOptions array keys must be integers recognizable by NumberFormatter::setTextAttribute(). "string" provided instead.'
+            ],
+            'int value for text options' => [
+                [],
+                [1 => 1],
+                [],
+                'The numberFormatterTextOptions array values must be strings. Did you mean to use numberFormatterOptions?'
+            ],
+            'non-string-int value for text options' => [
+                [],
+                [1 => 1.1],
+                [],
+                'The numberFormatterTextOptions array values must be strings. "double" provided instead.'
+            ],
+            'non-int key for symbol' => [
+                [],
+                [],
+                ['a' => 2],
+                'The numberFormatterSymbols array keys must be integers recognizable by NumberFormatter::setSymbol(). "string" provided instead.'
+            ],
+            'non-string value for symbol' => [
+                [],
+                [],
+                [1 => 3],
+                'The numberFormatterSymbols array values must be strings. "integer" provided instead.'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForConfiguredWrongTypeAttributes
+     */
+    public function testIntlAsIntegerConfiguredWrongTypeAttributes($intOptions, $textOptions, $symbols, $message)
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage($message);
+        $this->formatter->numberFormatterTextOptions = $textOptions;
+        $this->formatter->numberFormatterOptions = $intOptions;
+        $this->formatter->numberFormatterSymbols = $symbols;
+        $this->formatter->asInteger(1);
+    }
 }
