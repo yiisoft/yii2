@@ -154,6 +154,18 @@ class JsonTest extends TestCase
         $document = simplexml_load_string($xml);
         $this->assertSame('{"apiKey":"ieu2iqw4o","methodProperties":{"FindByString":"Kiev"}}', Json::encode($document));
 
+        // SimpleXMLElement with empty tag
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<parent>
+  <child1/>
+  <child2>
+    <subElement>sub</subElement>
+  </child2>
+</parent>';
+
+        $document = simplexml_load_string($xml);
+        $this->assertSame('{"child1":{},"child2":{"subElement":"sub"}}', Json::encode($document));
+
         $postsStack = new \SplStack();
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));

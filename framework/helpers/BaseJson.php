@@ -181,6 +181,9 @@ class BaseJson
                 $data = $data->toArray();
             } elseif ($data instanceof \SimpleXMLElement) {
                 $data = (array) $data;
+
+                // Avoid empty elements to be returned as array
+                $revertToObject = true;
             } else {
                 /*
                  * $data type is changed to array here and its elements will be processed further
