@@ -33,7 +33,7 @@ class JsonTest extends TestCase
         $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
-        $this->assertSame('{}', $actual);
+        $this->assertSame('[]', $actual);
 
         // basic data encoding
         $data = '1';
@@ -50,6 +50,13 @@ class JsonTest extends TestCase
         $data->a = 1;
         $data->b = 2;
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
+
+        // simple object with zero indexed keys encoding
+        $data = (object) [
+            0 => 1,
+            1 => 2
+        ];
+        $this->assertSame('{"0":1,"1":2}', Json::encode($data));
 
         // empty data encoding
         $data = [];

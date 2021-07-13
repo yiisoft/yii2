@@ -159,6 +159,8 @@ class BaseJson
      */
     protected static function processData($data, &$expressions, $expPrefix)
     {
+        $revertToObject = false;
+
         if (is_object($data)) {
             if ($data instanceof JsExpression) {
                 $token = "!{[$expPrefix=" . count($expressions) . ']}!';
@@ -180,15 +182,17 @@ class BaseJson
             } elseif ($data instanceof \SimpleXMLElement) {
                 $data = (array) $data;
             } else {
+                /*
+                 * $data type is changed to array here and its elements will be processed further
+                 * We must cast $data back to object later to keep intended dictionary type in JSON
+                 */
+                $revertToObject = true;
+
                 $result = [];
                 foreach ($data as $name => $value) {
                     $result[$name] = $value;
                 }
                 $data = $result;
-            }
-
-            if ($data === []) {
-                return new \stdClass();
             }
         }
 
@@ -200,7 +204,7 @@ class BaseJson
             }
         }
 
-        return $data;
+        return $revertToObject ? (object) $data : $data;
     }
 
     /**
