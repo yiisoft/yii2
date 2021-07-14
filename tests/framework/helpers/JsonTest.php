@@ -56,7 +56,12 @@ class JsonTest extends TestCase
             0 => 1,
             1 => 2
         ];
+        $default = Json::$keepObjectType;
+        Json::$keepObjectType = true;
         $this->assertSame('{"0":1,"1":2}', Json::encode($data));
+        Json::$keepObjectType = false;
+        $this->assertSame('[1,2]', Json::encode($data));
+        Json::$keepObjectType = $default;
 
         // empty data encoding
         $data = [];

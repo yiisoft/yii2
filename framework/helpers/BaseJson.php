@@ -29,6 +29,16 @@ class BaseJson
      * @since 2.0.43
      */
     public static $prettyPrint = null;
+
+    /**
+     * @var bool Avoids objects with zero-indexed keys to be encoded as array
+     * Json::encode((object)['test']) will be encoded as an object not array. This matches the behaviour of json_encode().
+     * Defaults to false to avoid any backwards compatibility issues.
+     * Enable for single purpose: Json::$keepObjectType = true;
+     * @see JsonResponseFormatter documentation to enable for all JSON responses
+     */
+    public static $keepObjectType = false;
+
     /**
      * List of JSON Error messages assigned to constant names for better handling of version differences.
      * @var array
@@ -182,20 +192,27 @@ class BaseJson
             } elseif ($data instanceof \SimpleXMLElement) {
                 $data = (array) $data;
 
-                // Avoid empty elements to be returned as array
+                // Avoid empty elements to be returned as array.
+                // Not breaking BC because empty array was always cast to stdClass before.
                 $revertToObject = true;
             } else {
                 /*
                  * $data type is changed to array here and its elements will be processed further
-                 * We must cast $data back to object later to keep intended dictionary type in JSON
+                 * We must cast $data back to object later to keep intended dictionary type in JSON.
+                 * Revert is only done when keepObjectType flag is provided to avoid breaking BC
                  */
-                $revertToObject = true;
+                $revertToObject = self::$keepObjectType;
 
                 $result = [];
                 foreach ($data as $name => $value) {
                     $result[$name] = $value;
                 }
                 $data = $result;
+
+                // Avoid empty objects to be returned as array (would break BC without keepObjectType flag)
+                if ($data === []) {
+                    $revertToObject = true;
+                }
             }
         }
 
