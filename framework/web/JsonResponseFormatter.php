@@ -87,6 +87,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * @var bool Avoids objects with zero-indexed keys to be encoded as array
      * Json::encode((object)['test']) will be encoded as an object not array. This matches the behaviour of json_encode().
      * Defaults to Json::$keepObjectType value
+     * @since 2.0.43
      */
     public $keepObjectType;
 

@@ -36,6 +36,7 @@ class BaseJson
      * Defaults to false to avoid any backwards compatibility issues.
      * Enable for single purpose: Json::$keepObjectType = true;
      * @see JsonResponseFormatter documentation to enable for all JSON responses
+     * @since 2.0.43
      */
     public static $keepObjectType = false;
 
