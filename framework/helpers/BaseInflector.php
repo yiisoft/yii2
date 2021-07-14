@@ -219,6 +219,8 @@ class BaseInflector
         'whiting' => 'whiting',
         'wildebeest' => 'wildebeest',
         'Yengeese' => 'Yengeese',
+        'software' => 'software',
+        'hardware' => 'hardware',
     ];
     /**
      * @var array fallback map for transliteration used by [[transliterate()]] when intl isn't available.
@@ -477,7 +479,11 @@ class BaseInflector
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
-        $parts = explode($replacement, static::transliterate($string));
+        if ((string)$replacement !== '') {
+            $parts = explode($replacement, static::transliterate($string));
+        } else {
+            $parts = [static::transliterate($string)];
+        }
 
         $replaced = array_map(function ($element) use ($replacement) {
             $element = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $element);
@@ -485,7 +491,9 @@ class BaseInflector
         }, $parts);
 
         $string = trim(implode($replacement, $replaced), $replacement);
-        $string = preg_replace('#' . preg_quote($replacement) . '+#', $replacement, $string);
+        if ((string)$replacement !== '') {
+            $string = preg_replace('#' . preg_quote($replacement) . '+#', $replacement, $string);
+        }
 
         return $lowercase ? strtolower($string) : $string;
     }

@@ -153,9 +153,9 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
+        "forum": "https://forum.yiiframework.com/",
         "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -220,7 +220,7 @@ para cada pacote dependente. Utilize dependências estáveis quando sua extensã
 estiver em uma versão estável.
 
 A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
-e/ou pelo [NPM](https://www.npmjs.org/), ao invés do Composer. O Yii usa o 
+e/ou pelo [NPM](https://www.npmjs.com/), ao invés do Composer. O Yii usa o 
 [plugin de asset do Composer](https://github.com/francoispluchino/composer-asset-plugin) 
 para habilitar a gerência destes tipos de pacotes através do Composer. Se sua 
 extensão depender do pacote do Bower, você pode simplesmente listar a dependência 

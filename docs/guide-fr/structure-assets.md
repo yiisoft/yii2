@@ -206,7 +206,7 @@ L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesom
 
 ### Installation des ressources Bower et NPM  <span id="bower-npm-assets"></span>
 
-La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.org/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
+La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.com/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
 
 Pour cela, nous devons configurer quelque peu notre composer. Il y a deux options possibles :
 

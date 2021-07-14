@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -68,7 +68,7 @@ class SiteController extends Controller
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('У вас нет доступа к этой странице');
     }
@@ -122,7 +122,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -223,6 +223,10 @@ return [
     ],
 ];
 ```
+
+> Примечание: Если вы используете шаблон проекта basic, компонент `authManager` необходимо настроить как в `config/web.php`, так и в
+> [конфигурации консольного приложения](tutorial-console.md#configuration) `config/console.php`.
+> При использовании шаблона проекта advanced `authManager` достаточно настроить единожды в `common/config/main.php`.
 
 `DbManager` использует четыре таблицы для хранения данных:
 
@@ -443,7 +447,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -539,7 +543,7 @@ $auth->addChild($admin, $author);
 // ... add permissions as children of $admin ...
 ```
 
-Обратите внимание, так как "author" добавлен как дочерняя роль к "admin", следовательно в реализации метода `execute()`
+Обратите внимание, так как "author" добавлен как дочерняя роль к "admin", следовательно, в реализации метода `execute()`
 класса правила вы должны учитывать эту иерархию. Именно поэтому для роли "author" метод `execute()` вернёт истину,
 если пользователь принадлежит к группам 1 или 2 (это означает, что пользователь находится в группе
 администраторов или авторов)

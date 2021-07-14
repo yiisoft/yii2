@@ -29,9 +29,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_UPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_UPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_BIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_UBIGPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_UBIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
@@ -520,6 +520,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sql = "$sql{$this->separator}$union";
         }
 
+        $with = $this->buildWithQueries($query->withQueries, $params);
+        if ($with !== '') {
+            $sql = "$with{$this->separator}$sql";
+        }
+
         return [$sql, $params];
     }
 
@@ -544,5 +549,23 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return trim($result);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        $tableParts = explode('.', $table);
+
+        $schema = null;
+        if (count($tableParts) === 2) {
+            list ($schema, $table) = $tableParts;
+        }
+
+        return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
+            . $this->db->quoteTableName(($schema ? $schema . '.' : '') . $name) . ' ON '
+            . $this->db->quoteTableName($table)
+            . ' (' . $this->buildColumns($columns) . ')';
     }
 }

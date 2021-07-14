@@ -991,18 +991,21 @@ class RequestTest extends TestCase
      */
     public function testHttpAuthCredentialsFromHttpAuthorizationHeader($secret, $expected)
     {
+        $original = $_SERVER;
+
         $request = new Request();
-
-        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . $secret;
         $this->assertSame($request->getAuthCredentials(), $expected);
         $this->assertSame($request->getAuthUser(), $expected[0]);
         $this->assertSame($request->getAuthPassword(), $expected[1]);
-        $request->getHeaders()->offsetUnset('HTTP_AUTHORIZATION');
+        $_SERVER = $original;
 
-        $request->getHeaders()->set('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $request = new Request();
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic ' . $secret;
         $this->assertSame($request->getAuthCredentials(), $expected);
         $this->assertSame($request->getAuthUser(), $expected[0]);
         $this->assertSame($request->getAuthPassword(), $expected[1]);
+        $_SERVER = $original;
     }
 
     public function testHttpAuthCredentialsFromServerSuperglobal()
@@ -1013,7 +1016,7 @@ class RequestTest extends TestCase
         $_SERVER['PHP_AUTH_PW'] = $pw;
 
         $request = new Request();
-        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
+        $request->getHeaders()->set('Authorization', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
 
         $this->assertSame($request->getAuthCredentials(), [$user, $pw]);
         $this->assertSame($request->getAuthUser(), $user);

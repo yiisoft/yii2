@@ -14,7 +14,7 @@ A module is organized as a directory which is called the [[yii\base\Module::base
 Within the directory, there are sub-directories, such as `controllers`, `models`, `views`, which hold controllers,
 models, views, and other code, just like in an application. The following example shows the content within a module:
 
-```
+```js
 forum/
     Module.php                   the module class file
     controllers/                 containing controller class files

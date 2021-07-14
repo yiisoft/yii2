@@ -42,15 +42,16 @@ the following methods:
   an instance of the identity class using the specified access token. This method is used when you need
   to authenticate a user by a single secret token (e.g. in a stateless RESTful application).
 * [[yii\web\IdentityInterface::getId()|getId()]]: it returns the ID of the user represented by this identity instance.
-* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: it returns a key used to verify cookie-based login.
-  The key is stored in the login cookie and will be later compared with the server-side version to make
-  sure the login cookie is valid.
+* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: it returns a key used to validate session and auto-login in
+  case it is enabled.
 * [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: it implements the logic for verifying
-  the cookie-based login key.
+  authentication key.
 
 If a particular method is not needed, you may implement it with an empty body. For example, if your application
 is a pure stateless RESTful application, you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
-and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body.
+and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body. Or if your 
+application uses session only authentication, you would need to implement all the methods except
+[[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
 
 In the following example, an [[yii\web\User::identityClass|identity class]] is implemented as
 an [Active Record](db-active-record.md) class associated with the `user` database table.
@@ -99,7 +100,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return string current user auth key
+     * @return string|null current user auth key
      */
     public function getAuthKey()
     {
@@ -108,7 +109,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $authKey
-     * @return bool if auth key is valid for current user
+     * @return bool|null if auth key is valid for current user
      */
     public function validateAuthKey($authKey)
     {
@@ -117,9 +118,8 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-As explained previously, you only need to implement `getAuthKey()` and `validateAuthKey()` if your application
-uses cookie-based login feature. In this case, you may use the following code to generate an auth key for each
-user and store it in the `user` table:
+You may use the following code to generate an auth key for each
+user and then store it in the `user` table:
 
 ```php
 class User extends ActiveRecord implements IdentityInterface

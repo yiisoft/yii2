@@ -68,7 +68,7 @@ class BaseYii
      */
     public static $classMap = [];
     /**
-     * @var \yii\console\Application|\yii\web\Application the application instance
+     * @var \yii\console\Application|\yii\web\Application|\yii\base\Application the application instance
      */
     public static $app;
     /**
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.32-dev';
+        return '2.0.43-dev';
     }
 
     /**
@@ -124,13 +124,13 @@ class BaseYii
      * @param string $alias the alias to be translated.
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
+     * @return string|false the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1)) {
+        if (strpos($alias, '@') !== 0) {
             // not an alias
             return $alias;
         }
@@ -162,7 +162,7 @@ class BaseYii
      * A root alias is an alias that has been registered via [[setAlias()]] previously.
      * If a given alias matches multiple root aliases, the longest one will be returned.
      * @param string $alias the alias
-     * @return string|bool the root alias, or false if no root alias is found
+     * @return string|false the root alias, or false if no root alias is found
      */
     public static function getRootAlias($alias)
     {
@@ -278,7 +278,7 @@ class BaseYii
     {
         if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
-            if ($classFile[0] === '@') {
+            if (strpos($classFile, '@') === 0) {
                 $classFile = static::getAlias($classFile);
             }
         } elseif (strpos($className, '\\') !== false) {

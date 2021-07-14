@@ -49,4 +49,17 @@ class Speaker extends Model
             'duplicates' => ['firstName', 'firstName', '!underscore_style', '!underscore_style'],
         ];
     }
+
+    private $_checkedValues = [];
+
+    public function customValidatingMethod($attribute, $params, $validator, $current)
+    {
+        $this->_checkedValues[] = $current;
+        $this->addError($attribute, 'Custom method error');
+    }
+
+    public function getCheckedValues()
+    {
+        return $this->_checkedValues;
+    }
 }

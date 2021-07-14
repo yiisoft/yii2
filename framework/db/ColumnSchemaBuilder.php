@@ -16,6 +16,8 @@ use yii\helpers\StringHelper;
  *
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *
+ * @property array $categoryMap mapping of abstract column types (keys) to type categories (values). (since version 2.0.8)
+ *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
@@ -81,9 +83,9 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
-     * @since 2.0.8
+     * @since 2.0.43
      */
-    public $categoryMap = [
+    public static $typeCategoryMap = [
         Schema::TYPE_PK => self::CATEGORY_PK,
         Schema::TYPE_UPK => self::CATEGORY_PK,
         Schema::TYPE_BIGPK => self::CATEGORY_PK,
@@ -106,6 +108,8 @@ class ColumnSchemaBuilder extends BaseObject
         Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
         Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
     ];
+
+
     /**
      * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
      * safely when building the final column schema string.
@@ -290,6 +294,24 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
+     * @return array mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.43
+     */
+    public function getCategoryMap()
+    {
+        return static::$typeCategoryMap;
+    }
+
+    /**
+     * @param array $categoryMap mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.43
+     */
+    public function setCategoryMap($categoryMap)
+    {
+        static::$typeCategoryMap = $categoryMap;
+    }
+
+    /**
      * Builds the length/precision part of the column.
      * @return string
      */
@@ -331,35 +353,46 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
+     * Return the default value for the column.
+     * @return string|null string with default value of column.
+     */
+    protected function buildDefaultValue()
+    {
+        if ($this->default === null) {
+            return $this->isNotNull === false ? 'NULL' : null;
+        }
+
+        switch (gettype($this->default)) {
+            case 'double':
+                // ensure type cast always has . as decimal separator in all locales
+                $defaultValue = StringHelper::floatToString($this->default);
+                break;
+            case 'boolean':
+                $defaultValue = $this->default ? 'TRUE' : 'FALSE';
+                break;
+            case 'integer':
+            case 'object':
+                $defaultValue = (string) $this->default;
+                break;
+            default:
+                $defaultValue = "'{$this->default}'";
+        }
+
+        return $defaultValue;
+    }
+
+    /**
      * Builds the default value specification for the column.
      * @return string string with default value of column.
      */
     protected function buildDefaultString()
     {
-        if ($this->default === null) {
-            return $this->isNotNull === false ? ' DEFAULT NULL' : '';
+        $defaultValue = $this->buildDefaultValue();
+        if ($defaultValue === null) {
+            return '';
         }
 
-        $string = ' DEFAULT ';
-        switch (gettype($this->default)) {
-            case 'integer':
-                $string .= (string) $this->default;
-                break;
-            case 'double':
-                // ensure type cast always has . as decimal separator in all locales
-                $string .= StringHelper::floatToString($this->default);
-                break;
-            case 'boolean':
-                $string .= $this->default ? 'TRUE' : 'FALSE';
-                break;
-            case 'object':
-                $string .= (string) $this->default;
-                break;
-            default:
-                $string .= "'{$this->default}'";
-        }
-
-        return $string;
+        return ' DEFAULT ' . $defaultValue;
     }
 
     /**

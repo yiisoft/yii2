@@ -40,6 +40,9 @@ use yii\helpers\Console;
  *     ],
  * ]);
  *
+ * @property-write string $listPrefix List prefix. This property is write-only.
+ * @property-write int $screenWidth Screen width. This property is write-only.
+ *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
  */
@@ -133,7 +136,7 @@ class Table extends Widget
     {
         $this->rows = array_map(function($row) {
             return array_map(function($value) {
-                return $value ?: ' ';
+                return empty($value) && !is_numeric($value) ? ' ' : $value;
             }, array_values($row));
         }, $rows);
         return $this;
@@ -240,7 +243,7 @@ class Table extends Widget
 
         $buffer = '';
         $arrayPointer = [];
-        $finalChunk = [];
+        $renderedChunkTexts = [];
         for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($size as $index => $cellSize) {
@@ -250,27 +253,28 @@ class Table extends Widget
                     $buffer .= $spanMiddle . ' ';
                 }
                 if (is_array($cell)) {
-                    if (empty($finalChunk[$index])) {
-                        $finalChunk[$index] = '';
+                    if (empty($renderedChunkTexts[$index])) {
+                        $renderedChunkTexts[$index] = '';
                         $start = 0;
                         $prefix = $this->listPrefix;
                         if (!isset($arrayPointer[$index])) {
                             $arrayPointer[$index] = 0;
                         }
                     } else {
-                        $start = mb_strwidth($finalChunk[$index], Yii::$app->charset);
+                        $start = mb_strwidth($renderedChunkTexts[$index], Yii::$app->charset);
                     }
-                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $cellSize - 4, Yii::$app->charset);
-                    $finalChunk[$index] .= $chunk;
-                    if (isset($cell[$arrayPointer[$index] + 1]) && $finalChunk[$index] === $cell[$arrayPointer[$index]]) {
+                    $chunk = Console::ansiColorizedSubstr($cell[$arrayPointer[$index]], $start, $cellSize - 4);
+                    $renderedChunkTexts[$index] .= Console::stripAnsiFormat($chunk);
+                    $fullChunkText = Console::stripAnsiFormat($cell[$arrayPointer[$index]]);
+                    if (isset($cell[$arrayPointer[$index] + 1]) && $renderedChunkTexts[$index] === $fullChunkText) {
                         $arrayPointer[$index]++;
-                        $finalChunk[$index] = '';
+                        $renderedChunkTexts[$index] = '';
                     }
                 } else {
-                    $chunk = mb_substr($cell, ($cellSize * $i) - ($i * 2), $cellSize - 2, Yii::$app->charset);
+                    $chunk = Console::ansiColorizedSubstr($cell, ($cellSize * $i) - ($i * 2), $cellSize - 2);
                 }
                 $chunk = $prefix . $chunk;
-                $repeat = $cellSize - mb_strwidth($chunk, Yii::$app->charset) - 1;
+                $repeat = $cellSize - Console::ansiStrwidth($chunk) - 1;
                 $buffer .= $chunk;
                 if ($repeat >= 0) {
                     $buffer .= str_repeat(' ', $repeat);
@@ -333,25 +337,31 @@ class Table extends Widget
         foreach ($columns as $column) {
             $columnWidth = max(array_map(function ($val) {
                 if (is_array($val)) {
-                    $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->listPrefix, Yii::$app->charset);
+                    return max(array_map('yii\helpers\Console::ansiStrwidth', $val)) + Console::ansiStrwidth($this->listPrefix);
                 }
-
-                return mb_strwidth($val, Yii::$app->charset);
+                return Console::ansiStrwidth($val);
             }, $column)) + 2;
             $this->columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;
         }
 
-        $relativeWidth = $screenWidth / $totalWidth;
-
         if ($totalWidth > $screenWidth) {
+            $minWidth = 3;
+            $fixWidths = [];
+            $relativeWidth = $screenWidth / $totalWidth;
             foreach ($this->columnWidths as $j => $width) {
-                $this->columnWidths[$j] = (int) ($width * $relativeWidth);
-                if ($j === count($this->columnWidths)) {
-                    $this->columnWidths = $totalWidth;
+                $scaledWidth = (int) ($width * $relativeWidth);
+                if ($scaledWidth < $minWidth) {
+                    $fixWidths[$j] = 3;
                 }
-                $totalWidth -= $this->columnWidths[$j];
+            }
+
+            $totalFixWidth = array_sum($fixWidths);
+            $relativeWidth = ($screenWidth - $totalFixWidth) / ($totalWidth - $totalFixWidth);
+            foreach ($this->columnWidths as $j => $width) {
+                if (!array_key_exists($j, $fixWidths)) {
+                    $this->columnWidths[$j] = (int) ($width * $relativeWidth);
+                }
             }
         }
     }
@@ -369,23 +379,17 @@ class Table extends Widget
             if (is_array($columnWidth)) {
                 $rows = 0;
                 foreach ($columnWidth as $width) {
-                    $rows += ceil($width / ($size - 2));
+                    $rows +=  $size == 2 ? 0 : ceil($width / ($size - 2));
                 }
-
                 return $rows;
             }
-
-            return ceil($columnWidth / ($size - 2));
+            return $size == 2 || $columnWidth == 0 ? 0 : ceil($columnWidth / ($size - 2));
         }, $this->columnWidths, array_map(function ($val) {
             if (is_array($val)) {
-                $encodings = array_fill(0, count($val), Yii::$app->charset);
-                return array_map('mb_strwidth', $val, $encodings);
+                return array_map('yii\helpers\Console::ansiStrwidth', $val);
             }
-
-            return mb_strwidth($val, Yii::$app->charset);
-        }, $row)
-        );
-
+            return Console::ansiStrwidth($val);
+        }, $row));
         return max($rowsPerCell);
     }
 

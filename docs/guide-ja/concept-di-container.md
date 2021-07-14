@@ -375,6 +375,24 @@ class HotelController extends Controller
 これで、あなたが再びコントローラにアクセスするときは、`app\components\BookingService`
 のインスタンスが作成され、コントローラのコンストラクタに3番目のパラメータとして注入されるようになります。
 
+Yii 2.0.36 以降は、PHP 7 を使う場合に、ウェブおよびコンソール両方のコントローラでアクション・インジェクションを利用することが出来ます。
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\BookingInterface;
+
+class HotelController extends Controller
+{    
+    public function actionBook($id, BookingInterface $bookingService)
+    {
+        $result = $bookingService->book($id);
+        // ...    
+    }
+}
+``` 
+
 高度な実際の使用方法 <span id="advanced-practical-usage"></span>
 --------------------
 
@@ -430,7 +448,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 構成情報に書かれている依存とともに DocumentReader オブジェクトが生成されます
 ```
 
@@ -463,7 +481,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 前の例と全く同じオブジェクトが生成されます
 ```
 

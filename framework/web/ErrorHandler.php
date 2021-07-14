@@ -180,7 +180,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars($text, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
     }
 
     /**
@@ -483,7 +483,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Returns human-readable exception name.
      * @param \Exception $exception
-     * @return string human-readable exception name or null if it cannot be determined
+     * @return string|null human-readable exception name or null if it cannot be determined
      */
     public function getExceptionName($exception)
     {

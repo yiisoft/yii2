@@ -66,10 +66,10 @@ class AccessRule extends Component
      * @see $roleParams
      */
     public $roles;
-    /** 
+    /**
      * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
-     * 
+     *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
      * @see $roles
@@ -114,8 +114,11 @@ class AccessRule extends Component
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
      * For example, '192.168.*' matches all IP addresses in the segment '192.168.'.
+     * It may also contain a pattern/mask like '172.16.0.0/12' which would match all IPs from the
+     * 20-bit private network block in RFC1918.
      * If not set or empty, it means this rule applies to all IP addresses.
      * @see Request::userIP
+     * @see IpHelper::inRange
      */
     public $ips;
     /**
@@ -261,16 +264,17 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' ||
-                $rule === $ip ||
-                (
-                    $ip !== null &&
-                    ($pos = strpos($rule, '*')) !== false &&
-                    strncmp($ip, $rule, $pos) === 0
-                ) ||
-                (
-                    ($pos = strpos($rule, '/')) !== false &&
-                    IpHelper::inRange($ip, $rule) === true
+            if (
+                $rule === '*'
+                || $rule === $ip
+                || (
+                    $ip !== null
+                    && ($pos = strpos($rule, '*')) !== false
+                    && strncmp($ip, $rule, $pos) === 0
+                )
+                || (
+                    strpos($rule, '/') !== false
+                    && IpHelper::inRange($ip, $rule) === true
                 )
             ) {
                 return true;

@@ -10,6 +10,8 @@ namespace yiiunit\framework\filters\auth;
 use Yii;
 use yii\filters\auth\HttpBasicAuth;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yii\base\Event;
+use yii\web\User;
 
 /**
  * @group filters
@@ -25,10 +27,13 @@ class BasicAuthTest extends AuthTest
      */
     public function testHttpBasicAuth($token, $login)
     {
+        $original = $_SERVER;
+
         $_SERVER['PHP_AUTH_USER'] = $token;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
         $filter = ['class' => HttpBasicAuth::className()];
         $this->ensureFilterApplies($token, $login, $filter);
+        $_SERVER = $original;
     }
 
     /**
@@ -38,9 +43,12 @@ class BasicAuthTest extends AuthTest
      */
     public function testHttpBasicAuthWithHttpAuthorizationHeader($token, $login)
     {
-        Yii::$app->request->headers->set('HTTP_AUTHORIZATION', 'Basic ' . base64_encode($token . ':' . 'mypw'));
+        $original = $_SERVER;
+
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($token . ':' . 'mypw');
         $filter = ['class' => HttpBasicAuth::className()];
         $this->ensureFilterApplies($token, $login, $filter);
+        $_SERVER = $original;
     }
 
     /**
@@ -50,9 +58,12 @@ class BasicAuthTest extends AuthTest
      */
     public function testHttpBasicAuthWithRedirectHttpAuthorizationHeader($token, $login)
     {
-        Yii::$app->request->headers->set('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . base64_encode($token . ':' . 'mypw'));
+        $original = $_SERVER;
+
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($token . ':' . 'mypw');
         $filter = ['class' => HttpBasicAuth::className()];
         $this->ensureFilterApplies($token, $login, $filter);
+        $_SERVER = $original;
     }
 
     /**
@@ -121,5 +132,21 @@ class BasicAuthTest extends AuthTest
         return [
             ['yii\filters\auth\HttpBasicAuth'],
         ];
+    }
+
+    /**
+     * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
+     */
+    public function testAfterLoginEventIsTriggered18031($token, $login)
+    {
+        $triggered = false;
+        Event::on('\yii\web\User', User::EVENT_AFTER_LOGIN, function ($event) use (&$triggered) {
+            $triggered = true;
+            $this->assertTrue($triggered);
+        });
+        $this->testHttpBasicAuthCustom($token, $login);
+        Event::off('\yii\web\User', User::EVENT_AFTER_LOGIN); // required because this method runs in foreach loop. See @dataProvider tokenProvider
     }
 }

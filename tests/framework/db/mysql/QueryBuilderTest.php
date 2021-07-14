@@ -367,4 +367,29 @@ MySqlStatement;
         $this->assertNotFalse($commentPos);
         $this->assertLessThan($checkPos, $commentPos);
     }
+
+    /**
+     * Test for issue https://github.com/yiisoft/yii2/issues/14663
+     */
+    public function testInsertInteger()
+    {
+        $db = $this->getConnection();
+        $command = $db->createCommand();
+
+        // int value should not be converted to string, when column is `int`
+        $sql = $command->insert('{{type}}', ['int_col' => 22])->getRawSql();
+        $this->assertEquals('INSERT INTO `type` (`int_col`) VALUES (22)', $sql);
+
+        // int value should not be converted to string, when column is `int unsigned`
+        $sql = $command->insert('{{type}}', ['int_col3' => 22])->getRawSql();
+        $this->assertEquals('INSERT INTO `type` (`int_col3`) VALUES (22)', $sql);
+
+        // int value should not be converted to string, when column is `bigint unsigned`
+        $sql = $command->insert('{{type}}', ['bigint_col' => 22])->getRawSql();
+        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES (22)", $sql);
+
+        // string value should not be converted
+        $sql = $command->insert('{{type}}', ['bigint_col' => '1000000000000'])->getRawSql();
+        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES ('1000000000000')", $sql);
+    }
 }

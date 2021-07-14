@@ -135,9 +135,9 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
+        "forum": "https://forum.yiiframework.com/",
         "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -193,7 +193,7 @@ La extensión depende de Yii (por supuesto). Por ello se debe añadir (`yiisoft/
 apropiadas (ej. `1.*`, `@stable`) para cada paquete dependiente. Se deben usar dependencias estables en versiones
 estables de nuestras extensiones.
 
-La mayoría de paquetes JavaScript/CSS se gestionan usando [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.org/),
+La mayoría de paquetes JavaScript/CSS se gestionan usando [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/),
 en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
  para habilitar la gestión de estos tipos de paquetes a través de Composer. Si la extensión depende de un paquete
  Bower, se puede, simplemente, añadir la dependencia de el archivo `composer.json` como se muestra a continuación:

@@ -134,6 +134,29 @@ class ActiveDataFilterTest extends TestCase
                     ],
                 ],
             ],
+            [
+                [
+                    'name' => 'NULL',
+                    'number' => 'NULL',
+                    'price' => 'NULL',
+                    'tags' => ['NULL'],
+                ],
+                [
+                    'AND',
+                    ['name' => ''],
+                    ['number' => null],
+                    ['price' => null],
+                    ['tags' => [null]],
+                ],
+            ],
+            [
+                [
+                    'number' => [
+                        'neq' => 'NULL'
+                    ],
+                ],
+                ['!=', 'number', null],
+            ],
         ];
     }
 

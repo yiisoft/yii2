@@ -153,22 +153,18 @@ class AssetBundle extends BaseObject
             if (is_array($js)) {
                 $file = array_shift($js);
                 $options = ArrayHelper::merge($this->jsOptions, $js);
-                $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
-            } else {
-                if ($js !== null) {
-                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
-                }
+                $view->registerJsFile($manager->getAssetUrl($this, $file, ArrayHelper::getValue($options, 'appendTimestamp')), $options);
+            } elseif ($js !== null) {
+                $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
             }
         }
         foreach ($this->css as $css) {
             if (is_array($css)) {
                 $file = array_shift($css);
                 $options = ArrayHelper::merge($this->cssOptions, $css);
-                $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
-            } else {
-                if ($css !== null) {
-                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
-                }
+                $view->registerCssFile($manager->getAssetUrl($this, $file, ArrayHelper::getValue($options, 'appendTimestamp')), $options);
+            } elseif ($css !== null) {
+                $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
             }
         }
     }

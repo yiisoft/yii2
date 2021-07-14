@@ -257,7 +257,7 @@ publicação `beforeCopy`, apenas os subdiretórios `fonts` e `css` serão publi
 ### Assets do Bower e NPM<span id="bower-npm-assets"></span>
 
 A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
-e/ou [NPM](https://www.npmjs.org/).
+e/ou [NPM](https://www.npmjs.com/).
 Se sua aplicação ou extensão estiver usando um destes pacotes, é recomendado que 
 você siga os passos a seguir para gerenciar os assets na biblioteca:
 

@@ -15,6 +15,13 @@ namespace yii\db\mssql;
 class ColumnSchema extends \yii\db\ColumnSchema
 {
     /**
+     * @var bool whether this column is a computed column
+     * @since 2.0.39
+     */
+    public $isComputed;
+
+
+    /**
      * Prepares default value and converts it according to [[phpType]]
      * @param mixed $value default value
      * @return mixed converted value

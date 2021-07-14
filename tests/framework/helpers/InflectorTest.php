@@ -44,6 +44,8 @@ class InflectorTest extends TestCase
             'car' => 'cars',
             'netherlands' => 'netherlands',
             'currency' => 'currencies',
+            'software' => 'software',
+            'hardware' => 'hardware',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -73,6 +75,8 @@ class InflectorTest extends TestCase
             'cars' => 'car',
             'Netherlands' => 'Netherlands',
             'currencies' => 'currency',
+            'software' => 'software',
+            'hardware' => 'hardware',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));
@@ -197,6 +201,7 @@ class InflectorTest extends TestCase
         $this->assertEquals('remove_excess_replacements', Inflector::slug(' _ _ remove excess _ _ replacements_', '_'));
         $this->assertEquals('thisrepisreprepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
         $this->assertEquals('0_100_kmh', Inflector::slug('0-100 Km/h', '_'));
+        $this->assertEquals('testtext', Inflector::slug('test text', ''));
     }
 
     public function testSlugIntl()

@@ -209,12 +209,34 @@ class AssetManager extends Component
     {
         parent::init();
         $this->basePath = Yii::getAlias($this->basePath);
+
+        $this->basePath = realpath($this->basePath);
+        $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+    }
+
+    private $_isBasePathPermissionChecked;
+
+    /**
+     * Check whether the basePath exists and is writeable.
+     *
+     * @since 2.0.40
+     */
+    public function checkBasePathPermission()
+    {
+        // if the check is been done already, skip further checks
+        if ($this->_isBasePathPermissionChecked) {
+            return;
+        }
+
         if (!is_dir($this->basePath)) {
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
         }
 
-        $this->basePath = realpath($this->basePath);
-        $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+        if (!is_writable($this->basePath)) {
+            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
+        }
+
+        $this->_isBasePathPermissionChecked = true;
     }
 
     /**
@@ -294,34 +316,24 @@ class AssetManager extends Component
      * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
+     * @param bool|null $appendTimestamp Whether to append timestamp to the URL.
      * @return string the actual URL for the specified asset.
      */
-    public function getAssetUrl($bundle, $asset)
+    public function getAssetUrl($bundle, $asset, $appendTimestamp = null)
     {
-        if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            if (strncmp($actualAsset, '@web/', 5) === 0) {
-                $asset = substr($actualAsset, 5);
-                $basePath = Yii::getAlias('@webroot');
-                $baseUrl = Yii::getAlias('@web');
-            } else {
-                $asset = Yii::getAlias($actualAsset);
-                $basePath = $this->basePath;
-                $baseUrl = $this->baseUrl;
-            }
-        } else {
-            $basePath = $bundle->basePath;
-            $baseUrl = $bundle->baseUrl;
+        $assetUrl = $this->getActualAssetUrl($bundle, $asset);
+        $assetPath = $this->getAssetPath($bundle, $asset);
+
+        $withTimestamp = $this->appendTimestamp;
+        if ($appendTimestamp !== null) {
+            $withTimestamp = $appendTimestamp;
         }
 
-        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
-            return $asset;
+        if ($withTimestamp && $assetPath && ($timestamp = @filemtime($assetPath)) > 0) {
+            return "$assetUrl?v=$timestamp";
         }
 
-        if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
-            return "$baseUrl/$asset?v=$timestamp";
-        }
-
-        return "$baseUrl/$asset";
+        return $assetUrl;
     }
 
     /**
@@ -455,10 +467,6 @@ class AssetManager extends Component
             throw new InvalidArgumentException("The file or directory to be published does not exist: $path");
         }
 
-        if (!is_writable($this->basePath)) {
-            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
-        }
-
         if (is_file($src)) {
             return $this->_published[$path] = $this->publishFile($src);
         }
@@ -474,6 +482,8 @@ class AssetManager extends Component
      */
     protected function publishFile($src)
     {
+        $this->checkBasePathPermission();
+
         $dir = $this->hash($src);
         $fileName = basename($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -529,6 +539,8 @@ class AssetManager extends Component
      */
     protected function publishDirectory($src, $options)
     {
+        $this->checkBasePathPermission();
+
         $dir = $this->hash($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
@@ -624,5 +636,34 @@ class AssetManager extends Component
         }
         $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
         return sprintf('%x', crc32($path . Yii::getVersion() . '|' . $this->linkAssets));
+    }
+
+    /**
+     * Returns the actual URL for the specified asset. Without parameters.
+     * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
+     * @param AssetBundle $bundle the asset bundle which the asset file belongs to
+     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
+     * @return string the actual URL for the specified asset.
+     * @since 2.0.39
+     */
+    public function getActualAssetUrl($bundle, $asset)
+    {
+        if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
+            if (strncmp($actualAsset, '@web/', 5) === 0) {
+                $asset = substr($actualAsset, 5);
+                $baseUrl = Yii::getAlias('@web');
+            } else {
+                $asset = Yii::getAlias($actualAsset);
+                $baseUrl = $this->baseUrl;
+            }
+        } else {
+            $baseUrl = $bundle->baseUrl;
+        }
+
+        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
+            return $asset;
+        }
+
+        return "$baseUrl/$asset";
     }
 }
