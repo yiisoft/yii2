@@ -19,7 +19,7 @@ Yii Framework 2 Change Log
 - Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
 - Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
 - Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
-
+- Enh #18762: Avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()`. Add `yii\helpers\Json::$keepObjectType` and `keepObjectType` option for `yii\web\JsonResponseFormatter`. Disabled by default. (zebraf1)
 
 2.0.42.1 May 06, 2021
 ---------------------

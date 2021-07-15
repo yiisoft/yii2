@@ -65,6 +65,21 @@ Upgrade from Yii 2.0.42
   ```sql
   INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
   ```
+* Json::encode() can now handle zero-indexed objects same way as json_encode() and keep them as objects.
+  In order to avoid breaking BC this is enabled by a new option flag.
+  * Set ```yii/helpers/Json::$keepObjectType = true``` anywhere in your application code
+  * Or configure json response formatter to enable it for all JSON responses:
+      ```php
+      'response' => [
+        'formatters' => [
+          \yii\web\Response::FORMAT_JSON => [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+            'keepObjectType' => true, // keep object type for zero-indexed objects
+          ],
+        ],
+      ],
+      ```
 
 Upgrade from Yii 2.0.41
 -----------------------
