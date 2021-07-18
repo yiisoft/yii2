@@ -85,7 +85,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 アーカイブ・ファイルから Yii をインストールするには、三つの手順を踏みます。
 
-1. [yiiframework.com](http://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードします。
+1. [yiiframework.com](https://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードします。
 2. ダウンロードしたファイルをウェブ・アクセス可能なフォルダに展開します。
 3. `config/web.php` ファイルを編集して、`cookieValidationKey` という構成情報の項目に秘密キーを入力します
    (Composer を使って Yii をインストールするときは、これは自動的に実行されます)。

@@ -74,7 +74,7 @@ O primeiro comando instala o [Composer asset plugin](https://github.com/francois
 que permite gerenciar o bower e dependências de pacotes npm através do Composer. Mesmo que você apenas queira utilizar a camada de banco de dados ou outros recursos não-ativos relacionados do Yii, isto é necessário para instalar o pacote Composer do Yii.
 Veja também a seção [sobre a instalação do Yii](start-installation.md#installing-via-composer) para obter mais informações do Composer e solução para os possíveis problemas que podem surgir durante a instalação.
 
-Caso contrário, você pode fazer o [download](http://www.yiiframework.com/download/) do Yii e descompactá-lo no diretório `BasePath/vendor`.
+Caso contrário, você pode fazer o [download](https://www.yiiframework.com/download/) do Yii e descompactá-lo no diretório `BasePath/vendor`.
 
 Em seguida, você deve modificar o script de entrada do sistema de terceiros incluindo o seguinte código no início:
 

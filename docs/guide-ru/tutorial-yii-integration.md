@@ -74,7 +74,7 @@ composer require yiisoft/yii2
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/), который позволяет управлять зависимостями пакетов bower и npm через Composer. Даже если вы хотите воспользоваться слоем абстракции баз данных или другими элементами Yii, не связанными с ресурсами, этот плагин все равно придется установить, так как без него не установится пакет Yii.
 В разделе [об установке Yii](start-installation.md#installing-via-composer) более подробно описана работа с Composer и даны решения проблем, которые могут возникнуть при установке.
 
-Также можно [скачать](http://www.yiiframework.com/download/) файл релиза Yii и распаковать его в директорию `BasePath/vendor`.
+Также можно [скачать](https://www.yiiframework.com/download/) файл релиза Yii и распаковать его в директорию `BasePath/vendor`.
 
 Далее следует изменить входной скрипт сторонней системы, поместив в его начало следующий код:
 

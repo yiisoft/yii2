@@ -69,7 +69,7 @@
 
 Встановлення Yii з архіву складається з трьох кроків:
 
-1. Завантажте архів за адресою [yiiframework.com](http://www.yiiframework.com/download/);
+1. Завантажте архів за адресою [yiiframework.com](https://www.yiiframework.com/download/);
 2. Розпакуйте архів в директорію, доступну через Web.
 3. Відредагуйте файл конфігурації `config/web.php` - необхідно ввести таємний ключ до пункту `cookieValidationKey`
    (це виконується автоматично при вставленні Yii через Composer):

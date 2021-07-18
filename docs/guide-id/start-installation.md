@@ -67,7 +67,7 @@ Instalasi dari file Arsip <span id="installing-from-archive-file"></span>
 
 Instalasi Yii dari file arsip melibatkan tiga langkah:
 
-1. Download file arsip dari [yiiframework.com](http://www.yiiframework.com/download/).
+1. Download file arsip dari [yiiframework.com](https://www.yiiframework.com/download/).
 2. Uraikan file yang didownload ke folder yang bisa diakses web.
 3. Memodifikasi `config/web.php` dengan memasukkan kunci rahasia untuk `cookieValidationKey`.
    (Ini dilakukan secara otomatis jika Anda menginstal Yii menggunakan Composer):

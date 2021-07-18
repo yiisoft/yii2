@@ -616,14 +616,14 @@ $this->registerLinkTag([
     'title' => 'Noticias en Vivo de Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 El resultado del código es el siguiente:
 
 ```html
-<link title="Noticias en Vivo de Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Noticias en Vivo de Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Al igual que con [[yii\web\View::registerMetaTag()|registerMetaTags()]], puedes especificar una clave al llamar

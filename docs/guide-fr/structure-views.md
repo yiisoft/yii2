@@ -497,14 +497,14 @@ $this->registerLinkTag([
     'title' => 'Live News for Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Le code suivant produit le résultat suivant :
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Comme avec  [[yii\web\View::registerMetaTag()|registerMetaTag()]], vous pouvez spécifier un clé lors de l'appel de [[yii\web\View::registerLinkTag()|registerLinkTag()]] pour éviter de générer des liens identiques.
