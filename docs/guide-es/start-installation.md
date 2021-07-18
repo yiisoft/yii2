@@ -67,7 +67,7 @@ Instalar desde un Archivo Comprimido <span id="installing-from-archive-file"></s
 
 Instalar Yii desde un archivo comprimido involucra tres pasos:
 
-1. Descargar el archivo desde [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
+1. Descargar el archivo desde [yiiframework.com](https://www.yiiframework.com/download/yii2-basic).
 2. Descomprimirlo en un directorio accesible vía Web.
 3. Modificar el archivo `config/web.php` introduciendo una clave secreta para el ítem de configuración `cookieValidationKey`
    (esto se realiza automáticamente si estás instalando Yii a través de Composer):

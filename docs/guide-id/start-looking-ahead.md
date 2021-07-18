@@ -9,20 +9,20 @@ kode secara otomatis. Menggunakan Gii dalam membuat kode, mengubah tugas-tugas p
 Bagian ini akan merangkum bacaan Yii yang tersedia untuk membantu anda menjadi lebih produktif dalam menggunakan framework ini.
 
 * Dokumentasi
-    - [Panduan Definitif](http://www.yiiframework.com/doc-2.0/guide-README.html):
+    - [Panduan Definitif](https://www.yiiframework.com/doc-2.0/guide-README.html):
       Sesuai dengan judulnya, panduan ini merincikan bagaimana Yii seharusnya bekerja dan menyediakan petunjuk umum
       tentang menggunakan Yii. Panduan ini sangat-sangat penting, dan panduan ini yang harus anda baca
       sebelum menulis kode Yii.
-    - [Referensi Class](http://www.yiiframework.com/doc-2.0/index.html):
+    - [Referensi Class](https://www.yiiframework.com/doc-2.0/index.html):
       Ini menjelaskan bagaimana menggunakan semua class yang disediakan oleh Yii. Pada umumnya anda akan menggunakan ini ketika anda sedang menulis
       kode dan ingin memahami bagaimana penggunaan _class, method, property_. Sebaiknya anda membaca referensi class ini ketika anda memilik pemahaman dasar tentang seluruh bagian framework.
-    - [Artikel Wiki](http://www.yiiframework.com/wiki/?tag=yii2):
+    - [Artikel Wiki](https://www.yiiframework.com/wiki/?tag=yii2):
       Artikel wiki ditulis oleh para pengguna Yii berdasarkan pengalaman pribadi masing-masing. Kebanyakan dari artikel ini ditulis
       seperti layaknya panduan memasak, dan menunjukkan bagaimana menyelesaikan beberapa masalah dengan menggunakan Yii. Walaupun kualitas artikel-artikel ini
       mungkin tidak selengkap Panduan Definitif, tetapi artikel ini terkadang lebih bermanfaat karna membahas topik yang cukup luas
       dan mungkin mampu menyediakan solusi-solusi yang sederhana.
     - [Buku](https://www.yiiframework.com/books)
-* [Extensions](http://www.yiiframework.com/extensions/):
+* [Extensions](https://www.yiiframework.com/extensions/):
   Yang harus dibanggakan adalah Yii memiliki ribuan library extension yang dibuat oleh pengguna yang dapat dipasang di aplikasi anda dengan mudah, dan akan membuat pengembangan aplikasi anda lebih mudah dan cepat.
 * Komunitas
     - Forum: <https://forum.yiiframework.com/>

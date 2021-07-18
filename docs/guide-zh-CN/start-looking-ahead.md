@@ -22,7 +22,7 @@
       但它们往往覆盖了更广泛的话题，并常常提供解决方案，
       所以它们也很有用。
     - 书籍
-* [扩展](http://www.yiiframework.com/extensions/)：Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，
+* [扩展](https://www.yiiframework.com/extensions/)：Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，
   使你的应用开发过程更加方便快捷。
 * 社区
     - 官方论坛：<https://forum.yiiframework.com/>
