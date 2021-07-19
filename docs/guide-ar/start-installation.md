@@ -87,7 +87,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 يتضمن تثبيت Yii من ملف أرشيف ثلاث خطوات وهي:
 </p>
 <ol dir="rtl">
-<li> تثبت الملف من خلال الموقع الرسمي <a href="http://www.yiiframework.com/download/">yiiframework.com</a>.</li>
+<li> تثبت الملف من خلال الموقع الرسمي <a href="https://www.yiiframework.com/download/">yiiframework.com</a>.</li>
 <li> قم بفك ضغط الملف الذي تم تنزيله إلى مجلد يمكن الوصول إليه عبر الويب.</li>
 <li> قم بتعديل ملف <code>config/web.php</code> عن طريق إدخال secret key ل<code> cookieValidationKey</code>
 (يتم ذلك تلقائيًا إذا قمت بتثبيت ال Yii باستخدام Composer): </li>

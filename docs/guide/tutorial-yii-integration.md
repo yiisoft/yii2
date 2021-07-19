@@ -93,7 +93,7 @@ you should require a special composer package that prevent Bower and NPM package
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
 
-Otherwise, you can [download](http://www.yiiframework.com/download/) the Yii release file and unpack it in
+Otherwise, you can [download](https://www.yiiframework.com/download/) the Yii release file and unpack it in
 the `BasePath/vendor` directory.
 
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:

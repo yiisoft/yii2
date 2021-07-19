@@ -681,14 +681,14 @@ $this->registerLinkTag([
     'title' => 'Notícias sobre o Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 O código acima resultará em
 
 ```html
-<link title="Notícias sobre o Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Notícias sobre o Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Assim como no método [[yii\web\View::registerMetaTag()|registerMetaTags()]],

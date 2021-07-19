@@ -85,7 +85,7 @@ Instalacja z pliku archiwum <span id="installing-from-archive-file"></span>
 
 Instalacja Yii z pliku archiwum składa się z trzech kroków:
 
-1. Pobranie pliku archiwum z [yiiframework.com](http://www.yiiframework.com/download/).
+1. Pobranie pliku archiwum z [yiiframework.com](https://www.yiiframework.com/download/).
 2. Rozpakowanie pliku archiwum do katalogu dostępnego z poziomu sieci web.
 3. Zmodyfikowanie pliku `config/web.php` przez dodanie sekretnego klucza do elementu konfiguracji `cookieValidationKey`
    (jest to wykonywane automatycznie, jeśli instalujesz Yii używając Composera):
