@@ -821,6 +821,19 @@ class BaseConsole
 
     /**
      * Prints text to STDOUT appended with a carriage return (PHP_EOL).
+     * Arguments are handled in the manner of `sprintf`.
+     *
+     * @param string $string the text to print
+     * @param string|int|float ...$values [optional]
+     * @return int|bool number of bytes printed or false on error.
+     */
+    public static function outputf($string = null, $values = null)
+    {
+        return self::output(call_user_func_array("sprintf", func_get_args()));
+    }
+
+    /**
+     * Prints text to STDOUT appended with a carriage return (PHP_EOL).
      *
      * @param string $string the text to print
      * @return int|bool number of bytes printed or false on error.
@@ -828,6 +841,19 @@ class BaseConsole
     public static function output($string = null)
     {
         return static::stdout($string . PHP_EOL);
+    }
+
+    /**
+     * Prints text to STDERR appended with a carriage return (PHP_EOL).
+     * Arguments are handled in the manner of `sprintf`.
+     *
+     * @param string $string the text to print
+     * @param string|int|float ...$values [optional]
+     * @return int|bool number of bytes printed or false on error.
+     */
+    public static function errorf($string = null, $values = null)
+    {
+        return self::error(call_user_func_array("sprintf", func_get_args()));
     }
 
     /**
