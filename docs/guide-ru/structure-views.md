@@ -539,14 +539,14 @@ $this->registerLinkTag([
     'title' => 'Сводка новостей по Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Этот код выведет
 
 ```html
-<link title="Сводка новостей по Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Сводка новостей по Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Как и в случае с [[yii\web\View::registerMetaTag()|registerMetaTag()]], вы можете указать ключ вторым параметром при вызове 

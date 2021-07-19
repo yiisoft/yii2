@@ -616,14 +616,14 @@ $this->registerLinkTag([
     'title' => 'Yii ライブ・ニューズ',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 上記のコードは、次の結果になります。
 
 ```html
-<link title="Yii ライブ・ニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Yii ライブ・ニューズ" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 [[yii\web\View::registerMetaTag()|registerMetaTag()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、

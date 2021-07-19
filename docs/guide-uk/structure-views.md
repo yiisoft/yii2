@@ -616,14 +616,14 @@ $this->registerLinkTag([
     'title' => 'Свіжі новини про Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Результатом вищенаведеного коду буде
 
 ```html
-<link title="Свіжі новини про Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Свіжі новини про Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Подібно до [[yii\web\View::registerMetaTag()|registerMetaTags()]], ви можете визначати ключ під час виклику

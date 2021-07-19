@@ -86,7 +86,7 @@ Instalando a partir de um Arquivo Compactado <span id="installing-from-archive-f
 
 A instalação do Yii a partir de um arquivo compactado envolve três passos:
 
-1. Baixe o arquivo compactado em [yiiframework.com](http://www.yiiframework.com/download/).
+1. Baixe o arquivo compactado em [yiiframework.com](https://www.yiiframework.com/download/).
 2. Descompacte o arquivo baixado em um diretório acessível pela Web.
 3. Modifique o arquivo `config/web.php` informando uma chave secreta no item de
 configuração `cookieValidationKey` (isto é feito automaticamente se você instalar
