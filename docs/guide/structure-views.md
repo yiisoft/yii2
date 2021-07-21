@@ -545,7 +545,7 @@ View components provide the following useful view-related features, each describ
 * [client script handling](output-client-scripts.md): supports CSS and JavaScript registration and rendering.
 * [asset bundle handling](structure-assets.md): supports registering and rendering of [asset bundles](structure-assets.md).
 * [alternative template engines](tutorial-template-engines.md): allows you to use other template engines, such as
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 You may also frequently use the following minor yet useful features when you are developing Web pages.
 

@@ -439,7 +439,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)：
   提供了基于 [swiftmailer](http://swiftmailer.org/) 的邮件发送功能。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig)：
-  提供了一个基于 [Twig](http://twig.sensiolabs.org/) 的模板引擎。
+  提供了一个基于 [Twig](https://twig.symfony.com/) 的模板引擎。
 
 以下官方扩展适用于 Yii 2.1 及以上版本。
 您不需要为 Yii 2.0 安装它们，因为它们包含在核心框架中。
