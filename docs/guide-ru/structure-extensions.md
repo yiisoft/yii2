@@ -422,4 +422,4 @@ Yii предоставляет следующие базовые расшире�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   предоставляет возможности отправки email, основанные на [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  предоставляет шаблонизатор, основанный на [Twig](http://twig.sensiolabs.org/).
+  предоставляет шаблонизатор, основанный на [Twig](https://twig.symfony.com/).

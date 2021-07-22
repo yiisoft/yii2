@@ -524,4 +524,4 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   fornece recursos para envio de e-mails baseados no [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  fornece um motor de template baseado no [Twig](http://twig.sensiolabs.org/).
+  fornece um motor de template baseado no [Twig](https://twig.symfony.com/).
