@@ -542,7 +542,7 @@ Các thành phần View cung cấp các tính năng hữu ích được liệt k
 * [client script handling](output-client-scripts.md): hỗ trợ đăng ký vào xuất bản các nội dung về CSS và JavaScript.
 * [asset bundle handling](structure-assets.md): hỗ trợ việc đăng ký và xuất bản các [asset bundles](structure-assets.md).
 * [alternative template engines](tutorial-template-engines.md): cho phép bạn sử dụng các bộ giao diện, chẳng hạn như
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 Bạn cũng có thể thường xuyên sử dụng các tính năng nhỏ nhưng hữu ích sau đây khi bạn đang phát triển các trang Web.
 

@@ -435,7 +435,7 @@ Les composants View fournissent les fonctionnalités utiles suivantes relatives 
 * [mise en cache de fragments](caching-fragment.md): vous permet de mettre en cache un fragment de votre page Web.
 * [gestion des scripts client](output-client-scripts.md): prend en charge l'enregistrement et le rendu de code CSS et JavaScript. 
 * [gestion de paquets de ressources](structure-assets.md): prend en charge l'enregistrement et le rendu de [paquets de ressources](structure-assets.md).
-* [moteurs de modèle alternatif](tutorial-template-engines.md): vous permet d'utiliser d'autres moteur de modèles tels que [Twig](http://twig.sensiolabs.org/) et [Smarty](http://www.smarty.net/).
+* [moteurs de modèle alternatif](tutorial-template-engines.md): vous permet d'utiliser d'autres moteur de modèles tels que [Twig](https://twig.symfony.com/) et [Smarty](https://www.smarty.net/).
 
 Vous pouvez aussi utiliser les fonctionnalités suivantes qui, bien que mineures, sont néanmoins utiles, pour développer vos pages Web. 
 

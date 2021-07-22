@@ -606,7 +606,7 @@ Componentes de view fornecem úteis recursos relacionados. Cada um deles está d
   fragmento de uma página.
 * [manipulação de client scripts](output-client-scripts.md): permite que você registre e renderize CSS e JavaScript.
 * [manipulando asset bundle](structure-assets.md): permite que você registre e renderize [recursos estáticos (asset bundles)](structure-assets.md).
-* [template engines alternativos](tutorial-template-engines.md): permite que você use outros template engines, tais como o [Twig](http://twig.sensiolabs.org/)
+* [template engines alternativos](tutorial-template-engines.md): permite que você use outros template engines, tais como o [Twig](https://twig.symfony.com/)
   e [Smarty](http://www.smarty.net/).
 
 Você também pode usar os seguintes recursos que, embora simples, são úteis quando estiver desenvolvendo suas páginas.
