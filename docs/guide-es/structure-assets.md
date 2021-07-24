@@ -202,7 +202,7 @@ class FontAwesomeAsset extends AssetBundle
 }
 ```
 
-El ejemplo anterior define un asset bundle para el ["fontawesome" package](http://fontawesome.io/). Especificando
+El ejemplo anterior define un asset bundle para el ["fontawesome" package](https://fontawesome.com/). Especificando
 la opción de publicación `beforeCopy`, solo los subdirectorios `fonts` y `css` serán publicados.
 
 ### Bower y NPM Assets <span id="bower-npm-assets"></span>

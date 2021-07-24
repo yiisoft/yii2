@@ -201,7 +201,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-上記の例は、["fontawesome" パッケージ](http://fontawesome.io/) のためのアセット・バンドルを定義するものです。
+上記の例は、["fontawesome" パッケージ](https://fontawesome.com/) のためのアセット・バンドルを定義するものです。
 発行オプション `only` を指定して、`fonts` と `css` サブ・ディレクトリだけが発行されるようにしています。
 
 

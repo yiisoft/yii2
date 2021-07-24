@@ -162,7 +162,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
+В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](https://fontawesome.com/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
