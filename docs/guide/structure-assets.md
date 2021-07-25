@@ -201,7 +201,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
+The above example defines an asset bundle for the ["fontawesome" package](https://fontawesome.com/). By specifying 
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
