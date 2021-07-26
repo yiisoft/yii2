@@ -165,7 +165,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      *
      * Falls back to [[itemTag]] otherwise.
      *
-     * @param mixed $name the name to test
+     * @param mixed $name the original name 
      * @return string
      * @since 2.0.12
      */
