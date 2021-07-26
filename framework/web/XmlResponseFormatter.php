@@ -87,9 +87,9 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 $this->dom->appendChild($root);
                 $this->buildXml($root, $response->data);
             } else {
-                $this->buildXml($dom, $response->data);
+                $this->buildXml($this->dom, $response->data);
             }
-            $response->content = $dom->saveXML();
+            $response->content = $this->dom->saveXML();
         }
     }
 
