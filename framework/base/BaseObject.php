@@ -25,7 +25,7 @@ use Yii;
  *
  * public function setLabel($value)
  * {
- *     $this->_label = $value;
+ *     $this->_label = trim($value);
  * }
  * ```
  *
