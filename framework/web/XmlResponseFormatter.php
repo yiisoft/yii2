@@ -8,7 +8,6 @@
 namespace yii\web;
 
 use DOMDocument;
-use DOMElement;
 use DOMException;
 use DOMText;
 use yii\base\Arrayable;
@@ -19,12 +18,6 @@ use yii\helpers\StringHelper;
  * XmlResponseFormatter formats the given data into an XML response content.
  *
  * It is used by [[Response]] to format response data.
- *
- * Customize properties in inner action:
- * ~~~php
- * $this->response->formatters[Response::FORMAT_XML] = ['class' => XmlResponseFormatter::class, 'rootTag' => 'root'];
- * return $this->asXml($items);
- * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
