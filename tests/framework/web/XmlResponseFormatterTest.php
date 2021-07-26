@@ -80,7 +80,7 @@ class XmlResponseFormatterTest extends FormatterTest
                 'b:c' => 'b:c',
                 'a b c' => 'a b c',
                 'äøñ' => 'äøñ',
-            ], "<response><item>1</item><item>2015-06-18</item><item>b:c</item><item>a b c</item><äøñ>äøñ</äøñ></response>\n"],
+            ], "<response><item>1</item><item>2015-06-18</item><b:c>b:c</b:c><item>a b c</item><äøñ>äøñ</äøñ></response>\n"],
         ]);
     }
 
