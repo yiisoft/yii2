@@ -87,8 +87,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * @param DOMElement $element
-     * @param mixed $data
+     * @param DOMElement|DOMDocument $element the current tag
+     * @param mixed $data the content of current tag
      */
     protected function buildXml($element, $data)
     {
