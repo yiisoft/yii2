@@ -439,7 +439,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
   provides email sending features based on [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+  provides a template engine based on [Twig](https://twig.symfony.com/).
 
 The following official extensions are for Yii 2.1 and above.
 You don't need to install them for Yii 2.0, since they are included in the core framework.

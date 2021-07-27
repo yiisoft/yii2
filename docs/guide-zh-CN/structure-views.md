@@ -545,7 +545,7 @@ class PostController extends Controller
 - [客户脚本处理](output-client-scripts.md): 支持CSS 和 JavaScript 注册和渲染；
 - [资源包处理](structure-assets.md): 支持 [资源包](structure-assets.md)的注册和渲染；
 - [模板引擎](tutorial-template-engines.md): 允许你使用其他模板引擎，如
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/)。
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/)。
 
 开发Web页面时，也可能频繁使用以下实用的小特性。
 

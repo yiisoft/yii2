@@ -439,4 +439,4 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer): proporciona características de envío de
   correos electrónicos basadas en [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig): proporciona un motor de plantillas basado en
-  [Twig](http://twig.sensiolabs.org/).
+  [Twig](https://twig.symfony.com/).

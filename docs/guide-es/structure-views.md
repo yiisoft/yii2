@@ -545,7 +545,7 @@ Los componentes de vista proveen las siguientes características útiles, cada u
 * [manejo de scripts del cliente](output-client-scripts.md): soporte para registro y renderización de CSS y JavaScript.
 * [manejo de asset bundle](structure-assets.md): soporte de registro y renderización de [asset bundles](structure-assets.md).
 * [motores de template alternativos](tutorial-template-engines.md): te permite utilizar otros motores de templates, como
-  [Twig](http://twig.sensiolabs.org/) o [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/) o [Smarty](https://www.smarty.net/).
 
 Puedes también utilizar frecuentemente el siguiente menor pero útil grupo de características al desarrollar páginas Web.
 

@@ -439,7 +439,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  [Twig](http://twig.sensiolabs.org/) に基づいたテンプレート・エンジンを提供します。
+  [Twig](https://twig.symfony.com/) に基づいたテンプレート・エンジンを提供します。
 
 下記の公式エクステンションは Yii 2.1 以上のためのものです。
 これらは、Yii 2.0 ではコア・フレームワークに含まれていますので、インストールする必要はありません。.
