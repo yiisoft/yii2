@@ -127,9 +127,9 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -439,7 +439,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  [Twig](http://twig.sensiolabs.org/) に基づいたテンプレート・エンジンを提供します。
+  [Twig](https://twig.symfony.com/) に基づいたテンプレート・エンジンを提供します。
 
 下記の公式エクステンションは Yii 2.1 以上のためのものです。
 これらは、Yii 2.0 ではコア・フレームワークに含まれていますので、インストールする必要はありません。.

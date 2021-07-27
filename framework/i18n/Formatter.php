@@ -743,7 +743,7 @@ class Formatter extends Component
     ];
 
     /**
-     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|null $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -842,7 +842,7 @@ class Formatter extends Component
     /**
      * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
-     * @param int|string|DateTime|DateTimeInterface $value the datetime value to be normalized. The following
+     * @param int|string|DateTime|DateTimeInterface|null $value the datetime value to be normalized. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp

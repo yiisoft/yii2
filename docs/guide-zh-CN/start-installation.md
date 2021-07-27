@@ -85,7 +85,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 通过归档文件安装 Yii 包括三个步骤：
 
-1. 从 [yiiframework.com](http://www.yiiframework.com/download/) 下载归档文件。
+1. 从 [yiiframework.com](https://www.yiiframework.com/download/) 下载归档文件。
 2. 将下载的文件解压缩到 Web 访问的文件夹中。
 3. 修改 `config/web.php` 文件，给 `cookieValidationKey` 配置项
    添加一个密钥（若你通过 Composer 安装，则此步骤会自动完成）：

@@ -153,9 +153,9 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -524,4 +524,4 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   fornece recursos para envio de e-mails baseados no [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  fornece um motor de template baseado no [Twig](http://twig.sensiolabs.org/).
+  fornece um motor de template baseado no [Twig](https://twig.symfony.com/).

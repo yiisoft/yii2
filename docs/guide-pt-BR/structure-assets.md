@@ -250,7 +250,7 @@ class FontAwesomeAsset extends AssetBundle
 ```
 
 O exemplo anterior define um asset bundle para o 
-[pacode de "fontawesome"](http://fontawesome.io/). Ao especificar a opção de 
+[pacode de "fontawesome"](https://fontawesome.com/). Ao especificar a opção de 
 publicação `beforeCopy`, apenas os subdiretórios `fonts` e `css` serão publicados.
 
 

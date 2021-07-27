@@ -99,7 +99,7 @@ class User extends Component
      */
     public $identityCookie = ['name' => '_identity', 'httpOnly' => true];
     /**
-     * @var int the number of seconds in which the user will be logged out automatically if he
+     * @var int the number of seconds in which the user will be logged out automatically if the user 
      * remains inactive. If this property is not set, the user will be logged out after
      * the current session expires (c.f. [[Session::timeout]]).
      * Note that this will not work if [[enableAutoLogin]] is `true`.

@@ -201,7 +201,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](http://fontawesome.io/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
+L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](https://fontawesome.com/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
 
 
 ### Installation des ressources Bower et NPM  <span id="bower-npm-assets"></span>

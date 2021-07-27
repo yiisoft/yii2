@@ -67,7 +67,7 @@ Installer depuis une archive <span id="installing-from-archive-file"></span>
 
 Installer Yii depuis une archive se fait en trois étapes :
 
-1. Télécharger l'archive sur le site [yiiframework.com](http://www.yiiframework.com/download/).
+1. Télécharger l'archive sur le site [yiiframework.com](https://www.yiiframework.com/download/).
 2. Décompresser l'archive dans un dossier accessible via le Web.
 3. Modifier le fichier `config/web.php` en entrant une clé secrète pour la configuration de `cookieValidationKey` (cela est fait automatiquement si vous installez Yii avec Composer) :
 

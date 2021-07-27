@@ -135,9 +135,9 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -439,4 +439,4 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer): proporciona características de envío de
   correos electrónicos basadas en [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig): proporciona un motor de plantillas basado en
-  [Twig](http://twig.sensiolabs.org/).
+  [Twig](https://twig.symfony.com/).
