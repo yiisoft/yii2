@@ -36,7 +36,7 @@ class ServeController extends Controller
      */
     public $docroot = '@app/web';
     /**
-     * @var string path to router script.
+     * @var string path or [path alias](guide:concept-aliases) to router script.
      * See https://secure.php.net/manual/en/features.commandline.webserver.php
      */
     public $router;
@@ -52,7 +52,7 @@ class ServeController extends Controller
     public function actionIndex($address = 'localhost')
     {
         $documentRoot = Yii::getAlias($this->docroot);
-        $router = Yii::getAlias($this->router);
+        $router = $this->router !== null ? Yii::getAlias($this->router) : null;
 
         if (strpos($address, ':') === false) {
             $address = $address . ':' . $this->port;
