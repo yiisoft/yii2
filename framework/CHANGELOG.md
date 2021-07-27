@@ -10,8 +10,6 @@ Yii Framework 2 Change Log
 - Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
-- Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
-
 - Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
 - Enh #18676: Added method `yii\helpers\BaseFileHelper::changeOwnership()` and properties `newFileMode`/`newFileOwnership` in `yii\console\controllers\BaseMigrateController` (rhertogh)
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
