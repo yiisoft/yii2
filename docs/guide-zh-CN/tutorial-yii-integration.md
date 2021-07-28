@@ -93,7 +93,7 @@ composer require yiisoft/yii2
 有关 Composer 的更多信息以及安装过程中可能出现的问题的解决方案，另请参见
 [关于安装 Yii 的部分](start-installation.md#installing-via-composer)。
 
-不然的话，你可以[下载](http://www.yiiframework.com/download/) Yii 的发布包，
+不然的话，你可以[下载](https://www.yiiframework.com/download/) Yii 的发布包，
 并把它解压到对应系统的 `BasePath/vendor` 目录内。
 
 之后，你需要修改该第三方应用的入口脚本，在开头位置添加 Yii 的引入代码：

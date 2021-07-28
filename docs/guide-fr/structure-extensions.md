@@ -101,9 +101,9 @@ L'exemple suivant montre le fichier `composer.json` de l'extension `yiisoft/yii2
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -319,7 +319,7 @@ Yii fournit les extensions du noyau suivantes (ou ["les extensions officielles"]
 - [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](http://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx) : fournit la prise en charge de [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la génération de code, etc.
 - [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](http://swiftmailer.org/).
-- [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig) : fournit un moteur de modèles basé sur [Twig](http://twig.sensiolabs.org/).
+- [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig) : fournit un moteur de modèles basé sur [Twig](https://twig.symfony.com/).
 
 Les extensions officielles suivantes sont valables pour les versions Yii 2.1 et plus récentes. Vous n'avez pas besoin de les installer car elles sont incluse dans le cœur du framework.
 

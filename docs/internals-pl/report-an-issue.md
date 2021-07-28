@@ -13,8 +13,8 @@ Jeśli nie jesteś pewien, gdzie powinno trafić zgłoszenie, [wyślij je do gł
 
 **Nie zgłaszaj problemu jeśli**
 
-* pytasz o to, w jaki sposób użyć którejś z funkcjonalności Yii. Do tego celu użyj [forum](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) lub [chatu](http://www.yiiframework.com/chat/).
-* dotyczy on bezpieczeństwa. W takim wypadku prosimy o [bezpośredni kontakt](http://www.yiiframework.com/security/).
+* pytasz o to, w jaki sposób użyć którejś z funkcjonalności Yii. Do tego celu użyj [forum](https://forum.yiiframework.com/index.php/forum/42-general-discussions-for-yii-20/) lub [chatu](https://www.yiiframework.com/chat/).
+* dotyczy on bezpieczeństwa. W takim wypadku prosimy o [bezpośredni kontakt](https://www.yiiframework.com/security/).
 
 **Unikaj duplikowania zgłoszeń**
 

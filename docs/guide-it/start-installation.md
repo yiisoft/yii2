@@ -54,7 +54,7 @@ Installazione da un archivio <span id="installing-from-archive-file"></span>
 
 L'installazione da un archivio compresso comporta tre passaggi:
 
-1. Scaricare l'archivio da [yiiframework.com](http://www.yiiframework.com/download/).
+1. Scaricare l'archivio da [yiiframework.com](https://www.yiiframework.com/download/).
 2. Scompattare l'archivio in una directory accessible via web.
 3. Modificare il file `config/web.php` inserendo una chiave segreta per il parametro di configurazione `cookieValidationKey` 
    (questa operazione viene fatta automaticamente se installi tramite Composer):
