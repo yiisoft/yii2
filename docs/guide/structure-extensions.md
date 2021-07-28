@@ -128,7 +128,7 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
         "forum": "https://forum.yiiframework.com/",
-        "wiki": "http://www.yiiframework.com/wiki/",
+        "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
@@ -439,7 +439,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
   provides email sending features based on [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+  provides a template engine based on [Twig](https://twig.symfony.com/).
 
 The following official extensions are for Yii 2.1 and above.
 You don't need to install them for Yii 2.0, since they are included in the core framework.

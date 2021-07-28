@@ -201,7 +201,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-上述的代码为 ["fontawesome" package](http://fontawesome.io/) 定义了资源包。
+上述的代码为 ["fontawesome" package](https://fontawesome.com/) 定义了资源包。
 通过配置发布选项的 only 下标，只有 `fonts` 和 `css` 子目录会发布。
 
 

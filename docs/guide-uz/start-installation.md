@@ -55,7 +55,7 @@ Arxivdan o'rnatish  <span id="installing-from-archive-file"></span>
 
 Yining arxivdan o'rnatilishi uch bosqichdan iborat:
 
-1. Yiiframework.com dan [arxivni](http://www.yiiframework.com/download/) yuklab oling.
+1. Yiiframework.com dan [arxivni](https://www.yiiframework.com/download/) yuklab oling.
 2. Yuklangan arxivni Internetdan kirib boladigan katalogiga tashlab, arxivni oching. 
 3. `config/web.php` `cookieValidationKey` (Composer orqali o'rnatilganda, bu avtomatik tarzda amalga oshiriladi) uchun maxsus kalitni qo'shing:
 

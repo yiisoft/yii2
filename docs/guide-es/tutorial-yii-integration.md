@@ -108,7 +108,7 @@ a la sección `extra` de tu `composer.json`:
 Visita también la [sección de cómo instalar Yii](start-installation.md#installing-via-composer) para más información
 sobre Composer y sobre cómo solucionar posibles problemas que surjan durante la instalación.
 
-En otro caso, puedes [descargar](http://www.yiiframework.com/download/) el archivo de la edición de Yii
+En otro caso, puedes [descargar](https://www.yiiframework.com/download/) el archivo de la edición de Yii
 y desempaquetarla en el directorio `BasePath/vendor`.
 
 Después, debes de modificar el script de entrada de sistema de terceros para incluir el siguiente código al principio:

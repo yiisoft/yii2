@@ -131,7 +131,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
         "forum": "https://forum.yiiframework.com/",
-        "wiki": "http://www.yiiframework.com/wiki/",
+        "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
@@ -422,4 +422,4 @@ Yii предоставляет следующие базовые расшире�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   предоставляет возможности отправки email, основанные на [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  предоставляет шаблонизатор, основанный на [Twig](http://twig.sensiolabs.org/).
+  предоставляет шаблонизатор, основанный на [Twig](https://twig.symfony.com/).

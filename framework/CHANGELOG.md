@@ -20,6 +20,8 @@ Yii Framework 2 Change Log
 - Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
 - Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
 - Enh #18762: Added `yii\helpers\Json::$keepObjectType` and `yii\web\JsonResponseFormatter::$keepObjectType` in order to avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()` (zebraf1)
+- Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
+
 
 2.0.42.1 May 06, 2021
 ---------------------

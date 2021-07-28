@@ -59,7 +59,7 @@ Cài đặt từ tập tin lưu trữ <span id="installing-from-archive-file"></
 
 Việc cài đặt Yii từ một tập tin lưu trữ bao gồm ba bước:
 
-1. Tải gói cài đặt từ [yiiframework.com](http://www.yiiframework.com/download/).
+1. Tải gói cài đặt từ [yiiframework.com](https://www.yiiframework.com/download/).
 2. Giải nén file tải về vào một thư mục Web của ứng dụng cần chạy.
 3. Sửa đồi file `config/web.php`  bởi nhập thông tin secret key `cookieValidationKey` ở mục cấu hình
    (này được thực hiện tự động nếu bạn đang cài đặt Yii sử dụng Composer):
