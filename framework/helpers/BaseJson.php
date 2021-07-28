@@ -32,9 +32,9 @@ class BaseJson
 
     /**
      * @var bool Avoids objects with zero-indexed keys to be encoded as array
-     * Json::encode((object)['test']) will be encoded as an object not array. This matches the behaviour of json_encode().
+     * `Json::encode((object)['test'])` will be encoded as an object not as an array. This matches the behaviour of `json_encode()`.
      * Defaults to false to avoid any backwards compatibility issues.
-     * Enable for single purpose: Json::$keepObjectType = true;
+     * Enable for single purpose: `Json::$keepObjectType = true;`
      * @see JsonResponseFormatter documentation to enable for all JSON responses
      * @since 2.0.43
      */
