@@ -44,6 +44,7 @@ use yii\db\QueryInterface;
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Dmitriy Malyar <softkoc@gmail.com>
  * @since 2.0
  */
 class ExistValidator extends Validator
@@ -112,6 +113,18 @@ class ExistValidator extends Validator
         } else {
             $this->checkTargetAttributeExistence($model, $attribute);
         }
+    }
+    
+    /**
+     * Get Table alias.
+     *
+     * @param ActiveQuery $query
+     * 
+     * @return string table alias
+     */
+    protected function getTableAlias($query)
+    {
+        return array_keys($query->getTablesUsedInFrom())[0];
     }
 
     /**
@@ -280,7 +293,9 @@ class ExistValidator extends Validator
     private function queryValueExists($query, $value)
     {
         if (is_array($value)) {
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
+            $alias = $this->getTableAlias($query);
+            
+            return $query->count("DISTINCT {$alias}.[[$this->targetAttribute]]") == count($value) ;
         }
         return $query->exists();
     }
@@ -313,9 +328,10 @@ class ExistValidator extends Validator
      */
     private function applyTableAlias($query, $conditions, $alias = null)
     {
-        if ($alias === null) {
-            $alias = array_keys($query->getTablesUsedInFrom())[0];
-        }
+        $alias = $alias === null
+            ? $this->getTableAlias($query)
+            : $alias;
+        
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
