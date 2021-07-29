@@ -1065,12 +1065,11 @@ class RequestTest extends TestCase
     public function testGetBodyParams($contentType, $rawBody, $expected)
     {
         $_SERVER['CONTENT_TYPE'] = $contentType;
-        $request = new Request([
-            'parsers' => [
-                'application/json' => 'yii\web\JsonParser',
-                'application/javascript' => 'yii\web\JsonParser',
-            ]
-        ]);
+        $request = new Request();
+        $request->parsers = [
+            'application/json' => 'yii\web\JsonParser',
+            'application/javascript' => 'yii\web\JsonParser',
+        ];
         $request->setRawBody($rawBody);
         $this->assertSame($expected, $request->getBodyParams());
     }
