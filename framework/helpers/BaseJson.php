@@ -202,7 +202,7 @@ class BaseJson
                  * We must cast $data back to object later to keep intended dictionary type in JSON.
                  * Revert is only done when keepObjectType flag is provided to avoid breaking BC
                  */
-                $revertToObject = self::$keepObjectType;
+                $revertToObject = static::$keepObjectType;
 
                 $result = [];
                 foreach ($data as $name => $value) {
