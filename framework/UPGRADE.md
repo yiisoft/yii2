@@ -67,7 +67,7 @@ Upgrade from Yii 2.0.42
   ```
 * Json::encode() can now handle zero-indexed objects same way as json_encode() and keep them as objects.
   In order to avoid breaking BC this is enabled by a new option flag.
-  * Set ```yii/helpers/Json::$keepObjectType = true``` anywhere in your application code
+  * Set `yii/helpers/Json::$keepObjectType = true` anywhere in your application code
   * Or configure json response formatter to enable it for all JSON responses:
       ```php
       'response' => [
