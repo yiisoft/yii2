@@ -494,13 +494,13 @@ Lorsque vous enregistrez une tel paquet de ressources dans une vue, le [[yii\web
 
 Yii utilise l'extension du nom de fichier pour identifier dans quelle syntaxe une ressource est écrite. Par défaut, il reconnaît les syntaxes et les extensions de nom suivants :
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii se fie aux outils de pré-traitement installés pour convertir les ressources. Par exemple, pour utiliser [LESS](http://lesscss.org/), vous devriez utiliser la commande de pré-traitement `lessc`.
+Yii se fie aux outils de pré-traitement installés pour convertir les ressources. Par exemple, pour utiliser [LESS](https://lesscss.org/), vous devriez utiliser la commande de pré-traitement `lessc`.
 
 Vous pouvez personnaliser les commandes de pré-traitement et la syntaxe étendue prise en charge en configurant [[yii\web\AssetManager::converter]] comme ci-après :
 

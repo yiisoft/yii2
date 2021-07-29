@@ -511,13 +511,13 @@ class AppAsset extends AssetBundle
 
 Yii использует имена расширений файлов для идентификации расширенного синтаксиса внутри ресурса. По умолчанию признаны следующие синтаксисы и имена расширений файлов:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](http://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
+Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](https://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
 
 Вы можете настроить команды препроцессора и поддерживать расширенный синтаксис сконфигурировав [[yii\web\AssetManager::converter]] следующим образом:
 

@@ -608,14 +608,14 @@ class AppAsset extends AssetBundle
 Yii 使用文件扩展名来表示资源使用哪种扩展语法，
 默认可以识别如下语法和文件扩展名：
 
-- [LESS](http://lesscss.org/)：`.less`
-- [SCSS](http://sass-lang.com/)：`.scss`
-- [Stylus](http://learnboost.github.io/stylus/)：`.styl`
-- [CoffeeScript](http://coffeescript.org/)：`.coffee`
-- [TypeScript](http://www.typescriptlang.org/)：`.ts`
+- [LESS](https://lesscss.org/)：`.less`
+- [SCSS](https://sass-lang.com/)：`.scss`
+- [Stylus](https://stylus-lang.com/)：`.styl`
+- [CoffeeScript](https://coffeescript.org/)：`.coffee`
+- [TypeScript](https://www.typescriptlang.org/)：`.ts`
 
 Yii 依靠安装的预处理工具来转换资源，例如，
-为使用 [LESS](http://lesscss.org/)，应安装 `lessc` 预处理命令。
+为使用 [LESS](https://lesscss.org/)，应安装 `lessc` 预处理命令。
 
 可配置 [[yii\web\AssetManager::converter]] 自定义预处理命令和支持的扩展语法，
 如下所示：
