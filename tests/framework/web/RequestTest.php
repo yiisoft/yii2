@@ -1053,16 +1053,16 @@ class RequestTest extends TestCase
     public function getBodyParamsDataProvider()
     {
         return [
-            'json' => ['application/json', '{"foo":"bar","baz":1}', ['foo'=>'bar', 'baz' => 1]],
-            'jsonp' => ['application/javascript', 'parseResponse({"x":"y"});', ['x'=>'y']],
-            'post' => ['application/x-www-form-urlencoded', 'foo=bar&baz=1', ['foo'=>'bar', 'baz' => 1]],
+            'json' => ['application/json', '{"foo":"bar","baz":1}', ['foo' => 'bar', 'baz' => 1]],
+            'jsonp' => ['application/javascript', 'parseResponse({"foo":"bar","baz":1});', ['foo' => 'bar', 'baz' => 1]],
+            'get' => ['application/x-www-form-urlencoded', 'foo=bar&baz=1', ['foo' => 'bar', 'baz' => '1']],
         ];
     }
 
     /**
      * @dataProvider getBodyParamsDataProvider
      */
-    public function testGetBodyParams($contentType, $rawBody, $expected)
+    public function testGetBodyParams($contentType, $rawBody, array $expected)
     {
         $_SERVER['CONTENT_TYPE'] = $contentType;
         $request = new Request();
