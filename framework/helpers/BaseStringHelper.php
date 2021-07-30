@@ -72,7 +72,7 @@ class BaseStringHelper
             $path = mb_substr($path, 0, -$len);
         }
  
-        $path = rtrim(str_replace('\\', '/', $path), '/');
+        $path = rtrim(str_replace('\\', '/', $path), '\/');
         $pos = mb_strrpos($path, '/');
         if ($pos !== false) {
             return mb_substr($path, $pos + 1);
