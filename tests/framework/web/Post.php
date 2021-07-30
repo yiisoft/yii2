@@ -14,9 +14,11 @@ class Post extends BaseObject
     public $id;
     public $title;
 
-    public function __construct($id, $title)
+    public function __construct($id, $title, $config = [])
     {
         $this->id = $id;
         $this->title = $title;
+
+        parent::__construct($config);
     }
 }
