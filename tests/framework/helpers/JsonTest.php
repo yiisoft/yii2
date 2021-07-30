@@ -83,7 +83,7 @@ class JsonTest extends TestCase
         // @see https://github.com/yiisoft/yii2/issues/12043
         $data = new JsonModel();
         $data->data = [];
-        $this->assertSame('{}', Json::encode($data));
+        $this->assertSame('[]', Json::encode($data));
         $data = new JsonModel();
         $data->data = (object) null;
         $this->assertSame('{}', Json::encode($data));
