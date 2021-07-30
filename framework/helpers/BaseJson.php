@@ -167,14 +167,17 @@ class BaseJson
             }
 
             if ($data instanceof \JsonSerializable) {
-                $data = $data->jsonSerialize();
+                return static::processData($data->jsonSerialize(), $expressions, $expPrefix);
+            }
+
+            if ($data instanceof \SimpleXMLElement || $data instanceof \DateTimeInterface) {
+                $data = (array) $data;
             } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
-            } elseif ($data instanceof \SimpleXMLElement || $data instanceof \DateTimeInterface) {
-                $data = (array) $data;
             } elseif ($data instanceof \Traversable) {
                 $data = iterator_to_array($data);
             }
+
             // to keep initial data type
             if (is_array($data)) {
                 $data = (object) $data;
