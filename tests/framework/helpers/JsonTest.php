@@ -33,7 +33,7 @@ class JsonTest extends TestCase
         $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
-        $this->assertSame('{}', $actual);
+        $this->assertSame('[]', $actual);
 
         // basic data encoding
         $data = '1';
@@ -171,7 +171,7 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException('yii\base\InvalidArgumentException');
         Json::decode($json);
     }
 
