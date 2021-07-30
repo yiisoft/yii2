@@ -171,12 +171,12 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         Json::decode($json);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Invalid JSON data.
      */
     public function testDecodeInvalidParamException()
@@ -190,8 +190,8 @@ class JsonTest extends TestCase
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidParamException $e) {
-            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+        } catch (\yii\base\InvalidArgumentException $e) {
+            $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
 
         // Unsupported type since PHP 5.5
@@ -200,11 +200,11 @@ class JsonTest extends TestCase
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
+                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
             } else {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
             }
         }
     }
