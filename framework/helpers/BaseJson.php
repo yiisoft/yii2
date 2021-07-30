@@ -177,7 +177,6 @@ class BaseJson
             } elseif ($data instanceof \Traversable) {
                 $data = iterator_to_array($data);
             }
-
             // to keep initial data type
             if (is_array($data)) {
                 $data = (object) $data;
@@ -185,17 +184,12 @@ class BaseJson
         }
 
         if (is_array($data) || is_object($data)) {
-            $arrayAccess = is_array($data) || $data instanceof \ArrayAccess;
-            foreach ($data as $key => $value) {
+            foreach ($data as &$value) {
                 if (is_array($value) || is_object($value)) {
                     $value = static::processData($value, $expressions, $expPrefix);
-                    if ($arrayAccess) {
-                        $data[$key] = $value;
-                    } else {
-                        $data->{$key} = $value;
-                    }
                 }
             }
+            unset($value);
         }
 
         return $data;
