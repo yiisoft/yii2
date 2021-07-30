@@ -230,11 +230,12 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-
         }
-        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
 
-        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), $encoding) === mb_strtolower($with, $encoding);
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        $string = static::byteSubstr($string, 0, $bytes);
+
+        return mb_strtolower($string, $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
@@ -261,8 +262,9 @@ class BaseStringHelper
         }
 
         $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
-        $substr = mb_substr($string, -$bytes, static::byteLength($string), '8bit');
-        return mb_strtolower($substr, $encoding) === mb_strtolower($with, $encoding);
+        $string = static::byteSubstr($string, -$bytes);
+
+        return mb_strtolower($string, $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
