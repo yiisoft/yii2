@@ -45,8 +45,8 @@ class BaseStringHelper
      */
     public static function byteSubstr($string, $start, $length = null)
     {
-        if ($length !== null) {
-            $length = static::byteLength($length);
+        if ($length === null) {
+            $length = static::byteLength($string);
         }
         return mb_substr($string, $start, $length, '8bit');
     }
@@ -232,6 +232,7 @@ class BaseStringHelper
 
         }
         $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+
         return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
