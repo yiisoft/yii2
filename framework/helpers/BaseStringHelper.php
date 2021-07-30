@@ -48,6 +48,7 @@ class BaseStringHelper
         if ($length === null) {
             $length = static::byteLength($string);
         }
+ 
         return mb_substr($string, $start, $length, '8bit');
     }
 
