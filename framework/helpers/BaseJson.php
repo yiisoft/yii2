@@ -170,6 +170,8 @@ class BaseJson
                 $data = $data->jsonSerialize();
             } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
+            } elseif ($data instanceof \SimpleXMLElement || $data instanceof \DateTimeInterface) {
+                $data = (array) $data;
             } elseif ($data instanceof \Traversable) {
                 $data = iterator_to_array($data);
             }
