@@ -30,8 +30,7 @@ class BaseJson
      */
     public static $prettyPrint = null;
     /**
-     * List of JSON Error messages assigned to constant names for better handling of version differences.
-     * @var array
+     * @var array List of JSON Error messages assigned to constant names for better handling of version differences.
      * @since 2.0.7
      */
     public static $jsonErrorMessages = [
@@ -41,8 +40,10 @@ class BaseJson
         'JSON_ERROR_SYNTAX' => 'Syntax error.',
         'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded.', // PHP 5.3.3
         'JSON_ERROR_RECURSION' => 'One or more recursive references in the value to be encoded.', // PHP 5.5.0
-        'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
-        'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given', // PHP 5.5.0
+        'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded.', // PHP 5.5.0
+        'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given.', // PHP 5.5.0
+        'JSON_ERROR_INVALID_PROPERTY_NAME' => 'A property name that cannot be encoded was given.', // PHP 7.0.0
+        'JSON_ERROR_UTF16' => 'Malformed UTF-16 characters, possibly incorrectly encoded.', // PHP 7.0.0
     ];
 
 
@@ -112,12 +113,13 @@ class BaseJson
      */
     public static function decode($json, $asArray = true)
     {
-        if (is_array($json)) {
+        if (is_array($json) || (is_object($json) && !method_exists($json, '__toString'))) {
             throw new InvalidArgumentException('Invalid JSON data.');
-        } elseif ($json === null || $json === '') {
+        }
+        if ($json === null || $json === '') {
             return null;
         }
-        $decode = json_decode((string) $json, $asArray);
+        $decode = json_decode((string) $json, (bool) $asArray);
         static::handleJsonError(json_last_error());
 
         return $decode;
@@ -132,22 +134,19 @@ class BaseJson
      */
     protected static function handleJsonError($lastError)
     {
-        if ($lastError === JSON_ERROR_NONE) {
-            return;
-        }
-
-        $availableErrors = [];
-        foreach (static::$jsonErrorMessages as $const => $message) {
-            if (defined($const)) {
-                $availableErrors[constant($const)] = $message;
+        if ($lastError !== JSON_ERROR_NONE) {
+            if (PHP_VERSION_ID >= 50500) {
+                throw new InvalidArgumentException(json_last_error_msg(), $lastError);
             }
-        }
 
-        if (isset($availableErrors[$lastError])) {
-            throw new InvalidArgumentException($availableErrors[$lastError], $lastError);
-        }
+            foreach (static::$jsonErrorMessages as $const => $message) {
+                if (defined($const) && constant($const) === $lastError) {
+                    throw new InvalidArgumentException($message, $lastError);
+                }
+            }
 
-        throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
+            throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
+        }
     }
 
     /**
@@ -161,41 +160,35 @@ class BaseJson
     {
         if (is_object($data)) {
             if ($data instanceof JsExpression) {
-                $token = "!{[$expPrefix=" . count($expressions) . ']}!';
-                $expressions['"' . $token . '"'] = $data->expression;
+                $token = '!{[' . $expPrefix . '=' . count($expressions) . ']}!';
+                $expressions['"' . $token . '"'] = (string) $data;
 
                 return $token;
             }
 
             if ($data instanceof \JsonSerializable) {
-                return static::processData($data->jsonSerialize(), $expressions, $expPrefix);
-            }
-
-            if ($data instanceof \DateTimeInterface) {
-                return static::processData((array)$data, $expressions, $expPrefix);
-            }
-
-            if ($data instanceof Arrayable) {
+                $data = $data->jsonSerialize();
+            } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
-            } elseif ($data instanceof \SimpleXMLElement) {
-                $data = (array) $data;
-            } else {
-                $result = [];
-                foreach ($data as $name => $value) {
-                    $result[$name] = $value;
-                }
-                $data = $result;
+            } elseif ($data instanceof \Traversable) {
+                $data = iterator_to_array($data);
             }
-
-            if ($data === []) {
-                return new \stdClass();
+            // to keep initial data type
+            if (is_array($data)) {
+                $data = (object) $data;
             }
         }
 
-        if (is_array($data)) {
+        if (is_array($data) || is_object($data)) {
+            $arrayAccess = is_array($data) || $data instanceof \ArrayAccess;
             foreach ($data as $key => $value) {
                 if (is_array($value) || is_object($value)) {
-                    $data[$key] = static::processData($value, $expressions, $expPrefix);
+                    $value = static::processData($value, $expressions, $expPrefix);
+                    if ($arrayAccess) {
+                        $data[$key] = $value;
+                    } else {
+                        $data->{$key} = $value;
+                    }
                 }
             }
         }
@@ -217,15 +210,15 @@ class BaseJson
     public static function errorSummary($models, $options = [])
     {
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
-        $lines = self::collectErrors($models, $showAllErrors);
+        $lines = static::collectErrors($models, $showAllErrors);
 
-        return json_encode($lines);
+        return static::encode($lines);
     }
 
     /**
-     * Return array of the validation errors
+     * Return array of the validation errors.
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
-     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * @param bool $showAllErrors if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
      * @return array of the validation errors
      * @since 2.0.14
@@ -233,14 +226,14 @@ class BaseJson
     private static function collectErrors($models, $showAllErrors)
     {
         $lines = [];
+
         if (!is_array($models)) {
             $models = [$models];
         }
-
         foreach ($models as $model) {
-            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+            $lines[] = $model->getErrorSummary($showAllErrors);
         }
 
-        return $lines;
+        return array_unique(call_user_func_array('array_merge', $lines));
     }
 }
