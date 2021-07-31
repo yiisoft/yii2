@@ -252,7 +252,7 @@ Comparé à asset-packagist, composer-asset-plugin ne nécessite aucun changemen
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-Cette commande installe  [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
+Cette commande installe  [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
 
 Ajoutez les lignes suivantes au fichier `composer.json` de votre projet pour préciser les dossiers où seront installés les paquets, si vous voulez les publier en utilisant Yii :
 

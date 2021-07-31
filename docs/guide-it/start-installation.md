@@ -30,7 +30,7 @@ Una volta installato Composer, puoi installare Yii eseguendo questo comando in u
     composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-Il primo comando installa il [plugin composer asset](https://github.com/francoispluchino/composer-asset-plugin/)
+Il primo comando installa il [plugin composer asset](https://github.com/fxpio/composer-asset-plugin)
 che consente di gestire le dipendenze di bower e npm tramite Composer. Devi eseguire questo comando solo una volta. Il secondo 
 installa Yii in una directory di nome `basic`. Puoi scegliere un nome diverso, se preferisci.
 

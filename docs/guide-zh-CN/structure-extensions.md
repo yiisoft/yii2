@@ -185,7 +185,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 当你发布一个稳定版本时，你所依赖的包也应当使用稳定版本。
 
 大多数 JavaScript/CSS 包是用 [Bower](http://bower.io/) 来管理的，而非 Composer。你可使用 
-[Composer asset 插件](https://github.com/francoispluchino/composer-asset-plugin) 使之可以
+[Composer asset 插件](https://github.com/fxpio/composer-asset-plugin) 使之可以
 通过 Composer 来管理这类包。如果你的扩展依赖 Bower 软件包，你可以如下例所示那样简单地
 在 `composer.json` 文件的依赖中列出它。
 

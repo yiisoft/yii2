@@ -257,7 +257,7 @@ $config = [
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-这个命令会全局安装 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) 插件，
+这个命令会全局安装 [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) 插件，
 以便使用 Composer 来管理对 Bower 和 NPM 包的依赖。 在这个插件安装后，
 你计算机上的每个项目都可以通过 `composer.json` 来管理 Bower 和 NPM 包。
 

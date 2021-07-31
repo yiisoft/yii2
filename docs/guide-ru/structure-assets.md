@@ -215,7 +215,7 @@ $config = [
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-Эта команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) глобально,
+Эта команда устанавливает [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) глобально,
 что позволит устанавливать зависимости из Bower и NPM. После установки все проекты на вашем комьютере будут поддерживать
 установку Bower и NPM пакетов, описанных в `composer.json`.
 

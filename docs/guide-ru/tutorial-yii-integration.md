@@ -71,7 +71,7 @@ composer require yiisoft/yii2
 [ресурсов](structure-assets.md), вы можете установить специальный пакет, который предотвращает загрузку Bower и NPM
 пакетов. Смотрите [cebe/assetfree-yii2](https://github.com/cebe/assetfree-yii2) для деталей.
 
-Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/), который позволяет управлять зависимостями пакетов bower и npm через Composer. Даже если вы хотите воспользоваться слоем абстракции баз данных или другими элементами Yii, не связанными с ресурсами, этот плагин все равно придется установить, так как без него не установится пакет Yii.
+Первая команда устанавливает [composer asset plugin](https://github.com/fxpio/composer-asset-plugin), который позволяет управлять зависимостями пакетов bower и npm через Composer. Даже если вы хотите воспользоваться слоем абстракции баз данных или другими элементами Yii, не связанными с ресурсами, этот плагин все равно придется установить, так как без него не установится пакет Yii.
 В разделе [об установке Yii](start-installation.md#installing-via-composer) более подробно описана работа с Composer и даны решения проблем, которые могут возникнуть при установке.
 
 Также можно [скачать](https://www.yiiframework.com/download/) файл релиза Yii и распаковать его в директорию `BasePath/vendor`.
