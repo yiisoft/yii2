@@ -94,7 +94,7 @@ Installer les Assets (ici bibliothèques CSS et JavaScript) <span id="installing
 Yii s'appuie sur les paquets [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.com/) pour l'installation des bibliothèques CSS et JavaScript.
 
 Il utilise Composer pour les obtenir, permettant ainsi aux versions de paquet de PHP et à celles de CSS/JavaScript, d'être résolues en même temps.
-Cela peut être obtenue soit en utilisant [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Cela peut être obtenue soit en utilisant [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
 
 Reportez-vous à la documentation sur les  [Assets](structure-assets.md) pour plus de détail.
 

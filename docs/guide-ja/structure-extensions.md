@@ -185,7 +185,7 @@ Yii のアプリケーションは、このファイルによって、どんな�
 あなたのエクステンションを安定バージョンとしてリリースする場合は、安定した依存パッケージを使ってください。
 
 たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) を使って管理されています。
-Yii は [Composer アセット・プラグイン](https://github.com/francoispluchino/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
+Yii は [Composer アセット・プラグイン](https://github.com/fxpio/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
 あなたのエクステンションが Bower パッケージに依存している場合でも、次のように、
 `composer.json` に依存パッケージをリストアップすることが簡単に出来ます。
 

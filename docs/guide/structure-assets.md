@@ -257,7 +257,7 @@ requires global installation of a special Composer plugin by running the followi
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
+This command installs [composer asset plugin](https://github.com/fxpio/composer-asset-plugin/) globally
 which allows managing Bower and NPM package dependencies through Composer. After the plugin installation, 
 every single project on your computer will support Bower and NPM packages through `composer.json`. 
 
