@@ -67,9 +67,16 @@ class BaseStringHelper
      */
     public static function basename($path, $suffix = '')
     {
-        $path = str_replace('\\', '/', $path);
+        if (!empty($suffix)) {
+            $len = mb_strlen($suffix);
+            if (mb_substr($path, -$len) === $suffix) {
+                $path = mb_substr($path, 0, -$len);
+            }
+        }
   
-        return \basename($path, $suffix);
+        $path = str_replace('\\', '/', $path);
+
+        return \basename($path);
     }
 
     /**
