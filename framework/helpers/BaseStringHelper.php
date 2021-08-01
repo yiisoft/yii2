@@ -85,8 +85,8 @@ class BaseStringHelper
     public static function dirname($path)
     {
        $pos = mb_strrpos(rtrim(str_replace('\\', '/', $path), '/'), '/');
-        if ($pos !== false) {
-            return mb_substr($path, 0, $pos === 0 ? $pos + 1 : $pos);
+        if ($pos !== false && $pos !== 0) {
+            return mb_substr($path, 0, $pos);
         }
 
         return '';
