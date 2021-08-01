@@ -54,47 +54,39 @@ class BaseStringHelper
 
     /**
      * Returns the trailing name component of a path.
-     * This method is similar to the php function `basename()` except that it will
-     * treat both \ and / as directory separators, independent of the operating system.
-     * This method was mainly created to work on php namespaces. When working with real
-     * file paths, php's `basename()` should work fine for you.
+     * This method is similar to the php function `basename()` except that it will treat both
+     * `\` and `/` as directory separators, independent of the operating system. This method
+     * was mainly created to work on php namespaces. When working with real file paths, PHP's
+     * `basename()` should work fine for you.
      * Note: this method is not aware of the actual filesystem, or path components such as "..".
      *
      * @param string $path A path string.
      * @param string $suffix If the name component ends in suffix this will also be cut off.
-     * @return string the trailing name component of the given path.
-     * @see https://secure.php.net/manual/en/function.basename.php
+     * @return string The trailing name component of the given path.
+     * @see https://www.php.net/manual/en/function.basename
      */
     public static function basename($path, $suffix = '')
     {
-        $len = mb_strlen($suffix);
-        if ($len > 0 && mb_substr($path, -$len) === $suffix) {
-            $path = mb_substr($path, 0, -$len);
-        }
- 
-        $path = rtrim(str_replace('\\', '/', $path), '/');
-        $pos = mb_strrpos($path, '/');
-        if ($pos !== false) {
-            return mb_substr($path, $pos + 1);
-        }
-
-        return $path;
+        $path = str_replace('\\', '/', $path);
+  
+        return \basename($path, $suffix);
     }
 
     /**
      * Returns parent directory's path.
-     * This method is similar to `dirname()` except that it will treat
-     * both \ and / as directory separators, independent of the operating system.
+     * This method is similar to PHP's `dirname()` except that it will treat both `\` and `/` as
+     * directory separators and if there are no slashes in path, '' is returned instead '.',
+     * independent of the operating filesystem.
      *
      * @param string $path A path string.
      * @return string the parent directory's path.
-     * @see https://secure.php.net/manual/en/function.basename.php
+     * @see https://www.php.net/manual/en/function.dirname
      */
     public static function dirname($path)
     {
-        $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
+       $pos = mb_strrpos(rtrim(str_replace('\\', '/', $path), '/'), '/');
         if ($pos !== false) {
-            return mb_substr($path, 0, $pos);
+            return mb_substr($path, 0, $pos === 0 ? $pos + 1 : $pos);
         }
 
         return '';
