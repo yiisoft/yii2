@@ -108,7 +108,7 @@ class Logger extends Component
      */
     public $traceLevel = 0;
     /**
-     * @var Dispatcher the message dispatcher
+     * @var Dispatcher the message dispatcher.
      */
     public $dispatcher;
     /**
@@ -116,6 +116,13 @@ class Logger extends Component
      * @since 2.0.41
      */
     public $dbEventNames = ['yii\db\Command::query', 'yii\db\Command::execute'];
+
+    /**
+     * @var array of profiling related messages.
+     * Structure of a log message is the same as in [[$messages]].
+     * @since 2.0.43
+     */
+    protected $profileMessages = [];
 
 
     /**
@@ -162,7 +169,11 @@ class Logger extends Component
                 }
             }
         }
-        $this->messages[] = [$message, $level, $category, $time, $traces, memory_get_usage()];
+        $data = [$message, $level, $category, $time, $traces, memory_get_usage()];
+        $this->messages[] = $data;
+        if ($level == self::LEVEL_PROFILE_BEGIN || $level == self::LEVEL_PROFILE_END) {
+            $this->profileMessages[] = $data;
+        }
         if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
             $this->flush();
         }
@@ -213,7 +224,7 @@ class Logger extends Component
      */
     public function getProfiling($categories = [], $excludeCategories = [])
     {
-        $timings = $this->calculateTimings($this->messages);
+        $timings = $this->calculateTimings($this->profileMessages);
         if (empty($categories) && empty($excludeCategories)) {
             return $timings;
         }

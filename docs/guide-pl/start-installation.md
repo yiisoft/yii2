@@ -115,7 +115,7 @@ Instalowanie zasobów <span id="installing-assets"></span>
 Yii używa menadżerów pakietów [Bower](http://bower.io/) i/lub [NPM](https://www.npmjs.com/) do instalacji bibliotek 
 zasobów (CSS i JavaScript). Proces pobierania tych bibliotek korzysta z Composera, pozwalając na rozwiązywanie zależności 
 pakietów PHP i CSS/JavaScript w tym samym czasie, za pomocą serwisu [asset-packagist.org](https://asset-packagist.org) 
-lub wtyczki [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).  
+lub wtyczki [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).  
 Po więcej informacji sięgnij do sekcji [dokumentacji Zasobów](structure-assets.md).
 
 Możesz, rzecz jasna, również zarządzać swoimi zasobami za pomocą natywnego klienta Bower/NPM, korzystać z CDN, albo też 

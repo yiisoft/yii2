@@ -86,7 +86,7 @@ para instalar Yii:
     composer require yiisoft/yii2
     composer install
 
-El primer comando instala el [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
+El primer comando instala el [composer asset plugin](https://github.com/fxpio/composer-asset-plugin),
 que permite administrar paquetes bower y npm a través de Composer. Incluso si sólo quieres utilizar la capa de base de datos
 u otra característica de Yii no relacionada a assets, requiere que instales el paquete composer de Yii.
 
