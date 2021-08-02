@@ -176,6 +176,9 @@ class BaseJson
                 $data = $data->toArray();
             } elseif ($data instanceof \Traversable) {
                 $data = iterator_to_array($data);
+            } else {
+                // to protect against changes to object's properties
+                $data = clone $data;     
             }
             // to keep initial data type
             if (is_array($data)) {
@@ -189,7 +192,6 @@ class BaseJson
                     $value = static::processData($value, $expressions, $expPrefix);
                 }
             }
-            unset($value);
         }
 
         return $data;
