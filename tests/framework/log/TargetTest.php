@@ -284,7 +284,7 @@ class TargetTest extends TestCase
         );
 
         $logger = new Logger([
-            'profilingEnabled' => true,
+            'profilingAware' => true,
             'dispatcher' => $dispatcher,
             'flushInterval' => 2,
         ]);
@@ -330,7 +330,7 @@ class TargetTest extends TestCase
         );
 
         $logger = new Logger([
-            'profilingEnabled' => true,
+            'profilingAware' => true,
             'dispatcher' => $dispatcher,
             'flushInterval' => 2,
         ]);
