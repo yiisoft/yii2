@@ -5,20 +5,20 @@
         "yii2",
         "framework"
     ],
-    "homepage": "http://www.yiiframework.com/",
+    "homepage": "https://www.yiiframework.com/",
     "type": "library",
     "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Qiang Xue",
             "email": "qiang.xue@gmail.com",
-            "homepage": "http://www.yiiframework.com/",
+            "homepage": "https://www.yiiframework.com/",
             "role": "Founder and project lead"
         },
         {
             "name": "Alexander Makarov",
             "email": "sam@rmcreative.ru",
-            "homepage": "http://rmcreative.ru/",
+            "homepage": "https://rmcreative.ru/",
             "role": "Core framework development"
         },
         {
@@ -29,7 +29,7 @@
         {
             "name": "Carsten Brandt",
             "email": "mail@cebe.cc",
-            "homepage": "http://cebe.cc/",
+            "homepage": "https://cebe.cc/",
             "role": "Core framework development"
         },
         {
@@ -59,7 +59,7 @@
         "issues": "https://github.com/yiisoft/yii2/issues?state=open",
         "forum": "http://www.yiiframework.com/forum/",
         "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "irc": "irc://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "require": {
