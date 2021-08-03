@@ -465,7 +465,7 @@ a sua extensão:
 
 > Informação: Embora não seja um requisito, sugerimos que sua extensão se conforme 
   a determinados estilos de codificação. Você pode consultar o 
-  [estilo de codificação do framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  [estilo de codificação do framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Extensões Nativas <span id="core-extensions"></span>

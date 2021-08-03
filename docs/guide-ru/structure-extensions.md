@@ -369,7 +369,7 @@ class MyBootstrapClass implements BootstrapInterface
   предоставляет инструмент для генерации документации API на основе ваших комментариев.
 
 > Info: Пока это не обязательно, но мы всё-таки рекомендуем вам придерживаться определённого стиля кодирования.
-  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Базовые расширения <span id="core-extensions"></span>
