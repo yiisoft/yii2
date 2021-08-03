@@ -119,10 +119,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                     $element->appendChild($child);
                     $this->buildXml($child, $value);
                 } else {
-                    $child = $this->dom->createElement(
-                        $this->getValidXmlElementName($name),
-                        $this->formatScalarValue($value)
-                    );
+                    $child = $this->dom->createElement($this->getValidXmlElementName($name));
+                    $child->appendChild($this->dom->createTextNode($this->formatScalarValue($value)));
                     $element->appendChild($child);
                 }
             }
@@ -147,9 +145,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 $this->buildXml($child, $array);
             }
         } else {
-            $element->appendChild(
-                $this->dom->createTextNode($this->formatScalarValue($data))
-            );
+            $element->appendChild($this->dom->createTextNode($this->formatScalarValue($data)));
         }
     }
 
@@ -169,7 +165,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
             return StringHelper::floatToString($value);
         }
 
-        return htmlspecialchars($value, ENT_XML1, $this->encoding);
+        return (string) $value;
     }
 
     /**
