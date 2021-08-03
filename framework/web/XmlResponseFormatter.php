@@ -55,6 +55,11 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @since 2.0.11
      */
     public $useObjectTags = true;
+    /**
+     * @var bool if true, converts object tags to lowercase, `$useObjectTags` must be enabled
+     * @since 2.0.43
+     */
+    public $objectTagToLowercase = false;
 
     /**
      * @var DOMDocument the XML document, serves as the root of the document tree
@@ -123,7 +128,10 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
             }
         } elseif (is_object($data)) {
             if ($this->useObjectTags) {
-                $name = lcfirst(StringHelper::basename(get_class($data)));
+                $name = StringHelper::basename(get_class($data));
+                if ($this->objectTagToLowercase) {
+                    $name = strtolower($name);
+                }
                 $child = $this->dom->createElement($name);
                 $element->appendChild($child);
             } else {
