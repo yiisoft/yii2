@@ -163,4 +163,13 @@ class XmlResponseFormatterTest extends FormatterTest
         $formatter->format($this->response);
         $this->assertEquals($this->xmlHead . "<response><id>123</id><title>abc</title></response>\n", $this->response->content);
     }
+
+    public function testObjectTagToLowercase()
+    {
+        $formatter = $this->getFormatterInstance(['objectTagToLowercase' => true]);
+
+        $this->response->data = new Post(123, 'abc');
+        $formatter->format($this->response);
+        $this->assertEquals($this->xmlHead . "<response><post><id>123</id><title>abc</title></post></response>\n", $this->response->content);
+    }
 }
