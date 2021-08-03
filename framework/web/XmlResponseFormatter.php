@@ -9,7 +9,7 @@ namespace yii\web;
 
 use DOMDocument;
 use DOMException;
-use DOMText;
+use Traversable;
 use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;
@@ -25,11 +25,11 @@ use yii\helpers\StringHelper;
 class XmlResponseFormatter extends Component implements ResponseFormatterInterface
 {
     /**
-     * @var string the Content-Type header for the response
+     * @var string the `Content-Type` header for the response
      */
     public $contentType = 'application/xml';
     /**
-     * @var string the XML version
+     * @var string the XML version.
      */
     public $version = '1.0';
     /**
@@ -37,24 +37,25 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $encoding;
     /**
-     * @var string the name of the root element. If set to false, null or is empty then no root tag should be added.
+     * @var string|string[]|false the name of the root element or index array (URI namespace, tag name).
+     * If set to false or null then no root tag should be added.
      */
     public $rootTag = 'response';
     /**
-     * @var string the name of the elements that represent the array elements with numeric keys.
+     * @var string the name of the elements that represent the array elements with numeric keys
      */
     public $itemTag = 'item';
     /**
-     * @var bool whether to interpret objects implementing the [[\Traversable]] interface as arrays.
-     * Defaults to `true`.
+     * @var bool whether to interpret objects implementing the [[Traversable]] interface as arrays
      * @since 2.0.7
      */
     public $useTraversableAsArray = true;
     /**
-     * @var bool if object tags should be added
+     * @var bool if object tags should be added (convert class to tag name)
      * @since 2.0.11
      */
     public $useObjectTags = true;
+
     /**
      * @var DOMDocument the XML document, serves as the root of the document tree
      * @since 2.0.43
@@ -64,36 +65,46 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
 
     /**
      * Formats the specified response.
+     *
      * @param Response $response the response to be formatted.
      */
     public function format($response)
     {
-        $charset = $this->encoding === null ? $response->charset : $this->encoding;
+        if ($this->encoding === null) {
+            $this->encoding = $response->charset;
+        }
         if (stripos($this->contentType, 'charset') === false) {
-            $this->contentType .= '; charset=' . $charset;
+            $this->contentType .= '; charset=' . $this->encoding;
         }
         $response->getHeaders()->set('Content-Type', $this->contentType);
         if ($response->data !== null) {
-            $this->dom = new DOMDocument($this->version, $charset);
-            if (!empty($this->rootTag)) {
-                $root = $this->dom->createElement($this->rootTag);
+            $this->dom = new DOMDocument($this->version, $this->encoding);
+            if (empty($this->rootTag)) {
+                $this->buildXml($this->dom, $response->data);
+            } else {
+                if (is_array($this->rootTag)) {
+                    $root = $this->dom->createElementNS($this->rootTag[0], $this->rootTag[1]);
+                } else {
+                    $root = $this->dom->createElement($this->rootTag);
+                }
                 $this->dom->appendChild($root);
                 $this->buildXml($root, $response->data);
-            } else {
-                $this->buildXml($this->dom, $response->data);
             }
             $response->content = $this->dom->saveXML();
         }
     }
 
     /**
+     * Recursive adds data to XML document.
+     *
      * @param DOMElement|DOMDocument $element the current element
      * @param mixed $data the content of current element
      */
     protected function buildXml($element, $data)
     {
-        if (is_array($data) ||
-            ($data instanceof \Traversable && $this->useTraversableAsArray && !$data instanceof Arrayable)
+        if (
+            is_array($data)
+            || (!$data instanceof Arrayable && $data instanceof Traversable && $this->useTraversableAsArray)
         ) {
             foreach ($data as $name => $value) {
                 if (is_int($name) && is_object($value)) {
@@ -112,7 +123,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
             }
         } elseif (is_object($data)) {
             if ($this->useObjectTags) {
-                $child = $this->dom->createElement(StringHelper::basename(get_class($data)));
+                $name = lcfirst(StringHelper::basename(get_class($data)));
+                $child = $this->dom->createElement($name);
                 $element->appendChild($child);
             } else {
                 $child = $element;
@@ -127,7 +139,9 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 $this->buildXml($child, $array);
             }
         } else {
-            $element->appendChild(new DOMText($this->formatScalarValue($data)));
+            $element->appendChild(
+                $this->dom->createTextNode($this->formatScalarValue($data))
+            );
         }
     }
 
@@ -140,21 +154,19 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     protected function formatScalarValue($value)
     {
-        if ($value === true) {
-            return 'true';
-        }
-        if ($value === false) {
-            return 'false';
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
         }
         if (is_float($value)) {
             return StringHelper::floatToString($value);
         }
-        return (string) $value;
+
+        return htmlspecialchars($value, ENT_XML1, $this->encoding);
     }
 
     /**
-     * Returns element name ready to be used in DOMElement if
-     * name is not empty, is not int and is valid.
+     * Returns element name ready to be used in `DOMElement` if name is not empty,
+     * is not integer and is valid.
      *
      * Falls back to [[itemTag]] otherwise.
      *
