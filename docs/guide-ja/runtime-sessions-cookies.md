@@ -403,3 +403,4 @@ Yii 2.0.21 以降、[[yii\web\Cookie::sameSite]] 設定がサポートされて�
 [PHP マニュアル](https://www.php.net/manual/ja/session.security.ini.php) で示されているように、`php.ini` にはセッションのセキュリティに関する重要な設定があります。
 推奨される設定を必ず適用して下さい。特に、PHP インストールのデフォルトでは有効にされていない
 `session.use_strict_mode` を有効にして下さい。
+この設定は [[yii\web\Session::useStrictMode]] を使って設定することも出来ます。
