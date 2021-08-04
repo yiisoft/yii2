@@ -462,7 +462,11 @@ class BaseStringHelper
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $parts = preg_split('/(\s+[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        if (empty($string)) {
+            return '';
+        }
+
+        $parts = preg_split('/(\s+[^\w]+\s+|\s+)/u', (string) $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         $upEven = empty(trim($parts[0]));
         foreach ($parts as $key => $value) {
             if ($upEven !== !($key & 1)) {
