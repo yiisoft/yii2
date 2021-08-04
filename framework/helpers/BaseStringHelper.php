@@ -462,14 +462,14 @@ class BaseStringHelper
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $words = preg_split('/(\s+[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $upEven = empty(trim($words[0]));
-        foreach ($words as $key => $word) {
+        $parts = preg_split('/(\s+[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $upEven = empty(trim($parts[0]));
+        foreach ($parts as $key => $value) {
             if ($upEven !== !($key & 1)) {
-                $words[$key] = static::mb_ucfirst($word, $encoding);
+                $parts[$key] = static::mb_ucfirst($value, $encoding);
             }
         }
 
-        return implode('', $words);
+        return implode('', $parts);
     }
 }
