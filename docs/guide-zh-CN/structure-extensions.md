@@ -383,7 +383,7 @@ Yii 提供了测试支持，使你更容易写单元测试、验收测试和功�
   代码注释生成漂亮的 API 文档。
 
 > Info: 虽然不做要求，我们还是建议你的扩展遵循某个编码规范。
-  你可以参照 [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style)。
+  你可以参照 [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md)。
 
 
 ## 核心扩展 <span id="core-extensions"></span>

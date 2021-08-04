@@ -392,7 +392,7 @@ mencionados a continuación para facilitar a otra gente el uso de nuestra extens
 
 > Info: Aunque no es un requerimiento, se recomienda que la extensión se adhiera a ciertos estilos de
   codificación. Se puede hacer referencia a
-  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) para
+  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) para
   obtener más detalles.
 
 ## Extensiones del Núcleo <span id="core-extensions"></span>
