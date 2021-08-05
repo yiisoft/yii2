@@ -257,7 +257,7 @@ requires global installation of a special Composer plugin by running the followi
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
+This command installs [composer asset plugin](https://github.com/fxpio/composer-asset-plugin/) globally
 which allows managing Bower and NPM package dependencies through Composer. After the plugin installation, 
 every single project on your computer will support Bower and NPM packages through `composer.json`. 
 
@@ -610,13 +610,13 @@ in extended syntax.
 Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
 the following syntax and file name extensions:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
+Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](https://lesscss.org/)
 you should install the `lessc` pre-processor command.
 
 You can customize the pre-processor commands and the supported extended syntax by configuring

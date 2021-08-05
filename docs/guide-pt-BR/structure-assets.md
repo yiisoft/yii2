@@ -542,14 +542,14 @@ O Yii usa as extensões dos nomes de arquivos para identificar se é um asset co
 sintaxe estendida. Por padrão, o Yii reconhecerá as seguintes sintaxes e extensões 
 de arquivos:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
 O Yii conta com ferramentas de pré-processamento instalados para converter os 
-assets. Por exemplo, para usar o [LESS](http://lesscss.org/) você deve instalar 
+assets. Por exemplo, para usar o [LESS](https://lesscss.org/) você deve instalar 
 o comando de pré-processamento `lessc`.
 
 Você pode personalizar os comandos de pré-processamento e o da sintaxe estendida 

@@ -44,7 +44,7 @@ composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Perintah pertama menginstal [komposer aset Plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+Perintah pertama menginstal [komposer aset Plugin](https://github.com/fxpio/composer-asset-plugin)
 yang memungkinkan mengelola bower dan paket npm melalui Composer. Anda hanya perlu menjalankan perintah ini
 sekali untuk semua. Perintah kedua menginstal Yii dalam sebuah direktori bernama `basic`. Anda dapat memilih nama direktori yang berbeda jika Anda ingin.
 
