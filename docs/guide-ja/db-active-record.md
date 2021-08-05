@@ -859,6 +859,8 @@ class Order extends ActiveRecord
   続けて書く、ということです。ご覧のように、`customer_id` は `Order` のプロパティであり、
   `id` は`Customer` のプロパティです。
   
+> Warning: リレーション名としては `relation` は予約済みで使えません。これを使うと `ArgumentCountError` となります。
+
 
 ### リレーショナル・データにアクセスする <span id="accessing-relational-data"></span>
 
