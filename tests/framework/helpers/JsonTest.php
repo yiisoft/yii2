@@ -15,6 +15,7 @@ use yiiunit\TestCase;
 
 /**
  * @group helpers
+ * @coversDefaultClass \yii\helpers\Json
  */
 class JsonTest extends TestCase
 {
@@ -169,7 +170,7 @@ class JsonTest extends TestCase
     /**
      * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Invalid JSON data.
-     * @covers Json::decode
+     * @covers ::decode
      */
     public function testDecodeInvalidParamException()
     {
@@ -177,7 +178,7 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @covers Json::decode
+     * @covers ::decode
      */
     public function testHandleJsonError()
     {
@@ -217,8 +218,8 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @link https://github.com/yiisoft/yii2/issues/17760
-     * @covers Json::encode
+     * @see https://github.com/yiisoft/yii2/issues/17760
+     * @covers ::encode
      */
     public function testEncodeDateTime()
     {
@@ -228,7 +229,7 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @covers Json::encode
+     * @covers ::encode
      */
     public function testPrettyPrint()
     {
