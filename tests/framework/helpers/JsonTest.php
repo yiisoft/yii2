@@ -7,11 +7,10 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\DynamicModel;
-use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
+use yiiunit\framework\models\JsonModel;
 use yiiunit\TestCase;
 
 /**
@@ -23,14 +22,14 @@ class JsonTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Helper must work without Yii::$app
+        // destroy application, helper must work without Yii::$app
         $this->destroyApplication();
     }
 
     public function testEncode()
     {
         // Arrayable data encoding
-        $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
+        $dataArrayable = $this->getMockBuilder('\yii\base\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
         $this->assertSame('{}', $actual);
@@ -46,9 +45,7 @@ class JsonTest extends TestCase
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
         // simple object encoding
-        $data = new \stdClass();
-        $data->a = 1;
-        $data->b = 2;
+        $data = (object) ['a' => 1, 'b' => 2];
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
         // empty data encoding
@@ -66,9 +63,7 @@ class JsonTest extends TestCase
         $expression1 = 'function (a) {}';
         $expression2 = 'function (b) {}';
         $data = [
-            'a' => [
-                1, new JsExpression($expression1),
-            ],
+            'a' => [1, new JsExpression($expression1)],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::encode($data));
@@ -80,7 +75,7 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
-        // @see https://github.com/yiisoft/yii2/issues/12043
+        // https://github.com/yiisoft/yii2/issues/12043
         $data = new JsonModel();
         $data->data = [];
         $this->assertSame('[]', Json::encode($data));
@@ -106,10 +101,8 @@ class JsonTest extends TestCase
         $this->assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
 
         // simple object encoding
-        $data = new \stdClass();
-        $data->a = 1;
-        $data->b = 2;
-        $this->assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
+        $data = (object) ['a' => 1, 'b' => 'c'];
+        $this->assertSame('{"a":1,"b":"c"}', Json::htmlEncode($data));
 
         // expression encoding
         $expression = 'function () {}';
@@ -120,9 +113,7 @@ class JsonTest extends TestCase
         $expression1 = 'function (a) {}';
         $expression2 = 'function (b) {}';
         $data = [
-            'a' => [
-                1, new JsExpression($expression1),
-            ],
+            'a' => [1, new JsExpression($expression1)],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::htmlEncode($data));
@@ -171,40 +162,44 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('\yii\base\InvalidArgumentException');
         Json::decode($json);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Invalid JSON data.
+     * @covers Json::decode
      */
     public function testDecodeInvalidParamException()
     {
         Json::decode([]);
     }
 
+    /**
+     * @covers Json::decode
+     */
     public function testHandleJsonError()
     {
-        // Basic syntax error
+        // basic syntax error
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidParamException $e) {
-            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+        } catch (\yii\base\InvalidArgumentException $e) {
+            $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
 
-        // Unsupported type since PHP 5.5
+        // unsupported type since PHP 5.5
         try {
             $fp = fopen('php://stdin', 'r');
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
+                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
             } else {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
             }
         }
     }
@@ -223,6 +218,7 @@ class JsonTest extends TestCase
 
     /**
      * @link https://github.com/yiisoft/yii2/issues/17760
+     * @covers Json::encode
      */
     public function testEncodeDateTime()
     {
@@ -231,6 +227,9 @@ class JsonTest extends TestCase
         $this->assertEquals('{"date":"2014-10-12 00:00:00.000000","timezone_type":3,"timezone":"UTC"}', $output);
     }
 
+    /**
+     * @covers Json::encode
+     */
     public function testPrettyPrint()
     {
         $defaultValue = Json::$prettyPrint;
@@ -260,28 +259,5 @@ class JsonTest extends TestCase
         $this->assertEquals($defOutput, $output);
 
         Json::$prettyPrint = $defaultValue;
-    }
-}
-
-class JsonModel extends DynamicModel implements \JsonSerializable
-{
-    public $data = ['json' => 'serializable'];
-
-    public function jsonSerialize()
-    {
-        return $this->data;
-    }
-
-    public function rules()
-    {
-        return [
-            ['name', 'required'],
-            ['name', 'string', 'max' => 100]
-        ];
-    }
-
-    public function init()
-    {
-       $this->defineAttribute('name');
     }
 }
