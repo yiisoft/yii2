@@ -124,7 +124,7 @@ class BaseJson
             throw new InvalidArgumentException('Invalid JSON data.');
         }
 
-        $decode = json_decode((string) $json, (bool) $asArray);
+        $decode = json_decode($json, (bool) $asArray);
         static::handleJsonError(json_last_error());
 
         return $decode;
