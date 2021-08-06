@@ -105,19 +105,26 @@ class BaseJson
 
     /**
      * Decodes the given JSON string into a PHP data structure.
+     *
      * @param string $json the JSON string to be decoded
-     * @param bool $asArray whether to return objects in terms of associative arrays.
+     * @param bool $asArray whether to return objects in terms of associative arrays
      * @return mixed the PHP data
      * @throws InvalidArgumentException if there is any decoding error
      */
     public static function decode($json, $asArray = true)
     {
-        if (is_array($json)) {
-            throw new InvalidArgumentException('Invalid JSON data.');
-        } elseif ($json === null || $json === '') {
+        if ($json === null) {
             return null;
         }
-        $decode = json_decode((string) $json, $asArray);
+        if ($json === '') {
+            return '';
+        }
+
+        if (is_array($json) || (is_object($json) && !method_exists($json, '__toString'))) {
+            throw new InvalidArgumentException('Invalid JSON data.');
+        }
+
+        $decode = json_decode((string) $json, (bool) $asArray);
         static::handleJsonError(json_last_error());
 
         return $decode;
