@@ -431,6 +431,7 @@ class StringHelperTest extends TestCase
             ['foo bar', 'Foo Bar'],
             ['!foo bar-baz', '!foo Bar-baz'],
             [' foo BAR', ' Foo BAR'],
+            [' ! foo BAR', ' ! Foo BAR'],
             ["\tfoo\nbar  baz", "\tFoo\nBar  Baz"],
             ['👍🏻 foo bar', '👍🏻 Foo Bar'],
             ['', ''],
