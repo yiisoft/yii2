@@ -156,10 +156,11 @@ class JsonTest extends TestCase
 
     public function testDecode()
     {
-        // empty value
+        // empty values
         $json = '';
-        $actual = Json::decode($json);
-        $this->assertNull($actual);
+        $this->assertSame('', Json::decode($json));
+        $json = null;
+        $this->assertNull(Json::decode($json));
 
         // basic data decoding
         $json = '"1"';
