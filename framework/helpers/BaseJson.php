@@ -203,6 +203,7 @@ class BaseJson
 
     /**
      * Generates a summary of the validation errors.
+     *
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
@@ -217,13 +218,14 @@ class BaseJson
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         $lines = self::collectErrors($models, $showAllErrors);
 
-        return json_encode($lines);
+        return static::encode($lines);
     }
 
     /**
-     * Return array of the validation errors
+     * Return array of the validation errors.
+     *
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
-     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * @param bool $showAllErrors if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
      * @return array of the validation errors
      * @since 2.0.14
@@ -231,14 +233,14 @@ class BaseJson
     private static function collectErrors($models, $showAllErrors)
     {
         $lines = [];
+
         if (!is_array($models)) {
             $models = [$models];
         }
-
         foreach ($models as $model) {
-            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+            $lines[] = $model->getErrorSummary($showAllErrors);
         }
 
-        return $lines;
+        return array_unique(call_user_func_array('array_merge', $lines));
     }
 }
