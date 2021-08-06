@@ -28,21 +28,22 @@ class BaseJson
      * In case `prettyPrint` is `null` (default) the `options` passed to `encode` functions will not be changed.
      * @since 2.0.43
      */
-    public static $prettyPrint = null;
+    public static $prettyPrint;
     /**
-     * List of JSON Error messages assigned to constant names for better handling of version differences.
-     * @var array
+     * @var array List of JSON Error messages assigned to constant names for better handling of version differences.
      * @since 2.0.7
      */
     public static $jsonErrorMessages = [
-        'JSON_ERROR_DEPTH' => 'The maximum stack depth has been exceeded.',
-        'JSON_ERROR_STATE_MISMATCH' => 'Invalid or malformed JSON.',
-        'JSON_ERROR_CTRL_CHAR' => 'Control character error, possibly incorrectly encoded.',
-        'JSON_ERROR_SYNTAX' => 'Syntax error.',
-        'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded.', // PHP 5.3.3
-        'JSON_ERROR_RECURSION' => 'One or more recursive references in the value to be encoded.', // PHP 5.5.0
+        'JSON_ERROR_DEPTH' => 'The maximum stack depth has been exceeded',
+        'JSON_ERROR_STATE_MISMATCH' => 'Invalid or malformed JSON',
+        'JSON_ERROR_CTRL_CHAR' => 'Control character error, possibly incorrectly encoded',
+        'JSON_ERROR_SYNTAX' => 'Syntax error',
+        'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded', // PHP 5.3.3
+        'JSON_ERROR_RECURSION' => 'One or more recursive references in the value to be encoded', // PHP 5.5.0
         'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
-        'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given', // PHP 5.5.0
+        'JSON_ERROR_UNSUPPORTED_TYPE' => 'Type is not supported', // PHP 5.5.0
+        'JSON_ERROR_INVALID_PROPERTY_NAME' => 'A property name that cannot be encoded was given', // PHP 7.0.0
+        'JSON_ERROR_UTF16' => 'Malformed UTF-16 characters, possibly incorrectly encoded', // PHP 7.0.0
     ];
 
 
@@ -126,28 +127,25 @@ class BaseJson
     /**
      * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
      *
-     * @param int $lastError error code from [json_last_error()](https://secure.php.net/manual/en/function.json-last-error.php).
+     * @param int $lastError error code from [json_last_error()](https://www.php.net/manual/en/function.json-last-error.php).
      * @throws InvalidArgumentException if there is any encoding/decoding error.
      * @since 2.0.6
      */
     protected static function handleJsonError($lastError)
     {
-        if ($lastError === JSON_ERROR_NONE) {
-            return;
-        }
-
-        $availableErrors = [];
-        foreach (static::$jsonErrorMessages as $const => $message) {
-            if (defined($const)) {
-                $availableErrors[constant($const)] = $message;
+        if ($lastError !== JSON_ERROR_NONE) {
+            if (PHP_VERSION_ID >= 50500) {
+                throw new InvalidArgumentException(json_last_error_msg(), $lastError);
             }
-        }
 
-        if (isset($availableErrors[$lastError])) {
-            throw new InvalidArgumentException($availableErrors[$lastError], $lastError);
-        }
+            foreach (static::$jsonErrorMessages as $const => $message) {
+                if (defined($const) && constant($const) === $lastError) {
+                    throw new InvalidArgumentException($message, $lastError);
+                }
+            }
 
-        throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
+            throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
+        }
     }
 
     /**
