@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.44 under development
+------------------------
+
+- Enh #18812: Added error messages and optimized "error" methods in `yii\helpers\BaseJson` (WinterSilence)
+
+
 2.0.43 under development
 ------------------------
 
@@ -24,7 +30,6 @@ Yii Framework 2 Change Log
 - Enh #18274: Added `profilingAware` option to `yii\log\Logger` to prevent breaking the profiling block messages pair when flushing them (bizley)
 - Enh #18789: Added JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
 - Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
-- Enh #18812: Added JSON_ERROR_INVALID_PROPERTY_NAME and JSON_ERROR_UTF16 to JSON error messages (WinterSilence)
 - Bug #18807: Fix replacing source whitespaces and optimize code of `yii\helpers\BaseStringHelper::mb_ucwords()` (WinterSilence)
 
 
