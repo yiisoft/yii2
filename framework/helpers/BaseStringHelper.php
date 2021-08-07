@@ -462,8 +462,8 @@ class BaseStringHelper
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        if ($string === null || $string === '') {
-            return '';
+        if (empty($string)) {
+            return is_string($string) ? $string : '';
         }
 
         $parts = preg_split('/(\s+[^\w]+\s+|^[^\w]+\s+|\s+)/u', (string) $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
