@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.44 under development
+------------------------
+
+- Bug #18813: Fix returned value for empty string, passing stringable object is allow in `yii\helpers\BaseJson::decode()` (WinterSilence)
+
+
 2.0.43 under development
 ------------------------
 
