@@ -457,17 +457,25 @@ class BaseStringHelper
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see https://secure.php.net/manual/en/function.ucwords.php
+     * @see https://www.php.net/manual/en/function.ucwords
      * @since 2.0.16
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $words = preg_split("/\s/u", $string, -1, PREG_SPLIT_NO_EMPTY);
+        $string = (string) $string;
+        if (empty($string)) {
+            return $string;
+        }
 
-        $titelized = array_map(function ($word) use ($encoding) {
-            return static::mb_ucfirst($word, $encoding);
-        }, $words);
+        $parts = preg_split('/(\s+[^\w]+\s+|^[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $ucfirstEven = !trim(mb_substr($parts[0], -1, 1, $encoding));
+        foreach ($parts as $key => $value) {
+            $isEven = (bool)($key % 2);
+            if ($ucfirstEven === $isEven) {
+                $parts[$key] = static::mb_ucfirst($value, $encoding);
+            }
+        }
 
-        return implode(' ', $titelized);
+        return implode('', $parts);
     }
 }
