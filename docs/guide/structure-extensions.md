@@ -185,7 +185,7 @@ Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) 
 dependencies when your extension is released in a stable version.
 
 Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/),
-instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+instead of Composer. Yii uses the [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
 to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
 simply list the dependency in `composer.json` like the following:
 
@@ -383,7 +383,7 @@ help other people learn about and use your extension:
   for you to generate pretty API documentation based on your code comments.
 
 > Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  the [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Core Extensions <span id="core-extensions"></span>

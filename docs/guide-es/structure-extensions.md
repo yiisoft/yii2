@@ -194,7 +194,7 @@ apropiadas (ej. `1.*`, `@stable`) para cada paquete dependiente. Se deben usar d
 estables de nuestras extensiones.
 
 La mayoría de paquetes JavaScript/CSS se gestionan usando [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/),
-en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
  para habilitar la gestión de estos tipos de paquetes a través de Composer. Si la extensión depende de un paquete
  Bower, se puede, simplemente, añadir la dependencia de el archivo `composer.json` como se muestra a continuación:
 
@@ -392,7 +392,7 @@ mencionados a continuación para facilitar a otra gente el uso de nuestra extens
 
 > Info: Aunque no es un requerimiento, se recomienda que la extensión se adhiera a ciertos estilos de
   codificación. Se puede hacer referencia a
-  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) para
+  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) para
   obtener más detalles.
 
 ## Extensiones del Núcleo <span id="core-extensions"></span>

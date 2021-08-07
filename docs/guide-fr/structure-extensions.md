@@ -149,7 +149,7 @@ Losqu'un utilisateur exécute `composer install` pour installer une extension, l
 Bien sûr, votre extension dépend de Yii. C'est pourquoi, vous devez lister  (`yiisoft/yii2`) dans l'entrée `require` dans `composer.json`. Si votre extension dépend aussi d'autres extensions ou bibliothèques de tierces parties, vous devez les lister également. Assurez-vous que vous de lister également les contraintes de versions appropriées (p. ex. `1.*`, `@stable`) pour chacun des paquets dont votre extension dépend. Utilisez des dépendances stables lorsque votre extension est publiée dans une version stable. 
 
 La plupart des paquets JavaScript/CSS sont gérés par [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.com/),
-plutôt que par Composer. Yii utilise le [greffon *assets* de Composer(https://github.com/francoispluchino/composer-asset-plugin) pour activer la gestion de ce genre de paquets par Composer. Si votre extension dépend d'un paquet Bower, vous pouvez simplement lister la dépendance dans  `composer.json` comme ceci : 
+plutôt que par Composer. Yii utilise le [greffon *assets* de Composer(https://github.com/fxpio/composer-asset-plugin) pour activer la gestion de ce genre de paquets par Composer. Si votre extension dépend d'un paquet Bower, vous pouvez simplement lister la dépendance dans  `composer.json` comme ceci : 
 
 ```json
 {
@@ -294,7 +294,7 @@ Dans les versions de votre extension, en plus des fichiers de code, vous devez e
  
 > Info: les commentaires de votre code peuvent être écrits dans le format Markdown. L'extension `yiisoft/yii2-apidoc` vous fournit un outil pour générer une documentation d'API agréable et basée sur les commentaires de votre code. 
 
-> Info: bien que cela ne soit pas une exigence, nous suggérons que votre extension respecte un certain style de codage. Vous pouvez vous reporter au document [style du codage du noyau du framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+> Info: bien que cela ne soit pas une exigence, nous suggérons que votre extension respecte un certain style de codage. Vous pouvez vous reporter au document [style du codage du noyau du framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Extensions du noyau <span id="core-extensions"></span>

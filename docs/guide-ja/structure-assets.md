@@ -257,7 +257,7 @@ asset-packagist と異なって、composer-asset-plugin はアプリケーショ
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-このコマンドによって [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) がグローバルにインストールされ、
+このコマンドによって [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) がグローバルにインストールされ、
 Bower と NPM パッケージの依存関係を Composer によって管理することが出来るようになります。
 プラグインがインストールされた後は、あなたのコンピュータ上の全てのプロジェクトが `composer.json` を通じて Bower と NPM パッケージをサポートすることが出来ます。
 

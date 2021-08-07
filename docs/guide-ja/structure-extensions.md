@@ -185,7 +185,7 @@ Yii のアプリケーションは、このファイルによって、どんな�
 あなたのエクステンションを安定バージョンとしてリリースする場合は、安定した依存パッケージを使ってください。
 
 たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) を使って管理されています。
-Yii は [Composer アセット・プラグイン](https://github.com/francoispluchino/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
+Yii は [Composer アセット・プラグイン](https://github.com/fxpio/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
 あなたのエクステンションが Bower パッケージに依存している場合でも、次のように、
 `composer.json` に依存パッケージをリストアップすることが簡単に出来ます。
 
@@ -383,7 +383,7 @@ Composer レポジトリに新しいリリースについて通知するだけ�
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
 
 > Info: これは要求ではありませんが、あなたのエクステンションも一定のコーディング・スタイルを守るのが良いと思います。
-  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
+  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) を参照してください。
 
 
 ## コア・エクステンション <span id="core-extensions"></span>
