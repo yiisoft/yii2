@@ -18,7 +18,7 @@ use yii\helpers\Json;
  * ```php
  * 'request' => [
  *     'parsers' => [
- *         'application/json' => yii\web\JsonParser::class,
+ *         'application/json' => 'yii\web\JsonParser',
  *     ]
  * ]
  * ```
