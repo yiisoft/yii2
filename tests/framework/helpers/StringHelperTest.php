@@ -435,7 +435,7 @@ class StringHelperTest extends TestCase
             ["\tfoo\nbar  baz", "\tFoo\nBar  Baz"],
             ['👍🏻 foo bar', '👍🏻 Foo Bar'],
             ['', ''],
-            ['0', '0']
+            ['0', '0'],
             [null, ''],
             ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
         ];
