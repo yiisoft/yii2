@@ -469,7 +469,7 @@ class BaseStringHelper
         $parts = preg_split('/(\s+[^\w]+\s+|^[^\w]+\s+|\s+)/u', (string) $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         $upEven = !trim(mb_substr($parts[0], -1, 1, $encoding));
         foreach ($parts as $key => $value) {
-            if ($upEven !== !($key & 1)) {
+            if ($upEven !== !($key % 2)) {
                 $parts[$key] = static::mb_ucfirst($value, $encoding);
             }
         }
