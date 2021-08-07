@@ -187,6 +187,22 @@ class m150101_185401_create_news_table extends Migration
 
 カラムの型を定義するために利用できる全てのメソッドのリストは、[[yii\db\SchemaBuilderTrait]] の API ドキュメントで参照することが出来ます。
 
+> Info: 生成されるファイルのパーミッションと所有者は現在の環境によって決定されます。
+  これが原因でファイルにアクセス出来ない場合が生じ得ます。例えば、docker コンテナ内で作成されたマイグレーションのファイルをホストで編集するとそうなる場合があります。
+  このような場合には MigrateController の `newFileMode` および/または `newFileOwnership` を変更することが出来ます。
+  例えば、アプリケーション設定で次のように設定します。
+  ```php
+  <?php
+  return [
+      'controllerMap' => [
+          'migrate' => [
+              'class' => 'yii\console\controllers\MigrateController',
+              'newFileOwnership' => '1000:1000', # Default WSL user id
+              'newFileMode' => 0660,
+          ],
+      ],
+  ];
+  ```
 
 ## マイグレーションを生成する <span id="generating-migrations"></span>
 
