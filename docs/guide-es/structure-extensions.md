@@ -135,9 +135,9 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -194,7 +194,7 @@ apropiadas (ej. `1.*`, `@stable`) para cada paquete dependiente. Se deben usar d
 estables de nuestras extensiones.
 
 La mayoría de paquetes JavaScript/CSS se gestionan usando [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/),
-en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
  para habilitar la gestión de estos tipos de paquetes a través de Composer. Si la extensión depende de un paquete
  Bower, se puede, simplemente, añadir la dependencia de el archivo `composer.json` como se muestra a continuación:
 
@@ -392,7 +392,7 @@ mencionados a continuación para facilitar a otra gente el uso de nuestra extens
 
 > Info: Aunque no es un requerimiento, se recomienda que la extensión se adhiera a ciertos estilos de
   codificación. Se puede hacer referencia a
-  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) para
+  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) para
   obtener más detalles.
 
 ## Extensiones del Núcleo <span id="core-extensions"></span>
@@ -439,4 +439,4 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer): proporciona características de envío de
   correos electrónicos basadas en [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig): proporciona un motor de plantillas basado en
-  [Twig](http://twig.sensiolabs.org/).
+  [Twig](https://twig.symfony.com/).

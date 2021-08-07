@@ -236,6 +236,26 @@ class TargetTest extends TestCase
         $this->assertCount(6, static::$messages[0]);
         $this->assertCount(6, static::$messages[1]);
     }
+
+    public function testBreakProfilingWithFlush()
+    {
+        $logger = new Logger();
+        new Dispatcher([
+            'logger' => $logger,
+            'targets' => [new TestTarget()],
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('info', Logger::LEVEL_INFO, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
+
+        $timings = $logger->getProfiling(['category']);
+
+        self::assertCount(1, $timings);
+        self::assertArrayHasKey('info', $timings[0]);
+        self::assertArrayHasKey('category', $timings[0]);
+    }
 }
 
 class TestTarget extends Target

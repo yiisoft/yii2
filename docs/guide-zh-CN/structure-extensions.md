@@ -127,9 +127,9 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -185,7 +185,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 当你发布一个稳定版本时，你所依赖的包也应当使用稳定版本。
 
 大多数 JavaScript/CSS 包是用 [Bower](http://bower.io/) 来管理的，而非 Composer。你可使用 
-[Composer asset 插件](https://github.com/francoispluchino/composer-asset-plugin) 使之可以
+[Composer asset 插件](https://github.com/fxpio/composer-asset-plugin) 使之可以
 通过 Composer 来管理这类包。如果你的扩展依赖 Bower 软件包，你可以如下例所示那样简单地
 在 `composer.json` 文件的依赖中列出它。
 
@@ -383,7 +383,7 @@ Yii 提供了测试支持，使你更容易写单元测试、验收测试和功�
   代码注释生成漂亮的 API 文档。
 
 > Info: 虽然不做要求，我们还是建议你的扩展遵循某个编码规范。
-  你可以参照 [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style)。
+  你可以参照 [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md)。
 
 
 ## 核心扩展 <span id="core-extensions"></span>
@@ -439,7 +439,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)：
   提供了基于 [swiftmailer](http://swiftmailer.org/) 的邮件发送功能。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig)：
-  提供了一个基于 [Twig](http://twig.sensiolabs.org/) 的模板引擎。
+  提供了一个基于 [Twig](https://twig.symfony.com/) 的模板引擎。
 
 以下官方扩展适用于 Yii 2.1 及以上版本。
 您不需要为 Yii 2.0 安装它们，因为它们包含在核心框架中。

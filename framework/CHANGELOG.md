@@ -4,12 +4,25 @@ Yii Framework 2 Change Log
 2.0.43 under development
 ------------------------
 
+- Bug #14663: Do not convert int to string if database type of a column is numeric (egorrishe)
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
+- Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
+- Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
 - Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
 - Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
 - Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
 - Enh #18676: Added method `yii\helpers\BaseFileHelper::changeOwnership()` and properties `newFileMode`/`newFileOwnership` in `yii\console\controllers\BaseMigrateController` (rhertogh)
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
+- Enh #18695: Added `yii\web\Cookie::SAME_SITE_NONE` constant (rhertogh)
+- Enh #18712: Added `scheme` option for `$options` argument for `yii\i18n\Formatter::asUrl()` (bizley)
+- Enh #18707: Changed the base error handler to not expose `$_SERVER` details unless `YII_DEBUG` is enabled (coolgoose)
+- Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
+- Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
+- Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
+- Bug #18756: Fix `\yii\validators\ExistValidator::queryValueExists` to validate against an array of unique values (DrDeath72)
+- Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
+- Enh #18789: Added JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
+- Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
 
 
 2.0.42.1 May 06, 2021

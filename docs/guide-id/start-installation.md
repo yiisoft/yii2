@@ -44,7 +44,7 @@ composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Perintah pertama menginstal [komposer aset Plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+Perintah pertama menginstal [komposer aset Plugin](https://github.com/fxpio/composer-asset-plugin)
 yang memungkinkan mengelola bower dan paket npm melalui Composer. Anda hanya perlu menjalankan perintah ini
 sekali untuk semua. Perintah kedua menginstal Yii dalam sebuah direktori bernama `basic`. Anda dapat memilih nama direktori yang berbeda jika Anda ingin.
 
@@ -67,7 +67,7 @@ Instalasi dari file Arsip <span id="installing-from-archive-file"></span>
 
 Instalasi Yii dari file arsip melibatkan tiga langkah:
 
-1. Download file arsip dari [yiiframework.com](http://www.yiiframework.com/download/).
+1. Download file arsip dari [yiiframework.com](https://www.yiiframework.com/download/).
 2. Uraikan file yang didownload ke folder yang bisa diakses web.
 3. Memodifikasi `config/web.php` dengan memasukkan kunci rahasia untuk `cookieValidationKey`.
    (Ini dilakukan secara otomatis jika Anda menginstal Yii menggunakan Composer):
