@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #18756: Fix `\yii\validators\ExistValidator::queryValueExists` to validate against an array of unique values (DrDeath72)
 - Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
 - Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
+- Enh #18812: Updated `$jsonErrorMessages`, optimized `handleJsonError()`, `errorSummary()` and `collectErrors()` in `yii\helpers\BaseJson` (WinterSilence)
 
 
 2.0.42.1 May 06, 2021
