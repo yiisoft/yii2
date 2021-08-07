@@ -383,7 +383,7 @@ Composer レポジトリに新しいリリースについて通知するだけ�
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
 
 > Info: これは要求ではありませんが、あなたのエクステンションも一定のコーディング・スタイルを守るのが良いと思います。
-  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
+  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) を参照してください。
 
 
 ## コア・エクステンション <span id="core-extensions"></span>

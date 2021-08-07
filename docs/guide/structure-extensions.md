@@ -383,7 +383,7 @@ help other people learn about and use your extension:
   for you to generate pretty API documentation based on your code comments.
 
 > Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  the [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Core Extensions <span id="core-extensions"></span>

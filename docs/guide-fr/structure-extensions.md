@@ -294,7 +294,7 @@ Dans les versions de votre extension, en plus des fichiers de code, vous devez e
  
 > Info: les commentaires de votre code peuvent être écrits dans le format Markdown. L'extension `yiisoft/yii2-apidoc` vous fournit un outil pour générer une documentation d'API agréable et basée sur les commentaires de votre code. 
 
-> Info: bien que cela ne soit pas une exigence, nous suggérons que votre extension respecte un certain style de codage. Vous pouvez vous reporter au document [style du codage du noyau du framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+> Info: bien que cela ne soit pas une exigence, nous suggérons que votre extension respecte un certain style de codage. Vous pouvez vous reporter au document [style du codage du noyau du framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Extensions du noyau <span id="core-extensions"></span>
