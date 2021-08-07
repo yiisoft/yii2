@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
 - Enh #18789: Added JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
 - Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
+- Bug #18807: Fix replacing source whitespaces and optimize code of `yii\helpers\BaseStringHelper::mb_ucwords()` (WinterSilence)
 
 
 2.0.42.1 May 06, 2021
