@@ -133,17 +133,19 @@ class BaseJson
      */
     protected static function handleJsonError($lastError)
     {
-        if ($lastError !== JSON_ERROR_NONE) {
-            foreach (static::$jsonErrorMessages as $const => $message) {
-                if (defined($const) && constant($const) === $lastError) {
-                    throw new InvalidArgumentException($message, $lastError);
-                }
-            }
-            if (function_exists('json_last_error_msg')) {
-                throw new InvalidArgumentException(json_last_error_msg(), $lastError);
-            }
-            throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
+        if ($lastError === JSON_ERROR_NONE) {
+            return;
         }
+
+        foreach (static::$jsonErrorMessages as $const => $message) {
+            if (defined($const) && constant($const) === $lastError) {
+                throw new InvalidArgumentException($message, $lastError);
+            }
+        }
+        if (function_exists('json_last_error_msg')) {
+            throw new InvalidArgumentException(json_last_error_msg(), $lastError);
+        }
+        throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
     }
 
     /**
