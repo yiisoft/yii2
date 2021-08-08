@@ -413,7 +413,7 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   Yii. Cuando se usa esta extensión, aparece una barra de herramientas de depuración en la parte inferior de cada
   página. La extensión también proporciona un conjunto de páginas para mostrar información detallada de depuración.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch): proporciona soporte para usar
-  [Elasticsearch](http://www.elasticsearch.org/). Incluye soporte básico para realizar consultas/búsquedas y también
+  [Elasticsearch](https://www.elastic.co/). Incluye soporte básico para realizar consultas/búsquedas y también
   implementa patrones de [Active Record](db-active-record.md) que permiten y permite guardar los `active records` en
   Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker): proporciona soporte para usar

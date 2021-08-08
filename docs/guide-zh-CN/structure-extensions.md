@@ -406,7 +406,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
   在每个页面的底部将显示一个调试工具条。
   该扩展还提供了一个独立的页面，以显示更详细的调试信息。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch)：
-  提供对 [Elasticsearch](http://www.elasticsearch.org/) 的使用支持。它包含基本的查询/搜索支持，
+  提供对 [Elasticsearch](https://www.elastic.co/) 的使用支持。它包含基本的查询/搜索支持，
   并实现了 [Active Record](db-active-record.md) 模式让你可以将活动记录
   存储在 Elasticsearch 中。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker)：
