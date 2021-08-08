@@ -324,7 +324,7 @@ class FileValidatorTest extends TestCase
             $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $randomString = '';
             for ($i = 0; $i < $len; $i++) {
-                $randomString .= $characters[Yii::$app->getSecurity()->generateRandomInt(0, strlen($characters) - 1)];
+                $randomString .= $characters[random_int(0, strlen($characters) - 1)];
             }
 
             return $randomString;
@@ -340,7 +340,7 @@ class FileValidatorTest extends TestCase
             if (is_readable($tempName)) {
                 $size = filesize($tempName);
             } else {
-                $size = isset($param['size']) ? $param['size'] : Yii::$app->getSecurity()->generateRandomInt(
+                $size = isset($param['size']) ? $param['size'] : random_int(
                     1,
                     $this->sizeToBytes(ini_get('upload_max_filesize'))
                 );

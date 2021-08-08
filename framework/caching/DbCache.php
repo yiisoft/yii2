@@ -277,7 +277,7 @@ class DbCache extends Cache
     public function gc($force = false)
     {
 
-        if ($force || Yii::$app->getSecurity()->generateRandomInt(0, 1000000) < $this->gcProbability) {
+        if ($force || random_int(0, 1000000) < $this->gcProbability) {
             $this->db->createCommand()
                 ->delete($this->cacheTable, '[[expire]] > 0 AND [[expire]] < ' . time())
                 ->execute();

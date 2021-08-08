@@ -215,16 +215,16 @@ class CaptchaAction extends Action
             $this->maxLength = 20;
         }
 
-        $length = Yii::$app->getSecurity()->generateRandomInt($this->minLength, $this->maxLength);
+        $length = random_int($this->minLength, $this->maxLength);
 
         $letters = 'bcdfghjklmnpqrstvwxyz';
         $vowels = 'aeiou';
         $code = '';
         for ($i = 0; $i < $length; ++$i) {
-            if ($i % 2 && Yii::$app->getSecurity()->generateRandomInt(0, 10) > 2 || !($i % 2) && Yii::$app->getSecurity()->generateRandomInt(0, 10) > 9) {
-                $code .= $vowels[Yii::$app->getSecurity()->generateRandomInt(0, 4)];
+            if ($i % 2 && random_int(0, 10) > 2 || !($i % 2) && random_int(0, 10) > 9) {
+                $code .= $vowels[random_int(0, 4)];
             } else {
-                $code .= $letters[Yii::$app->getSecurity()->generateRandomInt(0, 20)];
+                $code .= $letters[random_int(0, 20)];
             }
         }
 
@@ -299,8 +299,8 @@ class CaptchaAction extends Action
         $x = 10;
         $y = round($this->height * 27 / 40);
         for ($i = 0; $i < $length; ++$i) {
-            $fontSize = (int) (Yii::$app->getSecurity()->generateRandomInt(26, 32) * $scale * 0.8);
-            $angle = Yii::$app->getSecurity()->generateRandomInt(-10, 10);
+            $fontSize = (int) (random_int(26, 32) * $scale * 0.8);
+            $angle = random_int(-10, 10);
             $letter = $code[$i];
             $box = imagettftext($image, $fontSize, $angle, $x, $y, $foreColor, $this->fontFile, $letter);
             $x = $box[2] + $this->offset;
@@ -342,9 +342,9 @@ class CaptchaAction extends Action
         for ($i = 0; $i < $length; ++$i) {
             $draw = new \ImagickDraw();
             $draw->setFont($this->fontFile);
-            $draw->setFontSize((int) (Yii::$app->getSecurity()->generateRandomInt(26, 32) * $scale * 0.8));
+            $draw->setFontSize((int) (random_int(26, 32) * $scale * 0.8));
             $draw->setFillColor($foreColor);
-            $image->annotateImage($draw, $x, $y, Yii::$app->getSecurity()->generateRandomInt(-10, 10), $code[$i]);
+            $image->annotateImage($draw, $x, $y, random_int(-10, 10), $code[$i]);
             $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
             $x += (int) $fontMetrics['textWidth'] + $this->offset;
         }
