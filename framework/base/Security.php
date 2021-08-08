@@ -487,20 +487,6 @@ class Security extends Component
     }
 
     /**
-     * Generates random integer in a given range.
-     *
-     * @param int $min Minimum value.
-     * @param int $max Maximum value.
-     * @return int
-     * @throws \Exception If unable to generate random integer.
-     * @since 2.0.43
-     */
-    public function generateRandomInt($min, $max)
-    {
-        return random_int($min, $max);
-    }
-
-    /**
      * Generates a random string of specified length.
      * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
      *
