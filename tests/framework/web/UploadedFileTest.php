@@ -28,10 +28,10 @@ class UploadedFileTest extends TestCase
     private function generateFakeFileData()
     {
         return [
-            'name' => md5(mt_rand()),
-            'tmp_name' => md5(mt_rand()),
+            'name' => md5(Yii::$app->getSecurity()->generateRandomInt(0, PHP_INT_MAX)),
+            'tmp_name' => md5(Yii::$app->getSecurity()->generateRandomInt(0, PHP_INT_MAX)),
             'type' => 'image/jpeg',
-            'size' => mt_rand(1000, 10000),
+            'size' => Yii::$app->getSecurity()->generateRandomInt(1000, 10000),
             'error' => '0',
         ];
     }
@@ -39,10 +39,10 @@ class UploadedFileTest extends TestCase
     private function generateTempFileData()
     {
         return [
-            'name' => md5(mt_rand()),
+            'name' => md5(Yii::$app->getSecurity()->generateRandomInt(0, PHP_INT_MAX)),
             'tmp_name' => tempnam(sys_get_temp_dir(), ''),
             'type' => 'image/jpeg',
-            'size' => mt_rand(1000, 10000),
+            'size' => Yii::$app->getSecurity()->generateRandomInt(1000, 10000),
             'error' => '0',
         ];
     }

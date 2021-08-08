@@ -245,7 +245,7 @@ class FileCache extends Cache
      */
     public function gc($force = false, $expiredOnly = true)
     {
-        if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
+        if ($force || Yii::$app->getSecurity()->generateRandomInt(0, 1000000) < $this->gcProbability) {
             $this->gcRecursive($this->cachePath, $expiredOnly);
         }
     }
