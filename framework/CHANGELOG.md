@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Enh #18789: Added JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
 - Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
 - Bug #18807: Fix replacing source whitespaces and optimize code of `yii\helpers\BaseStringHelper::mb_ucwords()` (WinterSilence)
+- Enh #18674: Added more user-friendly exception messages for `yii\i18n\Formatter` (bizley)
 
 
 2.0.42.1 May 06, 2021
