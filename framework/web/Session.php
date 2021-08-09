@@ -301,11 +301,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Gets the session ID.
      * This is a wrapper for [PHP session_id()](https://www.php.net/manual/en/function.session-id.php).
-     * @return string the current session ID
+     * @return string|false the current session ID
      */
     public function getId()
     {
-        return (string) session_id();
+        return session_id();
     }
 
     /**
@@ -346,34 +346,36 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Gets the name of the current session.
      * This is a wrapper for [PHP session_name()](https://www.php.net/manual/en/function.session-name.php).
-     * @return string the current session name
+     * @return string|false the current session name
      */
     public function getName()
     {
-        return (string) session_name();
+        return session_name();
     }
 
     /**
      * Sets the name for the current session.
      * This is a wrapper for [PHP session_name()](https://www.php.net/manual/en/function.session-name.php).
-     * @param string $value the session name for the current session, must be an alphanumeric string.
-     * It defaults to "PHPSESSID".
+     * Note: The session name can't consist of digits only, at least one lettermust be present. Otherwise a new
+     * session id is generated every time. 
+     * @param string|null $value the session name for the current session, must be an alphanumeric string.
+     * It defaults to configuration directive `session.name`.
      */
     public function setName($value)
     {
         $this->freeze();
-        session_name((string) $value);
+        session_name($value);
         $this->unfreeze();
     }
 
     /**
      * Gets the current session save path.
      * This is a wrapper for [PHP session_save_path()](https://www.php.net/manual/en/function.session-save-path.php).
-     * @return string the current session save path, defaults to '/tmp'.
+     * @return string|false the current session save path, defaults to '/tmp'.
      */
     public function getSavePath()
     {
-        return (string) session_save_path();
+        return session_save_path();
     }
 
     /**
@@ -433,20 +435,18 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     private function setCookieParamsInternal()
     {
         $data = $this->getCookieParams();
-        if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
-            if (PHP_VERSION_ID >= 70300) {
-                session_set_cookie_params($data);
-            } else {
-                if (!empty($data['samesite'])) {
-                    $data['path'] .= '; samesite=' . $data['samesite'];
-                }
-                session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
-            }
-
-        } else {
+        if (!isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
             throw new InvalidArgumentException(
                 'Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.'
             );
+        }
+        if (PHP_VERSION_ID >= 70300) {
+            session_set_cookie_params($data);
+        } else {
+            if (!empty($data['samesite'])) {
+                $data['path'] .= '; samesite=' . $data['samesite'];
+            }
+            session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
         }
     }
 
@@ -759,7 +759,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @param mixed $key session variable name
+     * @param string $key session variable name
      * @return bool whether there is the named session variable
      */
     public function has($key)
@@ -964,8 +964,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         foreach (array_keys($counters) as $key) {
             if (isset($_SESSION[$key])) {
                 $values[$key] = $_SESSION[$key];
+                unset($_SESSION[$key]);
             }
-            unset($_SESSION[$key]);
         }
         unset($_SESSION[$this->flashParam]);
 
@@ -994,7 +994,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to retrieve element.
+     * @param string|int $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
@@ -1004,7 +1004,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to set element
+     * @param string|int $offset the offset to set element
      * @param mixed $value the element value
      */
     public function offsetSet($offset, $value)
@@ -1014,7 +1014,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to unset element
+     * @param string|int $offset the offset to unset element
      */
     public function offsetUnset($offset)
     {
@@ -1077,11 +1077,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Returns current cache limiter.
      *
-     * @return string current cache limiter
+     * @return string|false current cache limiter
      * @since 2.0.14
      */
     public function getCacheLimiter()
     {
-        return (string) session_cache_limiter();
+        return session_cache_limiter();
     }
 }
