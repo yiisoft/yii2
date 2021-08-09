@@ -356,7 +356,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the name for the current session.
      * This is a wrapper for [PHP session_name()](https://www.php.net/manual/en/function.session-name.php).
-     * Note: The session name can't consist of digits only, at least one lettermust be present. Otherwise a new
+     * Note: The session name can't consist of digits only, at least one letter must be present. Otherwise a new
      * session id is generated every time. 
      * @param string|null $value the session name for the current session, must be an alphanumeric string.
      * It defaults to configuration directive `session.name`.
