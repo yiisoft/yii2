@@ -113,11 +113,8 @@ class BaseJson
      */
     public static function decode($json, $asArray = true)
     {
-        if ($json === null) {
+        if ($json === null || $json === '') {
             return null;
-        }
-        if ($json === '') {
-            return '';
         }
 
         if (is_array($json) || (is_object($json) && !method_exists($json, '__toString'))) {
