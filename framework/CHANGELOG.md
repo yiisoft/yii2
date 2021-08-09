@@ -21,8 +21,10 @@ Yii Framework 2 Change Log
 - Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
 - Bug #18756: Fix `\yii\validators\ExistValidator::queryValueExists` to validate against an array of unique values (DrDeath72)
 - Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
+- Enh #18274: Added `profilingAware` option to `yii\log\Logger` to prevent breaking the profiling block messages pair when flushing them (bizley)
 - Enh #18789: Added JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
 - Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
+- Bug #18807: Fix replacing source whitespaces and optimize code of `yii\helpers\BaseStringHelper::mb_ucwords()` (WinterSilence)
 
 
 2.0.42.1 May 06, 2021

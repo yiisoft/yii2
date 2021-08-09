@@ -341,15 +341,16 @@ class LoggerTest extends TestCase
      */
     public function testGetProfilingWithEmptyCategoriesAndExcludeCategories()
     {
+        $messages = ['anyData'];
         $returnValue = 'return value';
         /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();
 
-        $logger->messages = ['anyData'];
+        $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with([]);
+        $logger->expects($this->once())->method('calculateTimings')->with($messages);
         $this->assertEquals($returnValue, $logger->getProfiling());
     }
 
@@ -376,7 +377,7 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with([]);
+        $logger->expects($this->once())->method('calculateTimings')->with($messages);
         $this->assertEquals([], $logger->getProfiling(['not-matched-category']));
     }
 
@@ -416,7 +417,7 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with([]);
+        $logger->expects($this->once())->method('calculateTimings')->with($messages);
         $this->assertEquals([$matchedByCategoryName], $logger->getProfiling(['category']));
 
         /*
@@ -429,7 +430,7 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with([]);
+        $logger->expects($this->once())->method('calculateTimings')->with($messages);
         $this->assertEquals([$matchedByCategoryName, $secondCategory], $logger->getProfiling(['category*']));
     }
 
@@ -478,7 +479,7 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with([]);
+        $logger->expects($this->once())->method('calculateTimings')->with($messages);
         $this->assertEquals([$fistCategory, $secondCategory], $logger->getProfiling(['cat*'], ['category3']));
 
         /*
@@ -491,7 +492,7 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with([]);
+        $logger->expects($this->once())->method('calculateTimings')->with($messages);
         $this->assertEquals([$fistCategory], $logger->getProfiling(['cat*'], ['category*']));
     }
 
