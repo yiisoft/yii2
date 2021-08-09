@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.43 under development
 ------------------------
 
+- Enh #18817: Use `paragonie/random_compat` for random bytes and int generation (samdark)
 - Bug #14663: Do not convert int to string if database type of a column is numeric (egorrishe)
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
 - Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
