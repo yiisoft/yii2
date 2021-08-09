@@ -437,7 +437,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $data = $this->getCookieParams();
         if (!isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
             throw new InvalidArgumentException(
-                'Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.'
+                'Please make sure cookieParams contains these elements: lifetime, path, domain, secure, and httponly.'
             );
         }
         if (PHP_VERSION_ID >= 70300) {
