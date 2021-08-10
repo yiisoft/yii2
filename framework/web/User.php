@@ -686,7 +686,6 @@ class User extends Component
      *
      * If the user identity cannot be determined by session, this method will try to [[loginByCookie()|login by cookie]]
      * if [[enableAutoLogin]] is true.
-     * 
      */
     protected function renewAuthStatus()
     {
@@ -701,21 +700,18 @@ class User extends Component
             $identity = $class::findIdentity($id);
         }
 
-        if ($identity === null) {
-            $this->switchIdentity(null);
-            return;
-        }
-
-        $authKey = $session->get($this->authKeyParam);
-        if ($authKey !== null && !$identity->validateAuthKey($authKey)) {
-            $identity = null;
-            $ip = Yii::$app->getRequest()->getUserIP();
-            Yii::warning("Invalid session auth key attempted for user '$id' from $ip: $authKey", __METHOD__);
+        if ($identity !== null) {
+            $authKey = $session->get($this->authKeyParam);
+            if ($authKey !== null && !$identity->validateAuthKey($authKey)) {
+                $identity = null;
+                $ip = Yii::$app->getRequest()->getUserIP();
+                Yii::warning("Invalid session auth key attempted for user '$id' from $ip: $authKey", __METHOD__);
+            }
         }
 
         $this->setIdentity($identity);
 
-        if ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null) {
+        if ($identity !== null && ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null)) {
             $expire = $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
             $expireAbsolute = $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
             if ($expire !== null && $expire < time() || $expireAbsolute !== null && $expireAbsolute < time()) {
@@ -731,6 +727,10 @@ class User extends Component
             } elseif ($this->autoRenewCookie) {
                 $this->renewIdentityCookie();
             }
+        }
+
+        if ($this->getIdentity(false) === null) {
+            $this->switchIdentity(null);
         }
     }
 
