@@ -3,7 +3,7 @@ Ilovani ishga tushirish
 
 `http://hostname/basic/web/index.php` o'rnatganingizdan so'ng, asosiy dastur `http://hostname/basic/web/index.php` URL manzilida yoki `http://hostname/index.php` orqali Veb-server sozlamalariga qarab mavjud bo'ladi. Ushbu bo'lim - kodni tashkil qilishning umumiy ta'rifi, o'rnatilgan funksionallik va murojaatlar bilan ishlash. 
 
-> Ma'lumot uchun: Ushbu qo'llanmada Yii `basic/web` katalogiga o'rnatilganini inobatga oladi va u o'z navbatida veb-server sozlamalaridagi ildiz katalogi sifatida o'rnatiladi. Natijada `http://hostname/index.php` URL manziliga kirish orqali `basic/web` joylashgan ilovaga kirishingiz mumkin. Boshlang'ich konfiguratsiya jarayonida batafsil ma'lumotni [Yii-ni o'rnatish bo'limida](start-installation.md) topishingiz mumkin.
+> Info: Ushbu qo'llanmada Yii `basic/web` katalogiga o'rnatilganini inobatga oladi va u o'z navbatida veb-server sozlamalaridagi ildiz katalogi sifatida o'rnatiladi. Natijada `http://hostname/index.php` URL manziliga kirish orqali `basic/web` joylashgan ilovaga kirishingiz mumkin. Boshlang'ich konfiguratsiya jarayonida batafsil ma'lumotni [Yii-ni o'rnatish bo'limida](start-installation.md) topishingiz mumkin.
 
 Freymvorkdan farqli o'laroq, dastur o'rnatilgandan so'ng, u sizniki bolib qoladi. Siz o`zingizni kodingizni o'zingiz xohlagan tarzda o'zgartirishingiz mumkin. 
 
@@ -28,7 +28,7 @@ Yii web-ilovasi tuzilmasi <span id="application-structure"></span>
 
 Quyidagida veb-ilovaning tuzilmasi asosiy kataloglari va fayllari ro'yxati berilgan (ilovaning `basic` katalogga o'rnatilgan deb hisoblaymiz): 
 
-```
+```js
 basic/                  ilovaning ildiz katalogi
     composer.json       Composer ishlatadigan fayl
     config/             Sozlamalar (konfiguratsion) fayl

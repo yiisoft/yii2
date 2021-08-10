@@ -44,7 +44,7 @@
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Перша команда встановить [плагін ресурсів composer (composer-asset-plugin)](https://github.com/francoispluchino/composer-asset-plugin/),
+Перша команда встановить [плагін ресурсів composer (composer-asset-plugin)](https://github.com/fxpio/composer-asset-plugin),
 що дозволить керувати залежностями пакунків Bower та NPM за допомогою Composer. Цю команду потрібно виконати лише
 один раз. Друга команда встановить Yii у директорію під назвою `basic`. За бажанням, ви можете обрати інше ім’я для директорії.
 
@@ -69,7 +69,7 @@
 
 Встановлення Yii з архіву складається з трьох кроків:
 
-1. Завантажте архів за адресою [yiiframework.com](http://www.yiiframework.com/download/);
+1. Завантажте архів за адресою [yiiframework.com](https://www.yiiframework.com/download/);
 2. Розпакуйте архів в директорію, доступну через Web.
 3. Відредагуйте файл конфігурації `config/web.php` - необхідно ввести таємний ключ до пункту `cookieValidationKey`
    (це виконується автоматично при вставленні Yii через Composer):

@@ -16,6 +16,8 @@ use yii\helpers\StringHelper;
  *
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *
+ * @property array $categoryMap Mapping of abstract column types (keys) to type categories (values).
+ *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
@@ -81,9 +83,9 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
-     * @since 2.0.8
+     * @since 2.0.43
      */
-    public $categoryMap = [
+    public static $typeCategoryMap = [
         Schema::TYPE_PK => self::CATEGORY_PK,
         Schema::TYPE_UPK => self::CATEGORY_PK,
         Schema::TYPE_BIGPK => self::CATEGORY_PK,
@@ -287,6 +289,24 @@ class ColumnSchemaBuilder extends BaseObject
         }
 
         return $this->buildCompleteString($format);
+    }
+
+    /**
+     * @return array mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.43
+     */
+    public function getCategoryMap()
+    {
+        return static::$typeCategoryMap;
+    }
+
+    /**
+     * @param array $categoryMap mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.43
+     */
+    public function setCategoryMap($categoryMap)
+    {
+        static::$typeCategoryMap = $categoryMap;
     }
 
     /**

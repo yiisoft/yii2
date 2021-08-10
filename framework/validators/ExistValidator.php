@@ -131,14 +131,12 @@ class ExistValidator extends Validator
             $relationQuery->andWhere($this->filter);
         }
 
-        if ($this->forceMasterDb && method_exists($model::getDb(), 'useMaster')) {
-            $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
-                $exists = $relationQuery->exists();
-            });
+        $connection = $model::getDb();
+        if ($this->forceMasterDb && method_exists($connection, 'useMaster')) {
+            $exists = $connection->useMaster([$relationQuery, 'exists']);
         } else {
             $exists = $relationQuery->exists();
         }
-
 
         if (!$exists) {
             $this->addError($model, $attribute, $this->message);
@@ -169,7 +167,7 @@ class ExistValidator extends Validator
             $conditions[] = $params;
         }
 
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
+        $targetClass = $this->getTargetClass($model);
         $query = $this->createQuery($targetClass, $conditions);
 
         if (!$this->valueExists($targetClass, $query, $model->$attribute)) {
@@ -246,9 +244,9 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Check whether value exists in target table
+     * Check whether value exists in target table.
      *
-     * @param string $targetClass
+     * @param string $targetClass the model
      * @param QueryInterface $query
      * @param mixed $value the value want to be checked
      * @return bool
@@ -259,8 +257,8 @@ class ExistValidator extends Validator
         $exists = false;
 
         if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
-            $db->useMaster(function ($db) use ($query, $value, &$exists) {
-                $exists = $this->queryValueExists($query, $value);
+            $exists = $db->useMaster(function () use ($query, $value) {
+                return $this->queryValueExists($query, $value);
             });
         } else {
             $exists = $this->queryValueExists($query, $value);
@@ -271,7 +269,7 @@ class ExistValidator extends Validator
 
 
     /**
-     * Run query to check if value exists
+     * Run query to check if value exists.
      *
      * @param QueryInterface $query
      * @param mixed $value the value to be checked
@@ -280,7 +278,7 @@ class ExistValidator extends Validator
     private function queryValueExists($query, $value)
     {
         if (is_array($value)) {
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count(array_unique($value));
         }
         return $query->exists();
     }

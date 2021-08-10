@@ -132,7 +132,7 @@ class AttributeTypecastBehavior extends Behavior
      *     'price' => 'float',
      *     'is_active' => 'boolean',
      *     'date' => function ($value) {
-     *         return ($value instanceof \DateTime) ? $value->getTimestamp(): (int)$value;
+     *         return ($value instanceof \DateTime) ? $value->getTimestamp(): (int) $value;
      *     },
      * ]
      * ```

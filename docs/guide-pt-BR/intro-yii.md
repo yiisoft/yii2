@@ -35,7 +35,7 @@ Se já estiver familiarizado com um outro framework, você pode gostar de saber 
   que podem ser redistribuídas.
 - Alta performance é sempre um objetivo principal do Yii.
 
-Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do código central (core)][about_yii]
+Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do código central (core)][yii_team]
 bem como por uma ampla comunidade de profissionais constantemente
 contribuindo com o desenvolvimento do Yii. A equipe de desenvolvedores do Yii
 acompanha de perto às últimas tendências do desenvolvimento Web e as
@@ -44,7 +44,7 @@ As mais relevantes e melhores práticas e características encontradas em outros
 são incorporadas regularmente no core do framework e expostas via interfaces
 simples e elegantes.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Versões do Yii
 --------------

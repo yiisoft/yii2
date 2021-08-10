@@ -44,7 +44,7 @@ composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-El primer comando instala [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
+El primer comando instala [composer asset plugin](https://github.com/fxpio/composer-asset-plugin),
 que permite administrar dependencias de paquetes bower y npm a través de Composer. Sólo necesitas ejecutar este comando
 una vez. El segundo comando instala Yii en un directorio llamado `basic`. Puedes elegir un nombre de directorio diferente si así lo deseas.
 
@@ -67,7 +67,7 @@ Instalar desde un Archivo Comprimido <span id="installing-from-archive-file"></s
 
 Instalar Yii desde un archivo comprimido involucra tres pasos:
 
-1. Descargar el archivo desde [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
+1. Descargar el archivo desde [yiiframework.com](https://www.yiiframework.com/download/yii2-basic).
 2. Descomprimirlo en un directorio accesible vía Web.
 3. Modificar el archivo `config/web.php` introduciendo una clave secreta para el ítem de configuración `cookieValidationKey`
    (esto se realiza automáticamente si estás instalando Yii a través de Composer):

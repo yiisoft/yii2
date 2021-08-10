@@ -13,8 +13,8 @@ Ukoliko niste sigurni, [prijavite problem u glavnom repozitorijumu](https://gith
 
 **Ne prijavljujte problem ako**
 
-* tražite pomoć pri korišćenju nekih Yii funkcionalnosti. Koristite [forum](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) ili [čet sobu](http://www.yiiframework.com/chat/) u te svrhe.
-* je vaš problem sigurnosnog tipa. Molimo da nas [kontaktirate direktno](http://www.yiiframework.com/security/) za prijavu sigurnosnih problema.
+* tražite pomoć pri korišćenju nekih Yii funkcionalnosti. Koristite [forum](https://forum.yiiframework.com/index.php/forum/42-general-discussions-for-yii-20/) ili [čet sobu](https://www.yiiframework.com/chat/) u te svrhe.
+* je vaš problem sigurnosnog tipa. Molimo da nas [kontaktirate direktno](https://www.yiiframework.com/security/) za prijavu sigurnosnih problema.
 
 **Izbegavajte duple probleme**
 

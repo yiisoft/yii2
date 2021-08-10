@@ -109,7 +109,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     public function getUploadFileMaxCount()
     {
         if ($this->_uploadFileMaxCount === null) {
-            $this->_uploadFileMaxCount = ini_get('max_file_uploads');
+            $this->_uploadFileMaxCount = (int)ini_get('max_file_uploads');
         }
 
         return $this->_uploadFileMaxCount;

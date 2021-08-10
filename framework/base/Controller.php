@@ -514,6 +514,7 @@ class Controller extends Component implements ViewContextInterface
     public function findLayoutFile($view)
     {
         $module = $this->module;
+        $layout = null;
         if (is_string($this->layout)) {
             $layout = $this->layout;
         } elseif ($this->layout === null) {
@@ -525,7 +526,7 @@ class Controller extends Component implements ViewContextInterface
             }
         }
 
-        if (!isset($layout)) {
+        if ($layout === null) {
             return false;
         }
 

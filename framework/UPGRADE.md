@@ -51,6 +51,21 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.42
+-----------------------
+
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitly anymore.
+* The methods `phpTypecast()` and `dbTypecast()` of `yii\db\ColumnSchema` will no longer convert `$value` from `int` to 
+  `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`.
+  * I.e. it affects update and insert queries. For example:
+  ```php
+  \Yii::$app->db->createCommand()->insert('{{some_table}}', ['int_unsigned_col' => 22])->execute();
+  ```
+  will execute next SQL:
+  ```sql
+  INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
+  ```
+
 Upgrade from Yii 2.0.41
 -----------------------
 

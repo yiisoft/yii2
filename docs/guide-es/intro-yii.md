@@ -32,12 +32,12 @@ y muchas más.
 como se puede también aprovechar su sólida arquitectura de extensiones para utilizar o desarrollar extensiones distribuibles.
 - El alto rendimiento es siempre la meta principal de Yii.
 
-Yii no es un proyecto de un sola persona, detrás de Yii hay un [sólido equipo de desarrollo](http://www.yiiframework.com/team/), 
+Yii no es un proyecto de un sola persona, detrás de Yii hay un [sólido equipo de desarrollo](https://www.yiiframework.com/team/), 
 así como una gran comunidad en la que numerosos profesionales contribuyen constantemente a su desarrollo.
 El equipo de desarrollo de Yii se mantiene atento a las últimas tendencias de desarrollo web, así como a las mejores prácticas y características de otros frameworks y proyectos.
 Las buenas prácticas y características más relevantes de otros proyectos se incorporan regularmente a la base del framework y se exponen a través de interfaces simples y elegantes.
 
-[about_yii]: http://www.yiiframework.com/about/
+[about_yii]: https://www.yiiframework.com/about/
 
 Versiones de Yii
 ----------------

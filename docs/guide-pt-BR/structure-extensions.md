@@ -153,9 +153,9 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -221,7 +221,7 @@ estiver em uma versão estável.
 
 A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
 e/ou pelo [NPM](https://www.npmjs.com/), ao invés do Composer. O Yii usa o 
-[plugin de asset do Composer](https://github.com/francoispluchino/composer-asset-plugin) 
+[plugin de asset do Composer](https://github.com/fxpio/composer-asset-plugin) 
 para habilitar a gerência destes tipos de pacotes através do Composer. Se sua 
 extensão depender do pacote do Bower, você pode simplesmente listar a dependência 
 no `composer.json` conforme o exemplo a seguir:
@@ -465,7 +465,7 @@ a sua extensão:
 
 > Informação: Embora não seja um requisito, sugerimos que sua extensão se conforme 
   a determinados estilos de codificação. Você pode consultar o 
-  [estilo de codificação do framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  [estilo de codificação do framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Extensões Nativas <span id="core-extensions"></span>
@@ -491,7 +491,7 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
   A extensão também fornece um conjunto de páginas independentes para exibir mais 
   detalhes das informações de depuração.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  fornece suporte para o uso de [Elasticsearch](http://www.elasticsearch.org/). 
+  fornece suporte para o uso de [Elasticsearch](https://www.elastic.co/). 
   Este inclui suporte a consultas/pesquisas básicas e também implementa o padrão 
   [Active Record](db-active-record.md) que permite que você armazene os active 
   records no Elasticsearch.
@@ -524,4 +524,4 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   fornece recursos para envio de e-mails baseados no [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  fornece um motor de template baseado no [Twig](http://twig.sensiolabs.org/).
+  fornece um motor de template baseado no [Twig](https://twig.symfony.com/).

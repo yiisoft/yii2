@@ -72,7 +72,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Установка Yii из архива состоит из трёх шагов:
 
-1. Скачайте архив с [yiiframework.com](http://www.yiiframework.com/download/);
+1. Скачайте архив с [yiiframework.com](https://www.yiiframework.com/download/);
 2. Распакуйте скачанный архив в папку, доступную из Web.
 3. В файле `config/web.php` добавьте секретный ключ в значение `cookieValidationKey` (при установке через Composer
    это происходит автоматически):

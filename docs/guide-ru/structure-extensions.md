@@ -130,9 +130,9 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -369,7 +369,7 @@ class MyBootstrapClass implements BootstrapInterface
   предоставляет инструмент для генерации документации API на основе ваших комментариев.
 
 > Info: Пока это не обязательно, но мы всё-таки рекомендуем вам придерживаться определённого стиля кодирования.
-  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Базовые расширения <span id="core-extensions"></span>
@@ -393,7 +393,7 @@ Yii предоставляет следующие базовые расшире�
   нижней части каждой страницы. Это расширение также предоставляет набор отдельных страниц для отображения более
   подробной отладочной информации.
 - [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
-  предоставляет поддержку использования [Elasticsearch](http://www.elasticsearch.org/). Оно включает в себя поддержку
+  предоставляет поддержку использования [Elasticsearch](https://www.elastic.co/). Оно включает в себя поддержку
   основных поисковых запросов, а также реализует шаблон проектирования [Active Record](db-active-record.md), который
   позволяет хранить записи Active Record в Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
@@ -422,4 +422,4 @@ Yii предоставляет следующие базовые расшире�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   предоставляет возможности отправки email, основанные на [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  предоставляет шаблонизатор, основанный на [Twig](http://twig.sensiolabs.org/).
+  предоставляет шаблонизатор, основанный на [Twig](https://twig.symfony.com/).

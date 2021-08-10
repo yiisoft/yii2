@@ -28,12 +28,12 @@ Nếu bạn có kinh nghiệm làm việc với các framework khác, bạn sẽ
   tận dụng lợi thế của kiến trúc mở rộng chuẩn Yii để sử dụng hoặc phát triển mở rộng phân phối..
 - Hiệu suất cao luôn luôn là một trong những mục tiêu chính của Yii.
 
-Yii không chỉ được phát triển từ một người, nó được hỗ trợ bởi [đội ngũ phát triển cốt lõi mạnh mẽ][about_yii], cũng như một cộng đồng lớn, trong đó các chuyên gia liên tục
+Yii không chỉ được phát triển từ một người, nó được hỗ trợ bởi [đội ngũ phát triển cốt lõi mạnh mẽ][yii_team], cũng như một cộng đồng lớn, trong đó các chuyên gia liên tục
 đóng góp cho sự phát triển của Yii. Nhóm nghiên cứu phát triển Yii giữ một mắt đóng trên các xu hướng phát triển Web mới nhất và trên thực hành tốt nhất và 
 các tính năng được tìm thấy trong các khuôn khổ và các dự án khác. Các thực hành tốt nhất và các tính năng được tìm thấy ở những nơi khác có liên quan nhất thường xuyên 
 được đưa vào khuôn khổ lõi và tiếp xúc thông qua giao diện đơn giản và thanh lịch.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Các phiên bản Yii
 ------------

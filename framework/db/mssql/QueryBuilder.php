@@ -11,6 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\TableSchema;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -107,7 +108,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
      * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int|Expression $limit the limit number. See [[\yii\db\Query::limit]] for more details.
      * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
@@ -483,10 +484,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        $cols = [];
+        $columns = [];
         if ($version2005orLater) {
+            /* @var $schema TableSchema */
             $schema = $this->db->getTableSchema($table);
-            $cols = [];
-            $columns = [];
             foreach ($schema->columns as $column) {
                 if ($column->isComputed) {
                     continue;
