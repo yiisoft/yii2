@@ -174,7 +174,7 @@ class SortTest extends TestCase
 
         $sort->params = ['sort' => '-age'];
         $sort->getAttributeOrders(true);
-        $this->assertEquals('age', $sort->createSortParam('age'));
+        $this->assertEquals('', $sort->createSortParam('age'));
 
         $sort->params = ['sort' => 'age'];
         $sort->getAttributeOrders(true);
