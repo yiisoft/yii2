@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
 
 
 2.0.43 August 09, 2021

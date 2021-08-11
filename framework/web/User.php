@@ -728,6 +728,10 @@ class User extends Component
                 $this->renewIdentityCookie();
             }
         }
+
+        if ($this->getIdentity(false) === null) {
+            $this->switchIdentity(null);
+        }
     }
 
     /**
