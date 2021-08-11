@@ -421,7 +421,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
   [JQuery UI](http://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。
+  [MongoDB](https://www.mongodb.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   キューによるタスクの非同期実行のサポートを提供します。
