@@ -132,7 +132,7 @@ Yii 提供以下 session 类实现不同的 session 存储方式：
 * [[yii\web\DbSession]]：存储 session 数据在数据表中
 * [[yii\web\CacheSession]]：存储 session 数据到缓存中，缓存和配置中的[缓存组件](caching-data.md#cache-components)相关
 * [[yii\redis\Session]]：存储 session 数据到以 [redis](http://redis.io/) 作为存储媒介中
-* [[yii\mongodb\Session]]：存储 session 数据到 [MongoDB](http://www.mongodb.org/)。
+* [[yii\mongodb\Session]]：存储 session 数据到 [MongoDB](https://www.mongodb.com/)。
 
 所有这些 session 类支持相同的 API 方法集，因此，
 切换到不同的 session 存储介质不需要修改项目使用 session 的代码。
