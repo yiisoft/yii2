@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
 
 
 2.0.43 August 09, 2021
