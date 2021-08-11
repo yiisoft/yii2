@@ -90,8 +90,8 @@ class BasicAuthTest extends AuthTest
 
     /**
      * This tests checks, that:
-     *  - HttpBasicAuth does not call `auth` closure, when user is already authenticated
-     *  - HttpBasicAuth does not switch identity, when the user identity to be set is the same as current user's one
+     *  - HttpBasicAuth does not call `auth` closure, when a user is already authenticated
+     *  - HttpBasicAuth does not switch identity, even when the user identity to be set is the same as current user's one
      *
      * @dataProvider tokenProvider
      * @param string|null $token
@@ -102,28 +102,22 @@ class BasicAuthTest extends AuthTest
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'y0u7h1nk175r34l?';
 
-        // Login user and set fake identity ID to session
-        if ($login !== null) {
-            Yii::$app->user->login(UserIdentity::findIdentity($login));
-        }
-
+        $user = Yii::$app->user;
         $session = Yii::$app->session;
-        $idParam = Yii::$app->user->idParam;
-        $idValue = 'should not be changed';
-        $session->set($idParam, $idValue);
+        $user->login(UserIdentity::findIdentity('user1'));
+        $identity = $user->getIdentity();
+        $sessionId = $session->getId();
 
         $filter = [
             'class' => HttpBasicAuth::className(),
             'auth' => function ($username, $password) {
-                if ($username !== null) {
-                    $this->fail('Authentication closure should not be called when user is already authenticated');
-                }
-                return null;
+                $this->fail('Authentication closure should not be called when user is already authenticated');
             },
         ];
-        $this->ensureFilterApplies($token, $login, $filter);
+        $this->ensureFilterApplies('token1', 'user1', $filter);
 
-        $this->assertSame($idValue, $session->get($idParam));
+        $this->assertSame($identity, $user->getIdentity());
+        $this->assertSame($sessionId, $session->getId());
         $session->destroy();
     }
 

@@ -4,7 +4,9 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+
 - Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
+- Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
 
 
 2.0.43 August 09, 2021
