@@ -438,7 +438,7 @@ class Sort extends BaseObject
         $definition = $this->attributes[$attribute];
         $directions = $this->getAttributeOrders();
         if (isset($directions[$attribute])) {
-            if ($this->enableMultiSort && count($directions) > 1) {
+            if ($this->enableMultiSort) {
                 if ($directions[$attribute] === SORT_ASC) {
                     $direction = SORT_DESC;
                 } else {
