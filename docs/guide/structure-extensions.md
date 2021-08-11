@@ -421,7 +421,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
   provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
+  provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   provides the supports for running tasks asynchronously via queues.

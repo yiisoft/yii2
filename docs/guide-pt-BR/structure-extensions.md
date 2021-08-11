@@ -510,7 +510,7 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
   fornece um conjunto de widgets que encapsulam as interações e widgets do 
   [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  fornece suporte para o uso do [MongoDB](http://www.mongodb.org/). Este inclui 
+  fornece suporte para o uso do [MongoDB](https://www.mongodb.com/). Este inclui 
   recursos como consultas básicas, Active Record, migrations, cache, geração de 
   códigos, etc.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
