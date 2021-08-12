@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
-- no changes in this release.
+- Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
 
 
 2.0.43 August 09, 2021
@@ -33,7 +33,6 @@ Yii Framework 2 Change Log
 - Enh #18734: Add `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
 - Enh #18789: Add JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
 - Enh #18817: Use `paragonie/random_compat` for random bytes and int generation (samdark)
-- Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
 
 
 2.0.42.1 May 06, 2021
