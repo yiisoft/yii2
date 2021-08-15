@@ -968,12 +968,28 @@ class Request extends \yii\base\Request
     /**
      * Sets a request "attribute" which can be used to for storage of any parameters derived from the request,
      * e.g. the scopes of an Oauth request. They can be retrieved via [[getAttribute()]] and [[getAttributes()]].
+     * @param string $name The name of the attribute to store
+     * @param mixed $value The value of the attribute to store
      * @see getAttribute()
      * @since 2.0.44
      */
     public function setAttribute($name, $value)
     {
         $this->_attributes[$name] = $value;
+    }
+
+    /**
+     * Sets request "attributes" which can be used to for storage of any parameters derived from the request,
+     * e.g. the scopes of an Oauth request. They can be retrieved via [[getAttribute()]] and [[getAttributes()]].
+     * @param array $attributes Array of attributes to store on the request where the array `key` is the attribute name.
+     * @see getAttribute()
+     * @since 2.0.44
+     */
+    public function setAttributes($attributes)
+    {
+        foreach ($attributes as $name => $value) {
+            $this->setAttribute($name, $value);
+        }
     }
 
     /**
