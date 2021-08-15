@@ -65,6 +65,8 @@ Upgrade from Yii 2.0.42
   ```sql
   INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
   ```
+* Property `yii\db\ColumnSchemaBuilder::$categoryMap` has been removed in favor of getter/setter methods `getCategoryMap()` 
+  and `setCategoryMap()`.
 
 Upgrade from Yii 2.0.41
 -----------------------
