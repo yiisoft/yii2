@@ -1270,9 +1270,9 @@ class RequestTest extends TestCase
 
     /**
      * @covers \yii\web\Request::setAttribute
-     * @covers \yii\web\Request::setAttributes
-     * @covers \yii\web\Request::getAttribute
      * @covers \yii\web\Request::addAttributes
+     * @covers \yii\web\Request::getAttribute
+     * @covers \yii\web\Request::getAttributes
      */
     public function testAttributes()
     {
