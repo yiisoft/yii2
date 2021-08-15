@@ -1267,4 +1267,24 @@ class RequestTest extends TestCase
         $this->assertSame('10.0.0.1', $request->userIP, 'User IP fail!');
         $this->assertSame('http://yiiframework.com', $request->hostInfo, 'Host info fail!');
     }
+
+    public function testAttributes()
+    {
+        $request = new Request();
+        $this->assertEquals([], $request->getAttributes(), 'Expected attributes to be empty by default.');
+
+        $request->setAttribute('test_1', 123);
+        $this->assertEquals(['test_1' => 123], $request->getAttributes());
+        $this->assertEquals(123, $request->getAttribute('test_1'));
+
+        $request->setAttribute('test_2', 456);
+        $this->assertEquals(['test_1' => 123, 'test_2' => 456], $request->getAttributes());
+        $this->assertEquals(123, $request->getAttribute('test_1'));
+        $this->assertEquals(456, $request->getAttribute('test_2'));
+
+        $request->setAttribute('test_1', 'abc');
+        $this->assertEquals(['test_1' => 'abc', 'test_2' => 456], $request->getAttributes());
+        $this->assertEquals('abc', $request->getAttribute('test_1'));
+        $this->assertEquals(456, $request->getAttribute('test_2'));
+    }
 }

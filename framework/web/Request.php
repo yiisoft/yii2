@@ -262,6 +262,13 @@ class Request extends \yii\base\Request
     ];
 
     /**
+     * @var mixed[] The request "attributes" can be used to for storage of any parameters derived from the request,
+     * e.g. the scopes of an Oauth request.
+     * @since 2.0.44
+     */
+    protected $_attributes = [];
+
+    /**
      * @var CookieCollection Collection of request cookies.
      */
     private $_cookies;
@@ -933,6 +940,40 @@ class Request extends \yii\base\Request
     public function setPathInfo($value)
     {
         $this->_pathInfo = $value === null ? null : ltrim($value, '/');
+    }
+
+    /**
+     * The request "attributes" can be used to for storage of any parameters derived from the request,
+     * e.g. the scopes of an Oauth request. They can be set via [[setAttribute()]].
+     * @return mixed[] The request attributes
+     * @see setAttribute()
+     * @since 2.0.44
+     */
+    public function getAttributes()
+    {
+        return $this->_attributes;
+    }
+
+    /**
+     * Get a request "attribute" which is previously set via [[setAttribute()]].
+     * @return mixed The request attribute
+     * @see setAttribute()
+     * @since 2.0.44
+     */
+    public function getAttribute($name, $default = null)
+    {
+        return array_key_exists($name, $this->_attributes) ? $this->_attributes[$name] : $default;
+    }
+
+    /**
+     * Sets a request "attribute" which can be used to for storage of any parameters derived from the request,
+     * e.g. the scopes of an Oauth request. They can be retrieved via [[getAttribute()]] and [[getAttributes()]].
+     * @see getAttribute()
+     * @since 2.0.44
+     */
+    public function setAttribute($name, $value)
+    {
+        $this->_attributes[$name] = $value;
     }
 
     /**
