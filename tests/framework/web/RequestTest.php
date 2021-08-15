@@ -1272,7 +1272,7 @@ class RequestTest extends TestCase
      * @covers \yii\web\Request::setAttribute
      * @covers \yii\web\Request::setAttributes
      * @covers \yii\web\Request::getAttribute
-     * @covers \yii\web\Request::getAttributes
+     * @covers \yii\web\Request::addAttributes
      */
     public function testAttributes()
     {
@@ -1293,7 +1293,7 @@ class RequestTest extends TestCase
         $this->assertEquals('abc', $request->getAttribute('test_1'));
         $this->assertEquals(456, $request->getAttribute('test_2'));
 
-        $request->setAttributes(['test_2' => 'def', 'test_3' => 789]);
+        $request->addAttributes(['test_2' => 'def', 'test_3' => 789]);
         $this->assertEquals(['test_1' => 'abc', 'test_2' => 'def', 'test_3' => 789], $request->getAttributes());
         $this->assertEquals('abc', $request->getAttribute('test_1'));
         $this->assertEquals('def', $request->getAttribute('test_2'));

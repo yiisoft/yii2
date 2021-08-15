@@ -90,6 +90,8 @@ use yii\validators\IpValidator;
  * @property-read string|null $userAgent User agent, null if not available. This property is read-only.
  * @property-read string|null $userHost User host name, null if not available. This property is read-only.
  * @property-read string|null $userIP User IP address, null if not available. This property is read-only.
+ * @property-read mixed[] $attributes request "attributes" which can be used to for storage of any parameters derived
+ * from the request, e.g. the scopes of an Oauth request.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -979,13 +981,13 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Sets request "attributes" which can be used to for storage of any parameters derived from the request,
+     * Add request "attributes" which can be used to for storage of any parameters derived from the request,
      * e.g. the scopes of an Oauth request. They can be retrieved via [[getAttribute()]] and [[getAttributes()]].
      * @param array $attributes Array of attributes to store on the request where the array `key` is the attribute name.
      * @see getAttribute()
      * @since 2.0.44
      */
-    public function setAttributes($attributes)
+    public function addAttributes($attributes)
     {
         foreach ($attributes as $name => $value) {
             $this->setAttribute($name, $value);
