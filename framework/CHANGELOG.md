@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
-
+- Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
 - Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
 - Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
 - Bug #18832: Fix `Inflector::camel2words()` adding extra spaces (brandonkelly)
