@@ -162,7 +162,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
+В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](https://fontawesome.com/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
@@ -215,7 +215,7 @@ $config = [
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-Эта команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) глобально,
+Эта команда устанавливает [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) глобально,
 что позволит устанавливать зависимости из Bower и NPM. После установки все проекты на вашем комьютере будут поддерживать
 установку Bower и NPM пакетов, описанных в `composer.json`.
 
@@ -511,13 +511,13 @@ class AppAsset extends AssetBundle
 
 Yii использует имена расширений файлов для идентификации расширенного синтаксиса внутри ресурса. По умолчанию признаны следующие синтаксисы и имена расширений файлов:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](http://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
+Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](https://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
 
 Вы можете настроить команды препроцессора и поддерживать расширенный синтаксис сконфигурировав [[yii\web\AssetManager::converter]] следующим образом:
 

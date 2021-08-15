@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://www.yiiframework.com/" target="_blank">
-        <img src="https://www.yiiframework.com/files/logo/yii.png" width="400" alt="Yii Framework" />
+        <img src="https://www.yiiframework.com/image/yii_logo_light.svg" width="400" alt="Yii Framework" />
     </a>
 </p>
 

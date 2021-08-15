@@ -85,7 +85,7 @@ Installing from an Archive File <span id="installing-from-archive-file"></span>
 
 Installing Yii from an archive file involves three steps:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/).
+1. Download the archive file from [yiiframework.com](https://www.yiiframework.com/download/).
 2. Unpack the downloaded file to a Web-accessible folder.
 3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
    (this is done automatically if you are installing Yii using Composer):
@@ -116,7 +116,7 @@ Installing Assets <span id="installing-assets"></span>
 
 Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/) packages for the asset (CSS and JavaScript) libraries installation.
 It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
-This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
 Please refer to [Assets documentation](structure-assets.md) for more details.
 
 You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.

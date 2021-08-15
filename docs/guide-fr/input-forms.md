@@ -93,7 +93,7 @@ Des balises additionnelles HTML peuvent être ajoutées au formulaire en utilisa
 Création d'une liste déroulante <span id="creating-activeform-dropdownlist"></span>
 -------------------------------
 
-Vous pouvez utiliser la méthode [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) de ActiveForm pour créer une liste déroulante :
+Vous pouvez utiliser la méthode [dropDownList()](https://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) de ActiveForm pour créer une liste déroulante :
 
 
 ```php

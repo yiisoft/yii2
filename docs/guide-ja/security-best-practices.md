@@ -353,3 +353,29 @@ return [
 
 > Note: 「ホスト・ヘッダ攻撃」に対する保護のためには、常に、フィルタの使用よりもウェブ・サーバの構成を優先すべきです。
   [[yii\filters\HostControl]] は、サーバの構成が出来ない場合にだけ使うべきものです。
+
+### SSL ピア検証を構成する
+
+SSL 証明書検証の問題、例えば :
+
+```
+cURL error 60: SSL certificate problem: unable to get local issuer certificate
+```
+
+または
+
+```
+stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
+```
+
+を解決する方法については、典型的な誤解があります。SSL ピア検証を無効化するよう示唆する間違った情報が数多くありますが、決して従ってはいけません。
+そんなことをすれば、マン・イン・ザ・ミドル型の攻撃を可能にします。そうするのではなく、PHP を適切に構成すべきです。
+
+1. [https://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem) をダウンロードする。
+2. php.ini に以下を追加する。
+  ```
+  openssl.cafile="/path/to/cacert.pem"
+  curl.cainfo="/path/to/cacert.pem".
+  ```
+
+`cacert.pem` ファイルを最新に保つ必要があることに注意して下さい。

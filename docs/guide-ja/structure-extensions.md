@@ -127,9 +127,9 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -185,7 +185,7 @@ Yii のアプリケーションは、このファイルによって、どんな�
 あなたのエクステンションを安定バージョンとしてリリースする場合は、安定した依存パッケージを使ってください。
 
 たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) を使って管理されています。
-Yii は [Composer アセット・プラグイン](https://github.com/francoispluchino/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
+Yii は [Composer アセット・プラグイン](https://github.com/fxpio/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
 あなたのエクステンションが Bower パッケージに依存している場合でも、次のように、
 `composer.json` に依存パッケージをリストアップすることが簡単に出来ます。
 
@@ -383,7 +383,7 @@ Composer レポジトリに新しいリリースについて通知するだけ�
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
 
 > Info: これは要求ではありませんが、あなたのエクステンションも一定のコーディング・スタイルを守るのが良いと思います。
-  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
+  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) を参照してください。
 
 
 ## コア・エクステンション <span id="core-extensions"></span>
@@ -406,7 +406,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
   このエクステンションが使われると、全てのページの末尾にデバッガ・ツールバーが表示されます。
   このエクステンションは、より詳細なデバッグ情報を表示する一連のスタンドアロン・ページも提供します。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  [Elasticsearch](http://www.elasticsearch.org/) の使用に対するサポートを提供します。
+  [Elasticsearch](https://www.elastic.co/) の使用に対するサポートを提供します。
   基本的なクエリ/サーチのサポートを含むだけでなく、Elasticsearch にアクティブ・レコードを保存することを可能にする
   [アクティブ・レコード](db-active-record.md) パターンをも実装しています。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
@@ -421,7 +421,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
   [JQuery UI](http://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。
+  [MongoDB](https://www.mongodb.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   キューによるタスクの非同期実行のサポートを提供します。
@@ -439,7 +439,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  [Twig](http://twig.sensiolabs.org/) に基づいたテンプレート・エンジンを提供します。
+  [Twig](https://twig.symfony.com/) に基づいたテンプレート・エンジンを提供します。
 
 下記の公式エクステンションは Yii 2.1 以上のためのものです。
 これらは、Yii 2.0 ではコア・フレームワークに含まれていますので、インストールする必要はありません。.

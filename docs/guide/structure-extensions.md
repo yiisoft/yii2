@@ -127,9 +127,9 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -185,7 +185,7 @@ Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) 
 dependencies when your extension is released in a stable version.
 
 Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/),
-instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+instead of Composer. Yii uses the [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
 to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
 simply list the dependency in `composer.json` like the following:
 
@@ -383,7 +383,7 @@ help other people learn about and use your extension:
   for you to generate pretty API documentation based on your code comments.
 
 > Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  the [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Core Extensions <span id="core-extensions"></span>
@@ -406,7 +406,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
   debug information.
 - [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
-  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
+  provides the support for using [Elasticsearch](https://www.elastic.co/). It includes basic querying/search
   support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
   in Elasticsearch.
 - [yiisoft/yii2-faker](https://www.yiiframework.com/extension/yiisoft/yii2-faker):
@@ -421,7 +421,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
   provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
+  provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   provides the supports for running tasks asynchronously via queues.
@@ -439,7 +439,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
   provides email sending features based on [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+  provides a template engine based on [Twig](https://twig.symfony.com/).
 
 The following official extensions are for Yii 2.1 and above.
 You don't need to install them for Yii 2.0, since they are included in the core framework.

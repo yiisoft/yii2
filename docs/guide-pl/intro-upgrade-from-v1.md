@@ -107,8 +107,8 @@ Więcej szczegółów na temat konfiguracji znajdziesz w sekcji [Konfiguracje](c
 Zdarzenia (Events)
 ------------------
 
-W Yii 1 zdarzenia były tworzone poprzez definiowanie `on`-metody (np., `onBeforeSave`). W Yii 2 możesz użyć dowolnej nazwy. Uruchomienie zdarzenia następuje 
-poprzez wywołanie metody [[yii\base\Component::trigger()|trigger()]]:
+W Yii 1 zdarzenia były tworzone poprzez definiowanie `on`-metody (np., `onBeforeSave`). W Yii 2 możesz użyć dowolnej nazwy. 
+Uruchomienie zdarzenia następuje poprzez wywołanie metody [[yii\base\Component::trigger()|trigger()]]:
 
 ```php
 $event = new \yii\base\Event;
