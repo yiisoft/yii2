@@ -406,7 +406,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
   debug information.
 - [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
-  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
+  provides the support for using [Elasticsearch](https://www.elastic.co/). It includes basic querying/search
   support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
   in Elasticsearch.
 - [yiisoft/yii2-faker](https://www.yiiframework.com/extension/yiisoft/yii2-faker):
@@ -421,7 +421,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
   provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
+  provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   provides the supports for running tasks asynchronously via queues.

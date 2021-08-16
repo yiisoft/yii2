@@ -413,7 +413,7 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   Yii. Cuando se usa esta extensión, aparece una barra de herramientas de depuración en la parte inferior de cada
   página. La extensión también proporciona un conjunto de páginas para mostrar información detallada de depuración.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch): proporciona soporte para usar
-  [Elasticsearch](http://www.elasticsearch.org/). Incluye soporte básico para realizar consultas/búsquedas y también
+  [Elasticsearch](https://www.elastic.co/). Incluye soporte básico para realizar consultas/búsquedas y también
   implementa patrones de [Active Record](db-active-record.md) que permiten y permite guardar los `active records` en
   Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker): proporciona soporte para usar
@@ -427,7 +427,7 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui): proporciona un conjunto de widgets que encapsulan las
   iteraciones y widgets de [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb): proporciona soporte para utilizar
-  [MongoDB](http://www.mongodb.org/). incluye características como consultas básicas, Active Record, migraciones,
+  [MongoDB](https://www.mongodb.com/). incluye características como consultas básicas, Active Record, migraciones,
   caching, generación de código, etc.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis): proporciona soporte para utilizar
   [redis](http://redis.io/). incluye características como consultas básicas, Active Record, caching, etc.

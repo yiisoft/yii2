@@ -1732,7 +1732,7 @@ class Formatter extends Component
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
         if ($this->_intlLoaded && !isset($options[NumberFormatter::GROUPING_USED])) {
-            $options[NumberFormatter::GROUPING_USED] = false;
+            $options[NumberFormatter::GROUPING_USED] = 0;
         }
         // format the size value
         $params = [
@@ -1793,19 +1793,19 @@ class Formatter extends Component
         $formatter = new NumberFormatter($this->locale, $style);
 
         // set text attributes
-        foreach ($this->numberFormatterTextOptions as $name => $attribute) {
-            $formatter->setTextAttribute($name, $attribute);
+        foreach ($this->numberFormatterTextOptions as $attribute => $value) {
+            $this->setFormatterTextAttribute($formatter, $attribute, $value, 'numberFormatterTextOptions', 'numberFormatterOptions');
         }
-        foreach ($textOptions as $name => $attribute) {
-            $formatter->setTextAttribute($name, $attribute);
+        foreach ($textOptions as $attribute => $value) {
+            $this->setFormatterTextAttribute($formatter, $attribute, $value, '$textOptions', '$options');
         }
 
         // set attributes
-        foreach ($this->numberFormatterOptions as $name => $value) {
-            $formatter->setAttribute($name, $value);
+        foreach ($this->numberFormatterOptions as $attribute => $value) {
+            $this->setFormatterIntAttribute($formatter, $attribute, $value, 'numberFormatterOptions', 'numberFormatterTextOptions');
         }
-        foreach ($options as $name => $value) {
-            $formatter->setAttribute($name, $value);
+        foreach ($options as $attribute => $value) {
+            $this->setFormatterIntAttribute($formatter, $attribute, $value, '$options', '$textOptions');
         }
         if ($decimals !== null) {
             $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
@@ -1823,11 +1823,89 @@ class Formatter extends Component
             $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
             $formatter->setSymbol(NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
         }
-        foreach ($this->numberFormatterSymbols as $name => $symbol) {
-            $formatter->setSymbol($name, $symbol);
+        foreach ($this->numberFormatterSymbols as $symbol => $value) {
+            $this->setFormatterSymbol($formatter, $symbol, $value, 'numberFormatterSymbols');
         }
 
         return $formatter;
+    }
+
+    /**
+     * @param NumberFormatter $formatter
+     * @param mixed $attribute
+     * @param mixed $value
+     * @param string $source
+     * @param string $alternative
+     */
+    private function setFormatterTextAttribute($formatter, $attribute, $value, $source, $alternative)
+    {
+        if (!is_int($attribute)) {
+            throw new InvalidArgumentException(
+                "The $source array keys must be integers recognizable by NumberFormatter::setTextAttribute(). \""
+                . gettype($attribute) . '" provided instead.'
+            );
+        }
+        if (!is_string($value)) {
+            if (is_int($value)) {
+                throw new InvalidArgumentException(
+                    "The $source array values must be strings. Did you mean to use $alternative?"
+                );
+            }
+            throw new InvalidArgumentException(
+                "The $source array values must be strings. \"" . gettype($value) . '" provided instead.'
+            );
+        }
+        $formatter->setTextAttribute($attribute, $value);
+    }
+
+    /**
+     * @param NumberFormatter $formatter
+     * @param mixed $symbol
+     * @param mixed $value
+     * @param string $source
+     */
+    private function setFormatterSymbol($formatter, $symbol, $value, $source)
+    {
+        if (!is_int($symbol)) {
+            throw new InvalidArgumentException(
+                "The $source array keys must be integers recognizable by NumberFormatter::setSymbol(). \""
+                . gettype($symbol) . '" provided instead.'
+            );
+        }
+        if (!is_string($value)) {
+            throw new InvalidArgumentException(
+                "The $source array values must be strings. \"" . gettype($value) . '" provided instead.'
+            );
+        }
+        $formatter->setSymbol($symbol, $value);
+    }
+
+    /**
+     * @param NumberFormatter $formatter
+     * @param mixed $attribute
+     * @param mixed $value
+     * @param string $source
+     * @param string $alternative
+     */
+    private function setFormatterIntAttribute($formatter, $attribute, $value, $source, $alternative)
+    {
+        if (!is_int($attribute)) {
+            throw new InvalidArgumentException(
+                "The $source array keys must be integers recognizable by NumberFormatter::setAttribute(). \""
+                . gettype($attribute) . '" provided instead.'
+            );
+        }
+        if (!is_int($value)) {
+            if (is_string($value)) {
+                throw new InvalidArgumentException(
+                    "The $source array values must be integers. Did you mean to use $alternative?"
+                );
+            }
+            throw new InvalidArgumentException(
+                "The $source array values must be integers. \"" . gettype($value) . '" provided instead.'
+            );
+        }
+        $formatter->setAttribute($attribute, $value);
     }
 
     /**

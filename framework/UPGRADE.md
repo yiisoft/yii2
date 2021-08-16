@@ -54,7 +54,7 @@ for both A and B.
 Upgrade from Yii 2.0.42
 -----------------------
 
-* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitely anymore.
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitly anymore.
 * The methods `phpTypecast()` and `dbTypecast()` of `yii\db\ColumnSchema` will no longer convert `$value` from `int` to 
   `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`.
   * I.e. it affects update and insert queries. For example:
@@ -65,6 +65,8 @@ Upgrade from Yii 2.0.42
   ```sql
   INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
   ```
+* Property `yii\db\ColumnSchemaBuilder::$categoryMap` has been removed in favor of getter/setter methods `getCategoryMap()` 
+  and `setCategoryMap()`.
 
 Upgrade from Yii 2.0.41
 -----------------------

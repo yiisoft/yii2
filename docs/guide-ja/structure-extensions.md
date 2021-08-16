@@ -406,7 +406,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
   このエクステンションが使われると、全てのページの末尾にデバッガ・ツールバーが表示されます。
   このエクステンションは、より詳細なデバッグ情報を表示する一連のスタンドアロン・ページも提供します。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  [Elasticsearch](http://www.elasticsearch.org/) の使用に対するサポートを提供します。
+  [Elasticsearch](https://www.elastic.co/) の使用に対するサポートを提供します。
   基本的なクエリ/サーチのサポートを含むだけでなく、Elasticsearch にアクティブ・レコードを保存することを可能にする
   [アクティブ・レコード](db-active-record.md) パターンをも実装しています。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
@@ -421,7 +421,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
   [JQuery UI](http://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。
+  [MongoDB](https://www.mongodb.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   キューによるタスクの非同期実行のサポートを提供します。
