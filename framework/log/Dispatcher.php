@@ -130,10 +130,10 @@ class Dispatcher extends Component
     {
         if (is_string($value) || is_array($value)) {
             $value = Yii::createObject($value);
-            Yii::setLogger($value);
         }
 
         $this->_logger = $value;
+        Yii::setLogger($value);
         $this->_logger->dispatcher = $this;
     }
 
