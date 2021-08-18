@@ -124,8 +124,7 @@ class Dispatcher extends Component
      * @param Logger|string|array $value the logger to be used. This can either be a logger instance
      * or a configuration that will be used to create one using [[Yii::createObject()]].
      * If you are providing custom logger configuration and would like it to be used for the whole application 
-     * and not just for the dispatcher you should use [[Yii::setLogger()]] or configure it at the top level 
-     * of application config instead.
+     * and not just for the dispatcher you should use [[Yii::setLogger()]] instead.
      */
     public function setLogger($value)
     {
