@@ -10,7 +10,6 @@ namespace yii\log;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
-use yii\base\InvalidConfigException;
 
 /**
  * Dispatcher manages a set of [[Target|log targets]].
@@ -124,7 +123,6 @@ class Dispatcher extends Component
      * Sets the connected logger.
      * @param Logger|string|array $value the logger to be used. This can either be a logger instance
      * or a configuration that will be used to create one using [[Yii::createObject()]].
-     * @throws InvalidConfigException
      */
     public function setLogger($value)
     {
@@ -133,7 +131,6 @@ class Dispatcher extends Component
         }
 
         $this->_logger = $value;
-        Yii::setLogger($value);
         $this->_logger->dispatcher = $this;
     }
 
