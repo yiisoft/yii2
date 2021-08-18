@@ -18,7 +18,6 @@ namespace yii\log {
 
 namespace yiiunit\framework\log {
 
-    use yii\BaseYii;
     use yiiunit\framework\log\mocks\TargetMock;
     use Yii;
     use yii\base\UserException;
@@ -88,16 +87,6 @@ namespace yiiunit\framework\log {
             ]);
             $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
             $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
-
-            $dispatcher = new Dispatcher([
-                'logger' => [
-                    'class' => 'yii\log\Logger',
-                    'profilingAware' => true,
-                ],
-            ]);
-            $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
-            $this->assertEquals(true, $dispatcher->getLogger()->profilingAware);
-            $this->assertEquals(true, BaseYii::getLogger()->profilingAware);
         }
 
         /**
