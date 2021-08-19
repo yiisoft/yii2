@@ -59,7 +59,7 @@
         "issues": "https://github.com/yiisoft/yii2/issues?state=open",
         "forum": "https://forum.yiiframework.com/",
         "wiki": "https://www.yiiframework.com/wiki",
-        "irc": "irc://irc.libera.chat:6697/yii",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "dev",
