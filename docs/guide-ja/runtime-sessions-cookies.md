@@ -374,7 +374,7 @@ return [
 セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] および [[yii\web\Session::cookieParams]] の 'httponly' パラメータの
 デフォルト値は `true` に設定されています。
 これによって、クライアント・サイド・スクリプトが保護されたクッキーにアクセスする危険が軽減されます (ブラウザがサポートしていれば)。
-詳細については、[httpOnly の wiki 記事](https://www.owasp.org/index.php/HttpOnly) を読んでください。
+詳細については、[httpOnly の wiki 記事](https://owasp.org/www-community/HttpOnly) を読んでください。
 
 ### secure
 

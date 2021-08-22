@@ -268,7 +268,7 @@ unset($cookies['language']);
 
 Além das propriedades [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] mostradas nos exemplos acima, a classe [[yii\web\Cookie]] também define outras propriedades para representar plenamente todas as informações de cookie disponíveis, tal como [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. Você pode configurar essas propriedades conforme necessário para preparar um cookie e, em seguida, adicioná-lo à coleção de cookie da resposta.
 
-> Observação: Para melhor segurança, o valor padrão de [[yii\web\Cookie::httpOnly]] é definido para `true`. Isso ajuda a reduzir o risco de um script do lado do cliente acessar o cookie protegido (se o browser suporta-lo). Você pode ler o [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para mais detalhes.
+> Observação: Para melhor segurança, o valor padrão de [[yii\web\Cookie::httpOnly]] é definido para `true`. Isso ajuda a reduzir o risco de um script do lado do cliente acessar o cookie protegido (se o browser suporta-lo). Você pode ler o [httpOnly wiki article](https://owasp.org/www-community/HttpOnly) para mais detalhes.
 
 
 ### Validação de Cookie <span id="cookie-validation"></span>
