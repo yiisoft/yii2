@@ -334,7 +334,7 @@ unset($cookies['language']);
 
 > Note: 为安全起见 [[yii\web\Cookie::httpOnly]] 被设置为 true，
   这可减少客户端脚本访问受保护 cookie（如果浏览器支持）的风险，
-  更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly)。
+  更多详情可阅读 [httpOnly wiki article](https://owasp.org/www-community/HttpOnly)。
 
 
 ### Cookie 验证 <span id="cookie-validation"></span>

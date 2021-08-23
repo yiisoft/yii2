@@ -299,7 +299,7 @@ unset($cookies['language']);
 
 En plus des propriétés  [[yii\web\Cookie::name|name (nom)]], [[yii\web\Cookie::value|value (valeur)]] montrées dans les exemples ci-dessus, la classe  [[yii\web\Cookie]] définit également d'autres propriétés pour représenter complètement toutes les informations de témoin de connexion disponibles, comme les propriétés [[yii\web\Cookie::domain|domain (domaine)]], [[yii\web\Cookie::expire|expire (date d'expiration)]]. Vous pouvez configurer ces propriété selon vos besoins pour préparer un témoin de connexion et ensuite l'ajouter à la collection de témoins de connexion de la réponse.
 
-> Note: pour une meilleure sécurité, la valeur par défaut de la propriété [[yii\web\Cookie::httpOnly]] est définie à `true`. Cela permet de limiter le risque qu'un script client n'accède à un témoin de connexion protégé (si le navigateur le prend en charge). Reportez-vous à l'[article de wiki httpOnly](https://www.owasp.org/index.php/HttpOnly) pour plus de détails.
+> Note: pour une meilleure sécurité, la valeur par défaut de la propriété [[yii\web\Cookie::httpOnly]] est définie à `true`. Cela permet de limiter le risque qu'un script client n'accède à un témoin de connexion protégé (si le navigateur le prend en charge). Reportez-vous à l'[article de wiki httpOnly](https://owasp.org/www-community/HttpOnly) pour plus de détails.
 
 
 ### Validation des témoins de connexion <span id="cookie-validation"></span>
