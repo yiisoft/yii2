@@ -483,15 +483,13 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
   fornece um conjunto de widgets que encapsulam os componentes e plug-ins do 
   [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
-  fornece suporte a testes baseados no [Codeception](http://codeception.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
   fornece suporte a depuração para aplicações Yii. Quando esta extensão é usada, 
   uma barra de ferramenta de depuração aparecerá na parte inferior de cada página. 
   A extensão também fornece um conjunto de páginas independentes para exibir mais 
   detalhes das informações de depuração.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  fornece suporte para o uso de [Elasticsearch](http://www.elasticsearch.org/). 
+  fornece suporte para o uso de [Elasticsearch](https://www.elastic.co/). 
   Este inclui suporte a consultas/pesquisas básicas e também implementa o padrão 
   [Active Record](db-active-record.md) que permite que você armazene os active 
   records no Elasticsearch.
@@ -510,7 +508,7 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
   fornece um conjunto de widgets que encapsulam as interações e widgets do 
   [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  fornece suporte para o uso do [MongoDB](http://www.mongodb.org/). Este inclui 
+  fornece suporte para o uso do [MongoDB](https://www.mongodb.com/). Este inclui 
   recursos como consultas básicas, Active Record, migrations, cache, geração de 
   códigos, etc.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):

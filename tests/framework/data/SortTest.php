@@ -163,8 +163,30 @@ class SortTest extends TestCase
             'route' => 'site/index',
         ]);
 
+        $sort->params = ['sort' => 'age,-name'];
+        $sort->getAttributeOrders(true);
         $this->assertEquals('-age,-name', $sort->createSortParam('age'));
+        $this->assertEquals('age', $sort->createSortParam('name'));
+
+        $sort->params = ['sort' => 'age'];
+        $sort->getAttributeOrders(true);
+        $this->assertEquals('-age', $sort->createSortParam('age'));
+
+        $sort->params = ['sort' => '-age'];
+        $sort->getAttributeOrders(true);
+        $this->assertEquals('', $sort->createSortParam('age'));
+
+        $sort->params = ['sort' => 'age'];
+        $sort->getAttributeOrders(true);
         $this->assertEquals('name,age', $sort->createSortParam('name'));
+
+        $sort->params = ['sort' => 'name,age'];
+        $sort->getAttributeOrders(true);
+        $this->assertEquals('-name,age', $sort->createSortParam('name'));
+
+        $sort->params = ['sort' => '-name,age'];
+        $sort->getAttributeOrders(true);
+        $this->assertEquals('age', $sort->createSortParam('name'));
     }
 
     public function testCreateUrl()
@@ -192,7 +214,7 @@ class SortTest extends TestCase
         ]);
 
         $this->assertEquals('/index.php?r=site%2Findex&sort=-age%2C-name', $sort->createUrl('age'));
-        $this->assertEquals('/index.php?r=site%2Findex&sort=name%2Cage', $sort->createUrl('name'));
+        $this->assertEquals('/index.php?r=site%2Findex&sort=age', $sort->createUrl('name'));
     }
 
     /**

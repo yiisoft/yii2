@@ -51,20 +51,9 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
-Upgrade from Yii 2.0.42
+Upgrade from Yii 2.0.43
 -----------------------
 
-* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitely anymore.
-* The methods `phpTypecast()` and `dbTypecast()` of `yii\db\ColumnSchema` will no longer convert `$value` from `int` to 
-  `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`.
-  * I.e. it affects update and insert queries. For example:
-  ```php
-  \Yii::$app->db->createCommand()->insert('{{some_table}}', ['int_unsigned_col' => 22])->execute();
-  ```
-  will execute next SQL:
-  ```sql
-  INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
-  ```
 * `Json::encode()` can now handle zero-indexed objects in same way as `json_encode()` and keep them as objects. In order to avoid breaking backwards compatibility this behavior could be enabled by a new option flag but is disabled by default.
   * Set `yii/helpers/Json::$keepObjectType = true` anywhere in your application code
   * Or configure json response formatter to enable it for all JSON responses:
@@ -79,6 +68,23 @@ Upgrade from Yii 2.0.42
         ],
       ],
       ```
+
+Upgrade from Yii 2.0.42
+-----------------------
+
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitly anymore.
+* The methods `phpTypecast()` and `dbTypecast()` of `yii\db\ColumnSchema` will no longer convert `$value` from `int` to 
+  `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`.
+  * I.e. it affects update and insert queries. For example:
+  ```php
+  \Yii::$app->db->createCommand()->insert('{{some_table}}', ['int_unsigned_col' => 22])->execute();
+  ```
+  will execute next SQL:
+  ```sql
+  INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
+  ```
+* Property `yii\db\ColumnSchemaBuilder::$categoryMap` has been removed in favor of getter/setter methods `getCategoryMap()` 
+  and `setCategoryMap()`.
 
 Upgrade from Yii 2.0.41
 -----------------------

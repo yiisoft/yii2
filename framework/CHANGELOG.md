@@ -1,17 +1,23 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.43 under development
+2.0.44 under development
 ------------------------
 
-- Bug #14663: Do not convert int to string if database type of a column is numeric (egorrishe)
+- Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
+- Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
+- Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
+- Bug #18832: Fix `Inflector::camel2words()` adding extra spaces (brandonkelly)
+- Enh #18762: Added `yii\helpers\Json::$keepObjectType` and `yii\web\JsonResponseFormatter::$keepObjectType` in order to avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()` (zebraf1)
+
+
+2.0.43 August 09, 2021
+----------------------
+
+- Bug #14663: Do not convert int to string if database type of column is numeric (egorrishe)
+- Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
+- Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
-- Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
-- Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
-- Enh #18628: Added strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
-- Enh #18653: Added method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
-- Enh #18669: Changed visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
-- Enh #18676: Added method `yii\helpers\BaseFileHelper::changeOwnership()` and properties `newFileMode`/`newFileOwnership` in `yii\console\controllers\BaseMigrateController` (rhertogh)
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 - Enh #18695: Added `yii\web\Cookie::SAME_SITE_NONE` constant (rhertogh)
 - Enh #18712: Added `scheme` option for `$options` argument for `yii\i18n\Formatter::asUrl()` (bizley)
@@ -19,10 +25,24 @@ Yii Framework 2 Change Log
 - Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
 - Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
 - Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
-- Enh #18762: Added `yii\helpers\Json::$keepObjectType` and `yii\web\JsonResponseFormatter::$keepObjectType` in order to avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()` (zebraf1)
+- Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
 - Bug #18756: Fix `\yii\validators\ExistValidator::queryValueExists` to validate against an array of unique values (DrDeath72)
-- Enh #18656: Added ability for `yii serve`'s `--router` param to take an alias (markhuot)
-- Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
+- Bug #18807: Fix replacing source whitespaces and optimize code of `yii\helpers\BaseStringHelper::mb_ucwords()` (WinterSilence)
+- Enh #18274: Add `profilingAware` option to `yii\log\Logger` to prevent breaking the profiling block messages pair when flushing them (bizley)
+- Enh #18628: Add strings "software", and "hardware" to `$specials` array in `yii\helpers\BaseInflector` (kjusupov)
+- Enh #18653: Add method `yii\helpers\BaseHtml::getInputIdByName()` (WinterSilence)
+- Enh #18656: Add ability for `yii serve`'s `--router` param to take an alias (markhuot)
+- Enh #18669: Change visibility of `yii\web\User::checkRedirectAcceptable()` to `public` (rhertogh)
+- Enh #18674: Add more user-friendly exception messages for `yii\i18n\Formatter` (bizley)
+- Enh #18676: Add method `yii\helpers\BaseFileHelper::changeOwnership()` and `newFileMode`/`newFileOwnership` properties to `yii\console\controllers\BaseMigrateController` (rhertogh)
+- Enh #18695: Add `yii\web\Cookie::SAME_SITE_NONE` constant (rhertogh)
+- Enh #18707: Change the base error handler to not expose `$_SERVER` details unless `YII_DEBUG` is enabled (coolgoose)
+- Enh #18712: Add `scheme` option for `$options` argument for `yii\i18n\Formatter::asUrl()` (bizley)
+- Enh #18724: Allow jQuery 3.6 to be installed (marcovtwout)
+- Enh #18726: Add `yii\helpers\Json::$prettyPrint` (rhertogh)
+- Enh #18734: Add `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
+- Enh #18789: Add JSONP support in `yii\web\JsonParser::parse()` (WinterSilence)
+- Enh #18817: Use `paragonie/random_compat` for random bytes and int generation (samdark)
 
 
 2.0.42.1 May 06, 2021

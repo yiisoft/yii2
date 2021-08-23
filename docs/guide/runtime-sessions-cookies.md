@@ -132,7 +132,7 @@ session classes implementing different session storage:
 * [[yii\web\DbSession]]: stores session data in a database table.
 * [[yii\web\CacheSession]]: stores session data in a cache with the help of a configured [cache component](caching-data.md#cache-components).
 * [[yii\redis\Session]]: stores session data using [redis](http://redis.io/) as the storage medium.
-* [[yii\mongodb\Session]]: stores session data in a [MongoDB](http://www.mongodb.org/).
+* [[yii\mongodb\Session]]: stores session data in a [MongoDB](https://www.mongodb.com/).
 
 All these session classes support the same set of API methods. As a result, you can switch to a different
 session storage class without the need to modify your application code that uses sessions.
@@ -374,7 +374,7 @@ Both [[yii\web\Cookie]] and [[yii\web\Session]] support the following security f
 For better security, the default value of [[yii\web\Cookie::httpOnly]] and the 'httponly' parameter of 
 [[yii\web\Session::cookieParams]] is set to `true`. This helps mitigate the risk of a client-side script accessing 
 the protected cookie (if the browser supports it).
-You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+You may read the [HttpOnly wiki article](https://owasp.org/www-community/HttpOnly) for more details.
 
 ### secure
 
