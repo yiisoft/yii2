@@ -374,7 +374,7 @@ Both [[yii\web\Cookie]] and [[yii\web\Session]] support the following security f
 For better security, the default value of [[yii\web\Cookie::httpOnly]] and the 'httponly' parameter of 
 [[yii\web\Session::cookieParams]] is set to `true`. This helps mitigate the risk of a client-side script accessing 
 the protected cookie (if the browser supports it).
-You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+You may read the [HttpOnly wiki article](https://owasp.org/www-community/HttpOnly) for more details.
 
 ### secure
 
