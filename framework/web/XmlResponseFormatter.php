@@ -25,11 +25,11 @@ use yii\helpers\StringHelper;
 class XmlResponseFormatter extends Component implements ResponseFormatterInterface
 {
     /**
-     * @var string the `Content-Type` header for the response
+     * @var string the Content-Type header for the response
      */
     public $contentType = 'application/xml';
     /**
-     * @var string the XML version.
+     * @var string the XML version
      */
     public $version = '1.0';
     /**
@@ -106,9 +106,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     protected function buildXml($element, $data)
     {
-        if (
-            is_array($data)
-            || (!$data instanceof Arrayable && $data instanceof Traversable && $this->useTraversableAsArray)
+        if (is_array($data) ||
+            ($data instanceof \Traversable && $this->useTraversableAsArray && !$data instanceof Arrayable)
         ) {
             foreach ($data as $name => $value) {
                 if (is_int($name) && is_object($value)) {
@@ -173,7 +172,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      *
      * Falls back to [[itemTag]] otherwise.
      *
-     * @param mixed $name the original name 
+     * @param mixed $name the original name
      * @return string
      * @since 2.0.12
      */
