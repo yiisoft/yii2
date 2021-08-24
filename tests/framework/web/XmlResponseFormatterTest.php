@@ -58,7 +58,6 @@ class XmlResponseFormatterTest extends FormatterTest
             [[
                 'a' => 1,
                 'b' => 'abc',
-
             ], "<response><a>1</a><b>abc</b></response>\n"],
             [
                 ['image:loc' => 'url'],
