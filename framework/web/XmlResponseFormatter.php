@@ -169,8 +169,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * Returns element name ready to be used in `DOMElement` if name is not empty,
-     * is not integer and is valid.
+     * Returns element name ready to be used in DOMElement if
+     * name is not empty, is not int and is valid.
      *
      * Falls back to [[itemTag]] otherwise.
      *
