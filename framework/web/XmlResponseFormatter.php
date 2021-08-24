@@ -9,7 +9,6 @@ namespace yii\web;
 
 use DOMDocument;
 use DOMException;
-use Traversable;
 use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;
