@@ -425,14 +425,14 @@ en la página, en lugar de los assets originales en sintaxis extendidas.
 Yii usa las extensiones de archivo para identificar que sintaxis extendida se está usando. De forma predeterminada se
 reconocen las siguientes sintaxis y extensiones de archivo.
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
 Yii se basa en las herramientas pre-procesadoras instalada para convertir los assets. Por ejemplo, para usar
-[LESS](http://lesscss.org/) se debe instalar el comando pre-procesador `lessc`.
+[LESS](https://lesscss.org/) se debe instalar el comando pre-procesador `lessc`.
 
 Se pueden personalizar los comandos de los pre-procesadores y las sintaxis extendidas soportadas configurando
 [[yii\web\AssetManager::converter]] como en el siguiente ejemplo:

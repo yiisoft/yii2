@@ -629,7 +629,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build/build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework release at github:  ./build/build release/package app-$name\n");
 
         $this->stdout("\n");
     }

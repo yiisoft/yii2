@@ -371,11 +371,11 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = mb_strtolower(trim(str_replace([
-            '-',
-            '_',
-            '.',
-        ], ' ', preg_replace('/(?<!\p{Lu})(\p{Lu})|(\p{Lu})(?=\p{Ll})/u', ' \0', $name))), self::encoding());
+        // Add a space before any uppercase letter preceded by a lowercase letter (xY => x Y)
+        // and any uppercase letter preceded by an uppercase letter and followed by a lowercase letter (XYz => X Yz)
+        $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=\p{L})\p{Lu}(?=\p{Ll})/u', ' \0', $name);
+
+        $label = mb_strtolower(trim(str_replace(['-', '_', '.'], ' ', $label)), self::encoding());
 
         return $ucwords ? StringHelper::mb_ucwords($label, self::encoding()) : $label;
     }
