@@ -101,10 +101,10 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * Recursive adds data to XML document.
+     * Recursively adds data to XML document.
      *
-     * @param DOMElement|DOMDocument $element the current element
-     * @param mixed $data the content of current element
+     * @param DOMElement|DOMDocument $element current element
+     * @param mixed $data content of the current element
      */
     protected function buildXml($element, $data)
     {
