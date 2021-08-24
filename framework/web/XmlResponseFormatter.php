@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use DOMDocument;
+use DOMElement;
 use DOMException;
 use yii\base\Arrayable;
 use yii\base\Component;
