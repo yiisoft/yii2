@@ -85,9 +85,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         $response->getHeaders()->set('Content-Type', $this->contentType);
         if ($response->data !== null) {
             $this->dom = new DOMDocument($this->version, $charset);
-            if (empty($this->rootTag)) {
-                $this->buildXml($this->dom, $response->data);
-            } else {
+            if (!empty($this->rootTag)) {
                 if (is_array($this->rootTag)) {
                     $root = $this->dom->createElementNS($this->rootTag[0], $this->rootTag[1]);
                 } else {
@@ -95,6 +93,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 }
                 $this->dom->appendChild($root);
                 $this->buildXml($root, $response->data);
+            } else {
+                $this->buildXml($this->dom, $response->data);
             }
             $response->content = $this->dom->saveXML();
         }
