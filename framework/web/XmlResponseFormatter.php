@@ -156,13 +156,15 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     protected function formatScalarValue($value)
     {
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
+        if ($value === true) {
+            return 'true';
+        }
+        if ($value === false) {
+            return 'false';
         }
         if (is_float($value)) {
             return StringHelper::floatToString($value);
         }
-
         return (string) $value;
     }
 
