@@ -7,7 +7,9 @@
 
 return <<<CODE
 <?php
+
 {$namespace}use yii\db\Migration;
+
 /**
  * Handles the creation of table `{{%{table}}}`.
  */
@@ -22,6 +24,7 @@ class {$class} extends Migration
             'id' => \$this->integer(11)->notNull(),
         ]);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -30,4 +33,5 @@ class {$class} extends Migration
         \$this->dropTable('{{%{table}}}');
     }
 }
+
 CODE;
