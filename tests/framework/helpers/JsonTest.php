@@ -33,7 +33,7 @@ class JsonTest extends TestCase
         $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
-        $this->assertSame('{}', $actual);
+        $this->assertSame('[]', $actual);
 
         // basic data encoding
         $data = '1';
@@ -50,6 +50,18 @@ class JsonTest extends TestCase
         $data->a = 1;
         $data->b = 2;
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
+
+        // simple object with zero indexed keys encoding
+        $data = (object) [
+            0 => 1,
+            1 => 2
+        ];
+        $default = Json::$keepObjectType;
+        Json::$keepObjectType = true;
+        $this->assertSame('{"0":1,"1":2}', Json::encode($data));
+        Json::$keepObjectType = false;
+        $this->assertSame('[1,2]', Json::encode($data));
+        Json::$keepObjectType = $default;
 
         // empty data encoding
         $data = [];
@@ -146,6 +158,18 @@ class JsonTest extends TestCase
 
         $document = simplexml_load_string($xml);
         $this->assertSame('{"apiKey":"ieu2iqw4o","methodProperties":{"FindByString":"Kiev"}}', Json::encode($document));
+
+        // SimpleXMLElement with empty tag
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<parent>
+  <child1/>
+  <child2>
+    <subElement>sub</subElement>
+  </child2>
+</parent>';
+
+        $document = simplexml_load_string($xml);
+        $this->assertSame('{"child1":{},"child2":{"subElement":"sub"}}', Json::encode($document));
 
         $postsStack = new \SplStack();
         $postsStack->push(new Post(915, 'record1'));

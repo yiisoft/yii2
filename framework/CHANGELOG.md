@@ -8,8 +8,10 @@ Yii Framework 2 Change Log
 - Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
 - Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
 - Bug #18832: Fix `Inflector::camel2words()` adding extra spaces (brandonkelly)
+- Enh #18762: Added `yii\helpers\Json::$keepObjectType` and `yii\web\JsonResponseFormatter::$keepObjectType` in order to avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()` (zebraf1)
 - Enh #18783: Add support for URI namespaced tags in `XmlResponseFormatter` (WinterSilence, samdark)
 - Enh #18783: Add `XmlResponseFormatter::$objectTagToLowercase` option to lowercase object tags (WinterSilence, samdark)
+
 
 2.0.43 August 09, 2021
 ----------------------
