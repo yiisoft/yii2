@@ -42,7 +42,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $rootTag = 'response';
     /**
-     * @var string the name of the elements that represent the array elements with numeric keys
+     * @var string the name of the elements that represent the array elements with numeric keys.
      */
     public $itemTag = 'item';
     /**
