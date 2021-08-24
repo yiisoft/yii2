@@ -37,8 +37,10 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $encoding;
     /**
-     * @var string|string[]|false the name of the root element or index array (URI namespace, tag name).
-     * If set to false or null then no root tag should be added.
+     * @var string|string[]|false the name of the root element. If set to false, null or is empty then no root tag
+     * should be added.
+     *
+     * Since 2.0.43 URI namespace could be specified by passing `[namespace, tag name]` array.
      */
     public $rootTag = 'response';
     /**
@@ -52,7 +54,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $useTraversableAsArray = true;
     /**
-     * @var bool if object tags should be added (convert class to tag name)
+     * @var bool if object class names should be used as tag names
      * @since 2.0.11
      */
     public $useObjectTags = true;
