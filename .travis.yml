@@ -1,10 +1,16 @@
-language: php
+language: python
+
+cache: pip
 
 notifications:
   email: false
 
-php:
--7.0
+python:
+- 3.8.1
+
+env:
+  global:
+    - PIPENV_IGNORE_VIRTUALENVS=1
 
 install:
 - pip install --upgrade pip tox
@@ -16,5 +22,8 @@ install:
 - pip install setuptools
 - pip install pytest-cov
 
-
-
+script:
+# - tox
+- pytest --cov-report term --cov-report xml:cov.xml --cov=test test/
+- pytest --junitxml=pytest-report.xml
+- sonar-scanner
