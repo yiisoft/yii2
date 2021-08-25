@@ -10,4 +10,3 @@ env:
 before_script: composer require atoum/atoum
 script: vendor/bin/atoum
 
-install: php vendor/vendors.php
