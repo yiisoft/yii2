@@ -1,4 +1,5 @@
-dist: xenial
+language: php
+
 
 #addons:
 #  sonarcloud:
@@ -18,12 +19,17 @@ script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - sonar-scanner
 
-language: php
-
-notifications:
-  email: false
-
 php:
--7.0
+  - '7.0'
+
+env:
+  - SYMFONY_VERSION="2.0.*" DB=mysql
+  - SYMFONY_VERSION="dev-master" DB=mysql
+
+
+
+        
+
+
 
 
