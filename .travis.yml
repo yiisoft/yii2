@@ -8,8 +8,7 @@ env:
   - SYMFONY_VERSION="dev-master" DB=mysql
 
 
-before_script: composer require atoum/atoum
-script: vendor/bin/atoum
+
         
 
 
