@@ -1,5 +1,6 @@
 language: php
-
+git:
+  depth: false
 php:
   - '7.0'
   
@@ -16,8 +17,7 @@ env:
 before_script: composer require atoum/atoum
 script:
   - vendor/bin/atoum
-  - phpunit --configuration phpunit_$DB.xml --coverage-text
-  - phpunit --coverage-clover coverage.xml
+  - vendor/bin/phpunit -c phpunit.xml.dist --coverage-clover=coverage-report.clover --log-junit=test-report.xml
   - sonar-scanner
   
 
