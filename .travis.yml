@@ -5,9 +5,6 @@ addons:
     organization: kimfml 
     token:
       secure: •••••••••••••••• 
-script:
-  - sonar-scanner
-
 
 language: php
 
