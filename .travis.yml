@@ -1,3 +1,14 @@
+dist: xenial
+
+addons:
+  sonarcloud:
+    organization: kimfml 
+    token:
+      secure: •••••••••••••••• 
+script:
+  - sonar-scanner
+
+
 language: php
 
 notifications:
@@ -6,6 +17,7 @@ notifications:
 php:
 -7.0
 
-
+script:
+  - sonar-scanner
 
 
