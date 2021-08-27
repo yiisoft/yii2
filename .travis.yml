@@ -1,13 +1,22 @@
 dist: xenial
 
+#addons:
+#  sonarcloud:
+#    organization: kimfml 
+#    token:
+#      secure: •••••••••••••••• 
+#script:
+#  - sonar-scanner
+
 addons:
   sonarcloud:
-    organization: kimfml 
+    organization: "kimfml"
     token:
-      secure: •••••••••••••••• 
-script:
-  - sonar-scanner
+      secure: "••••••••••••••••" # encrypted value of your token
 
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - sonar-scanner
 
 language: php
 
@@ -17,7 +26,7 @@ notifications:
 php:
 -7.0
 
-script:
-  - sonar-scanner
+#script:
+#  - sonar-scanner
 
 
