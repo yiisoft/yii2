@@ -14,8 +14,13 @@ addons:
     organization: kimfml
     token:
       secure: •••••••••••••••• 
+      
+      
+install: php vendor/vendors.php
 
+before_script: composer require atoum/atoum
 script:
+  - vendor/bin/atoum
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - sonar-scanner
 
