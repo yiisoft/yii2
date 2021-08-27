@@ -1,11 +1,3 @@
-dist: xenial
-
-addons:
-  sonarcloud:
-    organization: kimfml 
-    token:
-      secure: •••••••••••••••• 
-
 language: php
 
 php:
@@ -16,9 +8,14 @@ env:
   - SYMFONY_VERSION="dev-master" DB=mysql
 
 
-script:
-  - sonar-scanner
+before_script: composer require atoum/atoum
+script: -vendor/bin/atoum
+        -sonar-scanner
 
+
+
+sonar.python.coverage.reportPaths=/home/travis/build/Wiyiiong/Red-DiscordBot/cov.xml
+sonar.python.xunit.reportPath=/home/travis/build/Wiyiiong/Red-DiscordBot/pytest-report.xml
 
 
 
