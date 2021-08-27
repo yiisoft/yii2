@@ -20,6 +20,5 @@ script:
   - sonar-scanner
 
 
-sonar.python.coverage.reportPaths=/home/travis/build/Wiyiiong/Red-DiscordBot/cov.xml
-sonar.python.xunit.reportPath=/home/travis/build/Wiyiiong/Red-DiscordBot/pytest-report.xml
+
 
