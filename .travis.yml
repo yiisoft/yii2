@@ -1,21 +1,13 @@
 language: php
 
-#addons:
-#  sonarcloud:
-#    organization: kimfml 
-#    token:
-#      secure: •••••••••••••••• 
-#script:
-#  - sonar-scanner
-
+php:
+  - '7.0'
+  
 addons:
   sonarcloud:
     organization: kimfml
     token:
       secure: •••••••••••••••• 
-
-php:
-  - '7.0'
 
 env:
   - SYMFONY_VERSION="2.0.*" DB=mysql
@@ -24,11 +16,8 @@ env:
 before_script: composer require atoum/atoum
 script:
   - vendor/bin/atoum
-  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - sonar-scanner
   
-  
-install: php vendor/vendors.php
 
         
 
