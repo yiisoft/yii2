@@ -8,13 +8,18 @@ addons:
 
 language: php
 
-notifications:
-  email: false
-
 php:
--7.0
+  - '7.0'
+
+env:
+  - SYMFONY_VERSION="2.0.*" DB=mysql
+  - SYMFONY_VERSION="dev-master" DB=mysql
+
 
 script:
   - sonar-scanner
 
+
+sonar.python.coverage.reportPaths=/home/travis/build/Wiyiiong/Red-DiscordBot/cov.xml
+sonar.python.xunit.reportPath=/home/travis/build/Wiyiiong/Red-DiscordBot/pytest-report.xml
 
