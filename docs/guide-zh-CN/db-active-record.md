@@ -792,6 +792,12 @@ public function behaviors()
         OptimisticLockBehavior::class,
     ];
 }
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
 > Note: 因为 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 仅仅在保存记录的时候被确认，
 > 如果用户提交的有效版本号被直接解析 ：[[\yii\web\Request::getBodyParam()|getBodyParam()]]，
