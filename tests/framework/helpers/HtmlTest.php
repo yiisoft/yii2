@@ -1887,7 +1887,7 @@ EOD;
         $activeRecord->method('getPrimaryKey')->willReturn(1);
         $model->types = $activeRecord;
 
-        $expected = 1;
+        $expected = '1';
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
 
