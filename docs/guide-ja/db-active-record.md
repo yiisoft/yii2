@@ -792,6 +792,12 @@ public function behaviors()
         OptimisticLockBehavior::class,
     ];
 }
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
 > Note: [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] は、ユーザが正しいバージョン番号を送信したときにだけ
 > レコードが保存されるという事を保証します。そして、そのために、[[\yii\web\Request::getBodyParam()|getBodyParam()]] の結果を直接に解析します。

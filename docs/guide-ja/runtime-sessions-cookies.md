@@ -380,7 +380,7 @@ return [
 
 secure フラグの目的は、クッキーが平文で送信されることを防止することです。ブラウザが secure フラグをサポートしている場合、
 リクエストが secure な接続 (TLS) によって送信される場合にのみクッキーがリクエストに含まれます。
-詳細については [Secure フラグの wiki 記事](https://www.owasp.org/index.php/SecureFlag) を参照して下さい。
+詳細については [Secure フラグの wiki 記事](https://owasp.org/www-community/controls/SecureCookieAttribute) を参照して下さい。
 
 ### sameSite
 

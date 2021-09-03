@@ -791,6 +791,12 @@ public function behaviors()
         OptimisticLockBehavior::class,
     ];
 }
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
 > Note : comme [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] garantit que l'enregistrement n'est sauvegardé que 
 > si l'utilisateur soumet un numéro de version valide en analysant directement [[\yii\web\Request::getBodyParam()|getBodyParam()]], 
