@@ -106,8 +106,8 @@ class Dispatcher extends Component
 
     /**
      * Gets the connected logger.
-     * If not set, [[\Yii::getLogger()]] will be used.
-     * @property Logger the logger. If not set, [[\Yii::getLogger()]] will be used.
+     * If not set, [[Yii::getLogger()]] will be used.
+     * @property Logger the logger. If not set, [[Yii::getLogger()]] will be used.
      * @return Logger the logger.
      */
     public function getLogger()
@@ -123,12 +123,15 @@ class Dispatcher extends Component
      * Sets the connected logger.
      * @param Logger|string|array $value the logger to be used. This can either be a logger instance
      * or a configuration that will be used to create one using [[Yii::createObject()]].
+     * If you are providing custom logger configuration and would like it to be used for the whole application 
+     * and not just for the dispatcher you should use [[Yii::setLogger()]] instead.
      */
     public function setLogger($value)
     {
         if (is_string($value) || is_array($value)) {
             $value = Yii::createObject($value);
         }
+
         $this->_logger = $value;
         $this->_logger->dispatcher = $this;
     }

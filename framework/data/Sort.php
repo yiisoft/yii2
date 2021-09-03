@@ -438,14 +438,25 @@ class Sort extends BaseObject
         $definition = $this->attributes[$attribute];
         $directions = $this->getAttributeOrders();
         if (isset($directions[$attribute])) {
-            $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
+            if ($this->enableMultiSort) {
+                if ($directions[$attribute] === SORT_ASC) {
+                    $direction = SORT_DESC;
+                } else {
+                    $direction = null;
+                }
+            } else {
+                $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
+            }
+
             unset($directions[$attribute]);
         } else {
             $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
         }
 
         if ($this->enableMultiSort) {
-            $directions = array_merge([$attribute => $direction], $directions);
+            if ($direction !== null) {
+                $directions = array_merge([$attribute => $direction], $directions);
+            }
         } else {
             $directions = [$attribute => $direction];
         }

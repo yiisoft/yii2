@@ -12,6 +12,7 @@ use yiiunit\TestCase;
 
 /**
  * @group web
+ * @backupGlobals enabled
  */
 class RequestTest extends TestCase
 {
@@ -1047,6 +1048,30 @@ class RequestTest extends TestCase
         $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
         $this->assertSame(null, $request->getBodyParam('unexisting'));
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+    }
+
+    public function getBodyParamsDataProvider()
+    {
+        return [
+            'json' => ['application/json', '{"foo":"bar","baz":1}', ['foo' => 'bar', 'baz' => 1]],
+            'jsonp' => ['application/javascript', 'parseResponse({"foo":"bar","baz":1});', ['foo' => 'bar', 'baz' => 1]],
+            'get' => ['application/x-www-form-urlencoded', 'foo=bar&baz=1', ['foo' => 'bar', 'baz' => '1']],
+        ];
+    }
+
+    /**
+     * @dataProvider getBodyParamsDataProvider
+     */
+    public function testGetBodyParams($contentType, $rawBody, array $expected)
+    {
+        $_SERVER['CONTENT_TYPE'] = $contentType;
+        $request = new Request();
+        $request->parsers = [
+            'application/json' => 'yii\web\JsonParser',
+            'application/javascript' => 'yii\web\JsonParser',
+        ];
+        $request->setRawBody($rawBody);
+        $this->assertSame($expected, $request->getBodyParams());
     }
 
     public function trustedHostAndInjectedXForwardedForDataProvider()

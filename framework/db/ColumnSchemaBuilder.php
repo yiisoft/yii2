@@ -16,7 +16,7 @@ use yii\helpers\StringHelper;
  *
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *
- * @property array $categoryMap mapping of abstract column types (keys) to type categories (values). (since version 2.0.8)
+ * @property array $categoryMap Mapping of abstract column types (keys) to type categories (values).
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
@@ -108,8 +108,6 @@ class ColumnSchemaBuilder extends BaseObject
         Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
         Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
     ];
-
-
     /**
      * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
      * safely when building the final column schema string.

@@ -59,7 +59,7 @@
         "issues": "https://github.com/yiisoft/yii2/issues?state=open",
         "forum": "https://forum.yiiframework.com/",
         "wiki": "https://www.yiiframework.com/wiki",
-        "irc": "irc://irc.libera.chat:6697/yii",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "dev",
@@ -78,7 +78,8 @@
         "bower-asset/jquery": "3.6.*@stable | 3.5.*@stable | 3.4.*@stable | 3.3.*@stable | 3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
         "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
         "bower-asset/punycode": "1.3.*",
-        "bower-asset/yii2-pjax": "~2.0.1"
+        "bower-asset/yii2-pjax": "~2.0.1",
+        "paragonie/random_compat": ">=1"
     },
     "require-dev": {
         "cweagans/composer-patches": "^1.7",
@@ -101,11 +102,6 @@
             "yii\\": "framework/",
             "yii\\cs\\": "cs/src/"
         }
-    },
-    "autoload-dev": {
-        "files": [
-            "tests/bootstrap.php"
-        ]
     },
     "config": {
         "platform": {"php": "5.4"}
