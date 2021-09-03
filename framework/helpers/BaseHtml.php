@@ -2236,7 +2236,7 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     * @return string|array the corresponding attribute value
+     * @return string|null the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)
@@ -2260,17 +2260,14 @@ class BaseHtml
         if (is_array($value)) {
             foreach ($value as $i => $v) {
                 if ($v instanceof ActiveRecordInterface) {
-                    $v = $v->getPrimaryKey(false);
-                    $value[$i] = is_array($v) ? json_encode($v) : $v;
+                    $value[$i] = $v->getPrimaryKey();
                 }
             }
         } elseif ($value instanceof ActiveRecordInterface) {
-            $value = $value->getPrimaryKey(false);
-
-            return is_array($value) ? json_encode($value) : $value;
+            $value = $value->getPrimaryKey();
         }
 
-        return $value;
+        return is_array($value) ? Json::encode($value) : ($value === null ? null : (string) $value);
     }
 
     /**
