@@ -52,9 +52,6 @@ class BaseJson
         'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded', // PHP 5.3.3
         'JSON_ERROR_RECURSION' => 'One or more recursive references in the value to be encoded', // PHP 5.5.0
         'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
-        'JSON_ERROR_UNSUPPORTED_TYPE' => 'Type is not supported', // PHP 5.5.0
-        'JSON_ERROR_INVALID_PROPERTY_NAME' => 'A property name that cannot be encoded was given', // PHP 7.0.0
-        'JSON_ERROR_UTF16' => 'Malformed UTF-16 characters, possibly incorrectly encoded', // PHP 7.0.0
     ];
 
 
