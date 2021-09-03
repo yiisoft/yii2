@@ -1895,7 +1895,7 @@ EOD;
             $activeRecord,
         ];
 
-        $expected = [1];
+        $expected = '[1]';
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
     }
