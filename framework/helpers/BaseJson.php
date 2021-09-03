@@ -144,15 +144,14 @@ class BaseJson
             return;
         }
 
+        if (PHP_VERSION_ID >= 50500) {
+            throw new InvalidArgumentException(json_last_error_msg(), $lastError);
+        }
+
         foreach (static::$jsonErrorMessages as $const => $message) {
             if (defined($const) && constant($const) === $lastError) {
                 throw new InvalidArgumentException($message, $lastError);
             }
-        }
-
-        // don't move up, it fail test in PHP 5.4
-        if (function_exists('json_last_error_msg')) {
-            throw new InvalidArgumentException(json_last_error_msg(), $lastError);
         }
 
         throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
