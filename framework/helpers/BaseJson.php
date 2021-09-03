@@ -41,7 +41,7 @@ class BaseJson
     public static $keepObjectType = false;
 
     /**
-     * @var array List of JSON Error messages assigned to constant names for better handling of version differences.
+     * @var array List of JSON Error messages assigned to constant names for better handling of PHP <= 5.5.
      * @since 2.0.7
      */
     public static $jsonErrorMessages = [
@@ -49,7 +49,8 @@ class BaseJson
         'JSON_ERROR_STATE_MISMATCH' => 'Invalid or malformed JSON',
         'JSON_ERROR_CTRL_CHAR' => 'Control character error, possibly incorrectly encoded',
         'JSON_ERROR_SYNTAX' => 'Syntax error',
-        'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded', // PHP 5.3.3
+        'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded',
+        'JSON_ERROR_UNSUPPORTED_TYPE' => 'Type is not supported',
     ];
 
 
