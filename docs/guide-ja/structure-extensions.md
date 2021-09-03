@@ -399,8 +399,6 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
   Facebook OAuth2 クライアント、GitHub OAuth2 クライアントなど、よく使われる一連の auth クライアントを提供します。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
   [Bootstrap](http://getbootstrap.com/) のコンポーネントとプラグインをカプセル化した一連のウィジェットを提供します。
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception) (非推奨):
-  [Codeception](http://codeception.com/) に基づくテストのサポートを提供します。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
   Yii アプリケーションのデバッグのサポートを提供します。
   このエクステンションが使われると、全てのページの末尾にデバッガ・ツールバーが表示されます。

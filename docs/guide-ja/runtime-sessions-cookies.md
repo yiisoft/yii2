@@ -374,13 +374,13 @@ return [
 セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] および [[yii\web\Session::cookieParams]] の 'httponly' パラメータの
 デフォルト値は `true` に設定されています。
 これによって、クライアント・サイド・スクリプトが保護されたクッキーにアクセスする危険が軽減されます (ブラウザがサポートしていれば)。
-詳細については、[httpOnly の wiki 記事](https://www.owasp.org/index.php/HttpOnly) を読んでください。
+詳細については、[httpOnly の wiki 記事](https://owasp.org/www-community/HttpOnly) を読んでください。
 
 ### secure
 
 secure フラグの目的は、クッキーが平文で送信されることを防止することです。ブラウザが secure フラグをサポートしている場合、
 リクエストが secure な接続 (TLS) によって送信される場合にのみクッキーがリクエストに含まれます。
-詳細については [Secure フラグの wiki 記事](https://www.owasp.org/index.php/SecureFlag) を参照して下さい。
+詳細については [Secure フラグの wiki 記事](https://owasp.org/www-community/controls/SecureCookieAttribute) を参照して下さい。
 
 ### sameSite
 

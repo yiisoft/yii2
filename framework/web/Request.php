@@ -218,7 +218,7 @@ class Request extends \yii\base\Request
      * If the list contains the `Forwarded` header, processing will be done according to RFC 7239.
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-     * @see https://tools.ietf.org/html/rfc7239
+     * @see https://datatracker.ietf.org/doc/html/rfc7239
      * @see $trustedHosts
      * @since 2.0.13
      */
