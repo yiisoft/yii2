@@ -133,6 +133,9 @@ class MigrateControllerTest extends TestCase
                     price:money(11,2):notNull,
                     parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')',
             ],
+            'create_id_field_not_as_pk' => [
+                'fields' => 'id:integer(11):notNull',
+            ],
             'create_fields_with_col_method_after_default_value' => [
                 'fields' => 'id:primaryKey,
                     title:string(10):notNull:unique:defaultValue("test"):after("id"),
@@ -229,6 +232,7 @@ class MigrateControllerTest extends TestCase
 
             ['create_fields', 'create_test_table', 'test', $params['create_fields']],
             ['create_fields', 'create_TEST_table', 'TEST', $params['create_fields']],
+            ['create_id_field_not_as_pk', 'create_test_table', 'test', $params['create_id_field_not_as_pk']],
             ['create_title_pk', 'create_test_table', 'test', $params['create_title_pk']],
             ['create_title_pk', 'create_TEST_table', 'TEST', $params['create_title_pk']],
             ['create_unsigned_pk', 'create_test_table', 'test', $params['create_unsigned_pk']],
