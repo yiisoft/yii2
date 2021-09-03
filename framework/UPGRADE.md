@@ -68,6 +68,7 @@ Upgrade from Yii 2.0.43
         ],
       ],
       ```
+* `yii\caching\Cache::multiSet()` now uses the default cache duration (`yii\caching\Cache::$defaultDuration`) when no duration is provided. A duration of 0 should be explicitly passed if items should not expire.
 
 Upgrade from Yii 2.0.42
 -----------------------

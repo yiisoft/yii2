@@ -261,14 +261,15 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
-    public function mset($items, $duration = 0, $dependency = null)
+    public function mset($items, $duration = null, $dependency = null)
     {
         return $this->multiSet($items, $duration, $dependency);
     }
@@ -279,15 +280,20 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      * @since 2.0.7
      */
-    public function multiSet($items, $duration = 0, $dependency = null)
+    public function multiSet($items, $duration = null, $dependency = null)
     {
+        if ($duration === null) {
+            $duration = $this->defaultDuration;
+        }
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
