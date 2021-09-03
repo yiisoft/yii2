@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #18832: Fix `Inflector::camel2words()` adding extra spaces (brandonkelly)
 - Enh #18783: Add support for URI namespaced tags in `XmlResponseFormatter` (WinterSilence, samdark)
 - Enh #18783: Add `XmlResponseFormatter::$objectTagToLowercase` option to lowercase object tags (WinterSilence, samdark)
+- Bug #18845: Fix duplicating `id` in `MigrateController::addDefaultPrimaryKey()` (WinterSilence, samdark)
 
 2.0.43 August 09, 2021
 ----------------------
