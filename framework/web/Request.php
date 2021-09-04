@@ -279,7 +279,7 @@ class Request extends \yii\base\Request
     public function resolve()
     {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
-        if ($result !== false) {
+        if ($result !== false && is_array($result)) {
             list($route, $params) = $result;
             if ($this->_queryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
