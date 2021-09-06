@@ -563,6 +563,10 @@ class Controller extends Component implements ViewContextInterface
      */
     final protected function bindInjectedParams(\ReflectionType $type, $name, &$args, &$requestedParams)
     {
+        if (!$type instanceof \ReflectionNamedType || $type->isBuiltin()) {
+            return;
+        }
+
         // Since it is not a builtin type it must be DI injection.
         $typeName = $type->getName();
         if (($component = $this->module->get($name, false)) instanceof $typeName) {
