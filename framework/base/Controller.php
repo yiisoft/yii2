@@ -267,7 +267,7 @@ class Controller extends Component implements ViewContextInterface
                 }
             }
   
-            if ($method !== null && $method->isPublic() && !$method->isStatic()) {
+            if ($method !== null && $method->getName() === $methodName && $method->isPublic() && !$method->isStatic()) {
                 // inline action of controller/behavior
                 return new InlineAction($id, $this, $methodName);
             }
