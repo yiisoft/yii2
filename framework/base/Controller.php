@@ -234,9 +234,9 @@ class Controller extends Component implements ViewContextInterface
      * Creates an action based on the given action ID.
      * The method first checks if the action ID has been declared in [[actions()]]. If so,
      * it will use the configuration declared there to create the action object.
-     * If not, it will look for a controller method whose name is in the format of `actionXyz`
-     * where `xyz` is the action ID. If found, an [[InlineAction]] representing that
-     * method will be created and returned.
+     * If not, it will look for a controller/behavior method whose name is in the format of
+     * `actionXyz` where `xyz` is the action ID. If found, an [[InlineAction]] representing
+     * that method will be created and returned.
      * @param string $id the action ID.
      * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
      */
@@ -248,16 +248,28 @@ class Controller extends Component implements ViewContextInterface
 
         $actionMap = $this->actions();
         if (isset($actionMap[$id])) {
-            return Yii::createObject($actionMap[$id], [$id, $this]);
+            // external/standalone action
+            return $actionMap[$id] instanceof Action ? $actionMap[$id] : Yii::createObject($actionMap[$id], [$id, $this]);
         }
 
-        if (preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $id)) {
-            $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
-            if (method_exists($this, $methodName)) {
+        if (preg_match('/^(?:[a-z\d_]+-)*[a-z\d_]+$/', $id) === 1) {
+            $methodName = 'action' . str_replace('-', '', ucwords($id, '-'));
+            
+            $method = null;
+            if ($this->hasMethod($methodName, false)) {
                 $method = new \ReflectionMethod($this, $methodName);
-                if ($method->isPublic() && $method->getName() === $methodName) {
-                    return new InlineAction($id, $this, $methodName);
+            } else {
+                foreach ($this->getBehaviors() as $behavior) {
+                    if ($behavior->hasMethod($methodName)) {
+                        $method = new \ReflectionMethod($behavior, $methodName);
+                        break;
+                    }
                 }
+            }
+  
+            if ($method !== null && $method->isPublic() && !$method->isStatic()) {
+                // inline action of controller/behavior
+                return new InlineAction($id, $this, $methodName);
             }
         }
 
