@@ -399,8 +399,6 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
   提供了一套常用的认证客户端，例如 Facebook OAuth2 客户端、GitHub OAuth2 客户端。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap)：
   提供了一套挂件，封装了 [Bootstrap](http://getbootstrap.com/) 的组件和插件。
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception)：
-  提供了基于 [Codeception](http://codeception.com/) 的测试支持。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug)：
   提供了对 Yii 应用的调试支持。当使用该扩展是，
   在每个页面的底部将显示一个调试工具条。

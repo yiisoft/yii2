@@ -483,8 +483,6 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
   fornece um conjunto de widgets que encapsulam os componentes e plug-ins do 
   [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
-  fornece suporte a testes baseados no [Codeception](http://codeception.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
   fornece suporte a depuração para aplicações Yii. Quando esta extensão é usada, 
   uma barra de ferramenta de depuração aparecerá na parte inferior de cada página. 

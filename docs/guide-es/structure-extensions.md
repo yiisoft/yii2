@@ -407,8 +407,6 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   autorización tales como el cliente OAuth2 de Facebook, el cliente GitHub OAuth2.
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap): proporciona un conjunto de widgets que
   encapsulan los componentes y plugins de [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception): proporciona soporte de testing basado en
-  [Codeception](http://codeception.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug): proporciona soporte de depuración para aplicaciones
   Yii. Cuando se usa esta extensión, aparece una barra de herramientas de depuración en la parte inferior de cada
   página. La extensión también proporciona un conjunto de páginas para mostrar información detallada de depuración.

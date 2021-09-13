@@ -374,13 +374,13 @@ Both [[yii\web\Cookie]] and [[yii\web\Session]] support the following security f
 For better security, the default value of [[yii\web\Cookie::httpOnly]] and the 'httponly' parameter of 
 [[yii\web\Session::cookieParams]] is set to `true`. This helps mitigate the risk of a client-side script accessing 
 the protected cookie (if the browser supports it).
-You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+You may read the [HttpOnly wiki article](https://owasp.org/www-community/HttpOnly) for more details.
 
 ### secure
 
 The purpose of the secure flag is to prevent cookies from being sent in clear text. If the browser supports the
 secure flag it will only include the cookie when the request is sent over a secure (TLS) connection.
-You may read the [SecureFlag wiki article](https://www.owasp.org/index.php/SecureFlag) for more details.
+You may read the [SecureFlag wiki article](https://owasp.org/www-community/controls/SecureCookieAttribute) for more details.
 
 ### sameSite
 
