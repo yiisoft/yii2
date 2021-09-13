@@ -49,9 +49,9 @@ class CreateAction extends Action
             'scenario' => $this->scenario,
         ]);
 
-        $model->load($this->controller->getRequest()->getBodyParams(), '');
+        $model->load($this->controller->request->getBodyParams(), '');
         if ($model->save()) {
-            $response = $this->controller->getResponse();
+            $response = $this->controller->response;
             $response->setStatusCode(201);
             $id = implode(',', array_values($model->getPrimaryKey(true)));
             $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
