@@ -29,7 +29,7 @@ Yii 2.0 membutuhkan PHP 5.4 atau versi lebih tinggi, yang merupakan perbaikan be
 Akibatnya, ada banyak perbedaan pada tingkat bahasa yang harus Anda perhatikan.
 Di bawah ini adalah ringkasan perubahan utama mengenai PHP:
 
-- [Namespaces](https://secure.php.net/manual/en/language.namespaces.php).
+- [Namespaces](https://www.php.net/manual/en/language.namespaces.php).
 - [Anonymous fungsi](https://secure.php.net/manual/en/functions.anonymous.php).
 - Sintaks array pendek `[... elemen ...]` digunakan sebagai pengganti `array (... elemen ...)`.
 - Tags echo pendek `<=` digunakan dalam tampilan file. Ini aman digunakan mulai dari PHP 5.4.
