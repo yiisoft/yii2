@@ -43,14 +43,15 @@ class CreateAction extends Action
             call_user_func($this->checkAccess, $this->id);
         }
 
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $this->modelClass([
+        /** @var \yii\db\ActiveRecordInterface $model */
+        $model = Yii::createObject([
+            'class' => $this->modelClass,
             'scenario' => $this->scenario,
         ]);
 
-        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        $model->load($this->controller->getRequest()->getBodyParams(), '');
         if ($model->save()) {
-            $response = Yii::$app->getResponse();
+            $response = $this->controller->getResponse();
             $response->setStatusCode(201);
             $id = implode(',', array_values($model->getPrimaryKey(true)));
             $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
