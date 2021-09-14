@@ -249,7 +249,7 @@ class Controller extends Component implements ViewContextInterface
         $actionMap = $this->actions();
         if (isset($actionMap[$id])) {
             // external/standalone action
-            return $actionMap[$id] instanceof Action ? $actionMap[$id] : Yii::createObject($actionMap[$id], [$id, $this]);
+            return Yii::createObject($actionMap[$id], [$id, $this]);
         }
 
         if (preg_match('/^(?:[a-z\d_]+-)*[a-z\d_]+$/', $id) === 1) {
