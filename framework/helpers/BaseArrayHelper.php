@@ -70,6 +70,8 @@ class BaseArrayHelper
             }
 
             return $object;
+        } elseif ($object instanceof \DateTimeInterface) {
+            return (array)$object;
         } elseif (is_object($object)) {
             if (!empty($properties)) {
                 $className = get_class($object);

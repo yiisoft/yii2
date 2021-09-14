@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #18845: Fix duplicating `id` in `MigrateController::addDefaultPrimaryKey()` (WinterSilence, samdark)
 - Bug #17119: Fix `yii\caching\Cache::multiSet()` to use `yii\caching\Cache::$defaultDuration` when no duration is passed (OscarBarrett)
 - Bug #18842: Fix `yii\base\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
+- Bug #18880: Fix `yii\helpers\ArrayHelper::toArray()` for `DateTime` objects in PHP >= 7.4 (rhertogh)
 
 
 2.0.43 August 09, 2021
