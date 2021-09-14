@@ -5,7 +5,7 @@ Quá trình học Yii không quá khó cũng như các framework PHP khác nhưn
 ## PHP
 
 Yii là một framework PHP nên hãy đảm bảo bạn đã [đọc và hiểu ngôn ngữ của nó](https://secure.php.net/manual/en/langref.php).
-Khi phát triển với Yii, bạn sẽ viết code theo hướng đối tượng, vì vậy hãy đảm bảo rằng bạn đã quen với [Classes và Objects](https://secure.php.net/manual/en/language.oop5.basic.php) cũng như [namespaces](https://secure.php.net/manual/en/language.namespaces.php).
+Khi phát triển với Yii, bạn sẽ viết code theo hướng đối tượng, vì vậy hãy đảm bảo rằng bạn đã quen với [Classes và Objects](https://secure.php.net/manual/en/language.oop5.basic.php) cũng như [namespaces](https://www.php.net/manual/en/language.namespaces.php).
 
 ## Lập trình hướng đối tượng
 
