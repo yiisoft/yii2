@@ -29,7 +29,7 @@ Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP version 
 As a result, there are many differences on the language level that you should pay attention to.
 Below is a summary of the major changes regarding PHP:
 
-- [Namespaces](https://secure.php.net/manual/en/language.namespaces.php).
+- [Namespaces](https://www.php.net/manual/en/language.namespaces.php).
 - [Anonymous functions](https://secure.php.net/manual/en/functions.anonymous.php).
 - Short array syntax `[...elements...]` is used instead of `array(...elements...)`.
 - Short echo tags `<?=` are used in view files. This is safe to use starting from PHP 5.4.
