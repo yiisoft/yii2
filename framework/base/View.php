@@ -316,10 +316,10 @@ class View extends Component implements DynamicContentAwareInterface
             $event = new ViewEvent([
                 'viewFile' => $viewFile,
                 'params' => $params,
-                'output' => $output,
             ]);
+            $event->output =& $output;
+
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
-            $output = $event->output;
         }
     }
 
