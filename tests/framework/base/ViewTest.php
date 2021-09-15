@@ -97,4 +97,22 @@ PHP
 
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
+
+    public function testAfterRender()
+    {
+        $view = new View();
+        $filename = 'path/to/file';
+        $params = ['search' => 'simple', 'replace' => 'new'];
+        $output = 'This is a simple rendered output. (filename)';
+        $expectedOutput = 'This is a new rendered output. (path/to/file)';
+
+        $view->on(View::EVENT_AFTER_RENDER, function (ViewEvent $event) {
+            $event->output = str_replace($event->params['search'], $event->params['replace'], $event->output);
+            $event->output = str_replace('filename', $event->viewFile, $event->output);
+        });
+
+        $view->afterRender($filename, $params, $output);
+
+        $this->assertSame($expectedOutput, $output);
+    }
 }
