@@ -182,6 +182,7 @@ class Migration extends Component implements MigrationInterface
      */
     public function safeUp()
     {
+        return true;
     }
 
     /**
@@ -199,6 +200,7 @@ class Migration extends Component implements MigrationInterface
      */
     public function safeDown()
     {
+        return true;
     }
 
     /**
