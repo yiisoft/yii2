@@ -677,7 +677,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Removes errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use null to remove errors for all attributes.
+     * @param string|null $attribute attribute name. Use null to remove errors for all attributes.
      */
     public function clearErrors($attribute = null)
     {
