@@ -316,6 +316,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
+     * @param int ...$args additional parameters to decorate the output
      * @return int|bool Number of bytes printed or false on error
      */
     public function stderr($string)
