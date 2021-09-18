@@ -180,7 +180,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      */
     public function fromArray(array $array)
     {
-        $this->_headers = $array;
+        $this->_headers = array_change_key_case($array, CASE_LOWER);
     }
 
     /**
