@@ -16,7 +16,7 @@ Yii DAO 支持下列现成的数据库：
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)：版本 8.4 或更高
 - [CUBRID](http://www.cubrid.org/)：版本 9.3 或更高。
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx)：版本 2008 或更高。
 
 > Info: 在Yii 2.1及更高版本中，DAO 支持 CUBRID，Oracle 和 MSSQL
