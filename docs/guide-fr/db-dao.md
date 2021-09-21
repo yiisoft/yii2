@@ -12,7 +12,7 @@ Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les b
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/): version 8.4 ou plus récente.
 - [CUBRID](http://www.cubrid.org/): version 9.3 ou plus récente.
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 ou plus récente.
 
 > Info: depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour CUBRID, Oracle et MSSQL n'est plus fournie en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
