@@ -954,7 +954,7 @@ class BaseArrayHelper
                 continue;
             }
 
-            if (is_string($filter) && strpos($filter, '!') === 0) {
+            if (is_string($filter) && strncmp($filter, '!', 1) === 0) {
                 $excludeFilters[] = substr($filter, 1);
                 continue;
             }

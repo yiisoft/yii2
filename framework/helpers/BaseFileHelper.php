@@ -697,7 +697,7 @@ class BaseFileHelper
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
         // match with FNM_PATHNAME; the pattern has base implicitly in front of it.
-        if (strpos($pattern, '/') === 0) {
+        if (strncmp($pattern, '/', 1) === 0) {
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
             if ($firstWildcard !== false && $firstWildcard !== 0) {
                 $firstWildcard--;
@@ -807,7 +807,7 @@ class BaseFileHelper
             return $result;
         }
 
-        if (strpos($pattern, '!') === 0) {
+        if (strncmp($pattern, '!', 1) === 0) {
             $result['flags'] |= self::PATTERN_NEGATIVE;
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
         }
@@ -819,7 +819,7 @@ class BaseFileHelper
             $result['flags'] |= self::PATTERN_NODIR;
         }
         $result['firstWildcard'] = self::firstWildcardInPattern($pattern);
-        if (strpos($pattern, '*') === 0 && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
+        if (strncmp($pattern, '*', 1) === 0 && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
             $result['flags'] |= self::PATTERN_ENDSWITH;
         }
         $result['pattern'] = $pattern;

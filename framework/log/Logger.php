@@ -196,7 +196,7 @@ class Logger extends Component
                 if (is_int($index)) {
                     $messages[] = $message;
                 } else {
-                    if (strpos($index, 'begin-') === 0) {
+                    if (strncmp($index, 'begin-', 6) === 0) {
                         $oppositeProfile = 'end-' . substr($index, 6);
                     } else {
                         $oppositeProfile = 'begin-' . substr($index, 4);

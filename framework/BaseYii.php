@@ -130,7 +130,7 @@ class BaseYii
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strpos($alias, '@') !== 0) {
+        if (strncmp($alias, '@', 1) !== 0) {
             // not an alias
             return $alias;
         }
@@ -278,7 +278,7 @@ class BaseYii
     {
         if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
-            if (strpos($classFile, '@') === 0) {
+            if (strncmp($classFile, '@', 1) === 0) {
                 $classFile = static::getAlias($classFile);
             }
         } elseif (strpos($className, '\\') !== false) {
