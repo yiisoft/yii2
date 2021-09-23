@@ -40,7 +40,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @var string|string[]|false the name of the root element. If set to false, null or is empty then no root tag
      * should be added.
      *
-     * Since 2.0.43 URI namespace could be specified by passing `[namespace, tag name]` array.
+     * Since 2.0.44 URI namespace could be specified by passing `[namespace, tag name]` array.
      */
     public $rootTag = 'response';
     /**
