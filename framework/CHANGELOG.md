@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #18880: Fix `yii\helpers\ArrayHelper::toArray()` for `DateTime` objects in PHP >= 7.4 (rhertogh)
 - Bug #18883: Fix `yii\web\HeaderCollection::fromArray()` now ensures lower case keys (rhertogh)
 - Bug #18886: Fix default return of `yii\db\Migration::safeUp()` and `yii\db\Migration::safeDown()` (WinterSilence)
+- Bug #18898: Fix `yii\helpers\Inflector::camel2words()` to work with words ending with 0 (michaelarnauts)
 
 
 2.0.43 August 09, 2021
