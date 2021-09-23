@@ -468,7 +468,7 @@ class BaseStringHelper
         }
 
         $parts = preg_split('/(\s+[^\w]+\s+|^[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $ucfirstEven = (trim(mb_substr($parts[0], -1, 1, $encoding)) === '');
+        $ucfirstEven = trim(mb_substr($parts[0], -1, 1, $encoding)) === '';
         foreach ($parts as $key => $value) {
             $isEven = (bool)($key % 2);
             if ($ucfirstEven === $isEven) {
