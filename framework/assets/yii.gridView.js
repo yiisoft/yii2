@@ -198,6 +198,8 @@
                 var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
                 $grid.find("input[name='" + options.checkAll + "']").prop('checked', all).change();
             });
+            var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
+            $grid.find("input[name='" + options.checkAll + "']").prop('checked', all).change();
         },
 
         getSelectedRows: function () {

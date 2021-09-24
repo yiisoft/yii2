@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+- Bug #18867: Check-all checkbox of `\yii\grid\CheckboxColumn` will be checked on page load if all row checkboxes are checked (PowerGamer1)
 - Enh #18812: Added error messages and optimized "error" methods in `yii\helpers\BaseJson` (WinterSilence, samdark)
 - Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
 - Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
