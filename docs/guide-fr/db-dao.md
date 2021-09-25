@@ -59,7 +59,7 @@ Vous pouvez ensuite accéder à la base de données via l'expression `Yii::$app-
 
 > Tip: vous pouvez configurer plusieurs composants d'application « base de données » si votre application a besoin d'accéder à plusieurs bases de données. 
 
-Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](https://secure.php.net/manual/en/function.PDO-construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
+Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](https://www.php.net/manual/en/pdo.construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
