@@ -68,7 +68,7 @@ return [
 
 配置数据库连接时， 你应该总是通过 [[yii\db\Connection::dsn|dsn]] 属性来指明它的数据源名称 (DSN) 。
 不同的数据库有着不同的 DSN 格式。
-请参考 [PHP manual](https://secure.php.net/manual/en/function.PDO-construct.php) 来获得更多细节。下面是一些例子：
+请参考 [PHP manual](https://www.php.net/manual/en/pdo.construct.php) 来获得更多细节。下面是一些例子：
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`

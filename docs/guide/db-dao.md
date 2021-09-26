@@ -61,7 +61,7 @@ You can then access the DB connection via the expression `Yii::$app->db`.
 > Tip: You can configure multiple DB application components if your application needs to access multiple databases.
 
 When configuring a DB connection, you should always specify its Data Source Name (DSN) via the [[yii\db\Connection::dsn|dsn]] 
-property. The format of DSN varies for different databases. Please refer to the [PHP manual](https://secure.php.net/manual/en/function.PDO-construct.php) 
+property. The format of DSN varies for different databases. Please refer to the [PHP manual](https://www.php.net/manual/en/pdo.construct.php) 
 for more details. Below are some examples:
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
