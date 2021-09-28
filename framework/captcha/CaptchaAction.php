@@ -150,7 +150,7 @@ class CaptchaAction extends Action
     public function generateValidationHash($code)
     {
         for ($h = 0, $i = strlen($code) - 1; $i >= 0; --$i) {
-            $h += ord($code[$i]);
+            $h += ord($code[$i]) << $i;
         }
 
         return $h;
