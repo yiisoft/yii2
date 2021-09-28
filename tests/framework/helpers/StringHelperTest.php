@@ -438,6 +438,8 @@ class StringHelperTest extends TestCase
             ['0', '0'],
             [null, ''],
             ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
+            ['p0 upload', 'P0 Upload'],
+            ['p5 upload', 'P5 Upload'],
         ];
     }
 

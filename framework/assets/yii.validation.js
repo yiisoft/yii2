@@ -261,7 +261,7 @@ yii.validation = (function ($) {
             hash = hash == null ? options.hash : hash[options.caseSensitive ? 0 : 1];
             var v = options.caseSensitive ? value : value.toLowerCase();
             for (var i = v.length - 1, h = 0; i >= 0; --i) {
-                h += v.charCodeAt(i);
+                h += v.charCodeAt(i) << i;
             }
             if (h != hash) {
                 pub.addMessage(messages, options.message, value);
