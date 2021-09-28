@@ -164,7 +164,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-La liaison des paramètres est implémentée via des [instructions préparées](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php). En plus d'empêcher les attaques par injection SQL, cela peut aussi améliorer la performance en préparant l'instruction SQL une seule fois et l'exécutant de multiples fois avec des paramètres différents. Par exemple :
+La liaison des paramètres est implémentée via des [instructions préparées](https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php). En plus d'empêcher les attaques par injection SQL, cela peut aussi améliorer la performance en préparant l'instruction SQL une seule fois et l'exécutant de multiples fois avec des paramètres différents. Par exemple :
 
 ```php
 $command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');

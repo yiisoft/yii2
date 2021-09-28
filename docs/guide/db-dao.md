@@ -190,7 +190,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-Parameter binding is implemented via [prepared statements](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php).
+Parameter binding is implemented via [prepared statements](https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php).
 Besides preventing SQL injection attacks, it may also improve performance by preparing a SQL statement once and
 executing it multiple times with different parameters. For example,
 
