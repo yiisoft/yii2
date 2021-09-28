@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #18880: Fix `yii\helpers\ArrayHelper::toArray()` for `DateTime` objects in PHP >= 7.4 (rhertogh)
 - Bug #18883: Fix `yii\web\HeaderCollection::fromArray()` now ensures lower case keys (rhertogh)
 - Bug #18886: Fix default return of `yii\db\Migration::safeUp()` and `yii\db\Migration::safeDown()` (WinterSilence)
+- Enh #18899: Replace usages of `strpos` with `strncmp` and remove redundant usage of `array_merge` and `array_values` (AlexGx)
 
 
 2.0.43 August 09, 2021
