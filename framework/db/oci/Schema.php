@@ -421,7 +421,7 @@ SQL;
                     if ($defaultValue !== null) {
                         if (
                             strlen($defaultValue) > 2
-                            && strpos($defaultValue, "'") === 0
+                            && strncmp($defaultValue, "'", 1) === 0
                             && substr($defaultValue, -1) === "'"
                         ) {
                             $defaultValue = substr($defaultValue, 1, -1);

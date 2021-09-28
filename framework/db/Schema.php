@@ -480,7 +480,7 @@ abstract class Schema extends BaseObject
     public function quoteTableName($name)
     {
 
-        if (strpos($name, '(') === 0 && strpos($name, ')') === strlen($name) - 1) {
+        if (strncmp($name, '(', 1) === 0 && strpos($name, ')') === strlen($name) - 1) {
             return $name;
         }
         if (strpos($name, '{{') !== false) {
