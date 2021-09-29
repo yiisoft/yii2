@@ -129,7 +129,8 @@ class GettextMessageSource extends MessageSource
      */
     protected function getMessageFilePath($language)
     {
-        $messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
+        $languagePath = preg_replace('/[^\w_-]/', '_', $language);
+        $messageFile = Yii::getAlias($this->basePath) . '/' . $languagePath . '/' . $this->catalog;
         if ($this->useMoFile) {
             $messageFile .= self::MO_FILE_EXT;
         } else {
