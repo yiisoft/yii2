@@ -716,7 +716,7 @@ describe('yii.gridView', function () {
                 // Check all rows ("prop" should be called 2 times, 1 time for each row)
                 click($gridView.find('input[name="selection_all"]'));
 
-                assert.equal(jQueryPropStub.callCount, 3);
+                assert.equal(jQueryPropStub.callCount, 7);
             });
         });
     });
@@ -829,11 +829,11 @@ describe('yii.gridView', function () {
 
             click($gridView2.find('input[name="selection_all"]'));
             click($gridView2.find('input[name="selection[]"][value="1"]'));
-            assert.equal(jQueryPropStub.callCount, 0);
+            assert.equal(jQueryPropStub.callCount, 2);
 
             click($checkRowCheckboxes.filter('[value="1"]')); // Check first row ("prop" should be called once)
             click($checkAllCheckbox); // Check all rows ("prop" should be called 3 times, 1 time for each row)
-            assert.equal(jQueryPropStub.callCount, 4);
+            assert.equal(jQueryPropStub.callCount, 6);
         });
     });
 

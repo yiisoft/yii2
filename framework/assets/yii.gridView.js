@@ -14,7 +14,7 @@
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
-                return methods.init.apply(this, arguments);
+            return methods.init.apply(this, arguments);
         } else {
             $.error('Method ' + method + ' does not exist in jQuery.yiiGridView');
             return false;
@@ -87,7 +87,7 @@
                     gridData[id] = {};
                 }
 
-                gridData[id] = $.extend(gridData[id], {settings: settings});
+                gridData[id] = $.extend(gridData[id], { settings: settings });
 
                 var filterEvents = 'change.yiiGridView keydown.yiiGridView';
                 var enterPressed = false;
@@ -163,7 +163,7 @@
             }).appendTo($grid);
             $.each(data, function (name, values) {
                 $.each(values, function (index, value) {
-                    $form.append($('<input/>').attr({type: 'hidden', name: name, value: value}));
+                    $form.append($('<input/>').attr({ type: 'hidden', name: name, value: value }));
                 });
             });
 
@@ -194,10 +194,12 @@
             initEventHandler($grid, 'checkAllRows', 'click.yiiGridView', checkAll, function () {
                 $grid.find(inputs + ":enabled").prop('checked', this.checked).change();
             });
-            initEventHandler($grid, 'checkRow', 'click.yiiGridView', inputsEnabled, function () {
+            var handler = function () {
                 var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
                 $grid.find("input[name='" + options.checkAll + "']").prop('checked', all).change();
-            });
+            };
+            initEventHandler($grid, 'checkRow', 'click.yiiGridView', inputsEnabled, handler);
+            handler();
         },
 
         getSelectedRows: function () {
@@ -253,6 +255,6 @@
             gridEventHandlers[id] = {};
         }
         $(document).on(event, selector, callback);
-        gridEventHandlers[id][type] = {event: event, selector: selector};
+        gridEventHandlers[id][type] = { event: event, selector: selector };
     }
 })(window.jQuery);
