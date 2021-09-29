@@ -184,7 +184,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-绑定参数是通过 [预处理语句](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php) 实现的。
+绑定参数是通过 [预处理语句](https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php) 实现的。
 除了防止 SQL 注入攻击，它也可以通过一次预处理 SQL 语句，
 使用不同参数多次执行，来提升性能。例如：
 
