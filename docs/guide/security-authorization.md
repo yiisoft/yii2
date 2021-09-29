@@ -281,7 +281,7 @@ build the hierarchy itself won't be different.
 You can use [migrations](db-migrations.md)
 to initialize and modify hierarchy via APIs offered by `authManager`.
 
-Create new migration using `./yii migrate/create init_rbac` then impement creating a hierarchy:
+Create new migration using `./yii migrate/create init_rbac` then implement creating a hierarchy:
 
 ```php
 <?php
