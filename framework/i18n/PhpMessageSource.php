@@ -132,7 +132,8 @@ class PhpMessageSource extends MessageSource
      */
     protected function getMessageFilePath($category, $language)
     {
-        $messageFile = Yii::getAlias($this->basePath) . "/$language/";
+        $languagePath = preg_replace('/[^\w_-]/', '_', $language);
+        $messageFile = Yii::getAlias($this->basePath) . "/$languagePath/";
         if (isset($this->fileMap[$category])) {
             $messageFile .= $this->fileMap[$category];
         } else {
