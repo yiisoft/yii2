@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #18899: Replace usages of `strpos` with `strncmp` and remove redundant usage of `array_merge` and `array_values` (AlexGx)
 - Bug #18898: Fix `yii\helpers\Inflector::camel2words()` to work with words ending with 0 (michaelarnauts)
 - Enh #18904: Improve Captcha client-side validation (hexkir)
+- Bug #18913: Add filename validation for `MessageSource::getMessageFilePath()` (uaoleg)
 
 
 2.0.43 August 09, 2021
