@@ -8,6 +8,7 @@
 namespace yii\i18n;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 
 /**
  * PhpMessageSource represents a message source that stores translated messages in PHP scripts.
@@ -132,8 +133,10 @@ class PhpMessageSource extends MessageSource
      */
     protected function getMessageFilePath($category, $language)
     {
-        $languagePath = preg_replace('/[^\w_-]/', '_', $language);
-        $messageFile = Yii::getAlias($this->basePath) . "/$languagePath/";
+        if (!preg_match('/^[\w_-]+$/', $language)) {
+            throw new InvalidArgumentException('Invalid language code.');
+        }
+        $messageFile = Yii::getAlias($this->basePath) . "/$language/";
         if (isset($this->fileMap[$category])) {
             $messageFile .= $this->fileMap[$category];
         } else {
