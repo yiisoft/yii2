@@ -130,7 +130,7 @@ class GettextMessageSource extends MessageSource
      */
     protected function getMessageFilePath($language)
     {
-        if ($language !== null && !preg_match('/^[a-z_-]+$/i', $language)) {
+        if (!empty($language) && !preg_match('/^[a-z_-]+$/i', $language)) {
             throw new InvalidArgumentException(sprintf('Invalid language code: "%s".', $language));
         }
         $messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
