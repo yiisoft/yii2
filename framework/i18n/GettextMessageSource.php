@@ -8,6 +8,7 @@
 namespace yii\i18n;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 
 /**
  * GettextMessageSource represents a message source that is based on GNU Gettext.
@@ -129,8 +130,10 @@ class GettextMessageSource extends MessageSource
      */
     protected function getMessageFilePath($language)
     {
-        $languagePath = preg_replace('/[^\w_-]/', '_', $language);
-        $messageFile = Yii::getAlias($this->basePath) . '/' . $languagePath . '/' . $this->catalog;
+        if (!preg_match('/^[\w_-]+$/', $language)) {
+            throw new InvalidArgumentException('Invalid language code.');
+        }
+        $messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
         if ($this->useMoFile) {
             $messageFile .= self::MO_FILE_EXT;
         } else {
