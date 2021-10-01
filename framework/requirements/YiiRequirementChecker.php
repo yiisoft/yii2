@@ -24,7 +24,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *         'name' => 'PHP Some Extension',
  *         'mandatory' => true,
  *         'condition' => extension_loaded('some_extension'),
- *         'by' => 'Some application feature',
+ *         'by' => 'Some applications feature',
  *         'memo' => 'PHP extension "some_extension" required',
  *     ),
  * );
@@ -148,7 +148,7 @@ class YiiRequirementChecker
 
     /**
      * Renders the requirements check result.
-     * The output will vary depending is a script running from web or from console.
+     * The output will vary depending on is a script running from web or from console.
      */
     function render()
     {

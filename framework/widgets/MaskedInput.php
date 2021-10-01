@@ -92,7 +92,7 @@ class MaskedInput extends InputWidget
      */
     public $options = ['class' => 'form-control'];
     /**
-     * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
+     * @var string the type of the input tag. Currently, only 'text' and 'tel' are supported.
      * @see https://github.com/RobinHerbots/Inputmask
      * @since 2.0.6
      */

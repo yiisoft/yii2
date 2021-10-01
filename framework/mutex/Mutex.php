@@ -81,7 +81,7 @@ abstract class Mutex extends Component
     /**
      * Releases acquired lock. This method will return false in case the lock was not found.
      * @param string $name of the lock to be released. This lock must already exist.
-     * @return bool lock release result: false in case named lock was not found..
+     * @return bool lock release result: false in case named lock was not found.
      */
     public function release($name)
     {

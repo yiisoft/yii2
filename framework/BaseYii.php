@@ -31,15 +31,15 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
  */
 defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * Whether the the application is running in production environment.
+ * Whether the application is running in production environment.
  */
 defined('YII_ENV_PROD') or define('YII_ENV_PROD', YII_ENV === 'prod');
 /**
- * Whether the the application is running in development environment.
+ * Whether the application is running in development environment.
  */
 defined('YII_ENV_DEV') or define('YII_ENV_DEV', YII_ENV === 'dev');
 /**
- * Whether the the application is running in testing environment.
+ * Whether the application is running in testing environment.
  */
 defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
 
@@ -101,7 +101,7 @@ class BaseYii
      *
      * The translation is done according to the following procedure:
      *
-     * 1. If the given alias does not start with '@', it is returned back without change;
+     * 1. If the given alias does not start with '@', it is returned without change;
      * 2. Otherwise, look for the longest registered alias that matches the beginning part
      *    of the given alias. If it exists, replace the matching part of the given alias with
      *    the corresponding registered path.

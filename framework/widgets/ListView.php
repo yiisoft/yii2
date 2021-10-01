@@ -13,7 +13,7 @@ use yii\helpers\Html;
 
 /**
  * The ListView widget is used to display data from data
- * provider. Each data model is rendered using the view
+ * provider. All data model is rendered using the view
  * specified.
  *
  * For more details and usage information on ListView, see the [guide article on data widgets](guide:output-data-widgets).
