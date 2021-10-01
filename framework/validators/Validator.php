@@ -157,7 +157,7 @@ class Validator extends Component
      * refer to the model and the attribute currently being validated. The callable should return a boolean value.
      *
      * This property is mainly provided to support conditional validation on the server-side.
-     * If this property is not set, this validator will always be applied on the server-side.
+     * If this property is not set, this validator will be always applied on the server-side.
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
@@ -177,7 +177,7 @@ class Validator extends Component
      * and `value` the current value of the attribute.
      *
      * This property is mainly provided to support conditional validation on the client-side.
-     * If this property is not set, this validator will always be applied on the client-side.
+     * If this property is not set, this validator will be always applied on the client-side.
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
@@ -203,7 +203,7 @@ class Validator extends Component
      * @param array|string $attributes list of attributes to be validated. This can be either an array of
      * the attribute names or a string of comma-separated attribute names.
      * @param array $params initial values to be applied to the validator properties.
-     * @return array|object the validator
+     * @return Validator the validator
      */
     public static function createValidator($type, $model, $attributes, $params = [])
     {
@@ -288,7 +288,7 @@ class Validator extends Component
         $newAttributes = [];
         $attributeNames = $this->getAttributeNames();
         foreach ($attributes as $attribute) {
-            // do not strict compare, otherwise int attributes would fail due to string conversion in getAttributeNames() using ltrim().
+            // do not strict compare, otherwise int attributes would fail due to to string conversion in getAttributeNames() using ltrim().
             if (in_array($attribute, $attributeNames, false)) {
                 $newAttributes[] = $attribute;
             }
@@ -358,7 +358,7 @@ class Validator extends Component
      * for this example `message` template can contain `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
      *
      * Null should be returned if the data is valid.
-     * @throws NotSupportedException if the validator does not support data validation without a model
+     * @throws NotSupportedException if the validator does not supporting data validation without a model
      */
     protected function validateValue($value)
     {
@@ -375,7 +375,7 @@ class Validator extends Component
      *
      * The following JavaScript variables are predefined and can be used in the validation code:
      *
-     * - `attribute`: an object describing the attribute being validated.
+     * - `attribute`: an object describing the the attribute being validated.
      * - `value`: the value being validated.
      * - `messages`: an array used to hold the validation error messages for the attribute.
      * - `deferred`: an array used to hold deferred objects for asynchronous validation
@@ -474,7 +474,7 @@ class Validator extends Component
     }
 
     /**
-     * Formats a message using the I18N, or simple strtr if `\Yii::$app` is not available.
+     * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
      * @param string $message
      * @param array $params
      * @since 2.0.12

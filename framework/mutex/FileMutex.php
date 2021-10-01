@@ -116,7 +116,7 @@ class FileMutex extends Mutex
                 return false;
             }
 
-            // Under unix, we delete the lock file before releasing the related handle. Thus, it's possible that we've acquired a lock on
+            // Under unix we delete the lock file before releasing the related handle. Thus it's possible that we've acquired a lock on
             // a non-existing file here (race condition). We must compare the inode of the lock file handle with the inode of the actual lock file.
             // If they do not match we simply continue the loop since we can assume the inodes will be equal on the next try.
             // Example of race condition without inode-comparison:
@@ -150,13 +150,13 @@ class FileMutex extends Mutex
         }
 
         if ($this->isWindows) {
-            // Under windows, it's not possible to delete a file opened via fopen (either by own or other process).
+            // Under windows it's not possible to delete a file opened via fopen (either by own or other process).
             // That's why we must first unlock and close the handle and then *try* to delete the lock file.
             flock($this->_files[$name], LOCK_UN);
             fclose($this->_files[$name]);
             @unlink($this->getLockFilePath($name));
         } else {
-            // Under unix, it's possible to delete a file opened via fopen (either by own or other process).
+            // Under unix it's possible to delete a file opened via fopen (either by own or other process).
             // That's why we must unlink (the currently locked) lock file first and then unlock and close the handle.
             unlink($this->getLockFilePath($name));
             flock($this->_files[$name], LOCK_UN);

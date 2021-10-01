@@ -147,7 +147,7 @@ class DbManager extends BaseManager
     /**
      * Performs access check for the specified user based on the data loaded from cache.
      * This method is internally called by [[checkAccess()]] when [[cache]] is enabled.
-     * @param string|int $user the user ID. This should, can be either an integer or a string representing
+     * @param string|int $user the user ID. This should can be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param string $itemName the name of the operation that need access check
      * @param array $params name-value pairs that would be passed to rules associated
