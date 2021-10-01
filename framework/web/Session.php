@@ -961,7 +961,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to check on
+     * @param int|string $offset the offset to check on
      * @return bool
      */
     public function offsetExists($offset)
@@ -973,7 +973,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to retrieve element.
+     * @param int|string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
@@ -985,7 +985,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to set element
+     * @param int|string $offset the offset to set element
      * @param mixed $item the element value
      */
     public function offsetSet($offset, $item)
@@ -996,7 +996,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to unset element
+     * @param int|string $offset the offset to unset element
      */
     public function offsetUnset($offset)
     {
