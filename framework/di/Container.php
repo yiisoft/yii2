@@ -296,7 +296,7 @@ class Container extends Component
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
-     * @return bool Whether the container has the definition of the specified name..
+     * @return bool Whether the container has the definition of the specified name.
      * @see set()
      */
     public function has($class)
