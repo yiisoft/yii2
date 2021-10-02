@@ -33,19 +33,19 @@ class GettextMessageSource extends MessageSource
     const PO_FILE_EXT = '.po';
 
     /**
-     * @var string
+     * @var string base directory of messages files
      */
     public $basePath = '@app/messages';
     /**
-     * @var string
+     * @var string sub-directory of messages files
      */
     public $catalog = 'messages';
     /**
-     * @var bool
+     * @var bool whether to use generated MO files
      */
     public $useMoFile = true;
     /**
-     * @var bool
+     * @var bool whether to use big-endian when reading and writing an integer
      */
     public $useBigEndian = false;
 
