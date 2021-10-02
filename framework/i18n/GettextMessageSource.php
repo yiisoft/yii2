@@ -33,7 +33,7 @@ class GettextMessageSource extends MessageSource
     const PO_FILE_EXT = '.po';
 
     /**
-     * @var string base directory of message files
+     * @var string base directory of messages files
      */
     public $basePath = '@app/messages';
     /**
