@@ -37,7 +37,7 @@ class GettextMessageSource extends MessageSource
      */
     public $basePath = '@app/messages';
     /**
-     * @var string sub-directory of message files
+     * @var string sub-directory of messages files
      */
     public $catalog = 'messages';
     /**
