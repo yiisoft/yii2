@@ -604,7 +604,7 @@ class Container extends Component
     }
 
     /**
-     * Invoke a callback with resolving dependencies in parsameters.
+     * Invoke a callback with resolving dependencies in parameters.
      *
      * This method allows invoking a callback and let type hinted parameter names to be
      * resolved as objects of the Container. It additionally allows calling function using named parameters.
