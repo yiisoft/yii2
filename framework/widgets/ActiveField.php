@@ -815,6 +815,7 @@ class ActiveField extends Component
         if ($clientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
+                /* @var $validator \yii\validators\Validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {
@@ -952,7 +953,7 @@ class ActiveField extends Component
      * @param array $options
      * @return array
      */
-    public function preparingLabel(&$options)
+    protected function preparingLabel(&$options)
     {
         if (isset($options['label']) && !isset($this->parts['{label}'])) {
             $this->parts['{label}'] = $options['label'];
