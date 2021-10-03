@@ -105,12 +105,12 @@ class AssetManager extends Component
      */
     public $assetMap = [];
     /**
-     * @var bool whether to use symbolic link to publish asset files. Defaults to false, meaning
+     * @var bool whether to use a symbolic link to publish asset files. Defaults to false, meaning
      * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
      * assets will always be consistent with the source assets and there is no copy operation required.
      * This is especially useful during development.
      *
-     * However, there are special requirements for hosting environments in order to use symbolic links.
+     * However, there are special requirements for hosting environments to use symbolic links.
      * In particular, symbolic links are supported only on Linux/Unix, and Windows Vista/2008 or greater.
      *
      * Moreover, some Web servers need to be properly configured so that the linked assets are accessible
@@ -183,7 +183,7 @@ class AssetManager extends Component
      * implementation should use the directory path of the file instead of the file path to include
      * the relative asset files in the copying.
      *
-     * If this is not set, the asset manager will use the default CRC32 and filemtime in the `hash`
+     * If this is not set, the asset manager will use the default CRC32 and filetime in the `hash`
      * method.
      *
      * Example of an implementation using MD4 hash:
@@ -314,7 +314,7 @@ class AssetManager extends Component
     /**
      * Returns the actual URL for the specified asset.
      * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
-     * @param AssetBundle $bundle the asset bundle which the asset file belongs to
+     * @param AssetBundle $bundle the asset bundle to which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
      * @param bool|null $appendTimestamp Whether to append timestamp to the URL.
      * @return string the actual URL for the specified asset.
