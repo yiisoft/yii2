@@ -556,7 +556,7 @@ class ActiveField extends Component
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
         } else {
-            $options = $this->preparingLabel($options);
+            $options = $this->prepareLabel($options);
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
         }
 
@@ -601,7 +601,7 @@ class ActiveField extends Component
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
         } else {
-            $options = $this->preparingLabel($options);
+            $options = $this->prepareLabel($options);
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         }
 
@@ -953,7 +953,7 @@ class ActiveField extends Component
      * @param array $options
      * @return array
      */
-    protected function preparingLabel(&$options)
+    protected function prepareLabel(&$options)
     {
         if (isset($options['label']) && !isset($this->parts['{label}'])) {
             $this->parts['{label}'] = $options['label'];
