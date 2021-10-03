@@ -152,7 +152,7 @@ class Foo
  * Checks whether the IP is in subnet range
  *
  * @param string $ip an IPv4 or IPv6 address
- * @param int $cidr the CIDR lendth
+ * @param int $cidr the CIDR length
  * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
  * @return bool whether the IP is in subnet range
  */
@@ -395,9 +395,9 @@ Documentation
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

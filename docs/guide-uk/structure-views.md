@@ -545,7 +545,7 @@ class PostController extends Controller
 * [опрацювання клієнтських скриптів](output-client-scripts.md): підтримує реєстрацію та формування CSS та JavaScript;
 * [опрацювання колекції ресурсів](structure-assets.md): підтримує реєстрацію та формування [колекцій ресурсів](structure-assets.md);
 * [альтернативні шаблонізатори](tutorial-template-engines.md): дозволяє використовувати інші шаблонізатори, такі як
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 Ви також можете часто використовувати наступні другорядні, але корисні, можливості в процесі розробки веб-сторінок.
 
@@ -616,14 +616,14 @@ $this->registerLinkTag([
     'title' => 'Свіжі новини про Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Результатом вищенаведеного коду буде
 
 ```html
-<link title="Свіжі новини про Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Свіжі новини про Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Подібно до [[yii\web\View::registerMetaTag()|registerMetaTags()]], ви можете визначати ключ під час виклику

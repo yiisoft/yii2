@@ -64,11 +64,14 @@ END';
     {
         $db = $this->getConnection();
 
-        $sql = 'CREATE OR ALTER FUNCTION TESTFUNC(@Number INT)
+        $sql = 'IF OBJECT_ID(\'TESTFUNC\') IS NOT NULL EXEC(\'DROP FUNCTION TESTFUNC\')';
+        $db->createCommand($sql)->execute();
+
+        $sql = 'CREATE FUNCTION TESTFUNC(@Number INT)
 RETURNS VARCHAR(15)
 AS
 BEGIN
-      RETURN (SELECT TRY_CONVERT(VARCHAR(15),@Number))
+      RETURN (SELECT CONVERT(VARCHAR(15),@Number))
 END';
         $db->createCommand($sql)->execute();
 

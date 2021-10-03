@@ -35,7 +35,7 @@ sott'occhio le ultime tendenze e tecnologie di sviluppo web, sulle pratiche otti
 framework e progetti. Le peculiarità più rilevanti che si trovano altrove sono regolarmente incorporate nel
 codice principale del framework, e rese disponibili tramite semplici ed eleganti interfacce.
 
-[about_yii]: http://www.yiiframework.com/about/
+[about_yii]: https://www.yiiframework.com/about/
 
 Versioni di Yii
 ---------------

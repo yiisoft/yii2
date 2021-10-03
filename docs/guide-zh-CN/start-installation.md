@@ -85,7 +85,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 通过归档文件安装 Yii 包括三个步骤：
 
-1. 从 [yiiframework.com](http://www.yiiframework.com/download/) 下载归档文件。
+1. 从 [yiiframework.com](https://www.yiiframework.com/download/) 下载归档文件。
 2. 将下载的文件解压缩到 Web 访问的文件夹中。
 3. 修改 `config/web.php` 文件，给 `cookieValidationKey` 配置项
    添加一个密钥（若你通过 Composer 安装，则此步骤会自动完成）：
@@ -114,9 +114,9 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 安装 Assets <span id="installing-assets"></span>
 -----------
 
-Yii依靠 [Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/) 软件包来安装 asset（CSS 和 JavaScript）库。
+Yii依靠 [Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.com/) 软件包来安装 asset（CSS 和 JavaScript）库。
 它使用Composer来获取这些库，允许 PHP 和 CSS/JavaScript 包版本同时解析。
-这可以通过使用 [asset-packagist.org](https://asset-packagist.org) 或 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) 来实现。
+这可以通过使用 [asset-packagist.org](https://asset-packagist.org) 或 [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) 来实现。
 有关更多详细信息，请参阅 [Assets 文档](structure-assets.md)。
 
 您可能希望通过本地 Bower/NPM 客户端管理您的 assets，使用 CDN 或完全避免 assets 的安装。

@@ -33,6 +33,16 @@ class Cookie extends \yii\base\BaseObject
      * @see $sameSite
      */
     const SAME_SITE_STRICT = 'Strict';
+    /**
+     * SameSite policy None disables the SameSite policy so cookies will be sent in all contexts,
+     * i.e in responses to both first-party and cross-origin requests.
+     * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will include the cookie.
+     * Note: If `sameSite` is set to None, the `secure` attribute must be set to `true` (otherwise the cookie will be blocked by the browser).
+     * @see $sameSite
+     * @see $secure
+     * @since 2.0.43
+     */
+    const SAME_SITE_NONE = 'None';
 
     /**
      * @var string name of the cookie
@@ -67,17 +77,12 @@ class Cookie extends \yii\base\BaseObject
     public $httpOnly = true;
     /**
      * @var string SameSite prevents the browser from sending this cookie along with cross-site requests.
-     * Please note that this feature is only supported since PHP 7.3.0
-     * For better security, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
-     * To use this feature across different PHP versions check the version first. E.g.
-     * ```php
-     * $cookie->sameSite = PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
-     * ```
-     * See https://www.owasp.org/index.php/SameSite for more information about sameSite.
+     *
+     * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite for more information about sameSite.
      *
      * @since 2.0.21
      */
-    public $sameSite;
+    public $sameSite = self::SAME_SITE_LAX;
 
 
     /**

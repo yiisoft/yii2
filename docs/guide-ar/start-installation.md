@@ -87,7 +87,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 يتضمن تثبيت Yii من ملف أرشيف ثلاث خطوات وهي:
 </p>
 <ol dir="rtl">
-<li> تثبت الملف من خلال الموقع الرسمي <a href="http://www.yiiframework.com/download/">yiiframework.com</a>.</li>
+<li> تثبت الملف من خلال الموقع الرسمي <a href="https://www.yiiframework.com/download/">yiiframework.com</a>.</li>
 <li> قم بفك ضغط الملف الذي تم تنزيله إلى مجلد يمكن الوصول إليه عبر الويب.</li>
 <li> قم بتعديل ملف <code>config/web.php</code> عن طريق إدخال secret key ل<code> cookieValidationKey</code>
 (يتم ذلك تلقائيًا إذا قمت بتثبيت ال Yii باستخدام Composer): </li>
@@ -121,7 +121,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 --------------------------
 
 <p dir="rtl">
-    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
+    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.com/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/fxpio/composer-asset-plugin">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
 <br /><br />
 قد ترغب في إدارة ال assets عبر  ال native Bower/NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
 </p>

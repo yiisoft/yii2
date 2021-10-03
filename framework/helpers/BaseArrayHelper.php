@@ -70,6 +70,8 @@ class BaseArrayHelper
             }
 
             return $object;
+        } elseif ($object instanceof \DateTimeInterface) {
+            return (array)$object;
         } elseif (is_object($object)) {
             if (!empty($properties)) {
                 $className = get_class($object);
@@ -194,6 +196,10 @@ class BaseArrayHelper
                 $array = static::getValue($array, $keyPart);
             }
             $key = $lastKey;
+        }
+
+        if (is_object($array) && property_exists($array, $key)) {
+            return $array->$key;
         }
 
         if (static::keyExists($key, $array)) {
@@ -520,7 +526,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array
-     * @param int|string|\Closure $name
+     * @param int|string|array|\Closure $name
      * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values
@@ -944,13 +950,17 @@ class BaseArrayHelper
         $excludeFilters = [];
 
         foreach ($filters as $filter) {
-            if ($filter[0] === '!') {
+            if (!is_string($filter) && !is_int($filter)) {
+                continue;
+            }
+
+            if (is_string($filter) && strncmp($filter, '!', 1) === 0) {
                 $excludeFilters[] = substr($filter, 1);
                 continue;
             }
 
             $nodeValue = $array; //set $array as root node
-            $keys = explode('.', $filter);
+            $keys = explode('.', (string) $filter);
             foreach ($keys as $key) {
                 if (!array_key_exists($key, $nodeValue)) {
                     continue 2; //Jump to next filter
@@ -971,7 +981,7 @@ class BaseArrayHelper
 
         foreach ($excludeFilters as $filter) {
             $excludeNode = &$result;
-            $keys = explode('.', $filter);
+            $keys = explode('.', (string) $filter);
             $numNestedKeys = count($keys) - 1;
             foreach ($keys as $i => $key) {
                 if (!array_key_exists($key, $excludeNode)) {

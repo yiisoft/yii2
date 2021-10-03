@@ -42,7 +42,7 @@ use yii\base\InvalidConfigException;
  *
  * A more detailed usage guide on how to work with Query can be found in the [guide article on Query Builder](guide:db-query-builder).
  *
- * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ * @property-read string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -145,7 +145,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return Command the created DB command instance.
      */
@@ -236,7 +236,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Executes the query and returns all results as an array.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
@@ -245,7 +245,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         if ($this->emulateExecution) {
             return [];
         }
+
         $rows = $this->createCommand($db)->queryAll();
+
         return $this->populate($rows);
     }
 
@@ -271,7 +273,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Executes the query and returns a single row of result.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -290,7 +292,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * The value returned will be the first column in the first row of the query results.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
     public function scalar($db = null)
@@ -304,7 +306,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Executes the query and returns the first column of the result.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return array the first column of the query result. An empty array is returned if the query results in nothing.
      */
@@ -352,9 +354,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
-     * @return int|string number of records. The result may be a string depending on the
+     * @return int|string|null number of records. The result may be a string depending on the
      * underlying database engine and to support integer values higher than a 32bit PHP integer can handle.
      */
     public function count($q = '*', $db = null)
@@ -404,7 +406,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the minimum of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
      */
@@ -417,7 +419,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the maximum of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
      */
@@ -428,7 +430,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return bool whether the query result contains any row of data.
      */
@@ -448,8 +450,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Queries a scalar value by setting [[select]] first.
      * Restores the value of select to make this query reusable.
      * @param string|ExpressionInterface $selectExpression
-     * @param Connection|null $db
-     * @return bool|string
+     * @param Connection|null $db the database connection used to execute the query.
+     * @return bool|string|null
+     * @throws \Throwable if can't create command
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -477,7 +480,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             try {
                 $command = $this->createCommand($db);
             } catch (\Exception $e) {
-                // throw it later
+                // throw it later (for PHP < 7.0)
             } catch (\Throwable $e) {
                 // throw it later
             }

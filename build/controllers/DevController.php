@@ -51,7 +51,8 @@ class DevController extends Controller
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
         'bootstrap' => 'git@github.com:yiisoft/yii2-bootstrap.git',
-        'codeception' => 'git@github.com:yiisoft/yii2-codeception.git',
+        'bootstrap4' => 'git@github.com:yiisoft/yii2-bootstrap4.git',
+        'bootstrap5' => 'git@github.com:yiisoft/yii2-bootstrap5.git',
         'composer' => 'git@github.com:yiisoft/yii2-composer.git',
         'debug' => 'git@github.com:yiisoft/yii2-debug.git',
         'elasticsearch' => 'git@github.com:yiisoft/yii2-elasticsearch.git',
@@ -334,7 +335,7 @@ class DevController extends Controller
                 continue;
             }
             // ignore hidden directories
-            if ($file[0] === '.') {
+            if (strpos($file, '.') === 0) {
                 continue;
             }
             if (is_dir("$dir/$file")) {

@@ -20,7 +20,7 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
- * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
+ * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -50,7 +50,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $context;
     /**
-     * @var mixed custom parameters that are shared among view templates.
+     * @var array custom parameters that are shared among view templates.
      */
     public $params = [];
     /**
@@ -316,10 +316,10 @@ class View extends Component implements DynamicContentAwareInterface
             $event = new ViewEvent([
                 'viewFile' => $viewFile,
                 'params' => $params,
-                'output' => $output,
             ]);
+            $event->output =& $output;
+
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
-            $output = $event->output;
         }
     }
 

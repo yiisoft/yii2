@@ -22,10 +22,10 @@ use yii\helpers\Html;
  *
  * For more details and usage information on UploadedFile, see the [guide article on handling uploads](guide:input-file-upload).
  *
- * @property string $baseName Original file base name. This property is read-only.
- * @property string $extension File extension. This property is read-only.
- * @property bool $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed
- * error code information. This property is read-only.
+ * @property-read string $baseName Original file base name. This property is read-only.
+ * @property-read string $extension File extension. This property is read-only.
+ * @property-read bool $hasError Whether there is an error with the uploaded file. Check [[error]] for
+ * detailed error code information. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

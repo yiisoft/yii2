@@ -109,6 +109,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
         $m = new ValidatorTestRefModel();
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 7;
+        }
         $m->ref = 12121;
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
@@ -282,6 +286,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val = new UniqueValidator();
 
         $m = new ValidatorTestMainModel(['field1' => '']);
+
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 5;
+        }
+
         $val->validateAttribute($m, 'field1');
         $this->assertFalse($m->hasErrors('field1'));
         $m->save(false);
@@ -298,6 +308,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val = new UniqueValidator();
 
         $m = new ValidatorTestRefModel(['ref' => 0]);
+
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 6;
+        }
+
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
         $m->save(false);
@@ -416,7 +432,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         $validator = new UniqueValidator([
             'targetAttribute' => [
-                'title' => 'LOWER(title)',
+                'title' => 'LOWER([[title]])',
             ],
         ]);
         $model = new Document();
@@ -445,7 +461,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
     }
-    
+
     /**
      * Test join with doesn't attempt to eager load joinWith relations
      * @see https://github.com/yiisoft/yii2/issues/17389
@@ -463,7 +479,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             $this->fail('Query is crashed because "joinWith" relation cannot be loaded');
         }
     }
-    
+
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();
@@ -504,9 +520,9 @@ class WithCustomer extends Customer {
 class JoinWithCustomer extends Customer {
     public static function find() {
         $res = parent::find();
-        
+
         $res->joinWith('profile');
-        
+
         return $res;
     }
 }

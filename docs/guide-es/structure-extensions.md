@@ -135,9 +135,9 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -193,8 +193,8 @@ La extensión depende de Yii (por supuesto). Por ello se debe añadir (`yiisoft/
 apropiadas (ej. `1.*`, `@stable`) para cada paquete dependiente. Se deben usar dependencias estables en versiones
 estables de nuestras extensiones.
 
-La mayoría de paquetes JavaScript/CSS se gestionan usando [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.org/),
-en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+La mayoría de paquetes JavaScript/CSS se gestionan usando [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/),
+en lugar de Composer. Yii utiliza el [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
  para habilitar la gestión de estos tipos de paquetes a través de Composer. Si la extensión depende de un paquete
  Bower, se puede, simplemente, añadir la dependencia de el archivo `composer.json` como se muestra a continuación:
 
@@ -392,7 +392,7 @@ mencionados a continuación para facilitar a otra gente el uso de nuestra extens
 
 > Info: Aunque no es un requerimiento, se recomienda que la extensión se adhiera a ciertos estilos de
   codificación. Se puede hacer referencia a
-  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) para
+  [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) para
   obtener más detalles.
 
 ## Extensiones del Núcleo <span id="core-extensions"></span>
@@ -407,13 +407,11 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   autorización tales como el cliente OAuth2 de Facebook, el cliente GitHub OAuth2.
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap): proporciona un conjunto de widgets que
   encapsulan los componentes y plugins de [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception): proporciona soporte de testing basado en
-  [Codeception](http://codeception.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug): proporciona soporte de depuración para aplicaciones
   Yii. Cuando se usa esta extensión, aparece una barra de herramientas de depuración en la parte inferior de cada
   página. La extensión también proporciona un conjunto de páginas para mostrar información detallada de depuración.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch): proporciona soporte para usar
-  [Elasticsearch](http://www.elasticsearch.org/). Incluye soporte básico para realizar consultas/búsquedas y también
+  [Elasticsearch](https://www.elastic.co/). Incluye soporte básico para realizar consultas/búsquedas y también
   implementa patrones de [Active Record](db-active-record.md) que permiten y permite guardar los `active records` en
   Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker): proporciona soporte para usar
@@ -427,7 +425,7 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui): proporciona un conjunto de widgets que encapsulan las
   iteraciones y widgets de [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb): proporciona soporte para utilizar
-  [MongoDB](http://www.mongodb.org/). incluye características como consultas básicas, Active Record, migraciones,
+  [MongoDB](https://www.mongodb.com/). incluye características como consultas básicas, Active Record, migraciones,
   caching, generación de código, etc.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis): proporciona soporte para utilizar
   [redis](http://redis.io/). incluye características como consultas básicas, Active Record, caching, etc.
@@ -439,4 +437,4 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer): proporciona características de envío de
   correos electrónicos basadas en [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig): proporciona un motor de plantillas basado en
-  [Twig](http://twig.sensiolabs.org/).
+  [Twig](https://twig.symfony.com/).

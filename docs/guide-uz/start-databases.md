@@ -64,7 +64,7 @@ Fayl `config/db.php` — oddiy [sozlamalar](concept-configurations.md) vositasid
 
 Ma'lumotlar omboriga yuqoridagi sozlamalar sozlab bo'lgandan so'ng ulanish, undan foydalanish uchun `Yii::$app->db` orqali amalga oshiriladi.
 
-> Ma'lumot uchun: fayl `config/db.php` ilovaning assosiy sozlama fayli orqali ulanadi `config/web.php`,
+> Info: fayl `config/db.php` ilovaning assosiy sozlama fayli orqali ulanadi `config/web.php`,
   u esa [web-ilova](structure-applications.md) nusxasini sozlamalarini o'z ichiga oladi.
   qo'shimcha ma'lumot uchun, iltimos, ushbu [Sozlamalar](concept-configurations.md) bo'limga ko'rib chiqing.
 
@@ -94,7 +94,7 @@ class Country extends ActiveRecord
 
 `Country` klassi [[yii\db\ActiveRecord]]ni kengaytirmoqda. Siz uning ichida bir satr kod ham yozmasligingiz mumkin! Yuqoridagi kod assosida Yii o'zi ma'lumotlar omboridagi jadval va klass orasida aloqa yasaydi.
 
-> Ma'lumot uchun: Agar ma'lumotlar omboridagi nom va klassnomi orasida bir xillikni saqlash imkoni  bo'lmasa siz klassga aynan jadal ismini [[yii\db\ActiveRecord::tableName()]] usuli orqali yozishingiz mumkin.
+> Info: Agar ma'lumotlar omboridagi nom va klassnomi orasida bir xillikni saqlash imkoni  bo'lmasa siz klassga aynan jadal ismini [[yii\db\ActiveRecord::tableName()]] usuli orqali yozishingiz mumkin.
 
 `Country` klassini ishlatganingizda, siz osonlikcha `country` jadvalidagi ma'lumotlar bilan boshqarishingiz mumkin, misol uchun pastdagi qatorlarda shuni ko'rishingiz mumkin:
 
@@ -115,7 +115,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Ma'lumot uchun: Active Record — bu ma'lumotlar ombori bilan ishlash uchun juda ham mukammal vosita hisoblanadi.
+> Info: Active Record — bu ma'lumotlar ombori bilan ishlash uchun juda ham mukammal vosita hisoblanadi.
   Yana ko'oproq ma'lumotni siz [Active Record](db-active-record.md) bo'limida topishingiz mumkin. Qo'shimcha tariqasida, siz yana boshqa yanada past qism vositasi [Data Access Objects](db-dao.md)dan foydalanishingiz mumkin.
 
 

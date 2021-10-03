@@ -117,14 +117,6 @@ class Security extends Component
     }
 
     /**
-     * @return bool if operating system is Windows
-     */
-    private function isWindows()
-    {
-        return DIRECTORY_SEPARATOR !== '/';
-    }
-
-    /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
      * which is deliberately slow to protect against dictionary attacks. Use [[encryptByKey()]] to
@@ -471,8 +463,6 @@ class Security extends Component
         return false;
     }
 
-    private $_randomFile;
-
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
@@ -493,84 +483,7 @@ class Security extends Component
             throw new InvalidArgumentException('First parameter ($length) must be greater than 0');
         }
 
-        // always use random_bytes() if it is available
-        if (function_exists('random_bytes')) {
-            return random_bytes($length);
-        }
-
-        // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
-        // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
-        // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
-        if (function_exists('openssl_random_pseudo_bytes')
-            && ($this->shouldUseLibreSSL() || $this->isWindows())
-        ) {
-            $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
-            if ($cryptoStrong === false) {
-                throw new Exception(
-                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP setup is insecure.'
-                );
-            }
-            if ($key !== false && StringHelper::byteLength($key) === $length) {
-                return $key;
-            }
-        }
-
-        // mcrypt_create_iv() does not use libmcrypt. Since PHP 5.3.7 it directly reads
-        // CryptGenRandom on Windows. Elsewhere it directly reads /dev/urandom.
-        if (function_exists('mcrypt_create_iv')) {
-            $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-            if (StringHelper::byteLength($key) === $length) {
-                return $key;
-            }
-        }
-
-        // If not on Windows, try to open a random device.
-        if ($this->_randomFile === null && !$this->isWindows()) {
-            // urandom is a symlink to random on FreeBSD.
-            $device = PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom';
-            // Check random device for special character device protection mode. Use lstat()
-            // instead of stat() in case an attacker arranges a symlink to a fake device.
-            $lstat = @lstat($device);
-            if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
-                $this->_randomFile = fopen($device, 'rb') ?: null;
-
-                if (is_resource($this->_randomFile)) {
-                    // Reduce PHP stream buffer from default 8192 bytes to optimize data
-                    // transfer from the random device for smaller values of $length.
-                    // This also helps to keep future randoms out of user memory space.
-                    $bufferSize = 8;
-
-                    if (function_exists('stream_set_read_buffer')) {
-                        stream_set_read_buffer($this->_randomFile, $bufferSize);
-                    }
-                    // stream_set_read_buffer() isn't implemented on HHVM
-                    if (function_exists('stream_set_chunk_size')) {
-                        stream_set_chunk_size($this->_randomFile, $bufferSize);
-                    }
-                }
-            }
-        }
-
-        if (is_resource($this->_randomFile)) {
-            $buffer = '';
-            $stillNeed = $length;
-            while ($stillNeed > 0) {
-                $someBytes = fread($this->_randomFile, $stillNeed);
-                if ($someBytes === false) {
-                    break;
-                }
-                $buffer .= $someBytes;
-                $stillNeed -= StringHelper::byteLength($someBytes);
-                if ($stillNeed === 0) {
-                    // Leaving file pointer open in order to make next generation faster by reusing it.
-                    return $buffer;
-                }
-            }
-            fclose($this->_randomFile);
-            $this->_randomFile = null;
-        }
-
-        throw new Exception('Unable to generate a random key');
+        return random_bytes($length);
     }
 
     /**

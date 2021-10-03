@@ -86,7 +86,7 @@ Instalando a partir de um Arquivo Compactado <span id="installing-from-archive-f
 
 A instalação do Yii a partir de um arquivo compactado envolve três passos:
 
-1. Baixe o arquivo compactado em [yiiframework.com](http://www.yiiframework.com/download/).
+1. Baixe o arquivo compactado em [yiiframework.com](https://www.yiiframework.com/download/).
 2. Descompacte o arquivo baixado em um diretório acessível pela Web.
 3. Modifique o arquivo `config/web.php` informando uma chave secreta no item de
 configuração `cookieValidationKey` (isto é feito automaticamente se você instalar
@@ -120,9 +120,9 @@ No entanto, existem outras opções de instalação disponíveis:
 Instalando Recursos Estáticos (Assets) <span id="installing-assets"></span>
 -----------------
 
-Yii utiliza os pacotes [Bower](http://bower.io/) e/ou [NPM](https://www.npmjs.org/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
+Yii utiliza os pacotes [Bower](http://bower.io/) e/ou [NPM](https://www.npmjs.com/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
 Ele usa composer para obter essa bibliotecas, permitindo que versões de pacotes PHP, CSS e Javascrtip possam ser definidas/instaladas ao mesmo tempo.
-Isto é possível por usar ou [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Isto é possível por usar ou [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
 Por favor, consulta a [documentação sobre Assets](structure-assets.md) para mais detalhes.
 
 Você pode querer gerenciar assets através de clientes nativos do Bower ou NPM, pode querer utilizar CDNs ou até evitar completamente a instalação de recursos estáticos.

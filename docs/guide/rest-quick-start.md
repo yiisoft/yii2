@@ -190,7 +190,7 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 > such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
 > You can and should remove these fields from result as described in the [Resources](rest-resources.md) section.
 
-Addionally, you can sort collections like `http://localhost/users?sort=email` or
+Additionally, you can sort collections like `http://localhost/users?sort=email` or
 `http://localhost/users?sort=-email`. Filtering collections like `http://localhost/users?filter[id]=10` or
 `http://localhost/users?filter[email][like]=gmail.com` could be implemented using
 data filters. See [Resources](rest-resources.md#filtering-collections) section for details.

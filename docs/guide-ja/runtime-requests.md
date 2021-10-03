@@ -201,7 +201,7 @@ Yii アプリケーションに渡されるからです。
 その場合、前者は `ipHeaders` で構成されているようにユーザの IP を読み出すために使用され、
 後者は [[yii\web\Request::getIsSecureConnection()]] の結果を決定するために使用されます。
 
-2.0.31 以降、[RFC 7239](https://tools.ietf.org/html/rfc7239) の `Forwarded` ヘッダがサポートされています。
+2.0.31 以降、[RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239) の `Forwarded` ヘッダがサポートされています。
 有効にするためには、ヘッダ名を `secureHeaders` に追加する必要があります。
 あなたのプロキシにそれを設定させることを忘れないで下さい。さもないと、エンド・ユーザが IP とプロトコルを盗み見ることが可能になります。
 

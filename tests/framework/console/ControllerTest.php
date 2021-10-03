@@ -37,6 +37,15 @@ class ControllerTest extends TestCase
         ];
     }
 
+    public function testBindArrayToActionParams()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $params = ['test' => []];
+        $this->assertEquals([], $controller->runAction('aksi4', $params));
+        $this->assertEquals([], $controller->runAction('aksi4', $params));
+    }
+
     public function testBindActionParams()
     {
         $controller = new FakeController('fake', Yii::$app);

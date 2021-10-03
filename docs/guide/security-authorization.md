@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ You may customize this behavior by configuring the [[yii\filters\AccessControl::
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -281,7 +281,7 @@ build the hierarchy itself won't be different.
 You can use [migrations](db-migrations.md)
 to initialize and modify hierarchy via APIs offered by `authManager`.
 
-Create new migration using `./yii migrate/create init_rbac` then impement creating a hierarchy:
+Create new migration using `./yii migrate/create init_rbac` then implement creating a hierarchy:
 
 ```php
 <?php
@@ -538,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

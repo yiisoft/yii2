@@ -132,7 +132,7 @@ Yii は、また、さまざまなセッション・ストレージを実装す�
 * [[yii\web\DbSession]]: セッション・データをデータベース・テーブルを使って保存する。
 * [[yii\web\CacheSession]]: セッション・データを、構成された [キャッシュ・コンポーネント](caching-data.md#cache-components) の力を借りて、キャッシュを使って保存する。
 * [[yii\redis\Session]]: セッション・データを [redis](http://redis.io/) をストレージ媒体として使って保存する。
-* [[yii\mongodb\Session]]: セッション・データを [MongoDB](http://www.mongodb.org/) に保存する。
+* [[yii\mongodb\Session]]: セッション・データを [MongoDB](https://www.mongodb.com/) に保存する。
 
 これらのセッション・クラスは全て一連の同じ API メソッドをサポートします。
 その結果として、セッションを使用するアプリケーション・コードを修正することなしに、セッション・ストレージ・クラスを切り替えることが出来ます。
@@ -374,13 +374,13 @@ return [
 セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] および [[yii\web\Session::cookieParams]] の 'httponly' パラメータの
 デフォルト値は `true` に設定されています。
 これによって、クライアント・サイド・スクリプトが保護されたクッキーにアクセスする危険が軽減されます (ブラウザがサポートしていれば)。
-詳細については、[httpOnly の wiki 記事](https://www.owasp.org/index.php/HttpOnly) を読んでください。
+詳細については、[httpOnly の wiki 記事](https://owasp.org/www-community/HttpOnly) を読んでください。
 
 ### secure
 
 secure フラグの目的は、クッキーが平文で送信されることを防止することです。ブラウザが secure フラグをサポートしている場合、
 リクエストが secure な接続 (TLS) によって送信される場合にのみクッキーがリクエストに含まれます。
-詳細については [Secure フラグの wiki 記事](https://www.owasp.org/index.php/SecureFlag) を参照して下さい。
+詳細については [Secure フラグの wiki 記事](https://owasp.org/www-community/controls/SecureCookieAttribute) を参照して下さい。
 
 ### sameSite
 
@@ -403,3 +403,4 @@ Yii 2.0.21 以降、[[yii\web\Cookie::sameSite]] 設定がサポートされて�
 [PHP マニュアル](https://www.php.net/manual/ja/session.security.ini.php) で示されているように、`php.ini` にはセッションのセキュリティに関する重要な設定があります。
 推奨される設定を必ず適用して下さい。特に、PHP インストールのデフォルトでは有効にされていない
 `session.use_strict_mode` を有効にして下さい。
+この設定は [[yii\web\Session::useStrictMode]] を使って設定することも出来ます。

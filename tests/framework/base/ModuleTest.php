@@ -24,6 +24,19 @@ class ModuleTest extends TestCase
         $this->mockApplication();
     }
 
+    public function testTrueParentModule()
+    {
+        $parent = new Module('parent');
+        $child = new Module('child');
+        $child2 = new Module('child2');
+
+        $parent->setModule('child', $child);
+        $parent->setModules(['child2' => $child2]);
+
+        $this->assertEquals('parent', $child->module->id);
+        $this->assertEquals('parent', $child2->module->id);
+    }
+
     public function testControllerPath()
     {
         $module = new TestModule('test');
@@ -162,27 +175,27 @@ class ModuleTest extends TestCase
 
         list($controller, $action) = $module->createController('base');
         $this->assertSame('', $action);
-        $this->assertSame('base/default', $controller->uniqueId);
+        $this->assertSame('app/base/default', $controller->uniqueId);
 
         list($controller, $action) = $module->createController('base/default');
         $this->assertSame('', $action);
-        $this->assertSame('base/default', $controller->uniqueId);
+        $this->assertSame('app/base/default', $controller->uniqueId);
 
         list($controller, $action) = $module->createController('base/other');
         $this->assertSame('', $action);
-        $this->assertSame('base/other', $controller->uniqueId);
+        $this->assertSame('app/base/other', $controller->uniqueId);
 
         list($controller, $action) = $module->createController('base/default/index');
         $this->assertSame('index', $action);
-        $this->assertSame('base/default', $controller->uniqueId);
+        $this->assertSame('app/base/default', $controller->uniqueId);
 
         list($controller, $action) = $module->createController('base/other/index');
         $this->assertSame('index', $action);
-        $this->assertSame('base/other', $controller->uniqueId);
+        $this->assertSame('app/base/other', $controller->uniqueId);
 
         list($controller, $action) = $module->createController('base/other/someaction');
         $this->assertSame('someaction', $action);
-        $this->assertSame('base/other', $controller->uniqueId);
+        $this->assertSame('app/base/other', $controller->uniqueId);
 
         $controller = $module->createController('bases/default/index');
         $this->assertFalse($controller);

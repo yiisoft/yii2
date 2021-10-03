@@ -544,7 +544,7 @@ Yii は舞台裏で二つのステップを踏んで、特定のコントロー�
 * [フラグメント・キャッシュ](caching-fragment.md): ウェブ・ページの中の断片をキャッシュすることを可能にします。
 * [クライアント・スクリプトの取り扱い](output-client-scripts.md): CSS と JavaScript の登録とレンダリングをサポートします。
 * [アセット・バンドルの取り扱い](structure-assets.md): [アセット・バンドル](structure-assets.md) の登録とレンダリングをサポートします。
-* [代替のテンプレート・エンジン](tutorial-template-engines.md): [Twig](http://twig.sensiolabs.org/)、[Smarty](http://www.smarty.net/) など、
+* [代替のテンプレート・エンジン](tutorial-template-engines.md): [Twig](https://twig.symfony.com/)、[Smarty](https://www.smarty.net/) など、
   他のテンプレート・エンジンを使用することを可能にします。
 
 次に挙げるマイナーではあっても有用な諸機能は、ウェブ・ページを開発するときに頻繁に使用するでしょう。
@@ -616,14 +616,14 @@ $this->registerLinkTag([
     'title' => 'Yii ライブ・ニューズ',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 上記のコードは、次の結果になります。
 
 ```html
-<link title="Yii ライブ・ニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Yii ライブ・ニューズ" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 [[yii\web\View::registerMetaTag()|registerMetaTag()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、

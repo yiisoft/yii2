@@ -1,7 +1,7 @@
 Yii 2.0 決定版ガイド
 ====================
 
-このチュートリアルは [Yii ドキュメント許諾条件](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
+このチュートリアルは [Yii ドキュメント許諾条件](https://www.yiiframework.com/doc/terms/) の下にリリースされています。
 
 All Rights Reserved.
 

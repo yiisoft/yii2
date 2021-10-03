@@ -1,7 +1,7 @@
 Yii 2.0 权威指南
 ===============================
 
-本教程的发布遵循 [Yii 文档使用许可](http://www.yiiframework.com/doc/terms/)。
+本教程的发布遵循 [Yii 文档使用许可](https://www.yiiframework.com/doc/terms/)。
 
 版权所有。
 
@@ -79,10 +79,10 @@ Yii 2.0 权威指南
 * [查询生成器（Query Builder）](db-query-builder.md): 使用简单抽象层查询数据库
 * [活动记录（Active Record）](db-active-record.md): 活动记录对象关系映射（ORM），检索和操作记录、定义关联关系
 * [数据库迁移（Migrations）](db-migrations.md): 在团体开发中对你的数据库使用版本控制
-* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-zh-CN/README.md)
-* [Redis（yii2-redis）](yii2-redis.md): yii2-redis 扩展详解
-* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-zh-CN/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-zh-CN/README.md)
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Redis（yii2-redis）](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide/2.0/zh-cn): yii2-redis 扩展详解
+* [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
+* [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
 接收用户数据（Getting Data from Users）
@@ -183,14 +183,14 @@ RESTful Web 服务（RESTful Web Services）
 小部件（Widgets）
 ---------------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-zh-CN/README.md)
 * [jQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-zh-CN/README.md)
 

@@ -1,0 +1,81 @@
+on:
+  - pull_request
+  - push
+
+name: ci-oracle
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+
+    env:
+      extensions: oci8, pdo, pdo_oci
+      key: cache-v1
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+
+        php:
+          - "7.4"
+
+    services:
+      oci:
+          image: wnameless/oracle-xe-11g-r2:latest
+          ports:
+              - 1521:1521
+          options: --name=oci
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup cache environment
+        id: cache-env
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.cache-env.outputs.dir }}
+          key: ${{ steps.cache-env.outputs.key }}
+          restore-keys: ${{ steps.cache-env.outputs.key }}
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ env.extensions }}
+          ini-values: date.timezone='UTC'
+          coverage: pcov
+          tools: composer:v2, pecl
+
+      - name: Determine composer cache directory
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php }}-composer-
+
+      - name: Install dependencies with composer
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: PHP Unit tests
+        run: vendor/bin/phpunit --coverage-clover=coverage.clover --group oci --colors=always
+
+      - name: Code coverage
+        run: |
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+        continue-on-error: true # if is fork

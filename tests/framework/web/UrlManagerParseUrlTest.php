@@ -342,7 +342,7 @@ class UrlManagerParseUrlTest extends TestCase
                 ],
             ],
         ], \yii\web\Application::className());
-        $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
+        $this->assertEquals('/app/post/123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);

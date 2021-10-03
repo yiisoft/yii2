@@ -16,7 +16,7 @@ Yii 2.0 では、DAO は下記の DBMS のサポートを内蔵しています�
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/): バージョン 8.4 以上。
 - [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
 > Note: PHP 7 用の pdo_oci の新しいバージョンは、現在、ソース・コードとしてのみ存在します。

@@ -16,7 +16,7 @@ Yii DAO soporta las siguientes bases de datos:
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/): versión 8.4 o superior.
 - [CUBRID](http://www.cubrid.org/): versión 9.3 o superior.
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): versión 2008 o superior.
 
 ## Creando Conexiones DB <span id="creating-db-connections"></span>

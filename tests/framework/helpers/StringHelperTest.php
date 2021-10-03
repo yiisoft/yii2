@@ -429,10 +429,17 @@ class StringHelperTest extends TestCase
         return [
             ['foo', 'Foo'],
             ['foo bar', 'Foo Bar'],
+            ['!foo bar-baz', '!foo Bar-baz'],
+            [' foo BAR', ' Foo BAR'],
+            [' ! foo BAR', ' ! Foo BAR'],
+            ["\tfoo\nbar  baz", "\tFoo\nBar  Baz"],
             ['👍🏻 foo bar', '👍🏻 Foo Bar'],
             ['', ''],
+            ['0', '0'],
             [null, ''],
             ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
+            ['p0 upload', 'P0 Upload'],
+            ['p5 upload', 'P5 Upload'],
         ];
     }
 

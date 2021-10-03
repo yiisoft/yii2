@@ -30,7 +30,7 @@ use yii\helpers\Inflector;
  * In the above, if the command name is not provided, all
  * available commands will be displayed.
  *
- * @property array $commands All available command names. This property is read-only.
+ * @property-read array $commands All available command names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -485,7 +485,7 @@ class HelpController extends Controller
             }
             if (is_bool($defaultValue)) {
                 // show as integer to avoid confusion
-                $defaultValue = (int)$defaultValue;
+                $defaultValue = (int) $defaultValue;
             }
             if (is_string($defaultValue)) {
                 $defaultValue = "'" . $defaultValue . "'";

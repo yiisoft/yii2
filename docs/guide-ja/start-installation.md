@@ -85,7 +85,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 アーカイブ・ファイルから Yii をインストールするには、三つの手順を踏みます。
 
-1. [yiiframework.com](http://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードします。
+1. [yiiframework.com](https://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードします。
 2. ダウンロードしたファイルをウェブ・アクセス可能なフォルダに展開します。
 3. `config/web.php` ファイルを編集して、`cookieValidationKey` という構成情報の項目に秘密キーを入力します
    (Composer を使って Yii をインストールするときは、これは自動的に実行されます)。
@@ -114,9 +114,9 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 アセットをインストールする <span id="installing-assets"></span>
 --------------------------
 
-Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて [Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) のパッケージに依存しています。
+Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて [Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) のパッケージに依存しています。
 Yii はこれらのライブラリを取得するのに Composer を使って、PHP と CSS/JavaScript のパッケージ・バージョンを同時に解決できるようにしています。
-このことは、[asset-packagist.org](https://asset-packagist.org) または [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) を使用することによって達成されます。
+このことは、[asset-packagist.org](https://asset-packagist.org) または [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) を使用することによって達成されます。
 詳細は [アセットのドキュメント](structure-assets.md) を参照して下さい。
 
 あなたは、アセットの管理をネイティブの Bower/NPM クライアントで行ったり、CND を使ったり、アセットのインストールを完全に避けたりしたいかも知れません。

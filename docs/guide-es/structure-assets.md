@@ -202,12 +202,12 @@ class FontAwesomeAsset extends AssetBundle
 }
 ```
 
-El ejemplo anterior define un asset bundle para el ["fontawesome" package](http://fontawesome.io/). Especificando
+El ejemplo anterior define un asset bundle para el ["fontawesome" package](https://fontawesome.com/). Especificando
 la opción de publicación `beforeCopy`, solo los subdirectorios `fonts` y `css` serán publicados.
 
 ### Bower y NPM Assets <span id="bower-npm-assets"></span>
 
-La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.org/).
+La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/).
 Si tu aplicación o extensión usa estos paquetes, se recomienda seguir los siguientes pasos para gestionar los assets en
  la librería:
 
@@ -425,14 +425,14 @@ en la página, en lugar de los assets originales en sintaxis extendidas.
 Yii usa las extensiones de archivo para identificar que sintaxis extendida se está usando. De forma predeterminada se
 reconocen las siguientes sintaxis y extensiones de archivo.
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
 Yii se basa en las herramientas pre-procesadoras instalada para convertir los assets. Por ejemplo, para usar
-[LESS](http://lesscss.org/) se debe instalar el comando pre-procesador `lessc`.
+[LESS](https://lesscss.org/) se debe instalar el comando pre-procesador `lessc`.
 
 Se pueden personalizar los comandos de los pre-procesadores y las sintaxis extendidas soportadas configurando
 [[yii\web\AssetManager::converter]] como en el siguiente ejemplo:

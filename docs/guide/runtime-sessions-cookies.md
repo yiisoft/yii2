@@ -132,7 +132,7 @@ session classes implementing different session storage:
 * [[yii\web\DbSession]]: stores session data in a database table.
 * [[yii\web\CacheSession]]: stores session data in a cache with the help of a configured [cache component](caching-data.md#cache-components).
 * [[yii\redis\Session]]: stores session data using [redis](http://redis.io/) as the storage medium.
-* [[yii\mongodb\Session]]: stores session data in a [MongoDB](http://www.mongodb.org/).
+* [[yii\mongodb\Session]]: stores session data in a [MongoDB](https://www.mongodb.com/).
 
 All these session classes support the same set of API methods. As a result, you can switch to a different
 session storage class without the need to modify your application code that uses sessions.
@@ -374,13 +374,13 @@ Both [[yii\web\Cookie]] and [[yii\web\Session]] support the following security f
 For better security, the default value of [[yii\web\Cookie::httpOnly]] and the 'httponly' parameter of 
 [[yii\web\Session::cookieParams]] is set to `true`. This helps mitigate the risk of a client-side script accessing 
 the protected cookie (if the browser supports it).
-You may read the [HttpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+You may read the [HttpOnly wiki article](https://owasp.org/www-community/HttpOnly) for more details.
 
 ### secure
 
 The purpose of the secure flag is to prevent cookies from being sent in clear text. If the browser supports the
 secure flag it will only include the cookie when the request is sent over a secure (TLS) connection.
-You may read the [SecureFlag wiki article](https://www.owasp.org/index.php/SecureFlag) for more details.
+You may read the [SecureFlag wiki article](https://owasp.org/www-community/controls/SecureCookieAttribute) for more details.
 
 ### sameSite
 
@@ -403,3 +403,4 @@ To use this feature across different PHP versions check the version first. E.g.
 As [noted in PHP manual](https://www.php.net/manual/en/session.security.ini.php), `php.ini` has important
 session security settings. Please ensure recommended settings are applied. Especially `session.use_strict_mode`
 that is not enabled by default in PHP installations.
+This setting can also be set with [[yii\web\Session::useStrictMode]].

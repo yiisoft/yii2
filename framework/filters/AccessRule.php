@@ -66,10 +66,10 @@ class AccessRule extends Component
      * @see $roleParams
      */
     public $roles;
-    /** 
+    /**
      * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
-     * 
+     *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
      * @see $roles
@@ -264,16 +264,17 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' ||
-                $rule === $ip ||
-                (
-                    $ip !== null &&
-                    ($pos = strpos($rule, '*')) !== false &&
-                    strncmp($ip, $rule, $pos) === 0
-                ) ||
-                (
-                    ($pos = strpos($rule, '/')) !== false &&
-                    IpHelper::inRange($ip, $rule) === true
+            if (
+                $rule === '*'
+                || $rule === $ip
+                || (
+                    $ip !== null
+                    && ($pos = strpos($rule, '*')) !== false
+                    && strncmp($ip, $rule, $pos) === 0
+                )
+                || (
+                    strpos($rule, '/') !== false
+                    && IpHelper::inRange($ip, $rule) === true
                 )
             ) {
                 return true;

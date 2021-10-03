@@ -343,7 +343,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     {
         $time = microtime(true);
 
-        return date('Ymd-His-', $time) . sprintf('%04d', (int) (($time - (int) $time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
+        return date('Ymd-His-', $time) . sprintf('%04d', (int) (($time - (int) $time) * 10000)) . '-' . sprintf('%04d', random_int(0, 10000)) . '.eml';
     }
 
     /**
