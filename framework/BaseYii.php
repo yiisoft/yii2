@@ -203,7 +203,7 @@ class BaseYii
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
      * It may contain the forward-slash '/' which serves as a boundary character when performing
      * alias translation by [[getAlias()]].
-     * @param string $path The path corresponding to the alias. If this is null, the alias will
+     * @param string $path the path corresponding to the alias. If this is null, the alias will
      * be removed. Trailing '/' and '\' characters will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
@@ -566,7 +566,7 @@ class BaseYii
      * This method is provided such that we can get the public member variables of an object.
      * It is different from "get_object_vars()" because the latter will return private
      * and protected variables if it is called within the object itself.
-     * @param object $object The object to be handled
+     * @param object $object the object to be handled
      * @return array the public member variables of the object
      */
     public static function getObjectVars($object)
