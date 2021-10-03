@@ -384,7 +384,7 @@ the changes made by the queries prior to that failed query in the transaction. `
 exception as if we had not caught it, so the normal error handling process will take care of it.
 
 > Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://www.php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 
