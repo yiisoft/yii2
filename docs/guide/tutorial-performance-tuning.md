@@ -190,7 +190,7 @@ composer dumpautoload -o
 Additionally you may consider using
 [authoritative class maps](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps)
 and [APCu cache](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-b-apcu-cache).
-Note that both opmizations may or may not be suitable for your particular case.
+Note that both optimizations may or may not be suitable for your particular case.
 
 
 ## Processing Data Offline <span id="processing-data-offline"></span>
@@ -222,4 +222,4 @@ The following profiling tools may be useful:
 
 ## Prepare application for scaling
 
-When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md).
+When nothing helps you may try making your application scalable. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md).
