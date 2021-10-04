@@ -713,7 +713,7 @@ describe('yii.gridView', function () {
 
                 // Check first row ("prop" should be called once)
                 click($gridView.find('input[name="selection[]"][value="1"]'));
-                // Check all rows ("prop" should be called 2 times, 1 time for each row)
+                // Check all rows ("prop" should be called 6 times, 1 time for each row)
                 click($gridView.find('input[name="selection_all"]'));
 
                 assert.equal(jQueryPropStub.callCount, 7);
@@ -832,7 +832,7 @@ describe('yii.gridView', function () {
             assert.equal(jQueryPropStub.callCount, 2);
 
             click($checkRowCheckboxes.filter('[value="1"]')); // Check first row ("prop" should be called once)
-            click($checkAllCheckbox); // Check all rows ("prop" should be called 3 times, 1 time for each row)
+            click($checkAllCheckbox); // Check all rows ("prop" should be called 5 times, 1 time for each row)
             assert.equal(jQueryPropStub.callCount, 6);
         });
     });
