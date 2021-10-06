@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### Préfixes
 Un [[yii\db\Connection::$tablePrefix|préfixe de table]] peut aussi être appliqué. Les instructions de mise en œuvre sont données à la section 
-["Entourage des noms de table et de colonne par des marques de citation" du guide sur les objets d'accès aux bases de données" ](guide-db-dao.html#quoting-table-and-column-names).
+["Entourage des noms de table et de colonne par des marques de citation" du guide sur les objets d'accès aux bases de données" ](db-dao.md#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 La méthode [[yii\db\Query::where()|where()]] spécifie le fragment `WHERE`d'une requête SQL. Vous pouvez utiliser un des quatre formats suivants pour spécifier une condition `WHERE` :

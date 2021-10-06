@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### プレフィックス
 また、デフォルトの [[yii\db\Connection::$tablePrefix|tablePrefix]] を適用することも出来ます。
-実装の仕方は ["データベース・アクセス・オブジェクト" ガイドの "テーブル名を引用符で囲む" のセクション](guide-db-dao.html#quoting-table-and-column-names) にあります。
+実装の仕方は ["データベース・アクセス・オブジェクト" ガイドの "テーブル名を引用符で囲む" のセクション](db-dao.md#quoting-table-and-column-names) にあります。
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
