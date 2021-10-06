@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### 前缀
 `from` 还可以应用默认的 [[yii\db\Connection::$tablePrefix|tablePrefix]] 前缀，实现细节请参考
-[“数据库访问对象指南”的“Quoting Tables”章节](guide-db-dao.html#quoting-table-and-column-names).
+[“数据库访问对象指南”的“Quoting Tables”章节](db-dao.md#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
