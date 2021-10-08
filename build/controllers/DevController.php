@@ -16,8 +16,8 @@ use yii\helpers\FileHelper;
 /**
  * This command helps to set up a dev environment with all extensions and applications.
  *
- * It will clone an extension or app repo and link the yii2 dev installation to the containted applications/extensions vendor dirs
- * to help working on yii using the application to test it.
+ * It will clone an extension or app repo and link the yii2 dev installation to the contained applications/extensions vendor dirs
+ * to help to work on yii using the application to test it.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -29,7 +29,7 @@ class DevController extends Controller
      */
     public $defaultAction = 'all';
     /**
-     * @var bool whether to use HTTP when cloning github repositories
+     * @var bool whether to use HTTP when cloning GitHub repositories
      */
     public $useHttp = false;
     /**

@@ -14,7 +14,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\Json;
 
 /**
- * PhpDocController is there to help maintaining PHPDoc annotation in class files.
+ * PhpDocController is there to help to maintain PHPDoc annotation in class files.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -871,11 +871,11 @@ class PhpDocController extends Controller
      */
     protected function isBaseObject($className, \ReflectionClass $ref)
     {
-        $isDepreceatedObject = false;
+        $isDeprecatedObject = false;
         if (PHP_VERSION_ID <= 70100) {
-            $isDepreceatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
+            $isDeprecatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
         }
-        return !$isDepreceatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
+        return !$isDeprecatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
     }
 
     private function shouldSkipClass($className)
