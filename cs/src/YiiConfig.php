@@ -156,7 +156,7 @@ class YiiConfig extends Config
     }
 
     /**
-     * Merge current rules config with provided list of rules.
+     * Merge current rules' config with provided list of rules.
      *
      * @param array $rules
      * @return $this

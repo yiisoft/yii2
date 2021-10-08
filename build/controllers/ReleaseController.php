@@ -15,7 +15,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * ReleaseController is there to help preparing releases.
+ * ReleaseController is there to help to prepare releases.
  *
  * Get a version overview:
  *
@@ -53,7 +53,7 @@ class ReleaseController extends Controller
      */
     public $dryRun = false;
     /**
-     * @var bool whether to fetch latest tags.
+     * @var bool whether to fetch the latest tags.
      */
     public $update = false;
     /**
@@ -206,7 +206,7 @@ class ReleaseController extends Controller
                 $newVersions[$k] = $this->version;
             }
         } else {
-            // otherwise get next patch or minor
+            // otherwise, get next patch or minor
             $newVersions = $this->getNextVersions($versions, self::PATCH);
         }
 
@@ -803,7 +803,7 @@ class ReleaseController extends Controller
         try {
             chdir($path);
         } catch (\yii\base\ErrorException $e) {
-            throw new Exception('Failed to getch git tags in ' . $path . ': ' . $e->getMessage());
+            throw new Exception('Failed to fetch git tags in ' . $path . ': ' . $e->getMessage());
         }
         exec('git fetch --tags', $output, $ret);
         if ($ret != 0) {
