@@ -4,7 +4,7 @@ Json Helper
 Json helper provides a set of static methods for encoding and decoding JSON.
 It handles encoding errors and the `[[yii\helpers\Json::encode()]]` method will not encode a JavaScript expression that is represented in 
 terms of a `[[yii\web\JsExpression]]` object.
-By default, ecoding is done with the `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` options.
+By default, encoding is done with the `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` options.
 Please see [PHP:json_encode](https://secure.php.net/manual/en/function.json-encode.php) for more information.
 
 ## Pretty Print <span id="pretty-print"></span>

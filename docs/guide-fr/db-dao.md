@@ -330,7 +330,7 @@ try {
 En appelant la méthode [[yii\db\Connection::beginTransaction()|beginTransaction()]], une nouvelle transaction est démarrée. La transaction est représentée sous forme d'objet [[yii\db\Transaction]] stocké dans la variable `$transaction`. Ensuite, les requêtes à exécuter sont placées dans un bloc `try...catch...`. Si toutes les requêtes réussissent, la méthode [[yii\db\Transaction::commit()|commit()]] est appelée pour entériner la transaction. Autrement, si une exception a été levée et capturée, la méthode [[yii\db\Transaction::rollBack()|rollBack()]] est appelée pour défaire les changements faits par les requêtes de la transaction antérieures à celle qui a échoué. `throw $e` est alors à nouveau exécutée comme si l'exception n'avait jamais été capturée, ce qui permet au processus normal de gestion des erreurs de s'en occuper.
 
 > Note: dans le code précédent nous avons deux blocs « catch » pour compatibilité 
-> avec PHP 5.x et PHP 7.x. `\Exception` met en œuvre l'[interface `\Throwable`](https://secure.php.net/manual/en/class.throwable.php)
+> avec PHP 5.x et PHP 7.x. `\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
 > depuis PHP 7.0, ainsi vous pouvez sauter la partie avec `\Exception` si votre application utilise seulement PHP 7.0 et plus récent.
 
 ### Spécification de niveaux d'isolation <span id="specifying-isolation-levels"></span>

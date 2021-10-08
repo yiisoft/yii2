@@ -31,15 +31,15 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
  */
 defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * Whether the the application is running in production environment.
+ * Whether the application is running in the production environment.
  */
 defined('YII_ENV_PROD') or define('YII_ENV_PROD', YII_ENV === 'prod');
 /**
- * Whether the the application is running in development environment.
+ * Whether the application is running in the development environment.
  */
 defined('YII_ENV_DEV') or define('YII_ENV_DEV', YII_ENV === 'dev');
 /**
- * Whether the the application is running in testing environment.
+ * Whether the application is running in the testing environment.
  */
 defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
 
@@ -201,7 +201,7 @@ class BaseYii
      * See the [guide article on aliases](guide:concept-aliases) for more information.
      *
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
-     * It may contain the forward slash '/' which serves as boundary character when performing
+     * It may contain the forward-slash '/' which serves as a boundary character when performing
      * alias translation by [[getAlias()]].
      * @param string $path the path corresponding to the alias. If this is null, the alias will
      * be removed. Trailing '/' and '\' characters will be trimmed. This can be
@@ -266,7 +266,7 @@ class BaseYii
      * and have its top-level namespace or sub-namespaces defined as path aliases.
      *
      * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
-     * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
+     * will be loaded using the `@yii/bootstrap` alias which points to the directory where the bootstrap extension
      * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
      *
      * Also the [guide section on autoloading](guide:concept-autoloading).
@@ -393,11 +393,11 @@ class BaseYii
 
     /**
      * Logs a debug message.
-     * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code. This method will only log
+     * Trace messages are logged mainly for development purposes to see
+     * the execution workflow of some code. This method will only log
      * a message when the application is in debug mode.
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
+     * complex data structure, such as an array.
      * @param string $category the category of the message.
      * @since 2.0.14
      */
@@ -411,7 +411,7 @@ class BaseYii
     /**
      * Alias of [[debug()]].
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
+     * complex data structure, such as an array.
      * @param string $category the category of the message.
      * @deprecated since 2.0.14. Use [[debug()]] instead.
      */
@@ -425,7 +425,7 @@ class BaseYii
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
+     * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
     public static function error($message, $category = 'application')
@@ -438,7 +438,7 @@ class BaseYii
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
+     * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
     public static function warning($message, $category = 'application')
@@ -451,7 +451,7 @@ class BaseYii
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
+     * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
     public static function info($message, $category = 'application')
