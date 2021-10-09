@@ -613,7 +613,7 @@ try {
 ```
 
 > Note: w powyższym kodzie znajdują się dwa bloki catch dla kompatybilności 
-> z PHP 5.x i PHP 7.x. `\Exception` implementuje [interfejs `\Throwable`](https://secure.php.net/manual/en/class.throwable.php)
+> z PHP 5.x i PHP 7.x. `\Exception` implementuje [interfejs `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
 > od PHP 7.0, zatem można pominąć część z `\Exception`, jeśli Twoja aplikacja używa tylko PHP 7.0 lub wyższego.
 
 Drugi sposób polega na utworzeniu listy operacji bazodanowych, które wymagają transakcji za pomocą metody [[yii\db\ActiveRecord::transactions()|transactions()]]. 
