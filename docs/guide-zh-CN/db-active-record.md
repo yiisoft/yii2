@@ -689,7 +689,7 @@ try {
 ```
 
 > Tip: 在上面的代码中，我们有两个catch块用于兼容
-> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
+> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](https://www.php.net/manual/en/class.throwable.php)
 > 由于 PHP 7.0 的改动，如果您的应用程序仅使用 PHP 7.0 及更高版本，您可以跳过 `\Exception` 部分。
 
 第二种方法是在 [[yii\db\ActiveRecord::transactions()]] 方法中列出需要事务支持的 DB 操作。 
