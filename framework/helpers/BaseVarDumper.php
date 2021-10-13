@@ -150,20 +150,28 @@ class BaseVarDumper
      * PHP 5.4 or above is required to parse the exported value.
      *
      * @param mixed $var the variable to be exported.
+     * @param string|true $offset the line offset at left: string appended to lines or `true` to auto detect offset 
      * @return string a string representation of the variable
      */
-    public static function export($var)
+    public static function export($var, $offset = '')
     {
         self::$_output = '';
-        self::exportInternal($var, 0);
+        if ($offset === true) {
+            // auto detect offset
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+            $line = file($trace['file'])[$trace['line'] - 1];
+            $offset = substr($line, 0, -strlen(ltrim($line)));
+        }
+        self::exportInternal($var, 0, $offset);
         return self::$_output;
     }
 
     /**
      * @param mixed $var variable to be exported
      * @param int $level depth level
+     * @param string $offset the line offset at left
      */
-    private static function exportInternal($var, $level)
+    private static function exportInternal($var, $level, $offset = '')
     {
         switch (gettype($var)) {
             case 'NULL':
@@ -174,19 +182,19 @@ class BaseVarDumper
                     self::$_output .= '[]';
                 } else {
                     $keys = array_keys($var);
-                    $outputKeys = ($keys !== range(0, count($var) - 1));
+                    $outputKeys = $keys !== array_keys($keys);
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= '[';
                     foreach ($keys as $key) {
-                        self::$_output .= "\n" . $spaces . '    ';
+                        self::$_output .= "\n" . $offset . $spaces . '    ';
                         if ($outputKeys) {
                             self::exportInternal($key, 0);
                             self::$_output .= ' => ';
                         }
-                        self::exportInternal($var[$key], $level + 1);
+                        self::exportInternal($var[$key], $level + 1, $offset);
                         self::$_output .= ',';
                     }
-                    self::$_output .= "\n" . $spaces . ']';
+                    self::$_output .= "\n" . $offset . $spaces . ']';
                 }
                 break;
             case 'object':
@@ -199,9 +207,9 @@ class BaseVarDumper
                         // serialize may fail, for example: if object contains a `\Closure` instance
                         // so we use a fallback
                         if ($var instanceof Arrayable) {
-                            self::exportInternal($var->toArray(), $level);
+                            self::exportInternal($var->toArray(), $level, $offset);
                             return;
-                        } elseif ($var instanceof \IteratorAggregate) {
+                        } elseif ($var instanceof \Traversable) {
                             $varAsArray = [];
                             foreach ($var as $key => $value) {
                                 $varAsArray[$key] = $value;
