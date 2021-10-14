@@ -40,7 +40,7 @@ use yii\validators\Validator;
  * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property-read array $errors An array of errors for all attributes. Empty array is returned if no error.
+ * @property-read array<string, string[]> $errors An array of errors for all attributes. Empty array is returned if no error.
  * The result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is
  * read-only.
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
@@ -562,7 +562,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes. 
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
+     * @return array<string, string[]> errors for all attributes or the specified attribute. Empty array is returned if no error.
      * See [[getErrors()]] for detailed description.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
