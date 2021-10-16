@@ -56,12 +56,25 @@ class MysqlMutex extends DbMutex
      */
     protected function acquireLock($name, $timeout = 0)
     {
-        return $this->db->useMaster(function ($db) use ($name, $timeout) {
-            /** @var \yii\db\Connection $db */
-            return (bool) $db->createCommand(
-                'SELECT GET_LOCK(:name, :timeout)',
-                [':name' => $this->hashLockName($name), ':timeout' => $timeout]
-            )->queryScalar();
+        $hashedLockedName = $this->hashLockName($name);
+        return $this->retryAcquire($timeout, function () use ($hashedLockedName, $timeout) {
+            $isFree = $this->db->useMaster(function ($db) use ($hashedLockedName) {
+                /** @var \yii\db\Connection $db */
+                return (bool) $db->createCommand(
+                    'SELECT IS_FREE_LOCK(:name)',
+                    [':name' => $hashedLockedName]
+                )->queryScalar();
+            });
+            if (!$isFree) {
+                return false;
+            }
+            return $this->db->useMaster(function ($db) use ($hashedLockedName, $timeout) {
+                /** @var \yii\db\Connection $db */
+                return (bool) $db->createCommand(
+                    'SELECT GET_LOCK(:name, :timeout)',
+                    [':name' => $hashedLockedName, ':timeout' => $timeout]
+                )->queryScalar();
+            });
         });
     }
 
