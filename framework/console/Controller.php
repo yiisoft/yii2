@@ -226,7 +226,12 @@ class Controller extends \yii\base\Controller
                 }
                 $args[] = $actionParams[$key] = $params[$key];
                 unset($params[$key]);
-            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null) {
+            } elseif (
+                PHP_VERSION_ID >= 70100
+                && ($type = $param->getType()) !== null
+                && $type instanceof \ReflectionNamedType
+                && !$type->isBuiltin()
+            ) {
                 try {
                     $this->bindInjectedParams($type, $name, $args, $requestedParams);
                 } catch (\yii\base\Exception $e) {

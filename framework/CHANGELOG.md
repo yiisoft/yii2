@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #18898: Fix `yii\helpers\Inflector::camel2words()` to work with words ending with 0 (michaelarnauts)
 - Enh #18904: Improve Captcha client-side validation (hexkir)
 - Bug #18913: Add filename validation for `MessageSource::getMessageFilePath()` (uaoleg)
+- Bug #18909: Fix bug with binding default action parameters for controllers (bizley)
 
 
 2.0.43 August 09, 2021
