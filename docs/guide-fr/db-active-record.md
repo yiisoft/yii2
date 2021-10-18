@@ -688,7 +688,7 @@ try {
 ```
 
 > Note : dans le code précédent, nous utilisons deux blocs de capture pour être compatible avec PHP 5.x et PHP 7.x. 
-`\Exception` met en œuvre l'[interface `\Throwable`](https://secure.php.net/manual/en/class.throwable.php)
+`\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
 > à partir de  PHP 7.0, c'est pourquoi vous pouvez sauter la partie avec `\Exception` si votre application utilise PHP 7.0 ou une version plus récente.
 
 La deuxième façon consiste à lister les opérations de base de données qui nécessitent une prise en charge transactionnelle dans la méthode [[yii\db\ActiveRecord::transactions()]]. 
