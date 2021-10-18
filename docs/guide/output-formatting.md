@@ -45,7 +45,7 @@ echo Yii::$app->formatter->format(0.125, ['percent', 2]);
 > the formatter is not the right tool for that.
 > To convert user input for date and number values you may use [[yii\validators\DateValidator]] and [[yii\validators\NumberValidator]]
 > respectively. For simple conversion between machine readable date and time formats,
-> the PHP [date()](https://secure.php.net/manual/en/function.date.php)-function is enough.
+> the PHP [date()](https://www.php.net/manual/en/function.date.php)-function is enough.
 
 ## Configuring Formatter <span id="configuring-formatter"></span>
 
@@ -86,7 +86,7 @@ and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized glob
 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
 You can specify date and time formats using the [ICU syntax](http://userguide.icu-project.org/formatparse/datetime).
-You can also use the [PHP date() syntax](https://secure.php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
+You can also use the [PHP date() syntax](https://www.php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
 it from ICU syntax. For example,
 
 ```php

@@ -35,7 +35,7 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: le composant de formatage est conçu pour formater des valeurs à présenter à l'utilisateur. Si vous voulez convertir des entrées utilisateur en un format lisible par la machine, ou simplement formater une date dans un format lisible par la machine, le formateur n'est pas l'outil adapté à cela. Pour convertir une entrée utilisateur pour une date et un temps, vous pouvez utiliser [[yii\validators\DateValidator]] et [[yii\validators\NumberValidator]] respectivement. Pour une simple conversion entre les formats lisibles par la machine de date et de temps, la fonction PHP [date()](https://secure.php.net/manual/en/function.date.php) suffit.
+> Note: le composant de formatage est conçu pour formater des valeurs à présenter à l'utilisateur. Si vous voulez convertir des entrées utilisateur en un format lisible par la machine, ou simplement formater une date dans un format lisible par la machine, le formateur n'est pas l'outil adapté à cela. Pour convertir une entrée utilisateur pour une date et un temps, vous pouvez utiliser [[yii\validators\DateValidator]] et [[yii\validators\NumberValidator]] respectivement. Pour une simple conversion entre les formats lisibles par la machine de date et de temps, la fonction PHP [date()](https://www.php.net/manual/en/function.date.php) suffit.
 
 ## Configuration du formateur <span id="configuring-formatter"></span>
 
@@ -71,7 +71,7 @@ Le formateur prend en charge les formats de sortie suivants en relation avec les
 Les formats par défaut pour les dates et les temps utilisés pour les méthodes [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
 et [[yii\i18n\Formatter::asDatetime()|datetime]] peuvent être configurés globalement en configurant [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], et [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
-Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](http://userguide.icu-project.org/formatparse/datetime). Vous pouvez aussi utiliser la [syntaxe date() de PHP](https://secure.php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
+Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](http://userguide.icu-project.org/formatparse/datetime). Vous pouvez aussi utiliser la [syntaxe date() de PHP](https://www.php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
 
 ```php
 // format ICU

@@ -45,7 +45,7 @@ echo Yii::$app->formatter->format(0.125, ['percent', 2]);
 > 不要使用这个组件，
 > 而应该使用 [[yii\validators\DateValidator]] 和 [[yii\validators\NumberValidator]] 进行用户输入格式化
 > 对于机器可读的日期和时间格式之间的简单转换，
-> PHP 方法 [date()](https://secure.php.net/manual/en/function.date.php) 就足够了。
+> PHP 方法 [date()](https://www.php.net/manual/en/function.date.php) 就足够了。
 
 ## 配置 Formatter（Configuring Formatter） <span id="configuring-formatter"></span>
 
@@ -86,7 +86,7 @@ return [
 [[yii\i18n\Formatter::timeFormat|timeFormat]], 和 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]] 即可。
 
 同时，你还可以配置它使用 [ICU syntax](http://userguide.icu-project.org/formatparse/datetime)，
-同时你也可以配置它使用 [PHP date() 语法](https://secure.php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
+同时你也可以配置它使用 [PHP date() 语法](https://www.php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
 例如，
 
 ```php
