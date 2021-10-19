@@ -115,7 +115,7 @@ Afin d'empêcher l'installation des « assets » via Composer, ajoutez les lig
 Vérifier l'installation <span id="verifying-installation"></span>
 -----------------------
 
-Après l'installation, vous pouvez, soit configurer votre serveur Web (voir section suivante), soit utiliser le [serveur PHP web incorporé](https://secure.php.net/manual/fr/features.commandline.webserver.php) en utilisant la commande en console suivante depuis le dossier racine de votre projet :
+Après l'installation, vous pouvez, soit configurer votre serveur Web (voir section suivante), soit utiliser le [serveur PHP web incorporé](https://www.php.net/manual/fr/features.commandline.webserver.php) en utilisant la commande en console suivante depuis le dossier racine de votre projet :
  
 ```bash
 php yii serve
@@ -145,7 +145,7 @@ Vous devriez voir dans votre navigateur la page ci-dessus. Sinon, merci de véri
   php requirements.php
   ```
 
-Vous devez configurer votre installation de PHP afin qu'elle réponde aux exigences minimales de Yii. Le plus important étant que vous ayez PHP 5.4 ou plus, idéalement PHP 7. Si votre application a besoin d'une base de données, vous devez également installer l'[extension PHP PDO](https://secure.php.net/manual/fr/pdo.installation.php) ainsi qu'un pilote correspondant à votre système de base de données (par exemple `pdo_mysql` pour MySQL).
+Vous devez configurer votre installation de PHP afin qu'elle réponde aux exigences minimales de Yii. Le plus important étant que vous ayez PHP 5.4 ou plus, idéalement PHP 7. Si votre application a besoin d'une base de données, vous devez également installer l'[extension PHP PDO](https://www.php.net/manual/fr/pdo.installation.php) ainsi qu'un pilote correspondant à votre système de base de données (par exemple `pdo_mysql` pour MySQL).
 
 
 Configuration du serveur Web <span id="configuring-web-servers"></span>
@@ -194,7 +194,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuration Nginx recommandée <span id="recommended-nginx-configuration"></span>
 
-Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](https://secure.php.net/install.fpm).
+Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](https://www.php.net/install.fpm).
 Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.test` par le nom d'hôte de votre serveur.
 
 ```nginx

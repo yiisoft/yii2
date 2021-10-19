@@ -29,7 +29,7 @@ $model->name = 'example';
 echo $model->name;
 ```
 
-Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](https://secure.php.net/manual/ru/class.arrayaccess.php) и [Traversable](https://secure.php.net/manual/ru/class.traversable.php)
+Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](https://www.php.net/manual/ru/class.arrayaccess.php) и [Traversable](https://www.php.net/manual/ru/class.traversable.php)
 в [[yii\base\Model]]:
 
 ```php

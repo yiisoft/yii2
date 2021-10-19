@@ -1,26 +1,26 @@
-Json ƒwƒ‹ƒp
+Json ï¿½wï¿½ï¿½ï¿½p
 ===========
 
-Json ƒwƒ‹ƒp‚Í JSON ‚ðƒGƒ“ƒR[ƒh‚¨‚æ‚ÑƒfƒR[ƒh‚·‚éˆê˜A‚ÌÃ“Iƒƒ\ƒbƒh‚ð’ñ‹Ÿ‚µ‚Ü‚·B
-`[[yii\helpers\Json::encode()]]` ƒƒ\ƒbƒh‚ÍƒGƒ“ƒR[ƒhEƒGƒ‰[‚ðˆ—‚µ‚Ü‚·‚ªA
- `[[yii\web\JsExpression]]` ƒIƒuƒWƒFƒNƒg‚ÌŒ`Ž®‚Å•\Œ»‚³‚ê‚½ JavaScript ‚ÌŽ®‚ÍƒGƒ“ƒR[ƒh‚µ‚Ü‚¹‚ñB
-Šù’è‚Å‚ÍƒGƒ“ƒR[ƒh‚Í `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` ‚ÌƒIƒvƒVƒ‡ƒ“‚Ås‚í‚ê‚Ü‚·B
-Ú×‚É‚Â‚¢‚Ä‚Í [PHP:json_encode](https://secure.php.net/manual/ja/function.json-encode.php) ‚ðŽQÆ‚µ‚Ä‰º‚³‚¢B
+Json ï¿½wï¿½ï¿½ï¿½pï¿½ï¿½ JSON ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½Ñƒfï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ÌÃ“Iï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½ï¿½ñ‹Ÿ‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+`[[yii\helpers\Json::encode()]]` ï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½ÍƒGï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½Eï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½A
+ `[[yii\web\JsExpression]]` ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ÌŒ`ï¿½ï¿½ï¿½Å•\ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ JavaScript ï¿½ÌŽï¿½ï¿½ÍƒGï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+ï¿½ï¿½ï¿½ï¿½Å‚ÍƒGï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½ `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` ï¿½ÌƒIï¿½vï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Åsï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ï¿½Ú×‚É‚Â‚ï¿½ï¿½Ä‚ï¿½ [PHP:json_encode](https://www.php.net/manual/ja/function.json-encode.php) ï¿½ï¿½ï¿½Qï¿½Æ‚ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 
-## ®Œ`o—Í <span id="pretty-print"></span>
+## ï¿½ï¿½ï¿½`ï¿½oï¿½ï¿½ <span id="pretty-print"></span>
 
-Šù’è‚Å‚Í `[[yii\helpers\Json::encode()]]` ƒƒ\ƒbƒh‚Í®Œ`‚³‚ê‚Ä‚¢‚È‚¢ JSON (‚·‚È‚í‚¿‹ó”’–³‚µ‚Ì‚à‚Ì) ‚ðo—Í‚µ‚Ü‚·B
-lŠÔ‚É‚Æ‚Á‚Ä“Ç‚Ý‚â‚·‚¢‚à‚Ì‚É‚·‚é‚½‚ß‚ÉAu®Œ`o—Í pretty printingv‚ð ON ‚É‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B
+ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ `[[yii\helpers\Json::encode()]]` ï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½Íï¿½ï¿½`ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ JSON (ï¿½ï¿½ï¿½È‚í‚¿ï¿½ó”’–ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½oï¿½Í‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ï¿½lï¿½Ô‚É‚Æ‚ï¿½ï¿½Ä“Ç‚Ý‚â‚·ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚É‚ï¿½ï¿½é‚½ï¿½ß‚ÉAï¿½uï¿½ï¿½ï¿½`ï¿½oï¿½ï¿½ pretty printingï¿½vï¿½ï¿½ ON ï¿½É‚ï¿½ï¿½é‚±ï¿½Æ‚ï¿½ï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 
-> Note: ®Œ`o—Í‚ÍŠJ”­’†‚ÌƒfƒoƒbƒO‚É‚Í–ð—§‚Â‚Å‚µ‚å‚¤‚ªA»•iŠÂ‹«‚Å‚Í„§‚³‚ê‚Ü‚¹‚ñB
+> Note: ï¿½ï¿½ï¿½`ï¿½oï¿½Í‚ÍŠJï¿½ï¿½ï¿½ï¿½ï¿½Ìƒfï¿½oï¿½bï¿½Oï¿½É‚Í–ð—§‚Â‚Å‚ï¿½ï¿½å‚¤ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½iï¿½Â‹ï¿½ï¿½Å‚Íï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
 
-ƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚É®Œ`o—Í‚ð—LŒø‚É‚·‚é‚½‚ß‚É‚ÍƒIƒvƒVƒ‡ƒ“‚ðŽw’è‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B‚·‚È‚í‚¿ :
+ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½Æ‚Éï¿½ï¿½`ï¿½oï¿½Í‚ï¿½Lï¿½ï¿½ï¿½É‚ï¿½ï¿½é‚½ï¿½ß‚É‚ÍƒIï¿½vï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½wï¿½è‚·ï¿½é‚±ï¿½Æ‚ï¿½ï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½ï¿½ï¿½È‚í‚¿ :
 
 ```php
 $data = ['a' => 1, 'b' => 2];
 $json = yii\helpers\Json::encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 ```
-JSON ƒwƒ‹ƒp‚Ì®Œ`o—Í‚ðƒOƒ[ƒoƒ‹‚É—LŒø‚É‚·‚é‚±‚Æ‚ào—ˆ‚Ü‚·B—á‚¦‚ÎAÝ’èƒtƒ@ƒCƒ‹‚â index.php ‚Ì’†‚Å :
+JSON ï¿½wï¿½ï¿½ï¿½pï¿½Ìï¿½ï¿½`ï¿½oï¿½Í‚ï¿½ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½É—Lï¿½ï¿½ï¿½É‚ï¿½ï¿½é‚±ï¿½Æ‚ï¿½ï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½á‚¦ï¿½ÎAï¿½Ý’ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ index.php ï¿½Ì’ï¿½ï¿½ï¿½ :
 ```php
-yii\helpers\Json::$prettyPrint = YII_DEBUG; // ƒfƒoƒbƒOEƒ‚[ƒh‚Å‚Í®Œ`o—Í‚ðŽg—p
+yii\helpers\Json::$prettyPrint = YII_DEBUG; // ï¿½fï¿½oï¿½bï¿½Oï¿½Eï¿½ï¿½ï¿½[ï¿½hï¿½Å‚Íï¿½ï¿½`ï¿½oï¿½Í‚ï¿½ï¿½gï¿½p
 ```

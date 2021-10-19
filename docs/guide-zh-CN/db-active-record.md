@@ -473,8 +473,8 @@ Active Record 自动维护脏属性列表。 它保存所有属性的旧值，
 > 其中每个值都表示为一个字符串类型。
 > 为了确保正确的类型，比如，整型需要用[过滤验证器](input-validation.md#data-filtering)：
 > `['attributeName', 'filter', 'filter' => 'intval']`。其他 PHP 类型转换函数一样适用，像
-> [intval()](https://secure.php.net/manual/en/function.intval.php)， [floatval()](https://secure.php.net/manual/en/function.floatval.php)，
-> [boolval](https://secure.php.net/manual/en/function.boolval.php)，等等
+> [intval()](https://www.php.net/manual/en/function.intval.php)， [floatval()](https://www.php.net/manual/en/function.floatval.php)，
+> [boolval](https://www.php.net/manual/en/function.boolval.php)，等等
 
 ### 默认属性值（Default Attribute Values） <span id="default-attribute-values"></span>
 

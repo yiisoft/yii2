@@ -137,11 +137,11 @@ class BaseFileHelper
     /**
      * Determines the MIME type of the specified file.
      * This method will first try to determine the MIME type based on
-     * [finfo_open](https://secure.php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
+     * [finfo_open](https://www.php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
      * it will fall back to [[getMimeTypeByExtension()]] when `$checkExtension` is true.
      * @param string $file the file name.
      * @param string|null $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
-     * This will be passed as the second parameter to [finfo_open()](https://secure.php.net/manual/en/function.finfo-open.php)
+     * This will be passed as the second parameter to [finfo_open()](https://www.php.net/manual/en/function.finfo-open.php)
      * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
      * and this is null, it will use the file specified by [[mimeMagicFile]].
      * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
@@ -502,7 +502,7 @@ class BaseFileHelper
      * @param array $options options for directory searching. Valid options are:
      *
      * - `filter`: callback, a PHP callback that is called for each directory or file.
-     *   The signature of the callback should be: `function (string $path): bool`, where `$path` refers 
+     *   The signature of the callback should be: `function (string $path): bool`, where `$path` refers
      *   the full path to be filtered. The callback can return one of the following values:
      *
      *   * `true`: the directory will be returned

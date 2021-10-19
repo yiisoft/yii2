@@ -91,7 +91,7 @@ class BaseFormatConverter
      *
      * Pattern constructs that are not supported by the PHP format will be removed.
      *
-     * [php date() function format]: https://secure.php.net/manual/en/function.date.php
+     * [php date() function format]: https://www.php.net/manual/en/function.date.php
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
      *
      * @param string $pattern date format pattern in ICU format.
@@ -238,7 +238,7 @@ class BaseFormatConverter
      *
      * Pattern constructs that are not supported by the ICU format will be removed.
      *
-     * [php date() function format]: https://secure.php.net/manual/en/function.date.php
+     * [php date() function format]: https://www.php.net/manual/en/function.date.php
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
      *
      * Since 2.0.13 it handles escaped characters correctly.
@@ -248,7 +248,7 @@ class BaseFormatConverter
      */
     public static function convertDatePhpToIcu($pattern)
     {
-        // https://secure.php.net/manual/en/function.date.php
+        // https://www.php.net/manual/en/function.date.php
         $result = strtr($pattern, [
             "'" => "''''",  // single `'` should be encoded as `''`, which internally should be encoded as `''''`
             // Day
@@ -497,7 +497,7 @@ class BaseFormatConverter
      *
      * Pattern constructs that are not supported by the jQuery UI format will be removed.
      *
-     * [php date() function format]: https://secure.php.net/manual/en/function.date.php
+     * [php date() function format]: https://www.php.net/manual/en/function.date.php
      * [jQuery UI date format]: http://api.jqueryui.com/datepicker/#utility-formatDate
      *
      * @param string $pattern date format pattern in php date()-function format.
@@ -505,7 +505,7 @@ class BaseFormatConverter
      */
     public static function convertDatePhpToJui($pattern)
     {
-        // https://secure.php.net/manual/en/function.date.php
+        // https://www.php.net/manual/en/function.date.php
         return strtr($pattern, [
             // Day
             'd' => 'dd',    // Day of the month, 2 digits with leading zeros 	01 to 31

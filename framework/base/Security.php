@@ -55,12 +55,12 @@ class Security extends Component
     ];
     /**
      * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
-     * @see [hash_algos()](https://secure.php.net/manual/en/function.hash-algos.php)
+     * @see [hash_algos()](https://www.php.net/manual/en/function.hash-algos.php)
      */
     public $kdfHash = 'sha256';
     /**
      * @var string Hash algorithm for message authentication. Recommend sha256, sha384 or sha512.
-     * @see [hash_algos()](https://secure.php.net/manual/en/function.hash-algos.php)
+     * @see [hash_algos()](https://www.php.net/manual/en/function.hash-algos.php)
      */
     public $macHash = 'sha256';
     /**
@@ -537,7 +537,7 @@ class Security extends Component
      * compute the hash doubles for every increment by one of $cost.
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
-     * might increase in future versions of PHP (https://secure.php.net/manual/en/function.password-hash.php)
+     * might increase in future versions of PHP (https://www.php.net/manual/en/function.password-hash.php)
      * @throws Exception on bad password parameter or cost parameter.
      * @see validatePassword()
      */
@@ -599,7 +599,7 @@ class Security extends Component
     /**
      * Generates a salt that can be used to generate a password hash.
      *
-     * The PHP [crypt()](https://secure.php.net/manual/en/function.crypt.php) built-in function
+     * The PHP [crypt()](https://www.php.net/manual/en/function.crypt.php) built-in function
      * requires, for the Blowfish hash algorithm, a salt string in a specific format:
      * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
      * from the alphabet "./0-9A-Za-z".

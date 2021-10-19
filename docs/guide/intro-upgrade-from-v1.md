@@ -30,14 +30,14 @@ As a result, there are many differences on the language level that you should pa
 Below is a summary of the major changes regarding PHP:
 
 - [Namespaces](https://www.php.net/manual/en/language.namespaces.php).
-- [Anonymous functions](https://secure.php.net/manual/en/functions.anonymous.php).
+- [Anonymous functions](https://www.php.net/manual/en/functions.anonymous.php).
 - Short array syntax `[...elements...]` is used instead of `array(...elements...)`.
 - Short echo tags `<?=` are used in view files. This is safe to use starting from PHP 5.4.
-- [SPL classes and interfaces](https://secure.php.net/manual/en/book.spl.php).
-- [Late Static Bindings](https://secure.php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Date and Time](https://secure.php.net/manual/en/book.datetime.php).
-- [Traits](https://secure.php.net/manual/en/language.oop5.traits.php).
-- [intl](https://secure.php.net/manual/en/book.intl.php). Yii 2.0 makes use of the `intl` PHP extension
+- [SPL classes and interfaces](https://www.php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://www.php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Date and Time](https://www.php.net/manual/en/book.datetime.php).
+- [Traits](https://www.php.net/manual/en/language.oop5.traits.php).
+- [intl](https://www.php.net/manual/en/book.intl.php). Yii 2.0 makes use of the `intl` PHP extension
   to support internationalization features.
 
 

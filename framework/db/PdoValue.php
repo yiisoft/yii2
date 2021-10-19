@@ -16,9 +16,9 @@ namespace yii\db;
  * [':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
  * ```
  *
- * To see possible types, check [PDO::PARAM_* constants](https://secure.php.net/manual/en/pdo.constants.php).
+ * To see possible types, check [PDO::PARAM_* constants](https://www.php.net/manual/en/pdo.constants.php).
  *
- * @see https://secure.php.net/manual/en/pdostatement.bindparam.php
+ * @see https://www.php.net/manual/en/pdostatement.bindparam.php
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
  */
@@ -30,7 +30,7 @@ final class PdoValue implements ExpressionInterface
     private $value;
     /**
      * @var int One of PDO_PARAM_* constants
-     * @see https://secure.php.net/manual/en/pdo.constants.php
+     * @see https://www.php.net/manual/en/pdo.constants.php
      */
     private $type;
 

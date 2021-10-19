@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: Parameter formatting requires the installation of the [intl PHP extension](https://secure.php.net/manual/en/intro.intl.php).
+> Note: Parameter formatting requires the installation of the [intl PHP extension](https://www.php.net/manual/en/intro.intl.php).
 
 You can use either the short form or the full form to specify a placeholder with formatting:
 
@@ -738,12 +738,12 @@ See the [Data Formatting](output-formatting.md) section for details.
 
 ## Setting Up PHP Environment <span id="setup-environment"></span>
 
-Yii uses the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to provide most of its I18N features,
+Yii uses the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to provide most of its I18N features,
 such as the date and number formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
 Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
 only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
-The [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
+The [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
 provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
 formatting result of date and number values. To ensure your website produces the same results across all environments,
 it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)
