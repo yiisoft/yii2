@@ -7,6 +7,7 @@
 
 namespace yii\base;
 
+use ReflectionObject;
 use Yii;
 use yii\di\ServiceLocator;
 
@@ -143,6 +144,11 @@ class Module extends ServiceLocator
      * @since 2.0.11
      */
     private $_version;
+    /**
+     * @var ReflectionObject|null the reflection instance for this module
+     * @since 2.0.44
+     */
+    private $_reflection;
 
 
     /**
@@ -195,12 +201,24 @@ class Module extends ServiceLocator
      */
     public function init()
     {
-        if ($this->controllerNamespace === null) {
-            $class = get_class($this);
-            if (($pos = strrpos($class, '\\')) !== false) {
-                $this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
-            }
+        parent::init();
+
+        if ($this->controllerNamespace === null && $this->getReflection()->inNamespace()) {
+            $this->controllerNamespace = $this->getReflection()->getNamespaceName() . '\controllers';
         }
+    }
+
+    /**
+     * Returns instance of `ReflectionObject` for this module.
+     * @return ReflectionObject
+     */
+    protected function getReflection()
+    {
+        if ($this->_reflection === null) {
+            $this->_reflection = new ReflectionObject($this);
+        }
+
+        return $this->_reflection;
     }
 
     /**
@@ -221,8 +239,7 @@ class Module extends ServiceLocator
     public function getBasePath()
     {
         if ($this->_basePath === null) {
-            $class = new \ReflectionClass($this);
-            $this->_basePath = dirname($class->getFileName());
+            $this->_basePath = dirname($this->getReflection()->getFileName());
         }
 
         return $this->_basePath;
