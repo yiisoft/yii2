@@ -589,7 +589,7 @@ abstract class Application extends Module
     /**
      * Returns the mailer component.
      * @return \yii\mail\MailerInterface the mailer application component.
-     * @throws InvalidConfigException If this component not configured.
+     * @throws InvalidConfigException If this component is not configured.
      */
     public function getMailer()
     {
