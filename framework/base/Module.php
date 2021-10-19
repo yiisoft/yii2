@@ -145,7 +145,7 @@ class Module extends ServiceLocator
      */
     private $_version;
     /**
-     * @var ReflectionObject|null the reflection instance for this module
+     * @var ReflectionObject|null the reflection instance for this class
      * @since 2.0.44
      */
     private $_reflection;
@@ -209,8 +209,9 @@ class Module extends ServiceLocator
     }
 
     /**
-     * Returns instance of `ReflectionObject` for this module.
+     * Returns reflection instance for this class.
      * @return ReflectionObject
+     * @since 2.0.44
      */
     protected function getReflection()
     {
