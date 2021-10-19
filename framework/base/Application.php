@@ -640,7 +640,7 @@ abstract class Application extends Module
             'security' => ['class' => 'yii\base\Security'],
         ];
         if (class_exists('yii\swiftmailer\Mailer')) {
-            $components['mailer'] = ['class' => 'yii\swiftmailer\Mailer'],
+            $components['mailer'] = ['class' => 'yii\swiftmailer\Mailer'];
         }
 
         return $components;
