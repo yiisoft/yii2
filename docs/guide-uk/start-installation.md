@@ -99,7 +99,7 @@
 ----------------------
 
 Після успішного встановлення ви можете налаштувати свій веб-сервер (див. наступний розділ)
-або використати [вбудований веб-сервер PHP](https://secure.php.net/manual/en/features.commandline.webserver.php),
+або використати [вбудований веб-сервер PHP](https://www.php.net/manual/en/features.commandline.webserver.php),
 виконавши наступну консольну команду із директорії `web`:
 
 ```bash
@@ -136,7 +136,7 @@ http://localhost:8080/
   ```
 
 Необхідно налаштувати PHP таким чином, щоб він відповідав мінімальним вимогам Yii. Основна вимога — PHP версії 5.4 або вище.
-Якщо ваш додаток працює з базою даних, необхідно встановити [розширення PHP PDO](https://secure.php.net/manual/en/pdo.installation.php)
+Якщо ваш додаток працює з базою даних, необхідно встановити [розширення PHP PDO](https://www.php.net/manual/en/pdo.installation.php)
 та відповідний драйвер (наприклад, `pdo_mysql` для MySQL).
 
 
@@ -191,7 +191,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
-Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://secure.php.net/install.fpm).
+Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://www.php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
 `basic/web`, а `mysite.test` на актуальний домен.
 

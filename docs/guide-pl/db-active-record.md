@@ -438,8 +438,8 @@ Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wyw
 > ma tą samą wartość, ale jest innego typu. Taka sytuacja zdarza się często, kiedy model jest aktualizowany danymi pochodzącymi z formularza 
 > HTML, gdzie każda wartość jest reprezentowana jako string.
 > Aby upewnić się, że wartości będą odpowiednich typów, np. integer, możesz zaaplikować [filtr walidacji](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](https://secure.php.net/manual/en/function.intval.php), 
-> [floatval()](https://secure.php.net/manual/en/function.floatval.php), [boolval](https://secure.php.net/manual/en/function.boolval.php), itp...
+> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](https://www.php.net/manual/en/function.intval.php), 
+> [floatval()](https://www.php.net/manual/en/function.floatval.php), [boolval](https://www.php.net/manual/en/function.boolval.php), itp...
 
 
 ### Domyślne wartości atrybutów <span id="default-attribute-values"></span>

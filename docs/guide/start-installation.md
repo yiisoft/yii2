@@ -139,7 +139,7 @@ Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
 After installation is done, either configure your web server (see next section) or use the
-[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+[built-in PHP web server](https://www.php.net/manual/en/features.commandline.webserver.php) by running the following
 console command while in the project root directory:
  
 ```bash
@@ -173,7 +173,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php)
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -236,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://secure.php.net/install.fpm).
+To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://www.php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
 `basic/web` and `mysite.test` with the actual hostname to serve.
 

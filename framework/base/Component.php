@@ -223,7 +223,7 @@ class Component extends BaseObject
      * will be implicitly called when executing `isset($component->property)`.
      * @param string $name the property name or the event name
      * @return bool whether the named property is set
-     * @see https://secure.php.net/manual/en/function.isset.php
+     * @see https://www.php.net/manual/en/function.isset.php
      */
     public function __isset($name)
     {
@@ -255,7 +255,7 @@ class Component extends BaseObject
      * will be implicitly called when executing `unset($component->property)`.
      * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
-     * @see https://secure.php.net/manual/en/function.unset.php
+     * @see https://www.php.net/manual/en/function.unset.php
      */
     public function __unset($name)
     {

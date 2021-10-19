@@ -61,7 +61,7 @@ class UnknownCommandException extends Exception
      *   available commands. The Levenshtein distance is defined as the minimal number of
      *   characters you have to replace, insert or delete to transform str1 into str2.
      *
-     * @see https://secure.php.net/manual/en/function.levenshtein.php
+     * @see https://www.php.net/manual/en/function.levenshtein.php
      * @return array a list of suggested alternatives sorted by similarity.
      */
     public function getSuggestedAlternatives()
@@ -104,7 +104,7 @@ class UnknownCommandException extends Exception
      *   available commands. The Levenshtein distance is defined as the minimal number of
      *   characters you have to replace, insert or delete to transform str1 into str2.
      *
-     * @see https://secure.php.net/manual/en/function.levenshtein.php
+     * @see https://www.php.net/manual/en/function.levenshtein.php
      * @param array $actions available command names.
      * @param string $command the command to compare to.
      * @return array a list of suggested alternatives sorted by similarity.
