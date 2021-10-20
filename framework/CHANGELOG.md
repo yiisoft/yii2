@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #18909: Fix bug with binding default action parameters for controllers (bizley)
 - Bug #18961: Check `yiisoft/yii2-swiftmailer` before using as default mailer in `yii\base\Application` (WinterSilence)
 
+
 2.0.43 August 09, 2021
 ----------------------
 
