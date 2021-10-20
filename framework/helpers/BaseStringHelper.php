@@ -94,7 +94,7 @@ class BaseStringHelper
     {
         $normalizedPath = rtrim(
             str_replace('\\', '/', $path),
-            '/',
+            '/'
         );
         $separatorPosition = mb_strrpos($normalizedPath, '/');
 
