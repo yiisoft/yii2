@@ -733,19 +733,17 @@ class PhpDocController extends Controller
                 $docLine = ' * @property';
                 $note = '';
                 if (isset($prop['get'], $prop['set'])) {
-                    if ($prop['get']['type'] != $prop['set']['type']) {
+                    if ($prop['get']['type'] !== $prop['set']['type']) {
                         $note = ' Note that the type of this property differs in getter and setter.'
                                 . ' See [[get' . ucfirst($propName) . '()]]'
                                 . ' and [[set' . ucfirst($propName) . '()]] for details.';
                     }
                 } elseif (isset($prop['get'])) {
                     if (!$this->hasSetterInParents($className, $propName)) {
-                        $note = ' This property is read-only.';
                         $docLine .= '-read';
                     }
                 } elseif (isset($prop['set'])) {
                     if (!$this->hasGetterInParents($className, $propName)) {
-                        $note = ' This property is write-only.';
                         $docLine .= '-write';
                     }
                 } else {
@@ -754,7 +752,7 @@ class PhpDocController extends Controller
                 $docLine .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
                 $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
                 foreach ($comment as &$cline) {
-                    $cline = ltrim($cline, '* ');
+                    $cline = ltrim(rtrim($cline), '* ');
                 }
                 $docLine = wordwrap($docLine . implode(' ', $comment), 110, "\n * ") . "\n";
 
