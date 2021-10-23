@@ -548,7 +548,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @var bool Whether strict mode is enabled or not.
+     * @param bool $value Whether strict mode is enabled or not.
      * When `true` this setting prevents the session component to use an uninitialized session ID.
      * Note: Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.
      * Warning! Although enabling strict mode is mandatory for secure sessions, the default value of 'session.use-strict-mode' is `0`.
