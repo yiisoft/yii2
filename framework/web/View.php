@@ -133,6 +133,12 @@ class View extends \yii\base\View
 
     private $_assetManager;
 
+    /**
+     * Whether [[endBody()]] has been called
+     * @var bool
+     */
+    private $_isBodyEnded = false;
+
 
     /**
      * Marks the position of an HTML head section.
@@ -158,6 +164,8 @@ class View extends \yii\base\View
     {
         $this->trigger(self::EVENT_END_BODY);
         echo self::PH_BODY_END;
+
+        $this->_isBodyEnded = true;
 
         foreach (array_keys($this->assetBundles) as $bundle) {
             $this->registerAssetFiles($bundle);
@@ -489,6 +497,10 @@ class View extends \yii\base\View
             $assetManagerAppendTimestamp = false;
         }
         $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $assetManagerAppendTimestamp);
+
+        if ($this->_isBodyEnded) {
+            Yii::warning('You\'re trying to register a file after View::endBody() has been called');
+        }
 
         if (empty($depends)) {
             // register directly without AssetManager
