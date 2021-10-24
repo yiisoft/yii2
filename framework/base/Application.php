@@ -589,6 +589,7 @@ abstract class Application extends Module
     /**
      * Returns the mailer component.
      * @return \yii\mail\MailerInterface the mailer application component.
+     * @throws InvalidConfigException If this component is not configured.
      */
     public function getMailer()
     {
@@ -597,8 +598,7 @@ abstract class Application extends Module
 
     /**
      * Returns the auth manager for this application.
-     * @return \yii\rbac\ManagerInterface the auth manager application component.
-     * Null is returned if auth manager is not configured.
+     * @return \yii\rbac\ManagerInterface|null the auth manager application component or null if it's not configured.
      */
     public function getAuthManager()
     {
@@ -625,20 +625,25 @@ abstract class Application extends Module
 
     /**
      * Returns the configuration of core application components.
+     * @return array
      * @see set()
      */
     public function coreComponents()
     {
-        return [
+        $components = [
             'log' => ['class' => 'yii\log\Dispatcher'],
             'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\i18n\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
             'security' => ['class' => 'yii\base\Security'],
         ];
+        if (class_exists('yii\swiftmailer\Mailer')) {
+            $components['mailer'] = ['class' => 'yii\swiftmailer\Mailer'];
+        }
+
+        return $components;
     }
 
     /**

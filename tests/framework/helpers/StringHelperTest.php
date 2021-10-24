@@ -452,4 +452,26 @@ class StringHelperTest extends TestCase
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderDirname
+     */
+    public function testDirname($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::dirname($string));
+    }
+
+    public function dataProviderDirname()
+    {
+        return [
+            ['\\foo\\bar\\test', '\foo\bar'],
+            ['\\foo/bar\\test', '\foo/bar'],
+            ['\\foo\\bar\\test\\', '\foo\bar'],
+            ['foo/bar/test', 'foo/bar'],
+            ['foo', ''],
+            ['', ''],
+        ];
+    }
 }
