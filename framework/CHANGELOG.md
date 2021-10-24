@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+- Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
 - Enh #18328: Raise warning when trying to register a file after `View::endBody()` has been called (perlexed)
 - Enh #18812: Added error messages and optimized "error" methods in `yii\helpers\BaseJson` (WinterSilence, samdark)
 - Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
