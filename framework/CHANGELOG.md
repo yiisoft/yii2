@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #18913: Add filename validation for `MessageSource::getMessageFilePath()` (uaoleg)
 - Bug #18909: Fix bug with binding default action parameters for controllers (bizley)
 - Bug #18955: Check `yiisoft/yii2-swiftmailer` before using as default mailer in `yii\base\Application` (WinterSilence)
+- Bug #18962: Fix default values of  properties `$translator` and `$except` in `yii\console\MessageController` (WinterSilence)
 
 
 2.0.43 August 09, 2021
