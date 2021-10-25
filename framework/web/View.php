@@ -134,10 +134,10 @@ class View extends \yii\base\View
     private $_assetManager;
 
     /**
-     * Whether [[endBody()]] has been called
+     * Whether [[endPage()]] has been called and all files have been registered
      * @var bool
      */
-    private $_isBodyEnded = false;
+    private $_isPageEnded = false;
 
 
     /**
@@ -165,8 +165,6 @@ class View extends \yii\base\View
         $this->trigger(self::EVENT_END_BODY);
         echo self::PH_BODY_END;
 
-        $this->_isBodyEnded = true;
-
         foreach (array_keys($this->assetBundles) as $bundle) {
             $this->registerAssetFiles($bundle);
         }
@@ -181,6 +179,8 @@ class View extends \yii\base\View
     public function endPage($ajaxMode = false)
     {
         $this->trigger(self::EVENT_END_PAGE);
+
+        $this->_isPageEnded = true;
 
         $content = ob_get_clean();
 
@@ -498,7 +498,7 @@ class View extends \yii\base\View
         }
         $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $assetManagerAppendTimestamp);
 
-        if ($this->_isBodyEnded) {
+        if ($this->_isPageEnded) {
             Yii::warning('You\'re trying to register a file after View::endBody() has been called');
         }
 
