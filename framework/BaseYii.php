@@ -326,7 +326,8 @@ class BaseYii
      * Using [[\yii\di\Container|dependency injection container]], this method can also identify
      * dependent objects, instantiate them and inject them into the newly created object.
      *
-     * @param string|array|callable $type the object type. This can be specified in one of the following forms:
+     * @template T
+     * @param class-string<T>|array{class: class-string<T>}|callable(): T $type the object type. This can be specified in one of the following forms:
      *
      * - a string: representing the class name of the object to be created
      * - a configuration array: the array must contain a `class` element which is treated as the object class,
@@ -335,7 +336,7 @@ class BaseYii
      *   The callable should return a new instance of the object being created.
      *
      * @param array $params the constructor parameters
-     * @return object the created object
+     * @return T the created object
      * @throws InvalidConfigException if the configuration is invalid.
      * @see \yii\di\Container
      */
