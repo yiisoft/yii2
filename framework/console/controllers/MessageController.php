@@ -58,12 +58,12 @@ class MessageController extends \yii\console\Controller
      */
     public $languages = [];
     /**
-     * @var string the name of the function for translating messages.
+     * @var string|array the name of the function for translating messages.
      * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
      * translated. You may use a string for single function name or an array for
      * multiple function names.
      */
-    public $translator = ['Yii::t', '\Yii::t'];
+    public $translator = 'Yii::t';
     /**
      * @var bool whether to sort messages by keys when merging new messages
      * with the existing ones. Defaults to false, which means the new (untranslated)
