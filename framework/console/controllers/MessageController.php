@@ -58,7 +58,7 @@ class MessageController extends \yii\console\Controller
      */
     public $languages = [];
     /**
-     * @var string the name of the function for translating messages.
+     * @var string|array the name of the function for translating messages.
      * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
      * translated. You may use a string for single function name or an array for
      * multiple function names.
@@ -91,13 +91,12 @@ class MessageController extends \yii\console\Controller
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
      */
     public $except = [
-        '.svn',
-        '.git',
-        '.gitignore',
-        '.gitkeep',
-        '.hgignore',
-        '.hgkeep',
+        '.*',
+        '/.*',
         '/messages',
+        '/tests',
+        '/runtime',
+        '/vendor',
         '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
