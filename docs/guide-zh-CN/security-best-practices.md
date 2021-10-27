@@ -33,7 +33,7 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 
 进一步阅读该主题：
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
