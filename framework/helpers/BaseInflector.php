@@ -455,7 +455,7 @@ class BaseInflector
     /**
      * Converts a class name to its table name (pluralized) naming conventions.
      *
-     * For example, converts "Person" to "people".
+     * For example, converts "Person" to "person".
      * @param string $className the class name for getting related table_name
      * @return string
      */
@@ -535,7 +535,7 @@ class BaseInflector
     /**
      * Converts a table name to its class name.
      *
-     * For example, converts "people" to "Person".
+     * For example, converts "people" to "People".
      * @param string $tableName
      * @return string
      */
