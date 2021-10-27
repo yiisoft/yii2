@@ -472,9 +472,9 @@ ou la méthode [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 Cela est souvent le cas lorsque le modèle reçoit des entrées utilisateur de formulaires HTML ou chacune des valeurs est représentée par une chaîne de caractères. 
 Pour garantir le type correct pour p. ex. des valeurs entières, vous devez appliquer un [filtre de validation](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. 
-Cela fonctionne pour toutes les fonctions de transformation de type de PHP comme [intval()](https://secure.php.net/manual/en/function.intval.php), 
-[floatval()](https://secure.php.net/manual/en/function.floatval.php), 
-[boolval](https://secure.php.net/manual/en/function.boolval.php), etc...
+Cela fonctionne pour toutes les fonctions de transformation de type de PHP comme [intval()](https://www.php.net/manual/en/function.intval.php), 
+[floatval()](https://www.php.net/manual/en/function.floatval.php), 
+[boolval](https://www.php.net/manual/en/function.boolval.php), etc...
 
 ### Valeurs d'attribut par défaut <span id="default-attribute-values"></span>
 

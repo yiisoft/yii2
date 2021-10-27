@@ -68,7 +68,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
     كما يمكنك تفعيل ال driver المطلوب عن طريق حذف الفاصلة المنقوطة قبل ال driver المقصود مثل: 
 <code>extension=php_pdo_mysql.dll</code>
     ويمكنك الإطلاع على المزيد من هنا: 
-<a href="https://secure.php.net/manual/en/pdo.installation.php">pdo installation</a>    
+<a href="https://www.php.net/manual/en/pdo.installation.php">pdo installation</a>    
 </p></blockquote>
 
 <p dir="rtl">

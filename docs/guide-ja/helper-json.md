@@ -1,26 +1,25 @@
-Json �w���p
+Json ヘルパ
 ===========
 
-Json �w���p�� JSON ���G���R�[�h����уf�R�[�h�����A�̐ÓI���\�b�h��񋟂��܂��B
-`[[yii\helpers\Json::encode()]]` ���\�b�h�̓G���R�[�h�E�G���[���������܂����A
- `[[yii\web\JsExpression]]` �I�u�W�F�N�g�̌`���ŕ\�����ꂽ JavaScript �̎��̓G���R�[�h���܂���B
-����ł̓G���R�[�h�� `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` �̃I�v�V�����ōs���܂��B
-�ڍׂɂ��Ă� [PHP:json_encode](https://secure.php.net/manual/ja/function.json-encode.php) ���Q�Ƃ��ĉ������B
+Json ヘルパは JSON をエンコードおよびデコードする一連の静的メソッドを提供します。
+`[[yii\helpers\Json::encode()]]` メソッドはエンコード・エラーを処理しますが、
+ `[[yii\web\JsExpression]]` オブジェクトの形式で表現された JavaScript の式はエンコードしません。
+既定ではエンコードは `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` のオプションで行われます。
+詳細については [PHP:json_encode](https://www.php.net/manual/ja/function.json-encode.php) を参照して下さい。
 
-## ���`�o�� <span id="pretty-print"></span>
+## 整形出力 <span id="pretty-print"></span>
 
-����ł� `[[yii\helpers\Json::encode()]]` ���\�b�h�͐��`����Ă��Ȃ� JSON (���Ȃ킿�󔒖����̂���) ���o�͂��܂��B
-�l�ԂɂƂ��ēǂ݂₷�����̂ɂ��邽�߂ɁA�u���`�o�� pretty printing�v�� ON �ɂ��邱�Ƃ��o���܂��B
+既定では `[[yii\helpers\Json::encode()]]` メソッドは整形されていない JSON (すなわち空白無しのもの) を出力します。
+人間にとって読みやすいものにするために、「整形出力 pretty printing」を ON にすることが出来ます。
 
-> Note: ���`�o�͂͊J�����̃f�o�b�O�ɂ͖𗧂ł��傤���A���i���ł͐�������܂���B
-
-�C���X�^���X���Ƃɐ��`�o�͂�L���ɂ��邽�߂ɂ̓I�v�V�������w�肷�邱�Ƃ��o���܂��B���Ȃ킿 :
+> Note: 整形出力は開発中のデバッグには役立つでしょうが、製品環境では推奨されません。
+インスタンスごとに整形出力を有効にするためにはオプションを指定することが出来ます。すなわち :
 
 ```php
 $data = ['a' => 1, 'b' => 2];
 $json = yii\helpers\Json::encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 ```
-JSON �w���p�̐��`�o�͂��O���[�o���ɗL���ɂ��邱�Ƃ��o���܂��B�Ⴆ�΁A�ݒ�t�@�C���� index.php �̒��� :
+JSON ヘルパの整形出力をグローバルに有効にすることも出来ます。例えば、設定ファイルや index.php の中で :
 ```php
-yii\helpers\Json::$prettyPrint = YII_DEBUG; // �f�o�b�O�E���[�h�ł͐��`�o�͂��g�p
+yii\helpers\Json::$prettyPrint = YII_DEBUG; // デバッグ・モードでは整形出力を使用
 ```

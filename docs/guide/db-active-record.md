@@ -473,8 +473,8 @@ If you are interested in the attribute values prior to their most recent modific
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
-> [intval()](https://secure.php.net/manual/en/function.intval.php), [floatval()](https://secure.php.net/manual/en/function.floatval.php),
-> [boolval](https://secure.php.net/manual/en/function.boolval.php), etc...
+> [intval()](https://www.php.net/manual/en/function.intval.php), [floatval()](https://www.php.net/manual/en/function.floatval.php),
+> [boolval](https://www.php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 

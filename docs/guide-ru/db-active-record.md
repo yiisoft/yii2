@@ -689,7 +689,7 @@ try {
 ```
 
 > Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
-> `\Exception` реализует интерфейс [`\Throwable` interface](https://secure.php.net/manual/ru/class.throwable.php)
+> `\Exception` реализует интерфейс [`\Throwable` interface](https://www.php.net/manual/ru/class.throwable.php)
 > начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 Второй способ заключается в том, чтобы перечислить операции с базой данных, которые требуют тразнакционного выполнения,

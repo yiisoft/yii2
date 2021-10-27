@@ -57,5 +57,5 @@ informacji na temat wymagań i indywidualnych funkcjonalności, uruchom specjaln
 
 Używanie Yii wymaga podstawowej wiedzy o programowaniu obiektowym w PHP (OOP), ponieważ Yii
 jest frameworkiem czysto obiektowym. Yii 2.0 wykorzystuje ostatnie udoskonalenia w PHP, jak 
-[przestrzenie nazw](https://secure.php.net/manual/pl/language.namespaces.php) i [traity](https://secure.php.net/manual/pl/language.oop5.traits.php). 
+[przestrzenie nazw](https://www.php.net/manual/pl/language.namespaces.php) i [traity](https://www.php.net/manual/pl/language.oop5.traits.php). 
 Zrozumienie tych konstrukcji pomoże Ci szybciej i łatwiej rozpocząć pracę z Yii 2.0.
