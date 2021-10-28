@@ -33,7 +33,7 @@ Yii においては、たいていの場合、同様のチェックを行うた�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
