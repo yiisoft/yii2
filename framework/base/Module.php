@@ -146,7 +146,6 @@ class Module extends ServiceLocator
     private $_version;
     /**
      * @var ReflectionObject|null the reflection instance for this class
-     * @since 2.0.44
      */
     private $_reflection;
 
