@@ -58,12 +58,11 @@ class MessageController extends \yii\console\Controller
      */
     public $languages = [];
     /**
-     * @var string|array the name of the function for translating messages.
-     * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
-     * translated. You may use a string for single function name or an array for
-     * multiple function names.
+     * @var string|string[] the name of the function for translating messages.
+     * This is used as a mark to find the messages to be translated.
+     * You may use a string for single function name or an array for multiple function names.
      */
-    public $translator = 'Yii::t';
+    public $translator = ['Yii::t', '\Yii::t'];
     /**
      * @var bool whether to sort messages by keys when merging new messages
      * with the existing ones. Defaults to false, which means the new (untranslated)
@@ -87,7 +86,7 @@ class MessageController extends \yii\console\Controller
     /**
      * @var array list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
-     * See helpers/FileHelper::findFiles() description for pattern matching rules.
+     * See `helpers/FileHelper::findFiles()` description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
      */
     public $except = [
