@@ -90,7 +90,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      */
     public function handleFailure($response)
     {
-        throw new UnauthorizedHttpException('Your request was made with invalid credentials.');
+        throw new UnauthorizedHttpException(Yii::t('yii', 'Your request was made with invalid credentials.'));
     }
 
     /**
