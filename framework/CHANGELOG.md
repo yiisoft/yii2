@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+- Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
+- Enh #18328: Raise warning when trying to register a file after `View::endPage()` has been called (perlexed)
 - Enh #18812: Added error messages and optimized "error" methods in `yii\helpers\BaseJson` (WinterSilence, samdark)
 - Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
 - Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
@@ -25,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #18913: Add filename validation for `MessageSource::getMessageFilePath()` (uaoleg)
 - Bug #18909: Fix bug with binding default action parameters for controllers (bizley)
 - Bug #18955: Check `yiisoft/yii2-swiftmailer` before using as default mailer in `yii\base\Application` (WinterSilence)
+- Enh #18962: Extend ignore list in `yii\console\MessageController::$except` (WinterSilence)
 
 
 2.0.43 August 09, 2021

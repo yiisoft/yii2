@@ -37,7 +37,7 @@ namespace yii\filters\auth;
  *             'class' => \yii\filters\auth\HttpBasicAuth::class,
  *             'auth' => function ($username, $password) {
  *                 $user = User::find()->where(['username' => $username])->one();
- *                 if ($user->verifyPassword($password)) {
+ *                 if ($user && $user->validatePassword($password)) {
  *                     return $user;
  *                 }
  *                 return null;
