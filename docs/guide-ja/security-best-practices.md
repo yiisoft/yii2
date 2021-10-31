@@ -46,7 +46,7 @@ JavaScript や SQL のコンテキストでは、対象となる文字は別の�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Command_Injection>
+- <https://owasp.org/www-community/attacks/Command_Injection>
 - <https://www.owasp.org/index.php/Code_Injection>
 - <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
 
