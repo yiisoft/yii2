@@ -97,6 +97,10 @@ class ActiveRecord extends BaseActiveRecord
      */
     const OP_ALL = 0x07;
 
+    /**
+     * @var string The name of the database table associated with this class.
+     */
+    protected static $_tableName;
 
     /**
      * Loads default values from database table schema.
@@ -420,7 +424,11 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function tableName()
     {
-        return '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
+        if (static::$_tableName === null) {
+            static::$_tableName = '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
+        }
+
+        return static::$_tableName;
     }
 
     /**
