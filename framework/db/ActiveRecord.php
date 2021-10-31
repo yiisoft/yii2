@@ -115,9 +115,11 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function loadDefaultValues($skipIfSet = true)
     {
-        foreach (static::getTableSchema()->columns as $column) {
-            if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)) {
-                $this->{$column->name} = $column->defaultValue;
+        $columns = static::getTableSchema()->columns;
+        foreach ($this->attributes() as $name) {
+            $defaultValue = $columns[$name]->defaultValue;
+            if ($defaultValue !== null && (!$skipIfSet || $this->getAttribute($name) === null)) {
+                $this->setAttribute($name, $defaultValue);
             }
         }
 
