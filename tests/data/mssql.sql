@@ -280,7 +280,8 @@ CREATE TABLE [dbo].[bit_values] (
     ) ON [PRIMARY]
 );
 
-INSERT INTO [dbo].[bit_values] ([val]) VALUES (0), (1);
+INSERT INTO [dbo].[bit_values] (id, val) VALUES (1, 0);
+INSERT INTO [dbo].[bit_values] (id, val) VALUES (2, 1);
 
 CREATE TABLE [T_constraints_1]
 (
