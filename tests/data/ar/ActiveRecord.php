@@ -19,6 +19,6 @@ class ActiveRecord extends \yii\db\ActiveRecord
 
     public static function getDb()
     {
-        return static::$db;
+        return self::$db;
     }
 }
