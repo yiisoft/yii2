@@ -153,7 +153,7 @@ class BaseVarDumper
      * @param string|true $offset the line offset at left: string appended to lines or `true` to auto detect offset 
      * @return string a string representation of the variable
      */
-    public static function export($var, $offset = true)
+    public static function export($var, $offset = '')
     {
         self::$_output = '';
         if ($offset === true) {
