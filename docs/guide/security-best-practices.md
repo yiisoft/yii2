@@ -33,7 +33,7 @@ In Yii, most probably you'll use [form validation](input-validation.md) to do al
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
@@ -46,7 +46,7 @@ contexts.
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Command_Injection>
+- <https://owasp.org/www-community/attacks/Command_Injection>
 - <https://www.owasp.org/index.php/Code_Injection>
 - <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
 
