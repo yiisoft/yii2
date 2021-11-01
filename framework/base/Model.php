@@ -1006,7 +1006,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns whether there is an element at the specified offset.
      * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `isset($model[$offset])`.
-     * @param mixed $offset the offset to check on.
+     * @param string $offset the offset to check on.
      * @return bool whether or not an offset exists.
      */
     public function offsetExists($offset)
@@ -1018,7 +1018,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns the element at the specified offset.
      * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$value = $model[$offset];`.
-     * @param mixed $offset the offset to retrieve element.
+     * @param string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
@@ -1029,20 +1029,20 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Sets the element at the specified offset.
      * This method is required by the SPL interface [[\ArrayAccess]].
-     * It is implicitly called when you use something like `$model[$offset] = $item;`.
-     * @param int $offset the offset to set element
-     * @param mixed $item the element value
+     * It is implicitly called when you use something like `$model[$offset] = $value;`.
+     * @param string $offset the offset to set element
+     * @param mixed $value the element value
      */
-    public function offsetSet($offset, $item)
+    public function offsetSet($offset, $value)
     {
-        $this->$offset = $item;
+        $this->$offset = $value;
     }
 
     /**
      * Sets the element value at the specified offset to null.
      * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
-     * @param mixed $offset the offset to unset element
+     * @param string $offset the offset to unset element
      */
     public function offsetUnset($offset)
     {
