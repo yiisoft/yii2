@@ -153,7 +153,7 @@ class BaseVarDumper
      * @param string|true $offset the line offset at left: string appended to lines or `true` to auto detect offset 
      * @return string a string representation of the variable
      */
-    public static function export($var, $offset = '')
+    public static function export($var, $offset = true)
     {
         self::$_output = '';
         if ($offset === true) {
@@ -171,7 +171,7 @@ class BaseVarDumper
      * @param int $level depth level
      * @param string $offset the line offset at left
      */
-    private static function exportInternal($var, $level, $offset = '')
+    private static function exportInternal($var, $level, $offset)
     {
         switch (gettype($var)) {
             case 'NULL':
@@ -216,7 +216,7 @@ class BaseVarDumper
                             }
                             self::exportInternal($varAsArray, $level);
                             return;
-                        } elseif ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
+                        } elseif (method_exists($var, '__toString')) {
                             $output = var_export($var->__toString(), true);
                         } else {
                             $outputBackup = self::$_output;
@@ -258,7 +258,7 @@ class BaseVarDumper
         $closureTokens = [];
         $pendingParenthesisCount = 0;
         foreach ($tokens as $token) {
-            if (isset($token[0]) && $token[0] === T_FUNCTION) {
+            if (isset($token[0]) && ($token[0] === T_FUNCTION || (defined('T_FN') && $token[0] === T_FN))) {
                 $closureTokens[] = $token[1];
                 continue;
             }
