@@ -1592,11 +1592,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testBit()
     {
-        $falseBit = BitValues::findOne(1);
-        $this->assertEquals(false, $falseBit->val);
+        $falseBit = BitValues::findOne(['id' => 1]);
+        $this->assertEquals(false, $falseBit->getAttribute('val'));
 
-        $trueBit = BitValues::findOne(2);
-        $this->assertEquals(true, $trueBit->val);
+        $trueBit = BitValues::findOne(['id' => 2]);
+        $this->assertEquals(true, $trueBit->getAttribute('val'));
     }
 
     public function testLinkWhenRelationIsIndexed2()
