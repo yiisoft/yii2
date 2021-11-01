@@ -336,12 +336,13 @@ INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_5', 5);
 DROP TABLE IF EXISTS `bit_values` CASCADE;
 
 CREATE TABLE `bit_values` (
-  `id`      INT(11) NOT NULL AUTO_INCREMENT,
-  `val` bit(1) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `val` BIT(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');
+INSERT INTO `bit_values` (val) VALUES (b'0');
+INSERT INTO `bit_values` (val) VALUES (b'1');
 
 CREATE TABLE `T_constraints_1`
 (
