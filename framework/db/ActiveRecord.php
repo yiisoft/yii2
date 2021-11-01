@@ -117,9 +117,11 @@ class ActiveRecord extends BaseActiveRecord
     {
         $columns = static::getTableSchema()->columns;
         foreach ($this->attributes() as $name) {
-            $defaultValue = $columns[$name]->defaultValue;
-            if ($defaultValue !== null && (!$skipIfSet || $this->getAttribute($name) === null)) {
-                $this->setAttribute($name, $defaultValue);
+            if (isset($columns[$name])) {
+                $defaultValue = $columns[$name]->defaultValue;
+                if ($defaultValue !== null && (!$skipIfSet || $this->getAttribute($name) === null)) {
+                    $this->setAttribute($name, $defaultValue);
+                }
             }
         }
 
