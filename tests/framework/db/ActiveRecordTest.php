@@ -1346,7 +1346,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(33.22, $model->numeric_col);
         $this->assertEquals(true, $model->bool_col2);
 
-        // cropped model with 2 attributes/columns
+        // Cropped model with 2 attributes/columns
         $model = new CroppedType();
         $model->loadDefaultValues();
         $this->assertEquals(['int_col' => null, 'int_col2' => 1], $model->toArray());
