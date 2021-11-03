@@ -274,14 +274,13 @@ IF OBJECT_ID('[dbo].[bit_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bit_values
 
 CREATE TABLE [dbo].[bit_values] (
     [id] [int] IDENTITY NOT NULL,
-    [val] [bit](1) NOT NULL,
+    [val] [bit] NOT NULL,
     CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
         [id] ASC
     ) ON [PRIMARY]
 );
 
-INSERT INTO [dbo].[bit_values] ([val]) VALUES (0);
-INSERT INTO [dbo].[bit_values] ([val]) VALUES (1);
+INSERT INTO [dbo].[bit_values] ([val]) VALUES (0), (1);
 
 CREATE TABLE [T_constraints_1]
 (
