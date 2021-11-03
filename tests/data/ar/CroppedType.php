@@ -13,7 +13,7 @@ namespace yiiunit\data\ar;
  * @property int $int_col
  * @property int $int_col2 DEFAULT 1
  */
-class СroppedType extends ActiveRecord
+class CroppedType extends ActiveRecord
 {
     /**
      * @inheritDoc
