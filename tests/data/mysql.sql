@@ -341,8 +341,7 @@ CREATE TABLE `bit_values` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `bit_values` (val) VALUES (b'0');
-INSERT INTO `bit_values` (val) VALUES (b'1');
+INSERT INTO `bit_values` (val) VALUES (b'0'), (b'1');
 
 CREATE TABLE `T_constraints_1`
 (
