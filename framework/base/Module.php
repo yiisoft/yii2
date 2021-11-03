@@ -202,7 +202,7 @@ class Module extends ServiceLocator
     {
         parent::init();
 
-        if ($this->controllerNamespace === null && $this->getReflection()->inNamespace()) {
+        if ($this->controllerNamespace === null) {
             $this->controllerNamespace = $this->getReflection()->getNamespaceName() . '\controllers';
         }
     }
@@ -214,6 +214,11 @@ class Module extends ServiceLocator
      */
     protected function getReflection()
     {
+        // Starting with PHP 7.4 reflection classes unserializable
+        if (PHP_VERSION_ID >= 70400) {
+            return new ReflectionObject($this);
+        }
+
         if ($this->_reflection === null) {
             $this->_reflection = new ReflectionObject($this);
         }
