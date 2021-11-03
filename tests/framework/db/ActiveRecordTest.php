@@ -1349,7 +1349,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Cropped model with 2 attributes/columns
         $model = new CroppedType();
         $model->loadDefaultValues();
-        $this->assertEquals(['int_col' => null, 'int_col2' => 1], $model->toArray());
+        $this->assertEquals(['int_col2' => 1], $model->toArray());
         
         if ($this instanceof CubridActiveRecordTest) {
             // cubrid has non-standard timestamp representation
