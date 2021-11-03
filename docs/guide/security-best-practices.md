@@ -47,7 +47,7 @@ contexts.
 Further reading on the topic:
 
 - <https://owasp.org/www-community/attacks/Command_Injection>
-- <https://www.owasp.org/index.php/Code_Injection>
+- <https://owasp.org/www-community/attacks/Code_Injection>
 - <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
 
 
