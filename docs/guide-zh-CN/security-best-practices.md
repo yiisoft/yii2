@@ -48,7 +48,7 @@ Yii 提供了大量的工具来在不同的上下文执行转义。
 
 - <https://owasp.org/www-community/attacks/Command_Injection>
 - <https://owasp.org/www-community/attacks/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 避免 SQL 注入
@@ -151,7 +151,7 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 防止 CSRF 攻击
