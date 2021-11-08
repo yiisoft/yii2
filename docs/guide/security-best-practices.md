@@ -48,7 +48,7 @@ Further reading on the topic:
 
 - <https://owasp.org/www-community/attacks/Command_Injection>
 - <https://owasp.org/www-community/attacks/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 Avoiding SQL injections
@@ -151,7 +151,7 @@ Note that HtmlPurifier processing is quite heavy so consider adding caching.
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 Avoiding CSRF
