@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.44 under development
 ------------------------
-
+- Enh #13105: Add yiiActiveForm validate_only property for skipping form auto-submission (ptolomaues)
 - Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
 - Enh #18328: Raise warning when trying to register a file after `View::endPage()` has been called (perlexed)
 - Enh #18812: Added error messages and optimized "error" methods in `yii\helpers\BaseJson` (WinterSilence, samdark)
