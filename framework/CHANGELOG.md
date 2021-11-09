@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #18988: Fix default value of `yii\console\controllers\MessageController::$translator` (WinterSilence)
 - Enh #19005: Add `yii\base\Module::setControllerPath()` (WinterSilence)
 
+
 2.0.43 August 09, 2021
 ----------------------
 
