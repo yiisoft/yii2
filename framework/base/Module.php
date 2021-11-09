@@ -115,7 +115,7 @@ class Module extends ServiceLocator
      */
     private $_basePath;
     /**
-     * @var string|null The root directory that contains the controller classes for this module.
+     * @var string The root directory that contains the controller classes for this module.
      */
     private $_controllerPath;
     /**
