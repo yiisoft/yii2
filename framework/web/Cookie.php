@@ -22,7 +22,7 @@ class Cookie extends \yii\base\BaseObject
      * during CSRF-prone request methods (e.g. POST, PUT, PATCH etc).
      * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will not include the cookie, however a GET request will.
      * When a user follows a link from https://otherdomain.com to https://yourdomain.com it will include the cookie
-     * @see $sameSite
+     * @see sameSite
      */
     const SAME_SITE_LAX = 'Lax';
     /**
@@ -30,7 +30,7 @@ class Cookie extends \yii\base\BaseObject
      * regardless of the request method and even when following a regular link.
      * E.g. a GET request from https://otherdomain.com to https://yourdomain.com or a user following a link from
      * https://otherdomain.com to https://yourdomain.com will not include the cookie.
-     * @see $sameSite
+     * @see sameSite
      */
     const SAME_SITE_STRICT = 'Strict';
     /**
@@ -38,8 +38,8 @@ class Cookie extends \yii\base\BaseObject
      * i.e in responses to both first-party and cross-origin requests.
      * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will include the cookie.
      * Note: If `sameSite` is set to None, the `secure` attribute must be set to `true` (otherwise the cookie will be blocked by the browser).
-     * @see $sameSite
-     * @see $secure
+     * @see sameSite
+     * @see secure
      * @since 2.0.43
      */
     const SAME_SITE_NONE = 'None';

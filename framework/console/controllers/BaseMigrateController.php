@@ -54,7 +54,7 @@ abstract class BaseMigrateController extends Controller
      * as the migration name contains the origin of the migration in the history, which is not the case when
      * using multiple migration paths.
      *
-     * @see $migrationNamespaces
+     * @see migrationNamespaces
      */
     public $migrationPath = ['@app/migrations'];
     /**
@@ -75,7 +75,7 @@ abstract class BaseMigrateController extends Controller
      * ```
      *
      * @since 2.0.10
-     * @see $migrationPath
+     * @see migrationPath
      */
     public $migrationNamespaces = [];
     /**
