@@ -48,7 +48,7 @@ JavaScript や SQL のコンテキストでは、対象となる文字は別の�
 
 - <https://owasp.org/www-community/attacks/Command_Injection>
 - <https://owasp.org/www-community/attacks/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 SQL インジェクションを回避する
@@ -151,7 +151,7 @@ HtmlPurifier の処理は非常に重いので、キャッシュを追加する�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 CSRF を回避する
