@@ -37,6 +37,10 @@ class ModuleTest extends TestCase
         $this->assertEquals('parent', $child2->module->id);
     }
 
+    /**
+     * @test getControllerPath()
+     * @test setControllerPath()
+     */
     public function testControllerPath()
     {
         $module = new TestModule('test');
