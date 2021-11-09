@@ -424,11 +424,11 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function tableName()
     {
-        if (static::$_tableName === null) {
-            static::$_tableName = '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
+        if (self::$_tableName === null) {
+            self::$_tableName = '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
         }
-
-        return static::$_tableName;
+        
+        return self::$_tableName;
     }
 
     /**
