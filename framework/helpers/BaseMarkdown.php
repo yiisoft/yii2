@@ -45,7 +45,7 @@ class BaseMarkdown
     /**
      * @var string the markdown flavor to use when none is specified explicitly.
      * Defaults to `original`.
-     * @see $flavors
+     * @see flavors
      */
     public static $defaultFlavor = 'original';
 
