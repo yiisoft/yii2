@@ -9,8 +9,9 @@ namespace yii\helpers;
 
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
-use yii\web\JsExpression;
 use yii\base\Model;
+use yii\web\JsExpression;
+use yii\web\JsonResponseFormatter;
 
 /**
  * BaseJson provides concrete implementation for [[Json]].
