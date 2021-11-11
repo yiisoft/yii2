@@ -1922,6 +1922,24 @@ class BaseHtml
     }
 
     /**
+     * Returns list of separated CSS classes.
+     *
+     * @param string|array $classes the inline classes
+     * @return array
+     * @since 2.0.44
+     */
+    protected static function splitCssClasses($classes)
+    {
+        if (is_array($classes)) {
+            return array_unique(static::splitCssClasses(implode(' ', $classes)));
+        }
+
+        $classes = preg_split('/\s+/', $classes, -1, PREG_SPLIT_NO_EMPTY);
+
+        return $classes === false ? [] : $classes;
+    }
+
+    /**
      * Renders the HTML tag attributes.
      *
      * Attributes whose values are of boolean type will be treated as
@@ -1981,7 +1999,7 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
-                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                    $html .= " $name=\"" . static::encode(implode(' ', static::splitCssClasses($classes))) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
                         continue;
@@ -2018,13 +2036,14 @@ class BaseHtml
      */
     public static function addCssClass(&$options, $class)
     {
+        if (is_string($class)) {
+            $class = static::splitCssClasses($class);
+        }
         if (isset($options['class'])) {
-            if (is_array($options['class'])) {
-                $options['class'] = self::mergeCssClasses($options['class'], (array) $class);
-            } else {
-                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array) $class));
+            if (is_string($options['class'])) {
+                $options['class'] = static::splitCssClasses($options['class']);
             }
+            $options['class'] = static::mergeCssClasses($options['class'], $class);
         } else {
             $options['class'] = $class;
         }
@@ -2041,14 +2060,21 @@ class BaseHtml
     private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
     {
         foreach ($additionalClasses as $key => $class) {
-            if (is_int($key) && !in_array($class, $existingClasses)) {
-                $existingClasses[] = $class;
+            if (is_int($key)) {
+                if (!in_array($class, $existingClasses, true)) {
+                    $existingClasses[] = $class;
+                }
             } elseif (!isset($existingClasses[$key])) {
+                // remove duplicate
+                $index = array_search($class, $existingClasses, true);
+                if ($index !== false) {
+                    $existingClasses[$index];
+                }
                 $existingClasses[$key] = $class;
             }
         }
 
-        return array_unique($existingClasses);
+        return $existingClasses;
     }
 
     /**
@@ -2059,22 +2085,18 @@ class BaseHtml
      */
     public static function removeCssClass(&$options, $class)
     {
+        if (is_string($class)) {
+            $class = static::splitCssClasses($class);
+        }
         if (isset($options['class'])) {
-            if (is_array($options['class'])) {
-                $classes = array_diff($options['class'], (array) $class);
-                if (empty($classes)) {
-                    unset($options['class']);
-                } else {
-                    $options['class'] = $classes;
-                }
+            if (is_string($options['class'])) {
+                $options['class'] = static::splitCssClasses($options['class']);
+            }
+            $classes = array_diff($options['class'], $class);
+            if (empty($classes)) {
+                unset($options['class']);
             } else {
-                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $classes = array_diff($classes, (array) $class);
-                if (empty($classes)) {
-                    unset($options['class']);
-                } else {
-                    $options['class'] = implode(' ', $classes);
-                }
+                $options['class'] = $classes;
             }
         }
     }
