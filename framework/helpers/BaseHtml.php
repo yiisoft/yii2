@@ -1999,7 +1999,7 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
-                    $html .= " $name=\"" . static::encode(implode(' ', static::splitCssClasses($classes))) . '"';
+                    $html .= " $name=\"" . static::encode(implode(' ', static::splitCssClasses($value))) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
                         continue;
