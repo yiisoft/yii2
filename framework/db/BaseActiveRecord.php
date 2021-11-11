@@ -52,7 +52,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_AFTER_FIND = 'afterFind';
     /**
-     * @event yii\base\ModelEvent an event that is triggered before inserting a record.
+     * @event ModelEvent an event that is triggered before inserting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the insertion.
      */
     const EVENT_BEFORE_INSERT = 'beforeInsert';
@@ -61,7 +61,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_AFTER_INSERT = 'afterInsert';
     /**
-     * @event yii\base\ModelEvent an event that is triggered before updating a record.
+     * @event ModelEvent an event that is triggered before updating a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the update.
      */
     const EVENT_BEFORE_UPDATE = 'beforeUpdate';
@@ -70,7 +70,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_AFTER_UPDATE = 'afterUpdate';
     /**
-     * @event yii\base\ModelEvent an event that is triggered before deleting a record.
+     * @event ModelEvent an event that is triggered before deleting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the deletion.
      */
     const EVENT_BEFORE_DELETE = 'beforeDelete';
