@@ -2068,7 +2068,7 @@ class BaseHtml
                 // remove duplicate
                 $index = array_search($class, $existingClasses, true);
                 if ($index !== false) {
-                    $existingClasses[$index];
+                    unset($existingClasses[$index]);
                 }
                 $existingClasses[$key] = $class;
             }
