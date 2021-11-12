@@ -117,7 +117,7 @@ You can get details about the syntax in [Quoting Table and Column Names](db-dao.
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 Avoiding XSS
