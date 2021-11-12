@@ -305,8 +305,8 @@ class Sort extends BaseObject
      * @param string $param the value of the [[sortParam]].
      * @return array the valid sort attributes.
      * @since 2.0.12
-     * @see $separator for the attribute name separator.
-     * @see $sortParam
+     * @see separator for the attribute name separator.
+     * @see sortParam
      */
     protected function parseSortParam($param)
     {

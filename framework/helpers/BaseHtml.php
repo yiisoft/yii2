@@ -1745,7 +1745,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the checkboxes.
      * The array keys are the checkbox values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the checkbox list container tag.
      * The following options are specially handled:
      *
@@ -1787,7 +1786,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the radio buttons.
      * The array keys are the radio values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
@@ -1829,7 +1827,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the input fields.
      * The array keys are the input values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the input list. The supported special options
      * depend on the input type specified by `$type`.
      * @return string the generated input list
