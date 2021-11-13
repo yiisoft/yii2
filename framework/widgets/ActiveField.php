@@ -20,6 +20,8 @@ use yii\web\JsExpression;
  *
  * For more details and usage information on ActiveField, see the [guide article on forms](guide:input-forms).
  *
+ * @property-read string $inputId The attribute `id` of the input element
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -306,7 +308,7 @@ class ActiveField extends Component
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
-     * @see $errorOptions
+     * @see errorOptions
      * @return $this the field object itself.
      */
     public function error($options = [])

@@ -170,7 +170,8 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $category = 'test.category1';
         $message = 'test message';
-        $sourceFileContent = "Yii::t('{$category}', '{$message}');";
+        $message2 = 'test message 2';
+        $sourceFileContent = "Yii::t('{$category}', '{$message}');\n\Yii::t('{$category}', '{$message2}');";
         $this->createSourceFile($sourceFileContent);
 
         $this->saveConfigFile($this->getConfig());
@@ -178,6 +179,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
         $messages = $this->loadMessages($category);
         $this->assertArrayHasKey($message, $messages, "\"$message\" is missing in translation file. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($message2, $messages, "\"$message2\" is missing in translation file. Command output:\n\n" . $out);
     }
 
     /**

@@ -46,7 +46,7 @@ Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`
 
 The term "class" refers to all classes and interfaces here.
 
-- Classes should be named using `CamelCase`.
+- Classes should be named using `StudlyCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
 - All code in a class must be indented with 4 spaces.
