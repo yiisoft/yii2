@@ -228,8 +228,8 @@ class Sort extends BaseObject
         $attributeOrders = $this->getAttributeOrders($recalculate);
         $orders = [];
         foreach ($attributeOrders as $attribute => $direction) {
-            $definition = $this->attributes[$attribute];
-            $columns = $definition[$direction === SORT_ASC ? 'asc' : 'desc'];
+            $definition = $this->attributes[$attribute]??'_id ';
+            $columns = $definition[$direction === SORT_ASC ? 'asc' : 'desc'] ?? 'asc';
             if (is_array($columns) || $columns instanceof \Traversable) {
                 foreach ($columns as $name => $dir) {
                     $orders[$name] = $dir;
