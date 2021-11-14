@@ -20,7 +20,6 @@ Yii Framework 2 Change Log
 - Enh #18858: Reduce memory usage in `yii\base\View::afterRender` method (LeoOnTheEarth)
 - Bug #18880: Fix `yii\helpers\ArrayHelper::toArray()` for `DateTime` objects in PHP >= 7.4 (rhertogh)
 - Bug #18883: Fix `yii\web\HeaderCollection::fromArray()` now ensures lower case keys (rhertogh)
-- Bug #18886: Fix default return of `yii\db\Migration::safeUp()` and `yii\db\Migration::safeDown()` (WinterSilence)
 - Enh #18899: Replace usages of `strpos` with `strncmp` and remove redundant usage of `array_merge` and `array_values` (AlexGx)
 - Bug #18898: Fix `yii\helpers\Inflector::camel2words()` to work with words ending with 0 (michaelarnauts)
 - Enh #18904: Improve Captcha client-side validation (hexkir)
@@ -29,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #18955: Check `yiisoft/yii2-swiftmailer` before using as default mailer in `yii\base\Application` (WinterSilence)
 - Bug #18988: Fix default value of `yii\console\controllers\MessageController::$translator` (WinterSilence)
 - Bug #18993: Load defaults by `attributes()` in `yii\db\ActiveRecord::loadDefaultValues()` (WinterSilence)
+- Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
 
 
 2.0.43 August 09, 2021
