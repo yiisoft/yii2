@@ -117,7 +117,7 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 XSS を回避する

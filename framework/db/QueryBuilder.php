@@ -159,7 +159,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * default expression builders for this query builder. See [[expressionBuilders]] docs for details.
      *
      * @return array
-     * @see $expressionBuilders
+     * @see expressionBuilders
      * @since 2.0.14
      */
     protected function defaultExpressionBuilders()
