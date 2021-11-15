@@ -259,7 +259,7 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/CSRF>
+- <https://owasp.org/www-community/attacks/csrf>
 - <https://www.owasp.org/index.php/SameSite>
 
 
