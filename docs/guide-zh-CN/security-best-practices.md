@@ -255,7 +255,7 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/CSRF>
+- <https://owasp.org/www-community/attacks/csrf>
 
 
 防止文件暴露
