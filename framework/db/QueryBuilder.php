@@ -73,7 +73,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * In case you want to add custom conditions support, use the [[setConditionClasses()]] method.
      *
-     * @see setConditonClasses()
+     * @see setConditionClasses()
      * @see defaultConditionClasses()
      * @since 2.0.14
      */

@@ -18,12 +18,12 @@ class UrlNormalizerRedirectException extends \yii\base\Exception
 {
     /**
      * @var array|string the parameter to be used to generate a valid URL for redirection
-     * @see [[\yii\helpers\Url::to()]]
+     * @see \yii\helpers\Url::to()
      */
     public $url;
     /**
      * @var bool|string the URI scheme to use in the generated URL for redirection
-     * @see [[\yii\helpers\Url::to()]]
+     * @see \yii\helpers\Url::to()
      */
     public $scheme;
     /**
