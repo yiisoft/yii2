@@ -246,7 +246,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Unserialization is disabled to prevent remote code execution in case application
      * calls unserialize() on user input containing specially crafted string.
-     * @see CVE-2020-15148
+     * @see https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-15148
      * @since 2.0.38
      */
     public function __wakeup()
