@@ -124,7 +124,6 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * @var bool|array a boolean value indicating whether to cache all cookies, or an array of
      * cookie names indicating which cookies can be cached. Be very careful with caching cookies, because
      * it may leak sensitive or private data stored in cookies to unwanted users.
-     * @see insertResponseCollectionIntoData()
      * @since 2.0.4
      */
     public $cacheCookies = false;
@@ -132,7 +131,6 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * @var bool|array a boolean value indicating whether to cache all HTTP headers, or an array of
      * HTTP header names (case-insensitive) indicating which HTTP headers can be cached.
      * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
-     * @see insertResponseCollectionIntoData()
      * @since 2.0.4
      */
     public $cacheHeaders = true;

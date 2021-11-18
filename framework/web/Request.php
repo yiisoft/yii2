@@ -1216,9 +1216,9 @@ class Request extends \yii\base\Request
      *
      * @param string $ips comma separated IP list
      * @return string|null IP as string. Null is returned if IP can not be determined from header.
-     * @see getUserHost
-     * @see ipHeader
-     * @see trustedHeaders
+     * @see getUserHost()
+     * @see ipHeaders
+     * @see getTrustedHeaders()
      * @since 2.0.28
      */
     protected function getUserIpFromIpHeader($ips)
