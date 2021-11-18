@@ -387,7 +387,7 @@ You may read the [SecureFlag wiki article](https://owasp.org/www-community/contr
 Starting with Yii 2.0.21 the [[yii\web\Cookie::sameSite]] setting is supported. It requires PHP version 7.3.0 or higher.
 The purpose of the `sameSite` setting is to prevent CSRF (Cross-Site Request Forgery) attacks.
 If the browser supports the `sameSite` setting it will only include the cookie according to the specified policy ('Lax' or 'Strict').
-You may read the [SameSite wiki article](https://www.owasp.org/index.php/SameSite) for more details.
+You may read the [SameSite wiki article](https://owasp.org/www-community/SameSite) for more details.
 For better security, an exception will be thrown if `sameSite` is used with an unsupported version of PHP.
 To use this feature across different PHP versions check the version first. E.g.
 ```php
