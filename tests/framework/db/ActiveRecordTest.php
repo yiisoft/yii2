@@ -35,6 +35,7 @@ use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
+use yiiunit\data\ar\CroppedType;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\TestCase;
@@ -1344,7 +1345,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
         $this->assertEquals(true, $model->bool_col2);
-
         if ($this instanceof CubridActiveRecordTest) {
             // cubrid has non-standard timestamp representation
             $this->assertEquals('12:00:00 AM 01/01/2002', $model->time);
@@ -1354,15 +1354,18 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $model = new Type();
         $model->char_col2 = 'not something';
-
         $model->loadDefaultValues();
         $this->assertEquals('not something', $model->char_col2);
 
         $model = new Type();
         $model->char_col2 = 'not something';
-
         $model->loadDefaultValues(false);
         $this->assertEquals('something', $model->char_col2);
+        
+        // Cropped model with 2 attributes/columns
+        $model = new CroppedType();
+        $model->loadDefaultValues();
+        $this->assertEquals(['int_col2' => 1], $model->toArray());
     }
 
     public function testUnlinkAllViaTable()

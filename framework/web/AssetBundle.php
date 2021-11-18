@@ -40,7 +40,7 @@ class AssetBundle extends BaseObject
      * If you do not set this property, it means the source asset files are located under [[basePath]].
      *
      * You can use either a directory or an alias of the directory.
-     * @see $publishOptions
+     * @see publishOptions
      */
     public $sourcePath;
     /**

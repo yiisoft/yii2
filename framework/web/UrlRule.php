@@ -42,27 +42,27 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     const CREATION_ONLY = 2;
     /**
      * Represents the successful URL generation by last [[createUrl()]] call.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
     const CREATE_STATUS_SUCCESS = 0;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because rule does not support
      * creating URLs.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
     const CREATE_STATUS_PARSING_ONLY = 1;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched route.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
     const CREATE_STATUS_ROUTE_MISMATCH = 2;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched
      * or missing parameters.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
     const CREATE_STATUS_PARAMS_MISMATCH = 4;
@@ -543,7 +543,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      *
      * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
     public function getCreateUrlStatus()
