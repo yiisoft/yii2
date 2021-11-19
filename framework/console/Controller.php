@@ -588,7 +588,7 @@ class Controller extends \yii\base\Controller
             // find PhpDoc tag by property name or position
             $key = isset($phpDocParams[$parameter->name]) ? $parameter->name : (isset($phpDocParams[$i]) ? $i : null);
             if ($key !== null) {
-                $comment = trim($phpDocParams[$key]['comment']);
+                $comment = $phpDocParams[$key]['comment'];
                 if ($type === null) {
                     $type = $phpDocParams[$key]['type'];
                 }
