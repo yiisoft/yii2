@@ -585,13 +585,17 @@ class Controller extends \yii\base\Controller
                     : (string) $type;
                 }
             }
-            // find tag by property name or position
+            // find PhpDoc tag by property name or position
             $key = isset($phpDocParams[$parameter->name]) ? $parameter->name : (isset($phpDocParams[$i]) ? $i : null);
             if ($key !== null) {
-                $comment = $phpDocParams[$key]['comment'];
+                $comment = trim($phpDocParams[$key]['comment']);
                 if ($type === null) {
                     $type = $phpDocParams[$key]['type'];
                 }
+            }
+            // if type still not detected, then using type of default value
+            if ($type === null && $parameter->isDefaultValueAvailable()) {
+                $type = gettype($parameter->getDefaultValue());
             }
 
             $args[$parameter->name] = [
