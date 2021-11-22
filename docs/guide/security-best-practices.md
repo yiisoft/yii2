@@ -260,7 +260,7 @@ class ContactAction extends Action
 Further reading on the topic:
 
 - <https://owasp.org/www-community/attacks/csrf>
-- <https://www.owasp.org/index.php/SameSite>
+- <https://owasp.org/www-community/SameSite>
 
 
 Avoiding file exposure
@@ -288,7 +288,7 @@ details possible. If you absolutely need it check twice that access is properly 
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Exception_Handling>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
 - <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
 
 

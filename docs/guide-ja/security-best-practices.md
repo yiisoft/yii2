@@ -260,7 +260,7 @@ class ContactAction extends Action
 このトピックについて更に読むべき文書:
 
 - <https://owasp.org/www-community/attacks/csrf>
-- <https://www.owasp.org/index.php/SameSite>
+- <https://owasp.org/www-community/SameSite>
 
 
 ファイルの曝露を回避する
@@ -288,7 +288,7 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Exception_Handling>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
 - <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
 
 
