@@ -142,8 +142,8 @@ the pattern `yii\db\*`.
 If you do not specify the [[yii\log\Target::categories|categories]] property, it means the target will process
 messages of *any* category.
 
-Besides whitelisting the categories by the [[yii\log\Target::categories|categories]] property, you may also
-blacklist certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
+In addition to specifying allowed categories using the [[yii\log\Target::categories|categories]] property, you may also
+exclude certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
 is found or matches one of the patterns in this property, it will NOT be processed by the target.
  
 The following target configuration specifies that the target should only process error and warning messages
@@ -216,6 +216,17 @@ You may configure `logVars` to be an empty array to totally disable the inclusio
 Or if you want to implement your own way of providing context information, you may override the
 [[yii\log\Target::getContextMessage()]] method.
 
+In case some of your request fields contain sensitive information you would not like to log (e.g. passwords, access tokens),
+you may additionally configure `maskVars` property. By default, the following request parameters will be masked with `***`:
+`$_SERVER[HTTP_AUTHORIZATION]`, `$_SERVER[PHP_AUTH_USER]`, `$_SERVER[PHP_AUTH_PW]`, but you can set your own:
+
+```php
+[
+    'class' => 'yii\log\FileTarget',
+    'logVars' => ['_SERVER'],
+    'maskVars' => ['_SERVER.HTTP_X_PASSWORD']
+]
+```
 
 ### Message Trace Level <span id="trace-level"></span>
 

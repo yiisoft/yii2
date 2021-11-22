@@ -73,7 +73,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 Soyez prudent lorsque vous nommez des éléments de formulaire tels que des boutons de soumission. Selon la [documentation de jQuery](https://api.jquery.com/submit/), certains noms sont réservés car ils peuvent créer des conflits :
 
-> Les éléments *forms* et leurs éléments enfants ne devraient par utiliser des noms de champ de saisie, ou des identifiants que entrent en conflit avec les propriétés d'un élément de *form*, tels que `submit`, `length`, ou `method`. Les conflits de noms peuvent créer des échecs troublants. Pour une liste complètes des règles et pour vérifier votre code HTML à propos de ces problèmes, reportez-vous à [DOMLint](http://kangax.github.io/domlint/).
+> Les éléments *forms* et leurs éléments enfants ne devraient par utiliser des noms de champ de saisie, ou des identifiants que entrent en conflit avec les propriétés d'un élément de *form*, tels que `submit`, `length`, ou `method`. Les conflits de noms peuvent créer des échecs troublants. Pour une liste complètes des règles et pour vérifier votre code HTML à propos de ces problèmes, reportez-vous à [DOMLint](https://kangax.github.io/domlint/).
 
 Des balises additionnelles HTML peuvent être ajoutées au formulaire en utilisant du HTML simple ou en utilisant les méthodes de la classe [[yii\helpers\Html|Html]]-helper comme cela est fait dans l'exemple ci-dessus avec le [[yii\helpers\Html::submitButton()|bouton de soumission]].
 
@@ -93,7 +93,7 @@ Des balises additionnelles HTML peuvent être ajoutées au formulaire en utilisa
 Création d'une liste déroulante <span id="creating-activeform-dropdownlist"></span>
 -------------------------------
 
-Vous pouvez utiliser la méthode [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) de ActiveForm pour créer une liste déroulante :
+Vous pouvez utiliser la méthode [dropDownList()](https://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) de ActiveForm pour créer une liste déroulante :
 
 
 ```php

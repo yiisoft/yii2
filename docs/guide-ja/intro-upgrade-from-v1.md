@@ -29,15 +29,15 @@ Yii 2.0 は PHP 5.4 以上を必要とします。PHP 5.4 は、Yii 1.1 によ�
 この結果として、注意を払うべき言語レベルでの違いが数多くあります。
 以下は PHP に関する主要な変更点の要約です。
 
-- [名前空間](http://php.net/manual/ja/language.namespaces.php)。
-- [無名関数](http://php.net/manual/ja/functions.anonymous.php)。
+- [名前空間](https://www.php.net/manual/ja/language.namespaces.php)。
+- [無名関数](https://www.php.net/manual/ja/functions.anonymous.php)。
 - 配列の短縮構文 `[...要素...]` が `array(...要素...)` の代りに使われています。
 - 短縮形の echo タグ `<?=` がビュー・ファイルに使われています。PHP 5.4 以降は、この形を使っても安全です。
-- [SPL のクラスとインタフェイス](http://php.net/manual/ja/book.spl.php)。
-- [遅延静的束縛(Late Static Bindings)](http://php.net/manual/ja/language.oop5.late-static-bindings.php)。
-- [日付と時刻](http://php.net/manual/ja/book.datetime.php)。
-- [トレイト](http://php.net/manual/ja/language.oop5.traits.php)。
-- [国際化(intl)](http://php.net/manual/ja/book.intl.php)。
+- [SPL のクラスとインタフェイス](https://www.php.net/manual/ja/book.spl.php)。
+- [遅延静的束縛(Late Static Bindings)](https://www.php.net/manual/ja/language.oop5.late-static-bindings.php)。
+- [日付と時刻](https://www.php.net/manual/ja/book.datetime.php)。
+- [トレイト](https://www.php.net/manual/ja/language.oop5.traits.php)。
+- [国際化(intl)](https://www.php.net/manual/ja/book.intl.php)。
   Yii 2.0 は国際化の機能をサポートするために `intl` PHP 拡張を利用しています。
 
 
@@ -292,7 +292,7 @@ Yii 2.0 はコメント・ブロックからコマンドのヘルプ情報を自
 国際化
 ------
 
-Yii 2.0 は [PECL intl PHP モジュール](http://pecl.php.net/package/intl) に賛同して、内蔵の日付フォーマッタと数字フォーマッタの部品を取り除きました。
+Yii 2.0 は [PECL intl PHP モジュール](https://pecl.php.net/package/intl) に賛同して、内蔵の日付フォーマッタと数字フォーマッタの部品を取り除きました。
 
 メッセージは `i18n` アプリケーション・コンポーネント経由で翻訳されるようになりました。
 このコンポーネントは一連のメッセージ・ソースを管理するもので、

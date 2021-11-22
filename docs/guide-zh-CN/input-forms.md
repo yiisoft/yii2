@@ -107,7 +107,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 > 表单和它们的子元素不应该使用与表单的属性冲突的 input name 或 id，
 > 例如 `submit`，`length`，或者 `method`。
-> 要检查你的标签是否存在这些问题，一个完整的规则列表详见 [DOMLint](http://kangax.github.io/domlint/)。
+> 要检查你的标签是否存在这些问题，一个完整的规则列表详见 [DOMLint](https://kangax.github.io/domlint/)。
 
 额外的 HTML 标签可以使用纯 HTML 或者 [[yii\helpers\Html|Html]]-辅助类中的方法来添加到表单中，就如上面例子中的
 [[yii\helpers\Html::submitButton()|Html::submitButton()]]。
@@ -233,8 +233,8 @@ Pjax::end();
 
 #### 提交按钮和文件上传中的值
 
-在处理 [[https://github.com/jquery/jquery/issues/2321|files]] 和
-[[https://github.com/jquery/jquery/issues/2321|submit button values]] 
+在处理 [文件](https://github.com/jquery/jquery/issues/2321) 和
+[提交按钮值](https://github.com/jquery/jquery/issues/2321)
 时使用 `jQuery.serializeArray()` 
 有已知的问题，这将不会被解决，而是被弃用，
 以支持 HTML5 中引入的 FormData 类。

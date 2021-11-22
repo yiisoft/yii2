@@ -14,8 +14,8 @@ use yii\base\ErrorHandler;
 /**
  * BaseMessage serves as a base class that implements the [[send()]] method required by [[MessageInterface]].
  *
- * By default, [[send()]] will use the "mail" application component to send the current message.
- * The "mail" application component should be a mailer instance implementing [[MailerInterface]].
+ * By default, [[send()]] will use the "mailer" application component to send the current message.
+ * The "mailer" application component should be a mailer instance implementing [[MailerInterface]].
  *
  * @see BaseMailer
  *
@@ -35,7 +35,7 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
      * Sends this email message.
      * @param MailerInterface $mailer the mailer that should be used to send this message.
      * If no mailer is given it will first check if [[mailer]] is set and if not,
-     * the "mail" application component will be used instead.
+     * the "mailer" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */
     public function send(MailerInterface $mailer = null)

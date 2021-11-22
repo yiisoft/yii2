@@ -14,6 +14,7 @@ use Closure;
  *
  * @author Robert Korulczyk <robert@korulczyk.pl>
  * @internal
+ * @since 2.0.16
  */
 trait RetryAcquireTrait
 {

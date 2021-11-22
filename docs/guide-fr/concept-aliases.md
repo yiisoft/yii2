@@ -101,7 +101,7 @@ Yii prédéfinit un jeu d'alias pour faire référence à des chemins de fichier
 - `@web`, l'URL de base de l'application en cours d'exécution. Cet alias a la même valeur que  [[yii\web\Request::baseUrl]].
 - `@vendor`, le [[yii\base\Application::vendorPath|dossier vendor de Composer]]. Valeur par défaut `@app/vendor`.
 - `@bower`, le dossier racine des [paquets bower](http://bower.io/). Valeur par défaut `@vendor/bower`.
-- `@npm`, le dossier racine des [paquets npm](https://www.npmjs.org/). Valeur par défaut `@vendor/npm`.
+- `@npm`, le dossier racine des [paquets npm](https://www.npmjs.com/). Valeur par défaut `@vendor/npm`.
 
 L'alias `@yii` est défini lorsque vous incluez le fichier `Yii.php` dans votre [script d'entrée](structure-entry-scripts.md). Les alias restants sont définis dans le constructeur de l'application au moment où la [configuration](concept-configurations.md) de l'application est appliquée.
  .

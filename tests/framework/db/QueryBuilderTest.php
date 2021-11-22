@@ -7,7 +7,10 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
+use yii\db\conditions\LikeCondition;
+use yii\db\conditions\InCondition;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
@@ -41,10 +44,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Exception
-     * @return QueryBuilder
      * @param bool $reset
      * @param bool $open
+     * @return QueryBuilder
+     * @throws \Exception
      */
     protected function getQueryBuilder($reset = true, $open = false)
     {
@@ -81,7 +84,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigInteger(),
                 [
                     'mysql' => 'bigint(20)',
-                    'postgres' => 'bigint',
+                    'pgsql' => 'bigint',
                     'sqlite' => 'bigint',
                     'oci' => 'NUMBER(20)',
                     'sqlsrv' => 'bigint',
@@ -93,7 +96,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigInteger()->notNull(),
                 [
                     'mysql' => 'bigint(20) NOT NULL',
-                    'postgres' => 'bigint NOT NULL',
+                    'pgsql' => 'bigint NOT NULL',
                     'sqlite' => 'bigint NOT NULL',
                     'oci' => 'NUMBER(20) NOT NULL',
                     'sqlsrv' => 'bigint NOT NULL',
@@ -105,7 +108,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigInteger()->check('value > 5'),
                 [
                     'mysql' => 'bigint(20) CHECK (value > 5)',
-                    'postgres' => 'bigint CHECK (value > 5)',
+                    'pgsql' => 'bigint CHECK (value > 5)',
                     'sqlite' => 'bigint CHECK (value > 5)',
                     'oci' => 'NUMBER(20) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
@@ -117,7 +120,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigInteger(8),
                 [
                     'mysql' => 'bigint(8)',
-                    'postgres' => 'bigint',
+                    'pgsql' => 'bigint',
                     'sqlite' => 'bigint',
                     'oci' => 'NUMBER(8)',
                     'sqlsrv' => 'bigint',
@@ -129,7 +132,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigInteger(8)->check('value > 5'),
                 [
                     'mysql' => 'bigint(8) CHECK (value > 5)',
-                    'postgres' => 'bigint CHECK (value > 5)',
+                    'pgsql' => 'bigint CHECK (value > 5)',
                     'sqlite' => 'bigint CHECK (value > 5)',
                     'oci' => 'NUMBER(8) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
@@ -141,7 +144,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigPrimaryKey(),
                 [
                     'mysql' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'bigserial NOT NULL PRIMARY KEY',
+                    'pgsql' => 'bigserial NOT NULL PRIMARY KEY',
                     'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
@@ -150,7 +153,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->binary(),
                 [
                     'mysql' => 'blob',
-                    'postgres' => 'bytea',
+                    'pgsql' => 'bytea',
                     'sqlite' => 'blob',
                     'oci' => 'BLOB',
                     'sqlsrv' => 'varbinary(max)',
@@ -163,7 +166,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'tinyint(1) NOT NULL DEFAULT 1',
                     'sqlite' => 'boolean NOT NULL DEFAULT 1',
-                    'sqlsrv' => 'tinyint(1) NOT NULL DEFAULT 1',
+                    'sqlsrv' => 'bit NOT NULL DEFAULT 1',
                     'cubrid' => 'smallint NOT NULL DEFAULT 1',
                 ],
             ],
@@ -172,10 +175,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->boolean(),
                 [
                     'mysql' => 'tinyint(1)',
-                    'postgres' => 'boolean',
+                    'pgsql' => 'boolean',
                     'sqlite' => 'boolean',
                     'oci' => 'NUMBER(1)',
-                    'sqlsrv' => 'tinyint(1)',
+                    'sqlsrv' => 'bit',
                     'cubrid' => 'smallint',
                 ],
             ],
@@ -193,7 +196,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->char()->notNull(),
                 [
                     'mysql' => 'char(1) NOT NULL',
-                    'postgres' => 'char(1) NOT NULL',
+                    'pgsql' => 'char(1) NOT NULL',
                     'sqlite' => 'char(1) NOT NULL',
                     'oci' => 'CHAR(1) NOT NULL',
                     'cubrid' => 'char(1) NOT NULL',
@@ -213,7 +216,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->char(6),
                 [
                     'mysql' => 'char(6)',
-                    'postgres' => 'char(6)',
+                    'pgsql' => 'char(6)',
                     'sqlite' => 'char(6)',
                     'oci' => 'CHAR(6)',
                     'cubrid' => 'char(6)',
@@ -224,7 +227,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->char(),
                 [
                     'mysql' => 'char(1)',
-                    'postgres' => 'char(1)',
+                    'pgsql' => 'char(1)',
                     'sqlite' => 'char(1)',
                     'oci' => 'CHAR(1)',
                     'cubrid' => 'char(1)',
@@ -235,7 +238,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //    $this->date()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
             //    [
             //        'mysql' => ,
-            //        'postgres' => ,
+            //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
             //        'cubrid' => ,
@@ -246,7 +249,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->date()->notNull(),
                 [
                     'mysql' => 'date NOT NULL',
-                    'postgres' => 'date NOT NULL',
+                    'pgsql' => 'date NOT NULL',
                     'sqlite' => 'date NOT NULL',
                     'oci' => 'DATE NOT NULL',
                     'sqlsrv' => 'date NOT NULL',
@@ -258,7 +261,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->date(),
                 [
                     'mysql' => 'date',
-                    'postgres' => 'date',
+                    'pgsql' => 'date',
                     'sqlite' => 'date',
                     'oci' => 'DATE',
                     'sqlsrv' => 'date',
@@ -270,7 +273,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //    $this->dateTime()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
             //    [
             //        'mysql' => ,
-            //        'postgres' => ,
+            //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
             //        'cubrid' => ,
@@ -280,7 +283,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_DATETIME . ' NOT NULL',
                 $this->dateTime()->notNull(),
                 [
-                    'postgres' => 'timestamp(0) NOT NULL',
+                    'pgsql' => 'timestamp(0) NOT NULL',
                     'sqlite' => 'datetime NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
                     'sqlsrv' => 'datetime NOT NULL',
@@ -291,7 +294,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_DATETIME,
                 $this->dateTime(),
                 [
-                    'postgres' => 'timestamp(0)',
+                    'pgsql' => 'timestamp(0)',
                     'sqlite' => 'datetime',
                     'oci' => 'TIMESTAMP',
                     'sqlsrv' => 'datetime',
@@ -303,7 +306,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->decimal()->check('value > 5.6'),
                 [
                     'mysql' => 'decimal(10,0) CHECK (value > 5.6)',
-                    'postgres' => 'numeric(10,0) CHECK (value > 5.6)',
+                    'pgsql' => 'numeric(10,0) CHECK (value > 5.6)',
                     'sqlite' => 'decimal(10,0) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'decimal(18,0) CHECK (value > 5.6)',
@@ -315,7 +318,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->decimal()->notNull(),
                 [
                     'mysql' => 'decimal(10,0) NOT NULL',
-                    'postgres' => 'numeric(10,0) NOT NULL',
+                    'pgsql' => 'numeric(10,0) NOT NULL',
                     'sqlite' => 'decimal(10,0) NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
                     'sqlsrv' => 'decimal(18,0) NOT NULL',
@@ -327,7 +330,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->decimal(12, 4)->check('value > 5.6'),
                 [
                     'mysql' => 'decimal(12,4) CHECK (value > 5.6)',
-                    'postgres' => 'numeric(12,4) CHECK (value > 5.6)',
+                    'pgsql' => 'numeric(12,4) CHECK (value > 5.6)',
                     'sqlite' => 'decimal(12,4) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'decimal(12,4) CHECK (value > 5.6)',
@@ -339,7 +342,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->decimal(12, 4),
                 [
                     'mysql' => 'decimal(12,4)',
-                    'postgres' => 'numeric(12,4)',
+                    'pgsql' => 'numeric(12,4)',
                     'sqlite' => 'decimal(12,4)',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'decimal(12,4)',
@@ -351,7 +354,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->decimal(),
                 [
                     'mysql' => 'decimal(10,0)',
-                    'postgres' => 'numeric(10,0)',
+                    'pgsql' => 'numeric(10,0)',
                     'sqlite' => 'decimal(10,0)',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'decimal(18,0)',
@@ -363,7 +366,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->double()->check('value > 5.6'),
                 [
                     'mysql' => 'double CHECK (value > 5.6)',
-                    'postgres' => 'double precision CHECK (value > 5.6)',
+                    'pgsql' => 'double precision CHECK (value > 5.6)',
                     'sqlite' => 'double CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
@@ -375,7 +378,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->double()->notNull(),
                 [
                     'mysql' => 'double NOT NULL',
-                    'postgres' => 'double precision NOT NULL',
+                    'pgsql' => 'double precision NOT NULL',
                     'sqlite' => 'double NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
                     'sqlsrv' => 'float NOT NULL',
@@ -387,7 +390,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->double(16)->check('value > 5.6'),
                 [
                     'mysql' => 'double CHECK (value > 5.6)',
-                    'postgres' => 'double precision CHECK (value > 5.6)',
+                    'pgsql' => 'double precision CHECK (value > 5.6)',
                     'sqlite' => 'double CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
@@ -410,7 +413,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->double(),
                 [
                     'mysql' => 'double',
-                    'postgres' => 'double precision',
+                    'pgsql' => 'double precision',
                     'sqlite' => 'double',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'float',
@@ -422,7 +425,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->float()->check('value > 5.6'),
                 [
                     'mysql' => 'float CHECK (value > 5.6)',
-                    'postgres' => 'double precision CHECK (value > 5.6)',
+                    'pgsql' => 'double precision CHECK (value > 5.6)',
                     'sqlite' => 'float CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
@@ -434,7 +437,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->float()->notNull(),
                 [
                     'mysql' => 'float NOT NULL',
-                    'postgres' => 'double precision NOT NULL',
+                    'pgsql' => 'double precision NOT NULL',
                     'sqlite' => 'float NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
                     'sqlsrv' => 'float NOT NULL',
@@ -446,7 +449,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->float(16)->check('value > 5.6'),
                 [
                     'mysql' => 'float CHECK (value > 5.6)',
-                    'postgres' => 'double precision CHECK (value > 5.6)',
+                    'pgsql' => 'double precision CHECK (value > 5.6)',
                     'sqlite' => 'float CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
@@ -469,7 +472,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->float(),
                 [
                     'mysql' => 'float',
-                    'postgres' => 'double precision',
+                    'pgsql' => 'double precision',
                     'sqlite' => 'float',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'float',
@@ -481,7 +484,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->check('value > 5'),
                 [
                     'mysql' => 'int(11) CHECK (value > 5)',
-                    'postgres' => 'integer CHECK (value > 5)',
+                    'pgsql' => 'integer CHECK (value > 5)',
                     'sqlite' => 'integer CHECK (value > 5)',
                     'oci' => 'NUMBER(10) CHECK (value > 5)',
                     'sqlsrv' => 'int CHECK (value > 5)',
@@ -493,7 +496,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->notNull(),
                 [
                     'mysql' => 'int(11) NOT NULL',
-                    'postgres' => 'integer NOT NULL',
+                    'pgsql' => 'integer NOT NULL',
                     'sqlite' => 'integer NOT NULL',
                     'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'int NOT NULL',
@@ -505,7 +508,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer(8)->check('value > 5'),
                 [
                     'mysql' => 'int(8) CHECK (value > 5)',
-                    'postgres' => 'integer CHECK (value > 5)',
+                    'pgsql' => 'integer CHECK (value > 5)',
                     'sqlite' => 'integer CHECK (value > 5)',
                     'oci' => 'NUMBER(8) CHECK (value > 5)',
                     'sqlsrv' => 'int CHECK (value > 5)',
@@ -517,7 +520,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer(8),
                 [
                     'mysql' => 'int(8)',
-                    'postgres' => 'integer',
+                    'pgsql' => 'integer',
                     'sqlite' => 'integer',
                     'oci' => 'NUMBER(8)',
                     'sqlsrv' => 'int',
@@ -529,7 +532,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer(),
                 [
                     'mysql' => 'int(11)',
-                    'postgres' => 'integer',
+                    'pgsql' => 'integer',
                     'sqlite' => 'integer',
                     'oci' => 'NUMBER(10)',
                     'sqlsrv' => 'int',
@@ -541,7 +544,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->money()->check('value > 0.0'),
                 [
                     'mysql' => 'decimal(19,4) CHECK (value > 0.0)',
-                    'postgres' => 'numeric(19,4) CHECK (value > 0.0)',
+                    'pgsql' => 'numeric(19,4) CHECK (value > 0.0)',
                     'sqlite' => 'decimal(19,4) CHECK (value > 0.0)',
                     'oci' => 'NUMBER(19,4) CHECK (value > 0.0)',
                     'sqlsrv' => 'decimal(19,4) CHECK (value > 0.0)',
@@ -553,7 +556,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->money()->notNull(),
                 [
                     'mysql' => 'decimal(19,4) NOT NULL',
-                    'postgres' => 'numeric(19,4) NOT NULL',
+                    'pgsql' => 'numeric(19,4) NOT NULL',
                     'sqlite' => 'decimal(19,4) NOT NULL',
                     'oci' => 'NUMBER(19,4) NOT NULL',
                     'sqlsrv' => 'decimal(19,4) NOT NULL',
@@ -565,7 +568,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->money(16, 2)->check('value > 0.0'),
                 [
                     'mysql' => 'decimal(16,2) CHECK (value > 0.0)',
-                    'postgres' => 'numeric(16,2) CHECK (value > 0.0)',
+                    'pgsql' => 'numeric(16,2) CHECK (value > 0.0)',
                     'sqlite' => 'decimal(16,2) CHECK (value > 0.0)',
                     'oci' => 'NUMBER(16,2) CHECK (value > 0.0)',
                     'sqlsrv' => 'decimal(16,2) CHECK (value > 0.0)',
@@ -577,7 +580,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->money(16, 2),
                 [
                     'mysql' => 'decimal(16,2)',
-                    'postgres' => 'numeric(16,2)',
+                    'pgsql' => 'numeric(16,2)',
                     'sqlite' => 'decimal(16,2)',
                     'oci' => 'NUMBER(16,2)',
                     'sqlsrv' => 'decimal(16,2)',
@@ -589,7 +592,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->money(),
                 [
                     'mysql' => 'decimal(19,4)',
-                    'postgres' => 'numeric(19,4)',
+                    'pgsql' => 'numeric(19,4)',
                     'sqlite' => 'decimal(19,4)',
                     'oci' => 'NUMBER(19,4)',
                     'sqlsrv' => 'decimal(19,4)',
@@ -601,7 +604,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey()->check('value > 5'),
                 [
                     'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY CHECK (value > 5)',
+                    'pgsql' => 'serial NOT NULL PRIMARY KEY CHECK (value > 5)',
                     'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL CHECK (value > 5)',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY CHECK (value > 5)',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY CHECK (value > 5)',
@@ -629,7 +632,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey(),
                 [
                     'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'pgsql' => 'serial NOT NULL PRIMARY KEY',
                     'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
@@ -641,7 +644,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->tinyInteger(2),
                 [
                     'mysql' => 'tinyint(2)',
-                    'postgres' => 'smallint',
+                    'pgsql' => 'smallint',
                     'sqlite' => 'tinyint',
                     'oci' => 'NUMBER(2)',
                     'sqlsrv' => 'tinyint',
@@ -653,20 +656,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->tinyInteger()->unsigned(),
                 [
                     'mysql' => 'tinyint(3) UNSIGNED',
-                    'postgres' => 'smallint UNSIGNED',
                     'sqlite' => 'tinyint UNSIGNED',
                     'cubrid' => 'smallint UNSIGNED',
-                ],
+                ]
             ],
             [
                 Schema::TYPE_TINYINT,
                 $this->tinyInteger(),
                 [
                     'mysql' => 'tinyint(3)',
-                    'postgres' => 'smallint',
+                    'pgsql' => 'smallint',
                     'sqlite' => 'tinyint',
                     'oci' => 'NUMBER(3)',
-                    'sqlsrv' => 'smallint',
+                    'sqlsrv' => 'tinyint',
                     'cubrid' => 'smallint',
                 ],
             ],
@@ -675,7 +677,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->smallInteger(8),
                 [
                     'mysql' => 'smallint(8)',
-                    'postgres' => 'smallint',
+                    'pgsql' => 'smallint',
                     'sqlite' => 'smallint',
                     'oci' => 'NUMBER(8)',
                     'sqlsrv' => 'smallint',
@@ -687,7 +689,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->smallInteger(),
                 [
                     'mysql' => 'smallint(6)',
-                    'postgres' => 'smallint',
+                    'pgsql' => 'smallint',
                     'sqlite' => 'smallint',
                     'oci' => 'NUMBER(5)',
                     'sqlsrv' => 'smallint',
@@ -695,20 +697,20 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_STRING . ' CHECK (value LIKE "test%")',
-                $this->string()->check('value LIKE "test%"'),
+                Schema::TYPE_STRING . " CHECK (value LIKE 'test%')",
+                $this->string()->check("value LIKE 'test%'"),
                 [
-                    'mysql' => 'varchar(255) CHECK (value LIKE "test%")',
-                    'sqlite' => 'varchar(255) CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'varchar(255) CHECK (value LIKE "test%")',
-                    'cubrid' => 'varchar(255) CHECK (value LIKE "test%")',
+                    'mysql' => "varchar(255) CHECK (value LIKE 'test%')",
+                    'sqlite' => "varchar(255) CHECK (value LIKE 'test%')",
+                    'sqlsrv' => "nvarchar(255) CHECK (value LIKE 'test%')",
+                    'cubrid' => "varchar(255) CHECK (value LIKE 'test%')",
                 ],
             ],
             [
                 Schema::TYPE_STRING . ' CHECK (value LIKE \'test%\')',
                 $this->string()->check('value LIKE \'test%\''),
                 [
-                    'postgres' => 'varchar(255) CHECK (value LIKE \'test%\')',
+                    'pgsql' => 'varchar(255) CHECK (value LIKE \'test%\')',
                     'oci' => 'VARCHAR2(255) CHECK (value LIKE \'test%\')',
                 ],
             ],
@@ -717,28 +719,28 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string()->notNull(),
                 [
                     'mysql' => 'varchar(255) NOT NULL',
-                    'postgres' => 'varchar(255) NOT NULL',
+                    'pgsql' => 'varchar(255) NOT NULL',
                     'sqlite' => 'varchar(255) NOT NULL',
                     'oci' => 'VARCHAR2(255) NOT NULL',
-                    'sqlsrv' => 'varchar(255) NOT NULL',
+                    'sqlsrv' => 'nvarchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL',
                 ],
             ],
             [
-                Schema::TYPE_STRING . '(32) CHECK (value LIKE "test%")',
-                $this->string(32)->check('value LIKE "test%"'),
+                Schema::TYPE_STRING . "(32) CHECK (value LIKE 'test%')",
+                $this->string(32)->check("value LIKE 'test%'"),
                 [
-                    'mysql' => 'varchar(32) CHECK (value LIKE "test%")',
-                    'sqlite' => 'varchar(32) CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'varchar(32) CHECK (value LIKE "test%")',
-                    'cubrid' => 'varchar(32) CHECK (value LIKE "test%")',
+                    'mysql' => "varchar(32) CHECK (value LIKE 'test%')",
+                    'sqlite' => "varchar(32) CHECK (value LIKE 'test%')",
+                    'sqlsrv' => "nvarchar(32) CHECK (value LIKE 'test%')",
+                    'cubrid' => "varchar(32) CHECK (value LIKE 'test%')",
                 ],
             ],
             [
                 Schema::TYPE_STRING . '(32) CHECK (value LIKE \'test%\')',
                 $this->string(32)->check('value LIKE \'test%\''),
                 [
-                    'postgres' => 'varchar(32) CHECK (value LIKE \'test%\')',
+                    'pgsql' => 'varchar(32) CHECK (value LIKE \'test%\')',
                     'oci' => 'VARCHAR2(32) CHECK (value LIKE \'test%\')',
                 ],
             ],
@@ -747,10 +749,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string(32),
                 [
                     'mysql' => 'varchar(32)',
-                    'postgres' => 'varchar(32)',
+                    'pgsql' => 'varchar(32)',
                     'sqlite' => 'varchar(32)',
                     'oci' => 'VARCHAR2(32)',
-                    'sqlsrv' => 'varchar(32)',
+                    'sqlsrv' => 'nvarchar(32)',
                     'cubrid' => 'varchar(32)',
                 ],
             ],
@@ -759,28 +761,28 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->string(),
                 [
                     'mysql' => 'varchar(255)',
-                    'postgres' => 'varchar(255)',
+                    'pgsql' => 'varchar(255)',
                     'sqlite' => 'varchar(255)',
                     'oci' => 'VARCHAR2(255)',
-                    'sqlsrv' => 'varchar(255)',
+                    'sqlsrv' => 'nvarchar(255)',
                     'cubrid' => 'varchar(255)',
                 ],
             ],
             [
-                Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")',
-                $this->text()->check('value LIKE "test%"'),
+                Schema::TYPE_TEXT . " CHECK (value LIKE 'test%')",
+                $this->text()->check("value LIKE 'test%'"),
                 [
-                    'mysql' => 'text CHECK (value LIKE "test%")',
-                    'sqlite' => 'text CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'text CHECK (value LIKE "test%")',
-                    'cubrid' => 'varchar CHECK (value LIKE "test%")',
+                    'mysql' => "text CHECK (value LIKE 'test%')",
+                    'sqlite' => "text CHECK (value LIKE 'test%')",
+                    'sqlsrv' => "nvarchar(max) CHECK (value LIKE 'test%')",
+                    'cubrid' => "varchar CHECK (value LIKE 'test%')",
                 ],
             ],
             [
                 Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
                 $this->text()->check('value LIKE \'test%\''),
                 [
-                    'postgres' => 'text CHECK (value LIKE \'test%\')',
+                    'pgsql' => 'text CHECK (value LIKE \'test%\')',
                     'oci' => 'CLOB CHECK (value LIKE \'test%\')',
                 ],
             ],
@@ -789,55 +791,55 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->text()->notNull(),
                 [
                     'mysql' => 'text NOT NULL',
-                    'postgres' => 'text NOT NULL',
+                    'pgsql' => 'text NOT NULL',
                     'sqlite' => 'text NOT NULL',
                     'oci' => 'CLOB NOT NULL',
-                    'sqlsrv' => 'text NOT NULL',
+                    'sqlsrv' => 'nvarchar(max) NOT NULL',
                     'cubrid' => 'varchar NOT NULL',
                 ],
             ],
             [
-                Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")',
-                $this->text(255)->check('value LIKE "test%"'),
+                Schema::TYPE_TEXT . " CHECK (value LIKE 'test%')",
+                $this->text()->check("value LIKE 'test%'"),
                 [
-                    'mysql' => 'text CHECK (value LIKE "test%")',
-                    'sqlite' => 'text CHECK (value LIKE "test%")',
-                    'sqlsrv' => 'text CHECK (value LIKE "test%")',
-                    'cubrid' => 'varchar CHECK (value LIKE "test%")',
+                    'mysql' => "text CHECK (value LIKE 'test%')",
+                    'sqlite' => "text CHECK (value LIKE 'test%')",
+                    'sqlsrv' => "nvarchar(max) CHECK (value LIKE 'test%')",
+                    'cubrid' => "varchar CHECK (value LIKE 'test%')",
                 ],
-                Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")',
+                Schema::TYPE_TEXT . " CHECK (value LIKE 'test%')",
             ],
             [
-                Schema::TYPE_TEXT . '(255) CHECK (value LIKE \'test%\')',
-                $this->text(255)->check('value LIKE \'test%\''),
+                Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
+                $this->text()->check('value LIKE \'test%\''),
                 [
-                    'postgres' => 'text CHECK (value LIKE \'test%\')',
+                    'pgsql' => 'text CHECK (value LIKE \'test%\')',
                     'oci' => 'CLOB CHECK (value LIKE \'test%\')',
                 ],
                 Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
             ],
             [
-                Schema::TYPE_TEXT . '(255) NOT NULL',
-                $this->text(255)->notNull(),
+                Schema::TYPE_TEXT . ' NOT NULL',
+                $this->text()->notNull(),
                 [
                     'mysql' => 'text NOT NULL',
-                    'postgres' => 'text NOT NULL',
+                    'pgsql' => 'text NOT NULL',
                     'sqlite' => 'text NOT NULL',
                     'oci' => 'CLOB NOT NULL',
-                    'sqlsrv' => 'text NOT NULL',
+                    'sqlsrv' => 'nvarchar(max) NOT NULL',
                     'cubrid' => 'varchar NOT NULL',
                 ],
                 Schema::TYPE_TEXT . ' NOT NULL',
             ],
             [
-                Schema::TYPE_TEXT . '(255)',
-                $this->text(255),
+                Schema::TYPE_TEXT,
+                $this->text(),
                 [
                     'mysql' => 'text',
-                    'postgres' => 'text',
+                    'pgsql' => 'text',
                     'sqlite' => 'text',
                     'oci' => 'CLOB',
-                    'sqlsrv' => 'text',
+                    'sqlsrv' => 'nvarchar(max)',
                     'cubrid' => 'varchar',
                 ],
                 Schema::TYPE_TEXT,
@@ -847,10 +849,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->text(),
                 [
                     'mysql' => 'text',
-                    'postgres' => 'text',
+                    'pgsql' => 'text',
                     'sqlite' => 'text',
                     'oci' => 'CLOB',
-                    'sqlsrv' => 'text',
+                    'sqlsrv' => 'nvarchar(max)',
                     'cubrid' => 'varchar',
                 ],
             ],
@@ -859,7 +861,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //    $this->time()->check("value BETWEEN '12:00:00' AND '13:01:01'"),
             //    [
             //        'mysql' => ,
-            //        'postgres' => ,
+            //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
             //        'cubrid' => ,
@@ -869,7 +871,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIME . ' NOT NULL',
                 $this->time()->notNull(),
                 [
-                    'postgres' => 'time(0) NOT NULL',
+                    'pgsql' => 'time(0) NOT NULL',
                     'sqlite' => 'time NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
                     'sqlsrv' => 'time NOT NULL',
@@ -880,7 +882,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIME,
                 $this->time(),
                 [
-                    'postgres' => 'time(0)',
+                    'pgsql' => 'time(0)',
                     'sqlite' => 'time',
                     'oci' => 'TIMESTAMP',
                     'sqlsrv' => 'time',
@@ -892,7 +894,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //    $this->timestamp()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
             //    [
             //        'mysql' => ,
-            //        'postgres' => ,
+            //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
             //        'cubrid' => ,
@@ -902,10 +904,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIMESTAMP . ' NOT NULL',
                 $this->timestamp()->notNull(),
                 [
-                    'postgres' => 'timestamp(0) NOT NULL',
+                    'pgsql' => 'timestamp(0) NOT NULL',
                     'sqlite' => 'timestamp NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
-                    'sqlsrv' => 'timestamp NOT NULL',
+                    'sqlsrv' => 'datetime NOT NULL',
                     'cubrid' => 'timestamp NOT NULL',
                 ],
             ],
@@ -918,10 +920,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                      * @see \yiiunit\framework\db\mysql\QueryBuilderTest::columnTypes()
                      */
 
-                    'postgres' => 'timestamp(0)',
+                    'pgsql' => 'timestamp(0)',
                     'sqlite' => 'timestamp',
                     'oci' => 'TIMESTAMP',
-                    'sqlsrv' => 'timestamp',
+                    'sqlsrv' => 'datetime',
                     'cubrid' => 'timestamp',
                 ],
             ],
@@ -929,9 +931,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIMESTAMP . ' NULL DEFAULT NULL',
                 $this->timestamp()->defaultValue(null),
                 [
-                    'postgres' => 'timestamp(0) NULL DEFAULT NULL',
+                    'pgsql' => 'timestamp(0) NULL DEFAULT NULL',
                     'sqlite' => 'timestamp NULL DEFAULT NULL',
-                    'sqlsrv' => 'timestamp NULL DEFAULT NULL',
+                    'sqlsrv' => 'datetime NULL DEFAULT NULL',
                     'cubrid' => 'timestamp NULL DEFAULT NULL',
                 ],
             ],
@@ -940,8 +942,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey()->unsigned(),
                 [
                     'mysql' => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'pgsql' => 'serial NOT NULL PRIMARY KEY',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
             [
@@ -949,8 +951,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->bigPrimaryKey()->unsigned(),
                 [
                     'mysql' => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'bigserial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'pgsql' => 'bigserial NOT NULL PRIMARY KEY',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
             [
@@ -958,75 +960,90 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->integer()->comment('test comment'),
                 [
                     'mysql' => "int(11) COMMENT 'test comment'",
-                    'postgres' => 'integer',
                     'sqlsrv' => 'int',
                     'cubrid' => "int COMMENT 'test comment'",
                 ],
+                [
+                    'sqlsrv' => 'integer',
+                ]
             ],
             [
                 Schema::TYPE_PK . " COMMENT 'test comment'",
                 $this->primaryKey()->comment('test comment'),
                 [
                     'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                 ],
+                [
+                    'sqlsrv' => 'pk',
+                ]
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first(),
                 [
                     'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                 ],
+                [
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
+                    'sqlsrv' => 'pk',
+                ]
             ],
             [
                 Schema::TYPE_INTEGER . ' FIRST',
                 $this->integer()->first(),
                 [
                     'mysql' => 'int(11) FIRST',
-                    'postgres' => 'integer',
-                    'oci' => 'NUMBER(10)',
                     'sqlsrv' => 'int',
                     'cubrid' => 'int FIRST',
                 ],
+                [
+                    'oci' => 'NUMBER(10)',
+                    'pgsql' => 'integer',
+                    'sqlsrv' => 'integer',
+                ]
             ],
             [
                 Schema::TYPE_STRING . ' FIRST',
                 $this->string()->first(),
                 [
                     'mysql' => 'varchar(255) FIRST',
-                    'postgres' => 'varchar(255)',
-                    'oci' => 'VARCHAR2(255)',
-                    'sqlsrv' => 'varchar(255)',
+                    'sqlsrv' => 'nvarchar(255)',
                     'cubrid' => 'varchar(255) FIRST',
                 ],
+                [
+                    'oci' => 'VARCHAR2(255)',
+                    'sqlsrv' => 'string',
+                ]
             ],
             [
                 Schema::TYPE_INTEGER . ' NOT NULL FIRST',
                 $this->integer()->append('NOT NULL')->first(),
                 [
                     'mysql' => 'int(11) NOT NULL FIRST',
-                    'postgres' => 'integer NOT NULL',
-                    'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'int NOT NULL',
                     'cubrid' => 'int NOT NULL FIRST',
                 ],
+                [
+                    'oci' => 'NUMBER(10) NOT NULL',
+                    'sqlsrv' => 'integer NOT NULL',
+                ]
             ],
             [
                 Schema::TYPE_STRING . ' NOT NULL FIRST',
                 $this->string()->append('NOT NULL')->first(),
                 [
                     'mysql' => 'varchar(255) NOT NULL FIRST',
-                    'postgres' => 'varchar(255) NOT NULL',
-                    'oci' => 'VARCHAR2(255) NOT NULL',
-                    'sqlsrv' => 'varchar(255) NOT NULL',
+                    'sqlsrv' => 'nvarchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL FIRST',
                 ],
+                [
+                    'oci' => 'VARCHAR2(255) NOT NULL',
+                    'sqlsrv' => 'string NOT NULL',
+                ]
             ],
         ];
 
@@ -1047,8 +1064,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $qb = $this->getQueryBuilder();
 
         foreach ($this->columnTypes() as $item) {
+            /** @var ColumnSchemaBuilder $builder */
             list($column, $builder, $expected) = $item;
-            $expectedColumnSchemaBuilder = isset($item[3]) ? $item[3] : $column;
+            if (isset($item[3][$this->driverName])) {
+                $expectedColumnSchemaBuilder = $item[3][$this->driverName];
+            } elseif (isset($item[3]) && !is_array($item[3])) {
+                $expectedColumnSchemaBuilder = $item[3];
+            } else {
+                $expectedColumnSchemaBuilder = $column;
+            }
 
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));
@@ -1067,11 +1091,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($this->columnTypes() as $item) {
             list($column, $builder, $expected) = $item;
             if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
-                  strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
-                  strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
-                  strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
-                  strncmp(substr($column, -5), 'FIRST', 5) === 0
-                )) {
+                strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
+                strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
+                strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
+                strncmp(substr($column, -5), 'FIRST', 5) === 0
+            )) {
                 $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
@@ -1122,7 +1146,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
 
-            [['in', 'id', 1],   '[[id]]=:qp0', [':qp0' => 1]],
+            [['in', 'id', 1], '[[id]]=:qp0', [':qp0' => 1]],
             [['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1]],
             [['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1]],
             'composite in' => [
@@ -1130,11 +1154,36 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '([[id]], [[name]]) IN ((:qp0, :qp1))',
                 [':qp0' => 1, ':qp1' => 'oy'],
             ],
+            'composite in (just one column)' => [
+                ['in', ['id'], [['id' => 1, 'name' => 'Name1'], ['id' => 2, 'name' => 'Name2']]],
+                '[[id]] IN (:qp0, :qp1)',
+                [':qp0' => 1, ':qp1' => 2],
+            ],
+            'composite in using array objects (just one column)' => [
+                ['in', new TraversableObject(['id']), new TraversableObject([
+                    ['id' => 1, 'name' => 'Name1'],
+                    ['id' => 2, 'name' => 'Name2'],
+                ])],
+                '[[id]] IN (:qp0, :qp1)',
+                [':qp0' => 1, ':qp1' => 2],
+            ],
 
             // in using array objects.
             [['id' => new TraversableObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
 
             [['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
+
+            //in using array objects containing null value
+            [['in', 'id', new TraversableObject([1, null])], '[[id]]=:qp0 OR [[id]] IS NULL', [':qp0' => 1]],
+            [['in', 'id', new TraversableObject([1, 2, null])], '[[id]] IN (:qp0, :qp1) OR [[id]] IS NULL', [':qp0' => 1, ':qp1' => 2]],
+
+            //not in using array object containing null value
+            [['not in', 'id', new TraversableObject([1, null])], '[[id]]<>:qp0 AND [[id]] IS NOT NULL', [':qp0' => 1]],
+            [['not in', 'id', new TraversableObject([1, 2, null])], '[[id]] NOT IN (:qp0, :qp1) AND [[id]] IS NOT NULL', [':qp0' => 1, ':qp1' => 2]],
+
+            //in using array object containing only null value
+            [['in', 'id', new TraversableObject([null])], '[[id]] IS NULL', []],
+            [['not in', 'id', new TraversableObject([null])], '[[id]] IS NOT NULL', []],
 
             'composite in using array objects' => [
                 ['in', new TraversableObject(['id', 'name']), new TraversableObject([
@@ -1144,6 +1193,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
                 [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
+
+            // in object conditions
+            [new InCondition('id', 'in', 1), '[[id]]=:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'in', [1]), '[[id]]=:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'not in', 1), '[[id]]<>:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'not in', [1]), '[[id]]<>:qp0', [':qp0' => 1]],
+            [new InCondition('id', 'in', [1, 2]), '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
+            [new InCondition('id', 'not in', [1, 2]), '[[id]] NOT IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
+
             // exists
             [['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
@@ -1159,6 +1217,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '[[date]] >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', []],
             [['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '[[date]] >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2]],
             [['=', 'date', (new Query())->select('max(date)')->from('test')->where(['id' => 5])], '[[date]] = (SELECT max(date) FROM [[test]] WHERE [[id]]=:qp0)', [':qp0' => 5]],
+            [['=', new Expression('date'), '2019-08-01'], 'date = :qp0', [':qp0' => '2019-08-01']], // operand1 is Expression
+            [['=', (new Query())->select('COUNT(*)')->from('test')->where(['id' => 6]), 0], '(SELECT COUNT(*) FROM [[test]] WHERE [[id]]=:qp0) = :qp1', [':qp0' => 6, ':qp1' => 0]],
 
             // hash condition
             [['a' => 1, 'b' => 2], '([[a]]=:qp0) AND ([[b]]=:qp1)', [':qp0' => 1, ':qp1' => 2]],
@@ -1250,10 +1310,34 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
+     * @dataProvider buildFromDataProvider
+     * @param $table
+     * @param $expected
+     * @throws \Exception
+     */
+    public function testBuildFrom($table, $expected)
+    {
+        $params = [];
+        $sql = $this->getQueryBuilder()->buildFrom([$table], $params);
+        $this->assertEquals('FROM ' . $this->replaceQuotes($expected), $sql);
+    }
+
+    public function buildFromDataProvider()
+    {
+        return [
+            ['test t1', '[[test]] [[t1]]'],
+            ['test as t1', '[[test]] [[t1]]'],
+            ['test AS t1', '[[test]] [[t1]]'],
+            ['test', '[[test]]'],
+        ];
+    }
+
+    /**
      * @dataProvider conditionProvider
      * @param array $condition
      * @param string $expected
      * @param array $expectedParams
+     * @throws \Exception
      */
     public function testBuildCondition($condition, $expected, $expectedParams)
     {
@@ -1583,17 +1667,67 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $query = new Query();
         $secondQuery = new Query();
         $secondQuery->select('id')
-              ->from('TotalTotalExample t2')
-              ->where('w > 5');
+            ->from('TotalTotalExample t2')
+            ->where('w > 5');
         $thirdQuery = new Query();
         $thirdQuery->select('id')
-              ->from('TotalTotalExample t3')
-              ->where('w = 3');
+            ->from('TotalTotalExample t3')
+            ->where('w = 3');
         $query->select('id')
-              ->from('TotalExample t1')
-              ->where(['and', 'w > 0', 'x < 2'])
-              ->union($secondQuery)
-              ->union($thirdQuery, true);
+            ->from('TotalExample t1')
+            ->where(['and', 'w > 0', 'x < 2'])
+            ->union($secondQuery)
+            ->union($thirdQuery, true);
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
+    public function testBuildWithQuery()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS ((SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2) UNION ( SELECT [[id]] FROM [[t3]] WHERE expr = 3 )) SELECT * FROM [[a2]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $with2Query = (new Query())
+            ->select('id')
+            ->from('t2')
+            ->innerJoin('a1', 't2.id = a1.id')
+            ->where('expr = 2');
+
+        $with3Query = (new Query())
+            ->select('id')
+            ->from('t3')
+            ->where('expr = 3');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1')
+            ->withQuery($with2Query->union($with3Query), 'a2')
+            ->from('a2');
+
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
+    public function testBuildWithQueryRecursive()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH RECURSIVE a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1) SELECT * FROM [[a1]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1', true)
+            ->from('a1');
+
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
@@ -1629,7 +1763,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->from('tablename');
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes(
-            'SELECT [[t]].[[id]] AS [[ID]], [[gsm]].[[username]] AS [[GSM]], [[part]].[[Part]], [[t]].[[Part_Cost]] AS [[Part Cost]], st_x(location::geometry) as lon,'
+            'SELECT [[t]].[[id]] AS [[ID]], [[gsm]].[[username]] AS [[GSM]], [[part]].[[Part]], [[t]].[[Part_Cost]] AS [[Part Cost]], st_x(location::geometry) AS [[lon]],'
             . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -2104,17 +2238,30 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     ':qp1' => 0,
                 ],
             ],
+            'no columns to update' => [
+                'T_upsert_1',
+                [
+                    'a' => 1,
+                ],
+                true,
+                null,
+                [
+                    ':qp0' => 1,
+                ],
+            ],
         ];
     }
 
     /**
-     * @depends testInitFixtures
+     * @depends      testInitFixtures
      * @dataProvider upsertProvider
      * @param string $table
      * @param array $insertColumns
      * @param array|null $updateColumns
      * @param string|string[] $expectedSQL
      * @param array $expectedParams
+     * @throws \yii\base\NotSupportedException
+     * @throws \Exception
      */
     public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
     {
@@ -2186,6 +2333,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array $columns
      * @param array $value
      * @param string $expected
+     * @throws \Exception
      */
     public function testBatchInsert($table, $columns, $value, $expected)
     {
@@ -2325,6 +2473,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '[[location]].[[title_ru]] LIKE :qp0',
                 [':qp0' => 'vi%'],
             ],
+
+            // like object conditions
+            [new LikeCondition('name', 'like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'or like', new Expression('CONCAT("test", name, "%")')), '[[name]] LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'or not like', new Expression('CONCAT("test", name, "%")')), '[[name]] NOT LIKE CONCAT("test", name, "%")', []],
+            [new LikeCondition('name', 'like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") AND [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'or like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] LIKE CONCAT("test", name, "%") OR [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            [new LikeCondition('name', 'or not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+
+            // like with expression as columnName
+            [['like', new Expression('name'), 'teststring'], 'name LIKE :qp0', [':qp0' => "%teststring%"]],
         ];
 
         // adjust dbms specific escaping

@@ -202,7 +202,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 ### Примітка:
 
 Для виявлення регресу на ранніх стадіях кожне поєднання з кодовою базою Yii на GitHub опрацьовується у
-[Travis CI](http://travis-ci.org) для автоматичного запуску тестів. Оскільки основна команда розробників не бажає
+[Travis CI](http://travis-ci.com) для автоматичного запуску тестів. Оскільки основна команда розробників не бажає
 перевантажувати сервіс, додавайте [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) до
 опису поєднання, якщо ваш "pull request":
 

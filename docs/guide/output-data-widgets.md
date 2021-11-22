@@ -335,6 +335,7 @@ To add a CheckboxColumn to the GridView, add it to the [[yii\grid\GridView::$col
 
 ```php
 echo GridView::widget([
+    'id' => 'grid',
     'dataProvider' => $dataProvider,
     'columns' => [
         // ...

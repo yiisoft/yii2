@@ -37,8 +37,8 @@
 本番運用モードにおいては、[PHP OPCache] や [APC]  など、バイトコード・キャッシュを有効にして、
 PHP ファイルをインクルードして解析するのに要する時間を最小化してください。
 
-[PHP OPcache]: http://php.net/manual/ja/book.opcache.php
-[APC]: http://php.net/manual/ja/book.apc.php
+[PHP OPcache]: https://www.php.net/manual/ja/book.opcache.php
+[APC]: https://www.php.net/manual/ja/book.apcu.php
 
 大規模なアプリケーションには、多数の小さな構成情報ファイルに分割された、非常に複雑なアプリケーション [構成情報](concept-configurations.md) を持つものがあります。
 そのような場合には、構成情報配列全体をキャッシュするという方法を考慮して下さい。

@@ -4,8 +4,8 @@ Yii 的学习曲线并不像其他 PHP 框架那样陡峭，但仍然需要一�
 
 ## PHP
 
-Yii 是一个 PHP 框架，因此请确保您 [阅读并理解语言参考](http://php.net/manual/zh/langref.php)。
-用 Yii 进行开发时，您将以面向对象的方式编写代码，因此请确保您熟悉[类与对象](https://secure.php.net/manual/en/language.oop5.basic.php)以及[命名空间](https://secure.php.net/manual/en/language.namespaces.php)。
+Yii 是一个 PHP 框架，因此请确保您 [阅读并理解语言参考](https://www.php.net/manual/zh/langref.php)。
+用 Yii 进行开发时，您将以面向对象的方式编写代码，因此请确保您熟悉[类与对象](https://www.php.net/manual/en/language.oop5.basic.php)以及[命名空间](https://www.php.net/manual/en/language.namespaces.php)。
 
 ## 面向对象编程（Object oriented programming）
 

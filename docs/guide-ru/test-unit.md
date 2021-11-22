@@ -15,7 +15,8 @@
 Запуск тестов шаблонов проектов basic и advanced
 ------------------------------------------------
 
-Следуйте инструкциям в `apps/advanced/tests/README.md` и `apps/basic/tests/README.md`.
+- [Инструкции для шаблона advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-testing.md).  
+- [Инструкции для шаблона basic](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing).
 
 Модульные тесты фреймворка
 --------------------------

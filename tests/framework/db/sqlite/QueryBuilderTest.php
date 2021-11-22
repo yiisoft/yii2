@@ -9,6 +9,7 @@ namespace yiiunit\framework\db\sqlite;
 
 use yii\db\Query;
 use yii\db\Schema;
+use yii\db\sqlite\QueryBuilder;
 use yiiunit\data\base\TraversableObject;
 
 /**
@@ -65,6 +66,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+
+        $indexName = 'myindex';
+        $schemaName = 'myschema';
+        $tableName = 'mytable';
+
+        $result['with schema'] = [
+            "CREATE INDEX {{{$schemaName}}}.[[$indexName]] ON {{{$tableName}}} ([[C_index_1]])",
+            function (QueryBuilder $qb) use ($tableName, $indexName, $schemaName) {
+                return $qb->createIndex($indexName, $schemaName . '.' . $tableName, 'C_index_1');
+            },
+        ];
+
         return $result;
     }
 
@@ -143,6 +156,37 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals([], $queryParams);
     }
 
+    public function testBuildWithQuery()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS (SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2 UNION  SELECT [[id]] FROM [[t3]] WHERE expr = 3) SELECT * FROM [[a2]]'
+        );
+        $with1Query = (new Query())
+            ->select('id')
+            ->from('t1')
+            ->where('expr = 1');
+
+        $with2Query = (new Query())
+            ->select('id')
+            ->from('t2')
+            ->innerJoin('a1', 't2.id = a1.id')
+            ->where('expr = 2');
+
+        $with3Query = (new Query())
+            ->select('id')
+            ->from('t3')
+            ->where('expr = 3');
+
+        $query = (new Query())
+            ->withQuery($with1Query, 'a1')
+            ->withQuery($with2Query->union($with3Query), 'a2')
+            ->from('a2');
+
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+
     public function testResetSequence()
     {
         $qb = $this->getQueryBuilder(true, true);
@@ -191,6 +235,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ],
             'query, values and expressions without update part' => [
                 3 => 'WITH "EXCLUDED" (`email`, [[time]]) AS (SELECT :phEmail AS `email`, now() AS [[time]]) UPDATE {{%T_upsert}} SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1 WHERE {{%T_upsert}}.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]];',
+            ],
+            'no columns to update' => [
+                3 => 'INSERT OR IGNORE INTO `T_upsert_1` (`a`) VALUES (:qp0)',
             ],
         ];
         $newData = parent::upsertProvider();

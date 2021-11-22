@@ -2,7 +2,7 @@
 ==========================
 
 Yiiは、必要となるすべてのクラス・ファイルを特定してインクルードするにあたり、
-[クラスのオートローディング・メカニズム](http://www.php.net/manual/ja/language.oop5.autoload.php) を頼りにします。
+[クラスのオートローディング・メカニズム](https://www.php.net/manual/ja/language.oop5.autoload.php) を頼りにします。
 Yii は、[PSR-4 標準](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) に準拠した、高性能なクラスのオートローダを提供しています。
 このオートローダは、あなたが `Yii.php` ファイルをインクルードするときにインストールされます。
 
@@ -15,7 +15,7 @@ Yii オートローダを使用する <span id="using-yii-autoloader"></span>
 
 Yii のクラス・オートローダを使用するには、クラスを作成して名前を付けるとき、次の二つの単純なルールに従わなければなりません:
 
-* 各クラスは [名前空間](http://php.net/manual/ja/language.namespaces.php) の下になければなりません (例 `foo\bar\MyClass`)
+* 各クラスは [名前空間](https://www.php.net/manual/ja/language.namespaces.php) の下になければなりません (例 `foo\bar\MyClass`)
 * 各クラスは次のアルゴリズムで決定される個別のファイルに保存されなければなりません:
 
 ```php

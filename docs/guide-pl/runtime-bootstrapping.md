@@ -30,8 +30,8 @@ we [właściwości bootstrapowej](structure-applications.md#bootstrap), aby nowe
 W środowisku produkcyjnym zaleca się zastosowanie pamięci podręcznej kodu, takiej jak [PHP OPcache] lub [APC], aby zminimalizować czas konieczny do załadowania i przetworzenia 
 plików PHP.
 
-[PHP OPcache]: http://php.net/manual/en/intro.opcache.php
-[APC]: http://php.net/manual/en/book.apc.php
+[PHP OPcache]: https://www.php.net/manual/en/intro.opcache.php
+[APC]: https://www.php.net/manual/en/book.apcu.php
 
 Niektóre duże aplikacje posiadają bardzo skomplikowaną [konfigurację](concept-configurations.md), składającą się z wielu mniejszych plików konfiguracyjnych. 
 W takim przypadku zalecane jest zapisanie w pamięci całej wynikowej tablicy konfiguracji i załadowanie jej stamtąd bezpośrednio przed utworzeniem instancji aplikacji 

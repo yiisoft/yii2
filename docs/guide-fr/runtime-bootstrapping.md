@@ -21,7 +21,7 @@ Comme le travail d'amorçage doit être fait avant *chacune* des requêtes, il e
 
 Dans le mode production, activez un cache bytecode, tel que [PHP OPcache] ou [APC], pour minimiser le temps nécessaire à l'inclusion et à l'analyse des fichiers PHP.
 
-[PHP OPcache]: http://php.net/manual/en/intro.opcache.php
-[APC]: http://php.net/manual/en/book.apc.php
+[PHP OPcache]: https://www.php.net/manual/fr/book.opcache.php
+[APC]: https://www.php.net/manual/fr/book.apcu.php
 
 Quelques applications volumineuses ont des [configurations](concept-configurations.md) d'application très complexes qui sont divisées en fichiers de configuration plus petits. Si c'est le cas, envisagez de mettre tout le tableau de configuration en cache et de le charger directement à partir cache avant la création de l'instance d'application dans le script d'entrée. 

@@ -4,8 +4,8 @@ Yii の学習曲線は他の PHP フレームワークほど急峻ではあり�
 
 ## PHP
 
-Yii は PHP フレームワークですから、必ず [言語リファレンスを読んで理解する](http://php.net/manual/ja/langref.php) ようにして下さい。
-Yii を使って開発するときはオブジェクト指向の流儀でコードを書くことになりますから、必ず、[クラスとオブジェクト](https://secure.php.net/manual/ja/language.oop5.basic.php) および [名前空間](https://secure.php.net/manual/ja/language.namespaces.php) には慣れ親しんでおいて下さい。
+Yii は PHP フレームワークですから、必ず [言語リファレンスを読んで理解する](https://www.php.net/manual/ja/langref.php) ようにして下さい。
+Yii を使って開発するときはオブジェクト指向の流儀でコードを書くことになりますから、必ず、[クラスとオブジェクト](https://www.php.net/manual/ja/language.oop5.basic.php) および [名前空間](https://www.php.net/manual/ja/language.namespaces.php) には慣れ親しんでおいて下さい。
 
 ## オブジェクト指向プログラミング
 

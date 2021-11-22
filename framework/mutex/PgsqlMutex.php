@@ -7,7 +7,6 @@
 
 namespace yii\mutex;
 
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -37,6 +36,7 @@ use yii\base\InvalidConfigException;
 class PgsqlMutex extends DbMutex
 {
     use RetryAcquireTrait;
+
 
     /**
      * Initializes PgSQL specific mutex component implementation.

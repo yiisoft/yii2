@@ -92,6 +92,10 @@ class TargetTest extends TestCase
                 'C', 'C.C_a',
                 'D',
             ],
+            'maskVars' => [
+                'C.C_b',
+                'D.D_a'
+            ]
         ]);
         $GLOBALS['A'] = [
             'A_a' => 1,
@@ -105,7 +109,7 @@ class TargetTest extends TestCase
         ];
         $GLOBALS['C'] = [
             'C_a' => 1,
-            'C_b' => 1,
+            'C_b' => 'mySecret',
             'C_c' => 1,
         ];
         $GLOBALS['E'] = [
@@ -129,6 +133,8 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_a', $context);
         $this->assertNotContains('E_b', $context);
         $this->assertNotContains('E_c', $context);
+        $this->assertNotContains('mySecret', $context);
+        $this->assertContains('***', $context);
     }
 
     /**
@@ -213,6 +219,126 @@ class TargetTest extends TestCase
         $expectedWithMicro = '2017-10-16 13:26:30.000000 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
+    }
+
+    public function testCollectMessageStructure()
+    {
+        $target = new TestTarget(['logVars' => ['_SERVER']]);
+        static::$messages = [];
+
+        $messages = [
+            ['test', 1, 'application', 1560428356.212978, [], 1888416]
+        ];
+
+        $target->collect($messages, false);
+
+        $this->assertCount(2, static::$messages);
+        $this->assertCount(6, static::$messages[0]);
+        $this->assertCount(6, static::$messages[1]);
+    }
+
+    public function testBreakProfilingWithFlushWithProfilingDisabled()
+    {
+        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
+        $dispatcher->expects($this->once())->method('dispatch')->with($this->callback(function ($messages) {
+            return count($messages) === 2
+                && $messages[0][0] === 'token.a'
+                && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                && $messages[1][0] === 'info';
+        }), false);
+
+        $logger = new Logger([
+            'dispatcher' => $dispatcher,
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('info', Logger::LEVEL_INFO, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
+    }
+
+    public function testNotBreakProfilingWithFlushWithProfilingEnabled()
+    {
+        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
+        $dispatcher->expects($this->exactly(2))->method('dispatch')->withConsecutive(
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 1 && $messages[0][0] === 'info';
+                }),
+                false
+            ],
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 2
+                        && $messages[0][0] === 'token.a'
+                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                        && $messages[1][0] === 'token.a'
+                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
+                }),
+                false
+            ]
+        );
+
+        $logger = new Logger([
+            'profilingAware' => true,
+            'dispatcher' => $dispatcher,
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('info', Logger::LEVEL_INFO, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
+    }
+
+    public function testFlushingWithProfilingEnabledAndOverflow()
+    {
+        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
+        $dispatcher->expects($this->exactly(3))->method('dispatch')->withConsecutive(
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 2
+                        && $messages[0][0] === 'token.a'
+                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                        && $messages[1][0] === 'token.b'
+                        && $messages[1][1] == Logger::LEVEL_PROFILE_BEGIN;
+                }),
+                false
+            ],
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 1
+                        && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
+                }),
+                false
+            ],
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 2
+                        && $messages[0][0] === 'token.b'
+                        && $messages[0][1] == Logger::LEVEL_PROFILE_END
+                        && $messages[1][0] === 'token.a'
+                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
+                }),
+                false
+            ]
+        );
+
+        $logger = new Logger([
+            'profilingAware' => true,
+            'dispatcher' => $dispatcher,
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('token.b', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('token.b', Logger::LEVEL_PROFILE_END, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
     }
 }
 

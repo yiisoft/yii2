@@ -445,6 +445,25 @@ class ComponentTest extends TestCase
         $this->assertFalse($obj->off('test', [$this, 'handler2']), 'Trying to remove the handler that is not attached');
         $this->assertTrue($obj->off('test', [$this, 'handler']), 'Trying to remove the attached handler');
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17223
+     */
+    public function testEventClosureDetachesItself()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        $obj = require __DIR__ . '/stub/AnonymousComponentClass.php';
+
+        $obj->trigger('barEventOnce');
+        $this->assertEquals(1, $obj->foo);
+        $obj->trigger('barEventOnce');
+        $this->assertEquals(1, $obj->foo);
+    }
+
 }
 
 class NewComponent extends Component

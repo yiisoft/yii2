@@ -123,7 +123,7 @@ class ArrayDataProvider extends BaseDataProvider
      */
     protected function prepareTotalCount()
     {
-        return count($this->allModels);
+        return is_array($this->allModels) ? count($this->allModels) : 0;
     }
 
     /**
@@ -136,7 +136,7 @@ class ArrayDataProvider extends BaseDataProvider
     {
         $orders = $sort->getOrders();
         if (!empty($orders)) {
-            ArrayHelper::multisort($models, array_keys($orders), array_values($orders));
+            ArrayHelper::multisort($models, array_keys($orders), array_values($orders), $sort->sortFlags);
         }
 
         return $models;

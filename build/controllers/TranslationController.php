@@ -29,7 +29,6 @@ class TranslationController extends Controller
      * @param string $sourcePath the directory where the original documentation files are
      * @param string $translationPath the directory where the translated documentation files are
      * @param string $title custom title to use for report
-     * @return string
      */
     public function actionReport($sourcePath, $translationPath, $title = 'Translation report')
     {
@@ -126,11 +125,11 @@ class TranslationController extends Controller
     {
         $lines = explode("\n", $diff);
         foreach ($lines as $key => $val) {
-            if (mb_substr($val, 0, 1, 'utf-8') === '@') {
+            if (strpos($val, '@') === 0) {
                 $lines[$key] = '<span class="info">' . Html::encode($val) . '</span>';
-            } elseif (mb_substr($val, 0, 1, 'utf-8') === '+') {
+            } elseif (strpos($val, '+') === 0) {
                 $lines[$key] = '<ins>' . Html::encode($val) . '</ins>';
-            } elseif (mb_substr($val, 0, 1, 'utf-8') === '-') {
+            } elseif (strpos($val, '-') === 0) {
                 $lines[$key] = '<del>' . Html::encode($val) . '</del>';
             } else {
                 $lines[$key] = Html::encode($val);

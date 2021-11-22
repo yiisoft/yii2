@@ -14,6 +14,7 @@ use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
+use yii\widgets\MaskedInput;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
@@ -529,6 +530,62 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
+    public function testTabularAriaAttributes()
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testTabularAriaRequiredAttribute()
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addRule([$this->attributeName], 'required');
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename required">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testTabularAriaInvalidAttribute()
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addError($this->attributeName, 'Some error');
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename has-error">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block">Some error</div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
     public function testEmptyTag()
     {
         $this->activeField->options = ['tag' => false];
@@ -550,6 +607,31 @@ EOD;
 
         $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
         $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+    }
+
+    public function testWidgetOptions()
+    {
+        $this->activeField->form->validationStateOn = ActiveForm::VALIDATION_STATE_ON_INPUT;
+        $this->activeField->model->addError('attributeName', 'error');
+
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'form-control has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+
+        $this->activeField->inputOptions = [];
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
     }
 
     /**
@@ -582,6 +664,30 @@ HTML;
 HTML;
         $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    public function testInputOptionsTransferToWidget()
+    {
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_direct'],
+        ]);
+        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+
+        // transfer options from ActiveField to widget
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+        ]);
+        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+
+        // set both AF and widget options (second one takes precedence)
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_both_direct']
+        ]);
+        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
     }
 
     /**
@@ -667,3 +773,31 @@ class TestInputWidget extends InputWidget
         return 'Render: ' . get_class($this);
     }
 }
+
+class TestMaskedInput extends MaskedInput
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init()
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function getOptions() {
+        return $this->options;
+    }
+
+    public function run()
+    {
+        return 'Options: ' . implode(', ', array_map(
+            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            $this->options,
+            array_keys($this->options)
+        ));
+    }
+}
+

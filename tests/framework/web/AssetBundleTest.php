@@ -28,9 +28,6 @@ class AssetBundleTest extends \yiiunit\TestCase
         Yii::setAlias('@testAssetsPath', '@webroot/assets');
         Yii::setAlias('@testAssetsUrl', '@web/assets');
         Yii::setAlias('@testSourcePath', '@webroot/assetSources');
-        Yii::setAlias('@testReadOnlyAssetPath', '@webroot/readOnlyAssets');
-
-        mkdir(Yii::getAlias('@testReadOnlyAssetPath'), 0555);
 
         // clean up assets directory
         $handle = opendir($dir = Yii::getAlias('@testAssetsPath'));
@@ -49,11 +46,6 @@ class AssetBundleTest extends \yiiunit\TestCase
             }
         }
         closedir($handle);
-    }
-
-    protected function tearDown()
-    {
-        rmdir(Yii::getAlias('@testReadOnlyAssetPath'));
     }
 
     /**
@@ -183,11 +175,24 @@ class AssetBundleTest extends \yiiunit\TestCase
 
     public function testBasePathIsWritableOnPublish()
     {
+        Yii::setAlias('@testReadOnlyAssetPath', '@webroot/readOnlyAssets');
+        $path = Yii::getAlias('@testReadOnlyAssetPath');
+
+        // Deleting a directory that could remain after a previous unsuccessful test run
+        FileHelper::removeDirectory($path);
+
+        mkdir($path, 0555);
+        if (is_writable($path)) {
+            $this->markTestSkipped("This test can only be performed with reliable chmod. It's unreliable on your system.");
+        }
+
         $view = $this->getView(['basePath' => '@testReadOnlyAssetPath']);
         $bundle = new TestSourceAsset();
 
         $this->setExpectedException('yii\base\InvalidConfigException', 'The directory is not writable by the Web process');
         $bundle->publish($view->getAssetManager());
+
+        FileHelper::removeDirectory($path);
     }
 
     /**
@@ -522,13 +527,46 @@ EOF;
         }
         Yii::setAlias('@web', $webAlias);
 
-
         $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
         $method = 'register' . ucfirst($type) . 'File';
         $view->$method($path);
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
 
         Yii::setAlias('@web', $originalAlias);
+    }
+
+    public function testCustomFilePublishWithTimestamp()
+    {
+        $path = Yii::getAlias('@webroot');
+
+        $view = $this->getView();
+        $am = $view->assetManager;
+        // publishing without timestamp
+        $result = $am->publish($path . '/data.txt');
+        $this->assertRegExp('/.*data.txt$/i', $result[1]);
+        unset($view, $am, $result);
+
+        $view = $this->getView();
+        $am = $view->assetManager;
+        // turn on timestamp appending
+        $am->appendTimestamp = true;
+        $result = $am->publish($path . '/data.txt');
+        $this->assertRegExp('/.*data.txt\?v=\d+$/i', $result[1]);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18529
+     */
+    public function testNonRelativeAssetWebPathWithTimestamp()
+    {
+        Yii::setAlias('@webroot', '@yiiunit/data/web/assetSources/');
+
+        $view = $this->getView(['appendTimestamp' => true]);
+        TestNonRelativeAsset::register($view);
+        $this->assertRegExp(
+            '~123<script src="http:\/\/example\.com\/js\/jquery\.js\?v=\d+"><\/script>4~',
+            $view->renderFile('@yiiunit/data/views/rawlayout.php')
+        );
     }
 }
 
@@ -624,4 +662,13 @@ class TestAssetPerFileOptions extends AssetBundle
     ];
     public $cssOptions = ['media' => 'screen', 'hreflang' => 'en'];
     public $jsOptions = ['charset' => 'utf-8'];
+}
+
+class TestNonRelativeAsset extends AssetBundle
+{
+    public $basePath = '@webroot/js';
+    public $baseUrl = 'http://example.com/js/';
+    public $js = [
+        'jquery.js',
+    ];
 }

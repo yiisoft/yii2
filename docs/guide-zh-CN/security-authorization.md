@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ ACF 自顶向下逐一检查存取规则，直到找到一个与当前
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -159,7 +159,7 @@ class SiteController extends Controller
 详细的关于 RBAC 和诸多传统的存取控制方案对比的详情，请参阅
 [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control)。
 
-Yii 实现了通用的分层的 RBAC，遵循的模型是 [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii 实现了通用的分层的 RBAC，遵循的模型是 [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 它通过 [[yii\rbac\ManagerInterface|authManager]] [application component](structure-application-components.md) 提供 RBAC 功能。
 
 使用 RBAC 涉及到两部分工作。第一部分是建立授权数据，
@@ -538,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

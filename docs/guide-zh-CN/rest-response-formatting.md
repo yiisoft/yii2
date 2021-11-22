@@ -164,7 +164,7 @@ JSON 响应将由 [[yii\web\JsonResponseFormatter|JsonResponseFormatter]] 类来
 比如 [[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]]，这对于开发更好的可读式响应更有用，
 或者用 [[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] 去控制 JSON 编码的输出。
 
-格式化程序可以在 [configuration](concept-configuration.md) 的 `response` 应用程序组件 [[yii\web\Response::formatters|formatters]] 的属性进行配置，
+格式化程序可以在 [configuration](concept-configurations.md) 的 `response` 应用程序组件 [[yii\web\Response::formatters|formatters]] 的属性进行配置，
 如下所示：
 
 ```php

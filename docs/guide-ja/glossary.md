@@ -58,7 +58,7 @@ Yii の場合は、パーミッションを設定すること、および、ソ�
 
 ## namespace 名前空間
 
-名前空間は Yii 2 で積極的に使用されている [PHP 言語機能のひとつ](http://php.net/manual/ja/language.namespaces.php) です。
+名前空間は Yii 2 で積極的に使用されている [PHP 言語機能のひとつ](https://www.php.net/manual/ja/language.namespaces.php) です。
 
 # P
 

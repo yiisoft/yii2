@@ -130,4 +130,29 @@ class StringValidatorTest extends TestCase
         $errorMsg = $model->getErrors('attr_string');
         $this->assertEquals('attr_string to short. Min is 5', $errorMsg[0]);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13327
+     */
+    public function testValidateValueInNonStrictMode()
+    {
+        $val = new StringValidator();
+        $val->strict = false;
+
+        // string
+        $this->assertTrue($val->validate('Just some string'));
+
+        // non-scalar
+        $this->assertFalse($val->validate(['array']));
+        $this->assertFalse($val->validate(new \stdClass()));
+        $this->assertFalse($val->validate(null));
+
+        // bool
+        $this->assertTrue($val->validate(true));
+        $this->assertTrue($val->validate(false));
+
+        // number
+        $this->assertTrue($val->validate(42));
+        $this->assertTrue($val->validate(36.6));
+    }
 }

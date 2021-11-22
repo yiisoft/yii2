@@ -10,6 +10,7 @@ namespace yiiunit\framework\db\pgsql;
 use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
 
 /**
@@ -75,7 +76,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bool_col2']['precision'] = null;
         $columns['bool_col2']['scale'] = null;
         $columns['bool_col2']['defaultValue'] = true;
-        $columns['ts_default']['defaultValue'] = new Expression('now()');
+        if (version_compare($this->getConnection(false)->getServerVersion(), '10', '<')) {
+            $columns['ts_default']['defaultValue'] = new Expression('now()');
+        }
         $columns['bit_col']['dbType'] = 'bit';
         $columns['bit_col']['size'] = 8;
         $columns['bit_col']['precision'] = null;
@@ -204,6 +207,52 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertFalse($table->getColumn('default_false')->defaultValue);
     }
 
+    public function testSequenceName()
+    {
+        $connection = $this->getConnection();
+
+        $sequenceName = $connection->schema->getTableSchema('item')->sequenceName;
+
+        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'item_id_seq_2\')')->execute();
+
+        $connection->schema->refreshTableSchema('item');
+        $this->assertEquals('item_id_seq_2', $connection->schema->getTableSchema('item')->sequenceName);
+
+        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'' .  $sequenceName . '\')')->execute();
+        $connection->schema->refreshTableSchema('item');
+        $this->assertEquals($sequenceName, $connection->schema->getTableSchema('item')->sequenceName);
+    }
+
+    public function testGeneratedValues()
+    {
+        if (version_compare($this->getConnection(false)->getServerVersion(), '12.0', '<')) {
+            $this->markTestSkipped('PostgreSQL < 12.0 does not support GENERATED AS IDENTITY columns.');
+        }
+
+        $config = $this->database;
+        unset($config['fixture']);
+        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres12.sql');
+
+        $table = $this->getConnection(false)->schema->getTableSchema('generated');
+        $this->assertTrue($table->getColumn('id_always')->autoIncrement);
+        $this->assertTrue($table->getColumn('id_primary')->autoIncrement);
+        $this->assertTrue($table->getColumn('id_primary')->isPrimaryKey);
+        $this->assertTrue($table->getColumn('id_default')->autoIncrement);
+    }
+
+    public function testPartitionedTable()
+    {
+        if (version_compare($this->getConnection(false)->getServerVersion(), '10.0', '<')) {
+            $this->markTestSkipped('PostgreSQL < 10.0 does not support PARTITION BY clause.');
+        }
+
+        $config = $this->database;
+        unset($config['fixture']);
+        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres10.sql');
+
+        $this->assertNotNull($this->getConnection(false)->schema->getTableSchema('partitioned'));
+    }
+
     public function testFindSchemaNames()
     {
         $schema = $this->getConnection()->schema;
@@ -295,10 +344,26 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     public function constraintsProvider()
     {
         $result = parent::constraintsProvider();
-        $result['1: check'][2][0]->expression = '(("C_check")::text <> \'\'::text)';
+        $result['1: check'][2][0]->expression = 'CHECK ((("C_check")::text <> \'\'::text))';
 
         $result['3: foreign key'][2][0]->foreignSchemaName = 'public';
         $result['3: index'][2] = [];
         return $result;
+    }
+
+    public function testCustomTypeInNonDefaultSchema()
+    {
+        $connection = $this->getConnection();
+        ActiveRecord::$db = $this->getConnection();
+
+        $schema = $connection->schema->getTableSchema('schema2.custom_type_test_table');
+        $model = EnumTypeInCustomSchema::find()->one();
+        $this->assertSame(['VAL2'], $model->test_type->getValue());
+
+        $model->test_type = ['VAL1'];
+        $model->save();
+
+        $modelAfterUpdate = EnumTypeInCustomSchema::find()->one();
+        $this->assertSame(['VAL1'], $modelAfterUpdate->test_type->getValue());
     }
 }

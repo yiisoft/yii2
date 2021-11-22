@@ -9,25 +9,34 @@ namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\console\controllers\FixtureController;
+use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\console\controllers\fixtures\DependentActiveFixture;
 use yiiunit\data\console\controllers\fixtures\FixtureStorage;
-use yiiunit\TestCase;
+use yiiunit\framework\db\DatabaseTestCase;
 
 /**
  * Unit test for [[\yii\console\controllers\FixtureController]].
  * @see FixtureController
  *
  * @group console
+ * @group db
  */
-class FixtureControllerTest extends TestCase
+class FixtureControllerTest extends DatabaseTestCase
 {
     /**
      * @var \yiiunit\framework\console\controllers\FixtureConsoledController
      */
     private $_fixtureController;
 
+    protected $driverName = 'mysql';
+
     protected function setUp()
     {
         parent::setUp();
+
+        $db = $this->getConnection();
+        \Yii::$app->set('db', $db);
+        ActiveRecord::$db = $db;
 
         $this->_fixtureController = Yii::createObject([
             'class' => 'yiiunit\framework\console\controllers\FixtureConsoledController',
@@ -220,6 +229,17 @@ class FixtureControllerTest extends TestCase
     public function testNoFixturesWereFoundInUnload()
     {
         $this->_fixtureController->actionUnload(['NotExistingFixture']);
+    }
+
+    public function testLoadActiveFixtureSequence()
+    {
+        $this->assertEmpty(FixtureStorage::$activeFixtureSequence, 'Active fixture sequence should be empty.');
+
+        $this->_fixtureController->actionLoad(['*']);
+
+        $lastFixture = end(FixtureStorage::$activeFixtureSequence);
+
+        $this->assertEquals(DependentActiveFixture::className(), $lastFixture);
     }
 }
 

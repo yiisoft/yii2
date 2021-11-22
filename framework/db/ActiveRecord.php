@@ -115,9 +115,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function loadDefaultValues($skipIfSet = true)
     {
-        foreach (static::getTableSchema()->columns as $column) {
-            if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)) {
-                $this->{$column->name} = $column->defaultValue;
+        $columns = static::getTableSchema()->columns;
+        foreach ($this->attributes() as $name) {
+            if (isset($columns[$name])) {
+                $defaultValue = $columns[$name]->defaultValue;
+                if ($defaultValue !== null && (!$skipIfSet || $this->getAttribute($name) === null)) {
+                    $this->setAttribute($name, $defaultValue);
+                }
             }
         }
 
@@ -173,7 +177,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!ArrayHelper::isAssociative($condition) && !$condition instanceof ExpressionInterface) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
@@ -187,10 +191,31 @@ class ActiveRecord extends BaseActiveRecord
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         } elseif (is_array($condition)) {
-            $condition = static::filterCondition($condition);
+            $aliases = static::filterValidAliases($query);
+            $condition = static::filterCondition($condition, $aliases);
         }
 
         return $query->andWhere($condition);
+    }
+
+    /**
+     * Returns table aliases which are not the same as the name of the tables.
+     *
+     * @param Query $query
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidAliases(Query $query)
+    {
+        $tables = $query->getTablesUsedInFrom();
+
+        $aliases = array_diff(array_keys($tables), $tables);
+
+        return array_map(function ($alias) {
+            return preg_replace('/{{([\w]+)}}/', '$1', $alias);
+        }, array_values($aliases));
     }
 
     /**
@@ -199,28 +224,58 @@ class ActiveRecord extends BaseActiveRecord
      * This method will ensure that an array condition only filters on existing table columns.
      *
      * @param array $condition condition to filter.
+     * @param array $aliases
      * @return array filtered condition.
      * @throws InvalidArgumentException in case array contains unsafe values.
+     * @throws InvalidConfigException
      * @since 2.0.15
      * @internal
      */
-    protected static function filterCondition(array $condition)
+    protected static function filterCondition(array $condition, array $aliases = [])
     {
         $result = [];
-        // valid column names are table column names or column names prefixed with table name
-        $columnNames = static::getTableSchema()->getColumnNames();
-        $tableName = static::tableName();
-        $columnNames = array_merge($columnNames, array_map(function($columnName) use ($tableName) {
-            return "$tableName.$columnName";
-        }, $columnNames));
+        $db = static::getDb();
+        $columnNames = static::filterValidColumnNames($db, $aliases);
+
         foreach ($condition as $key => $value) {
-            if (is_string($key) && !in_array($key, $columnNames, true)) {
+            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
                 throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
             }
             $result[$key] = is_array($value) ? array_values($value) : $value;
         }
 
         return $result;
+    }
+
+    /**
+     * Valid column names are table column names or column names prefixed with table name or table alias
+     *
+     * @param Connection $db
+     * @param array $aliases
+     * @return array
+     * @throws InvalidConfigException
+     * @since 2.0.17
+     * @internal
+     */
+    protected static function filterValidColumnNames($db, array $aliases)
+    {
+        $columnNames = [];
+        $tableName = static::tableName();
+        $quotedTableName = $db->quoteTableName($tableName);
+
+        foreach (static::getTableSchema()->getColumnNames() as $columnName) {
+            $columnNames[] = $columnName;
+            $columnNames[] = $db->quoteColumnName($columnName);
+            $columnNames[] = "$tableName.$columnName";
+            $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
+            foreach ($aliases as $tableAlias) {
+                $columnNames[] = "$tableAlias.$columnName";
+                $quotedTableAlias = $db->quoteTableName($tableAlias);
+                $columnNames[] = $db->quoteSql("$quotedTableAlias.[[$columnName]]");
+            }
+        }
+
+        return $columnNames;
     }
 
     /**
@@ -238,7 +293,7 @@ class ActiveRecord extends BaseActiveRecord
         $query->where($pk);
 
         /* @var $record BaseActiveRecord */
-        $record = $query->one();
+        $record = $query->noCache()->one();
         return $this->refreshInternal($record);
     }
 
@@ -502,7 +557,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception|\Throwable in case insert failed.
+     * @throws \Exception in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -612,7 +667,7 @@ class ActiveRecord extends BaseActiveRecord
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
-     * @throws \Exception|\Throwable in case update failed.
+     * @throws \Exception in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -661,7 +716,7 @@ class ActiveRecord extends BaseActiveRecord
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
-     * @throws \Exception|\Throwable in case delete failed.
+     * @throws \Exception in case delete failed.
      */
     public function delete()
     {

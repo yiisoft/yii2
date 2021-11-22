@@ -84,6 +84,11 @@ class FakeController extends Controller
         return $this->testArray;
     }
 
+    public function actionTrimargs($param1 = null)
+    {
+        return func_get_args();
+    }
+
     public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
     {
         return $simpleArgument;

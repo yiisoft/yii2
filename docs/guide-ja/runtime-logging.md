@@ -142,8 +142,8 @@ Yii は下記のログ・ターゲットをあらかじめ内蔵しています�
 [[yii\log\Target::categories|categories]] プロパティを指定しない場合は、
 ターゲットが *全ての* カテゴリのメッセージを処理することを意味します。
 
-カテゴリを [[yii\log\Target::categories|categories]] プロパティでホワイト・リストとして登録する以外に、
-一定のカテゴリを [[yii\log\Target::except|except]] プロパティによってブラック・リストとして登録することも可能です。
+処理するカテゴリを [[yii\log\Target::categories|categories]] プロパティで指定する以外に、
+処理から除外するカテゴリを [[yii\log\Target::except|except]] プロパティによって指定することも可能です。
 カテゴリの名前がこの配列にあるか、または配列にあるパターンに合致する場合は、メッセージはターゲットによって処理されません。
 
 次のターゲットの構成は、ターゲットが、`yii\db\*` または `yii\web\HttpException:*` に合致するカテゴリ名を持つエラーおよび警告のメッセージだけを処理すべきこと、
@@ -216,6 +216,17 @@ Yii は下記のログ・ターゲットをあらかじめ内蔵しています�
 あるいは、また、コンテキスト情報の提供方法を自分で実装したい場合は、
 [[yii\log\Target::getContextMessage()]] メソッドをオーバーライドすることも出来ます。
 
+ログに出力したくない機密情報 (例えば、パスワードやアクセス・トークン) を含んでいるリクエストのフィールドについては、`maskVars` プロパティを追加で構成することが出来ます。
+デフォルトでは、`$_SERVER[HTTP_AUTHORIZATION]`、`$_SERVER[PHP_AUTH_USER]`、`$_SERVER[PHP_AUTH_PW]` のリクエスト・パラメータが `***` でマスクされまが、
+自分自身で設定することも出来ます。例えば、
+
+```php
+[
+    'class' => 'yii\log\FileTarget',
+    'logVars' => ['_SERVER'],
+    'maskVars' => ['_SERVER.HTTP_X_PASSWORD']
+]
+```
 
 ### メッセージのトレース・レベル <span id="trace-level"></span>
 

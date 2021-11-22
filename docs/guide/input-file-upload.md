@@ -123,7 +123,7 @@ You can also upload multiple files at once, with some adjustments to the code li
 First you should adjust the model class by adding the `maxFiles` option in the `file` validation rule to limit
 the maximum number of files allowed to upload. Setting `maxFiles` to `0` means there is no limit on the number of files
 that can be uploaded simultaneously. The maximum number of files allowed to be uploaded simultaneously is also limited
-with PHP directive [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads),
+with PHP directive [`max_file_uploads`](https://www.php.net/manual/en/ini.core.php#ini.max-file-uploads),
 which defaults to 20. The `upload()` method should also be updated to save the uploaded files one by one.
 
 ```php
@@ -161,7 +161,7 @@ class UploadForm extends Model
 ```
 
 In the view file, you should add the `multiple` option to the `fileInput()` call so that the file upload field
-can receive multiple files:
+can receive multiple files. You also need to change `imageFiles` to `imageFiles[]` so that the attribute values are submitted as an array:
  
 ```php
 <?php

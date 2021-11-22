@@ -17,7 +17,7 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'basicAuth' => [
- *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *             'class' => \yii\filters\auth\HttpBasicAuth::class,
  *         ],
  *     ];
  * }
@@ -34,10 +34,10 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'basicAuth' => [
- *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *             'class' => \yii\filters\auth\HttpBasicAuth::class,
  *             'auth' => function ($username, $password) {
  *                 $user = User::find()->where(['username' => $username])->one();
- *                 if ($user->verifyPassword($password)) {
+ *                 if ($user && $user->validatePassword($password)) {
  *                     return $user;
  *                 }
  *                 return null;
@@ -101,7 +101,7 @@ class HttpBasicAuth extends AuthMethod
                 if ($identity === null) {
                     $this->handleFailure($response);
                 } elseif ($user->getIdentity(false) !== $identity) {
-                    $user->switchIdentity($identity);
+                    $user->login($identity);
                 }
 
                 return $identity;

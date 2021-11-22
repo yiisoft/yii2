@@ -20,7 +20,7 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
- * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
+ * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -50,7 +50,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $context;
     /**
-     * @var mixed custom parameters that are shared among view templates.
+     * @var array custom parameters that are shared among view templates.
      */
     public $params = [];
     /**
@@ -316,10 +316,10 @@ class View extends Component implements DynamicContentAwareInterface
             $event = new ViewEvent([
                 'viewFile' => $viewFile,
                 'params' => $params,
-                'output' => $output,
             ]);
+            $event->output =& $output;
+
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
-            $output = $event->output;
         }
     }
 
@@ -336,7 +336,6 @@ class View extends Component implements DynamicContentAwareInterface
      * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
      * @throws \Exception
-     * @throws \Throwable
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
@@ -372,6 +371,11 @@ class View extends Component implements DynamicContentAwareInterface
      * @param string $statements the PHP statements for generating the dynamic content.
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
+     *
+     * Note that most methods that indirectly modify layout such as registerJS() or registerJSFile() do not
+     * work with dynamic rendering.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/17673
      */
     public function renderDynamic($statements)
     {

@@ -9,6 +9,7 @@ namespace yiiunit\framework\web;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\View;
 use yiiunit\TestCase;
 
 class ErrorHandlerTest extends TestCase
@@ -17,6 +18,7 @@ class ErrorHandlerTest extends TestCase
     {
         parent::setUp();
         $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
             'components' => [
                 'errorHandler' => [
                     'class' => 'yiiunit\framework\web\ErrorHandler',
@@ -53,6 +55,20 @@ Exception: yii\web\NotFoundHttpException', $out);
 ', $out);
     }
 
+    public function testClearAssetFilesInErrorActionView()
+    {
+        Yii::$app->getErrorHandler()->errorAction = 'test/error';
+        Yii::$app->getView()->registerJs("alert('hide me')", View::POS_END);
+
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new NotFoundHttpException()]);
+        ob_get_clean();
+        $out = Yii::$app->response->data;
+        $this->assertNotContains('<script', $out);
+    }
+
     public function testRenderCallStackItem()
     {
         $handler = Yii::$app->getErrorHandler();
@@ -62,6 +78,61 @@ Exception: yii\web\NotFoundHttpException', $out);
         $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::className(), null, null, null);
 
         $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
+    }
+
+    public function dataHtmlEncode()
+    {
+        return [
+            [
+                "a \t=<>&\"'\x80`\n",
+                "a \t=&lt;&gt;&amp;\"'�`\n",
+            ],
+            [
+                '<b>test</b>',
+                '&lt;b&gt;test&lt;/b&gt;',
+            ],
+            [
+                '"hello"',
+                '"hello"',
+            ],
+            [
+                "'hello world'",
+                "'hello world'",
+            ],
+            [
+                'Chip&amp;Dale',
+                'Chip&amp;amp;Dale',
+            ],
+            [
+                "\t\$x=24;",
+                "\t\$x=24;",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataHtmlEncode
+     */
+    public function testHtmlEncode($text, $expected)
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame($expected, $handler->htmlEncode($text));
+    }
+
+    public function testHtmlEncodeWithUnicodeSequence()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";
+        $expected = "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}";
+
+        $this->assertSame($expected, $handler->htmlEncode($text));
     }
 }
 

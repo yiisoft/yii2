@@ -103,7 +103,7 @@ trait ArrayableTrait
      * This method will first identify which fields to be included in the resulting array by calling [[resolveFields()]].
      * It will then turn the model into an array with these fields. If `$recursive` is true,
      * any embedded objects will also be converted into arrays.
-     * When embeded objects are [[Arrayable]], their respective nested fields will be extracted and passed to [[toArray()]].
+     * When embedded objects are [[Arrayable]], their respective nested fields will be extracted and passed to [[toArray()]].
      *
      * If the model implements the [[Linkable]] interface, the resulting array will also have a `_link` element
      * which refers to a list of links as specified by the interface.
@@ -130,11 +130,15 @@ trait ArrayableTrait
                 $nestedExpand = $this->extractFieldsFor($expand, $field);
                 if ($attribute instanceof Arrayable) {
                     $attribute = $attribute->toArray($nestedFields, $nestedExpand);
+                } elseif ($attribute instanceof \JsonSerializable) {
+                    $attribute = $attribute->jsonSerialize();
                 } elseif (is_array($attribute)) {
                     $attribute = array_map(
                         function ($item) use ($nestedFields, $nestedExpand) {
                             if ($item instanceof Arrayable) {
                                 return $item->toArray($nestedFields, $nestedExpand);
+                            } elseif ($item instanceof \JsonSerializable) {
+                                return $item->jsonSerialize();
                             }
                             return $item;
                         },

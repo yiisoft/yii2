@@ -1,5 +1,6 @@
 # phpstorm project files
 .idea
+*.iml
 
 # netbeans project files
 nbproject
@@ -46,3 +47,4 @@ phpunit.phar
 # NPM packages
 /node_modules
 .env
+package-lock.json

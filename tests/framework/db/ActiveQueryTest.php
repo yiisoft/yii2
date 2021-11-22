@@ -136,6 +136,26 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $result->joinWith);
     }
 
+    public function testBuildJoinWithRemoveDuplicateJoinByTableName()
+    {
+        $query = new ActiveQuery(Customer::className());
+        $query->innerJoinWith('orders')
+            ->joinWith('orders.orderItems');
+        $this->invokeMethod($query, 'buildJoinWith');
+        $this->assertEquals([
+            [
+                'INNER JOIN',
+                'order',
+                '{{customer}}.[[id]] = {{order}}.[[customer_id]]'
+            ],
+            [
+                'LEFT JOIN',
+                'order_item',
+                '{{order}}.[[id]] = {{order_item}}.[[order_id]]'
+            ],
+        ], $query->join);
+    }
+
     /**
      * @todo: tests for the regex inside getQueryTableName
      */
@@ -215,7 +235,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
      */
     public function testViaTable()
     {
-        $query = new ActiveQuery(Customer::className());
+        $query = new ActiveQuery(Customer::className(), ['primaryModel' => new Order()]);
         $result = $query->viaTable(Profile::className(), ['id' => 'item_id']);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result->via);

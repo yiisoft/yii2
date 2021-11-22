@@ -201,13 +201,13 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-上述的代码为 ["fontawesome" package](http://fontawesome.io/) 定义了资源包。
+上述的代码为 ["fontawesome" package](https://fontawesome.com/) 定义了资源包。
 通过配置发布选项的 only 下标，只有 `fonts` 和 `css` 子目录会发布。
 
 
 ### Bower 和 NPM 资源安装 <span id="bower-npm-assets"></span>
 
-大多数 JavaScript/CSS 包使用 [Bower](http://bower.io/) 或 [NPM](https://www.npmjs.org/) 来管理。
+大多数 JavaScript/CSS 包使用 [Bower](http://bower.io/) 或 [NPM](https://www.npmjs.com/) 来管理。
 在 PHP 中，我们用 Composer 来管理 PHP 依赖。像 PHP 包一样，
 也可以使用 `composer.json` 管理 Bower 和 NPM 包。
 
@@ -257,7 +257,7 @@ $config = [
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-这个命令会全局安装 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) 插件，
+这个命令会全局安装 [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) 插件，
 以便使用 Composer 来管理对 Bower 和 NPM 包的依赖。 在这个插件安装后，
 你计算机上的每个项目都可以通过 `composer.json` 来管理 Bower 和 NPM 包。
 
@@ -608,14 +608,14 @@ class AppAsset extends AssetBundle
 Yii 使用文件扩展名来表示资源使用哪种扩展语法，
 默认可以识别如下语法和文件扩展名：
 
-- [LESS](http://lesscss.org/)：`.less`
-- [SCSS](http://sass-lang.com/)：`.scss`
-- [Stylus](http://learnboost.github.io/stylus/)：`.styl`
-- [CoffeeScript](http://coffeescript.org/)：`.coffee`
-- [TypeScript](http://www.typescriptlang.org/)：`.ts`
+- [LESS](https://lesscss.org/)：`.less`
+- [SCSS](https://sass-lang.com/)：`.scss`
+- [Stylus](https://stylus-lang.com/)：`.styl`
+- [CoffeeScript](https://coffeescript.org/)：`.coffee`
+- [TypeScript](https://www.typescriptlang.org/)：`.ts`
 
 Yii 依靠安装的预处理工具来转换资源，例如，
-为使用 [LESS](http://lesscss.org/)，应安装 `lessc` 预处理命令。
+为使用 [LESS](https://lesscss.org/)，应安装 `lessc` 预处理命令。
 
 可配置 [[yii\web\AssetManager::converter]] 自定义预处理命令和支持的扩展语法，
 如下所示：

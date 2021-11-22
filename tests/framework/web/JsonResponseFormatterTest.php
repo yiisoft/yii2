@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\helpers\Json;
 use yii\web\JsonResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
 
@@ -193,5 +194,60 @@ class JsonResponseFormatterTest extends FormatterTest
         $this->response->data = null;
         $this->formatter->format($this->response);
         $this->assertEquals('null', $this->response->content);
+    }
+
+    /**
+     * Formatter must return early sets content,
+     * e.g. content may be sets by PageCache filter
+     */
+    public function testFormatFilledContent()
+    {
+        $content = '{"text": "early seted content"}';
+        $this->response->data = null;
+        $this->response->content = $content;
+        $this->formatter->format($this->response);
+        $this->assertEquals($content, $this->response->content);
+    }
+
+    /**
+     * Formatter configuration keepObjectType affects how zero-indexed objects are encoded
+     */
+    public function testFormatZeroIndexedObjectKeepObject()
+    {
+        $formatter = $this->getFormatterInstance([
+            'keepObjectType' => true,
+        ]);
+        $this->response->data = (object)['test'];
+        $formatter->format($this->response);
+        $this->assertEquals('{"0":"test"}', $this->response->content);
+    }
+
+    /**
+     * Formatter configuration keepObjectType affects how zero-indexed objects are encoded
+     */
+    public function testFormatZeroIndexedObjectAllowArray()
+    {
+        $formatter = $this->getFormatterInstance([
+            'keepObjectType' => false,
+        ]);
+        $this->response->data = (object)['test'];
+        $formatter->format($this->response);
+        $this->assertEquals('["test"]', $this->response->content);
+    }
+
+    /**
+     * Formatter configuration keepObjectType reverts Json::$keepObjectType to its previous value
+     */
+    public function testFormatCleanupKeepObjectType()
+    {
+        $default = Json::$keepObjectType;
+        Json::$keepObjectType = false;
+        $formatter = $this->getFormatterInstance([
+            'keepObjectType' => true,
+        ]);
+        $this->response->data = (object)['test'];
+        $formatter->format($this->response);
+        $this->assertFalse(Json::$keepObjectType);
+        Json::$keepObjectType = $default;
     }
 }

@@ -21,7 +21,7 @@ use yii\db\BaseActiveRecord;
  * public function behaviors()
  * {
  *     return [
- *         TimestampBehavior::className(),
+ *         TimestampBehavior::class,
  *     ];
  * }
  * ```
@@ -45,7 +45,7 @@ use yii\db\BaseActiveRecord;
  * {
  *     return [
  *         [
- *             'class' => TimestampBehavior::className(),
+ *             'class' => TimestampBehavior::class,
  *             'createdAtAttribute' => 'create_time',
  *             'updatedAtAttribute' => 'update_time',
  *             'value' => new Expression('NOW()'),
@@ -84,7 +84,7 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * In case, when the value is `null`, the result of the PHP function [time()](https://www.php.net/manual/en/function.time.php)
      * will be used as value.
      */
     public $value;
@@ -108,7 +108,7 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](https://www.php.net/manual/en/function.time.php)
      * will be used as value.
      */
     protected function getValue($event)

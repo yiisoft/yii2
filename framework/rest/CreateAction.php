@@ -52,7 +52,7 @@ class CreateAction extends Action
         if ($model->save()) {
             $response = Yii::$app->getResponse();
             $response->setStatusCode(201);
-            $id = implode(',', array_values($model->getPrimaryKey(true)));
+            $id = implode(',', $model->getPrimaryKey(true));
             $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
         } elseif (!$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to create the object for unknown reason.');

@@ -42,15 +42,15 @@ interface QueryInterface
     /**
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
-     * @param Connection $db the database connection used to execute the query.
+     * @param Connection|null $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
-     * @return int number of records.
+     * @return int|string|null number of records.
      */
     public function count($q = '*', $db = null);
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param Connection $db the database connection used to execute the query.
+     * @param Connection|null $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
      * @return bool whether the query result contains any row of data.
      */

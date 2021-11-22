@@ -61,7 +61,7 @@ interface DataProviderInterface
     public function getKeys();
 
     /**
-     * @return Sort the sorting object. If this is false, it means the sorting is disabled.
+     * @return Sort|false the sorting object. If this is false, it means the sorting is disabled.
      */
     public function getSort();
 

@@ -7,6 +7,7 @@
 DROP TABLE IF EXISTS "composite_fk" CASCADE;
 DROP TABLE IF EXISTS "order_item" CASCADE;
 DROP TABLE IF EXISTS "item" CASCADE;
+DROP SEQUENCE IF EXISTS "item_id_seq_2" CASCADE;
 DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
 DROP TABLE IF EXISTS "order_with_null_fk" CASCADE;
@@ -25,12 +26,15 @@ DROP TABLE IF EXISTS "comment" CASCADE;
 DROP TABLE IF EXISTS "dossier";
 DROP TABLE IF EXISTS "employee";
 DROP TABLE IF EXISTS "department";
+DROP TABLE IF EXISTS "alpha";
+DROP TABLE IF EXISTS "beta";
 DROP VIEW IF EXISTS "animal_view";
 DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
 DROP TABLE IF EXISTS "T_upsert";
+DROP TABLE IF EXISTS "T_upsert_1";
 
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -76,6 +80,7 @@ CREATE TABLE "item" (
   name varchar(128) NOT NULL,
   category_id integer NOT NULL references "category"(id) on UPDATE CASCADE on DELETE CASCADE
 );
+CREATE SEQUENCE "item_id_seq_2";
 
 CREATE TABLE "order" (
   id serial not null primary key,
@@ -207,6 +212,18 @@ CREATE TABLE "dossier" (
   summary VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE "alpha" (
+  id INTEGER NOT NULL,
+  string_identifier VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "beta" (
+  id INTEGER NOT NULL,
+  alpha_string_identifier VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
 INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Cat');
@@ -251,7 +268,7 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
@@ -267,6 +284,24 @@ INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (1, 1, 1,
 INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
 INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
+INSERT INTO "alpha" (id, string_identifier) VALUES (1, '1');
+INSERT INTO "alpha" (id, string_identifier) VALUES (2, '1a');
+INSERT INTO "alpha" (id, string_identifier) VALUES (3, '01');
+INSERT INTO "alpha" (id, string_identifier) VALUES (4, '001');
+INSERT INTO "alpha" (id, string_identifier) VALUES (5, '2');
+INSERT INTO "alpha" (id, string_identifier) VALUES (6, '2b');
+INSERT INTO "alpha" (id, string_identifier) VALUES (7, '02');
+INSERT INTO "alpha" (id, string_identifier) VALUES (8, '002');
+
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (1, '1');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (2, '01');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (3, '001');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (4, '001');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (5, '2');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (6, '2b');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (7, '2b');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (8, '02');
+
 /**
  * (Postgres-)Database Schema for validator tests
  */
@@ -277,11 +312,11 @@ DROP TABLE IF EXISTS "validatorMain" CASCADE;
 DROP TABLE IF EXISTS "validatorRef" CASCADE;
 
 CREATE TABLE "validator_main" (
-  id integer not null primary key,
+  id serial primary key,
   field1 VARCHAR(255)
 );
 CREATE TABLE "validator_ref" (
-  id integer not null primary key,
+  id serial primary key,
   a_field VARCHAR(255),
   ref     integer
 );
@@ -296,16 +331,16 @@ CREATE TABLE "validatorRef" (
   CONSTRAINT "validatorRef_id" FOREIGN KEY ("ref") REFERENCES "validatorMain" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO "validator_main" (id, field1) VALUES (1, 'just a string1');
-INSERT INTO "validator_main" (id, field1) VALUES (2, 'just a string2');
-INSERT INTO "validator_main" (id, field1) VALUES (3, 'just a string3');
-INSERT INTO "validator_main" (id, field1) VALUES (4, 'just a string4');
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
-INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
+INSERT INTO "validator_main" (field1) VALUES ('just a string1');
+INSERT INTO "validator_main" (field1) VALUES ('just a string2');
+INSERT INTO "validator_main" (field1) VALUES ('just a string3');
+INSERT INTO "validator_main" (field1) VALUES ('just a string4');
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_3', 3);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO "validator_ref" (a_field, ref) VALUES ('ref_to_5', 5);
 INSERT INTO "validatorMain" (id, field1) VALUES (2, 'just a string2');
 INSERT INTO "validatorMain" (id, field1) VALUES (3, 'just a string3');
 INSERT INTO "validatorRef" (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
@@ -384,3 +419,17 @@ CREATE TABLE "T_upsert"
     "profile_id" INT NULL,
     UNIQUE ("email", "recovery_email")
 );
+
+CREATE TABLE "T_upsert_1"
+(
+    "a" INT NOT NULL PRIMARY KEY
+);
+
+CREATE TYPE "schema2"."my_type" AS enum('VAL1', 'VAL2', 'VAL3');
+CREATE TABLE "schema2"."custom_type_test_table" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "test_type" "schema2"."my_type"[]
+);
+INSERT INTO "schema2"."custom_type_test_table" ("test_type")
+VALUES (array['VAL2']::"schema2"."my_type"[]);
+
