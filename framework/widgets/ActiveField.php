@@ -927,11 +927,14 @@ class ActiveField extends Component
      */
     protected function addAriaAttributes(&$options)
     {
+        // Get proper attribute name when attribute name is tabular.
+        $attributeName = Html::getAttributeName($this->attribute);
+
         if ($this->addAriaAttributes) {
-            if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
+            if (!isset($options['aria-required']) && $this->model->isAttributeRequired($attributeName)) {
                 $options['aria-required'] = 'true';
             }
-            if (!isset($options['aria-invalid']) && $this->model->hasErrors($this->attribute)) {
+            if (!isset($options['aria-invalid']) && $this->model->hasErrors($attributeName)) {
                 $options['aria-invalid'] = 'true';
             }
         }
