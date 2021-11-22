@@ -288,7 +288,7 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Exception_Handling>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
 - <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
 
 
