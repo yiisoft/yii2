@@ -78,7 +78,7 @@ EOD;
     }
 
     /**
-     * @todo    discuss|review  Expected HTML shouldn't be wrapped only by the $content?
+     * @todo discuss|review Expected HTML shouldn't be wrapped only by the $content?
      */
     public function testRenderWithCallableContent()
     {
