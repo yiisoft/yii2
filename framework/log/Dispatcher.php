@@ -106,8 +106,8 @@ class Dispatcher extends Component
 
     /**
      * Gets the connected logger.
-     * If not set, [[\Yii::getLogger()]] will be used.
-     * @property Logger the logger. If not set, [[\Yii::getLogger()]] will be used.
+     * If not set, [[Yii::getLogger()]] will be used.
+     * @property Logger the logger. If not set, [[Yii::getLogger()]] will be used.
      * @return Logger the logger.
      */
     public function getLogger()
@@ -123,12 +123,15 @@ class Dispatcher extends Component
      * Sets the connected logger.
      * @param Logger|string|array $value the logger to be used. This can either be a logger instance
      * or a configuration that will be used to create one using [[Yii::createObject()]].
+     * If you are providing custom logger configuration and would like it to be used for the whole application 
+     * and not just for the dispatcher you should use [[Yii::setLogger()]] instead.
      */
     public function setLogger($value)
     {
         if (is_string($value) || is_array($value)) {
             $value = Yii::createObject($value);
         }
+
         $this->_logger = $value;
         $this->_logger->dispatcher = $this;
     }
@@ -184,24 +187,42 @@ class Dispatcher extends Component
     {
         $targetErrors = [];
         foreach ($this->targets as $target) {
-            if ($target->enabled) {
-                try {
-                    $target->collect($messages, $final);
-                } catch (\Exception $e) {
-                    $target->enabled = false;
-                    $targetErrors[] = [
-                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($e),
-                        Logger::LEVEL_WARNING,
-                        __METHOD__,
-                        microtime(true),
-                        [],
-                    ];
-                }
+            if (!$target->enabled) {
+                continue;
+            }
+            try {
+                $target->collect($messages, $final);
+            } catch (\Throwable $t) {
+                $target->enabled = false;
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $t, __METHOD__);
+            } catch (\Exception $e) {
+                $target->enabled = false;
+                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $e, __METHOD__);
             }
         }
 
         if (!empty($targetErrors)) {
             $this->dispatch($targetErrors, true);
         }
+    }
+
+    /**
+     * Generate target error message
+     *
+     * @param Target $target log target object
+     * @param \Throwable|\Exception $throwable catched exception
+     * @param string $method full method path
+     * @return array generated error message data
+     * @since 2.0.32
+     */
+    protected function generateTargetFailErrorMessage($target, $throwable, $method)
+    {
+        return [
+            'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($throwable),
+            Logger::LEVEL_WARNING,
+            $method,
+            microtime(true),
+            [],
+        ];
     }
 }

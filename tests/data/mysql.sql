@@ -32,6 +32,7 @@ DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_1` CASCADE;
 DROP TABLE IF EXISTS `T_upsert` CASCADE;
+DROP TABLE IF EXISTS `T_upsert_1`;
 
 CREATE TABLE `constraints`
 (
@@ -137,8 +138,10 @@ CREATE TABLE `negative_default_values` (
 CREATE TABLE `type` (
   `int_col` integer NOT NULL,
   `int_col2` integer DEFAULT '1',
+  `int_col3` integer(11) unsigned DEFAULT '1',
   `tinyint_col` tinyint(3) DEFAULT '1',
   `smallint_col` smallint(1) DEFAULT '1',
+  `bigint_col` bigint unsigned,
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',
   `char_col3` text,
@@ -263,7 +266,7 @@ INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VA
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 8.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO `document` (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
@@ -396,3 +399,8 @@ CREATE TABLE `T_upsert`
     UNIQUE (`email`, `recovery_email`)
 )
 ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `T_upsert_1` (
+  `a` int(11) NOT NULL,
+  PRIMARY KEY (`a`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

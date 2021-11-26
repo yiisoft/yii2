@@ -16,8 +16,8 @@ use yii\helpers\FileHelper;
 /**
  * This command helps to set up a dev environment with all extensions and applications.
  *
- * It will clone an extension or app repo and link the yii2 dev installation to the containted applications/extensions vendor dirs
- * to help working on yii using the application to test it.
+ * It will clone an extension or app repo and link the yii2 dev installation to the contained applications/extensions vendor dirs
+ * to help to work on yii using the application to test it.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -29,7 +29,7 @@ class DevController extends Controller
      */
     public $defaultAction = 'all';
     /**
-     * @var bool whether to use HTTP when cloning github repositories
+     * @var bool whether to use HTTP when cloning GitHub repositories
      */
     public $useHttp = false;
     /**
@@ -51,7 +51,8 @@ class DevController extends Controller
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
         'bootstrap' => 'git@github.com:yiisoft/yii2-bootstrap.git',
-        'codeception' => 'git@github.com:yiisoft/yii2-codeception.git',
+        'bootstrap4' => 'git@github.com:yiisoft/yii2-bootstrap4.git',
+        'bootstrap5' => 'git@github.com:yiisoft/yii2-bootstrap5.git',
         'composer' => 'git@github.com:yiisoft/yii2-composer.git',
         'debug' => 'git@github.com:yiisoft/yii2-debug.git',
         'elasticsearch' => 'git@github.com:yiisoft/yii2-elasticsearch.git',
@@ -164,7 +165,11 @@ class DevController extends Controller
             }
 
             $this->stdout("cloning application repo '$app' from '$repo'...\n", Console::BOLD);
-            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir);
+            passthru('git clone ' . escapeshellarg($repo) . ' ' . $appDir, $returnVar);
+            if ($returnVar !== 0) {
+                $this->stdout("Error occurred while cloning repository.\n", Console::BOLD, Console::FG_RED);
+                return 1;
+            }
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
 
@@ -330,7 +335,7 @@ class DevController extends Controller
                 continue;
             }
             // ignore hidden directories
-            if ($file[0] === '.') {
+            if (strpos($file, '.') === 0) {
                 continue;
             }
             if (is_dir("$dir/$file")) {

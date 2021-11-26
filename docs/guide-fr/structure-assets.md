@@ -201,12 +201,12 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](http://fontawesome.io/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
+L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](https://fontawesome.com/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
 
 
 ### Installation des ressources Bower et NPM  <span id="bower-npm-assets"></span>
 
-La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.org/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
+La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.com/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
 
 Pour cela, nous devons configurer quelque peu notre composer. Il y a deux options possibles :
 
@@ -252,7 +252,7 @@ Comparé à asset-packagist, composer-asset-plugin ne nécessite aucun changemen
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-Cette commande installe  [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
+Cette commande installe  [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
 
 Ajoutez les lignes suivantes au fichier `composer.json` de votre projet pour préciser les dossiers où seront installés les paquets, si vous voulez les publier en utilisant Yii :
 
@@ -494,13 +494,13 @@ Lorsque vous enregistrez une tel paquet de ressources dans une vue, le [[yii\web
 
 Yii utilise l'extension du nom de fichier pour identifier dans quelle syntaxe une ressource est écrite. Par défaut, il reconnaît les syntaxes et les extensions de nom suivants :
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii se fie aux outils de pré-traitement installés pour convertir les ressources. Par exemple, pour utiliser [LESS](http://lesscss.org/), vous devriez utiliser la commande de pré-traitement `lessc`.
+Yii se fie aux outils de pré-traitement installés pour convertir les ressources. Par exemple, pour utiliser [LESS](https://lesscss.org/), vous devriez utiliser la commande de pré-traitement `lessc`.
 
 Vous pouvez personnaliser les commandes de pré-traitement et la syntaxe étendue prise en charge en configurant [[yii\web\AssetManager::converter]] comme ci-après :
 

@@ -531,8 +531,8 @@ window.onload = function() {
 };
 
     // Highlight lines that have text in them but still support text selection:
-    document.onmousedown = function() { document.getElementsByTagName('body')[0].classList.add('mousedown'); }
-    document.onmouseup = function() { document.getElementsByTagName('body')[0].classList.remove('mousedown'); }
+    document.onmousedown = function() { document.getElementsByTagName('body')[0].classList.add('mousedown'); };
+    document.onmouseup = function() { document.getElementsByTagName('body')[0].classList.remove('mousedown'); };
     </script>
     <?php if (method_exists($this, 'endBody')): ?>
         <?php $this->endBody() // to allow injecting code into body (mostly by Yii Debug Toolbar)?>

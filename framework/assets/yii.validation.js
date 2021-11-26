@@ -261,7 +261,7 @@ yii.validation = (function ($) {
             hash = hash == null ? options.hash : hash[options.caseSensitive ? 0 : 1];
             var v = options.caseSensitive ? value : value.toLowerCase();
             for (var i = v.length - 1, h = 0; i >= 0; --i) {
-                h += v.charCodeAt(i);
+                h += v.charCodeAt(i) << i;
             }
             if (h != hash) {
                 pub.addMessage(messages, options.message, value);
@@ -408,10 +408,18 @@ yii.validation = (function ($) {
 
     function validateFile(file, messages, options) {
         if (options.extensions && options.extensions.length > 0) {
-            var index = file.name.lastIndexOf('.');
-            var ext = !~index ? '' : file.name.substr(index + 1, file.name.length).toLowerCase();
+            var found = false;
+            var filename = file.name.toLowerCase();
 
-            if (!~options.extensions.indexOf(ext)) {
+            for (var index=0; index < options.extensions.length; index++) {
+                var ext = options.extensions[index].toLowerCase();
+                if ((ext === '' && filename.indexOf('.') === -1) || (filename.substr(filename.length - options.extensions[index].length - 1) === ('.' + ext))) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
                 messages.push(options.wrongExtension.replace(/\{file\}/g, file.name));
             }
         }

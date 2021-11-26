@@ -176,7 +176,7 @@ SQL;
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
+WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f', 'p')
 ORDER BY c.relname
 SQL;
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
@@ -232,7 +232,7 @@ INNER JOIN "pg_index" AS "i"
 INNER JOIN "pg_class" AS "ic"
     ON "ic"."oid" = "i"."indexrelid"
 INNER JOIN "pg_attribute" AS "ia"
-    ON "ia"."attrelid" = "i"."indrelid" AND "ia"."attnum" = ANY ("i"."indkey")
+    ON "ia"."attrelid" = "i"."indexrelid"
 WHERE "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
 ORDER BY "ia"."attnum" ASC
 SQL;
@@ -443,7 +443,7 @@ SQL;
                 $row = array_change_key_case($row, CASE_LOWER);
             }
             $column = $row['columnname'];
-            if (!empty($column) && $column[0] === '"') {
+            if (strncmp($column, '"', 1) === 0) {
                 // postgres will quote names that are not lowercase-only
                 // https://github.com/yiisoft/yii2/issues/10613
                 $column = substr($column, 1, -1);
@@ -463,6 +463,12 @@ SQL;
     {
         $tableName = $this->db->quoteValue($table->name);
         $schemaName = $this->db->quoteValue($table->schemaName);
+
+        $orIdentity = '';
+        if (version_compare($this->db->serverVersion, '12.0', '>=')) {
+            $orIdentity = 'OR attidentity != \'\'';
+        }
+
         $sql = <<<SQL
 SELECT
     d.nspname AS table_schema,
@@ -470,12 +476,14 @@ SELECT
     a.attname AS column_name,
     COALESCE(td.typname, tb.typname, t.typname) AS data_type,
     COALESCE(td.typtype, tb.typtype, t.typtype) AS type_type,
+    (SELECT nspname FROM pg_namespace WHERE oid = COALESCE(td.typnamespace, tb.typnamespace, t.typnamespace)) AS type_scheme,
     a.attlen AS character_maximum_length,
     pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
     a.atttypmod AS modifier,
     a.attnotnull = false AS is_nullable,
     CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
-    coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
+    coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) {$orIdentity} AS is_autoinc,
+    pg_get_serial_sequence(quote_ident(d.nspname) || '.' || quote_ident(c.relname), a.attname) AS sequence_name,
     CASE WHEN COALESCE(td.typtype, tb.typtype, t.typtype) = 'e'::char
         THEN array_to_string((SELECT array_agg(enumlabel) FROM pg_enum WHERE enumtypid = COALESCE(td.oid, tb.oid, a.atttypid))::varchar[], ',')
         ELSE NULL
@@ -518,7 +526,7 @@ FROM
     LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
     LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND ct.contype = 'p'
 WHERE
-    a.attnum > 0 AND t.typname != ''
+    a.attnum > 0 AND t.typname != '' AND NOT a.attisdropped
     AND c.relname = {$tableName}
     AND d.nspname = {$schemaName}
 ORDER BY
@@ -536,17 +544,26 @@ SQL;
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
-                if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
-                    $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
+                if ($table->sequenceName === null) {
+                    $table->sequenceName = $column->sequenceName;
                 }
                 $column->defaultValue = null;
             } elseif ($column->defaultValue) {
-                if ($column->type === 'timestamp' && $column->defaultValue === 'now()') {
+                if (
+                    in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
+                    in_array(
+                        strtoupper($column->defaultValue),
+                        ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
+                        true
+                    )
+                ) {
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
                     $column->defaultValue = ($column->defaultValue === 'true');
-                } elseif (strncasecmp($column->dbType, 'bit', 3) === 0 || strncasecmp($column->dbType, 'varbit', 6) === 0) {
-                    $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
+                } elseif (preg_match("/^B'(.*?)'::/", $column->defaultValue, $matches)) {
+                    $column->defaultValue = bindec($matches[1]);
+                } elseif (preg_match("/^'(\d+)'::\"bit\"$/", $column->defaultValue, $matches)) {
+                    $column->defaultValue = bindec($matches[1]);
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $column->phpTypecast($matches[1]);
                 } elseif (preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
@@ -576,7 +593,12 @@ SQL;
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];
-        $column->dbType = $info['data_type'];
+        if ($info['type_scheme'] !== null && !in_array($info['type_scheme'], [$this->defaultSchema, 'pg_catalog'], true)
+        ) {
+            $column->dbType = $info['type_scheme'] . '.' . $info['data_type'];
+        } else {
+            $column->dbType = $info['data_type'];
+        }
         $column->defaultValue = $info['column_default'];
         $column->enumValues = ($info['enum_values'] !== null) ? explode(',', str_replace(["''"], ["'"], $info['enum_values'])) : null;
         $column->unsigned = false; // has no meaning in PG
@@ -585,7 +607,14 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
-        $column->dimension = (int)$info['dimension'];
+        $column->dimension = (int) $info['dimension'];
+        // pg_get_serial_sequence() doesn't track DEFAULT value change. GENERATED BY IDENTITY columns always have null default value
+        if (isset($column->defaultValue) && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
+            $column->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
+        } elseif (isset($info['sequence_name'])) {
+            $column->sequenceName = $this->resolveTableName($info['sequence_name'])->fullName;
+        }
+
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {
@@ -641,7 +670,7 @@ SELECT
     "fa"."attname" AS "foreign_column_name",
     "c"."confupdtype" AS "on_update",
     "c"."confdeltype" AS "on_delete",
-    "c"."consrc" AS "check_expr"
+    pg_get_constraintdef("c"."oid") AS "check_expr"
 FROM "pg_class" AS "tc"
 INNER JOIN "pg_namespace" AS "tcns"
     ON "tcns"."oid" = "tc"."relnamespace"

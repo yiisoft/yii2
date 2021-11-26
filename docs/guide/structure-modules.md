@@ -14,7 +14,7 @@ A module is organized as a directory which is called the [[yii\base\Module::base
 Within the directory, there are sub-directories, such as `controllers`, `models`, `views`, which hold controllers,
 models, views, and other code, just like in an application. The following example shows the content within a module:
 
-```
+```js
 forum/
     Module.php                   the module class file
     controllers/                 containing controller class files
@@ -159,6 +159,9 @@ the [[yii\base\Application::modules|modules]] property of the application. The f
     ],
 ]
 ```
+
+> Info: To connect console commands of your module,
+> you also need to include it in the [console application configuration](tutorial-console.md#configuration)
 
 The [[yii\base\Application::modules|modules]] property takes an array of module configurations. Each array key
 represents a *module ID* which uniquely identifies the module among all modules in the application, and the corresponding

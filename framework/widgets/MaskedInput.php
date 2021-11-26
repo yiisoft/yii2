@@ -8,7 +8,6 @@
 namespace yii\widgets;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yii\web\View;
@@ -33,7 +32,7 @@ use yii\web\View;
  * method, for example like this:
  *
  * ```php
- * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::className(), [
+ * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::class, [
  *     'mask' => '999-999-9999',
  * ]) ?>
  * ```

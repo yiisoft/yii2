@@ -31,6 +31,24 @@ class MimeTypeController extends Controller
      */
     private $aliases = [
         'text/xml' => 'application/xml',
+        'image/svg' => 'image/svg+xml',
+        'image/x-bmp' => 'image/bmp',
+        'image/x-bitmap' => 'image/bmp',
+        'image/x-xbitmap' => 'image/bmp',
+        'image/x-win-bitmap' => 'image/bmp',
+        'image/x-windows-bmp' => 'image/bmp',
+        'image/ms-bmp' => 'image/bmp',
+        'image/x-ms-bmp' => 'image/bmp',
+        'application/bmp' => 'image/bmp',
+        'application/x-bmp' => 'image/bmp',
+        'application/x-win-bitmap' => 'image/bmp',
+    ];
+
+    /**
+     * @var array MIME types to add to the ones parsed from Apache files
+     */
+    private $additionalMimeTypes = [
+        'mjs' => 'text/javascript',
     ];
 
     /**
@@ -47,9 +65,9 @@ class MimeTypeController extends Controller
             $aliasesOutFile = Yii::getAlias('@yii/helpers/mimeAliases.php');
         }
 
-        $this->stdout('downloading mime-type file from apache httpd repository...');
+        $this->stdout('Downloading mime-type file from apache httpd repository...');
         if ($apacheMimeTypesFileContent = file_get_contents('http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=co')) {
-            $this->stdout("done.\n", Console::FG_GREEN);
+            $this->stdout("Done.\n", Console::FG_GREEN);
             $this->generateMimeTypesFile($outFile, $apacheMimeTypesFileContent);
             $this->generateMimeAliasesFile($aliasesOutFile);
         } else {
@@ -63,11 +81,11 @@ class MimeTypeController extends Controller
      */
     private function generateMimeTypesFile($outFile, $content)
     {
-        $this->stdout("generating file $outFile...");
+        $this->stdout("Generating file $outFile...");
         $mimeMap = [];
         foreach (explode("\n", $content) as $line) {
             $line = trim($line);
-            if (empty($line) || $line[0] === '#') { // skip comments and empty lines
+            if (empty($line) || strpos($line, '#') === 0) { // skip comments and empty lines
                 continue;
             }
             $parts = preg_split('/\s+/', $line);
@@ -78,6 +96,7 @@ class MimeTypeController extends Controller
                 }
             }
         }
+        $mimeMap = array_merge($mimeMap, $this->additionalMimeTypes);
         ksort($mimeMap);
         $array = VarDumper::export($mimeMap);
         $content = <<<EOD

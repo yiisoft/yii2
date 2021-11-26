@@ -85,7 +85,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 通过归档文件安装 Yii 包括三个步骤：
 
-1. 从 [yiiframework.com](http://www.yiiframework.com/download/) 下载归档文件。
+1. 从 [yiiframework.com](https://www.yiiframework.com/download/) 下载归档文件。
 2. 将下载的文件解压缩到 Web 访问的文件夹中。
 3. 修改 `config/web.php` 文件，给 `cookieValidationKey` 配置项
    添加一个密钥（若你通过 Composer 安装，则此步骤会自动完成）：
@@ -114,9 +114,9 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 安装 Assets <span id="installing-assets"></span>
 -----------
 
-Yii依靠 [Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/) 软件包来安装 asset（CSS 和 JavaScript）库。
+Yii依靠 [Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.com/) 软件包来安装 asset（CSS 和 JavaScript）库。
 它使用Composer来获取这些库，允许 PHP 和 CSS/JavaScript 包版本同时解析。
-这可以通过使用 [asset-packagist.org](https://asset-packagist.org) 或 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) 来实现。
+这可以通过使用 [asset-packagist.org](https://asset-packagist.org) 或 [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) 来实现。
 有关更多详细信息，请参阅 [Assets 文档](structure-assets.md)。
 
 您可能希望通过本地 Bower/NPM 客户端管理您的 assets，使用 CDN 或完全避免 assets 的安装。
@@ -139,7 +139,7 @@ Yii依靠 [Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/) 软件
 ------------
 
 当安装完成之后，
-或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://secure.php.net/manual/en/features.commandline.webserver.php)，
+或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://www.php.net/manual/en/features.commandline.webserver.php)，
 当在项目 `web` 目录下可以通过下面的命令:
  
 ```bash
@@ -173,7 +173,7 @@ http://localhost:8080/
   ```
 
 你需要配置好 PHP 安装环境，使其符合 Yii 的最小需求。主要是需要 PHP 5.4 或 以上版本。
-如果应用需要用到数据库，那还要安装 [PDO PHP 扩展](https://secure.php.net/manual/zh/pdo.installation.php) 
+如果应用需要用到数据库，那还要安装 [PDO PHP 扩展](https://www.php.net/manual/zh/pdo.installation.php) 
 和相应的数据库驱动（例如访问 MySQL 数据库所需的 `pdo_mysql`）。
 
 
@@ -234,7 +234,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推荐使用的 Nginx 配置 <span id="recommended-nginx-configuration"></span>
 
-为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](https://secure.php.net/install.fpm) 了。
+为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](https://www.php.net/install.fpm) 了。
 你可以使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，
 `mysite.local` 替换为实际的主机名以提供服务。
 

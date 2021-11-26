@@ -109,7 +109,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
         $m = new ValidatorTestRefModel();
-        $m->id = 7;
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 7;
+        }
         $m->ref = 12121;
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
@@ -209,10 +212,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateTargetClass()
     {
-        // Check whether "Description" and "address" aren't equal
+        // Check whether "Description" and "name" aren't equal
         $val = new UniqueValidator([
             'targetClass' => Customer::className(),
-            'targetAttribute' => ['description' => 'address'],
+            'targetAttribute' => ['description' => 'name'],
         ]);
 
         /** @var Profile $m */
@@ -222,16 +225,16 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertFalse($m->hasErrors('description'));
 
         // ID of Profile is not equal to ID of Customer
-        // (1, description = address2) <=> (2, address = address2)
-        $m->description = 'address2';
+        // (1, description = user2) <=> (2, name = user2)
+        $m->description = 'user2';
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
         $m->clearErrors('description');
 
         // ID of Profile IS equal to ID of Customer
-        // (1, description = address1) <=> (1, address = address1)
+        // (1, description = user1) <=> (1, name = user1)
         // https://github.com/yiisoft/yii2/issues/10263
-        $m->description = 'address1';
+        $m->description = 'user1';
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
     }
@@ -283,13 +286,17 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val = new UniqueValidator();
 
         $m = new ValidatorTestMainModel(['field1' => '']);
-        $m->id = 1;
+
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 5;
+        }
+
         $val->validateAttribute($m, 'field1');
         $this->assertFalse($m->hasErrors('field1'));
         $m->save(false);
 
         $m = new ValidatorTestMainModel(['field1' => '']);
-        $m->id = 2;
         $val->validateAttribute($m, 'field1');
         $this->assertTrue($m->hasErrors('field1'));
     }
@@ -301,13 +308,17 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $val = new UniqueValidator();
 
         $m = new ValidatorTestRefModel(['ref' => 0]);
-        $m->id = 1;
+
+        // Add id manual, there is no definition of sequence for the table.
+        if ($this->driverName === 'oci') {
+            $m->id = 6;
+        }
+
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors('ref'));
         $m->save(false);
 
         $m = new ValidatorTestRefModel(['ref' => 0]);
-        $m->id = 2;
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
     }
@@ -406,7 +417,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             },
         ]);
         $model = new Order();
-        $model->id = 42;
         $model->customer_id = 1;
         $model->total = 800;
         $model->save(false);
@@ -422,11 +432,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         $validator = new UniqueValidator([
             'targetAttribute' => [
-                'title' => 'LOWER(title)',
+                'title' => 'LOWER([[title]])',
             ],
         ]);
         $model = new Document();
-        $model->id = 42;
         $model->title = 'Test';
         $model->content = 'test';
         $model->version = 1;
@@ -452,7 +461,25 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
     }
-    
+
+    /**
+     * Test join with doesn't attempt to eager load joinWith relations
+     * @see https://github.com/yiisoft/yii2/issues/17389
+     */
+    public function testFindModelJoinWith()
+    {
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['status', 'profile_id'],
+        ]);
+        $model = JoinWithCustomer::find()->one();
+        try {
+            $validator->validateAttribute($model, 'email');
+            $this->assertTrue(true);
+        } catch (\Exception $exception) {
+            $this->fail('Query is crashed because "joinWith" relation cannot be loaded');
+        }
+    }
+
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();
@@ -485,6 +512,16 @@ class WithCustomer extends Customer {
         $res = parent::find();
 
         $res->with('profile');
+
+        return $res;
+    }
+}
+
+class JoinWithCustomer extends Customer {
+    public static function find() {
+        $res = parent::find();
+
+        $res->joinWith('profile');
 
         return $res;
     }

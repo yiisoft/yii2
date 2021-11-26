@@ -225,6 +225,31 @@ class DataFilterTest extends TestCase
                 true,
                 [],
             ],
+            [
+                [
+                    'name' => [
+                        'eq' => 'NULL',
+                    ],
+                ],
+                true,
+                [],
+            ],
+            [
+                [
+                    'name' => 'NULL',
+                ],
+                true,
+                [],
+            ],
+            [
+                [
+                    'name' => [
+                        'neq' => 'NULL',
+                    ],
+                ],
+                true,
+                [],
+            ],
         ];
     }
 
@@ -363,6 +388,14 @@ class DataFilterTest extends TestCase
                     'datetime' => '2015-06-06 17:46:12',
                 ],
             ],
+            [
+                [
+                    'name' => 'NULL',
+                ],
+                [
+                    'name' => null,
+                ],
+            ],
         ];
     }
 
@@ -401,6 +434,15 @@ class DataFilterTest extends TestCase
 
         $builder->filter = $filter;
         $this->assertEquals($expectedResult, $builder->normalize(false));
+    }
+
+    public function testNormalizeNonDefaultNull()
+    {
+        $builder = new DataFilter();
+        $builder->nullValue = 'abcde';
+        $builder->setSearchModel((new DynamicModel(['name' => null]))->addRule('name', 'string'));
+        $builder->filter = ['name' => 'abcde'];
+        $this->assertEquals(['name' => null], $builder->normalize(false));
     }
 
     public function testSetupErrorMessages()

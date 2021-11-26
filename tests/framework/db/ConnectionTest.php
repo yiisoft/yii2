@@ -10,6 +10,9 @@ namespace yiiunit\framework\db;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\ArrayCache;
+use yii\db\conditions\AndCondition;
+use yii\db\conditions\ExistsConditionBuilder;
+use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;
 
@@ -44,6 +47,50 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->dsn = 'unknown::memory:';
         $this->expectException('yii\db\Exception');
         $connection->open();
+    }
+
+    public function testQueryBuilderConfigurationAfterOpenClose()
+    {
+        $connection = $this->getConnection(false, false);
+        $connection->setQueryBuilder([
+            'expressionBuilders' => [
+                // Just a dumb mapping to make sure it's applied
+                'yii\db\conditions\OrCondition' => 'yii\db\conditions\ExistsConditionBuilder'
+            ],
+        ]);
+        // Second call to make sure that consecutive calls are handled correctly
+        $connection->setQueryBuilder([
+            'expressionBuilders' => [
+                'yii\db\conditions\AndCondition' => 'yii\db\conditions\InConditionBuilder'
+            ],
+        ]);
+
+        $orCondition = new OrCondition(['dumb']);
+        $andCondition = new AndCondition(['dumb']);
+
+        $connection->open();
+
+        $this->assertInstanceOf(
+            '\yii\db\conditions\ExistsConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($orCondition)
+        );
+        $this->assertInstanceOf(
+            '\yii\db\conditions\InConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($andCondition)
+        );
+
+        $connection->close();
+        $this->assertNull($connection->pdo);
+        $connection->open();
+
+        $this->assertInstanceOf(
+            '\yii\db\conditions\ExistsConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($orCondition)
+        );
+        $this->assertInstanceOf(
+            '\yii\db\conditions\InConditionBuilder',
+            $connection->getQueryBuilder()->getExpressionBuilder($andCondition)
+        );
     }
 
     public function testSerialize()
@@ -85,6 +132,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('`schema`.`table`'));
         $this->assertEquals('{{table}}', $connection->quoteTableName('{{table}}'));
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
+        $this->assertEquals('`table(0)`', $connection->quoteTableName('table(0)'));
     }
 
     public function testQuoteColumnName()
@@ -136,7 +184,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertFalse($transaction->isActive);
         $this->assertNull($connection->transaction);
 
-        $this->assertEquals(0, $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction';")->queryScalar());
+        $this->assertEquals(
+            0,
+            $connection->createCommand(
+                "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction'"
+            )->queryScalar()
+        );
 
         $transaction = $connection->beginTransaction();
         $connection->createCommand()->insert('profile', ['description' => 'test transaction'])->execute();
@@ -144,7 +197,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertFalse($transaction->isActive);
         $this->assertNull($connection->transaction);
 
-        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction';")->queryScalar());
+        $this->assertEquals(
+            1,
+            $connection->createCommand(
+                "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction'"
+            )->queryScalar()
+        );
     }
 
     public function testTransactionIsolation()
@@ -192,7 +250,10 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $this->assertTrue($result, 'transaction shortcut valid value should be returned from callback');
 
-        $profilesCount = $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")->queryScalar();
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
+
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 
@@ -259,7 +320,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($connection->getTableSchema('qlog1', true));
 
         \Yii::getLogger()->messages = [];
-        $connection->createCommand('SELECT * FROM qlog1')->queryAll();
+        $connection->createCommand('SELECT * FROM {{qlog1}}')->queryAll();
         $this->assertCount(3, \Yii::getLogger()->messages);
 
         // profiling only
@@ -272,7 +333,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($connection->getTableSchema('qlog2', true));
 
         \Yii::getLogger()->messages = [];
-        $connection->createCommand('SELECT * FROM qlog2')->queryAll();
+        $connection->createCommand('SELECT * FROM {{qlog2}}')->queryAll();
         $this->assertCount(2, \Yii::getLogger()->messages);
 
         // logging only
@@ -285,7 +346,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($connection->getTableSchema('qlog3', true));
 
         \Yii::getLogger()->messages = [];
-        $connection->createCommand('SELECT * FROM qlog3')->queryAll();
+        $connection->createCommand('SELECT * FROM {{qlog3}}')->queryAll();
         $this->assertCount(1, \Yii::getLogger()->messages);
 
         // disabled
@@ -296,7 +357,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->createCommand()->createTable('qlog4', ['id' => 'pk'])->execute();
         $this->assertNotNull($connection->getTableSchema('qlog4', true));
         $this->assertCount(0, \Yii::getLogger()->messages);
-        $connection->createCommand('SELECT * FROM qlog4')->queryAll();
+        $connection->createCommand('SELECT * FROM {{qlog4}}')->queryAll();
         $this->assertCount(0, \Yii::getLogger()->messages);
     }
 

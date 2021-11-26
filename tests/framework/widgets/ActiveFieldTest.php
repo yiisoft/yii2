@@ -78,7 +78,7 @@ EOD;
     }
 
     /**
-     * @todo    discuss|review  Expected HTML shouldn't be wrapped only by the $content?
+     * @todo discuss|review Expected HTML shouldn't be wrapped only by the $content?
      */
     public function testRenderWithCallableContent()
     {
@@ -530,6 +530,62 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
+    public function testTabularAriaAttributes()
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testTabularAriaRequiredAttribute()
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addRule([$this->attributeName], 'required');
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename required">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testTabularAriaInvalidAttribute()
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addError($this->attributeName, 'Some error');
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename has-error">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block">Some error</div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
     public function testEmptyTag()
     {
         $this->activeField->options = ['tag' => false];
@@ -551,6 +607,31 @@ EOD;
 
         $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
         $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+    }
+
+    public function testWidgetOptions()
+    {
+        $this->activeField->form->validationStateOn = ActiveForm::VALIDATION_STATE_ON_INPUT;
+        $this->activeField->model->addError('attributeName', 'error');
+
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'form-control has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+
+        $this->activeField->inputOptions = [];
+        $this->activeField->widget(TestInputWidget::className());
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
     }
 
     /**

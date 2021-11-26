@@ -97,6 +97,13 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $m->test_val = [2, 3, 4, 5];
         $val->validateAttribute($m, 'test_val');
         $this->assertFalse($m->hasErrors('test_val'));
+        // existing non-unique array
+        $val = new ExistValidator(['targetAttribute' => 'ref']);
+        $val->allowArray = true;
+        $m = new ValidatorTestRefModel();
+        $m->test_val = [2, 2, 3, 3, 4, 4, 5, 5];
+        $val->validateAttribute($m, 'test_val');
+        $this->assertFalse($m->hasErrors('test_val'));
         // non-existing array
         $val = new ExistValidator(['targetAttribute' => 'ref']);
         $val->allowArray = true;
@@ -198,7 +205,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     {
         $val = new ExistValidator([
            'targetClass' => OrderItem::className(),
-           'targetAttribute' => ['id' => 'COALESCE(order_id, 0)'],
+           'targetAttribute' => ['id' => 'COALESCE([[order_id]], 0)'],
        ]);
 
         $m = new Order(['id' => 1]);
@@ -235,7 +242,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
     }
-    
+
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();

@@ -74,7 +74,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('n/j/y', $value->getTimestamp()), $this->formatter->asDate($value, 'short'));
         $this->assertSame(date('F j, Y', $value->getTimestamp()), $this->formatter->asDate($value, 'long'));
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+        if (PHP_VERSION_ID >= 50500) {
             $value = new \DateTimeImmutable();
             $this->assertSame(date('M j, Y', $value->getTimestamp()), $this->formatter->asDate($value));
             $this->assertSame(date('Y/m/d', $value->getTimestamp()), $this->formatter->asDate($value, 'php:Y/m/d'));
@@ -192,10 +192,16 @@ class FormatterDateTest extends TestCase
         $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($date));
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($date, 'php:Y/m/d h:i:s A'));
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+        if (PHP_VERSION_ID >= 50500) {
             $value = new \DateTimeImmutable();
             $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
             $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
+        }
+
+        if (PHP_VERSION_ID >= 50600) {
+            // DATE_ATOM
+            $value = time();
+            $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
         }
 
         // empty input
@@ -204,10 +210,6 @@ class FormatterDateTest extends TestCase
         $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
-
-        // DATE_ATOM
-        $value = time();
-        $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
     }
 
     public function testIntlAsTimestamp()
@@ -408,6 +410,9 @@ class FormatterDateTest extends TestCase
         // just now
         $this->assertSame('just now', $this->formatter->asRelativeTime($t = time(), $t));
         $this->assertSame('just now', $this->formatter->asRelativeTime(0, 0));
+        $interval_0_seconds = new DateInterval('PT0S');
+        $interval_0_seconds->invert = true;
+        $this->assertSame('just now', $this->formatter->asRelativeTime($interval_0_seconds));
 
         // empty input
         $this->assertSame('just now', $this->formatter->asRelativeTime(false, 0));
@@ -416,6 +421,10 @@ class FormatterDateTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null, time()));
+
+        // no reference time
+        $now = new DateTime('-1 minute');
+        $this->assertSame('a minute ago', $this->formatter->asRelativeTime($now));
     }
 
     public function testIntlAsDuration()

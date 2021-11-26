@@ -24,13 +24,13 @@ Jika Anda sudah akrab dengan framework lain, Anda mungkin menghargai pengetahuan
 - Yii sangat extensible. Anda dapat menyesuaikan atau mengganti hampir setiap bagian dari kode inti Yii. Anda juga bisa mengambil keuntungan dari arsitektur ekstensi Yii yang solid untuk menggunakan atau mengembangkan ekstensi untuk disebarkan kembali.
 - Kinerja tinggi selalu menjadi tujuan utama dari Yii.
 
-Yii tidak dikerjakan oleh satu orang, Yii didukung oleh [tim pengembang inti yang kuat][about_yii], serta komunitas besar
+Yii tidak dikerjakan oleh satu orang, Yii didukung oleh [tim pengembang inti yang kuat][yii_team], serta komunitas besar
 profesional yang terus memberikan kontribusi bagi pengembangan Yii. Tim pengembang Yii
 terus mengamati perkembangan tren terbaru Web, pada penerapan terbaik serta fitur yang
 ditemukan dalam framework dan proyek lain. Penerapan terbaik yang paling relevan dan fitur yang ditemukan di tempat lain secara teratur
 dimasukkan ke dalam kerangka inti dan menampakkannya melalui antarmuka yang sederhana dan elegan.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Versi Yii
 ----------
@@ -48,5 +48,5 @@ Yii 2.0 memerlukan PHP 5.4.0 atau versi lebih tinggi. Anda dapat menemukan persy
 dengan menjalankan pengecek persyaratan yang diikutsertakan dalam setiap rilis Yii.
 
 Menggunakan Yii memerlukan pengetahuan dasar tentang pemrograman berorientasi objek (OOP), mengingat Yii adalah framework berbasis OOP murni.
-Yii 2.0 juga memanfaatkan fitur terbaru dari PHP, seperti [namespace](https://secure.php.net/manual/en/language.namespaces.php) dan [traits](https://secure.php.net/manual/en/language.oop5.traits.php). 
+Yii 2.0 juga memanfaatkan fitur terbaru dari PHP, seperti [namespace](https://www.php.net/manual/en/language.namespaces.php) dan [traits](https://www.php.net/manual/en/language.oop5.traits.php). 
 Memahami konsep-konsep ini akan membantu Anda lebih mudah memahami Yii 2.0.

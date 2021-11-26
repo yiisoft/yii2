@@ -114,7 +114,7 @@ utilizadas regularmente. La siguiente es la lista de alias predefinidos por Yii:
 - `@web`: la URL base de la aplicación web se ejecuta actualmente. Tiene el mismo valor que [[yii\web\Request::baseUrl]].
 - `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer]]. Por defecto `@app/vendor`.
 - `@bower`, el directorio raíz que contiene [paquetes bower](http://bower.io/). Por defecto `@vendor/bower`.
-- `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.org/). Por defecto `@vendor/npm`.
+- `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.com/). Por defecto `@vendor/npm`.
 
 El alias `@yii` se define cuando incluyes el archivo `Yii.php` en tu [script de entrada](structure-entry-scripts.md),
 mientras que el resto de los alias están definidos en el constructor de la aplicación cuando se aplica la

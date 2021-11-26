@@ -18,7 +18,7 @@ class ChangeLogTest extends TestCase
     public function changeProvider()
     {
 
-        $lines = explode("\n", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'));
+        $lines = preg_split("~\R~", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'), -1, PREG_SPLIT_NO_EMPTY);
 
         // Don't check last 1500 lines, they are old and often don't obey the standard.
         $lastIndex = count($lines) - 1500;
@@ -54,6 +54,6 @@ class ChangeLogTest extends TestCase
          * - Description ends without a "."
          * - Line ends with contributor name between "(" and ")".
          */
-        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.*\)$/', $line);
+        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.+\)$/', $line);
     }
 }

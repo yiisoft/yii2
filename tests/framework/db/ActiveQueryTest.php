@@ -53,7 +53,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of prepare()
+     * @todo tests for internal logic of prepare()
      */
     public function testPrepare()
     {
@@ -72,7 +72,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of populate()
+     * @todo tests for internal logic of populate()
      */
     public function testPopulate_FilledRows()
     {
@@ -83,7 +83,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of one()
+     * @todo tests for internal logic of one()
      */
     public function testOne()
     {
@@ -93,7 +93,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: test internal logic of createCommand()
+     * @todo test internal logic of createCommand()
      */
     public function testCreateCommand()
     {
@@ -103,7 +103,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of queryScalar()
+     * @todo tests for internal logic of queryScalar()
      */
     public function testQueryScalar()
     {
@@ -113,7 +113,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of joinWith()
+     * @todo tests for internal logic of joinWith()
      */
     public function testJoinWith()
     {
@@ -125,7 +125,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of innerJoinWith()
+     * @todo tests for internal logic of innerJoinWith()
      */
     public function testInnerJoinWith()
     {
@@ -136,8 +136,28 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $result->joinWith);
     }
 
+    public function testBuildJoinWithRemoveDuplicateJoinByTableName()
+    {
+        $query = new ActiveQuery(Customer::className());
+        $query->innerJoinWith('orders')
+            ->joinWith('orders.orderItems');
+        $this->invokeMethod($query, 'buildJoinWith');
+        $this->assertEquals([
+            [
+                'INNER JOIN',
+                'order',
+                '{{customer}}.[[id]] = {{order}}.[[customer_id]]'
+            ],
+            [
+                'LEFT JOIN',
+                'order_item',
+                '{{order}}.[[id]] = {{order_item}}.[[order_id]]'
+            ],
+        ], $query->join);
+    }
+
     /**
-     * @todo: tests for the regex inside getQueryTableName
+     * @todo tests for the regex inside getQueryTableName
      */
     public function testGetQueryTableName_from_not_set()
     {
@@ -211,7 +231,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of viaTable()
+     * @todo tests for internal logic of viaTable()
      */
     public function testViaTable()
     {

@@ -25,6 +25,7 @@
 return [
     '(not set)' => '(לא הוגדר)',
     'An internal server error occurred.' => 'שגיאת שרת פנימית',
+    'Are you sure you want to delete this item?' => 'האם אתה בטוח שברצונך למחוק פריט זה?',
     'Delete' => 'מחק',
     'Error' => 'שגיאה',
     'File upload failed.' => 'העלאת קובץ נכשלה',

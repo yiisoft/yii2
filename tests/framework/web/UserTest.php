@@ -47,10 +47,6 @@ class UserTest extends TestCase
 
     public function testLoginExpires()
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test this on travis-ci.');
-        }
-
         $appConfig = [
             'components' => [
                 'user' => [
@@ -352,16 +348,39 @@ class UserTest extends TestCase
 
     public function testAccessChecker()
     {
-        $appConfig = [
+        $this->mockWebApplication([
             'components' => [
                 'user' => [
                     'identityClass' => UserIdentity::className(),
                     'accessChecker' => AccessChecker::className()
                 ]
             ],
-        ];
+        ]);
+        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
 
-        $this->mockWebApplication($appConfig);
+        $this->mockWebApplication([
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'accessChecker' => [
+                        'class' => AccessChecker::className(),
+                    ],
+                ],
+            ],
+        ]);
+        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+
+        $this->mockWebApplication([
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'accessChecker' => 'accessChecker',
+                ],
+                'accessChecker' => [
+                    'class' => AccessChecker::className(),
+                ]
+            ],
+        ]);
         $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
     }
 
@@ -431,6 +450,77 @@ class UserTest extends TestCase
 
         $this->expectException('\yii\base\InvalidValueException');
         Yii::$app->user->setIdentity(new \stdClass());
+    }
+
+    public function testSessionAuthWithNonExistingId()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', '1');
+
+        $this->assertNull(Yii::$app->user->getIdentity());
+    }
+
+    public function testSessionAuthWithMissingKey()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', 'user1');
+
+        $this->assertNotNull(Yii::$app->user->getIdentity());
+    }
+
+    public function testSessionAuthWithInvalidKey()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', 'user1');
+        Yii::$app->session->set('__authKey', 'invalid');
+
+
+        $this->assertNull(Yii::$app->user->getIdentity());
+    }
+
+    public function testSessionAuthWithValidKey()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->set('__id', 'user1');
+        Yii::$app->session->set('__authKey', 'ABCD1234');
+
+        $this->assertNotNull(Yii::$app->user->getIdentity());
     }
 }
 

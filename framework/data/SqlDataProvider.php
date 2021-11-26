@@ -119,7 +119,7 @@ class SqlDataProvider extends BaseDataProvider
 
         if ($sort !== false) {
             $orders = $sort->getOrders();
-            $pattern = '/\s+order\s+by\s+([\w\s,\.]+)$/i';
+            $pattern = '/\s+order\s+by\s+([\w\s,\."`\[\]]+)$/i';
             if (preg_match($pattern, $sql, $matches)) {
                 array_unshift($orders, new Expression($matches[1]));
                 $sql = preg_replace($pattern, '', $sql);

@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
 DROP TABLE IF EXISTS "T_upsert";
+DROP TABLE IF EXISTS "T_upsert_1";
 
 CREATE TABLE "profile" (
   id INTEGER NOT NULL,
@@ -227,7 +228,7 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
@@ -353,4 +354,9 @@ CREATE TABLE "T_upsert"
     "orders" INT NOT NULL DEFAULT 0,
     "profile_id" INT NULL,
     UNIQUE ("email", "recovery_email")
+);
+
+CREATE TABLE "T_upsert_1"
+(
+    "a" INTEGER NOT NULL PRIMARY KEY
 );

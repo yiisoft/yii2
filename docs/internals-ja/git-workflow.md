@@ -217,7 +217,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ### 注意:
 
-退行 (regression) を早期に発見するために、github 上の Yii コード・ベースへのマージは、すべて [Travis CI](http://travis-ci.org) に取り上げられて、自動化されたテストにかけられます。
+退行 (regression) を早期に発見するために、github 上の Yii コード・ベースへのマージは、すべて [Travis CI](http://travis-ci.com) に取り上げられて、自動化されたテストにかけられます。
 コア・チームとしては、このサービスに過大な負担をかけたくないために、以下の場合にはマージの説明に 
 [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) が含まれるようにしてください。
 すなわち、プル・リクエストが下記のものである場合がそうです。

@@ -201,13 +201,13 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-上記の例は、["fontawesome" パッケージ](http://fontawesome.io/) のためのアセット・バンドルを定義するものです。
+上記の例は、["fontawesome" パッケージ](https://fontawesome.com/) のためのアセット・バンドルを定義するものです。
 発行オプション `only` を指定して、`fonts` と `css` サブ・ディレクトリだけが発行されるようにしています。
 
 
 ### Bower と NPM のアセットのインストール <span id="bower-npm-assets"></span>
 
-ほとんどの JavaScript/CSS パッケージは、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) によって管理されています。
+ほとんどの JavaScript/CSS パッケージは、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) によって管理されています。
 PHP の世界には PHP の依存を管理する Composer がありますが、PHP のパッケージと全く同じように
 `composer.json` を使って Bower のパッケージも NPM のパッケージもロードすることが可能です。
 
@@ -257,7 +257,7 @@ asset-packagist と異なって、composer-asset-plugin はアプリケーショ
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-このコマンドによって [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) がグローバルにインストールされ、
+このコマンドによって [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) がグローバルにインストールされ、
 Bower と NPM パッケージの依存関係を Composer によって管理することが出来るようになります。
 プラグインがインストールされた後は、あなたのコンピュータ上の全てのプロジェクトが `composer.json` を通じて Bower と NPM パッケージをサポートすることが出来ます。
 
@@ -266,9 +266,11 @@ Yii を使ってこれらのアセットを発行したい場合は、プロジ�
 
 ```json
 "config": {
-    "asset-installer-paths": {
-        "npm-asset-library": "vendor/npm",
-        "bower-asset-library": "vendor/bower"
+    "fxp-asset": {
+        "installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```
@@ -608,14 +610,14 @@ class AppAsset extends AssetBundle
 Yii はファイル名の拡張子を使って、アセットが使っている拡張構文を識別します。
 デフォルトでは、下記の構文とファイル名拡張子を認識します。
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
 Yii はインストールされたプリ・プロセッサ・ツールに頼ってアセットを変換します。
-例えば、[LESS](http://lesscss.org/) を使うためには、`lessc` プリ・プロセッサ・コマンドをインストールしなければなりません。
+例えば、[LESS](https://lesscss.org/) を使うためには、`lessc` プリ・プロセッサ・コマンドをインストールしなければなりません。
 
 下記のように [[yii\web\AssetManager::converter]] を構成することで、
 プリ・プロセッサ・コマンドとサポートされる拡張構文をカスタマイズすることが出来ます。

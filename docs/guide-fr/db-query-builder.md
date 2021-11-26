@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### Préfixes
 Un [[yii\db\Connection::$tablePrefix|préfixe de table]] peut aussi être appliqué. Les instructions de mise en œuvre sont données à la section 
-["Entourage des noms de table et de colonne par des marques de citation" du guide sur les objets d'accès aux bases de données" ](guide-db-dao.html#quoting-table-and-column-names).
+["Entourage des noms de table et de colonne par des marques de citation" du guide sur les objets d'accès aux bases de données" ](db-dao.md#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 La méthode [[yii\db\Query::where()|where()]] spécifie le fragment `WHERE`d'une requête SQL. Vous pouvez utiliser un des quatre formats suivants pour spécifier une condition `WHERE` :
@@ -326,7 +326,7 @@ Ainsi l'exemple de code suivant est vulnérable :
 ```php
 // Code vulnérable:
 $column = $request->get('column');
-$value = $request->get('value);
+$value = $request->get('value');
 $query->where(['=', $column, $value]);
 // $value est sûre, mais le nom  $column n'est pas encodé !
 ```
@@ -771,7 +771,7 @@ foreach ($query->each() as $username => $user) {
 #### Limitations des requêtes par lots dans MySQL <span id="batch-query-mysql"></span>
 
 La mise en œuvre des requêtes par lots de MySQL s'appuie sur la bibliothèque du pilote PDO. Par défaut, les requêtes MySQL sont 
-[`mises en tampon`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php). 
+[`mises en tampon`](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php). 
 Cela empêche d'utiliser le curseur pour obtenir les données, parce que cela n'empêche pas le jeu résultant complet d'être chargé dans la mémoire du client par le pilote.
 
 

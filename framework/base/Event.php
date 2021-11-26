@@ -73,7 +73,7 @@ class Event extends BaseObject
      * `afterInsert` event:
      *
      * ```php
-     * Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+     * Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
      *     Yii::trace(get_class($event->sender) . ' is inserted.');
      * });
      * ```
@@ -158,7 +158,7 @@ class Event extends BaseObject
             }
             if ($removed) {
                 self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
-                return $removed;
+                return true;
             }
         }
 
@@ -225,23 +225,23 @@ class Event extends BaseObject
         );
 
         // regular events
-        foreach ($classes as $class) {
-            if (!empty(self::$_events[$name][$class])) {
+        foreach ($classes as $className) {
+            if (!empty(self::$_events[$name][$className])) {
                 return true;
             }
         }
 
         // wildcard events
         foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
-            if (!StringHelper::matchWildcard($nameWildcard, $name)) {
+            if (!StringHelper::matchWildcard($nameWildcard, $name, ['escape' => false])) {
                 continue;
             }
             foreach ($classHandlers as $classWildcard => $handlers) {
                 if (empty($handlers)) {
                     continue;
                 }
-                foreach ($classes as $class) {
-                    if (!StringHelper::matchWildcard($classWildcard, $class)) {
+                foreach ($classes as $className) {
+                    if (StringHelper::matchWildcard($classWildcard, $className, ['escape' => false])) {
                         return true;
                     }
                 }
@@ -297,7 +297,7 @@ class Event extends BaseObject
         foreach ($classes as $class) {
             $eventHandlers = [];
             foreach ($wildcardEventHandlers as $classWildcard => $handlers) {
-                if (StringHelper::matchWildcard($classWildcard, $class)) {
+                if (StringHelper::matchWildcard($classWildcard, $class, ['escape' => false])) {
                     $eventHandlers = array_merge($eventHandlers, $handlers);
                     unset($wildcardEventHandlers[$classWildcard]);
                 }
