@@ -218,6 +218,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
+                    validate_only: false, // validate without auto submitting
                     options: getFormOptions($form)
                 });
 
@@ -754,12 +755,14 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                if (data.submitObject) {
-                    applyButtonOptions($form, data.submitObject);
-                }
-                $form.submit();
-                if (data.submitObject) {
-                    restoreButtonOptions($form);
+                if (!data.validate_only) {
+                    if (data.submitObject) {
+                        applyButtonOptions($form, data.submitObject);
+                    }
+                    $form.submit();
+                    if (data.submitObject) {
+                        restoreButtonOptions($form);
+                    }
                 }
             }
         } else {
