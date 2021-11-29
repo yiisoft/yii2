@@ -188,7 +188,7 @@ class Instance
      * @param array $state
      * @return Instance
      * @throws InvalidConfigException when $state property does not contain `id` parameter
-     * @see var_export()
+     * @see https://www.php.net/manual/en/function.var-export.php
      * @since 2.0.12
      */
     public static function __set_state($state)

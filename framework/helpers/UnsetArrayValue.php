@@ -54,7 +54,7 @@ class UnsetArrayValue
      *
      * @param array $state
      * @return UnsetArrayValue
-     * @see var_export()
+     * @see https://www.php.net/manual/en/function.var-export.php
      * @since 2.0.16
      */
     public static function __set_state($state)

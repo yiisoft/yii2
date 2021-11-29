@@ -255,7 +255,7 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/CSRF>
+- <https://owasp.org/www-community/attacks/csrf>
 
 
 防止文件暴露
@@ -283,8 +283,8 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Exception_Handling>
-- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
+- <https://owasp.org/www-pdf-archive/OWASP_Top_10_2007.pdf> (A6 - Information Leakage and Improper Error Handling)
 
 
 使用 TLS 上的安全连接

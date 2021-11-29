@@ -69,7 +69,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return null|string
-     * @see type
      */
     public function getType()
     {
@@ -78,7 +77,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return array|mixed|QueryInterface
-     * @see value
      */
     public function getValue()
     {
@@ -87,7 +85,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return int the number of indices needed to select an element
-     * @see dimensions
      */
     public function getDimension()
     {
