@@ -89,11 +89,6 @@ class FakeController extends Controller
         return func_get_args();
     }
 
-    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
-    {
-        return $simpleArgument;
-    }
-
     public function actionStatus($status = 0)
     {
         return $status;
