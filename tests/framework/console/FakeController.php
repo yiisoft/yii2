@@ -57,9 +57,13 @@ class FakeController extends Controller
 
     public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$fromParam, $other];
+        return [$fromParam, $other];
     }
 
+    /**
+     * @param string $value the string value
+     * @return array
+     */
     public function actionAksi2(array $values, $value)
     {
         return [$values, $value];
