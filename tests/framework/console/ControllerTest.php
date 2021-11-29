@@ -295,12 +295,15 @@ class ControllerTest extends TestCase
         $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
 
         $this->assertArrayHasKey('values', $help);
+        if (PHP_MAJOR_VERSION > 5) {
+            // declared type
+            $this->assertEquals('array', $help['values']['type']);
+        } else {
+            $this->markTestSkipped('Can not test declared type of parameter $values on PHP < 7.0');
+        }
         $this->assertArrayHasKey('value', $help);
-        // declared type
-        $this->assertEquals('array', $help['values']['type']);
         // PHPDoc type
         $this->assertEquals('string', $help['value']['type']);
-        
     }
 
     public function testGetActionHelpSummaryOnNull()
