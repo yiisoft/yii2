@@ -75,7 +75,7 @@ Por exemplo, você pode modificar a configuração acima para usar [[yii\caching
 
 Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
 
-* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](https://www.php.net/manual/en/book.apc.php). Esta opção pode ser
+* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](https://www.php.net/manual/en/book.apcu.php). Esta opção pode ser
   considerada a mais rápida ao se implementar o cache de uma aplicação densa e centralizada (por exemplo, um
   servidor, sem balanceadores de carga dedicados, etc.).
 * [[yii\caching\DbCache]]: usa uma tabela no banco de dados para armazenar os dados em cache. Para usar este cache
