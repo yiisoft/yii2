@@ -103,7 +103,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 Yii 支持一系列缓存存储器，概况如下：
 
-* [[yii\caching\ApcCache]]：使用 PHP [APC](https://www.php.net/manual/en/book.apc.php) 扩展。
+* [[yii\caching\ApcCache]]：使用 PHP [APC](https://www.php.net/manual/en/book.apcu.php) 扩展。
   这个选项可以认为是集中式应用程序环境中
  （例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
 * [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，
