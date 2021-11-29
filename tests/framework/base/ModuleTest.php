@@ -37,17 +37,19 @@ class ModuleTest extends TestCase
         $this->assertEquals('parent', $child2->module->id);
     }
 
-    /**
-     * @test getControllerPath()
-     * @test setControllerPath()
-     */
-    public function testControllerPath()
+    public function testGetControllerPath()
     {
         $module = new TestModule('test');
         $controllerPath = __DIR__ . DIRECTORY_SEPARATOR . 'controllers';
 
         $this->assertEquals('yiiunit\framework\base\controllers', $module->controllerNamespace);
-        $this->assertEquals($controllerPath, str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $module->controllerPath));
+        $this->assertEquals($controllerPath, str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $module->getControllerPath()));
+    }
+
+    public function testSetControllerPath()
+    {
+        $module = new TestModule('test');
+        $controllerPath = __DIR__ . DIRECTORY_SEPARATOR . 'controllers';
 
         $module->setControllerPath($controllerPath);
         $this->assertEquals($controllerPath, $module->getControllerPath());
