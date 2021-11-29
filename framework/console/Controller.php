@@ -63,7 +63,7 @@ class Controller extends \yii\base\Controller
      */
     public $help = false;
     /**
-     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception,
+     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception.
      * false - `ExitCode::UNSPECIFIED_ERROR`.
      * Default: `YII_ENV_TEST`
      * @since 2.0.36
