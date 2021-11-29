@@ -28,12 +28,9 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property-read string $help This property is read-only.
- * @property-read string $helpSummary This property is read-only.
- * @property-read array $passedOptionValues The properties corresponding to the passed options. This property
- * is read-only.
- * @property-read array $passedOptions The names of the options passed during execution. This property is
- * read-only.
+ * @property-read string $helpSummary
+ * @property-read array $passedOptionValues The properties corresponding to the passed options.
+ * @property-read array $passedOptions The names of the options passed during execution.
  * @property Request $request
  * @property Response $response
  *
@@ -66,7 +63,7 @@ class Controller extends \yii\base\Controller
      */
     public $help = false;
     /**
-     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception.
+     * @var bool|null if true - script finish with `ExitCode::OK` in case of exception,
      * false - `ExitCode::UNSPECIFIED_ERROR`.
      * Default: `YII_ENV_TEST`
      * @since 2.0.36
@@ -545,15 +542,15 @@ class Controller extends \yii\base\Controller
      * The returned value should be an array. The keys are the argument names, and the values are
      * the corresponding help information. Each value must be an array of the following structure:
      *
-     * - required: boolean, whether this argument is required
-     * - type: string|null, the PHP type of this argument
+     * - required: bool, whether this argument is required
+     * - type: string|null, the PHP type(s) of this argument
      * - default: mixed, the default value of this argument
      * - comment: string, the description of this argument
      *
      * The default implementation will return the help information extracted from the Reflection or
      * DocBlock of the parameters corresponding to the action method.
      *
-     * @param Action $action
+     * @param Action $action the action instance
      * @return array the help information of the action arguments
      */
     public function getActionArgsHelp($action)
@@ -589,12 +586,12 @@ class Controller extends \yii\base\Controller
             $key = isset($phpDocParams[$parameter->name]) ? $parameter->name : (isset($phpDocParams[$i]) ? $i : null);
             if ($key !== null) {
                 $comment = $phpDocParams[$key]['comment'];
-                if ($type === null) {
+                if ($type === null && !empty($phpDocParams[$key]['type'])) {
                     $type = $phpDocParams[$key]['type'];
                 }
             }
             // if type still not detected, then using type of default value
-            if ($type === null && $parameter->isDefaultValueAvailable()) {
+            if ($type === null && $parameter->isDefaultValueAvailable() && $parameter->getDefaultValue() !== null) {
                 $type = gettype($parameter->getDefaultValue());
             }
 
