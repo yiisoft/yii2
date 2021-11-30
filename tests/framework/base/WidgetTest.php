@@ -49,11 +49,9 @@ class WidgetTest extends TestCase
     }
 
     /**
-     * @covers Widget::begin
-     * @covers Widget::end
      * @see https://github.com/yiisoft/yii2/issues/19030
      */
-    public function testDI()
+    public function testDependencyInjection()
     {
         Yii::$container = new Container();
         Yii::$container->setDefinitions([
