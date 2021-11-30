@@ -575,15 +575,15 @@ class Controller extends \yii\base\Controller
             $type = null;
             $comment = '';
             if (PHP_MAJOR_VERSION > 5 && $parameter->hasType()) {
-                $type = $parameter->getType();
-                if (PHP_MAJOR_VERSION > 7) {
-                    $types = $type instanceof \ReflectionUnionType ? $type->getTypes() : [$type];
-                    foreach ($types as $key => $type) {
-                        $types[$key] = $type->getName();
+                $reflectionType = $parameter->getType();
+                if (PHP_VERSION_ID >= 70100) {
+                    $types = method_exists($reflectionType, 'getTypes') ? $reflectionType->getTypes() : [$reflectionType];
+                    foreach ($types as $key => $reflectionType) {
+                        $types[$key] = $reflectionType->getName();
                     }
                     $type = implode('|', $types);
                 } else {
-                    $type = PHP_VERSION_ID >= 70100 ? $type->getName() : (string) $type;
+                    $type = (string) $reflectionType;
                 }
             }
             // find PhpDoc tag by property name or position
