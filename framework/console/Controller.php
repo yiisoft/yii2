@@ -577,9 +577,13 @@ class Controller extends \yii\base\Controller
             if (PHP_MAJOR_VERSION > 5 && $parameter->hasType()) {
                 $type = $parameter->getType();
                 if (PHP_MAJOR_VERSION > 7) {
-                    $type = $type instanceof \ReflectionUnionType
-                    ? implode('|', $type->getTypes())
-                    : (string) $type;
+                    $types = $type instanceof \ReflectionUnionType ? $type->getTypes() : [$type];
+                    foreach ($types as &$type) {
+                        $type = $type->getName();
+                    }
+                    $type = implode('|', $types);
+                } else {
+                    $type = PHP_VERSION_ID >= 70100 ? $type->getName() : (string) $type;
                 }
             }
             // find PhpDoc tag by property name or position
