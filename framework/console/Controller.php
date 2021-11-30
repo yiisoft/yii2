@@ -578,8 +578,8 @@ class Controller extends \yii\base\Controller
                 $type = $parameter->getType();
                 if (PHP_MAJOR_VERSION > 7) {
                     $types = $type instanceof \ReflectionUnionType ? $type->getTypes() : [$type];
-                    foreach ($types as &$type) {
-                        $type = $type->getName();
+                    foreach ($types as $key => $type) {
+                        $types[$key] = $type->getName();
                     }
                     $type = implode('|', $types);
                 } else {
