@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+- Enh #13105: Add yiiActiveForm validate_only property for skipping form auto-submission (ptolomaues)
 - Enh #18967: Use proper attribute names for tabular data in `yii\widgets\ActiveField::addAriaAttributes()` (AnkIF)
 - Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
 - Enh #18328: Raise warning when trying to register a file after `View::endPage()` has been called (perlexed)
@@ -30,6 +31,8 @@ Yii Framework 2 Change Log
 - Bug #18988: Fix default value of `yii\console\controllers\MessageController::$translator` (WinterSilence)
 - Bug #18993: Load defaults by `attributes()` in `yii\db\ActiveRecord::loadDefaultValues()` (WinterSilence)
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
+- Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
+- Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
 
 
 2.0.43 August 09, 2021

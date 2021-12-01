@@ -57,9 +57,13 @@ class FakeController extends Controller
 
     public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$fromParam, $other];
+        return [$fromParam, $other];
     }
 
+    /**
+     * @param string $value the string value
+     * @return array
+     */
     public function actionAksi2(array $values, $value)
     {
         return [$values, $value];
@@ -87,11 +91,6 @@ class FakeController extends Controller
     public function actionTrimargs($param1 = null)
     {
         return func_get_args();
-    }
-
-    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
-    {
-        return $simpleArgument;
     }
 
     public function actionStatus($status = 0)
