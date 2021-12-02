@@ -46,8 +46,8 @@ class IndexAction extends Action
      */
     public $prepareDataProvider;
     /**
-     * @var callable a PHP callable that will be called to prepare query in prepareDataProvider
-     * Should return $query
+     * @var callable a PHP callable that will be called to prepare query in prepareDataProvider.
+     * Should return $query.
      * For example:
      *
      * ```php
