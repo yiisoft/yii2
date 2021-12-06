@@ -248,7 +248,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info : quelques systèmes de gestion de bases de données (DBMS) (p. ex. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Info : quelques systèmes de gestion de bases de données (DBMS) (p. ex. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   prennent également en charge la mise en cache de requêtes du côté serveur de base de données. Vous pouvez choisir d'utiliser l'un ou l'autre des ces mécanismes de mise en cache de requêtes. Les mises en cache de requêtes décrites ci-dessus offrent l'avantage de pouvoir spécifier des dépendances de mise en cache flexibles et sont potentiellement plus efficaces.
 
 

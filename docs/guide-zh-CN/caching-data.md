@@ -310,7 +310,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
+> Info: 有些 DBMS （例如：[MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html)）
 也支持数据库服务器端的查询缓存。
 你可以选择使用任一查询缓存机制。
 上文所述的查询缓存的好处在于你可以指定更灵活的缓存依赖因此可能更加高效。

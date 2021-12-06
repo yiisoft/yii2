@@ -259,7 +259,7 @@ $resultado = Cliente::getDb()->cache(function ($bd) {
 });
 ```
 
-> Informação: Alguns SGBDs (ex., [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Informação: Alguns SGBDs (ex., [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   também suportam o cache de consulta no servidor. Você pode escolher usá-lo ao invés do mecanismo de cache 
   de consulta.
   O cache de consulta descrito acima tem a vantagem de poder especificar dependências de cache flexíveis 
