@@ -221,7 +221,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Note: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
+> Note: Algunos DBMS (ej. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
 
 ### Configuraciones <span id="query-caching-configs"></span>
