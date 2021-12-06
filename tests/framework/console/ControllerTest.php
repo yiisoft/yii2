@@ -286,18 +286,24 @@ class ControllerTest extends TestCase
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
     }
 
-
     /**
-     * Tests if action help does not include (class) type hinted arguments.
-     * @see #10372
+     * @see https://github.com/yiisoft/yii2/issues/19028
      */
-    public function testHelpSkipsTypeHintedArguments()
+    public function testGetActionArgsHelp()
     {
         $controller = new FakeController('fake', Yii::$app);
-        $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+        $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
 
-        $this->assertArrayNotHasKey('typedArgument', $help);
-        $this->assertArrayHasKey('simpleArgument', $help);
+        $this->assertArrayHasKey('values', $help);
+        if (PHP_MAJOR_VERSION > 5) {
+            // declared type
+            $this->assertEquals('array', $help['values']['type']);
+        } else {
+            $this->markTestSkipped('Can not test declared type of parameter $values on PHP < 7.0');
+        }
+        $this->assertArrayHasKey('value', $help);
+        // PHPDoc type
+        $this->assertEquals('string', $help['value']['type']);
     }
 
     public function testGetActionHelpSummaryOnNull()
