@@ -123,7 +123,7 @@ STRING
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
         $this->assertEqualsWithoutLE(<<<'STRING'
-action:route to action
+action: route to action
 
 --interactive: whether to run the command interactively.
 --color: whether to enable ANSI color in the output.If not set, ANSI color will only be enabled for terminals that support it.

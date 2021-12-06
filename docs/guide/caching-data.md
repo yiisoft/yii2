@@ -103,7 +103,7 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 
 Yii supports a wide range of cache storage. The following is a summary:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](https://www.php.net/manual/en/book.apc.php) extension. This option can be
+* [[yii\caching\ApcCache]]: uses PHP [APC](https://www.php.net/manual/en/book.apcu.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
@@ -128,7 +128,7 @@ Yii supports a wide range of cache storage. The following is a summary:
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
+* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache) extension.
 * [[yii\caching\ZendDataCache]] _(deprecated)_: uses
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
@@ -310,7 +310,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Info: Some DBMS (e.g. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   also support query caching on the DB server-side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.

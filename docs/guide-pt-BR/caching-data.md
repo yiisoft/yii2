@@ -75,7 +75,7 @@ Por exemplo, você pode modificar a configuração acima para usar [[yii\caching
 
 Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
 
-* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](https://www.php.net/manual/en/book.apc.php). Esta opção pode ser
+* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](https://www.php.net/manual/en/book.apcu.php). Esta opção pode ser
   considerada a mais rápida ao se implementar o cache de uma aplicação densa e centralizada (por exemplo, um
   servidor, sem balanceadores de carga dedicados, etc.).
 * [[yii\caching\DbCache]]: usa uma tabela no banco de dados para armazenar os dados em cache. Para usar este cache
@@ -96,7 +96,7 @@ Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
   [Redis](http://redis.io/) (requer redis versão 2.6.12 ou mais recente).
 * [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([veja também](https://www.php.net/manual/en/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: usa a extensão PHP [XCache](http://xcache.lighttpd.net/).
+* [[yii\caching\XCache]] _(deprecated)_: usa a extensão PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: usa
   [Cache de Dados Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   como o meio de cache subjacente.
@@ -259,7 +259,7 @@ $resultado = Cliente::getDb()->cache(function ($bd) {
 });
 ```
 
-> Informação: Alguns SGBDs (ex., [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Informação: Alguns SGBDs (ex., [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   também suportam o cache de consulta no servidor. Você pode escolher usá-lo ao invés do mecanismo de cache 
   de consulta.
   O cache de consulta descrito acima tem a vantagem de poder especificar dependências de cache flexíveis 
