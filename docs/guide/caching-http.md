@@ -107,7 +107,7 @@ Expensive ETag generation may defeat the purpose of using `HttpCache` and introd
 since they need to be re-evaluated on every request. Try to find a simple expression that invalidates
 the cache if the page content has been modified.
 
-> Note: In compliance to [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+> Note: In compliance to [RFC 7232](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4),
   `HttpCache` will send out both `ETag` and `Last-Modified` headers if they are both configured.
   And if the client sends both of the `If-None-Match` header and the `If-Modified-Since` header, only the former
   will be respected.
