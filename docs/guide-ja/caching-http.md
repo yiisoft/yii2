@@ -107,7 +107,7 @@ ETag はリクエスト毎に再評価する必要があるため、負荷の高
 の本来の目的を損なって不必要なオーバーヘッドが生じる場合があります。
 ページのコンテントが変更されたときにキャッシュを無効化するための式は単純なものを指定するようにして下さい。
 
-> Note: [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4) に準拠して
+> Note: [RFC 7232](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4) に準拠して
   `Etag` と `Last-Modified` ヘッダの両方を設定した場合、
   `HttpCache` はその両方とも送信します。  また、もし `If-None-Match` ヘッダと
   `If-Modified-Since` ヘッダの両方を送信した場合は前者のみが尊重されます。
