@@ -27,8 +27,7 @@ use yii\di\ServiceLocator;
  * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
  * example. This property is write-only.
  * @property string $basePath The root directory of the module.
- * @property-read string $controllerPath The directory that contains the controller classes. This property is
- * read-only.
+ * @property string $controllerPath The root directory that contains the controller classes.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property-read string $uniqueId The unique ID of the module. This property is read-only.
@@ -116,6 +115,10 @@ class Module extends ServiceLocator
      */
     private $_basePath;
     /**
+     * @var string The root directory that contains the controller classes for this module.
+     */
+    private $_controllerPath;
+    /**
      * @var string the root directory that contains view files for this module
      */
     private $_viewPath;
@@ -127,6 +130,7 @@ class Module extends ServiceLocator
      * @var array child modules of this module
      */
     private $_modules = [];
+    
     /**
      * @var string|callable the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
@@ -254,7 +258,22 @@ class Module extends ServiceLocator
      */
     public function getControllerPath()
     {
-        return Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
+        if ($this->_controllerPath === null) {
+            $this->_controllerPath = Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
+        }
+
+        return $this->_controllerPath;
+    }
+
+    /**
+     * Sets the directory that contains the controller classes.
+     * @param string $path the root directory that contains the controller classes.
+     * @throws InvalidArgumentException if the directory is invalid.
+     * @since 2.0.44
+     */
+    public function setControllerPath($path)
+    {
+        $this->_controllerPath = Yii::getAlias($path);
     }
 
     /**

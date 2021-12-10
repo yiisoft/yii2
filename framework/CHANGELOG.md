@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #18909: Fix bug with binding default action parameters for controllers (bizley)
 - Bug #18955: Check `yiisoft/yii2-swiftmailer` before using as default mailer in `yii\base\Application` (WinterSilence)
 - Bug #18988: Fix default value of `yii\console\controllers\MessageController::$translator` (WinterSilence)
+- Enh #19005: Add `yii\base\Module::setControllerPath()` (WinterSilence)
 - Bug #18993: Load defaults by `attributes()` in `yii\db\ActiveRecord::loadDefaultValues()` (WinterSilence)
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
