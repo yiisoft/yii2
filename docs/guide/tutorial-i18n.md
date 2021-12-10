@@ -441,7 +441,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 // You and one other person liked this
 ```
 
-#### Ordinal selection <span id="ordinal-selection">
+#### Ordinal selection <span id="ordinal-selection"></span>
 
 The parameter type of `selectordinal` is meant to choose a string based on language rules for ordinals for the
 locale you are translating to:
