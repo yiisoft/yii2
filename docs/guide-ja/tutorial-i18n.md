@@ -500,7 +500,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 > 横着をして、`{n, plural, ...}` を `{n, number}` に置き換えても、多分、大きな問題は生じないでしょう。
 
 
-#### 序数選択肢 <span id="ordinal-selection">
+#### 序数選択肢 <span id="ordinal-selection"></span>
 
 パラメータのタイプとして `selectordinal` を使うと、翻訳先ロケールの言語規則に基づいて序数のための文字列を選択することが出来ます。
 

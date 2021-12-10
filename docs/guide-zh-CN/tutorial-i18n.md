@@ -441,7 +441,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 // You and one other person liked this
 ```
 
-#### 序数选择（Ordinal selection） <span id="ordinal-selection">
+#### 序数选择（Ordinal selection） <span id="ordinal-selection"></span>
 
 `selectordinal` 的参数类型旨在为您所翻译的语言环境选择一个基于语序规则的字符串：
 一个基于语序规则的字符串：
