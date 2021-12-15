@@ -418,7 +418,7 @@ of each entry to be 1MB. Therefore, if the size of a query result exceeds this l
 the caching will fail.
 
 
-## Cache Flushing <span id="cache-flushing">
+## Cache Flushing <span id="cache-flushing"></span>
 
 When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
 
