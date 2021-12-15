@@ -252,7 +252,7 @@ $result = Customer::getDb()->cache(function ($db) {
   prennent également en charge la mise en cache de requêtes du côté serveur de base de données. Vous pouvez choisir d'utiliser l'un ou l'autre des ces mécanismes de mise en cache de requêtes. Les mises en cache de requêtes décrites ci-dessus offrent l'avantage de pouvoir spécifier des dépendances de mise en cache flexibles et sont potentiellement plus efficaces.
 
 
-### Vidage du cache <span id="cache-flushing">
+### Vidage du cache <span id="cache-flushing"></span>
 
 Lorsque vous avez besoin d'invalider toutes les données stockées dans le cache, vous pouvez appeler [[yii\caching\Cache::flush()]].
 
