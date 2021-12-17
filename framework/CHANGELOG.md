@@ -1,6 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
+- Bug #18660: Check name if backslash appears.
+
 2.0.44 under development
 ------------------------
 
