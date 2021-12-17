@@ -17,8 +17,8 @@ use yii\base\InvalidConfigException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  *
- * @method ActiveRecordInterface one($db = null)
- * @method ActiveRecordInterface[] all($db = null)
+ * @method ActiveRecordInterface one($db = null) See [[ActiveQueryInterface::one()]] for more info.
+ * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
  * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait

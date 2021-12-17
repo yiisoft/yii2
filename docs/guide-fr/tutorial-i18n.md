@@ -350,7 +350,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 // You and one other person liked this
 ```
 
-#### Sélection ordinale <span id="ordinal-selection">
+#### Sélection ordinale <span id="ordinal-selection"></span>
 
 L'argument `selectordinal` pour une valeur à remplacer  numérique a pour but de choisir une chaîne de caractères basée sur les règles linguistiques de la locale cible pour les ordinaux. Ainsi, 
 

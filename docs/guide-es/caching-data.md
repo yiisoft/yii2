@@ -79,7 +79,7 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](https://www.php.net/manual/es/book.memcache.php) y [memcached](https://www.php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (ej. con varios servidores, con balance de carga, etc..)
 * [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](http://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
 * [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([ver también](https://www.php.net/manual/es/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
+* [[yii\caching\XCache]] _(deprecated)_: utiliza la extensión de PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
 > Tip: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
@@ -221,7 +221,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Note: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
+> Note: Algunos DBMS (ej. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
 
 ### Configuraciones <span id="query-caching-configs"></span>

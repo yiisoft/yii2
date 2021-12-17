@@ -363,7 +363,7 @@ $query->filterWhere([
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 Метод [[yii\db\Query::orderBy()|orderBy()]] определяет фрагмент `ORDER BY` SQL выражения. Например,
- 
+
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
@@ -460,14 +460,14 @@ $query->limit(10)->offset(20);
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 Метод [[yii\db\Query::join()|join()]] определяет фрагмент `JOIN` SQL запроса.
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 Метод [[yii\db\Query::join()|join()]] принимает четыре параметра:
- 
+
 - `$type`: тип объединения, например, `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: имя таблицы, которая должна быть присоединена.
 - `$on`: необязательное условие объединения, то есть фрагмент `ON`. Пожалуйста, обратитесь к документации для

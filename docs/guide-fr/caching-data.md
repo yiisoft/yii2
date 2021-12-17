@@ -100,7 +100,7 @@ Yii prend en charge un large panel de supports de stockage pour cache. Ce qui su
   (une version de redis égale ou supérieure à 2.6.12 est nécessaire).
 * [[yii\caching\WinCache]]: utilise le [WinCache](http://iis.net/downloads/microsoft/wincache-extension) PHP
   ([voir aussi l'extension](https://www.php.net/manual/en/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: utilise l'extension PHP [XCache](http://xcache.lighttpd.net/).
+* [[yii\caching\XCache]] _(deprecated)_: utilise l'extension PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: utilise le 
   [cache de données Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   en tant que médium de cache sous-jacent.
@@ -248,11 +248,11 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info : quelques systèmes de gestion de bases de données (DBMS) (p. ex. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Info : quelques systèmes de gestion de bases de données (DBMS) (p. ex. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   prennent également en charge la mise en cache de requêtes du côté serveur de base de données. Vous pouvez choisir d'utiliser l'un ou l'autre des ces mécanismes de mise en cache de requêtes. Les mises en cache de requêtes décrites ci-dessus offrent l'avantage de pouvoir spécifier des dépendances de mise en cache flexibles et sont potentiellement plus efficaces.
 
 
-### Vidage du cache <span id="cache-flushing">
+### Vidage du cache <span id="cache-flushing"></span>
 
 Lorsque vous avez besoin d'invalider toutes les données stockées dans le cache, vous pouvez appeler [[yii\caching\Cache::flush()]].
 
