@@ -418,7 +418,7 @@ $result = $db->cache(function ($db) {
 则会导致缓存失败。
 
 
-### 缓存冲刷 <span id="cache-flushing">
+### 缓存冲刷 <span id="cache-flushing"></span>
 
 当你想让所有的缓存数据失效时，可以调用 [[yii\caching\Cache::flush()]]。
 
