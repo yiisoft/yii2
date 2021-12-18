@@ -191,6 +191,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the header name
      * @return bool whether the named header exists
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($name)
     {
         return $this->has($name);
