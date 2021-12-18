@@ -34,6 +34,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It will be implicitly called when you use `foreach` to traverse the collection.
      * @return \ArrayIterator an iterator for traversing the headers in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->_headers);
