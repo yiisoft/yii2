@@ -46,6 +46,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It will be implicitly called when you use `count($collection)`.
      * @return int the number of headers in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getCount();
@@ -55,6 +56,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns the number of headers in the collection.
      * @return int the number of headers in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function getCount()
     {
         return count($this->_headers);
