@@ -22,6 +22,13 @@ class Request extends \yii\base\Request
 {
     private $_params;
 
+    /**
+     * @inheritDoc
+     */
+    public function init()
+    {
+        $this->setIsConsoleRequest(true);
+    }
 
     /**
      * Returns the command line arguments.
