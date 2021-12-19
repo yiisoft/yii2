@@ -1981,6 +1981,11 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
+                    if (count($value) > 1) {
+                        // removes duplicates: replace `['widget' => 'foo bar', 'foo']` to `['foo', 'bar']`
+                        $value = explode(' ', implode(' ', $value));
+                        $value = array_unique($value);
+                    }
                     $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
