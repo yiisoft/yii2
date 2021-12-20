@@ -2245,7 +2245,6 @@ class BaseHtml
         }
         foreach ($attributes as $name => $value) {
             if (is_array($value) && in_array($name, static::$dataAttributes, true)) {
-                $value = (array) $value;
                 $result[$name] = isset($result[$name]) ? array_merge($result[$name], $value) : $value;
             } elseif (static::isCustomAttribute($name, $prefix)) {
                 if (!isset($result[$prefix])) {
