@@ -1982,7 +1982,7 @@ class BaseHtml
                         continue;
                     }
                     if (count($value) > 1) {
-                        // removes duplicates: replace `['widget' => 'foo bar', 'foo']` to `['foo', 'bar']`
+                        // removes duplicate classes
                         $value = explode(' ', implode(' ', $value));
                         $value = array_unique($value);
                     }
