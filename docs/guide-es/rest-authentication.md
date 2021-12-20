@@ -19,7 +19,7 @@ Hay muchas maneras de enviar una token (pieza) de acceso:
   que no usen las cabeceras HTTP para enviar piezas de acceso.
 * [OAuth 2](http://oauth.net/2/): la pieza de acceso es obtenida por el consumidor por medio de una autorización del servidor
   y enviada al API del servidor según el protocolo
-  OAuth 2 [tokens HTTP del portador](http://tools.ietf.org/html/rfc6750).
+  OAuth 2 [tokens HTTP del portador](https://datatracker.ietf.org/doc/html/rfc6750).
 
 Yii soporta todos los métodos anteriores de autenticación. Puedes crear nuevos métodos de autenticación de una forma fácil.
 
