@@ -1310,7 +1310,7 @@ EOD;
                     'data' => ['foo-bar' => 'baz'],
                 ],
                 [
-                    'data' => ['foo-bar' => 'baz', 'id' => 2],
+                    'data' => ['id' => 2, 'foo-bar' => 'baz'],
                 ],
             ],
             'inline "style"' => [
@@ -1366,7 +1366,7 @@ EOD;
      */
     public function testNormalizeAttributes(array $attributes, array $expected)
     {
-        $this->assertSame($expected, Html::normalizeAttributes($attributes));
+        $this->assertEquals($expected, Html::normalizeAttributes($attributes));
     }
 
     public function testMergeAttributes()
@@ -1389,7 +1389,7 @@ EOD;
             'class' => ['widget' => 'navbar navbar-dark', 'bg-primary'],
             'id' => 'form-2',
         ];
-        $this->assertSame($expected, Html::mergeAttributes($attributes, $attributes2));
+        $this->assertEquals($expected, Html::mergeAttributes($attributes, $attributes2));
     }
 
     public function testBooleanAttributes()
