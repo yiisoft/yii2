@@ -1275,7 +1275,7 @@ EOD;
     /**
      * @return array[]
      */
-    public function dataProviderIsCustomAttribute()
+    public function dataProviderIsCustomTagAttribute()
     {
         return [
             'valid "aria" prefix' => ['aria-expanded', true],
@@ -1291,17 +1291,17 @@ EOD;
     /**
      * @param string $name the attribute name
      * @param bool $expected the expected result
-     * @dataProvider dataProviderIsCustomAttribute
+     * @dataProvider dataProviderIsCustomTagAttribute
      */
-    public function testIsCustomAttribute($name, $expected)
+    public function testIsCustomTagAttribute($name, $expected)
     {
-        $this->assertEquals($expected, Html::isCustomAttribute($name));
+        $this->assertEquals($expected, Html::isCustomTagAttribute($name));
     }
 
     /**
      * @return array[]
      */
-    public function dataProviderNormalizeAttributes()
+    public function dataProviderNormalizeTagAttributes()
     {
         return [
             'mixed "data"' => [
@@ -1362,14 +1362,14 @@ EOD;
     /**
      * @param array $attributes the attributes to normalize
      * @param array $expected the normalized attributes
-     * @dataProvider dataProviderNormalizeAttributes
+     * @dataProvider dataProviderNormalizeTagAttributes
      */
-    public function testNormalizeAttributes(array $attributes, array $expected)
+    public function testNormalizeTagAttributes(array $attributes, array $expected)
     {
-        $this->assertEquals($expected, Html::normalizeAttributes($attributes));
+        $this->assertEquals($expected, Html::normalizeTagAttributes($attributes));
     }
 
-    public function testMergeAttributes()
+    public function testMergeTagAttributes()
     {
         $attributes = [
             'data-id' => 1,
@@ -1389,7 +1389,7 @@ EOD;
             'class' => ['widget' => 'navbar navbar-dark', 'bg-primary'],
             'id' => 'form-2',
         ];
-        $this->assertEquals($expected, Html::mergeAttributes($attributes, $attributes2));
+        $this->assertEquals($expected, Html::mergeTagAttributes($attributes, $attributes2));
     }
 
     public function testBooleanAttributes()
