@@ -2202,7 +2202,7 @@ class BaseHtml
      * @param string|null $prefix the attribute prefix returns by reference
      * @return bool
      */
-    public static function isCustomAttribute($name, &$prefix = null)
+    public static function isCustomTagAttribute($name, &$prefix = null)
     {
         foreach (static::$dataAttributes as $prefix) {
             if (StringHelper::startsWith($name, $prefix . '-')) {
@@ -2225,7 +2225,7 @@ class BaseHtml
      * @param array $attributes the attributes to normalize
      * @return array
      */
-    public static function normalizeAttributes(array $attributes)
+    public static function normalizeTagAttributes(array $attributes)
     {
         $result = [];
 
@@ -2246,7 +2246,7 @@ class BaseHtml
         foreach ($attributes as $name => $value) {
             if (is_array($value) && in_array($name, static::$dataAttributes, true)) {
                 $result[$name] = isset($result[$name]) ? array_merge($result[$name], $value) : $value;
-            } elseif (static::isCustomAttribute($name, $prefix)) {
+            } elseif (static::isCustomTagAttribute($name, $prefix)) {
                 if (!isset($result[$prefix])) {
                     $result[$prefix] = [];
                 }
@@ -2267,10 +2267,10 @@ class BaseHtml
      * @param array $attributes2 The attributes to merge
      * @return array
      */
-    public static function mergeAttributes(array $attributes, array $attributes2)
+    public static function mergeTagAttributes(array $attributes, array $attributes2)
     {
-        $attributes = static::normalizeAttributes($attributes);
-        $attributes2 = static::normalizeAttributes($attributes2);
+        $attributes = static::normalizeTagAttributes($attributes);
+        $attributes2 = static::normalizeTagAttributes($attributes2);
         if (isset($attributes2['class'])) {
             static::addCssClass($attributes, $attributes2['class']);
             unset($attributes2['class']);
