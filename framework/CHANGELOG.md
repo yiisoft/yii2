@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
+- Enh #19100: Add methods `isCustomAttribute`, `normalizeAttributes` and `mergeAttributes` in `yii\helper\BaseHtml` (WinterSilence)
 
 
 2.0.43 August 09, 2021
