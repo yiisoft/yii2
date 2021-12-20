@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+- Bug #18660: Check name if backslash appears (iridance)
 - Enh #13105: Add yiiActiveForm validate_only property for skipping form auto-submission (ptolomaues)
 - Enh #18967: Use proper attribute names for tabular data in `yii\widgets\ActiveField::addAriaAttributes()` (AnkIF)
 - Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
