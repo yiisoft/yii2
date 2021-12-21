@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
 - Enh #19100: Add methods `isCustomTagAttribute`, `normalizeTagAttributes` and `mergeTagAttributes` in `yii\helper\BaseHtml` (WinterSilence)
+- Bug #19096: Fix `Request::getIsConsoleRequest()` may return erroneously when testing a Web application in Codeception (WinterSilence)
 
 
 2.0.43 August 09, 2021
