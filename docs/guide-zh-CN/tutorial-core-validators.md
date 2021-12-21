@@ -341,7 +341,7 @@ function foo($model, $attribute) {
   MIME 的字符串 (如 "image/jpeg, image/png")。
   Mime 类型名是大小写不敏感的。默认为 null，
   意味着所有 MIME 类型都被接受。
-  请参考 [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) 获取更多详细内容。
+  请参考 [common media types](https://en.wikipedia.org/wiki/Media_type) 获取更多详细内容。
 - `minSize`：上传文件所需最少多少 Byte 的大小。默认为 null，代表没有下限。
 - `maxSize`：上传文件所需最多多少 Byte 的大小。默认为 null，代表没有上限。
 - `maxFiles`：给定属性最多能承载多少个文件。
