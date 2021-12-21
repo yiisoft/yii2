@@ -26,7 +26,7 @@ jobs:
             extensions: pdo, pdo_sqlsrv-5.8.1
             mssql: 'server:2017-latest'
           - php: '7.3'
-            extensions: pdo, pdo_sqlsrv-5.8.1
+            extensions: pdo, pdo_sqlsrv
             mssql: 'server:2017-latest'
           - php: '7.4'
             extensions: pdo, pdo_sqlsrv
