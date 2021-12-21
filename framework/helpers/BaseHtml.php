@@ -2201,6 +2201,7 @@ class BaseHtml
      * @param string $name the attribute name
      * @param string|null $prefix the attribute prefix returns by reference
      * @return bool
+     * @since 2.0.44
      */
     public static function isCustomTagAttribute($name, &$prefix = null)
     {
@@ -2224,6 +2225,7 @@ class BaseHtml
      *
      * @param array $attributes the attributes to normalize
      * @return array
+     * @since 2.0.44
      */
     public static function normalizeTagAttributes(array $attributes)
     {
@@ -2266,6 +2268,7 @@ class BaseHtml
      * @param array $attributes The input attributes
      * @param array $attributes2 The attributes to merge
      * @return array
+     * @since 2.0.44
      */
     public static function mergeTagAttributes(array $attributes, array $attributes2)
     {
