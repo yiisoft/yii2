@@ -139,7 +139,7 @@ public function rules()
 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] 所指定的属性里。
 
 - `format`：被验证值的日期/时间格式。
-   这里的值可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中定义的日期时间格式。
+   这里的值可以是 [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax) 中定义的日期时间格式。
    另外还可以设置以 `php:` 开头的字符串，用来表示PHP可以识别的日期时间格式。
    `Datetime` 日期时间类。请参考 <https://www.php.net/manual/en/datetime.createfromformat.php> 获取更多支持的格式。
    如果没有设置，默认值将使用 `Yii::$app->formatter->dateFormat` 中的值。
