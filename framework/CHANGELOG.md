@@ -34,8 +34,8 @@ Yii Framework 2 Change Log
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
-- Bug #19098: Fix duplicate classes in `yii\helper\BaseHtml::renderTagAttributes()` (WinterSilence)
 - Bug #19096: Fix `Request::getIsConsoleRequest()` may return erroneously when testing a Web application in Codeception (WinterSilence)
+- Enh #19098: Add `yii\helper\BaseHtml::$normalizeClassAttribute` to fix duplicate classes (WinterSilence)
 
 
 2.0.43 August 09, 2021
