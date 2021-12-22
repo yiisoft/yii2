@@ -611,16 +611,16 @@ class Component extends BaseObject
 
         $eventHandlers = [];
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
-            if (!empty($handlers) && StringHelper::matchWildcard($wildcard, $name)) {
-                $eventHandlers = array_merge($eventHandlers, $handlers);
+            if (StringHelper::matchWildcard($wildcard, $name)) {
+                $eventHandlers[] = $handlers;
             }
         }
-
         if (!empty($this->_events[$name])) {
-            $eventHandlers = array_merge($eventHandlers, $this->_events[$name]);
+            $eventHandlers[] = $this->_events[$name];
         }
 
         if (!empty($eventHandlers)) {
+            $eventHandlers = call_user_func_array('array_merge', $eventHandlers);
             if ($event === null) {
                 $event = new Event();
             }
