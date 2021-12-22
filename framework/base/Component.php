@@ -465,13 +465,17 @@ class Component extends BaseObject
     {
         $this->ensureBehaviors();
 
+        if (!empty($this->_events[$name])) {
+            return true;
+        }
+
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
             if (!empty($handlers) && StringHelper::matchWildcard($wildcard, $name)) {
                 return true;
             }
         }
 
-        return !empty($this->_events[$name]) || Event::hasHandlers($this, $name);
+        return Event::hasHandlers($this, $name);
     }
 
     /**
@@ -594,10 +598,12 @@ class Component extends BaseObject
 
     /**
      * Triggers an event.
-     * This method represents the happening of an event. It invokes
-     * all attached handlers for the event including class-level handlers.
+     *
+     * This method represents the happening of an event. It invokes all attached handlers for the event
+     * including class-level handlers.
+     *
      * @param string $name the event name
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param Event|null $event the event instance. If ommit, a default [[Event]] object will be created.
      */
     public function trigger($name, Event $event = null)
     {
@@ -605,7 +611,7 @@ class Component extends BaseObject
 
         $eventHandlers = [];
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
-            if (StringHelper::matchWildcard($wildcard, $name)) {
+            if (!empty($handlers) && StringHelper::matchWildcard($wildcard, $name)) {
                 $eventHandlers = array_merge($eventHandlers, $handlers);
             }
         }
