@@ -603,7 +603,7 @@ class Component extends BaseObject
      * including class-level handlers.
      *
      * @param string $name the event name
-     * @param Event|null $event the event instance. If ommit, a default [[Event]] object will be created.
+     * @param Event|null $event the event instance. If not set, a default [[Event]] object will be created.
      */
     public function trigger($name, Event $event = null)
     {
