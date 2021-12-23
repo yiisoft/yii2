@@ -376,7 +376,7 @@ This validator checks if the input is a valid uploaded file.
   The wildcard mask with the special character `*` can be used to match groups of mime types.
   For example `image/*` will pass all mime types, that begin with `image/` (e.g. `image/jpeg`, `image/png`).
   Mime type names are case-insensitive. Defaults to `null`, meaning all MIME types are allowed.
-  For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
+  For more details, please refer to [common media types](https://en.wikipedia.org/wiki/Media_type).
 - `minSize`: the minimum number of bytes required for the uploaded file. Defaults to `null`, meaning no lower limit.
 - `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to `null`, meaning no upper limit.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
