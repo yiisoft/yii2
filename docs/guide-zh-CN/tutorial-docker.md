@@ -5,7 +5,7 @@ Yii 和 Docker
 
 容器可以解决许多问题，例如在开发人员计算机和服务器上具有相同的软件版本，在开发时快速部署或模拟多服务器体系结构。
 
-您可以在 [docker.com](https://www.docker.com/what-docker) 上阅读有关Docker容器的更多信息。
+您可以在 [docker.com](https://www.docker.com/why-docker) 上阅读有关Docker容器的更多信息。
 
 ## 要求
 

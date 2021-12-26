@@ -376,7 +376,7 @@ function foo($model, $attribute) {
   特殊文字 `*` によるワイルドカードのマスクを使って、一群の MIME タイプに一致させることも出来ます。
   例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。デフォルト値は `null` であり、すべての MIME タイプが許可されることを意味します。
-  MIME タイプの詳細については、[一般的なメディア・タイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
+  MIME タイプの詳細については、[一般的なメディア・タイプ](https://en.wikipedia.org/wiki/Media_type) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。デフォルト値は `null` であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。デフォルト値は `null` であり、上限値が無いことを意味します。
 - `maxFiles`: 指定された属性が保持しうる最大限のファイル数。
