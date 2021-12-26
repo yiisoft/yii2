@@ -139,7 +139,7 @@ compare バリデータは、文字列や数値を比較するためにしか使
 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
 - `format`: 検証される値が従っているべき日付/時刻の書式。
-  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
+  これには [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax)
   で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
   サポートされている書式については、<https://www.php.net/manual/ja/datetime.createfromformat.php> を参照してください。
@@ -376,7 +376,7 @@ function foo($model, $attribute) {
   特殊文字 `*` によるワイルドカードのマスクを使って、一群の MIME タイプに一致させることも出来ます。
   例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。デフォルト値は `null` であり、すべての MIME タイプが許可されることを意味します。
-  MIME タイプの詳細については、[一般的なメディア・タイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
+  MIME タイプの詳細については、[一般的なメディア・タイプ](https://en.wikipedia.org/wiki/Media_type) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。デフォルト値は `null` であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。デフォルト値は `null` であり、上限値が無いことを意味します。
 - `maxFiles`: 指定された属性が保持しうる最大限のファイル数。
