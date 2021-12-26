@@ -5,7 +5,7 @@ For development and deployments Yii applications can be run as Docker containers
 
 Containers can solve many issues such as having identical software versions at developer's computer and the server, fast deployments or simulating multi-server architecture while developing.
 
-You can read more about Docker containers on [docker.com](https://www.docker.com/what-docker).
+You can read more about Docker containers on [docker.com](https://www.docker.com/why-docker).
 
 ## Requirements
 
