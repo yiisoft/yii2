@@ -698,6 +698,9 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
+            if ($identity === null) {
+                $this->switchIdentity(null);
+            }
         }
 
         if ($identity !== null) {
@@ -727,10 +730,6 @@ class User extends Component
             } elseif ($this->autoRenewCookie) {
                 $this->renewIdentityCookie();
             }
-        }
-
-        if ($this->getIdentity(false) === null) {
-            $this->switchIdentity(null);
         }
     }
 
