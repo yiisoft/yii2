@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
 - Bug #19096: Fix `Request::getIsConsoleRequest()` may return erroneously when testing a Web application in Codeception (WinterSilence)
+- Enh #19098: Add `yii\helper\BaseHtml::$normalizeClassAttribute` to fix duplicate classes (WinterSilence)
 - Enh #19108: Optimize `Component::hasEventHandlers()` and `Component::trigger()` (WinterSilence)
 
 

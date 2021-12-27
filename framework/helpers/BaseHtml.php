@@ -94,8 +94,15 @@ class BaseHtml
      * @since 2.0.3
      */
     public static $dataAttributes = ['aria', 'data', 'data-ng', 'ng'];
-
-
+    /**
+     * @var bool whether to removes duplicate class names in tag attribute `class`
+     * @see mergeCssClasses()
+     * @see renderTagAttributes()
+     * @since 2.0.44
+     */
+    public static $normalizeClassAttribute = false;
+    
+    
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -1981,6 +1988,11 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
+                    if (static::$normalizeClassAttribute === true && count($value) > 1) {
+                        // removes duplicate classes
+                        $value = explode(' ', implode(' ', $value));
+                        $value = array_unique($value);
+                    }
                     $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
@@ -2047,7 +2059,7 @@ class BaseHtml
             }
         }
 
-        return array_unique($existingClasses);
+        return static::$normalizeClassAttribute ? array_unique($existingClasses) : $existingClasses;
     }
 
     /**
