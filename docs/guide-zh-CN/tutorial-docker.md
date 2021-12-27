@@ -12,7 +12,7 @@ Yii 和 Docker
 - `docker`
 - `docker-compose`
 
-访问[下载页面](https://www.docker.com/community-edition)获取 Docker 工具。
+访问[下载页面](https://www.docker.com/products/container-runtime)获取 Docker 工具。
 
 ## 安装
 
