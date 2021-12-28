@@ -655,9 +655,7 @@ class User extends Component
         }
 
         $session = Yii::$app->getSession();
-        if (!YII_ENV_TEST) {
-            $session->regenerateID(true);
-        }
+        $session->regenerateID(true);
         $session->remove($this->idParam);
         $session->remove($this->authTimeoutParam);
         $session->remove($this->authKeyParam);
