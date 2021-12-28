@@ -1473,7 +1473,7 @@ class Request extends \yii\base\Request
      * contained in [[getRawBody()]] or, in the case of the HEAD method, the
      * media type that would have been sent had the request been a GET.
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
-     * @return string request content-type. Null is returned if this information is not available.
+     * @return string request content-type. Empty string is returned if this information is not available.
      * @link https://tools.ietf.org/html/rfc2616#section-14.17
      * HTTP 1.1 header field definitions
      */
@@ -1484,7 +1484,7 @@ class Request extends \yii\base\Request
         }
 
         //fix bug https://bugs.php.net/bug.php?id=66606
-        return $this->headers->get('Content-Type');
+        return $this->headers->get('Content-Type') ?: '';
     }
 
     private $_languages;
