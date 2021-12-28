@@ -55,6 +55,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It will be implicitly called when you use `foreach` to traverse the collection.
      * @return ArrayIterator an iterator for traversing the cookies in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->_cookies);
@@ -66,6 +67,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It will be implicitly called when you use `count($collection)`.
      * @return int the number of cookies in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getCount();
@@ -199,6 +201,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the cookie name
      * @return bool whether the named cookie exists
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($name)
     {
         return $this->has($name);
@@ -212,6 +215,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the cookie name
      * @return Cookie the cookie with the specified name, null if the named cookie does not exist.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($name)
     {
         return $this->get($name);
@@ -225,6 +229,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the cookie name
      * @param Cookie $cookie the cookie to be added
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($name, $cookie)
     {
         $this->add($cookie);
@@ -237,6 +242,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * This is equivalent to [[remove()]].
      * @param string $name the cookie name
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($name)
     {
         $this->remove($name);
