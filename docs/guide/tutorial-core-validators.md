@@ -139,7 +139,7 @@ Optionally, it can convert the input value into a UNIX timestamp or other machin
 specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
 - `format`: the date/time format that the value being validated should be in.
-   This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+   This can be a date time pattern as described in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
    Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP
    `Datetime` class. Please refer to <https://www.php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
@@ -376,7 +376,7 @@ This validator checks if the input is a valid uploaded file.
   The wildcard mask with the special character `*` can be used to match groups of mime types.
   For example `image/*` will pass all mime types, that begin with `image/` (e.g. `image/jpeg`, `image/png`).
   Mime type names are case-insensitive. Defaults to `null`, meaning all MIME types are allowed.
-  For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
+  For more details, please refer to [common media types](https://en.wikipedia.org/wiki/Media_type).
 - `minSize`: the minimum number of bytes required for the uploaded file. Defaults to `null`, meaning no lower limit.
 - `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to `null`, meaning no upper limit.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning

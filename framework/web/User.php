@@ -655,9 +655,7 @@ class User extends Component
         }
 
         $session = Yii::$app->getSession();
-        if (!YII_ENV_TEST) {
-            $session->regenerateID(true);
-        }
+        $session->regenerateID(true);
         $session->remove($this->idParam);
         $session->remove($this->authTimeoutParam);
         $session->remove($this->authKeyParam);
@@ -698,6 +696,9 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
+            if ($identity === null) {
+                $this->switchIdentity(null);
+            }
         }
 
         if ($identity !== null) {
@@ -727,10 +728,6 @@ class User extends Component
             } elseif ($this->autoRenewCookie) {
                 $this->renewIdentityCookie();
             }
-        }
-
-        if ($this->getIdentity(false) === null) {
-            $this->switchIdentity(null);
         }
     }
 
