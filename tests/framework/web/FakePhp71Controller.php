@@ -39,3 +39,50 @@ class FakePhp71Controller extends Controller
 
     }
 }
+
+/**
+ * @author Djibril <djidji01@gmail.com>
+ */
+class FakeAccessParamPhp71Controller extends FakePhp71Controller
+{
+    public $csrfParam = '_csrf';
+    public $dataProviderkey = 'key';
+
+    public function actionInjection($before, Request $request, $between, VendorImage $vendorImage, Post $post = null, $after)
+    {
+        return 'injection executed';
+
+    }
+
+    public function actionNullInjection(Request $request, ?Post $post)
+    {
+        return 'null injection executed';
+    }
+
+    public function actionModuleServiceInjection(DataProviderInterface $dataProvider)
+    {
+        return 'module service executed';
+    }
+    
+    public function beforeAction($action)
+    {
+        if ($action->actionMethod === 'actionInjection') {
+            if ( $action->getRequestedParam('request')->enableCsrfValidation === false) {
+                return false;
+            } elseif ($action->getRequestedParam('vendorImage')->name !== 'name') {
+                return false;
+            } 
+
+        } elseif ($action->actionMethod === 'actionNullInjection') {            
+            if ($action->getRequestedParam('request')->csrfParam !== $this->csrfParam) {
+                return false;
+            }
+        } elseif ($action->actionMethod === 'actionModuleServiceInjection') {
+            if ($action->getRequestedParam('dataProvider')->key !== $this->dataProviderkey) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
