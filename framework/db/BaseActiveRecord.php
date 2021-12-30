@@ -23,19 +23,17 @@ use yii\helpers\ArrayHelper;
  *
  * See [[\yii\db\ActiveRecord]] for a concrete implementation.
  *
- * @property-read array $dirtyAttributes The changed attribute values (name-value pairs). This property is
- * read-only.
+ * @property-read array $dirtyAttributes The changed attribute values (name-value pairs).
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
  * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
- * value is null). This property is read-only.
+ * value is null).
  * @property-read mixed $primaryKey The primary key value. An array (column name => column value) is returned
  * if the primary key is composite. A string is returned otherwise (null will be returned if the key value is
- * null). This property is read-only.
- * @property-read array $relatedRecords An array of related records indexed by relation names. This property
- * is read-only.
+ * null).
+ * @property-read array $relatedRecords An array of related records indexed by relation names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

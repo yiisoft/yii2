@@ -101,8 +101,8 @@ class BaseHtml
      * @since 2.0.44
      */
     public static $normalizeClassAttribute = false;
-    
-    
+
+
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.

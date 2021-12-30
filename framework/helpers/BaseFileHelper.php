@@ -509,7 +509,7 @@ class BaseFileHelper
      *   * `false`: the directory will NOT be returned
      *
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
-     * See [[findFiles()]] for more options.
+     *   See [[findFiles()]] for more options.
      * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
      * @throws InvalidArgumentException if the dir is invalid.
      * @since 2.0.14

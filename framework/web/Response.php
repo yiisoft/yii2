@@ -37,27 +37,22 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Response, see the [guide article on responses](guide:runtime-responses).
  *
- * @property-read CookieCollection $cookies The cookie collection. This property is read-only.
- * @property-write string $downloadHeaders The attachment file name. This property is write-only.
- * @property-read HeaderCollection $headers The header collection. This property is read-only.
- * @property-read bool $isClientError Whether this response indicates a client error. This property is
- * read-only.
- * @property-read bool $isEmpty Whether this response is empty. This property is read-only.
- * @property-read bool $isForbidden Whether this response indicates the current request is forbidden. This
- * property is read-only.
- * @property-read bool $isInformational Whether this response is informational. This property is read-only.
- * @property-read bool $isInvalid Whether this response has a valid [[statusCode]]. This property is
- * read-only.
+ * @property-read CookieCollection $cookies The cookie collection.
+ * @property-write string $downloadHeaders The attachment file name.
+ * @property-read HeaderCollection $headers The header collection.
+ * @property-read bool $isClientError Whether this response indicates a client error.
+ * @property-read bool $isEmpty Whether this response is empty.
+ * @property-read bool $isForbidden Whether this response indicates the current request is forbidden.
+ * @property-read bool $isInformational Whether this response is informational.
+ * @property-read bool $isInvalid Whether this response has a valid [[statusCode]].
  * @property-read bool $isNotFound Whether this response indicates the currently requested resource is not
- * found. This property is read-only.
- * @property-read bool $isOk Whether this response is OK. This property is read-only.
- * @property-read bool $isRedirection Whether this response is a redirection. This property is read-only.
- * @property-read bool $isServerError Whether this response indicates a server error. This property is
- * read-only.
- * @property-read bool $isSuccessful Whether this response is successful. This property is read-only.
+ * found.
+ * @property-read bool $isOk Whether this response is OK.
+ * @property-read bool $isRedirection Whether this response is a redirection.
+ * @property-read bool $isServerError Whether this response indicates a server error.
+ * @property-read bool $isSuccessful Whether this response is successful.
  * @property int $statusCode The HTTP status code to send with the response.
- * @property-write \Exception|\Error|\Throwable $statusCodeByException The exception object. This property is
- * write-only.
+ * @property-write \Exception|\Error|\Throwable $statusCodeByException The exception object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
