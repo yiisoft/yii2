@@ -4,17 +4,17 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
-- Bug #18660: Check name if backslash appears (iridance)
-- Enh #13105: Add yiiActiveForm validate_only property for skipping form auto-submission (ptolomaues)
+- Bug #18660: Fix database migration template does not work with namespaced migrations when migration name does not include namespace (iridance)
+- Enh #13105: Add yiiActiveForm `validate_only` property for skipping form auto-submission (ptolomaues)
 - Enh #18967: Use proper attribute names for tabular data in `yii\widgets\ActiveField::addAriaAttributes()` (AnkIF)
 - Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
 - Enh #18328: Raise warning when trying to register a file after `View::endPage()` has been called (perlexed)
-- Enh #18812: Added error messages and optimized "error" methods in `yii\helpers\BaseJson` (WinterSilence, samdark)
-- Chg #18823: Rollback changes #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
+- Enh #18812: Add error messages and optimize "error" methods in `yii\helpers\BaseJson` (WinterSilence, samdark)
+- Chg #18823: Rollback changes from #18806 in `yii\validators\ExistValidator::checkTargetRelationExistence()` (WinterSilence)
 - Enh #18826: Add ability to turn the sorting off for a clicked column in GridView with multisort (ditibal)
 - Bug #18646: Remove stale identity data from session if `IdentityInterface::findIdentity()` returns `null` (mikehaertl)
 - Bug #18832: Fix `Inflector::camel2words()` adding extra spaces (brandonkelly)
-- Enh #18762: Added `yii\helpers\Json::$keepObjectType` and `yii\web\JsonResponseFormatter::$keepObjectType` in order to avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()` (zebraf1)
+- Enh #18762: Add `yii\helpers\Json::$keepObjectType` and `yii\web\JsonResponseFormatter::$keepObjectType` in order to avoid changing zero-indexed objects to array in `yii\helpers\Json::encode()` (zebraf1)
 - Enh #18783: Add support for URI namespaced tags in `XmlResponseFormatter` (WinterSilence, samdark)
 - Enh #18783: Add `XmlResponseFormatter::$objectTagToLowercase` option to lowercase object tags (WinterSilence, samdark)
 - Bug #18845: Fix duplicating `id` in `MigrateController::addDefaultPrimaryKey()` (WinterSilence, samdark)
