@@ -21,7 +21,7 @@ Yii アプリケーションで使用される全てのロケール ID は、一
 `ll-CC` の形式に正規化されなければなりません。
 ここで `ll` は [ISO-639](http://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、
 `CC` は [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html) に従った二文字の国コードです。
-ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept)
+ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)
 に述べられています。
 
 ### 言語
