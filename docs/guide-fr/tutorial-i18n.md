@@ -11,7 +11,7 @@ Une *locale* est un jeu de paramètres qui définissent la langue de l'utilisate
 Elle est généralement identifiée par un identifiant (ID), lui-même constitué par un identifiant de langue et un identifiant de région. Par exemple, l'identifiant `en-US` représente la locale *anglais* pour la langue et   *États-Unis* pour la région. 
 
 Pour assurer la cohérence, tous les identifiants utilisés par les application Yii doivent être présentés sous leur forme canonique `ll-CC`, où `ll` est un code à 2 ou 3 lettres pour la langue conforme à la norme [ISO-639](http://www.loc.gov/standards/iso639-2/) et `CC` est un code à deux lettres pour le pays conforme à la norme [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-Pour plus de détails sur les locales, reportez-vous à la [documentation du projet ICU](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+Pour plus de détails sur les locales, reportez-vous à la [documentation du projet ICU](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 Dans Yii, nous utilisons souvent le mot « langue » pour faire référence à la locale. 
 

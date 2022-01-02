@@ -22,7 +22,7 @@ For consistency reasons, all locale IDs used in Yii applications should be canon
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
 More details about locale can be found in the
-[documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+[documentation of the ICU project](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 ### Language
 
