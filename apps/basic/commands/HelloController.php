@@ -27,4 +27,14 @@ class HelloController extends Controller
     {
         echo $message . "\n";
     }
+    
+    /**
+     * This command hash any string into Password hash.
+     * @param string $str the message to be echoed.
+     */
+    public function actionHash($str = 'password', $salt='')
+    {
+        // the following is how the creation of new user is. In other words, how the password is hashed in the User model.
+        echo password_hash(Yii::$app->params['salt'].$str.$salting, PASSWORD_BCRYPT, ['cost' => 12])."\n";
+    }
 }
