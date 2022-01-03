@@ -256,7 +256,7 @@ echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 +```
 
-このようなプレースホルダを指定する方法についての完全な説明は、[ICU ドキュメント](http://icu-project.org/apiref/icu4c/classMessageFormat.html)を参照してください。以下では、よくある使用方法をいくつか示します。
+このようなプレースホルダを指定する方法についての完全な説明は、[ICU ドキュメント](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html)を参照してください。以下では、よくある使用方法をいくつか示します。
 
 
 #### 数値 <span id="number"></span>
