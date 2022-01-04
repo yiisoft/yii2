@@ -29,15 +29,15 @@ Yii 2.0 membutuhkan PHP 5.4 atau versi lebih tinggi, yang merupakan perbaikan be
 Akibatnya, ada banyak perbedaan pada tingkat bahasa yang harus Anda perhatikan.
 Di bawah ini adalah ringkasan perubahan utama mengenai PHP:
 
-- [Namespaces](https://secure.php.net/manual/en/language.namespaces.php).
-- [Anonymous fungsi](https://secure.php.net/manual/en/functions.anonymous.php).
+- [Namespaces](https://www.php.net/manual/en/language.namespaces.php).
+- [Anonymous fungsi](https://www.php.net/manual/en/functions.anonymous.php).
 - Sintaks array pendek `[... elemen ...]` digunakan sebagai pengganti `array (... elemen ...)`.
 - Tags echo pendek `<=` digunakan dalam tampilan file. Ini aman digunakan mulai dari PHP 5.4.
-- [Class SPL dan interface](https://secure.php.net/manual/en/book.spl.php).
-- [Late Static Bindings](https://secure.php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Tanggal dan Waktu](https://secure.php.net/manual/en/book.datetime.php).
-- [Traits](https://secure.php.net/manual/en/language.oop5.traits.php).
-- [Intl](https://secure.php.net/manual/en/book.intl.php). Yii 2.0 menggunakan `ekstensi PHP intl`
+- [Class SPL dan interface](https://www.php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://www.php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Tanggal dan Waktu](https://www.php.net/manual/en/book.datetime.php).
+- [Traits](https://www.php.net/manual/en/language.oop5.traits.php).
+- [Intl](https://www.php.net/manual/en/book.intl.php). Yii 2.0 menggunakan `ekstensi PHP intl`
   untuk mendukung fitur internasionalisasi.
 
 
@@ -506,7 +506,7 @@ Kelas `CUserIdentity`. Sebaliknya, Anda harus menerapkan [[yii\web\IdentityInter
 jauh lebih mudah untuk digunakan. Template proyek lanjutan memberikan contoh seperti itu.
 
 Silakan merujuk ke bagian [Otentikasi](security-authentication.md), [Otorisasi](security-authorization.md), 
-dan [Template Proyek Lanjutan](https://github.com/yiisoft/yii2-app-advanced/blob /master/docs/guide/README.md) untuk lebih jelasnya.
+dan [Template Proyek Lanjutan](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) untuk lebih jelasnya.
 
 
 Manajemen URL

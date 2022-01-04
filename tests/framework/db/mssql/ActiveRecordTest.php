@@ -56,4 +56,31 @@ END';
         $testRecord = TestTriggerAlert::findOne(1);
         $this->assertEquals('test', $testRecord->stringcol);
     }
+
+    /**
+     * @throws \yii\db\Exception
+     */
+    public function testSaveWithComputedColumn()
+    {
+        $db = $this->getConnection();
+
+        $sql = 'IF OBJECT_ID(\'TESTFUNC\') IS NOT NULL EXEC(\'DROP FUNCTION TESTFUNC\')';
+        $db->createCommand($sql)->execute();
+
+        $sql = 'CREATE FUNCTION TESTFUNC(@Number INT)
+RETURNS VARCHAR(15)
+AS
+BEGIN
+      RETURN (SELECT CONVERT(VARCHAR(15),@Number))
+END';
+        $db->createCommand($sql)->execute();
+
+        $sql = 'ALTER TABLE [dbo].[test_trigger] ADD [computed_column] AS dbo.TESTFUNC([ID])';
+        $db->createCommand($sql)->execute();
+
+        $record = new TestTrigger();
+        $record->stringcol = 'test';
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
+    }
 }

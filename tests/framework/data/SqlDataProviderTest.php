@@ -46,4 +46,36 @@ class SqlDataProviderTest extends DatabaseTestCase
         ]);
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
+
+    public function providerForOrderByColumn()
+    {
+        return [
+            'no marks' => ['name'],
+            'no marks dot' => ['customer.name'],
+            'mysql' => ['`name`'],
+            'mysql dot' => ['`customer`.`name`'],
+            'sqlite, pgsql, oracle, mysql ansi quotes' => ['"name"'],
+            'sqlite, pgsql, oracle, mysql ansi quotes dot' => ['"customer"."name"'],
+            'mssql' => ['[name]'],
+            'mssql dot' => ['[customer].[name]'],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForOrderByColumn
+     * @see https://github.com/yiisoft/yii2/issues/18552
+     */
+    public function testRemovingOrderBy($column)
+    {
+        $dataProvider = new SqlDataProvider([
+            'sql' => 'select * from `customer` order by ' . $column . ' desc',
+            'db' => $this->getConnection(),
+            'sort' => [
+                'attributes' => ['email'],
+                'params' => ['sort' => '-email']
+            ],
+        ]);
+        $modelsSorted = $dataProvider->getModels();
+        $this->assertSame('user3', $modelsSorted[0]['name']);
+    }
 }

@@ -120,21 +120,21 @@ class User extends ActiveRecord
     {
         return [
             // 匿名行为，只有行为类名
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // 命名行为，只有行为类名
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // 匿名行为，配置数组
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // 命名行为，配置数组
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -156,11 +156,11 @@ use app\components\MyBehavior;
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
 // 附加行为类
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // 附加配置数组
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -171,7 +171,7 @@ $component->attachBehavior('myBehavior3', [
 ```php
 $component->attachBehaviors([
     'myBehavior1' => new MyBehavior,  // 命名行为
-    MyBehavior::className(),          // 匿名行为
+    MyBehavior::class,          // 匿名行为
 ]);
 ```
 
@@ -179,10 +179,10 @@ $component->attachBehaviors([
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -272,7 +272,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -329,7 +329,7 @@ $user->touch('login_time');
 比较行为与 Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-虽然行为类似于 [traits](https://secure.php.net/traits)，它们都将自己的属性和方法“注入”到主类中，
+虽然行为类似于 [traits](https://www.php.net/traits)，它们都将自己的属性和方法“注入”到主类中，
 但它们在许多方面有所不同。如下所述，他们都有优点和缺点。
 它们更像互补类而非替代类。
 

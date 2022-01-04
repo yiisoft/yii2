@@ -15,7 +15,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * ReleaseController is there to help preparing releases.
+ * ReleaseController is there to help to prepare releases.
  *
  * Get a version overview:
  *
@@ -53,7 +53,7 @@ class ReleaseController extends Controller
      */
     public $dryRun = false;
     /**
-     * @var bool whether to fetch latest tags.
+     * @var bool whether to fetch the latest tags.
      */
     public $update = false;
     /**
@@ -206,7 +206,7 @@ class ReleaseController extends Controller
                 $newVersions[$k] = $this->version;
             }
         } else {
-            // otherwise get next patch or minor
+            // otherwise, get next patch or minor
             $newVersions = $this->getNextVersions($versions, self::PATCH);
         }
 
@@ -629,7 +629,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build/build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework release at github:  ./build/build release/package app-$name\n");
 
         $this->stdout("\n");
     }
@@ -803,7 +803,7 @@ class ReleaseController extends Controller
         try {
             chdir($path);
         } catch (\yii\base\ErrorException $e) {
-            throw new Exception('Failed to getch git tags in ' . $path . ': ' . $e->getMessage());
+            throw new Exception('Failed to fetch git tags in ' . $path . ': ' . $e->getMessage());
         }
         exec('git fetch --tags', $output, $ret);
         if ($ret != 0) {

@@ -66,7 +66,7 @@ class Command extends Component
     public $pdoStatement;
     /**
      * @var int the default fetch mode for this command.
-     * @see https://secure.php.net/manual/en/pdostatement.setfetchmode.php
+     * @see https://www.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
@@ -218,7 +218,10 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return strtr($this->_sql, $params);
+            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+                $m = $matches[1];
+                return isset($params[$m]) ? $params[$m] : $m;
+            }, $this->_sql);
         }
         $sql = '';
         foreach (explode('?', $this->_sql) as $i => $part) {
@@ -246,6 +249,9 @@ class Command extends Component
         }
 
         $sql = $this->getSql();
+        if ($sql === '') {
+            return;
+        }
 
         if ($this->db->getTransaction()) {
             // master is in a transaction. use the same connection.
@@ -264,6 +270,9 @@ class Command extends Component
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
+            throw new Exception($message, null, (int) $e->getCode(), $e);
         }
     }
 
@@ -287,7 +296,7 @@ class Command extends Component
      * @param int $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
-     * @see https://secure.php.net/manual/en/function.PDOStatement-bindParam.php
+     * @see https://www.php.net/manual/en/function.PDOStatement-bindParam.php
      */
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
     {
@@ -329,7 +338,7 @@ class Command extends Component
      * @param mixed $value The value to bind to the parameter
      * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
-     * @see https://secure.php.net/manual/en/function.PDOStatement-bindValue.php
+     * @see https://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
     public function bindValue($name, $value, $dataType = null)
     {
@@ -390,7 +399,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -404,7 +413,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/pdostatement.setfetchmode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -418,7 +427,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */
@@ -1127,7 +1136,7 @@ class Command extends Component
     /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
@@ -1186,7 +1195,7 @@ class Command extends Component
      * Returns the cache key for the query.
      *
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://secure.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes.
      * @return array the cache key
      * @since 2.0.16

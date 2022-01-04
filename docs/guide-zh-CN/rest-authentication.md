@@ -18,7 +18,7 @@
   由于大多数服务器都会保存请求参数到日志，
   这种方式应主要用于`JSONP` 请求，因为它不能使用HTTP头来发送access token 
 * [OAuth 2](http://oauth.net/2/)：使用者从认证服务器上获取基于 OAuth2 协议的 access token，
-  然后通过 [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 
+  然后通过 [HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750) 
   发送到 API 服务器。
 
 Yii 支持上述的认证方式，你也可很方便的创建新的认证方式。
@@ -57,7 +57,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -75,11 +75,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

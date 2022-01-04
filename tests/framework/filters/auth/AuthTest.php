@@ -29,10 +29,6 @@ class AuthTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        if (defined('HHVM_VERSION') && getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not test reliably with HHVM on travis-ci.');
-        }
-
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
 

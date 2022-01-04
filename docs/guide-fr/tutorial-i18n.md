@@ -11,7 +11,7 @@ Une *locale* est un jeu de paramètres qui définissent la langue de l'utilisate
 Elle est généralement identifiée par un identifiant (ID), lui-même constitué par un identifiant de langue et un identifiant de région. Par exemple, l'identifiant `en-US` représente la locale *anglais* pour la langue et   *États-Unis* pour la région. 
 
 Pour assurer la cohérence, tous les identifiants utilisés par les application Yii doivent être présentés sous leur forme canonique `ll-CC`, où `ll` est un code à 2 ou 3 lettres pour la langue conforme à la norme [ISO-639](http://www.loc.gov/standards/iso639-2/) et `CC` est un code à deux lettres pour le pays conforme à la norme [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-Pour plus de détails sur les locales, reportez-vous à la [documentation du projet ICU](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+Pour plus de détails sur les locales, reportez-vous à la [documentation du projet ICU](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 Dans Yii, nous utilisons souvent le mot « langue » pour faire référence à la locale. 
 
@@ -149,7 +149,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://secure.php.net/manual/en/intro.intl.php).
+> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://www.php.net/manual/en/intro.intl.php).
 
 Vous pouvez utiliser, soit la forme raccourcie, soit la forme complète pour spécifier une valeur à remplacer avec un format :
 ```
@@ -350,7 +350,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 // You and one other person liked this
 ```
 
-#### Sélection ordinale <span id="ordinal-selection">
+#### Sélection ordinale <span id="ordinal-selection"></span>
 
 L'argument `selectordinal` pour une valeur à remplacer  numérique a pour but de choisir une chaîne de caractères basée sur les règles linguistiques de la locale cible pour les ordinaux. Ainsi, 
 
@@ -637,9 +637,9 @@ Reportez-vous à la section [Formatage des données](output-formatting.md) pour 
 
 ## Configuration de l'environnement PHP <span id="setup-environment"></span>
 
-Yii utilise l'[extension intl de PHP](https://secure.php.net/manual/en/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
+Yii utilise l'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
 Les deux classes fournissent un mécanisme de remplacement lorsque l'extension `intl` n'est pas installée. Néanmoins, l'implémentation du mécanisme de remplacement ne fonctionne bien que quand la langue cible est l'anglais. C'est pourquoi, il est fortement recommandé d'installer `intl` quand c'est nécessaire.
-L'[extension intl de PHP](https://secure.php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](http://site.icu-project.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
+L'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](http://site.icu-project.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
 
 Pour savoir quelle version d'ICU est utilisée par PHP, vous pouvez exécuter le script suivant, qui vous restitue la version de PHP et d'ICU en cours d'utilisation. 
 

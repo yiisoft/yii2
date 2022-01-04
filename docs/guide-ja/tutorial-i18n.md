@@ -21,7 +21,7 @@ Yii アプリケーションで使用される全てのロケール ID は、一
 `ll-CC` の形式に正規化されなければなりません。
 ここで `ll` は [ISO-639](http://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、
 `CC` は [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html) に従った二文字の国コードです。
-ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept)
+ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)
 に述べられています。
 
 ### 言語
@@ -241,7 +241,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: パラメータのフォーマットには、[intl PHP 拡張](https://secure.php.net/manual/ja/intro.intl.php) のインストールが必要です。
+> Note: パラメータのフォーマットには、[intl PHP 拡張](https://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
 
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 
@@ -500,7 +500,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 > 横着をして、`{n, plural, ...}` を `{n, number}` に置き換えても、多分、大きな問題は生じないでしょう。
 
 
-#### 序数選択肢 <span id="ordinal-selection">
+#### 序数選択肢 <span id="ordinal-selection"></span>
 
 パラメータのタイプとして `selectordinal` を使うと、翻訳先ロケールの言語規則に基づいて序数のための文字列を選択することが出来ます。
 
@@ -804,12 +804,12 @@ class TranslationEventHandler
 
 ## PHP 環境をセットアップする <span id="setup-environment"></span>
 
-Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) を使います。
+Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](https://www.php.net/manual/ja/book.intl.php) を使います。
 この二つのクラスは、`intl` がインストールされていない場合に備えて基本的な機能を提供するフォールバックを実装しています。
 だだし、このフォールバックの実装は、英語がターゲット言語である場合にのみ十分に機能するものす。
 従って、国際化機能が必要とされる場合は、`intl` をインストールすることが強く推奨されます。
 
-[PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
+[PHP intl 拡張](https://www.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
 [ICU ライブラリ](http://site.icu-project.org/) に基礎を置いています。
 ICU のバージョンが異なると、日付や数値のフォーマットの結果も異なる場合があります。
 あなたのウェブ・サイトが全ての環境で同じ出力をすることを保証するためには、

@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### プレフィックス
 また、デフォルトの [[yii\db\Connection::$tablePrefix|tablePrefix]] を適用することも出来ます。
-実装の仕方は ["データベース・アクセス・オブジェクト" ガイドの "テーブル名を引用符で囲む" のセクション](guide-db-dao.html#quoting-table-and-column-names) にあります。
+実装の仕方は ["データベース・アクセス・オブジェクト" ガイドの "テーブル名を引用符で囲む" のセクション](db-dao.md#quoting-table-and-column-names) にあります。
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -716,6 +716,9 @@ $query = (new \yii\db\Query())
     ->all();
 ```
 
+インデックス付けが働くためには、[[yii\db\Query::indexBy()|indexBy()]] メソッドに渡されるカラム名が結果セットに存在する必要があります。
+そのことを保証するのは開発者の責任です。
+
 式の値によってインデックスするためには、[[yii\db\Query::indexBy()|indexBy()]] メソッドに無名関数を渡します。
 
 ```php
@@ -795,7 +798,7 @@ foreach ($query->each() as $username => $user) {
 #### MySQL におけるバッチ・クエリの制約 <span id="batch-query-mysql"></span>
 
 MySQL のバッチ・クエリの実装は PDO ドライバのライブラリに依存しています。デフォルトでは、MySQL のクエリは
-[`バッファ・モード`](https://secure.php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
+[`バッファ・モード`](https://www.php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
 このことが、カーソルを使ってデータを取得する目的を挫折させます。というのは、バッファ・モードでは、
 ドライバによって結果セット全体がクライアントのメモリに読み込まれることを防止できないからです。
 

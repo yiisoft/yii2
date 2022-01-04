@@ -180,12 +180,7 @@ FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
 ORDER BY [t].[table_name]
 SQL;
-        $tables = $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
-        $tables = array_map(static function ($item) {
-            return '[' . $item . ']';
-        }, $tables);
-
-        return $tables;
+        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
     }
 
     /**
@@ -202,6 +197,29 @@ SQL;
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSchemaMetadata($schema, $type, $refresh)
+    {
+        $metadata = [];
+        $methodName = 'getTable' . ucfirst($type);
+        $tableNames = array_map(function ($table) {
+            return $this->quoteSimpleTableName($table);
+        }, $this->getTableNames($schema, $refresh));
+        foreach ($tableNames as $name) {
+            if ($schema !== '') {
+                $name = $schema . '.' . $name;
+            }
+            $tableMetadata = $this->$methodName($name, $refresh);
+            if ($tableMetadata !== null) {
+                $metadata[] = $tableMetadata;
+            }
+        }
+
+        return $metadata;
     }
 
     /**
@@ -364,6 +382,7 @@ SQL;
         $column->enumValues = []; // mssql has only vague equivalents to enum
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
         $column->autoIncrement = $info['is_identity'] == 1;
+        $column->isComputed = (bool)$info['is_computed'];
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
 
@@ -375,9 +394,9 @@ SQL;
             }
             if (!empty($matches[2])) {
                 $values = explode(',', $matches[2]);
-                $column->size = $column->precision = (int)$values[0];
+                $column->size = $column->precision = (int) $values[0];
                 if (isset($values[1])) {
-                    $column->scale = (int)$values[1];
+                    $column->scale = (int) $values[1];
                 }
                 if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
                     $column->type = 'boolean';
@@ -436,6 +455,7 @@ SELECT
  END AS 'data_type',
  [t1].[column_default],
  COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
+ COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsComputed') AS is_computed,
  (
     SELECT CONVERT(VARCHAR, [t2].[value])
 		FROM [sys].[extended_properties] AS [t2]
@@ -595,12 +615,7 @@ WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'VIEW'
 ORDER BY [t].[table_name]
 SQL;
 
-        $views = $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
-        $views = array_map(static function ($item) {
-            return '[' . $item . ']';
-        }, $views);
-
-        return $views;
+        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
     }
 
     /**
@@ -774,13 +789,12 @@ SQL;
         $tableSchema = $this->getTableSchema($table);
         $result = [];
         foreach ($tableSchema->primaryKey as $name) {
-            if ($tableSchema->columns[$name]->autoIncrement) {
-                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
-                break;
-            }
             // @see https://github.com/yiisoft/yii2/issues/13828 & https://github.com/yiisoft/yii2/issues/17474
             if (isset($inserted[$name])) {
                 $result[$name] = $inserted[$name];
+            } elseif ($tableSchema->columns[$name]->autoIncrement) {
+                // for a version earlier than 2005
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
             } elseif (isset($columns[$name])) {
                 $result[$name] = $columns[$name];
             } else {
@@ -789,5 +803,13 @@ SQL;
         }
 
         return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

@@ -85,7 +85,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 アーカイブ・ファイルから Yii をインストールするには、三つの手順を踏みます。
 
-1. [yiiframework.com](http://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードします。
+1. [yiiframework.com](https://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードします。
 2. ダウンロードしたファイルをウェブ・アクセス可能なフォルダに展開します。
 3. `config/web.php` ファイルを編集して、`cookieValidationKey` という構成情報の項目に秘密キーを入力します
    (Composer を使って Yii をインストールするときは、これは自動的に実行されます)。
@@ -114,9 +114,9 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 アセットをインストールする <span id="installing-assets"></span>
 --------------------------
 
-Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて [Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) のパッケージに依存しています。
+Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて [Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) のパッケージに依存しています。
 Yii はこれらのライブラリを取得するのに Composer を使って、PHP と CSS/JavaScript のパッケージ・バージョンを同時に解決できるようにしています。
-このことは、[asset-packagist.org](https://asset-packagist.org) または [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) を使用することによって達成されます。
+このことは、[asset-packagist.org](https://asset-packagist.org) または [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) を使用することによって達成されます。
 詳細は [アセットのドキュメント](structure-assets.md) を参照して下さい。
 
 あなたは、アセットの管理をネイティブの Bower/NPM クライアントで行ったり、CND を使ったり、アセットのインストールを完全に避けたりしたいかも知れません。
@@ -140,7 +140,7 @@ Composer によるアセットのインストールを抑止するためには�
 
 インストール完了後、あなたのウェブ・サーバを構成してください (次のセクションを参照してください)。
 あるいは、プロジェクトの `web` ディレクトリで次のコマンドを実行して、
-[PHP の内蔵ウェブ・サーバ](https://secure.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
+[PHP の内蔵ウェブ・サーバ](https://www.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
 
 ```bash
 php yii serve
@@ -174,7 +174,7 @@ http://localhost:8080/
 
 Yii の最低必要条件を満たすように PHP のインストールを構成しなければなりません。
 最も重要なことは、PHP 5.4 以上でなければならないということです。最新の PHP 7 なら理想的です。
-また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](https://secure.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
+また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](https://www.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
 ウェブ・サーバを構成する <span id="configuring-web-servers"></span>
@@ -236,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推奨される Nginx の構成 <span id="recommended-nginx-configuration"></span>
 
-[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](https://secure.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
+[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](https://www.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
 下記の Nginx の設定を使うことができます。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、`mysite.test` を実際のサーバのホスト名に置き換えてください。
 

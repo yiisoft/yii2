@@ -56,12 +56,11 @@ use yii\di\Instance;
 class ActiveDataProvider extends BaseDataProvider
 {
     /**
-     * @var QueryInterface the query that is used to fetch data models and [[totalCount]]
-     * if it is not explicitly set.
+     * @var QueryInterface|null the query that is used to fetch data models and [[totalCount]] if it is not explicitly set.
      */
     public $query;
     /**
-     * @var string|callable the column that is used as the key of the data models.
+     * @var string|callable|null the column that is used as the key of the data models.
      * This can be either a column name, or a callable that returns the key value of a given data model.
      *
      * If this is not set, the following rules will be used to determine the keys of the data models:
@@ -73,8 +72,8 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $key;
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
-     * If not set, the default DB connection will be used.
+     * @var Connection|array|string|null the DB connection object or the application component ID of the DB connection.
+     * If set it overrides [[query]] default DB connection.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db;
@@ -82,14 +81,14 @@ class ActiveDataProvider extends BaseDataProvider
 
     /**
      * Initializes the DB connection component.
-     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+     * This method will initialize the [[db]] property (when set) to make sure it refers to a valid DB connection.
      * @throws InvalidConfigException if [[db]] is invalid.
      */
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Instance::ensure($this->db, Connection::className());
+        if ($this->db !== null) {
+            $this->db = Instance::ensure($this->db);
         }
     }
 
@@ -175,7 +174,7 @@ class ActiveDataProvider extends BaseDataProvider
     public function setSort($value)
     {
         parent::setSort($value);
-        if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
+        if ($this->query instanceof ActiveQueryInterface && ($sort = $this->getSort()) !== false) {
             /* @var $modelClass Model */
             $modelClass = $this->query->modelClass;
             $model = $modelClass::instance();

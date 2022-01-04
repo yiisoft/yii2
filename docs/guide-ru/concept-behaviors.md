@@ -126,21 +126,21 @@ class User extends ActiveRecord
     {
         return [
             // анонимное поведение, прикрепленное по имени класса
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // именованное поведение, прикрепленное по имени класса
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // анонимное поведение, сконфигурированное с использованием массива
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // именованное поведение, сконфигурированное с использованием массива
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -164,11 +164,11 @@ use app\components\MyBehavior;
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
 // прикрепляем по имени класса поведения
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // прикрепляем используя массив конфигураций
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -180,7 +180,7 @@ $component->attachBehavior('myBehavior3', [
 ```php
 $component->attachBehaviors([
     'myBehavior1' => new MyBehavior,  // именованное поведение
-    MyBehavior::className(),          // анонимное поведение
+    MyBehavior::class,          // анонимное поведение
 ]);
 ```
 
@@ -188,10 +188,10 @@ $component->attachBehaviors([
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -280,7 +280,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -332,7 +332,7 @@ $user->touch('login_time');
 - [[yii\behaviors\AttributeBehavior]] - автоматически задаёт указанное значение одному или нескольким атрибутам
   ActiveRecord при срабатывании определённых событий.
 - [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - предоставляет методы для
-  «мягкого» удаления и воосстановления ActiveRecord. То есть выставляет статус или флаг, который показывает, что
+  «мягкого» удаления и восстановления ActiveRecord. То есть выставляет статус или флаг, который показывает, что
   запись удалена.
 - [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - позволяет управлять порядком
   записей через специальные методы. Информация сохраняется в целочисленном поле.
@@ -341,14 +341,14 @@ $user->touch('login_time');
 Сравнение с трейтами <span id="comparison-with-traits"></span>
 ---------------------------------------------------
 
-Несмотря на то, что поведения схожи с [трейтами](https://secure.php.net/manual/ru/language.oop5.traits.php) тем, что 
+Несмотря на то, что поведения схожи с [трейтами](https://www.php.net/manual/ru/language.oop5.traits.php) тем, что 
 "внедряют" свои свойства и методы в основной класс, они имеют множество отличий. Они оба имеют свои плюсы и минусы, 
 и, скорее, дополняют друг друга, а не заменяют.
 
 
 ### Плюсы поведений <span id="pros-for-behaviors"></span>
 
-Поведения, как и любые другие классы, поддерживают наследование. Трейты же можно рассматривать как копипейст
+Поведения, как и любые другие классы, поддерживают наследование. Трейты можно рассматривать как копипейст
 на уровне языка. Они наследование не поддерживают.
 
 Поведения могут быть прикреплены и отвязаны от компонента динамически, без необходимости модифицирования класса 
