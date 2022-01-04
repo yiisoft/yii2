@@ -173,6 +173,13 @@ class DbSession extends MultiFieldSession
         return $data === false ? '' : $data;
     }
 
+    protected function composeFields($id = null, $data = null)
+    {
+        $fields = parent::composeFields($id, $data);
+        $fields['expire'] = time() + $this->getTimeout();
+        return $fields;
+    }
+
     /**
      * Session write handler.
      * @internal Do not call this method directly.
@@ -195,11 +202,6 @@ class DbSession extends MultiFieldSession
             } else {
                 $_SESSION = $this->fields['data'];
             }
-            // ensure 'id' and 'expire' are never affected by [[writeCallback]]
-            $this->fields = array_merge($this->fields, [
-                'id' => $id,
-                'expire' => time() + $this->getTimeout(),
-            ]);
             $this->fields = $this->typecastFields($this->fields);
             $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
             $this->fields = [];
