@@ -37,7 +37,7 @@ use yii\validators\StringValidator;
  *     {
  *         return [
  *             'typecast' => [
- *                 'class' => AttributeTypecastBehavior::className(),
+ *                 'class' => AttributeTypecastBehavior::class,
  *                 'attributeTypes' => [
  *                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,
  *                     'price' => AttributeTypecastBehavior::TYPE_FLOAT,
@@ -77,7 +77,7 @@ use yii\validators\StringValidator;
  *     {
  *         return [
  *             'typecast' => [
- *                 'class' => AttributeTypecastBehavior::className(),
+ *                 'class' => AttributeTypecastBehavior::class,
  *                 // 'attributeTypes' will be composed automatically according to `rules()`
  *             ],
  *         ];
@@ -132,7 +132,7 @@ class AttributeTypecastBehavior extends Behavior
      *     'price' => 'float',
      *     'is_active' => 'boolean',
      *     'date' => function ($value) {
-     *         return ($value instanceof \DateTime) ? $value->getTimestamp(): (int)$value;
+     *         return ($value instanceof \DateTime) ? $value->getTimestamp(): (int) $value;
      *     },
      * ]
      * ```
@@ -346,7 +346,7 @@ class AttributeTypecastBehavior extends Behavior
     {
         $this->typecastAttributes();
     }
-    
+
     /**
      * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
      * @param \yii\base\Event $event event instance.

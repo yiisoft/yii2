@@ -80,7 +80,7 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     /**
      * Specify data which should be serialized to JSON
      *
-     * @link https://secure.php.net/manual/en/jsonserializable.jsonserialize.php
+     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 2.0.14.2

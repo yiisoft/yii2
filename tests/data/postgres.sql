@@ -268,7 +268,7 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
@@ -424,3 +424,12 @@ CREATE TABLE "T_upsert_1"
 (
     "a" INT NOT NULL PRIMARY KEY
 );
+
+CREATE TYPE "schema2"."my_type" AS enum('VAL1', 'VAL2', 'VAL3');
+CREATE TABLE "schema2"."custom_type_test_table" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "test_type" "schema2"."my_type"[]
+);
+INSERT INTO "schema2"."custom_type_test_table" ("test_type")
+VALUES (array['VAL2']::"schema2"."my_type"[]);
+

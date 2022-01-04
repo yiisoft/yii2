@@ -20,7 +20,7 @@ use yii\web\UploadedFile;
  *
  * Note that you should enable `fileinfo` PHP extension.
  *
- * @property int $sizeLimit The size limit for uploaded files. This property is read-only.
+ * @property-read int $sizeLimit The size limit for uploaded files.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -62,8 +62,8 @@ class FileValidator extends Validator
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
-     * @see https://secure.php.net/manual/en/ini.core.php#ini.upload-max-filesize
-     * @see https://secure.php.net/post-max-size
+     * @see https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize
+     * @see https://www.php.net/post-max-size
      * @see getSizeLimit
      * @see tooBig for the customized message for a file that is too big.
      */
@@ -77,7 +77,7 @@ class FileValidator extends Validator
      * > Note: The maximum number of files allowed to be uploaded simultaneously is
      * also limited with PHP directive `max_file_uploads`, which defaults to 20.
      *
-     * @see https://secure.php.net/manual/en/ini.core.php#ini.max-file-uploads
+     * @see https://www.php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;

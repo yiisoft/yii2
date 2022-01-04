@@ -93,7 +93,7 @@ Bower および NPM のパッケージのインストールを阻止する特別
 Composer に関する更なる情報や、インストールの過程で出現しうる問題に対する解決方法については、
 一般的な [Composer によるインストール](start-installation.md#installing-via-composer) のセクションを参照してください。
 
-そうでない場合は、Yii のリリースを [ダウンロード](http://www.yiiframework.com/download/) して、
+そうでない場合は、Yii のリリースを [ダウンロード](https://www.yiiframework.com/download/) して、
 `BasePath/vendor` ディレクトリに解凍してください。
 
 次に、サードパーティのシステムのエントリ・スクリプトを修正します。次のコードをエントリ・スクリプトの先頭に追加してください。

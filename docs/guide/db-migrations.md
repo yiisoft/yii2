@@ -187,6 +187,22 @@ class m150101_185401_create_news_table extends Migration
 
 A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
+> Info: The generated file permissions and ownership will be determined by the current environment. This might lead to
+  inaccessible files. This could, for example, happen when the migration is created within a docker container
+  and the files are edited on the host. In this case the `newFileMode` and/or `newFileOwnership` of the MigrateController
+  can be changed. E.g. in the application config:
+  ```php
+  <?php
+  return [
+      'controllerMap' => [
+          'migrate' => [
+              'class' => 'yii\console\controllers\MigrateController',
+              'newFileOwnership' => '1000:1000', # Default WSL user id
+              'newFileMode' => 0660,
+          ],
+      ],
+  ];
+  ```
 
 ## Generating Migrations <span id="generating-migrations"></span>
 

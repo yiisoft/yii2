@@ -108,7 +108,7 @@ return [
     '{attribute} must be less than "{compareValue}".' => '«{attribute}» qiymati «{compareValue}» dan kichkina bo`lishi kerak.',
     '{attribute} must be less than or equal to "{compareValue}".' => '«{attribute}» qiymati «{compareValue}» dan kichik yoki teng bo`lishi kerak.',
     '{attribute} must be no greater than {max}.' => '«{attribute}» qiymati {max} dan oshmasligi kerak.',
-    '{attribute} must be no less than {min}.' => '«{attribute}» qiymati {min} dan kichkina bo`lishi kerak.',
+    '{attribute} must be no less than {min}.' => '«{attribute}» qiymati {min} dan kichkina bo`lmasligi kerak.',
     '{attribute} must be repeated exactly.' => '«{attribute}» qiymati bir xil tarzda takrorlanishi kerak.',
     '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» qiymati «{compareValue}» ga teng bo`lmasligi kerak.',
     '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» qiymati «{compareValueOrAttribute}» qiymatiga teng bo`lmasligi lozim.',

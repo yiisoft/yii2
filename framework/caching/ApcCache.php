@@ -12,8 +12,8 @@ use yii\base\InvalidConfigException;
 /**
  * ApcCache provides APC caching in terms of an application component.
  *
- * To use this application component, the [APC PHP extension](https://secure.php.net/apc) must be loaded.
- * Alternatively [APCu PHP extension](https://secure.php.net/apcu) could be used via setting `useApcu` to `true`.
+ * To use this application component, the [APC PHP extension](https://www.php.net/apc) must be loaded.
+ * Alternatively [APCu PHP extension](https://www.php.net/apcu) could be used via setting `useApcu` to `true`.
  * In order to enable APC or APCu for CLI you should add "apc.enable_cli = 1" to your php.ini.
  *
  * See [[Cache]] for common cache operations that ApcCache supports.

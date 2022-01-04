@@ -233,7 +233,7 @@ public function actionDownload()
 - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
 - Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
 - Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
+- Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
 - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 

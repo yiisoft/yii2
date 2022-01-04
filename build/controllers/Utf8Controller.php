@@ -69,11 +69,11 @@ class Utf8Controller extends Controller
                 }
                 if ($ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
                     0x0080 <= $ord && $ord < 0x009F) {
-                    $this->found('CONTROL CHARARCTER', $c, $line, $pos, $file);
+                    $this->found('CONTROL CHARACTER', $c, $line, $pos, $file);
                     continue;
                 }
 //                if ($ord > 0x009F) {
-//                    $this->found("NON ASCII CHARARCTER", $c, $line, $pos, $file);
+//                    $this->found("NON ASCII CHARACTER", $c, $line, $pos, $file);
 //                    continue;
 //                }
             }

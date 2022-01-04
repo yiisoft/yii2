@@ -250,14 +250,14 @@ class FontAwesomeAsset extends AssetBundle
 ```
 
 O exemplo anterior define um asset bundle para o 
-[pacode de "fontawesome"](http://fontawesome.io/). Ao especificar a opção de 
+[pacode de "fontawesome"](https://fontawesome.com/). Ao especificar a opção de 
 publicação `beforeCopy`, apenas os subdiretórios `fonts` e `css` serão publicados.
 
 
 ### Assets do Bower e NPM<span id="bower-npm-assets"></span>
 
 A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
-e/ou [NPM](https://www.npmjs.org/).
+e/ou [NPM](https://www.npmjs.com/).
 Se sua aplicação ou extensão estiver usando um destes pacotes, é recomendado que 
 você siga os passos a seguir para gerenciar os assets na biblioteca:
 
@@ -542,14 +542,14 @@ O Yii usa as extensões dos nomes de arquivos para identificar se é um asset co
 sintaxe estendida. Por padrão, o Yii reconhecerá as seguintes sintaxes e extensões 
 de arquivos:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
 O Yii conta com ferramentas de pré-processamento instalados para converter os 
-assets. Por exemplo, para usar o [LESS](http://lesscss.org/) você deve instalar 
+assets. Por exemplo, para usar o [LESS](https://lesscss.org/) você deve instalar 
 o comando de pré-processamento `lessc`.
 
 Você pode personalizar os comandos de pré-processamento e o da sintaxe estendida 

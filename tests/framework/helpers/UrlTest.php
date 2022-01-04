@@ -303,4 +303,17 @@ class UrlTest extends TestCase
         $this->assertFalse(Url::isRelative('http://example.com/'));
         $this->assertFalse(Url::isRelative('https://example.com/'));
     }
+
+    public function testRemember()
+    {
+        Yii::$app->getUser()->login(UserIdentity::findIdentity('user1'));
+
+        Url::remember('test');
+        $this->assertSame('test', Yii::$app->getUser()->getReturnUrl());
+        $this->assertSame('test', Yii::$app->getSession()->get(Yii::$app->getUser()->returnUrlParam));
+
+        Yii::$app->getUser()->setReturnUrl(null);
+        Url::remember('test', 'remember-test');
+        $this->assertSame('test', Yii::$app->getSession()->get('remember-test'));
+    }
 }

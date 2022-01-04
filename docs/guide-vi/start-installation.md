@@ -38,7 +38,7 @@ Sau khi cài đặt Composer, bạn có thể cài đặt Yii bằng cách chạ
     composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
 và cho phép Composer có thể quản lý những package dependencies của bower và npm. Câu lệnh này chỉ cần chạy một lần.
 Câu lệnh thứ hai sẽ cài đặt phiên bản Yii có tên là  `basic`. Bạn có thể chọn một tên thư mục khác nếu bạn muốn.
 
@@ -59,7 +59,7 @@ Cài đặt từ tập tin lưu trữ <span id="installing-from-archive-file"></
 
 Việc cài đặt Yii từ một tập tin lưu trữ bao gồm ba bước:
 
-1. Tải gói cài đặt từ [yiiframework.com](http://www.yiiframework.com/download/).
+1. Tải gói cài đặt từ [yiiframework.com](https://www.yiiframework.com/download/).
 2. Giải nén file tải về vào một thư mục Web của ứng dụng cần chạy.
 3. Sửa đồi file `config/web.php`  bởi nhập thông tin secret key `cookieValidationKey` ở mục cấu hình
    (này được thực hiện tự động nếu bạn đang cài đặt Yii sử dụng Composer):
@@ -110,7 +110,7 @@ Các yêu cầu Yii. Bạn có thể kiểm tra xem các yêu cầu tối thiể
   ```
 
 Bạn nên cấu hình cài đặt PHP của bạn để nó đáp ứng các yêu cầu tối thiểu của Yii. Diều quan trọng nhất, bạn nên có PHP 5.4 hoặc hơn. Bạn cũng nên cài đặt
-các gói [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
+các gói [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
 (như là `pdo_mysql` cho CSDL MySQL), nếu ứng dụng của bạn cần thao tác với CSLD.
 
 
@@ -161,7 +161,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Các khuyến nghị khi cấu hình Nginx <span id="recommended-nginx-configuration"></span>
 
-Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://secure.php.net/install.fpm).
+Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://www.php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
 `basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 

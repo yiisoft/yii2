@@ -180,7 +180,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars($text, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
     }
 
     /**
@@ -401,7 +401,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             'http://lighttpd.net/' => ['lighttpd'],
             'http://gwan.com/' => ['g-wan', 'gwan'],
             'http://iis.net/' => ['iis', 'services'],
-            'https://secure.php.net/manual/en/features.commandline.webserver.php' => ['development'],
+            'https://www.php.net/manual/en/features.commandline.webserver.php' => ['development'],
         ];
         if (isset($_SERVER['SERVER_SOFTWARE'])) {
             foreach ($serverUrls as $url => $keywords) {
@@ -483,7 +483,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Returns human-readable exception name.
      * @param \Exception $exception
-     * @return string human-readable exception name or null if it cannot be determined
+     * @return string|null human-readable exception name or null if it cannot be determined
      */
     public function getExceptionName($exception)
     {

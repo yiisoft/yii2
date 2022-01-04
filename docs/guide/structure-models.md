@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 You can also access attributes like accessing array elements, thanks to the support for
-[ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) and [Traversable](https://secure.php.net/manual/en/class.traversable.php)
+[ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) and [Traversable](https://www.php.net/manual/en/class.traversable.php)
 by [[yii\base\Model]]:
 
 ```php

@@ -91,10 +91,10 @@ class HttpCache extends ActionFilter
      */
     public $cacheControlHeader = 'public, max-age=3600';
     /**
-     * @var string the name of the cache limiter to be set when [session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php)
+     * @var string the name of the cache limiter to be set when [session_cache_limiter()](https://www.php.net/manual/en/function.session-cache-limiter.php)
      * is called. The default value is an empty string, meaning turning off automatic sending of cache headers entirely.
      * You may set this property to be `public`, `private`, `private_no_expire`, and `nocache`.
-     * Please refer to [session_cache_limiter()](https://secure.php.net/manual/en/function.session-cache-limiter.php)
+     * Please refer to [session_cache_limiter()](https://www.php.net/manual/en/function.session-cache-limiter.php)
      * for detailed explanation of these values.
      *
      * If this property is `null`, then `session_cache_limiter()` will not be called. As a result,

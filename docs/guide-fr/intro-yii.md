@@ -29,13 +29,13 @@ prise en charge de caches multi-niveaux; et plus.
 profiter de son architecture extensible solide, afin d'utiliser ou développer des extensions distribuables. 
 - La haute performance est toujours un des principaux objectifs de Yii.
 
-Yii n'est pas un one-man show, il est soutenu par une [solide équipe de développement du noyau][about_yii] ainsi que d'une grande communauté 
+Yii n'est pas un one-man show, il est soutenu par une [solide équipe de développement du noyau][yii_team] ainsi que d'une grande communauté 
 avec de nombreux professionnels qui contribuent constamment au développement de Yii. L'équipe de développeurs de Yii 
 garde un œil attentif sur les dernières tendances en développement Web, et sur les meilleures pratiques et caractéristiques 
 trouvées dans d'autres frameworks ou projets. Les meilleures pratiques et caractéristiques les plus pertinentes trouvées ailleurs sont régulièrement intégrées dans le code du noyau et utilisables
 via des interfaces simples et élégantes.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Versions de Yii
 ---------------
@@ -51,6 +51,6 @@ Yii 2.0 nécessite PHP 5.4.0 ou plus. Vous pouvez trouver plus de détails sur l
 en utilisant le script de test de la configuration inclus dans chaque distribution de Yii.
 
 Utiliser Yii requiert des connaissances de base sur la programmation objet (OOP), en effet Yii est un framework basé sur ce type de programmation.
-Yii 2.0 utilise aussi des fonctionnalités récentes de PHP, telles que les [espaces de noms](https://secure.php.net/manual/fr/language.namespaces.php) et les [traits](https://secure.php.net/manual/fr/language.oop5.traits.php).
+Yii 2.0 utilise aussi des fonctionnalités récentes de PHP, telles que les [espaces de noms](https://www.php.net/manual/fr/language.namespaces.php) et les [traits](https://www.php.net/manual/fr/language.oop5.traits.php).
 Comprendre ces concepts vous aidera à mieux prendre en main Yii.
 

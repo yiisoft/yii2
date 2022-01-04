@@ -33,7 +33,7 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 
 进一步阅读该主题：
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
@@ -46,9 +46,9 @@ Yii 提供了大量的工具来在不同的上下文执行转义。
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Command_Injection>
-- <https://www.owasp.org/index.php/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/Command_Injection>
+- <https://owasp.org/www-community/attacks/Code_Injection>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 避免 SQL 注入
@@ -117,7 +117,7 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 防止 XSS 攻击
@@ -151,7 +151,7 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 防止 CSRF 攻击
@@ -255,7 +255,7 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/CSRF>
+- <https://owasp.org/www-community/attacks/csrf>
 
 
 防止文件暴露
@@ -283,8 +283,8 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Exception_Handling>
-- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
+- <https://owasp.org/www-pdf-archive/OWASP_Top_10_2007.pdf> (A6 - Information Leakage and Improper Error Handling)
 
 
 使用 TLS 上的安全连接

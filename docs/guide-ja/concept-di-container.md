@@ -448,7 +448,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 構成情報に書かれている依存とともに DocumentReader オブジェクトが生成されます
 ```
 
@@ -481,7 +481,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 前の例と全く同じオブジェクトが生成されます
 ```
 

@@ -18,7 +18,7 @@
   такой подход следует применять только при работе с `JSONP`-запросами, которые не могут отправлять токены доступа
  в HTTP-заголовках.
 * [OAuth 2](http://oauth.net/2/): токен доступа выдается пользователю API сервером авторизации
-  и отправляется API-серверу через [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
+  и отправляется API-серверу через [HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750),
   в соответствии с протоколом OAuth2.
 
 Yii поддерживает все выше перечисленные методы аутентификации. Вы также можете легко создавать новые методы аутентификации.
@@ -57,7 +57,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -75,11 +75,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;
