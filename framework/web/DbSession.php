@@ -217,17 +217,25 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // https://www.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            if (empty($this->fields)) {
-                $this->fields = $this->composeFields($this->id, $data);
+            $fields = $this->fields;
+            $this->fields = [];
+            if (empty($fields)) {
+                // This is a fallback for direct session management via PHP functions.
+                // This will fail if the `writeCallback` uses the data from the session.
+                $fields = $this->composeFields($id, $data);
+            } else {
+                // In case we went through the proper cycle where a session is closed or regenerated via this class,
+                // we set the data manually since it wasn't available at the call to `composeFields()` earlier.
+                $fields['data'] = $data;
             }
 
-            $this->fields = $this->typecastFields($this->fields);
-            $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
+            $fields = $this->typecastFields($fields);
+            $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
         } finally {
-            $this->fields = [];
+
         }
         return true;
     }
