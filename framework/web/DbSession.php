@@ -196,7 +196,11 @@ class DbSession extends MultiFieldSession
 
     protected function composeFields($id = null, $data = null)
     {
-        $fields = parent::composeFields($id, $data);
+        // We don't pass data up to the parent, since DbSession uses the opposite logic from the parent class :-|
+        $fields = parent::composeFields($id, null);
+        if (!isset($fields['data']) && isset($data)) {
+            $fields['data'] = $data;
+        }
         $fields['expire'] = time() + $this->getTimeout();
         return $fields;
     }
