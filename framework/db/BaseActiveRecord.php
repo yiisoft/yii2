@@ -1719,7 +1719,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param mixed $offset the offset to unset element
      */
-
     public function offsetUnset($offset)
     {
         if (property_exists($this, $offset)) {
