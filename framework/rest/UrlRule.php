@@ -62,7 +62,7 @@ use yii\web\UrlRuleInterface;
 class UrlRule extends CompositeUrlRule
 {
     /**
-     * @var string the common prefix string shared by all patterns.
+     * @var string|null the common prefix string shared by all patterns.
      */
     public $prefix;
     /**
@@ -158,7 +158,7 @@ class UrlRule extends CompositeUrlRule
         }
         $this->controller = $controllers;
 
-        $this->prefix = trim($this->prefix, '/');
+        $this->prefix = trim((string)$this->prefix, '/');
 
         parent::init();
     }
