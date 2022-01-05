@@ -570,7 +570,7 @@ class Request extends \yii\base\Request
             }
 
             $rawContentType = $this->getContentType();
-            if (($pos = strpos($rawContentType, ';')) !== false) {
+            if (($pos = strpos(isset($rawContentType) ? $rawContentType : '', ';')) !== false) {
                 // e.g. text/html; charset=UTF-8
                 $contentType = substr($rawContentType, 0, $pos);
             } else {
@@ -796,7 +796,8 @@ class Request extends \yii\base\Request
     public function getHostName()
     {
         if ($this->_hostName === null) {
-            $this->_hostName = parse_url($this->getHostInfo(), PHP_URL_HOST);
+            $hostInfo = null !== $this->getHostInfo() ? $this->getHostInfo() : '';
+            $this->_hostName = parse_url($hostInfo, PHP_URL_HOST);
         }
 
         return $this->_hostName;

@@ -336,7 +336,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         // if host starts with relative scheme, then insert pattern to match any
-        if (strncmp($this->host, '//', 2) === 0) {
+        if (strncmp(isset($this->host) ? $this->host : '', '//', 2) === 0) {
             $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
         }
 

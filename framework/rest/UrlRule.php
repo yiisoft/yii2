@@ -158,7 +158,7 @@ class UrlRule extends CompositeUrlRule
         }
         $this->controller = $controllers;
 
-        $this->prefix = trim($this->prefix, '/');
+        $this->prefix = trim(isset($this->prefix) ? $this->prefix : '', '/');
 
         parent::init();
     }

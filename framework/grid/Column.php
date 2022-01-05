@@ -127,7 +127,8 @@ class Column extends BaseObject
      */
     protected function renderHeaderCellContent()
     {
-        return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
+        $header = isset($this->header) ? $this->header : '';
+        return trim($header) !== '' ? $header : $this->getHeaderCellLabel();
     }
 
     /**

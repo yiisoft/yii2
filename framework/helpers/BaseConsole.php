@@ -331,6 +331,7 @@ class BaseConsole
      */
     public static function stripAnsiFormat($string)
     {
+        $string = isset($string) ? $string : '';
         return preg_replace(self::ansiCodesPattern(), '', $string);
     }
 
@@ -370,6 +371,7 @@ class BaseConsole
             return '';
         }
 
+        $string = isset($string) ? $string : '';
         $textItems = preg_split(self::ansiCodesPattern(), $string);
 
         preg_match_all(self::ansiCodesPattern(), $string, $colors);
