@@ -246,7 +246,7 @@ full form: {name,type,style}
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 ```
 
-Complete format is described in the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html).
+Complete format is described in the [ICU documentation](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html).
 In the following we will show some common usages.
 
 

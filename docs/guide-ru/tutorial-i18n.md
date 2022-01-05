@@ -138,7 +138,7 @@ echo \Yii::t('app', 'Balance: {0}', $sum);
 После этого вам станет доступен расширенный синтаксис указателей, а также сокращённая запись `{placeholderName, argumentType}`,
 эквивалентная форме `{placeholderName, argumentType, argumentStyle}`, позволяющая определять стиль форматирования.
 
-Полная документация доступна на [сайте ICU](http://icu-project.org/apiref/icu4c/classMessageFormat.html), но далее в 
+Полная документация доступна на [сайте ICU](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html), но далее в 
 документации будут приведены примеры использования расширенных возможностей интернационализации.
 
 #### Числа
