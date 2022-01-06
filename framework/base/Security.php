@@ -298,11 +298,7 @@ class Security extends Component
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
         if (function_exists('hash_hkdf')) {
-            $algo     = isset($algo) ? $algo : '';
-            $inputKey = isset($inputKey) ? $inputKey : '';
-            $salt     = isset($salt) ? $salt : '';
-            $info     = isset($info) ? $info : '';
-            $outputKey = hash_hkdf($algo, $inputKey, $length, $info, $salt);
+            $outputKey = hash_hkdf((string)$algo, (string)$inputKey, $length, (string)$info, (string)$salt);
             if ($outputKey === false) {
                 throw new InvalidArgumentException('Invalid parameters to hash_hkdf()');
             }
