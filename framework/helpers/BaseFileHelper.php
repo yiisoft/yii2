@@ -162,8 +162,8 @@ class BaseFileHelper
 
             throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
-        if (file_exists(self::DEFAULT_MIME_MAGIC)) {
-            $magicFile = "/usr/share/misc/magic.mgc";
+        if (!isset($magicFile) && file_exists(self::DEFAULT_MIME_MAGIC)) {
+            $magicFile = self::DEFAULT_MIME_MAGIC;
         }
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
