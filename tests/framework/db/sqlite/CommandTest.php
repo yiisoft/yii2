@@ -92,7 +92,7 @@ SELECT * FROM {{T_multistatement}}
 SQL;
         $this->assertSame([
             [
-                'intcol' => 410,
+                'intcol' => '410',
                 'textcol' => 'foo',
             ],
         ], $db->createCommand($sql, [
