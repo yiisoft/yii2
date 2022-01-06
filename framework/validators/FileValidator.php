@@ -188,7 +188,7 @@ class FileValidator extends Validator
             $this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.');
         }
         if (!is_array($this->extensions)) {
-            $fileExtension = isset($this->extensions) ? $this->extensions : "";
+            $fileExtension = (string)$this->extensions;
             $this->extensions = preg_split('/[\s,]+/', strtolower($fileExtension), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             $this->extensions = array_map('strtolower', $this->extensions);
@@ -197,7 +197,7 @@ class FileValidator extends Validator
             $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
         }
         if (!is_array($this->mimeTypes)) {
-            $mimeType = isset($this->mimeTypes) ? $this->mimeTypes : "";
+            $mimeType = (string)$this->mimeTypes;
             $this->mimeTypes = preg_split('/[\s,]+/', strtolower($mimeType), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
