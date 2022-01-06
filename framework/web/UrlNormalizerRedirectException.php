@@ -47,7 +47,6 @@ class UrlNormalizerRedirectException extends \yii\base\Exception
         $this->url = $url;
         $this->scheme = $scheme;
         $this->statusCode = $statusCode;
-        $message = isset($message) ? $message : '';
-        parent::__construct($message, $code, $previous);
+        parent::__construct((string)$message, $code, $previous);
     }
 }
