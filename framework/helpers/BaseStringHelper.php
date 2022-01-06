@@ -29,7 +29,7 @@ class BaseStringHelper
      */
     public static function byteLength($string)
     {
-        return mb_strlen(isset($string) ? $string : '', '8bit');
+        return mb_strlen((string)$string, '8bit');
     }
 
     /**
