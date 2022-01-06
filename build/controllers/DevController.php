@@ -68,6 +68,7 @@ class DevController extends Controller
         'smarty' => 'git@github.com:yiisoft/yii2-smarty.git',
         'sphinx' => 'git@github.com:yiisoft/yii2-sphinx.git',
         'swiftmailer' => 'git@github.com:yiisoft/yii2-swiftmailer.git',
+        'symfonymailer' => 'git@github.com:yiisoft/yii2-symfonymailer.git',
         'twig' => 'git@github.com:yiisoft/yii2-twig.git',
     ];
 
