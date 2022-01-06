@@ -436,7 +436,7 @@ class BaseStringHelper
             $pattern .= 'i';
         }
 
-        return preg_match($pattern, isset($string) ? $string : '') === 1;
+        return preg_match($pattern, (string)$string) === 1;
     }
 
     /**
@@ -450,7 +450,7 @@ class BaseStringHelper
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
-        $string = isset($string) ? $string : '';
+        $string = (string)$string;
         $firstChar = mb_substr($string, 0, 1, $encoding);
         $rest = mb_substr($string, 1, null, $encoding);
 
