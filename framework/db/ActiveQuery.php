@@ -1001,14 +1001,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $alias = str_replace(['{', '}', '%'], '', $alias);
             $alias = '{{' . $alias . '}}';
             if (strpos($column, '.') === false) { // no alias or table inside
-                if (strpos($column, '(') === false) { // no database expression
+                if (strpos($column, '(') === false || strpos($column, 'BETWEEN') !== false || strpos($column, ' IN ') !== false) { // no database expression, or have IN or BETWEEN, Column is at beginning, append alias
                     $column = $alias . '.' . $column;
                 } else if (substr_count($column, '(') <= 1) {
-                    // try to append alias after "(", if it simple condition, at least we could process one column
-                    $column = substr($column, 0, strpos($column, '(') + 1) . $alias . '.' . substr($column, strpos($column, '(') + 1);
+                    if (strpos($column, 'IF(') === false) { // If not contain IF statement
+                        // try to append alias after "(", if it simple condition, at least we could process one column
+                        $column = substr($column, 0, strpos($column, '(') + 1) . $alias . '.' . substr($column, strpos($column, '(') + 1);
+                    }
                 }
             } else if (substr_count($column, '.') === 1) { // there is already table or alias, but make sure it is just one
-                if (strpos($column, '(') === false) { // no DB expression
+                if (strpos($column, '(') === false || strpos($column, 'BETWEEN') !== false || strpos($column, ' IN ') !== false) { // no DB expression, or have IN or BETWEEN, Column is at beginning, append alias
                     // lets find table or alias
                     $presentAlias = substr($column, 0, strpos($column, '.'));
                     $presentAlias = str_replace(['{', '}', '%'], '', $presentAlias);
@@ -1027,23 +1029,25 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                         $column = $alias . '.' . $presentColumn;
                     }
                 } else if (substr_count($column, '(') <= 1) {
-                    // there is expression, try to replace alias, by finding everything after ( until ., but only if condition seems simple, when contains one (
-                    $operator = substr($column, 0, strpos($column, '(') + 1);
-                    $presentAlias = substr($column, strpos($column, '(') + 1, strpos($column, '.') - strpos($column, '(') - 2);
-                    $presentAlias = str_replace(['{', '}', '%'], '', $presentAlias);
-                    $presentColumn = substr($column, strpos($column, '.') + 1);
-                    // now try to find relation that have this table name
-                    $relation = array_keys(
-                        array_filter($this->relationMap, function($item) use ($presentAlias) {
-                            return $item['table'] === $presentAlias;}
-                        )
-                    );
-                    $relation = isset($relation[0]) ? $relation[0] : null;
-                    if ($relation) {
-                        $alias = $prefix . $this->relationMap[$relation]['alias'] . $suffix;
-                        $column = $operator . $alias . '.' . $presentColumn;
-                    } else if ($presentAlias == $table) { // column is prefixed with own table name, so we need to replace with current alias
-                        $column = $operator . $alias . '.' . $presentColumn;
+                    if (strpos($column, 'IF(') === false) { // If not contain IF statement
+                        // there is expression, try to replace alias, by finding everything after ( until ., but only if condition seems simple, when contains one (
+                        $operator = substr($column, 0, strpos($column, '(') + 1);
+                        $presentAlias = substr($column, strpos($column, '(') + 1, strpos($column, '.') - strpos($column, '(') - 2);
+                        $presentAlias = str_replace(['{', '}', '%'], '', $presentAlias);
+                        $presentColumn = substr($column, strpos($column, '.') + 1);
+                        // now try to find relation that have this table name
+                        $relation = array_keys(
+                            array_filter($this->relationMap, function($item) use ($presentAlias) {
+                                return $item['table'] === $presentAlias;}
+                            )
+                        );
+                        $relation = isset($relation[0]) ? $relation[0] : null;
+                        if ($relation) {
+                            $alias = $prefix . $this->relationMap[$relation]['alias'] . $suffix;
+                            $column = $operator . $alias . '.' . $presentColumn;
+                        } else if ($presentAlias == $table) { // column is prefixed with own table name, so we need to replace with current alias
+                            $column = $operator . $alias . '.' . $presentColumn;
+                        }
                     }
                 }
             }

@@ -43,6 +43,9 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
         foreach ($values as $value) {
             $vs = [];
             foreach ($columns as $i => $column) {
+                if (strpos($column, '.') !== false && !isset($value[$column])) { // if column have alias and is not indexed with alias, remove it
+                    $column = substr($column, strpos($column, '.') + 1); 
+                }
                 if (isset($value[$column])) {
                     $phName = $this->queryBuilder->bindParam($value[$column], $params);
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
