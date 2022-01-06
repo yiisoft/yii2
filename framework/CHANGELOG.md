@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.44 under development
 ------------------------
 
+- Bug #18660: Check name if backslash appears (iridance)
 - Enh #13105: Add yiiActiveForm validate_only property for skipping form auto-submission (ptolomaues)
 - Enh #18967: Use proper attribute names for tabular data in `yii\widgets\ActiveField::addAriaAttributes()` (AnkIF)
 - Bug #18798: Fix `StringHelper::dirname()` when passing string with a trailing slash (perlexed)
@@ -34,6 +35,9 @@ Yii Framework 2 Change Log
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
+- Bug #19096: Fix `Request::getIsConsoleRequest()` may return erroneously when testing a Web application in Codeception (WinterSilence)
+- Enh #19098: Add `yii\helper\BaseHtml::$normalizeClassAttribute` to fix duplicate classes (WinterSilence)
+- Enh #19108: Optimize `Component::hasEventHandlers()` and `Component::trigger()` (WinterSilence)
 
 
 2.0.43 August 09, 2021

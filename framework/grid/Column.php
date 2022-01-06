@@ -26,7 +26,7 @@ class Column extends BaseObject
      */
     public $grid;
     /**
-     * @var string the header cell content. Note that it will not be HTML-encoded.
+     * @var null|string the header cell content. Note that it will not be HTML-encoded.
      */
     public $header;
     /**
@@ -127,8 +127,7 @@ class Column extends BaseObject
      */
     protected function renderHeaderCellContent()
     {
-        $header = isset($this->header) ? $this->header : '';
-        return trim($header) !== '' ? $header : $this->getHeaderCellLabel();
+        return $this->header !== null && trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
     }
 
     /**
@@ -150,7 +149,7 @@ class Column extends BaseObject
      */
     protected function renderFooterCellContent()
     {
-        return trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
+        return $this->footer !== null && trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
     }
 
     /**

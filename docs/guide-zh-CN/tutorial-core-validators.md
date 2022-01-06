@@ -139,7 +139,7 @@ public function rules()
 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] 所指定的属性里。
 
 - `format`：被验证值的日期/时间格式。
-   这里的值可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中定义的日期时间格式。
+   这里的值可以是 [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax) 中定义的日期时间格式。
    另外还可以设置以 `php:` 开头的字符串，用来表示PHP可以识别的日期时间格式。
    `Datetime` 日期时间类。请参考 <https://www.php.net/manual/en/datetime.createfromformat.php> 获取更多支持的格式。
    如果没有设置，默认值将使用 `Yii::$app->formatter->dateFormat` 中的值。
@@ -341,7 +341,7 @@ function foo($model, $attribute) {
   MIME 的字符串 (如 "image/jpeg, image/png")。
   Mime 类型名是大小写不敏感的。默认为 null，
   意味着所有 MIME 类型都被接受。
-  请参考 [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) 获取更多详细内容。
+  请参考 [common media types](https://en.wikipedia.org/wiki/Media_type) 获取更多详细内容。
 - `minSize`：上传文件所需最少多少 Byte 的大小。默认为 null，代表没有下限。
 - `maxSize`：上传文件所需最多多少 Byte 的大小。默认为 null，代表没有上限。
 - `maxFiles`：给定属性最多能承载多少个文件。
