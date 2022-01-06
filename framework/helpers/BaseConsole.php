@@ -370,7 +370,7 @@ class BaseConsole
             return '';
         }
 
-        $string = isset($string) ? $string : '';
+        $string = (string)$string;
         $textItems = preg_split(self::ansiCodesPattern(), $string);
 
         preg_match_all(self::ansiCodesPattern(), $string, $colors);
