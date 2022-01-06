@@ -898,7 +898,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param \yii\db\string $column
      * @return string
      */
-    public function getRelationColumn(string $relation, string $column): string
+    public function getRelationColumn(string $relation, string $column)
     {
         $query = clone $this;
         if (!$query->relationMap || !isset($query->relationMap[$relation])) {
