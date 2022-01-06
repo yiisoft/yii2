@@ -162,7 +162,7 @@ $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html).
 
 #### Даты
 
