@@ -29,6 +29,7 @@ class BaseFileHelper
     const PATTERN_MUSTBEDIR = 8;
     const PATTERN_NEGATIVE = 16;
     const PATTERN_CASE_INSENSITIVE = 32;
+    const DEFAULT_MIME_MAGIC = "/usr/share/misc/magic.mgc";
 
     /**
      * @var string the path (or alias) of a PHP file containing MIME type information.
@@ -161,6 +162,10 @@ class BaseFileHelper
 
             throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
+        if (file_exists(self::DEFAULT_MIME_MAGIC)) {
+
+        }
+        $magicFile = "/usr/share/misc/magic.mgc";
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {
