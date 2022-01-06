@@ -1,3 +1,4 @@
+- Enh #19137: Add support to use automatic aliases for relations when joining
 Yii Framework 2 Change Log
 ==========================
 
