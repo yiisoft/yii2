@@ -992,7 +992,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @param \yii\db\string $column
      */
-    private function normalizeAliasColumn(string &$column): void
+    private function normalizeAliasColumn(&$column)
     {
         $prefix = '{{';
         $suffix = '}}';
@@ -1019,7 +1019,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                             return $item['table'] === $presentAlias;}
                         )
                     );
-                    $relation = $relation[0] ?? null;
+                    $relation = isset($relation[0]) ? $relation[0] : null;
                     if ($relation) {
                         $alias = $prefix . $this->relationMap[$relation]['alias'] . $suffix;
                         $column = $alias . '.' . $presentColumn;
@@ -1038,7 +1038,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                             return $item['table'] === $presentAlias;}
                         )
                     );
-                    $relation = $relation[0] ?? null;
+                    $relation = isset($relation[0]) ? $relation[0] : null;
                     if ($relation) {
                         $alias = $prefix . $this->relationMap[$relation]['alias'] . $suffix;
                         $column = $operator . $alias . '.' . $presentColumn;
@@ -1053,7 +1053,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @param $columns
      */
-    private function normalizeAliasGroupBy(&$columns): void
+    private function normalizeAliasGroupBy(&$columns)
     {
         if ($columns) {
             if (is_array($columns)) {
@@ -1075,7 +1075,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @param $columns
      */
-    private function normalizeAliasOrderBy(&$columns): void
+    private function normalizeAliasOrderBy(&$columns)
     {
         if ($columns) {
             $newColumns = [];
@@ -1095,7 +1095,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @param $columns
      */
-    private function normalizeAliasSelect(&$columns): void
+    private function normalizeAliasSelect(&$columns)
     {
         if (is_array($columns)) {
             foreach ($columns as $key => &$column) {
@@ -1115,7 +1115,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param \yii\db\ActiveQuery $relation
      * @return string
      */
-    private function makeAutomaticRelationAlias(ActiveQuery $relation): string
+    private function makeAutomaticRelationAlias(ActiveQuery $relation)
     {
         list($table, $alias) = $relation->getTableNameAndAlias();
         if ($relation->relationName) {
