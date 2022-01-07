@@ -1046,11 +1046,12 @@ TEXT;
      */
     public function testHkdf($hash, $ikm, $salt, $info, $l, $prk, $okm)
     {
-        $hash = isset($hash) ? $hash : '';
-        $ikm  = isset($ikm) ? $ikm : '';
-        $salt = isset($salt) ? $salt : '';
-        $info = isset($info) ? $info : '';
-        $dk = $this->security->hkdf($hash, hex2bin($ikm), hex2bin($salt), hex2bin($info), $l);
+        $dk = $this->security->hkdf(
+            (string)$hash,
+            hex2bin((string)$ikm),
+            hex2bin((string)$salt),
+            hex2bin((string)$info),
+            $l);
         $this->assertEquals($okm, bin2hex($dk));
     }
 

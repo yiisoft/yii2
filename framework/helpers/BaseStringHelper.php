@@ -29,7 +29,7 @@ class BaseStringHelper
      */
     public static function byteLength($string)
     {
-        return mb_strlen(isset($string) ? $string : '', '8bit');
+        return mb_strlen((string)$string, '8bit');
     }
 
     /**
@@ -436,7 +436,7 @@ class BaseStringHelper
             $pattern .= 'i';
         }
 
-        return preg_match($pattern, isset($string) ? $string : '') === 1;
+        return preg_match($pattern, (string)$string) === 1;
     }
 
     /**
@@ -450,9 +450,8 @@ class BaseStringHelper
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
-        $string = isset($string) ? $string : '';
-        $firstChar = mb_substr($string, 0, 1, $encoding);
-        $rest = mb_substr($string, 1, null, $encoding);
+        $firstChar = mb_substr((string)$string, 0, 1, $encoding);
+        $rest = mb_substr((string)$string, 1, null, $encoding);
 
         return mb_strtoupper($firstChar, $encoding) . $rest;
     }

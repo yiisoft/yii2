@@ -101,8 +101,8 @@ class BaseHtml
      * @since 2.0.44
      */
     public static $normalizeClassAttribute = false;
-    
-    
+
+
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -115,8 +115,7 @@ class BaseHtml
      */
     public static function encode($content, $doubleEncode = true)
     {
-        $content = isset($content) ? $content : '';
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
+        return htmlspecialchars((string)$content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
     }
 
     /**

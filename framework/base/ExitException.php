@@ -33,8 +33,10 @@ class ExitException extends \Exception
     public function __construct($status = 0, $message = null, $code = 0, $previous = null)
     {
         $this->statusCode = $status;
-        $message  = isset($message) ? $message : '';
-        $previous = isset($previous) ? $previous : new \Exception();
-        parent::__construct($message, $code, $previous);
+        if ($previous === null) {
+            parent::__construct((string)$message, $code);
+        } else {
+            parent::__construct((string)$message, $code, $previous);
+        }
     }
 }
