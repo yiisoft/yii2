@@ -168,7 +168,6 @@ class DbSession extends MultiFieldSession
     public function close()
     {
         if ($this->getIsActive()) {
-
             // prepare writeCallback fields before session closes
             $this->fields = $this->composeFields($this->id);
             YII_DEBUG ? session_write_close() : @session_write_close();
