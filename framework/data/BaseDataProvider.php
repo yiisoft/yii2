@@ -16,7 +16,7 @@ use yii\base\InvalidArgumentException;
  *
  * For more details and usage information on BaseDataProvider, see the [guide article on data providers](guide:output-data-providers).
  *
- * @property-read int $count The number of data models in the current page. This property is read-only.
+ * @property-read int $count The number of data models in the current page.
  * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
  * uniquely identified by the corresponding key value in this array.
  * @property array $models The list of data models in the current page.
