@@ -996,7 +996,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $prefix = '{{';
         $suffix = '}}';
-        if (strpos($column, '><') === false) { // check if not already processed
+        if (strpos($column, '>') === false && strpos($column, '<') === false) { // check if not already processed
             list($table, $alias) = $this->getTableNameAndAlias();
             $alias = str_replace(['{', '}', '%'], '', $alias);
             $alias = '{{' . $alias . '}}';
@@ -1126,7 +1126,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $table = str_replace(['{', '}', '%'], '', $table);
             $fqModelName = explode("\\", get_class($relation->primaryModel));
             $modelName = (array_pop($fqModelName));
-            return $modelName . '<' . $relation->relationName . '><' . $table . '>';
+            
+            if (strlen($modelName.$relation->relationName) > 27) {
+                // We need to limit alias to 32 chars, because Oracle support aliases up to 32 chars long
+                // Check if we already have relation alias with same name
+                $existingAliases = array_filter($this->relationMap, function($item) use ($modelName, $relation) {
+                        preg_match('/(\w+<\w+)_[0-9]{2}>/', $item['alias'], $matches);
+                        return $matches[1] && substr($modelName. '<' . $relation->relationName, 0, 28) == $matches[1];
+                    }
+                );
+                // Limit alias to 32 chars
+                return substr($modelName . '<' . $relation->relationName, 0, 28) . '_' . sprintf("%02d", count($existingAliases) + 1) . '>';
+            }
+            
+            return $modelName. '<' . $relation->relationName . '>';
         }
         return $table;
     }
