@@ -246,7 +246,7 @@ full form: {PlaceholderName, ParameterType, ParameterStyle}
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 ```
 
-请参阅 [ICU 文档](http://icu-project.org/apiref/icu4c/classMessageFormat.html)
+请参阅 [ICU 文档](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html)
 关于如何指定这样的占位符的说明。接下来我们会展示一些常用的使用方法。
 
 

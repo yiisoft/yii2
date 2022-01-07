@@ -163,7 +163,7 @@ forme complète : {name,type,style}
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 ```
 
-Le format complet est décrit dans la [documentation ICU](http://icu-project.org/apiref/icu4c/classMessageFormat.html).
+Le format complet est décrit dans la [documentation ICU](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html).
 
 Dans ce qui suit, nous allons présenter quelques usages courants.
 
