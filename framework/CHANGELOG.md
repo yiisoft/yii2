@@ -1,3 +1,4 @@
+Bug #19138: Allow digits in language code
 Yii Framework 2 Change Log
 ==========================
 
