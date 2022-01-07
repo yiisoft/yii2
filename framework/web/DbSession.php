@@ -238,8 +238,6 @@ class DbSession extends MultiFieldSession
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
-        } finally {
-
         }
         return true;
     }
