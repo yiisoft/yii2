@@ -16,7 +16,7 @@ use yii\base\InvalidConfigException;
  *
  * The class requires [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to be installed.
  *
- * @property-read string $currencySymbol This property is read-only.
+ * @property-read string $currencySymbol
  *
  * @since 2.0.14
  */

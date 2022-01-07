@@ -49,7 +49,7 @@ return [
 соответствии со стандартом [ISO-639](http://www.loc.gov/standards/iso639-2/), а `CC` — это код страны в соответствии
 со стандартом [ISO-3166](https://ru.wikipedia.org/wiki/ISO_3166-1#Список_кодов_по_ISO_3166).
 
-> Note: больше информации о синтаксисе и концепции локалей можно получить в [документации проекта ICU](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+> Note: больше информации о синтаксисе и концепции локалей можно получить в [документации проекта ICU](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 Перевод сообщений <span id="message-translation"></span>
 --------------------------------------------------------
@@ -138,7 +138,7 @@ echo \Yii::t('app', 'Balance: {0}', $sum);
 После этого вам станет доступен расширенный синтаксис указателей, а также сокращённая запись `{placeholderName, argumentType}`,
 эквивалентная форме `{placeholderName, argumentType, argumentStyle}`, позволяющая определять стиль форматирования.
 
-Полная документация доступна на [сайте ICU](http://icu-project.org/apiref/icu4c/classMessageFormat.html), но далее в 
+Полная документация доступна на [сайте ICU](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html), но далее в 
 документации будут приведены примеры использования расширенных возможностей интернационализации.
 
 #### Числа

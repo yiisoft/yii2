@@ -40,12 +40,11 @@ use yii\base\NotSupportedException;
  * > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
  *
  * @property-read bool $isActive Whether this transaction is active. Only an active transaction can
- * [[commit()]] or [[rollBack()]]. This property is read-only.
+ * [[commit()]] or [[rollBack()]].
  * @property-write string $isolationLevel The transaction isolation level to use for this transaction. This
  * can be one of [[READ_UNCOMMITTED]], [[READ_COMMITTED]], [[REPEATABLE_READ]] and [[SERIALIZABLE]] but also a
- * string containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is
- * write-only.
- * @property-read int $level The current nesting level of the transaction. This property is read-only.
+ * string containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`.
+ * @property-read int $level The current nesting level of the transaction.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
