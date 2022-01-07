@@ -14,7 +14,7 @@ use yii\base\BaseObject;
  * CompositeUrlRule is the base class for URL rule classes that consist of multiple simpler rules.
  *
  * @property-read null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call.
- * `null` if rule does not provide info about create status. This property is read-only.
+ * `null` if rule does not provide info about create status.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

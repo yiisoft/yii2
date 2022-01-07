@@ -30,7 +30,6 @@ class BaseJson
      * @since 2.0.43
      */
     public static $prettyPrint;
-
     /**
      * @var bool Avoids objects with zero-indexed keys to be encoded as array
      * `Json::encode((object)['test'])` will be encoded as an object not as an array. This matches the behaviour of `json_encode()`.
@@ -40,7 +39,6 @@ class BaseJson
      * @since 2.0.44
      */
     public static $keepObjectType = false;
-
     /**
      * @var array List of JSON Error messages assigned to constant names for better handling of PHP <= 5.5.
      * @since 2.0.7

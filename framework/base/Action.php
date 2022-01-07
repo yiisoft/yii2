@@ -30,8 +30,7 @@ use Yii;
  *
  * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
  *
- * @property-read string $uniqueId The unique ID of this action among the whole application. This property is
- * read-only.
+ * @property-read string $uniqueId The unique ID of this action among the whole application.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

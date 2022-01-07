@@ -93,8 +93,7 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on Component, see the [guide article on components](guide:concept-components).
  *
- * @property-read Behavior[] $behaviors List of behaviors attached to this component. This property is
- * read-only.
+ * @property-read Behavior[] $behaviors List of behaviors attached to this component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
