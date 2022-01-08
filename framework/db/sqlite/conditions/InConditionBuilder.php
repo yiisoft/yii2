@@ -8,6 +8,7 @@
 namespace yii\db\sqlite\conditions;
 
 use yii\base\NotSupportedException;
+use yii\db\ExpressionInterface;
 
 /**
  * {@inheritdoc}
