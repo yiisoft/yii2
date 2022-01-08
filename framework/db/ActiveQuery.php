@@ -1127,16 +1127,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $fqModelName = explode("\\", get_class($relation->primaryModel));
             $modelName = (array_pop($fqModelName));
             
-            if (strlen($modelName.$relation->relationName) > 27) {
-                // We need to limit alias to 32 chars, because Oracle support aliases up to 32 chars long
+            if (strlen($modelName.$relation->relationName) > 25) {
+                // We need to limit alias to 32 chars, because Oracle support aliases up to 30 chars long
                 // Check if we already have relation alias with same name
                 $existingAliases = array_filter($this->relationMap, function($item) use ($modelName, $relation) {
                         preg_match('/(\w+<\w+)_[0-9]{2}>/', $item['alias'], $matches);
-                        return isset($matches[1]) && $matches[1] && substr($modelName. '<' . $relation->relationName, 0, 27) == $matches[1];
+                        return isset($matches[1]) && $matches[1] && substr(substr($modelName, 0, 25). '<' . $relation->relationName, 0, 25) == $matches[1];
                     }
                 );
-                // Limit alias to 32 chars
-                return substr($modelName . '<' . $relation->relationName, 0, 27) . '_' . sprintf("%02d", count($existingAliases) + 1) . '>';
+                // Limit alias to 30 chars
+                return substr(ubstr($modelName, 0, 25) . '<' . $relation->relationName, 0, 25) . '_' . sprintf("%02d", count($existingAliases) + 1) . '>';
             }
             
             return $modelName. '<' . $relation->relationName . '>';

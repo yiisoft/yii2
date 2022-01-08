@@ -2137,7 +2137,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         ]));
     }
 
-    public function testMakingAutomaticRelationUpTo32CharsUnique()
+    public function testMakingAutomaticRelationUpTo30CharsUnique()
     {
         $customer = Customer::find()->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
         $expectedSql = $this->replaceQuotes('SELECT [[customer]].* FROM [[customer]] LEFT JOIN [[order]] [[Customer<someVeryBigRelatio_01>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelatio_01>]].[[customer_id]] LEFT JOIN [[order]] [[Customer<someVeryBigRelatio_02>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelatio_02>]].[[customer_id]] LEFT JOIN [[order]] [[Customer<someVeryBigRelatio_03>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelatio_03>]].[[customer_id]]');
