@@ -736,6 +736,11 @@ class Connection extends Component
                 $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
             }
         }
+
+        if (PHP_VERSION_ID >= 80100 && $this->getDriverName() === 'sqlite') {
+            $this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
+        }
+
         if (!$this->isSybase && in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
             $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
         }
