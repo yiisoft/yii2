@@ -1,3 +1,4 @@
+Enh #18821: Allow `yii\db\ExpressionInterface` as column in `yii\db\conditions\InBuilder`
 Yii Framework 2 Change Log
 ==========================
 
