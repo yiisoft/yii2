@@ -1136,7 +1136,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     }
                 );
                 // Limit alias to 30 chars
-                return substr(ubstr($modelName, 0, 25) . '<' . $relation->relationName, 0, 25) . '_' . sprintf("%02d", count($existingAliases) + 1) . '>';
+                return substr(substr($modelName, 0, 25) . '<' . $relation->relationName, 0, 25) . '_' . sprintf("%02d", count($existingAliases) + 1) . '>';
             }
             
             return $modelName. '<' . $relation->relationName . '>';
