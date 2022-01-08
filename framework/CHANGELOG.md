@@ -1,11 +1,10 @@
-Bug #19138: Allow digits in language code
 Yii Framework 2 Change Log
 ==========================
 
 2.0.45 under development
 ------------------------
 
-- no changes in this release.
+- Bug #19138: Allow digits in language code (ntesic)
 
 
 2.0.44 December 30, 2021
