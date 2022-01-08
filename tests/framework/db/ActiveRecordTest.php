@@ -2136,4 +2136,24 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             'item_id' => null,
         ]));
     }
+
+    public function testMakingAutomaticRelationUpTo32CharsUnique()
+    {
+        $customer = Customer::find()->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        $expectedSql = 'SELECT `customer`.* FROM `customer` LEFT JOIN `order` `Customer<someVeryBigRelation_01>` ON `customer`.`id` = `Customer<someVeryBigRelation_01>`.`customer_id` LEFT JOIN `order` `Customer<someVeryBigRelation_02>` ON `customer`.`id` = `Customer<someVeryBigRelation_02>`.`customer_id` LEFT JOIN `order` `Customer<someVeryBigRelation_03>` ON `customer`.`id` = `Customer<someVeryBigRelation_03>`.`customer_id`';
+        $this->assertEquals($expectedSql, $customer->createCommand()->sql);
+
+        $customer = Customer::find()->joinWith(['orders' => function ($q) {
+            $q->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        }]);
+        $expectedSql = 'SELECT `customer`.* FROM `customer` LEFT JOIN `order` `Customer<orders>` ON `customer`.`id` = `Customer<orders>`.`customer_id` LEFT JOIN `order_item` `Order<someVeryBigRelationTha_01>` ON `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_01>`.`order_id` AND `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_01>`.`quantity` LEFT JOIN `order_item` `Order<someVeryBigRelationTha_02>` ON `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_02>`.`order_id` AND `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_02>`.`quantity` LEFT JOIN `order_item` `Order<someVeryBigRelationTha_03>` ON `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_03>`.`order_id` AND `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_03>`.`quantity` ORDER BY `Customer<orders>`.`id`';
+        $this->assertEquals($expectedSql, $customer->createCommand()->sql);
+
+        $customer = Customer::find()->joinWith(['orders' => function ($q) {
+            $q->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        }, 'someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        $expectedSql = 'SELECT `customer`.* FROM `customer` LEFT JOIN `order` `Customer<orders>` ON `customer`.`id` = `Customer<orders>`.`customer_id` LEFT JOIN `order_item` `Order<someVeryBigRelationTha_01>` ON `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_01>`.`order_id` AND `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_01>`.`quantity` LEFT JOIN `order_item` `Order<someVeryBigRelationTha_02>` ON `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_02>`.`order_id` AND `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_02>`.`quantity` LEFT JOIN `order_item` `Order<someVeryBigRelationTha_03>` ON `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_03>`.`order_id` AND `Customer<orders>`.`id` = `Order<someVeryBigRelationTha_03>`.`quantity` LEFT JOIN `order` `Customer<someVeryBigRelation_01>` ON `customer`.`id` = `Customer<someVeryBigRelation_01>`.`customer_id` LEFT JOIN `order` `Customer<someVeryBigRelation_02>` ON `customer`.`id` = `Customer<someVeryBigRelation_02>`.`customer_id` LEFT JOIN `order` `Customer<someVeryBigRelation_03>` ON `customer`.`id` = `Customer<someVeryBigRelation_03>`.`customer_id` ORDER BY `Customer<orders>`.`id`';
+        $this->assertEquals($expectedSql, $customer->createCommand()->sql);
+    }
+
 }

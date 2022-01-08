@@ -87,6 +87,21 @@ class Customer extends ActiveRecord
         })->orderBy('id');
     }
 
+    public function getSomeVeryBigRelationThatIsNeedToBeStripped()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->with('orderItems');
+    }
+
+    public function getSomeVeryBigRelationThatIsNeedToBeStrippedSecond()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->with('orderItems');
+    }
+
+    public function getSomeVeryBigRelationThatIsNeedToBeStrippedThird()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->with('orderItems');
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
         ActiveRecordTest::$afterSaveInsert = $insert;

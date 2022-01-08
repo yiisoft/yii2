@@ -1132,7 +1132,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 // Check if we already have relation alias with same name
                 $existingAliases = array_filter($this->relationMap, function($item) use ($modelName, $relation) {
                         preg_match('/(\w+<\w+)_[0-9]{2}>/', $item['alias'], $matches);
-                        return $matches[1] && substr($modelName. '<' . $relation->relationName, 0, 28) == $matches[1];
+                        return isset($matches[1]) && $matches[1] && substr($modelName. '<' . $relation->relationName, 0, 28) == $matches[1];
                     }
                 );
                 // Limit alias to 32 chars
