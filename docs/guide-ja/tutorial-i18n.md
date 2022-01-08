@@ -290,7 +290,7 @@ echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
 カスタムフォーマットで使用される文字については、
-[ICU API リファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) の "Special Pattern Characters"
+[ICU API リファレンス](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html) の "Special Pattern Characters"
 のセクションに記述されています。
  
 数値は常に翻訳先のロケールに従ってフォーマットされます。
