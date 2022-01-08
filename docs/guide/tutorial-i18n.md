@@ -274,7 +274,7 @@ echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
 Characters used in the custom format could be found in
-[ICU API reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) under "Special Pattern Characters"
+[ICU API reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html) under "Special Pattern Characters"
 section.
  
  
