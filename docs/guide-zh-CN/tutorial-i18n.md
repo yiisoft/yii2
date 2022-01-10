@@ -302,7 +302,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 ```
 
-[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details)。
+[格式化参考](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details)。
 
 
 #### 时间（Time） <span id="time"></span>

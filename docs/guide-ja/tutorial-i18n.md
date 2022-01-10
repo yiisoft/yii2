@@ -326,7 +326,7 @@ echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 // 日本語出力: '今日は 2015-01-07 です。'
 ```
 
-[書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[書式のリファレンス](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 #### 時刻 <span id="time"></span>
 

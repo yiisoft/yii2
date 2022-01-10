@@ -182,7 +182,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 echo \Yii::t('app', 'Today is {0, date,yyyy-MM-dd}', time());
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 #### Время
 
