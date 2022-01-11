@@ -539,14 +539,14 @@ $query->limit(10)->offset(20);
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 [[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 [[yii\db\Query::join()|join()]] 带有四个参数：
- 
+
 - `$type`：连接类型，例如，`'INNER JOIN'`，`'LEFT JOIN'`。
 - `$table`：将要连接的表名称。
 - `$on`：可选的，连接条件，即 `ON` 片段。有关指定条件的详细信息，请参阅 [where()](#where)。
