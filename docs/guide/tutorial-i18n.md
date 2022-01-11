@@ -302,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Formatting reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
