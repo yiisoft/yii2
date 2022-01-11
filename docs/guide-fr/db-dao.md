@@ -3,7 +3,7 @@ Objets d'accès aux bases de données
 
 Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](https://www.php.net/manual/en/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
 
-Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous manipulez des requêtes SQL et des tableaux PHP. En conséquence, cela reste le moyen le plus efficace pour accéder aux bases de données. Néanmoins, étant donné que la syntaxe du langage SQL varie selon le type de base de données, l'utilisation des objets d'accès aux bases de données de Yii signifie également que vous avez à faire un travail supplémentaire pour créer une application indifférente au type de base de données. 
+Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous manipulez des requêtes SQL et des tableaux PHP. En conséquence, cela reste le moyen le plus efficace pour accéder aux bases de données. Néanmoins, étant donné que la syntaxe du langage SQL varie selon le type de base de données, l'utilisation des objets d'accès aux bases de données de Yii signifie également que vous avez à faire un travail supplémentaire pour créer une application indifférente au type de base de données.
 
 Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les bases de données suivantes sans configuration supplémentaire :
 
@@ -17,10 +17,10 @@ Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les b
 
 > Info: depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour CUBRID, Oracle et MSSQL n'est plus fournie en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
 Parmi les [extensions officielles](https://www.yiiframework.com/extensions/official), on trouve [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) et
-  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql).
+[yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql).
 
 > Note: la nouvelle version de pdo_oci pour PHP 7 n'existe pour le moment que sous forme de code source. Suivez les [instructions de la communauté](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
-  pour la compiler ou utilisez [la couche d'émulation de PDO](https://github.com/taq/pdooci).
+pour la compiler ou utilisez [la couche d'émulation de PDO](https://github.com/taq/pdooci).
 
 
 ## Création de connexions à une base de données <span id="creating-db-connections"></span>
@@ -57,10 +57,10 @@ return [
 
 Vous pouvez ensuite accéder à la base de données via l'expression `Yii::$app->db`.
 
-> Tip: vous pouvez configurer plusieurs composants d'application « base de données » si votre application a besoin d'accéder à plusieurs bases de données. 
+> Tip: vous pouvez configurer plusieurs composants d'application « base de données » si votre application a besoin d'accéder à plusieurs bases de données.
 
 Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](https://www.php.net/manual/en/pdo.construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
- 
+
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
@@ -87,7 +87,7 @@ En plus de la propriété [[yii\db\Connection::dsn|dsn]], vous devez souvent con
 > Info: lorsque vous créez une instance de connexion à une base de données, la connexion réelle à la base de données n'est pas établie tant que vous n'avez pas exécuté la première requête SQL ou appelé la méthode [[yii\db\Connection::open()|open()]] explicitement.
 
 > Tip: parfois, vous désirez effectuer quelques requêtes juste après l'établissement de la connexion à la base de données pour initialiser quelques variables d'environnement (p. ex. pour définir le fuseau horaire ou le jeu de caractères). Vous pouvez le faire en enregistrant un gestionnaire d'événement pour l'événement [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] de la connexion à la base de données. Vous pouvez enregistrer le gestionnaire directement dans la configuration de l'application comme ceci :
-> 
+>
 > ```php
 > 'db' => [
 >     // ...
@@ -108,7 +108,7 @@ Une fois que vous avez une instance de connexion à la base de données, vous po
 3. Appeler l'une des méthodes d'exécution SQL dans la [[yii\db\Command|commande]].
 
 L'exemple qui suit montre différentes façons d'aller chercher des données dans une base de données :
- 
+
 ```php
 // retourne un jeu de lignes. Chaque ligne est un tableau associatif (couples clé-valeur) dont les clés sont des noms de colonnes 
 // retourne un tableau vide si la requête ne retourne aucun résultat
@@ -131,12 +131,12 @@ $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
-> Note: pour préserver la précision, les données extraites des bases de données sont toutes représentées sous forme de chaînes de caractères, même si les colonnes sont de type numérique. 
+> Note: pour préserver la précision, les données extraites des bases de données sont toutes représentées sous forme de chaînes de caractères, même si les colonnes sont de type numérique.
 
 
 ### Liaison des paramètres <span id="binding-parameters"></span>
 
-Lorsque vous créez une commande de base de données à partir d'une requête SQL avec des paramètres, vous devriez presque toujours utiliser l'approche de liaison des paramètres pour éviter les attaques par injection SQL. Par exemple : 
+Lorsque vous créez une commande de base de données à partir d'une requête SQL avec des paramètres, vous devriez presque toujours utiliser l'approche de liaison des paramètres pour éviter les attaques par injection SQL. Par exemple :
 
 ```php
 $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
@@ -188,11 +188,11 @@ $post2 = $command->queryOne();
 // ...
 ```
 
-Notez que vous devez lier la valeur à remplacer à la variable `$id` avant l'exécution, et ensuite changer la valeur de cette variable avant chacune des exécutions subséquentes (cela est souvent réalisé dans une boucle). L'exécution de requêtes de cette façon peut être largement plus efficace que d'exécuter une nouvelle requête pour chacune des valeurs du paramètre). 
+Notez que vous devez lier la valeur à remplacer à la variable `$id` avant l'exécution, et ensuite changer la valeur de cette variable avant chacune des exécutions subséquentes (cela est souvent réalisé dans une boucle). L'exécution de requêtes de cette façon peut être largement plus efficace que d'exécuter une nouvelle requête pour chacune des valeurs du paramètre).
 
-> Info: la liaison de paramètres n'est utilisée qu'en des endroits où les valeurs doivent être insérées dans des chaînes de caractères qui contiennent du langage SQL. 
-> Dans de nombreux endroits dans des couches plus abstraites comme le [query builder](db-query-builder.md) (constructeur de requêtes) et [active record](db-active-record.md) (enregistrement actif) 
-> vous spécifiez souvent un tableau de valeurs qui est transformé en SQL. À ces endroits, la liaison de paramètres est assurée par Yii en interne. Il n'est donc pas nécessaire de spécifier ces paramètres manuellement. 
+> Info: la liaison de paramètres n'est utilisée qu'en des endroits où les valeurs doivent être insérées dans des chaînes de caractères qui contiennent du langage SQL.
+> Dans de nombreux endroits dans des couches plus abstraites comme le [query builder](db-query-builder.md) (constructeur de requêtes) et [active record](db-active-record.md) (enregistrement actif)
+> vous spécifiez souvent un tableau de valeurs qui est transformé en SQL. À ces endroits, la liaison de paramètres est assurée par Yii en interne. Il n'est donc pas nécessaire de spécifier ces paramètres manuellement.
 
 
 ### Exécution de requête sans sélection <span id="non-select-queries"></span>
@@ -204,7 +204,7 @@ Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
    ->execute();
 ```
 
-La méthode [[yii\db\Command::execute()]] exécute retourne le nombre de lignes affectées par l'exécution de la requête SQL. 
+La méthode [[yii\db\Command::execute()]] exécute retourne le nombre de lignes affectées par l'exécution de la requête SQL.
 
 Pour les requeêtes INSERT, UPDATE et DELETE, au lieu d'écrire des instructions SQL simples, vous pouvez appeler les méthodes [[yii\db\Command::insert()|insert()]], [[yii\db\Command::update()|update()]] ou [[yii\db\Command::delete()|delete()]], respectivement, pour construire les instructions SQL correspondantes. Ces méthodes entourent correctement les noms de tables et de colonnes par des marques de citation et lient les paramètres. Par exemple :
 
@@ -246,14 +246,14 @@ Yii::$app->db->createCommand()->upsert('pages', [
 
 Le code ci-dessus, soit insère un enregistrement pour une nouvelle page, soit incrémente sont compteur de visite automatiquement.
 
-Notez que les méthodes mentionnées ci-dessus ne font que créer les requêtes, vous devez toujours appeler [[yii\db\Command::execute()|execute()]] pour les exécuter réellement. 
+Notez que les méthodes mentionnées ci-dessus ne font que créer les requêtes, vous devez toujours appeler [[yii\db\Command::execute()|execute()]] pour les exécuter réellement.
 
 
 ## Entourage de noms de table et de colonne par des marque de citation <span id="quoting-table-and-column-names"></span>
 
 Lorsque l'on écrit du code indifférent au type de base de données, entourer correctement les noms table et de colonne avec des marques de citation (p. ex. guillemets ou simple apostrophe) et souvent un casse-tête parce que les différentes base de données utilisent des règles de marquage de citation différentes. Pour vous affranchir de cette difficulté, vous pouvez utiliser la syntaxe de citation introduite par Yii :
 
-* `[[column name]]`: entourez un nom de colonne qui doit recevoir les marques de citation par des doubles crochets ; 
+* `[[column name]]`: entourez un nom de colonne qui doit recevoir les marques de citation par des doubles crochets ;
 * `{{table name}}`: entourez un nom de table qui doit recevoir les marques de citation par des doubles accolades ;
 
 Les objets d'accès aux base de données de Yii convertissent automatiquement de telles constructions en les noms de colonne ou de table correspondants en utilisant la syntaxe spécifique au système de gestion de la base de données. Par exemple :
@@ -295,8 +295,8 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 
 ## Réalisation de transactions <span id="performing-transactions"></span>
 
-Lorsque vous exécutez plusieurs requêtes liées en séquence, il arrive que vous ayez besoin de les envelopper dans une transactions pour garantir l'intégrité et la cohérence de votre base de données. Si une des requêtes échoue, la base de données est ramenée en arrière dans l'état dans lequel elle se trouvait avant qu'aucune de ces requêtes n'ait été exécutée. 
- 
+Lorsque vous exécutez plusieurs requêtes liées en séquence, il arrive que vous ayez besoin de les envelopper dans une transactions pour garantir l'intégrité et la cohérence de votre base de données. Si une des requêtes échoue, la base de données est ramenée en arrière dans l'état dans lequel elle se trouvait avant qu'aucune de ces requêtes n'ait été exécutée.
+
 Le code suivant montre une façon typique d'utiliser les transactions :
 
 ```php
@@ -329,7 +329,7 @@ try {
 
 En appelant la méthode [[yii\db\Connection::beginTransaction()|beginTransaction()]], une nouvelle transaction est démarrée. La transaction est représentée sous forme d'objet [[yii\db\Transaction]] stocké dans la variable `$transaction`. Ensuite, les requêtes à exécuter sont placées dans un bloc `try...catch...`. Si toutes les requêtes réussissent, la méthode [[yii\db\Transaction::commit()|commit()]] est appelée pour entériner la transaction. Autrement, si une exception a été levée et capturée, la méthode [[yii\db\Transaction::rollBack()|rollBack()]] est appelée pour défaire les changements faits par les requêtes de la transaction antérieures à celle qui a échoué. `throw $e` est alors à nouveau exécutée comme si l'exception n'avait jamais été capturée, ce qui permet au processus normal de gestion des erreurs de s'en occuper.
 
-> Note: dans le code précédent nous avons deux blocs « catch » pour compatibilité 
+> Note: dans le code précédent nous avons deux blocs « catch » pour compatibilité
 > avec PHP 5.x et PHP 7.x. `\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
 > depuis PHP 7.0, ainsi vous pouvez sauter la partie avec `\Exception` si votre application utilise seulement PHP 7.0 et plus récent.
 
@@ -351,20 +351,20 @@ $transaction = Yii::$app->db->beginTransaction($isolationLevel);
 
 Yii fournit quatre constantes pour les niveaux d'isolation les plus courants :
 
-- [[\yii\db\Transaction::READ_UNCOMMITTED]] – le niveau le plus faible, des lectures sales (*dirty reads*) , des lectures non répétables) (*non-repeatable reads*) et des lectures fantômes (*phantoms*) peuvent se produire. 
+- [[\yii\db\Transaction::READ_UNCOMMITTED]] – le niveau le plus faible, des lectures sales (*dirty reads*) , des lectures non répétables) (*non-repeatable reads*) et des lectures fantômes (*phantoms*) peuvent se produire.
 - [[\yii\db\Transaction::READ_COMMITTED]] – évite les lectures sales.
-- [[\yii\db\Transaction::REPEATABLE_READ]] – évite les lectures sales et les lectures non répétables. 
+- [[\yii\db\Transaction::REPEATABLE_READ]] – évite les lectures sales et les lectures non répétables.
 - [[\yii\db\Transaction::SERIALIZABLE]] – le niveau le plus élevé, évite tous les problèmes évoqués ci-dessus.
 
 
 
-En plus de l'utilisation des constantes présentées ci-dessus pour spécifier un niveau d'isolation, vous pouvez également utiliser des chaînes de caractères avec une syntaxe valide prise en charges par le système de gestion de base de données que vous utilisez. Par exemple, dans PostgreSQL, vous pouvez utiliser `"SERIALIZABLE READ ONLY DEFERRABLE"`. 
+En plus de l'utilisation des constantes présentées ci-dessus pour spécifier un niveau d'isolation, vous pouvez également utiliser des chaînes de caractères avec une syntaxe valide prise en charges par le système de gestion de base de données que vous utilisez. Par exemple, dans PostgreSQL, vous pouvez utiliser `"SERIALIZABLE READ ONLY DEFERRABLE"`.
 
-Notez que quelques systèmes de gestion de base de données autorisent la définition des niveaux d'isolation uniquement au niveau de la connexion tout entière. Toutes les transactions subséquentes auront donc le même niveau d'isolation même si vous n'en spécifiez aucun. En utilisant cette fonctionnalité, vous avez peut-être besoin de spécifier le niveau d'isolation de manière explicite pour éviter les conflits de définition. Au moment d'écrire ces lignes, seules MSSQL et SQLite sont affectées par cette limitation. 
+Notez que quelques systèmes de gestion de base de données autorisent la définition des niveaux d'isolation uniquement au niveau de la connexion tout entière. Toutes les transactions subséquentes auront donc le même niveau d'isolation même si vous n'en spécifiez aucun. En utilisant cette fonctionnalité, vous avez peut-être besoin de spécifier le niveau d'isolation de manière explicite pour éviter les conflits de définition. Au moment d'écrire ces lignes, seules MSSQL et SQLite sont affectées par cette limitation.
 
-> Note: SQLite ne prend en charge que deux niveaux d'isolation, c'est pourquoi vous ne pouvez utiliser que `READ UNCOMMITTED` et `SERIALIZABLE`. L'utilisation d'autres niveaux provoque la levée d'une exception. 
+> Note: SQLite ne prend en charge que deux niveaux d'isolation, c'est pourquoi vous ne pouvez utiliser que `READ UNCOMMITTED` et `SERIALIZABLE`. L'utilisation d'autres niveaux provoque la levée d'une exception.
 
-> Note: PostgreSQL n'autorise pas la définition du niveau d'isolation tant que la transaction n'a pas démarré, aussi ne pouvez-vous pas spécifier le niveau d'isolation directement en démarrant la transaction. Dans ce cas, vous devez appeler [[yii\db\Transaction::setIsolationLevel()]] après que la transaction a démarré. 
+> Note: PostgreSQL n'autorise pas la définition du niveau d'isolation tant que la transaction n'a pas démarré, aussi ne pouvez-vous pas spécifier le niveau d'isolation directement en démarrant la transaction. Dans ce cas, vous devez appeler [[yii\db\Transaction::setIsolationLevel()]] après que la transaction a démarré.
 
 [isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
@@ -465,10 +465,10 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 
 Le composant `Connection` prend en charge l'équilibrage de charge et de basculement entre esclaves. Lorsque vous effectuez une requête en lecture par la première fois, le composant `Connection` sélectionne un esclave de façon aléatoire et essaye de s'y connecter. Si l'esclave set trouvé « mort », il en essaye un autre. Si aucun des esclaves n'est disponible, il se connecte au maître. En configurant un [[yii\db\Connection::serverStatusCache|cache d'état du serveur]], le composant mémorise le serveur « mort » et ainsi, pendant un [[yii\db\Connection::serverRetryInterval|certain intervalle de temps]], n'essaye plus de s'y connecter.
 
-> Info: dans la configuration précédente, un temps d'attente de connexion de 10 secondes est spécifié pour chacun des esclaves. Cela signifie que, si un esclave ne peut être atteint pendant ces 10 secondes, il est considéré comme « mort ». Vous pouvez ajuster ce paramètre en fonction de votre environnement réel. 
+> Info: dans la configuration précédente, un temps d'attente de connexion de 10 secondes est spécifié pour chacun des esclaves. Cela signifie que, si un esclave ne peut être atteint pendant ces 10 secondes, il est considéré comme « mort ». Vous pouvez ajuster ce paramètre en fonction de votre environnement réel.
 
 
-Vous pouvez aussi configurer plusieurs maîtres avec plusieurs esclaves. Par exemple : 
+Vous pouvez aussi configurer plusieurs maîtres avec plusieurs esclaves. Par exemple :
 
 
 ```php
