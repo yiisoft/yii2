@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.45 under development
 ------------------------
 
+- Bug #19161: Add checks to yii\db\ActiveRelationTrait::mapVia()  (mgrechanik)
 - Bug #19138: Allow digits in language code (ntesic)
 
 

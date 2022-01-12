@@ -448,11 +448,16 @@ trait ActiveRelationTrait
      * @param array $viaMap
      * @return array
      */
-    private function mapVia($map, $viaMap) {
+    private function mapVia($map, $viaMap) 
+    {
         $resultMap = [];
-        foreach ($map as $key => $linkKeys) {
-            foreach (array_keys($linkKeys) as $linkKey) {
-                $resultMap[$key] = $viaMap[$linkKey];
+        if ($viaMap) {
+            foreach ($map as $key => $linkKeys) {
+                foreach (array_keys($linkKeys) as $linkKey) {
+                    if (isset($viaMap[$linkKey])) {
+                        $resultMap[$key] = $viaMap[$linkKey];
+                    }
+                }
             }
         }
         return $resultMap;
