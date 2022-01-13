@@ -202,7 +202,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 echo \Yii::t('app', 'It is {0, date,HH:mm}', time());
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Числа прописью
