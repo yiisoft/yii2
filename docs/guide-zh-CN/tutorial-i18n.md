@@ -325,7 +325,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 ```
 
-[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details)。
+[格式化参考](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details)。
 
 
 #### 拼写（Spellout） <span id="spellout"></span>
