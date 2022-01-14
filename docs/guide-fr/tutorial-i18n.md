@@ -192,7 +192,7 @@ $sum = 42;
 echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
-Les caractères à utiliser dans les formats personnalisés sont présentés dans le document [ICU API reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) à la section "Special Pattern Characters" (Caractères pour motifs spéciaux).
+Les caractères à utiliser dans les formats personnalisés sont présentés dans le document [ICU API reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html) à la section "Special Pattern Characters" (Caractères pour motifs spéciaux).
  
  
 La valeur de remplacement est toujours formatée en fonction de la locale cible c'est à dire que vous ne pouvez pas modifier les séparateurs de milliers et de décimales, les symboles monétaires, etc. sans modifier la locale de traduction. Si vous devez personnaliser ces éléments vous pouvez utiliser [[yii\i18n\Formatter::asDecimal()]] et [[yii\i18n\Formatter::asCurrency()]].
@@ -217,7 +217,7 @@ Vous pouvez aussi spécifier un motif personnalisé pour formater la date :
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-Voir [Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+Voir [Formatting reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Heure <span id="time"></span>

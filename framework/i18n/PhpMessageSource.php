@@ -134,7 +134,7 @@ class PhpMessageSource extends MessageSource
     protected function getMessageFilePath($category, $language)
     {
         $language = (string) $language;
-        if ($language !== '' && !preg_match('/^[a-z_-]+$/i', $language)) {
+        if ($language !== '' && !preg_match('/^[a-z0-9_-]+$/i', $language)) {
             throw new InvalidArgumentException(sprintf('Invalid language code: "%s".', $language));
         }
         $messageFile = Yii::getAlias($this->basePath) . "/$language/";

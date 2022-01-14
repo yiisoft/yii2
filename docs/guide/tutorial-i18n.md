@@ -274,7 +274,7 @@ echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
 Characters used in the custom format could be found in
-[ICU API reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) under "Special Pattern Characters"
+[ICU API reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html) under "Special Pattern Characters"
 section.
  
  
@@ -302,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Formatting reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
