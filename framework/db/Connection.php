@@ -1009,7 +1009,7 @@ class Connection extends Component
     public function getDriverName()
     {
         if ($this->_driverName === null) {
-            if (($pos = strpos(isset($this->dsn) ? $this->dsn : '', ':')) !== false) {
+            if (($pos = strpos((string)$this->dsn), ':')) !== false) {
                 $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
             } else {
                 $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
