@@ -331,7 +331,7 @@ class BaseConsole
      */
     public static function stripAnsiFormat($string)
     {
-        return preg_replace(self::ansiCodesPattern(), '', $string);
+        return preg_replace(self::ansiCodesPattern(), '', (string)$string);
     }
 
     /**
@@ -370,9 +370,9 @@ class BaseConsole
             return '';
         }
 
-        $textItems = preg_split(self::ansiCodesPattern(), $string);
+        $textItems = preg_split(self::ansiCodesPattern(), (string)$string);
 
-        preg_match_all(self::ansiCodesPattern(), $string, $colors);
+        preg_match_all(self::ansiCodesPattern(), (string)$string, $colors);
         $colors = count($colors) ? $colors[0] : [];
         array_unshift($colors, '');
 

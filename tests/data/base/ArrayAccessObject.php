@@ -29,6 +29,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -44,6 +45,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return mixed Can return all value types.
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data[$offset];
@@ -62,6 +64,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return void
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->data[$offset] = $value;
@@ -77,6 +80,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return void
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
