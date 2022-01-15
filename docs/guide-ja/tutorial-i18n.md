@@ -385,7 +385,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 'spellout,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Spellout" を参照してください。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Numbering schemas, Spellout" を参照してください。
 
 
 #### 序数 <span id="ordinal"></span>
@@ -407,7 +407,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 'ordinal,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
 
 > Note: 上記のソース・メッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n,ordinal}の訪問者です' となります。
 > しかし、その出力結果は、'あなたはこのサイトの第42の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
@@ -435,7 +435,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 'duration,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
 
 > Note: このソース・メッセージを 'あなたはこのサイトに既に{n,duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
 > これも、プレースホルダのスタイルも含めて全体を翻訳し直す方が良いでしょう。
@@ -466,7 +466,7 @@ echo \Yii::t('app', 'There {n,plural,=0{are no cats} =1{is one cat} other{are # 
 ```
 
 これら `other`、`few`、`many` などの特別な引数の名前は言語によって異なります。
-特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
+特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
 あるいは、その代りに、[unicode.org の規則のリファレンス](http://cldr.unicode.org/index/cldr-spec/plural-rules) を参照することも出来ます。
 
 > Note: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
@@ -518,7 +518,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 フォーマットは複数形で使われるものと非常に近いものです。
-特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
+特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
 あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
 
 

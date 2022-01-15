@@ -347,7 +347,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 请注意，在 `spellout,` 之后和 `%` 之前不应该有空格。
 
 要获取可用于您正在使用的语言环境的选项列表，请查看
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“编号模式，拼写”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“编号模式，拼写”。
 
 #### 序数词（Ordinal） <span id="ordinal"></span>
 
@@ -368,7 +368,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 请注意，在 `ordinal,` 之后和 `%` 之前不应该有空格。
 
 要获取可用于您正在使用的语言环境的选项列表，请查看
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“编号模式，序号”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“编号模式，序号”。
 
 #### 持续时间（Duration） <span id="duration"></span>
 
@@ -389,7 +389,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 请注意，在 `duration,` 之后和 `%` 之前不应该有空格。
 
 要获取您正在使用的区域设置的可用选项列表，请查看
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“编号模式，持续时间”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“编号模式，持续时间”。
 
 #### 复数（Plural） <span id="plural"></span>
 
@@ -460,7 +460,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 格式与复数使用的格式非常接近。 要了解您应为特定语言环境指定哪些参数，请参阅
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“复数规则，序数”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“复数规则，序数”。
 或者，您可以参考 [unicode.org上的规则参考](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html)。
 
 #### 选择（Selection） <span id="selection"></span>
