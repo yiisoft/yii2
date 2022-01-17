@@ -347,7 +347,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 Note that there should be no space after `spellout,` and before `%`.
 
 To get a list of options available for locale you're using check 
-"Numbering schemas, Spellout" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Spellout" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Ordinal <span id="ordinal"></span>
 
@@ -368,7 +368,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 Note that there should be no space after `ordinal,` and before `%`.
 
 To get a list of options available for locale you're using check 
-"Numbering schemas, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Ordinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Duration <span id="duration"></span>
 
@@ -389,7 +389,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 Note that there should be no space after `duration,` and before `%`.
 
 To get a list of options available for locale you're using check 
-"Numbering schemas, Duration" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Duration" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Plural <span id="plural"></span>
 
@@ -415,7 +415,7 @@ while `one` matches `21` or `101`:
 ```
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
-specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+specify for a particular locale, please refer to "Plural Rules, Cardinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
 Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
@@ -460,7 +460,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 The format is very close to what's used for plurals. To learn which arguments you should specify for a particular locale,
-please refer to "Plural Rules, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+please refer to "Plural Rules, Ordinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
 Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
 #### Selection <span id="selection"></span>

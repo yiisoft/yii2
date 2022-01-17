@@ -262,7 +262,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 Notez qu'il ne doit pas y avoir d'espace après `spellout,` et avant `%`.
 
 Pour trouver une liste des options disponibles pour votre locale, reportez-vous à 
-"Numbering schemas, Spellout" à [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Spellout" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Nombre ordinal <span id="ordinal"></span>
 
@@ -283,7 +283,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 Notez qu'il ne doit pas y avoir d'espace après `ordinal,` et avant `%`.
 
 Pour trouver une liste des options disponibles pour votre locale, reportez-vous à 
-"Numbering schemas, Ordinal" à  [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Ordinal" à  [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Durée <span id="duration"></span>
 
@@ -304,7 +304,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 Notez qu'il ne doit pas y avoir d'espace après `duration,` et avant `%`.
 
 Pour trouver une liste des options disponibles pour votre locale, reportez-vous à 
-"Numbering schemas, Duration" à [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Duration" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Pluriel <span id="plural"></span>
 
@@ -326,7 +326,7 @@ tandis que  `one` correspond à  `21` ou `101`:
 Здесь {n,plural,=0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
-Ces noms d'arguments spéciaux tels que  `other`, `few`, `many` et autres varient en fonction de la langue. Pour savoir lesquels utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Cardinal" à [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+Ces noms d'arguments spéciaux tels que  `other`, `few`, `many` et autres varient en fonction de la langue. Pour savoir lesquels utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Cardinal" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
 En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: le message en russe ci-dessus est principalement utilisé comme message traduit, pas comme message source, sauf si vous définissez la [[yii\base\Application::$sourceLanguage|langue source]] de votre application comme étant `ru-RU` et traduisez à partir du russe.
@@ -374,7 +374,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 //Vous êtes le 3e visiteur
 ```
 
-Le format est assez proche de celui utilisé pour le pluriel. Pour connaître quels arguments utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Ordinal" à [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+Le format est assez proche de celui utilisé pour le pluriel. Pour connaître quels arguments utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Ordinal" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
 En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
 #### Sélection <span id="selection"></span>
