@@ -62,8 +62,8 @@ class AccessRule extends Component
      * Note that it is preferred to check for permissions instead.
      *
      * If this property is not set or empty, it means this rule applies regardless of roles.
-     * @see $permissions
-     * @see $roleParams
+     * @see permissions
+     * @see roleParams
      */
     public $roles;
     /**
@@ -72,8 +72,8 @@ class AccessRule extends Component
      *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
-     * @see $roles
-     * @see $roleParams
+     * @see roles
+     * @see roleParams
      */
     public $permissions;
     /**
@@ -106,7 +106,7 @@ class AccessRule extends Component
      *
      * A reference to the [[AccessRule]] instance will be passed to the closure as the first parameter.
      *
-     * @see $roles
+     * @see roles
      * @since 2.0.12
      */
     public $roleParams = [];

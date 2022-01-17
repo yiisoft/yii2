@@ -19,8 +19,7 @@ use Yii;
  * setter. See [[getId()]] and [[setId()]] for details.
  * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
  * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.
- * @property-read string $viewPath The directory containing the view files for this widget. This property is
- * read-only.
+ * @property-read string $viewPath The directory containing the view files for this widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -104,7 +103,13 @@ class Widget extends Component implements ViewContextInterface
     {
         if (!empty(self::$stack)) {
             $widget = array_pop(self::$stack);
-            if (get_class($widget) === get_called_class()) {
+
+            $calledClass = get_called_class();
+            if (Yii::$container->has($calledClass) && isset(Yii::$container->getDefinitions()[$calledClass]['class'])) {
+                $calledClass = Yii::$container->getDefinitions()[$calledClass]['class'];
+            }
+
+            if (get_class($widget) === $calledClass) {
                 /* @var $widget Widget */
                 if ($widget->beforeRun()) {
                     $result = $widget->run();

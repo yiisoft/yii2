@@ -173,7 +173,7 @@ class BaseObject implements Configurable
      * Note that if the property is not defined, false will be returned.
      * @param string $name the property name or the event name
      * @return bool whether the named property is set (not null).
-     * @see https://secure.php.net/manual/en/function.isset.php
+     * @see https://www.php.net/manual/en/function.isset.php
      */
     public function __isset($name)
     {
@@ -195,7 +195,7 @@ class BaseObject implements Configurable
      * If the property is read-only, it will throw an exception.
      * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
-     * @see https://secure.php.net/manual/en/function.unset.php
+     * @see https://www.php.net/manual/en/function.unset.php
      */
     public function __unset($name)
     {

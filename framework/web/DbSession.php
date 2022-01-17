@@ -206,7 +206,7 @@ class DbSession extends MultiFieldSession
         }
 
         // exception must be caught in session write handler
-        // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
+        // https://www.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             // ensure backwards compatability (fixed #9438)
             if ($this->writeCallback && !$this->fields) {

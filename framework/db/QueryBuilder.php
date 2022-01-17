@@ -23,9 +23,9 @@ use yii\helpers\StringHelper;
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
  * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
- * ```php ['LIKE' => yii\db\condition\LikeCondition::class] ``` . This property is write-only.
+ * ```php ['LIKE' => yii\db\condition\LikeCondition::class] ``` .
  * @property-write string[] $expressionBuilders Array of builders that should be merged with the pre-defined
- * ones in [[expressionBuilders]] property. This property is write-only.
+ * ones in [[expressionBuilders]] property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -73,7 +73,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * In case you want to add custom conditions support, use the [[setConditionClasses()]] method.
      *
-     * @see setConditonClasses()
+     * @see setConditionClasses()
      * @see defaultConditionClasses()
      * @since 2.0.14
      */
@@ -159,7 +159,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * default expression builders for this query builder. See [[expressionBuilders]] docs for details.
      *
      * @return array
-     * @see $expressionBuilders
+     * @see expressionBuilders
      * @since 2.0.14
      */
     protected function defaultExpressionBuilders()

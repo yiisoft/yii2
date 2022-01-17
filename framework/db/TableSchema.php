@@ -13,7 +13,7 @@ use yii\base\InvalidArgumentException;
 /**
  * TableSchema represents the metadata of a database table.
  *
- * @property-read array $columnNames List of column names. This property is read-only.
+ * @property-read array $columnNames List of column names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

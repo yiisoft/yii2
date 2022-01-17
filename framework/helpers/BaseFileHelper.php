@@ -99,13 +99,12 @@ class BaseFileHelper
      * "path/to/zh-CN/view.php". If the file is not found, it will try a fallback with just a language code that is
      * "zh" i.e. "path/to/zh/view.php". If it is not found as well the original file will be returned.
      *
-     * If the target and the source language codes are the same,
-     * the original file will be returned.
+     * If the target and the source language codes are the same, the original file will be returned.
      *
      * @param string $file the original file
-     * @param string $language the target language that the file should be localized to.
+     * @param string|null $language the target language that the file should be localized to.
      * If not set, the value of [[\yii\base\Application::language]] will be used.
-     * @param string $sourceLanguage the language that the original file is in.
+     * @param string|null $sourceLanguage the language that the original file is in.
      * If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
      * @return string the matching localized file, or the original file if the localized version is not found.
      * If the target and the source language codes are the same, the original file will be returned.
@@ -138,11 +137,11 @@ class BaseFileHelper
     /**
      * Determines the MIME type of the specified file.
      * This method will first try to determine the MIME type based on
-     * [finfo_open](https://secure.php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
+     * [finfo_open](https://www.php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
      * it will fall back to [[getMimeTypeByExtension()]] when `$checkExtension` is true.
      * @param string $file the file name.
-     * @param string $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
-     * This will be passed as the second parameter to [finfo_open()](https://secure.php.net/manual/en/function.finfo-open.php)
+     * @param string|null $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
+     * This will be passed as the second parameter to [finfo_open()](https://www.php.net/manual/en/function.finfo-open.php)
      * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
      * and this is null, it will use the file specified by [[mimeMagicFile]].
      * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
@@ -162,6 +161,11 @@ class BaseFileHelper
 
             throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
+
+        if (PHP_VERSION_ID >= 80100) {
+            return static::getMimeTypeByExtension($file, $magicFile);
+        }
+
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {
@@ -180,7 +184,7 @@ class BaseFileHelper
      * Determines the MIME type based on the extension name of the specified file.
      * This method will use a local map between extension names and MIME types.
      * @param string $file the file name.
-     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return string|null the MIME type. Null is returned if the MIME type cannot be determined.
      */
@@ -202,7 +206,7 @@ class BaseFileHelper
      * Determines the extensions by given MIME type.
      * This method will use a local map between extension names and MIME types.
      * @param string $mimeType file MIME type.
-     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return array the extensions corresponding to the specified MIME type
      */
@@ -503,13 +507,14 @@ class BaseFileHelper
      * @param array $options options for directory searching. Valid options are:
      *
      * - `filter`: callback, a PHP callback that is called for each directory or file.
-     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
-     *   The callback can return one of the following values:
+     *   The signature of the callback should be: `function (string $path): bool`, where `$path` refers
+     *   the full path to be filtered. The callback can return one of the following values:
      *
      *   * `true`: the directory will be returned
      *   * `false`: the directory will NOT be returned
      *
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
+     *   See [[findFiles()]] for more options.
      * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
      * @throws InvalidArgumentException if the dir is invalid.
      * @since 2.0.14
@@ -539,6 +544,8 @@ class BaseFileHelper
 
     /**
      * @param string $dir
+     * @param array $options
+     * @return array
      */
     private static function setBasePath($dir, $options)
     {
@@ -553,6 +560,8 @@ class BaseFileHelper
 
     /**
      * @param string $dir
+     * @return resource
+     * @throws InvalidArgumentException if unable to open directory
      */
     private static function openDir($dir)
     {
@@ -565,13 +574,15 @@ class BaseFileHelper
 
     /**
      * @param string $dir
+     * @return string
+     * @throws InvalidArgumentException if directory not exists
      */
     private static function clearDir($dir)
     {
         if (!is_dir($dir)) {
             throw new InvalidArgumentException("The dir argument must be a directory: $dir");
         }
-        return rtrim($dir, DIRECTORY_SEPARATOR);
+        return rtrim($dir, '\/');
     }
 
     /**
@@ -697,7 +708,7 @@ class BaseFileHelper
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
         // match with FNM_PATHNAME; the pattern has base implicitly in front of it.
-        if (strpos($pattern, '/') === 0) {
+        if (strncmp($pattern, '/', 1) === 0) {
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
             if ($firstWildcard !== false && $firstWildcard !== 0) {
                 $firstWildcard--;
@@ -807,7 +818,7 @@ class BaseFileHelper
             return $result;
         }
 
-        if (strpos($pattern, '!') === 0) {
+        if (strncmp($pattern, '!', 1) === 0) {
             $result['flags'] |= self::PATTERN_NEGATIVE;
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
         }
@@ -819,7 +830,7 @@ class BaseFileHelper
             $result['flags'] |= self::PATTERN_NODIR;
         }
         $result['firstWildcard'] = self::firstWildcardInPattern($pattern);
-        if (strpos($pattern, '*') === 0 && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
+        if (strncmp($pattern, '*', 1) === 0 && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
             $result['flags'] |= self::PATTERN_ENDSWITH;
         }
         $result['pattern'] = $pattern;
@@ -894,8 +905,8 @@ class BaseFileHelper
      */
     public static function changeOwnership($path, $ownership, $mode = null)
     {
-        if (!file_exists($path)) {
-            throw new InvalidArgumentException('Unable to change ownerhip, "' . $path . '" is not a file or directory.');
+        if (!file_exists((string)$path)) {
+            throw new InvalidArgumentException('Unable to change ownership, "' . $path . '" is not a file or directory.');
         }
 
         if (empty($ownership) && $ownership !== 0 && $mode === null) {

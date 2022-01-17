@@ -9,8 +9,9 @@ namespace yii\helpers;
 
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
-use yii\web\JsExpression;
 use yii\base\Model;
+use yii\web\JsExpression;
+use yii\web\JsonResponseFormatter;
 
 /**
  * BaseJson provides concrete implementation for [[Json]].
@@ -29,7 +30,6 @@ class BaseJson
      * @since 2.0.43
      */
     public static $prettyPrint;
-
     /**
      * @var bool Avoids objects with zero-indexed keys to be encoded as array
      * `Json::encode((object)['test'])` will be encoded as an object not as an array. This matches the behaviour of `json_encode()`.
@@ -39,7 +39,6 @@ class BaseJson
      * @since 2.0.44
      */
     public static $keepObjectType = false;
-
     /**
      * @var array List of JSON Error messages assigned to constant names for better handling of PHP <= 5.5.
      * @since 2.0.7
@@ -66,7 +65,7 @@ class BaseJson
      *
      * @param mixed $value the data to be encoded.
      * @param int $options the encoding options. For more details please refer to
-     * <https://secure.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
+     * <https://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * @return string the encoding result.
      * @throws InvalidArgumentException if there is any encoding error.
      */

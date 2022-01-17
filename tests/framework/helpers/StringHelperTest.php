@@ -104,7 +104,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals('file', StringHelper::basename('/path/to/filete\st', 'te\st'));
         $this->assertEquals('st', StringHelper::basename('/path/to/filete\st', 'te/st'));
 
-        // https://secure.php.net/manual/en/function.basename.php#72254
+        // https://www.php.net/manual/en/function.basename.php#72254
         $this->assertEquals('foo', StringHelper::basename('/bar/foo/'));
         $this->assertEquals('foo', StringHelper::basename('\\bar\\foo\\'));
     }
@@ -438,6 +438,8 @@ class StringHelperTest extends TestCase
             ['0', '0'],
             [null, ''],
             ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
+            ['p0 upload', 'P0 Upload'],
+            ['p5 upload', 'P5 Upload'],
         ];
     }
 
@@ -449,5 +451,27 @@ class StringHelperTest extends TestCase
     public function testMb_ucwords($string, $expectedResult)
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderDirname
+     */
+    public function testDirname($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::dirname($string));
+    }
+
+    public function dataProviderDirname()
+    {
+        return [
+            ['\\foo\\bar\\test', '\foo\bar'],
+            ['\\foo/bar\\test', '\foo/bar'],
+            ['\\foo\\bar\\test\\', '\foo\bar'],
+            ['foo/bar/test', 'foo/bar'],
+            ['foo', ''],
+            ['', ''],
+        ];
     }
 }

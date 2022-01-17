@@ -16,7 +16,7 @@ use yii\helpers\Html;
  *
  * The value being compared with can be another attribute value
  * (specified via [[compareAttribute]]) or a constant (specified via
- * [[compareValue]]. When both are specified, the latter takes
+ * [[compareValue]]). When both are specified, the latter takes
  * precedence. If neither is specified, the attribute will be compared
  * with another attribute whose name is by appending "_repeat" to the source
  * attribute name.
@@ -105,14 +105,10 @@ class CompareValidator extends Validator
         if ($this->message === null) {
             switch ($this->operator) {
                 case '==':
-                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".');
-                    break;
                 case '===':
                     $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".');
                     break;
                 case '!=':
-                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValueOrAttribute}".');
-                    break;
                 case '!==':
                     $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValueOrAttribute}".');
                     break;

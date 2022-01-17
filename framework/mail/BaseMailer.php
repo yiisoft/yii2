@@ -342,8 +342,9 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     public function generateMessageFileName()
     {
         $time = microtime(true);
+        $timeInt = (int) $time;
 
-        return date('Ymd-His-', $time) . sprintf('%04d', (int) (($time - (int) $time) * 10000)) . '-' . sprintf('%04d', random_int(0, 10000)) . '.eml';
+        return date('Ymd-His-', $timeInt) . sprintf('%04d', (int) (($time - $timeInt) * 10000)) . '-' . sprintf('%04d', random_int(0, 10000)) . '.eml';
     }
 
     /**

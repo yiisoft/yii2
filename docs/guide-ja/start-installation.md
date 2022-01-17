@@ -140,7 +140,7 @@ Composer によるアセットのインストールを抑止するためには�
 
 インストール完了後、あなたのウェブ・サーバを構成してください (次のセクションを参照してください)。
 あるいは、プロジェクトの `web` ディレクトリで次のコマンドを実行して、
-[PHP の内蔵ウェブ・サーバ](https://secure.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
+[PHP の内蔵ウェブ・サーバ](https://www.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
 
 ```bash
 php yii serve
@@ -174,7 +174,7 @@ http://localhost:8080/
 
 Yii の最低必要条件を満たすように PHP のインストールを構成しなければなりません。
 最も重要なことは、PHP 5.4 以上でなければならないということです。最新の PHP 7 なら理想的です。
-また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](https://secure.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
+また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](https://www.php.net/manual/ja/pdo.installation.php) および対応するデータベース・ドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
 ウェブ・サーバを構成する <span id="configuring-web-servers"></span>
@@ -236,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推奨される Nginx の構成 <span id="recommended-nginx-configuration"></span>
 
-[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](https://secure.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
+[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](https://www.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
 下記の Nginx の設定を使うことができます。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、`mysite.test` を実際のサーバのホスト名に置き換えてください。
 

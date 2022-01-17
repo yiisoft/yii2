@@ -326,7 +326,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      * Determines the PDO type for the given PHP data value.
      * @param mixed $data the data whose PDO type is to be determined
      * @return int the PDO type
-     * @see https://secure.php.net/manual/en/pdo.constants.php
+     * @see https://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
     {

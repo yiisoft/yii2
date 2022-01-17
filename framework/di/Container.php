@@ -26,8 +26,8 @@ use yii\helpers\ArrayHelper;
  * Container supports constructor injection as well as property injection.
  *
  * To use Container, you first need to set up the class dependencies by calling [[set()]].
- * You then call [[get()]] to create a new class object. Container will automatically instantiate
- * dependent objects, inject them into the object being created, configure and finally return the newly created object.
+ * You then call [[get()]] to create a new class object. The Container will automatically instantiate
+ * dependent objects, inject them into the object being created, configure, and finally return the newly created object.
  *
  * By default, [[\Yii::$container]] refers to a Container instance which is used by [[\Yii::createObject()]]
  * to create new object instances. You may use this method to replace the `new` operator
@@ -95,9 +95,8 @@ use yii\helpers\ArrayHelper;
  * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
  *
  * @property-read array $definitions The list of the object definitions or the loaded shared objects (type or
- * ID => definition or instance). This property is read-only.
- * @property-write bool $resolveArrays Whether to attempt to resolve elements in array dependencies. This
- * property is write-only.
+ * ID => definition or instance).
+ * @property-write bool $resolveArrays Whether to attempt to resolve elements in array dependencies.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -146,7 +145,7 @@ class Container extends Component
      * In this case, the constructor parameters and object configurations will be used
      * only if the class is instantiated the first time.
      *
-     * @param string|Instance $class the class Instance, name or an alias name (e.g. `foo`) that was previously
+     * @param string|Instance $class the class Instance, name, or an alias name (e.g. `foo`) that was previously
      * registered via [[set()]] or [[setSingleton()]].
      * @param array $params a list of constructor parameter values. Use one of two definitions:
      *  - Parameters as name-value pairs, for example: `['posts' => PostRepository::class]`.
@@ -296,7 +295,7 @@ class Container extends Component
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
-     * @return bool whether the container has the definition of the specified name..
+     * @return bool Whether the container has the definition of the specified name.
      * @see set()
      */
     public function has($class)
@@ -606,8 +605,8 @@ class Container extends Component
     /**
      * Invoke a callback with resolving dependencies in parameters.
      *
-     * This methods allows invoking a callback and let type hinted parameter names to be
-     * resolved as objects of the Container. It additionally allow calling function using named parameters.
+     * This method allows invoking a callback and let type hinted parameter names to be
+     * resolved as objects of the Container. It additionally allows calling function using named parameters.
      *
      * For example, the following callback may be invoked using the Container to resolve the formatter dependency:
      *

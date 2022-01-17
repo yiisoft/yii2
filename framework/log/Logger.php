@@ -31,12 +31,11 @@ use yii\base\Component;
  * or [[DbTarget|database]], with the help of the [[dispatcher]].
  *
  * @property-read array $dbProfiling The first element indicates the number of SQL statements executed, and
- * the second element the total time spent in SQL execution. This property is read-only.
- * @property-read float $elapsedTime The total elapsed time in seconds for current request. This property is
- * read-only.
+ * the second element the total time spent in SQL execution.
+ * @property-read float $elapsedTime The total elapsed time in seconds for current request.
  * @property-read array $profiling The profiling results. Each element is an array consisting of these
  * elements: `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory`
- * and `memoryDiff` values are available since version 2.0.11. This property is read-only.
+ * and `memoryDiff` values are available since version 2.0.11.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -196,7 +195,7 @@ class Logger extends Component
                 if (is_int($index)) {
                     $messages[] = $message;
                 } else {
-                    if (strpos($index, 'begin-') === 0) {
+                    if (strncmp($index, 'begin-', 6) === 0) {
                         $oppositeProfile = 'end-' . substr($index, 6);
                     } else {
                         $oppositeProfile = 'begin-' . substr($index, 4);

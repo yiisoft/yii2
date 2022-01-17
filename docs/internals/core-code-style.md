@@ -46,7 +46,7 @@ Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`
 
 The term "class" refers to all classes and interfaces here.
 
-- Classes should be named using `CamelCase`.
+- Classes should be named using `StudlyCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
 - All code in a class must be indented with 4 spaces.
@@ -152,7 +152,7 @@ class Foo
  * Checks whether the IP is in subnet range
  *
  * @param string $ip an IPv4 or IPv6 address
- * @param int $cidr the CIDR lendth
+ * @param int $cidr the CIDR length
  * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
  * @return bool whether the IP is in subnet range
  */

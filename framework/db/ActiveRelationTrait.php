@@ -17,8 +17,8 @@ use yii\base\InvalidConfigException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  *
- * @method ActiveRecordInterface one($db = null)
- * @method ActiveRecordInterface[] all($db = null)
+ * @method ActiveRecordInterface one($db = null) See [[ActiveQueryInterface::one()]] for more info.
+ * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
  * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait
@@ -167,7 +167,7 @@ trait ActiveRelationTrait
 
     /**
      * Finds the related records for the specified primary record.
-     * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
+     * This method is invoked when a relation of an ActiveRecord is being accessed lazily.
      * @param string $name the relation name
      * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
      * @return mixed the related record(s)
@@ -589,7 +589,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param mixed $value raw key value. Since 2.0.40 non-string values must be convertable to string (like special
+     * @param mixed $value raw key value. Since 2.0.40 non-string values must be convertible to string (like special
      * objects for cross-DBMS relations, for example: `|MongoId`).
      * @return string normalized key value.
      */

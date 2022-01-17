@@ -261,7 +261,7 @@ class FileCache extends Cache
     {
         if (($handle = opendir($path)) !== false) {
             while (($file = readdir($handle)) !== false) {
-                if (strpos($file, '.') === 0) {
+                if (strncmp($file, '.', 1) === 0) {
                     continue;
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;

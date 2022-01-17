@@ -139,10 +139,10 @@ compare バリデータは、文字列や数値を比較するためにしか使
 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
 - `format`: 検証される値が従っているべき日付/時刻の書式。
-  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
+  これには [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax)
   で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
-  サポートされている書式については、<https://secure.php.net/manual/ja/datetime.createfromformat.php> を参照してください。
+  サポートされている書式については、<https://www.php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
 
 - `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
@@ -376,7 +376,7 @@ function foo($model, $attribute) {
   特殊文字 `*` によるワイルドカードのマスクを使って、一群の MIME タイプに一致させることも出来ます。
   例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。デフォルト値は `null` であり、すべての MIME タイプが許可されることを意味します。
-  MIME タイプの詳細については、[一般的なメディア・タイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
+  MIME タイプの詳細については、[一般的なメディア・タイプ](https://en.wikipedia.org/wiki/Media_type) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。デフォルト値は `null` であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。デフォルト値は `null` であり、上限値が無いことを意味します。
 - `maxFiles`: 指定された属性が保持しうる最大限のファイル数。
@@ -424,7 +424,7 @@ function foo($model, $attribute) {
 > Tip: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
 > Tip: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
-> 例えば、([intval](https://secure.php.net/manual/ja/function.intval.php) や [boolval](https://secure.php.net/manual/ja/function.boolval.php) 
+> 例えば、([intval](https://www.php.net/manual/ja/function.intval.php) や [boolval](https://www.php.net/manual/ja/function.boolval.php) 
 > などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、
 > それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >

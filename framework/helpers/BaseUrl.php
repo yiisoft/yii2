@@ -248,7 +248,7 @@ class BaseUrl
             return $url;
         }
 
-        if (strpos($url, '//') === 0) {
+        if (strncmp($url, '//', 2) === 0) {
             // e.g. //example.com/path/to/resource
             return $scheme === '' ? $url : "$scheme:$url";
         }

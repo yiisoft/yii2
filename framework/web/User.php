@@ -48,10 +48,9 @@ use yii\rbac\CheckAccessInterface;
  * ```
  *
  * @property-read string|int $id The unique identifier for the user. If `null`, it means the user is a guest.
- * This property is read-only.
  * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
  * user. `null` is returned if the user is not logged in (not authenticated).
- * @property-read bool $isGuest Whether the current user is a guest. This property is read-only.
+ * @property-read bool $isGuest Whether the current user is a guest.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
  * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
  *
@@ -655,9 +654,7 @@ class User extends Component
         }
 
         $session = Yii::$app->getSession();
-        if (!YII_ENV_TEST) {
-            $session->regenerateID(true);
-        }
+        $session->regenerateID(true);
         $session->remove($this->idParam);
         $session->remove($this->authTimeoutParam);
         $session->remove($this->authKeyParam);
@@ -698,6 +695,9 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
+            if ($identity === null) {
+                $this->switchIdentity(null);
+            }
         }
 
         if ($identity !== null) {
@@ -727,10 +727,6 @@ class User extends Component
             } elseif ($this->autoRenewCookie) {
                 $this->renewIdentityCookie();
             }
-        }
-
-        if ($this->getIdentity(false) === null) {
-            $this->switchIdentity(null);
         }
     }
 

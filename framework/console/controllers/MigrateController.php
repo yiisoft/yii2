@@ -387,7 +387,7 @@ class MigrateController extends BaseMigrateController
             $name = substr($name, 0, -1);
         }
 
-        if (strpos($name, '_') === 0) {
+        if (strncmp($name, '_', 1) === 0) {
             return substr($name, 1);
         }
 
@@ -406,7 +406,7 @@ class MigrateController extends BaseMigrateController
 
         $name = $params['name'];
         if ($params['namespace']) {
-            $name = substr($name, strrpos($name, '\\') + 1);
+            $name = substr($name, (strrpos($name, '\\') ?: -1) + 1);
         }
 
         $templateFile = $this->templateFile;

@@ -1082,12 +1082,14 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.10'], $data, $attributes));
     }
 
-    public function testRenderAttributes()
+    public function testRenderTagAttributes()
     {
         $this->assertEquals('', Html::renderTagAttributes([]));
         $this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(['name' => 'test', 'empty' => null, 'value' => '1<>']));
         $this->assertEquals(' checked disabled', Html::renderTagAttributes(['checked' => true, 'disabled' => true, 'hidden' => false]));
         $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first', 'second']]));
+        Html::$normalizeClassAttribute = true;
+        $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first second', 'first']]));
         $this->assertEquals('', Html::renderTagAttributes(['class' => []]));
         $this->assertEquals(' style="width: 100px; height: 200px;"', Html::renderTagAttributes(['style' => ['width' => '100px', 'height' => '200px']]));
         $this->assertEquals('', Html::renderTagAttributes(['style' => []]));

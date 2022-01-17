@@ -33,7 +33,7 @@ Yii においては、たいていの場合、同様のチェックを行うた�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
@@ -46,9 +46,9 @@ JavaScript や SQL のコンテキストでは、対象となる文字は別の�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Command_Injection>
-- <https://www.owasp.org/index.php/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/Command_Injection>
+- <https://owasp.org/www-community/attacks/Code_Injection>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 SQL インジェクションを回避する
@@ -117,7 +117,7 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 XSS を回避する
@@ -151,7 +151,7 @@ HtmlPurifier の処理は非常に重いので、キャッシュを追加する�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 CSRF を回避する
@@ -259,8 +259,8 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/CSRF>
-- <https://www.owasp.org/index.php/SameSite>
+- <https://owasp.org/www-community/attacks/csrf>
+- <https://owasp.org/www-community/SameSite>
 
 
 ファイルの曝露を回避する
@@ -288,8 +288,8 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Exception_Handling>
-- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
+- <https://owasp.org/www-pdf-archive/OWASP_Top_10_2007.pdf> (A6 - Information Leakage and Improper Error Handling)
 
 
 TLS によるセキュアな接続を使う

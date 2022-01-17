@@ -42,7 +42,7 @@ use yii\base\InvalidConfigException;
  *
  * A more detailed usage guide on how to work with Query can be found in the [guide article on Query Builder](guide:db-query-builder).
  *
- * @property-read string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ * @property-read string[] $tablesUsedInFrom Table names indexed by aliases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -452,7 +452,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * @param string|ExpressionInterface $selectExpression
      * @param Connection|null $db the database connection used to execute the query.
      * @return bool|string|null
-     * @throws \Throwable if can't create command
+     * @throws \Exception if can't create command
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -921,7 +921,7 @@ PATTERN;
      */
     public function andFilterCompare($name, $value, $defaultOperator = '=')
     {
-        if (preg_match('/^(<>|>=|>|<=|<|=)/', $value, $matches)) {
+        if (preg_match('/^(<>|>=|>|<=|<|=)/', (string)$value, $matches)) {
             $operator = $matches[1];
             $value = substr($value, strlen($operator));
         } else {

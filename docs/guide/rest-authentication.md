@@ -18,7 +18,7 @@ There are different ways to send an access token:
   parameters in server logs, this approach should be mainly used to serve `JSONP` requests which
   cannot use HTTP headers to send access tokens.
 * [OAuth 2](http://oauth.net/2/): the access token is obtained by the consumer from an authorization
-  server and sent to the API server via [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
+  server and sent to the API server via [HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750),
   according to the OAuth2 protocol.
 
 Yii supports all of the above authentication methods. You can also easily create new authentication methods.

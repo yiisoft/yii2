@@ -29,7 +29,7 @@ class BaseStringHelper
      */
     public static function byteLength($string)
     {
-        return mb_strlen($string, '8bit');
+        return mb_strlen((string)$string, '8bit');
     }
 
     /**
@@ -41,14 +41,14 @@ class BaseStringHelper
      * @param int $length the desired portion length. If not specified or `null`, there will be
      * no limit on length i.e. the output will be until the end of the string.
      * @return string the extracted part of string, or FALSE on failure or an empty string.
-     * @see https://secure.php.net/manual/en/function.substr.php
+     * @see https://www.php.net/manual/en/function.substr.php
      */
     public static function byteSubstr($string, $start, $length = null)
     {
         if ($length === null) {
             $length = static::byteLength($string);
         }
- 
+
         return mb_substr($string, $start, $length, '8bit');
     }
 
@@ -63,7 +63,7 @@ class BaseStringHelper
      * @param string $path A path string.
      * @param string $suffix If the name component ends in suffix this will also be cut off.
      * @return string the trailing name component of the given path.
-     * @see https://secure.php.net/manual/en/function.basename.php
+     * @see https://www.php.net/manual/en/function.basename.php
      */
     public static function basename($path, $suffix = '')
     {
@@ -71,7 +71,7 @@ class BaseStringHelper
         if ($len > 0 && mb_substr($path, -$len) === $suffix) {
             $path = mb_substr($path, 0, -$len);
         }
- 
+
         $path = rtrim(str_replace('\\', '/', $path), '/');
         $pos = mb_strrpos($path, '/');
         if ($pos !== false) {
@@ -88,13 +88,18 @@ class BaseStringHelper
      *
      * @param string $path A path string.
      * @return string the parent directory's path.
-     * @see https://secure.php.net/manual/en/function.basename.php
+     * @see https://www.php.net/manual/en/function.basename.php
      */
     public static function dirname($path)
     {
-        $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
-        if ($pos !== false) {
-            return mb_substr($path, 0, $pos);
+        $normalizedPath = rtrim(
+            str_replace('\\', '/', $path),
+            '/'
+        );
+        $separatorPosition = mb_strrpos($normalizedPath, '/');
+
+        if ($separatorPosition !== false) {
+            return mb_substr($path, 0, $separatorPosition);
         }
 
         return '';
@@ -143,7 +148,7 @@ class BaseStringHelper
             return static::truncateHtml($string, $count, $suffix);
         }
 
-        $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
+        $words = preg_split('/(\s+)/u', trim($string), 0, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
         }
@@ -311,7 +316,7 @@ class BaseStringHelper
      */
     public static function countWords($string)
     {
-        return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+        return count(preg_split('/\s+/u', $string, 0, PREG_SPLIT_NO_EMPTY));
     }
 
     /**
@@ -431,7 +436,7 @@ class BaseStringHelper
             $pattern .= 'i';
         }
 
-        return preg_match($pattern, $string) === 1;
+        return preg_match($pattern, (string)$string) === 1;
     }
 
     /**
@@ -440,13 +445,13 @@ class BaseStringHelper
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see https://secure.php.net/manual/en/function.ucfirst.php
+     * @see https://www.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
-        $firstChar = mb_substr($string, 0, 1, $encoding);
-        $rest = mb_substr($string, 1, null, $encoding);
+        $firstChar = mb_substr((string)$string, 0, 1, $encoding);
+        $rest = mb_substr((string)$string, 1, null, $encoding);
 
         return mb_strtoupper($firstChar, $encoding) . $rest;
     }
@@ -468,7 +473,7 @@ class BaseStringHelper
         }
 
         $parts = preg_split('/(\s+[^\w]+\s+|^[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $ucfirstEven = !trim(mb_substr($parts[0], -1, 1, $encoding));
+        $ucfirstEven = trim(mb_substr($parts[0], -1, 1, $encoding)) === '';
         foreach ($parts as $key => $value) {
             $isEven = (bool)($key % 2);
             if ($ucfirstEven === $isEven) {

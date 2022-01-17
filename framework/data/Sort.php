@@ -72,7 +72,7 @@ use yii\web\Request;
  * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. Note that the type of this property
  * differs in getter and setter. See [[getAttributeOrders()]] and [[setAttributeOrders()]] for details.
  * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can
- * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query. This property is read-only.
+ * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -305,8 +305,8 @@ class Sort extends BaseObject
      * @param string $param the value of the [[sortParam]].
      * @return array the valid sort attributes.
      * @since 2.0.12
-     * @see $separator for the attribute name separator.
-     * @see $sortParam
+     * @see separator for the attribute name separator.
+     * @see sortParam
      */
     protected function parseSortParam($param)
     {
