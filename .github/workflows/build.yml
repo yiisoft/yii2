@@ -64,7 +64,7 @@ jobs:
         run: composer req --dev phpstan/phpstan
         if: matrix.php == '8.0'
       - name: PHPStan analysis with PHP 8.0
-        run: vendor/bin/phpstan analyse framework -c phpstan.neon
+        run: vendor/bin/phpstan analyse framework -c phpstan.neon --no-progress
         if: matrix.php == '8.0'
       - name: PHPUnit tests for PHP 7.1
         run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
