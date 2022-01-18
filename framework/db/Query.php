@@ -921,7 +921,7 @@ PATTERN;
      */
     public function andFilterCompare($name, $value, $defaultOperator = '=')
     {
-        if (preg_match('/^(<>|>=|>|<=|<|=)/', $value, $matches)) {
+        if (preg_match('/^(<>|>=|>|<=|<|=)/', (string)$value, $matches)) {
             $operator = $matches[1];
             $value = substr($value, strlen($operator));
         } else {

@@ -660,6 +660,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by the interface [[\IteratorAggregate]].
      * @return SessionIterator an iterator for traversing the session variables.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $this->open();
@@ -681,6 +682,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by [[\Countable]] interface.
      * @return int number of items in the session.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getCount();
@@ -962,6 +964,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset the offset to check on
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $this->open();
@@ -974,6 +977,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->open();
@@ -986,6 +990,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset the offset to set element
      * @param mixed $item the element value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $item)
     {
         $this->open();
@@ -996,6 +1001,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by the interface [[\ArrayAccess]].
      * @param int|string $offset the offset to unset element
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->open();

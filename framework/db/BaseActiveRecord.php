@@ -1219,6 +1219,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param mixed $offset the offset to check on
      * @return bool whether there is an element at the specified offset.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return $this->__isset($offset);
