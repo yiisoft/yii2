@@ -101,6 +101,7 @@ class XCache extends Cache
     protected function flushValues()
     {
         for ($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i++) {
+            /** @phpstan-ignore-next-line */
             if (xcache_clear_cache(XC_TYPE_VAR, $i) === false) {
                 return false;
             }

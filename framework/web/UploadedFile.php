@@ -127,6 +127,7 @@ class UploadedFile extends BaseObject
     public static function getInstanceByName($name)
     {
         $files = self::loadFiles();
+        /** @phpstan-ignore-next-line */
         return isset($files[$name]) ? new static($files[$name]) : null;
     }
 
@@ -143,11 +144,13 @@ class UploadedFile extends BaseObject
     {
         $files = self::loadFiles();
         if (isset($files[$name])) {
+            /** @phpstan-ignore-next-line */
             return [new static($files[$name])];
         }
         $results = [];
         foreach ($files as $key => $file) {
             if (strpos($key, "{$name}[") === 0) {
+                /** @phpstan-ignore-next-line */
                 $results[] = new static($file);
             }
         }

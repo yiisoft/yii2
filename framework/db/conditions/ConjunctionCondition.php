@@ -48,6 +48,7 @@ abstract class ConjunctionCondition implements ConditionInterface
      */
     public static function fromArrayDefinition($operator, $operands)
     {
+        /** @phpstan-ignore-next-line */
         return new static($operands);
     }
 }

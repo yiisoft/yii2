@@ -297,7 +297,7 @@ class YiiRequirementChecker
      * @param string $_viewFile_ view file
      * @param array $_data_ data to be extracted and made available to the view file
      * @param bool $_return_ whether the rendering result should be returned as a string
-     * @return string the rendering result. Null if the rendering result is not required.
+     * @return string|void the rendering result. Null if the rendering result is not required.
      */
     function renderViewFile($_viewFile_, $_data_ = null, $_return_ = false)
     {

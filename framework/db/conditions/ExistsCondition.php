@@ -49,6 +49,7 @@ class ExistsCondition implements ConditionInterface
             throw new InvalidArgumentException('Subquery for EXISTS operator must be a Query object.');
         }
 
+        /** @phpstan-ignore-next-line */
         return new static($operator, $operands[0]);
     }
 

@@ -51,6 +51,7 @@ class NotCondition implements ConditionInterface
             throw new InvalidArgumentException("Operator '$operator' requires exactly one operand.");
         }
 
+        /** @phpstan-ignore-next-line */
         return new static(array_shift($operands));
     }
 }

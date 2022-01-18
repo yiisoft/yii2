@@ -68,6 +68,7 @@ class LikeCondition extends SimpleCondition
             throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
+        /** @phpstan-ignore-next-line */
         $condition = new static($operands[0], $operator, $operands[1]);
         if (isset($operands[2])) {
             $condition->escapingReplacements = $operands[2];

@@ -1210,6 +1210,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function instantiate($row)
     {
+        /** @phpstan-ignore-next-line */
         return new static();
     }
 

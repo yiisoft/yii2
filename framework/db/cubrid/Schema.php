@@ -92,6 +92,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     protected function findTableNames($schema = '')
     {
         $pdo = $this->db->getSlavePdo();
+        /** @phpstan-ignore-next-line */
         $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
@@ -110,7 +111,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     protected function loadTableSchema($name)
     {
         $pdo = $this->db->getSlavePdo();
-
+        /** @phpstan-ignore-next-line */
         $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
         if (!isset($tableInfo[0]['NAME'])) {
@@ -127,7 +128,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
         }
-
+        /** @phpstan-ignore-next-line */
         $primaryKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
         foreach ($primaryKeys as $key) {
             $column = $table->columns[$key['ATTR_NAME']];
@@ -137,7 +138,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
                 $table->sequenceName = '';
             }
         }
-
+        /** @phpstan-ignore-next-line */
         $foreignKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
         foreach ($foreignKeys as $key) {
             if (isset($table->foreignKeys[$key['FK_NAME']])) {
@@ -158,6 +159,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function loadTablePrimaryKey($tableName)
     {
+        /** @phpstan-ignore-next-line */
         $primaryKey = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
         if (empty($primaryKey)) {
             return null;
@@ -181,7 +183,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             2 => 'NO ACTION',
             3 => 'SET NULL',
         ];
-
+        /** @phpstan-ignore-next-line */
         $foreignKeys = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
         $foreignKeys = ArrayHelper::index($foreignKeys, null, 'FK_NAME');
         ArrayHelper::multisort($foreignKeys, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
@@ -385,6 +387,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private function loadTableConstraints($tableName, $returnType)
     {
+        /** @phpstan-ignore-next-line */
         $constraints = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
         $constraints = ArrayHelper::index($constraints, null, ['TYPE', 'NAME']);
         ArrayHelper::multisort($constraints, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);

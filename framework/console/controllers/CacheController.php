@@ -166,8 +166,10 @@ class CacheController extends Controller
             $schema = $connection->getSchema();
             $schema->refresh();
             $this->stdout("Schema cache for component \"$db\", was flushed.\n\n", Console::FG_GREEN);
+            return ExitCode::OK;
         } catch (\Exception $e) {
             $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
+            return ExitCode::UNSPECIFIED_ERROR;
         }
     }
 

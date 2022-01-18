@@ -79,6 +79,7 @@ class SimpleCondition implements ConditionInterface
             throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
+        /** @phpstan-ignore-next-line */
         return new static($operands[0], $operator, $operands[1]);
     }
 }

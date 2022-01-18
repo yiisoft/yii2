@@ -1,0 +1,5 @@
+parameters:
+    level: 0
+    excludePaths:
+        analyseAndScan:
+            - framework/base/Object.php

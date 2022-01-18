@@ -85,6 +85,7 @@ class Instance
      */
     public static function of($id, $optional = false)
     {
+        /** @phpstan-ignore-next-line */
         return new static($id, $optional);
     }
 
@@ -135,6 +136,7 @@ class Instance
         }
 
         if (is_string($reference)) {
+            /** @phpstan-ignore-next-line */
             $reference = new static($reference);
         } elseif ($type === null || $reference instanceof $type) {
             return $reference;

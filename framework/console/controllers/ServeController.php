@@ -47,7 +47,7 @@ class ServeController extends Controller
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
-     * @return int
+     * @return int|void
      */
     public function actionIndex($address = 'localhost')
     {
@@ -55,7 +55,7 @@ class ServeController extends Controller
         $router = $this->router !== null ? Yii::getAlias($this->router) : null;
 
         if (strpos($address, ':') === false) {
-            $address = $address . ':' . $this->port;
+            $address .= ':' . $this->port;
         }
 
         if (!is_dir($documentRoot)) {

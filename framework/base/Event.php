@@ -274,6 +274,7 @@ class Event extends BaseObject
         }
 
         if ($event === null) {
+            /** @phpstan-ignore-next-line */
             $event = new static();
         }
         $event->handled = false;

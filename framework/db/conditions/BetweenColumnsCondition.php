@@ -116,6 +116,7 @@ class BetweenColumnsCondition implements ConditionInterface
             throw new InvalidArgumentException("Operator '$operator' requires three operands.");
         }
 
+        /** @phpstan-ignore-next-line */
         return new static($operands[0], $operator, $operands[1], $operands[2]);
     }
 }
