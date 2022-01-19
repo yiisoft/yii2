@@ -93,6 +93,7 @@ class IndexAction extends Action
      * @var array|Pagination|false The pagination to be used by [[prepareDataProvider()]].
      * If this is `false`, it means pagination is disabled.
      * Note: if a Pagination object is passed, it's `params` will be set to the request parameters.
+     * @see Pagination
      * @since 2.0.45
      */
     public $pagination = [];
@@ -101,6 +102,7 @@ class IndexAction extends Action
      * @var array|Sort|false The sorting to be used by [[prepareDataProvider()]].
      * If this is `false`, it means sorting is disabled.
      * Note: if a Sort object is passed, it's `params` will be set to the request parameters.
+     * @see Sort
      * @since 2.0.45
      */
     public $sort = [];
