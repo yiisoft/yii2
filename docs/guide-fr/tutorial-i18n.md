@@ -375,7 +375,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 Le format est assez proche de celui utilisé pour le pluriel. Pour connaître quels arguments utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Ordinal" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
-En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html).
 
 #### Sélection <span id="selection"></span>
 
