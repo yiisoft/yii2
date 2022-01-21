@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #19182: RBAC Migration failed when use oracle with oci8 (Murolike)
 - Bug #14543: Throw exception when trying to create migration longer than 180 symbols (dmirogin, cebe)
 - Enh #14877: Disabled profiling on connection opening when profiling is disabled (njasm)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)

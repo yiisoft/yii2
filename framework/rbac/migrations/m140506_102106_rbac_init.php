@@ -40,7 +40,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
 
     protected function isOracle()
     {
-        return $this->db->driverName === 'oci';
+        return $this->db->driverName === 'oci' || $this->db->driverName === 'oci8';
     }
 
     /**
