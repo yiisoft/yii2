@@ -15,11 +15,11 @@ use Yii;
  *
  * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
  *
- * @property string $id ID of the widget.
+ * @property string|null $id ID of the widget. Note that the type of this property differs in getter and
+ * setter. See [[getId()]] and [[setId()]] for details.
  * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
  * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.
- * @property string $viewPath The directory containing the view files for this widget. This property is
- * read-only.
+ * @property-read string $viewPath The directory containing the view files for this widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -87,7 +87,7 @@ class Widget extends Component implements ViewContextInterface
         $config['class'] = get_called_class();
         /* @var $widget Widget */
         $widget = Yii::createObject($config);
-        static::$stack[] = $widget;
+        self::$stack[] = $widget;
 
         return $widget;
     }
@@ -101,9 +101,15 @@ class Widget extends Component implements ViewContextInterface
      */
     public static function end()
     {
-        if (!empty(static::$stack)) {
-            $widget = array_pop(static::$stack);
-            if (get_class($widget) === get_called_class()) {
+        if (!empty(self::$stack)) {
+            $widget = array_pop(self::$stack);
+
+            $calledClass = get_called_class();
+            if (Yii::$container->has($calledClass) && isset(Yii::$container->getDefinitions()[$calledClass]['class'])) {
+                $calledClass = Yii::$container->getDefinitions()[$calledClass]['class'];
+            }
+
+            if (get_class($widget) === $calledClass) {
                 /* @var $widget Widget */
                 if ($widget->beforeRun()) {
                     $result = $widget->run();
@@ -156,7 +162,7 @@ class Widget extends Component implements ViewContextInterface
     /**
      * Returns the ID of the widget.
      * @param bool $autoGenerate whether to generate an ID if it is not set previously
-     * @return string ID of the widget.
+     * @return string|null ID of the widget.
      */
     public function getId($autoGenerate = true)
     {
@@ -229,7 +235,7 @@ class Widget extends Component implements ViewContextInterface
      * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file does not exist.
+     * @throws InvalidArgumentException if the view file does not exist.
      */
     public function render($view, $params = [])
     {
@@ -241,7 +247,7 @@ class Widget extends Component implements ViewContextInterface
      * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file does not exist.
+     * @throws InvalidArgumentException if the view file does not exist.
      */
     public function renderFile($file, $params = [])
     {

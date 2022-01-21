@@ -30,8 +30,7 @@ use Yii;
  *
  * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
  *
- * @property string $uniqueId The unique ID of this action among the whole application. This property is
- * read-only.
+ * @property-read string $uniqueId The unique ID of this action among the whole application.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -86,7 +85,7 @@ class Action extends Component
             throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
         $args = $this->controller->bindActionParams($this, $params);
-        Yii::trace('Running action: ' . get_class($this) . '::run()', __METHOD__);
+        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }

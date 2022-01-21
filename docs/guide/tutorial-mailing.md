@@ -8,7 +8,7 @@ only the content composition functionality and basic interface. Actual mail send
 be provided by the extension, because different projects may require its different implementation and
 it usually depends on the external services and libraries.
 
-For the most common cases you can use [yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) official extension.
+For the most common cases you can use [yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) official extension.
 
 
 Configuration
@@ -23,6 +23,15 @@ return [
     'components' => [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'encryption' => 'tls',
+                'host' => 'your_mail_server_host',
+                'port' => 'your_smtp_port',
+                'username' => 'your_username',
+                'password' => 'your_password',
+            ],             
         ],
     ],
 ];

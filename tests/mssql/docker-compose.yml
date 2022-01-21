@@ -12,6 +12,8 @@ services:
     # Enable for debugging, Note: File-cache tests may be VERY slow or fail
     #volumes:
     #  - ../../..:/project
+    volumes:
+      - ../../tests/data/config-docker.php:/project/tests/data/config.php
     depends_on:
       - mssql
     # Enable for debugging

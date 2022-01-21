@@ -5,9 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
+use yii\base\InvalidConfigException;
 use yii\db\Migration;
 use yii\rbac\DbManager;
-use yii\base\InvalidConfigException;
 
 /**
  * Adds index on `user_id` column in `auth_assignment` table for performance reasons.
@@ -37,21 +37,24 @@ class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
         $authManager = $this->getAuthManager();
-        $this->createIndex($this->index, $authManager->assignmentTable, $this->column);
+        $this->db = $authManager->db;
 
+        $this->createIndex($this->index, $authManager->assignmentTable, $this->column);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
         $authManager = $this->getAuthManager();
+        $this->db = $authManager->db;
+
         $this->dropIndex($this->index, $authManager->assignmentTable);
     }
 }

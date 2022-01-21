@@ -54,7 +54,7 @@ class ActiveDataFilter extends DataFilter
      *
      * Usually the map can be left empty as filter operator names are consistent with the ones
      * used in [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
-     * For example, when using PosgreSQL you may want to setup the following map:
+     * For example, when using PostgreSQL you may want to setup the following map:
      *
      * ```php
      * [
@@ -66,7 +66,7 @@ class ActiveDataFilter extends DataFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildInternal()
     {
@@ -101,7 +101,7 @@ class ActiveDataFilter extends DataFilter
 
         if (!empty($parts)) {
             if (count($parts) > 1) {
-                $parts = array_merge(['AND'], $parts);
+                array_unshift($parts, 'AND');
             } else {
                 $parts = array_shift($parts);
             }
@@ -145,7 +145,7 @@ class ActiveDataFilter extends DataFilter
         }
         return [
             $operator,
-            $this->buildCondition($condition)
+            $this->buildCondition($condition),
         ];
     }
 

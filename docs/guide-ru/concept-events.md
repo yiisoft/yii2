@@ -9,7 +9,7 @@
 Обработчики событий <span id="event-handlers"></span>
 --------------
 
-Обработчик события - это [callback-функция PHP](http://www.php.net/manual/ru/language.types.callable.php), которая выполняется при срабатывании события, к которому она присоединена. Можно использовать следующие callback-функции:
+Обработчик события - это [callback-функция PHP](https://www.php.net/manual/ru/language.types.callable.php), которая выполняется при срабатывании события, к которому она присоединена. Можно использовать следующие callback-функции:
 
 - глобальную функцию PHP, указав строку с именем функции (без скобок), например, `'trim'`;
 - метод объекта, указав массив, содержащий строки с именами объекта и метода (без скобок), например, `[$object, 'methodName']`;
@@ -72,7 +72,7 @@ function function_name($event) {
 Порядок обработки событий
 -------------------
 
-К одному событию можно присоединить несколько обработчиков. При срабатывании события обработчики будут вызываться в том порядке, к котором они присоединялись к событию. Чтобы запретить в обработчике вызов всех следующих за ним обработчиков, необходимо установить свойство [[yii\base\Event::handled]] параметра `$event` в `true`:
+К одному событию можно присоединить несколько обработчиков. При срабатывании события обработчики будут вызываться в том порядке, в котором они присоединялись к событию. Чтобы запретить в обработчике вызов всех следующих за ним обработчиков, необходимо установить свойство [[yii\base\Event::handled]] параметра `$event` в `true`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -187,8 +187,8 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' добавлен');
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+    Yii::debug(get_class($event->sender) . ' добавлен');
 });
 ```
 
@@ -201,11 +201,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // выводит "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Обратите внимание, что в данном случае `$event->sender` имеет значение `null` вместо экзепляра класса, который инициировал событие.
@@ -216,10 +216,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // отсоединение $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // отсоединяются все обработчики Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Обработчики событий на уровне интерфейсов <span id="interface-level-event-handlers"></span>
@@ -239,7 +239,7 @@ interface DanceEventInterface
 }
 ```
 
-И два класса, которые его реализовывают:
+И два класса, которые его реализуют:
 
 ```php
 class Dog extends Component implements DanceEventInterface
@@ -266,7 +266,7 @@ class Developer extends Component implements DanceEventInterface
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+    Yii::debug(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
 });
 ```
 
@@ -274,13 +274,13 @@ Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
-Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
+Однако невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
 
 ```php
 // НЕ БУДЕТ РАБОТАТЬ

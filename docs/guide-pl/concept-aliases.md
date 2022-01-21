@@ -1,12 +1,10 @@
 Aliasy
 ======
 
-Aliasy używane są do reprezentowania ścieżek do plików lub adresów URL i pozwalają uniknąć konieczności wielokrotnego definiowania ich 
-w kodzie aplikacji. Alias musi zaczynać się od znaku `@`, dla odróżnienia od zwykłej ścieżki i adresu URL. W przypadku zdefiniowania 
-aliasu bez tego znaku, będzie on automatycznie dodany na początku.
+Aliasy używane są do reprezentowania ścieżek do plików lub adresów URL i pozwalają uniknąć konieczności wielokrotnego definiowania ich w kodzie aplikacji. Alias musi zaczynać się od znaku `@`, dla odróżnienia od zwykłej ścieżki i adresu URL. W przypadku zdefiniowania aliasu bez tego znaku, będzie on automatycznie dodany na początku.
 
-Yii korzysta z wielu predefiniowanych aliasów. Dla przykładu, alias `@yii` reprezentuje ścieżkę instalacji frameworka, a `@web` bazowy 
-adres URL aktualnie uruchomionej aplikacji Web.
+Yii korzysta z wielu predefiniowanych aliasów. Dla przykładu, alias `@yii` reprezentuje ścieżkę instalacji frameworka, a `@web` bazowy adres URL aktualnie uruchomionej aplikacji Web.
+
 
 Definiowanie aliasów <span id="defining-aliases"></span>
 --------------------
@@ -19,13 +17,15 @@ Yii::setAlias('@foo', '/path/to/foo');
 
 // alias do adresu URL
 Yii::setAlias('@bar', 'http://www.example.com');
+
+// alias istniejącego pliku, zawierającego klasę \foo\Bar
+Yii::setAlias('@foo/Bar.php', '/zdecydowanie/nie/foo/Bar.php');
 ```
 
 > Note: *nie* jest konieczne, aby aliasowana ścieżka pliku lub URL wskazywał istniejący plik lub zasób.
 
-Mając już zdefiniowany alias, możesz rozbudować go, tworząc nowy alias (bez konieczności wywołania [[Yii::setAlias()]]), dodając 
-ukośnik `/` i kolejne segmenty ścieżki. Aliasy zdefiniowane za pomocą [[Yii::setAlias()]] nazywane są *bazowymi aliasami*, a te, które 
-je rozbudowują *aliasami pochodnymi*. Dla przykładu, `@foo` jest aliasem bazowym, a `@foo/bar/file.php` pochodnym.
+Mając już zdefiniowany alias, możesz rozbudować go, tworząc nowy alias (bez konieczności wywołania [[Yii::setAlias()]]), 
+dodając ukośnik `/` i kolejne segmenty ścieżki. Aliasy zdefiniowane za pomocą [[Yii::setAlias()]] nazywane są *bazowymi aliasami*, a te, które je rozbudowują, *aliasami pochodnymi*. Dla przykładu, `@foo` jest aliasem bazowym, a `@foo/bar/file.php` pochodnym.
 
 Możesz definiować aliasy używając innych aliasów (zarówno bazowych, jak i pochodnych):
 
@@ -56,9 +56,9 @@ Możesz wywołać [[Yii::getAlias()]], aby rozwiązać alias, czyli zamienić go
 Dotyczy to zarówno bazowych aliasów, jak i pochodnych:
 
 ```php
-echo Yii::getAlias('@foo');               // wyświetla: /path/to/foo
+echo Yii::getAlias('@foo');               // wyświetla: /ścieżka/do/foo
 echo Yii::getAlias('@bar');               // wyświetla: http://www.example.com
-echo Yii::getAlias('@foo/bar/file.php');  // wyświetla: /path/to/foo/bar/file.php
+echo Yii::getAlias('@foo/bar/file.php');  // wyświetla: /ścieżka/do/foo/bar/file.php
 ```
 
 Ścieżka/URL reprezentowany przez pochodny alias jest ustalany poprzez zamianę części z bazowym aliasem na jego rozwiązaną 
@@ -66,9 +66,7 @@ reprezentację.
 
 > Note: Metoda [[Yii::getAlias()]] nie sprawdza, czy reprezentowana ścieżka/URL wskazuje na istniejący plik lub zasób.
 
-
-Alias bazowy może również zawierać ukośnik `/`. Metoda [[Yii::getAlias()]] potrafi określić, która część aliasu jest aliasem bazowym 
-i prawidłowo określić odpowiadającą mu ścieżkę pliku lub URL:
+Alias bazowy może również zawierać ukośnik `/`. Metoda [[Yii::getAlias()]] potrafi określić, która część aliasu jest aliasem bazowym i prawidłowo określić odpowiadającą mu ścieżkę pliku lub URL:
 
 ```php
 Yii::setAlias('@foo', '/path/to/foo');
@@ -112,11 +110,12 @@ Yii predefiniuje zestaw aliasów do łatwego wskazywania często używanych ści
 - `@web`, bazowy adres URL aktualnie używanej aplikacji Web. Wskazuje na tą samą wartość co [[yii\web\Request::baseUrl]].
 - `@vendor`, [[yii\base\Application::vendorPath|folder pakietów composera]]. Domyślnie wskazuje na `@app/vendor`.
 - `@bower`, bazowy folder zawierający [pakiety bowera](http://bower.io/). Domyślnie wskazuje na `@vendor/bower`.
-- `@npm`, bazowy folder zawierający [pakiety npm](https://www.npmjs.org/). Domyślnie wskazuje na `@vendor/npm`.
+- `@npm`, bazowy folder zawierający [pakiety npm](https://www.npmjs.com/). Domyślnie wskazuje na `@vendor/npm`.
 
 Alias `@yii` jest definiowany poprzez dołączenie pliku `Yii.php` w [skrypcie wejścia](structure-entry-scripts.md).
 Pozostałe aliasy są definiowane w konstruktorze aplikacji podczas ładowania [konfiguracji](concept-configurations.md).
 
+> Note: aliasy `@web` i `@webroot`, zgodnie z ich opisami, są zdefiniowane w [[yii\web\Application|aplikacji Web]] i z tego powodu niedostępne domyślnie w [[yii\console\Application|aplikacji konsolowej]].
 
 Aliasy rozszerzeń <span id="extension-aliases"></span>
 -----------------

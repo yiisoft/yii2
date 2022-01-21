@@ -69,7 +69,7 @@ abstract class Mutex extends Component
      */
     public function acquire($name, $timeout = 0)
     {
-        if ($this->acquireLock($name, $timeout)) {
+        if (!in_array($name, $this->_locks, true) && $this->acquireLock($name, $timeout)) {
             $this->_locks[] = $name;
 
             return true;
@@ -95,6 +95,19 @@ abstract class Mutex extends Component
         }
 
         return false;
+    }
+
+    /**
+     * Checks if a lock is acquired by the current process.
+     * Note that it returns false if the mutex is acquired in another process.
+     *
+     * @param string $name of the lock to check.
+     * @return bool Returns true if currently acquired.
+     * @since 2.0.36
+     */
+    public function isAcquired($name)
+    {
+        return in_array($name, $this->_locks, true);
     }
 
     /**

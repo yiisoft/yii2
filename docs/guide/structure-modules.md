@@ -160,6 +160,9 @@ the [[yii\base\Application::modules|modules]] property of the application. The f
 ]
 ```
 
+> Info: To connect console commands of your module,
+> you also need to include it in the [console application configuration](tutorial-console.md#configuration)
+
 The [[yii\base\Application::modules|modules]] property takes an array of module configurations. Each array key
 represents a *module ID* which uniquely identifies the module among all modules in the application, and the corresponding
 array value is a [configuration](concept-configurations.md) for creating the module.
@@ -175,6 +178,14 @@ For example, if an application uses a module named `forum`, then the route
 only contains the module ID, then the [[yii\base\Module::defaultRoute]] property, which defaults to `default`,
 will determine which controller/action should be used. This means a route `forum` would represent the `default`
 controller in the `forum` module.
+
+The URL manager rules for the modules should be added before [[yii\web\UrlManager::parseRequest()]] is fired. That means doing it 
+in module's `init()` won't work because module will be initialized when routes were already processed. Thus, the rules
+should be added at [bootstrap stage](structure-extensions.md#bootstrapping-classes). It is a also a good practice
+to wrap module's URL rules with [[\yii\web\GroupUrlRule]].  
+
+In case a module is used to [version API](rest-versioning.md), its URL rules should be added directly in `urlManager` 
+section of the application config.
 
 
 ### Accessing Modules <span id="accessing-modules"></span>
@@ -277,12 +288,14 @@ This means that it is preferable to use `$module->get('db')` over `Yii::$app->ge
 The user of a module is able to specify a specific component to be used for the module in case a different component
 (configuration) is required.
 
-For example consider this application configuration:
+For example consider partial this application configuration:
 
 ```php
 'components' => [
     'db' => [
         'tablePrefix' => 'main_',
+        'class' => Connection::class,
+        'enableQueryCache' => false
     ],
 ],
 'modules' => [
@@ -290,6 +303,7 @@ For example consider this application configuration:
         'components' => [
             'db' => [
                 'tablePrefix' => 'module_',
+                'class' => Connection::class
             ],
         ],
     ],
@@ -297,6 +311,7 @@ For example consider this application configuration:
 ```
 
 The application database tables will be prefixed with `main_`, while all module tables will be prefixed with `module_`.
+Note that configuration above is not merged; the modules' component for example will have the query cache enabled since that is the default value.
 
 ## Best Practices <span id="best-practices"></span>
 

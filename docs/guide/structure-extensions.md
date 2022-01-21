@@ -127,9 +127,9 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -184,8 +184,8 @@ If your extension also depends on other extensions or third-party libraries, you
 Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
 dependencies when your extension is released in a stable version.
 
-Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/),
-instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/),
+instead of Composer. Yii uses the [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
 to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
 simply list the dependency in `composer.json` like the following:
 
@@ -383,55 +383,74 @@ help other people learn about and use your extension:
   for you to generate pretty API documentation based on your code comments.
 
 > Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  the [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Core Extensions <span id="core-extensions"></span>
 
-Yii provides the following core extensions that are developed and maintained by the Yii developer team. They are all
+Yii provides the following core extensions (or ["Official Extensions"](https://www.yiiframework.com/extensions/official)) that are developed and maintained by the Yii developer team. They are all
 registered on [Packagist](https://packagist.org/) and can be easily installed as described in the
 [Using Extensions](#using-extensions) subsection.
 
-- [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
+- [yiisoft/yii2-apidoc](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc):
   provides an extensible and high-performance API documentation generator. It is also used to generate the core
   framework API documentation.
-- [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
+- [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient):
   provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
-- [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
+- [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap):
   provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
-  provides testing support based on [Codeception](http://codeception.com/).
-- [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
+- [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug):
   provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
   at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
   debug information.
-- [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
+- [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
+  provides the support for using [Elasticsearch](https://www.elastic.co/). It includes basic querying/search
   support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
   in Elasticsearch.
-- [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
-  provides the support for using [Faker](https://github.com/fzaninotto/Faker) to generate fake data for you.
-- [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
+- [yiisoft/yii2-faker](https://www.yiiframework.com/extension/yiisoft/yii2-faker):
+  provides the support for using [Faker](https://www.yiiframework.com/extension/fzaninotto/Faker) to generate fake data for you.
+- [yiisoft/yii2-gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii):
   provides a Web-based code generator that is highly extensible and can be used to quickly generate models,
   forms, modules, CRUD, etc.
-- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+- [yiisoft/yii2-httpclient](https://www.yiiframework.com/extension/yiisoft/yii2-httpclient):
   provides an HTTP client.
-- [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
+- [yiisoft/yii2-imagine](https://www.yiiframework.com/extension/yiisoft/yii2-imagine):
   provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
-- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
+- [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
   provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
-- [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
+- [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
+  provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
-- [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
+- [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
+  provides the supports for running tasks asynchronously via queues.
+  It supports queues based on DB, Redis, RabbitMQ, AMQP, Beanstalk and Gearman.
+- [yiisoft/yii2-redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis):
   provides the support for using [redis](http://redis.io/). It includes features such as basic query,
   Active Record, caching, etc.
-- [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
+- [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
+  provides an interactive shell based on [psysh](http://psysh.org/).
+- [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty):
   provides a template engine based on [Smarty](http://www.smarty.net/).
-- [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
+- [yiisoft/yii2-sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx):
   provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
   Active Record, code generation, etc.
-- [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
+- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
   provides email sending features based on [swiftmailer](http://swiftmailer.org/).
-- [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+- [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
+  provides a template engine based on [Twig](https://twig.symfony.com/).
+
+The following official extensions are for Yii 2.1 and above.
+You don't need to install them for Yii 2.0, since they are included in the core framework.
+
+- [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha):
+  provides an CAPTCHA.
+- [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
+  provides a support for [jQuery](https://jquery.com/).
+- [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
+  provides a masked input widget based on [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
+- [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
+  provides the support for using [MSSQL](https://www.microsoft.com/sql-server/).
+- [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):
+  provides the support for using [Oracle](https://www.oracle.com/).
+- [yiisoft/yii2-rest](https://www.yiiframework.com/extension/yiisoft/yii2-rest):
+  provides a support for the REST API.

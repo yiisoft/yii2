@@ -48,7 +48,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
- * [[sql]]. This property is read-only.
+ * [[sql]].
  * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -66,7 +66,7 @@ class Command extends Component
     public $pdoStatement;
     /**
      * @var int the default fetch mode for this command.
-     * @see http://www.php.net/manual/en/pdostatement.setfetchmode.php
+     * @see https://www.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
@@ -90,8 +90,10 @@ class Command extends Component
 
     /**
      * @var array pending parameters to be bound to the current PDO statement.
+     * @since 2.0.33
      */
-    private $_pendingParams = [];
+    protected $pendingParams = [];
+
     /**
      * @var string the SQL statement that this command represents
      */
@@ -100,6 +102,16 @@ class Command extends Component
      * @var string name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
+    /**
+     * @var string|false|null the isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     */
+    private $_isolationLevel = false;
+    /**
+     * @var callable a callable (e.g. anonymous function) that is called when [[\yii\db\Exception]] is thrown
+     * when executing the command.
+     */
+    private $_retryHandler;
 
 
     /**
@@ -195,8 +207,8 @@ class Command extends Component
             if (is_string($name) && strncmp(':', $name, 1)) {
                 $name = ':' . $name;
             }
-            if (is_string($value)) {
-                $params[$name] = $this->db->quoteValue($value);
+            if (is_string($value) || $value instanceof Expression) {
+                $params[$name] = $this->db->quoteValue((string)$value);
             } elseif (is_bool($value)) {
                 $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
@@ -206,7 +218,10 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return strtr($this->_sql, $params);
+            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+                $m = $matches[1];
+                return isset($params[$m]) ? $params[$m] : $m;
+            }, $this->_sql);
         }
         $sql = '';
         foreach (explode('?', $this->_sql) as $i => $part) {
@@ -234,6 +249,9 @@ class Command extends Component
         }
 
         $sql = $this->getSql();
+        if ($sql === '') {
+            return;
+        }
 
         if ($this->db->getTransaction()) {
             // master is in a transaction. use the same connection.
@@ -252,6 +270,9 @@ class Command extends Component
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
+            throw new Exception($message, null, (int) $e->getCode(), $e);
         }
     }
 
@@ -275,7 +296,7 @@ class Command extends Component
      * @param int $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
-     * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
+     * @see https://www.php.net/manual/en/function.PDOStatement-bindParam.php
      */
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
     {
@@ -302,10 +323,10 @@ class Command extends Component
      */
     protected function bindPendingParams()
     {
-        foreach ($this->_pendingParams as $name => $value) {
+        foreach ($this->pendingParams as $name => $value) {
             $this->pdoStatement->bindValue($name, $value[0], $value[1]);
         }
-        $this->_pendingParams = [];
+        $this->pendingParams = [];
     }
 
     /**
@@ -317,14 +338,14 @@ class Command extends Component
      * @param mixed $value The value to bind to the parameter
      * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
-     * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
+     * @see https://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
     public function bindValue($name, $value, $dataType = null)
     {
         if ($dataType === null) {
             $dataType = $this->db->getSchema()->getPdoType($value);
         }
-        $this->_pendingParams[$name] = [$value, $dataType];
+        $this->pendingParams[$name] = [$value, $dataType];
         $this->params[$name] = $value;
 
         return $this;
@@ -337,8 +358,8 @@ class Command extends Component
      * @param array $values the values to be bound. This must be given in terms of an associative
      * array with array keys being the parameter names, and array values the corresponding parameter values,
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
-     * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
-     * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+     * by its PHP type. You may explicitly specify the PDO type by using a [[yii\db\PdoValue]] class: `new PdoValue(value, type)`,
+     * e.g. `[':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
      * @return $this the current command being executed
      */
     public function bindValues($values)
@@ -349,12 +370,15 @@ class Command extends Component
 
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
-            if (is_array($value)) {
-                $this->_pendingParams[$name] = $value;
+            if (is_array($value)) { // TODO: Drop in Yii 2.1
+                $this->pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
+            } elseif ($value instanceof PdoValue) {
+                $this->pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
-                $this->_pendingParams[$name] = [$value, $type];
+                $this->pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
             }
         }
@@ -375,7 +399,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -389,7 +413,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://php.net/manual/en/pdostatement.setfetchmode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -403,7 +427,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */
@@ -490,11 +514,49 @@ class Command extends Component
             return $this->db->quoteSql($column);
         }, $columns);
 
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $params);
 
         $this->setRawSql($sql);
+        $this->bindValues($params);
 
         return $this;
+    }
+
+    /**
+     * Creates a command to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * For example,
+     *
+     * ```php
+     * $sql = $queryBuilder->upsert('pages', [
+     *     'name' => 'Front page',
+     *     'url' => 'http://example.com/', // url is unique
+     *     'visits' => 0,
+     * ], [
+     *     'visits' => new \yii\db\Expression('visits + 1'),
+     * ], $params);
+     * ```
+     *
+     * The method will properly escape the table and column names.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the parameters to be bound to the command.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
+    {
+        $sql = $this->db->getQueryBuilder()->upsert($table, $insertColumns, $updateColumns, $params);
+
+        return $this->setSql($sql)->bindValues($params);
     }
 
     /**
@@ -631,7 +693,7 @@ class Command extends Component
      * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
      * @param string $column the name of the new column. The name will be properly quoted by the method.
      * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
-     * to convert the give column type to the physical one. For example, `string` will be converted
+     * to convert the given column type to the physical one. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      * @return $this the command object itself
      */
@@ -880,10 +942,10 @@ class Command extends Component
     /**
      * Creates a SQL command for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
+     * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence will be reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     * the next new row's primary key will have the maximum existing value +1.
      * @return $this the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
@@ -892,6 +954,22 @@ class Command extends Component
         $sql = $this->db->getQueryBuilder()->resetSequence($table, $value);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Executes a db command resetting the sequence value of a table's primary key.
+     * Reason for execute is that some databases (Oracle) need several queries to do so.
+     * The sequence is reset such that the primary key of the next new row inserted
+     * will have the specified value or the maximum existing value +1.
+     * @param string $table the name of the table whose primary key sequence is reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value +1.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     * @since 2.0.16
+     */
+    public function executeResetSequence($table, $value = null)
+    {
+        return $this->db->getQueryBuilder()->executeResetSequence($table, $value);
     }
 
     /**
@@ -971,6 +1049,36 @@ class Command extends Component
     }
 
     /**
+     * Creates a SQL View.
+     *
+     * @param string $viewName the name of the view to be created.
+     * @param string|Query $subquery the select statement which defines the view.
+     * This can be either a string or a [[Query]] object.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function createView($viewName, $subquery)
+    {
+        $sql = $this->db->getQueryBuilder()->createView($viewName, $subquery);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
+
+    /**
+     * Drops a SQL View.
+     *
+     * @param string $viewName the name of the view to be dropped.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function dropView($viewName)
+    {
+        $sql = $this->db->getQueryBuilder()->dropView($viewName);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
+
+    /**
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
      * No result set will be returned.
@@ -991,7 +1099,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, __METHOD__);
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
             $n = $this->pdoStatement->rowCount();
 
             $profile and Yii::endProfile($rawSql, __METHOD__);
@@ -999,9 +1107,9 @@ class Command extends Component
             $this->refreshTableSchema();
 
             return $n;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, __METHOD__);
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
     }
 
@@ -1012,7 +1120,7 @@ class Command extends Component
      * @return array array of two elements, the first is boolean of whether profiling is enabled or not.
      * The second is the rawSql if it has been created.
      */
-    private function logQuery($category)
+    protected function logQuery($category)
     {
         if ($this->db->enableLogging) {
             $rawSql = $this->getRawSql();
@@ -1028,7 +1136,7 @@ class Command extends Component
     /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
@@ -1043,17 +1151,10 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $cacheKey = [
-                    __CLASS__,
-                    $method,
-                    $fetchMode,
-                    $this->db->dsn,
-                    $this->db->username,
-                    $rawSql ?: $rawSql = $this->getRawSql(),
-                ];
+                $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
-                    Yii::trace('Query result served from cache', 'yii\db\Command::query');
+                    Yii::debug('Query result served from cache', 'yii\db\Command::query');
                     return $result[0];
                 }
             }
@@ -1064,7 +1165,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, 'yii\db\Command::query');
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
 
             if ($method === '') {
                 $result = new DataReader($this);
@@ -1077,17 +1178,41 @@ class Command extends Component
             }
 
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
 
         if (isset($cache, $cacheKey, $info)) {
             $cache->set($cacheKey, [$result], $info[1], $info[2]);
-            Yii::trace('Saved query result in cache', 'yii\db\Command::query');
+            Yii::debug('Saved query result in cache', 'yii\db\Command::query');
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the cache key for the query.
+     *
+     * @param string $method method of PDOStatement to be called
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes.
+     * @return array the cache key
+     * @since 2.0.16
+     */
+    protected function getCacheKey($method, $fetchMode, $rawSql)
+    {
+        $params = $this->params;
+        ksort($params);
+        return [
+            __CLASS__,
+            $method,
+            $fetchMode,
+            $this->db->dsn,
+            $this->db->username,
+            $this->getSql(),
+            json_encode($params),
+        ];
     }
 
     /**
@@ -1114,15 +1239,91 @@ class Command extends Component
     }
 
     /**
-     * Resets [[sql]] and [[params]] properties.
+     * Marks the command to be executed in transaction.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function requireTransaction($isolationLevel = null)
+    {
+        $this->_isolationLevel = $isolationLevel;
+        return $this;
+    }
+
+    /**
+     * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
+     * when executing the command. The signature of the callable should be:
+     *
+     * ```php
+     * function (\yii\db\Exception $e, $attempt)
+     * {
+     *     // return true or false (whether to retry the command or rethrow $e)
+     * }
+     * ```
+     *
+     * The callable will recieve a database exception thrown and a current attempt
+     * (to execute the command) number starting from 1.
+     *
+     * @param callable $handler a PHP callback to handle database exceptions.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function setRetryHandler(callable $handler)
+    {
+        $this->_retryHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Executes a prepared statement.
+     *
+     * It's a wrapper around [[\PDOStatement::execute()]] to support transactions
+     * and retry handlers.
+     *
+     * @param string|null $rawSql the rawSql if it has been created.
+     * @throws Exception if execution failed.
+     * @since 2.0.14
+     */
+    protected function internalExecute($rawSql)
+    {
+        $attempt = 0;
+        while (true) {
+            try {
+                if (
+                    ++$attempt === 1
+                    && $this->_isolationLevel !== false
+                    && $this->db->getTransaction() === null
+                ) {
+                    $this->db->transaction(function () use ($rawSql) {
+                        $this->internalExecute($rawSql);
+                    }, $this->_isolationLevel);
+                } else {
+                    $this->pdoStatement->execute();
+                }
+                break;
+            } catch (\Exception $e) {
+                $rawSql = $rawSql ?: $this->getRawSql();
+                $e = $this->db->getSchema()->convertException($e, $rawSql);
+                if ($this->_retryHandler === null || !call_user_func($this->_retryHandler, $e, $attempt)) {
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Resets command properties to their initial state.
      *
      * @since 2.0.13
      */
     protected function reset()
     {
         $this->_sql = null;
-        $this->_pendingParams = [];
+        $this->pendingParams = [];
         $this->params = [];
         $this->_refreshTableName = null;
+        $this->_isolationLevel = false;
+        $this->_retryHandler = null;
     }
 }

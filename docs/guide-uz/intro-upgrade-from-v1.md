@@ -25,16 +25,16 @@ Yii 2.0 talqin Yii 1.1 talqinda qo'llanilgan PHP 5.2 ga nisbatan ancha yaxshilan
 Shu tufayli siz nazarda tutishingiz kerak bo'lgan tildagi ko'p o'zgarishlar mavjud. 
 Quyida PHP ning asosiy o'zgarishlari keltirilgan:
 
-- [Nomlar sohasi](http://php.net/manual/ru/language.namespaces.php);
-- [Anonim funksiyalar](http://php.net/manual/ru/functions.anonymous.php);
+- [Nomlar sohasi](https://www.php.net/manual/ru/language.namespaces.php);
+- [Anonim funksiyalar](https://www.php.net/manual/ru/functions.anonymous.php);
 - Massivlar uchun qisqa sintaksisni qo'llash: `[...elementlar...]` ni `array(...элементы...)` o'rniga;
 - Qisqartirilgan teglarni qo'llash `<?=` ko'rinish fayllarida chiqarish uchun.
   PHP 5.4 talqinida ushbu imkoniyatni hech qanday sozlashlarsiz qo'llash mumkin;
-- [SPL ning klaslari va interfeyslari](http://php.net/manual/ru/book.spl.php);
-- [Kechroq statik bog'lash (LSB)](http://php.net/manual/ru/language.oop5.late-static-bindings.php);
-- [Sana va vaqt uchun klaslar](http://php.net/manual/ru/book.datetime.php);
-- [Treytlar](http://php.net/manual/ru/language.oop5.traits.php);
-- [Xalqarolashtirish (Intl)](http://php.net/manual/ru/book.intl.php); Xalqarolashtirish imkoniyatlaridan foydalanish maqsadida Yii 2.0 PHP ning `intl` kengaytmasini ishlatadi.
+- [SPL ning klaslari va interfeyslari](https://www.php.net/manual/ru/book.spl.php);
+- [Kechroq statik bog'lash (LSB)](https://www.php.net/manual/ru/language.oop5.late-static-bindings.php);
+- [Sana va vaqt uchun klaslar](https://www.php.net/manual/ru/book.datetime.php);
+- [Treytlar](https://www.php.net/manual/ru/language.oop5.traits.php);
+- [Xalqarolashtirish (Intl)](https://www.php.net/manual/ru/book.intl.php); Xalqarolashtirish imkoniyatlaridan foydalanish maqsadida Yii 2.0 PHP ning `intl` kengaytmasini ishlatadi.
 
 
 Nomlar sohasi

@@ -40,6 +40,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        ['css/print.css', 'media' => 'print'],
     ];
     public $js = [
     ];
@@ -68,17 +69,18 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
   if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
   will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
-* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
-  forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
-  following two formats:
+* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. Note that only forward slash "/"
+  should be used as directory separators. Each file can be specified on its own as a string or in an array together with
+  attribute tags and their values.
+* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. The format of this array
+  is the same as that of [[yii\web\AssetBundle::css|css]]. Each JavaScript file can be specified in one of the following two
+  formats:
   - a relative path representing a local JavaScript file (e.g. `js/main.js`). The actual path of the file
     can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
     of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
-  is the same as that of [[yii\web\AssetBundle::js|js]].
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
@@ -143,8 +145,8 @@ will be passed to the [[yii\web\View::registerCssFile()]] and [[yii\web\View::re
 they are called by the [view](structure-views.md) to include CSS and JavaScript files.
 
 > Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
-  use different options for different files, you should create separate asset bundles, and use one set of options
-  in each bundle.
+  use different options for different files, you should use the format mentioned [[yii\web\AssetBundle::css|above]] or create
+  separate asset bundles, and use one set of options in each bundle.
 
 For example, to conditionally include a CSS file for browsers that are IE9 or below, you can use the following option:
 
@@ -192,20 +194,20 @@ class FontAwesomeAsset extends AssetBundle
     ];
     public $publishOptions = [
         'only' => [
-            'fonts/',
-            'css/',
+            'fonts/*',
+            'css/*',
         ]
     ];
 }  
 ```
 
-The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
+The above example defines an asset bundle for the ["fontawesome" package](https://fontawesome.com/). By specifying 
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
-Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) package 
+Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/) package 
 managers. In PHP world we have Composer, that manages PHP dependencies, but it is possible to load
 both Bower and NPM packages using `composer.json` just as PHP packages.
 
@@ -213,7 +215,7 @@ To achieve this, we should configure our composer a bit. There are two options t
 
 ___
 
-##### Using asset-packagist repository
+#### Using asset-packagist repository
 
 This way will satisfy requirements of the majority of projects, that need NPM or Bower packages.
 
@@ -246,16 +248,16 @@ $config = [
 
 Visit [asset-packagist.org](https://asset-packagist.org) to know, how it works.
 
-##### Using fxp/composer-asset-plugin
+#### Using fxp/composer-asset-plugin
 
-Comparing to to using asset-packagist, composer-asset-plugin does not require to change application config. Instead, it
-requires to install a special Composer plugin globally by running the following command:
+Compared to asset-packagist, composer-asset-plugin does not require any changes to application config. Instead, it
+requires global installation of a special Composer plugin by running the following command:
 
 ```bash
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
+This command installs [composer asset plugin](https://github.com/fxpio/composer-asset-plugin/) globally
 which allows managing Bower and NPM package dependencies through Composer. After the plugin installation, 
 every single project on your computer will support Bower and NPM packages through `composer.json`. 
 
@@ -263,10 +265,12 @@ Add the following lines to `composer.json` of your project to adjust directories
 will be placed, if you want to publish them using Yii:
 
 ```json
-"extra": {
-    "asset-installer-paths": {
-        "npm-asset-library": "vendor/npm",
-        "bower-asset-library": "vendor/bower"
+"config": {
+    "fxp-asset": {
+        "installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```
@@ -606,13 +610,13 @@ in extended syntax.
 Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
 the following syntax and file name extensions:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
+Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](https://lesscss.org/)
 you should install the `lessc` pre-processor command.
 
 You can customize the pre-processor commands and the supported extended syntax by configuring

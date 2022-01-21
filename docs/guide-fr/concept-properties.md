@@ -7,7 +7,7 @@ En PHP, les variables membres des classes sont aussi appelées *propriétés*. C
 $object->label = trim($label);
 ```
 
-Le revers du code ci-dessus est que vous devez appeler `trim()` partout ou vous voulez définir la propriété `label`. Si, plus tard, la propriété `label` devient sujette à de nouvelles exigences, telles que la première lettre doit être une capitale, vous auriez à modifier toutes les parties de code  qui assigne une valeur à la propriété `label`. La répétition de code conduit à des bogues, et c'est une pratique courant de l'éviter autant que faire se peut.
+Le revers du code ci-dessus est que vous devez appeler `trim()` partout ou vous voulez définir la propriété `label`. Si, plus tard, la propriété `label` devient sujette à de nouvelles exigences, telles que la première lettre doit être une capitale, vous auriez à modifier toutes les parties de code  qui assignent une valeur à la propriété `label`. La répétition de code conduit à des bogues, et c'est une pratique courante de l'éviter autant que faire se peut.
 
 Pour résoudre ce problème, Yii introduit une classe de base nommée [[yii\base\BaseObject]] qui prend en charge la définition de propriétés sur la base de méthodes d'obtention (*getter*) et de méthode d'assignation (*setters*). Si une classe a besoin de cette fonctionnalité, il suffit qu'elle étende la classe[[yii\base\BaseObject]], ou une de ses classes filles.
 
@@ -52,9 +52,9 @@ Une propriété définie par une méthode d'obtention (*getter*) sans méthode d
 
 Il existe plusieurs règles spéciales pour les propriétés définies via des méthodes d'obtention et d'assignation, ainsi que certaines limitations sur elles.
 
-* Le nom de telles propriétés sont *insensibles à la casse*. Par exempe,  `$object->label` et `$object->Label` sont identiques. Cela est dû au fait que le nom des méthodes dans PHP est insensible à la casse.
-* Si le nom d'uen telle propriété est identique à celui d'une variable membre de la classe, la dernier prévaut. Par exemple, si la classe ci-dessus `Foo` possède une variable mommée `label`, alors l'assignation `$object->label = 'abc'` affecte la *variable membre* `label` ; cette ligne ne fait pas appel à la méthode d'assignation `setLabel()`.
-* Ces propriétés en prennent pas en charge la visibilité. Cela ne fait aucune différence pour les méthodes d'obtention et d'assignation qui définissent une propriété, que cette propriété soit publique, protégée ou privée.
+* Le nom de telles propriétés sont *insensibles à la casse*. Par exemple,  `$object->label` et `$object->Label` sont identiques. Cela est dû au fait que le nom des méthodes dans PHP est insensible à la casse.
+* Si le nom d'une telle propriété est identique à celui d'une variable membre de la classe, le dernier prévaut. Par exemple, si la classe ci-dessus `Foo` possède une variable momée `label`, alors l'assignation `$object->label = 'abc'` affecte la *variable membre* `label` ; cette ligne ne fait pas appel à la méthode d'assignation `setLabel()`.
+* Ces propriétés ne prennent pas en charge la visibilité. Cela ne fait aucune différence pour les méthodes d'obtention et d'assignation qui définissent une propriété, que cette propriété soit publique, protégée ou privée.
 * Les propriétés peuvent uniquement être définies par des méthodes d'obtention et d'assignation *non-statiques*. Les méthodes statiques ne sont pas traitées de la même manière. 
 * Un appel normal à la méthode `property_exists()` ne fonctionne pas pour déterminer des propriétés magiques. Vous devez appeler  [[yii\base\BaseObject::canGetProperty()|canGetProperty()]] ou [[yii\base\BaseObject::canSetProperty()|canSetProperty()]] respectivement.
 

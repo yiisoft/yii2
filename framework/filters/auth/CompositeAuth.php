@@ -23,10 +23,10 @@ use yii\base\InvalidConfigException;
  * {
  *     return [
  *         'compositeAuth' => [
- *             'class' => \yii\filters\auth\CompositeAuth::className(),
+ *             'class' => \yii\filters\auth\CompositeAuth::class,
  *             'authMethods' => [
- *                 \yii\filters\auth\HttpBasicAuth::className(),
- *                 \yii\filters\auth\QueryParamAuth::className(),
+ *                 \yii\filters\auth\HttpBasicAuth::class,
+ *                 \yii\filters\auth\QueryParamAuth::class,
  *             ],
  *         ],
  *     ];
@@ -50,7 +50,7 @@ class CompositeAuth extends AuthMethod
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -58,7 +58,7 @@ class CompositeAuth extends AuthMethod
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function authenticate($user, $request, $response)
     {
@@ -80,7 +80,7 @@ class CompositeAuth extends AuthMethod
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {

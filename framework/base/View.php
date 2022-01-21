@@ -20,13 +20,13 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
- * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
- * rendered. This property is read-only.
+ * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
+ * rendered.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class View extends Component
+class View extends Component implements DynamicContentAwareInterface
 {
     /**
      * @event Event an event that is triggered by [[beginPage()]].
@@ -50,7 +50,7 @@ class View extends Component
      */
     public $context;
     /**
-     * @var mixed custom parameters that are shared among view templates.
+     * @var array custom parameters that are shared among view templates.
      */
     public $params = [];
     /**
@@ -86,15 +86,19 @@ class View extends Component
      */
     public $blocks;
     /**
-     * @var array a list of currently active fragment cache widgets. This property
-     * is used internally to implement the content caching feature. Do not modify it directly.
+     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
+     * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
+     * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
      */
     public $cacheStack = [];
     /**
      * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
+     * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
      */
     public $dynamicPlaceholders = [];
 
@@ -180,7 +184,7 @@ class View extends Component
             }
         } elseif ($context instanceof ViewContextInterface) {
             $file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
-        } elseif (($currentViewFile = $this->getViewFile()) !== false) {
+        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
             $file = dirname($currentViewFile) . DIRECTORY_SEPARATOR . $view;
         } else {
             throw new InvalidCallException("Unable to resolve view file for view '$view': no active view context.");
@@ -218,7 +222,7 @@ class View extends Component
      */
     public function renderFile($viewFile, $params = [], $context = null)
     {
-        $viewFile = Yii::getAlias($viewFile);
+        $viewFile = $requestedFile = Yii::getAlias($viewFile);
 
         if ($this->theme !== null) {
             $viewFile = $this->theme->applyTo($viewFile);
@@ -234,10 +238,13 @@ class View extends Component
             $this->context = $context;
         }
         $output = '';
-        $this->_viewFiles[] = $viewFile;
+        $this->_viewFiles[] = [
+            'resolved' => $viewFile,
+            'requested' => $requestedFile
+        ];
 
         if ($this->beforeRender($viewFile, $params)) {
-            Yii::trace("Rendering view file: $viewFile", __METHOD__);
+            Yii::debug("Rendering view file: $viewFile", __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
@@ -263,7 +270,16 @@ class View extends Component
      */
     public function getViewFile()
     {
-        return end($this->_viewFiles);
+        return empty($this->_viewFiles) ? false : end($this->_viewFiles)['resolved'];
+    }
+
+    /**
+     * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
+     * @since 2.0.16
+     */
+    protected function getRequestedViewFile()
+    {
+        return empty($this->_viewFiles) ? false : end($this->_viewFiles)['requested'];
     }
 
     /**
@@ -300,10 +316,10 @@ class View extends Component
             $event = new ViewEvent([
                 'viewFile' => $viewFile,
                 'params' => $params,
-                'output' => $output,
             ]);
+            $event->output =& $output;
+
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
-            $output = $event->output;
         }
     }
 
@@ -320,7 +336,6 @@ class View extends Component
      * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
      * @throws \Exception
-     * @throws \Throwable
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
@@ -356,6 +371,11 @@ class View extends Component
      * @param string $statements the PHP statements for generating the dynamic content.
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
+     *
+     * Note that most methods that indirectly modify layout such as registerJS() or registerJSFile() do not
+     * work with dynamic rendering.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/17673
      */
     public function renderDynamic($statements)
     {
@@ -371,18 +391,36 @@ class View extends Component
     }
 
     /**
-     * Adds a placeholder for dynamic content.
-     * This method is internally used.
-     * @param string $placeholder the placeholder name
-     * @param string $statements the PHP statements for generating the dynamic content
+     * {@inheritdoc}
+     */
+    public function getDynamicPlaceholders()
+    {
+        return $this->dynamicPlaceholders;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDynamicPlaceholders($placeholders)
+    {
+        $this->dynamicPlaceholders = $placeholders;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
         foreach ($this->cacheStack as $cache) {
-            $cache->dynamicPlaceholders[$placeholder] = $statements;
+            if ($cache instanceof DynamicContentAwareInterface) {
+                $cache->addDynamicPlaceholder($placeholder, $statements);
+            } else {
+                // TODO: Remove in 2.1
+                $cache->dynamicPlaceholders[$placeholder] = $statements;
+            }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-    }
+}
 
     /**
      * Evaluates the given PHP statements.
@@ -393,6 +431,37 @@ class View extends Component
     public function evaluateDynamicContent($statements)
     {
         return eval($statements);
+    }
+
+    /**
+     * Returns a list of currently active dynamic content class instances.
+     * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
+     * @since 2.0.14
+     */
+    public function getDynamicContents()
+    {
+        return $this->cacheStack;
+    }
+
+    /**
+     * Adds a class instance supporting dynamic contents to the end of a list of currently active
+     * dynamic content class instances.
+     * @param DynamicContentAwareInterface $instance class instance supporting dynamic contents.
+     * @since 2.0.14
+     */
+    public function pushDynamicContent(DynamicContentAwareInterface $instance)
+    {
+        $this->cacheStack[] = $instance;
+    }
+
+    /**
+     * Removes a last class instance supporting dynamic contents from a list of currently active
+     * dynamic content class instances.
+     * @since 2.0.14
+     */
+    public function popDynamicContent()
+    {
+        array_pop($this->cacheStack);
     }
 
     /**

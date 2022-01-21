@@ -42,8 +42,8 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior`, with two properties--
-`prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
+The above code defines the behavior class `app\components\MyBehavior`, with two properties
+`prop1` and `prop2` and one method `foo()`. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\BaseObject]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
@@ -120,21 +120,21 @@ class User extends ActiveRecord
     {
         return [
             // anonymous behavior, behavior class name only
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // named behavior, behavior class name only
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // anonymous behavior, configuration array
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // named behavior, configuration array
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -153,14 +153,14 @@ To attach a behavior dynamically, call the [[yii\base\Component::attachBehavior(
 use app\components\MyBehavior;
 
 // attach a behavior object
-$component->attachBehavior('myBehavior1', new MyBehavior);
+$component->attachBehavior('myBehavior1', new MyBehavior());
 
 // attach a behavior class
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // attach a configuration array
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -170,8 +170,8 @@ You may attach multiple behaviors at once using the [[yii\base\Component::attach
 
 ```php
 $component->attachBehaviors([
-    'myBehavior1' => new MyBehavior,  // a named behavior
-    MyBehavior::className(),          // an anonymous behavior
+    'myBehavior1' => new MyBehavior(), // a named behavior
+    MyBehavior::class,                 // an anonymous behavior
 ]);
 ```
 
@@ -179,10 +179,10 @@ You may also attach behaviors through [configurations](concept-configurations.md
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -272,7 +272,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -329,7 +329,7 @@ There are several built-in and external behaviors available:
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
+While behaviors are similar to [traits](https://www.php.net/traits) in that they both "inject" their
 properties and methods to the primary class, they differ in many aspects. As explained below, they
 both have pros and cons. They are more like complements to each other rather than alternatives.
 

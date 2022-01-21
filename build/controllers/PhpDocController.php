@@ -11,9 +11,10 @@ use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\Json;
 
 /**
- * PhpDocController is there to help maintaining PHPDoc annotation in class files.
+ * PhpDocController is there to help to maintain PHPDoc annotation in class files.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -21,6 +22,9 @@ use yii\helpers\FileHelper;
  */
 class PhpDocController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public $defaultAction = 'property';
     /**
      * @var bool whether to update class docs directly. Setting this to false will just output docs
@@ -82,7 +86,7 @@ class PhpDocController extends Controller
         $nFilesUpdated = 0;
         foreach ($files as $file) {
             $contents = file_get_contents($file);
-            $sha = sha1($contents);
+            $hash = $this->hash($contents);
 
             // fix line endings
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
@@ -94,10 +98,10 @@ class PhpDocController extends Controller
             $lines = array_values($this->fixLineSpacing($lines));
 
             $newContent = implode("\n", $lines);
-            if ($sha !== sha1($newContent)) {
+            if ($hash !== $this->hash($newContent)) {
+                file_put_contents($file, $newContent);
                 $nFilesUpdated++;
             }
-            file_put_contents($file, $newContent);
             $nFilesTotal++;
         }
 
@@ -106,13 +110,18 @@ class PhpDocController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), ['updateFiles', 'skipFrameworkRequirements']);
     }
 
+    /**
+     * @param string $root
+     * @param bool $needsInclude
+     * @return array list of files.
+     */
     protected function findFiles($root, $needsInclude = true)
     {
         $except = [];
@@ -132,7 +141,7 @@ class PhpDocController extends Controller
                     '/generators/extension/default/AutoloadExample.php',
                 ],
                 'swiftmailer' => [
-                    '/Logger.php',
+                    'src/Logger.php',
                 ],
                 'twig' => [
                     '/Extension.php',
@@ -147,13 +156,9 @@ class PhpDocController extends Controller
         }
 
         if ($root === null) {
-            $root = dirname(YII2_PATH);
+            $root = \dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
-            foreach (scandir($extensionPath) as $extension) {
-                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
-                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
-                }
-            }
+            $this->setUpExtensionAliases($extensionPath);
 
             $except = [
                 '/apps/',
@@ -172,11 +177,11 @@ class PhpDocController extends Controller
                 }
             }
         } elseif (preg_match('~extensions/([\w-]+)[\\\\/]?$~', $root, $matches)) {
-            $extensionPath = dirname(rtrim($root, '\\/'));
+            $extensionPath = \dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $extension) = $matches;
-            Yii::setAlias("@yii/$extension", "$root");
+            Yii::setAlias("@yii/$extension", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -195,11 +200,11 @@ class PhpDocController extends Controller
 //                return [];
 //            }
         } elseif (preg_match('~apps/([\w-]+)[\\\\/]?$~', $root, $matches)) {
-            $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
+            $extensionPath = \dirname(\dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $appName) = $matches;
-            Yii::setAlias("@app-$appName", "$root");
+            Yii::setAlias("@app-$appName", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -230,14 +235,30 @@ class PhpDocController extends Controller
                 'vendor/',
             ]),
         ];
+
         return FileHelper::findFiles($root, $options);
     }
 
+    /**
+     * @param string $extensionPath root path containing extension repositories.
+     */
     private function setUpExtensionAliases($extensionPath)
     {
         foreach (scandir($extensionPath) as $extension) {
             if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
                 Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+
+                $composerConfigFile = $extensionPath . '/' . $extension . '/composer.json';
+                if (file_exists($composerConfigFile)) {
+                    $composerConfig = Json::decode(file_get_contents($composerConfigFile));
+                    if (isset($composerConfig['autoload']['psr-4'])) {
+                        foreach ($composerConfig['autoload']['psr-4'] as $namespace => $subPath) {
+                            $alias = '@' . str_replace('\\', '/', $namespace);
+                            $path = rtrim("$extensionPath/$extension/$subPath", '/');
+                            Yii::setAlias($alias, $path);
+                        }
+                    }
+                }
             }
         }
     }
@@ -285,6 +306,7 @@ class PhpDocController extends Controller
 
     /**
      * Markdown aware fix of whitespace issues in doc comments.
+     * @param array $lines
      */
     protected function fixDocBlockIndentation(&$lines)
     {
@@ -307,16 +329,16 @@ class PhpDocController extends Controller
                 $tag = false;
             } elseif ($docBlock) {
                 $line = ltrim($line);
-                if (isset($line[0]) && $line[0] === '*') {
+                if (strpos($line, '*') === 0) {
                     $line = substr($line, 1);
                 }
-                if (isset($line[0]) && $line[0] === ' ') {
+                if (strpos($line, ' ') === 0) {
                     $line = substr($line, 1);
                 }
                 $docLine = str_replace("\t", '    ', rtrim($line));
                 if (empty($docLine)) {
                     $listIndent = '';
-                } elseif ($docLine[0] === '@') {
+                } elseif (strpos($docLine, '@') === 0) {
                     $listIndent = '';
                     $codeBlock = false;
                     $tag = true;
@@ -326,7 +348,7 @@ class PhpDocController extends Controller
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
                 } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
-                    $listIndent = str_repeat(' ', strlen($matches[0]));
+                    $listIndent = str_repeat(' ', \strlen($matches[0]));
                     $tag = false;
                     $lines[$i] = $indent . ' * ' . $docLine;
                     continue;
@@ -340,6 +362,10 @@ class PhpDocController extends Controller
         }
     }
 
+    /**
+     * @param string $line
+     * @return string
+     */
     protected function fixParamTypes($line)
     {
         return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function ($matches) {
@@ -427,15 +453,15 @@ class PhpDocController extends Controller
                 $endofPrivate = $i;
                 $property = 'Private';
                 $level = 0;
-            } elseif (substr($line, 0, 6) === 'const ') {
+            } elseif (strpos($line, 'const ') === 0) {
                 $endofConst = $i;
                 $property = false;
-            } elseif (substr($line, 0, 4) === 'use ') {
+            } elseif (strpos($line, 'use ') === 0) {
                 $endofUse = $i;
                 $property = false;
-            } elseif (!empty($line) && $line[0] === '*') {
+            } elseif (strpos($line, '*') === 0) {
                 $property = false;
-            } elseif (!empty($line) && $line[0] !== '*' && strpos($line, 'function ') !== false || $line === '}') {
+            } elseif (strpos($line, '*') !== 0 && strpos($line, 'function ') !== false || $line === '}') {
                 break;
             }
 
@@ -478,9 +504,17 @@ class PhpDocController extends Controller
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
     {
+        if ($this->shouldSkipClass($className)) {
+            $this->stderr("[INFO] Skipping class $className.\n", Console::FG_BLUE, Console::BOLD);
+            return false;
+        }
+
         try {
             $ref = new \ReflectionClass($className);
         } catch (\Exception $e) {
+            $this->stderr("[ERR] Unable to create ReflectionClass for class '$className': " . $e->getMessage() . "\n", Console::FG_RED);
+            return false;
+        } catch (\Error $e) {
             $this->stderr("[ERR] Unable to create ReflectionClass for class '$className': " . $e->getMessage() . "\n", Console::FG_RED);
             return false;
         }
@@ -489,7 +523,7 @@ class PhpDocController extends Controller
             return false;
         }
 
-        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object' && !$ref->isSubclassOf('yii\base\BaseObject') && $className != 'yii\base\BaseObject') {
+        if ($this->isBaseObject($className, $ref)) {
             $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\BaseObject.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }
@@ -532,10 +566,10 @@ class PhpDocController extends Controller
         if (trim($oldDoc) != trim($newDoc)) {
             $fileContent = explode("\n", file_get_contents($file));
             $start = $ref->getStartLine() - 2;
-            $docStart = $start - count(explode("\n", $oldDoc)) + 1;
+            $docStart = $start - \count(explode("\n", $oldDoc)) + 1;
 
             $newFileContent = [];
-            $n = count($fileContent);
+            $n = \count($fileContent);
             for ($i = 0; $i < $n; $i++) {
                 if ($i > $start || $i < $docStart) {
                     $newFileContent[] = $fileContent[$i];
@@ -562,7 +596,7 @@ class PhpDocController extends Controller
     protected function cleanDocComment($doc)
     {
         $lines = explode("\n", $doc);
-        $n = count($lines);
+        $n = \count($lines);
         for ($i = 0; $i < $n; $i++) {
             $lines[$i] = rtrim($lines[$i]);
             if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
@@ -586,9 +620,9 @@ class PhpDocController extends Controller
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
             $line = trim($line);
-            if (strncmp($line, '* @property ', 12) === 0) {
+            if (strncmp($line, '* @property', 11) === 0) {
                 $propertyPart = true;
-            } elseif ($propertyPart && $line == '*') {
+            } elseif ($propertyPart && $line === '*') {
                 $propertyPosition = $i;
                 $propertyPart = false;
             }
@@ -601,9 +635,9 @@ class PhpDocController extends Controller
             }
         }
 
-        // if no properties or other tags where present add properties at the end
+        // if no properties or other tags were present add properties at the end
         if ($propertyPosition === false) {
-            $propertyPosition = count($lines) - 2;
+            $propertyPosition = \count($lines) - 2;
         }
 
         $finalDoc = '';
@@ -623,25 +657,33 @@ class PhpDocController extends Controller
         $file = str_replace("\r", '', str_replace("\t", ' ', file_get_contents($fileName, true)));
         $ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
         $namespace = reset($ns);
-        $namespace = $namespace['name'];
-        $classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
+        if ($namespace === false) {
+            $namespace = '\\';
+        } else {
+            $namespace = $namespace['name'];
+        }
+        $classes = $this->match('#\n(?:abstract )?(?:final )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
 
-        if (count($classes) > 1) {
+        if (\count($classes) > 1) {
             $this->stderr("[ERR] There should be only one class in a file: $fileName\n", Console::FG_RED);
 
             return false;
         }
-        if (count($classes) < 1) {
+        if (\count($classes) < 1) {
             $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
-            if (count($interfaces) == 1) {
+            if (\count($interfaces) == 1) {
                 return false;
-            } elseif (count($interfaces) > 1) {
+            }
+
+            if (\count($interfaces) > 1) {
                 $this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
             } else {
                 $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.*)\n\}(\n|$)#', $file);
-                if (count($traits) == 1) {
+                if (\count($traits) == 1) {
                     return false;
-                } elseif (count($traits) > 1) {
+                }
+
+                if (\count($traits) > 1) {
                     $this->stderr("[ERR] There should be only one class/trait/interface in a file: $fileName\n", Console::FG_RED);
                 } else {
                     $this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
@@ -680,63 +722,43 @@ class PhpDocController extends Controller
                 ];
             }
 
+            if (\count($props) === 0) {
+                continue;
+            }
+
             ksort($props);
 
-            if (count($props) > 0) {
-                $phpdoc .= " *\n";
-                foreach ($props as $propName => &$prop) {
-                    $docline = ' * @';
-                    $docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
-                    $note = '';
-                    if (isset($prop['get']) && isset($prop['set'])) {
-                        if ($prop['get']['type'] != $prop['set']['type']) {
-                            $note = ' Note that the type of this property differs in getter and setter.'
-                                  . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';
-                        }
-                    } elseif (isset($prop['get'])) {
-                        // check if parent class has setter defined
-                        $c = $className;
-                        $parentSetter = false;
-                        while ($parent = get_parent_class($c)) {
-                            if (method_exists($parent, 'set' . ucfirst($propName))) {
-                                $parentSetter = true;
-                                break;
-                            }
-                            $c = $parent;
-                        }
-                        if (!$parentSetter) {
-                            $note = ' This property is read-only.';
-//							$docline .= '-read';
-                        }
-                    } elseif (isset($prop['set'])) {
-                        // check if parent class has getter defined
-                        $c = $className;
-                        $parentGetter = false;
-                        while ($parent = get_parent_class($c)) {
-                            if (method_exists($parent, 'set' . ucfirst($propName))) {
-                                $parentGetter = true;
-                                break;
-                            }
-                            $c = $parent;
-                        }
-                        if (!$parentGetter) {
-                            $note = ' This property is write-only.';
-//							$docline .= '-write';
-                        }
-                    } else {
-                        continue;
+            $phpdoc .= " *\n";
+            foreach ($props as $propName => &$prop) {
+                $docLine = ' * @property';
+                $note = '';
+                if (isset($prop['get'], $prop['set'])) {
+                    if ($prop['get']['type'] !== $prop['set']['type']) {
+                        $note = ' Note that the type of this property differs in getter and setter.'
+                                . ' See [[get' . ucfirst($propName) . '()]]'
+                                . ' and [[set' . ucfirst($propName) . '()]] for details.';
                     }
-                    $docline .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
-                    $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
-                    foreach ($comment as &$cline) {
-                        $cline = ltrim($cline, '* ');
+                } elseif (isset($prop['get'])) {
+                    if (!$this->hasSetterInParents($className, $propName)) {
+                        $docLine .= '-read';
                     }
-                    $docline = wordwrap($docline . implode(' ', $comment), 110, "\n * ") . "\n";
-
-                    $phpdoc .= $docline;
+                } elseif (isset($prop['set'])) {
+                    if (!$this->hasGetterInParents($className, $propName)) {
+                        $docLine .= '-write';
+                    }
+                } else {
+                    continue;
                 }
-                $phpdoc .= " *\n";
+                $docLine .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
+                $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
+                foreach ($comment as &$cline) {
+                    $cline = ltrim(rtrim($cline), '* ');
+                }
+                $docLine = wordwrap($docLine . implode(' ', $comment), 110, "\n * ") . "\n";
+
+                $phpdoc .= $docLine;
             }
+            $phpdoc .= " *\n";
         }
 
         return [$className, $phpdoc];
@@ -773,11 +795,92 @@ class PhpDocController extends Controller
             return '';
         }
 
-        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
+        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[\strlen($str) - 1] !== '.' ? '.' : '');
     }
 
     protected function getPropParam($prop, $param)
     {
         return isset($prop['property']) ? $prop['property'][$param] : (isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param]);
+    }
+
+    /**
+     * Generate a hash value (message digest)
+     * @param string $string message to be hashed.
+     * @return string calculated message digest.
+     */
+    private function hash($string)
+    {
+        if (!function_exists('hash')) {
+            return sha1($string);
+        }
+        return hash('sha256', $string);
+    }
+
+    /**
+     * @param string $className
+     * @param string $propName
+     * @return bool
+     */
+    protected function hasGetterInParents($className, $propName)
+    {
+        $class = $className;
+
+        try {
+            while ($parent = get_parent_class($class)) {
+                if (method_exists($parent, 'get' . ucfirst($propName))) {
+                    return true;
+                }
+                $class = $parent;
+            }
+        } catch (\Throwable $t) {
+            $this->stderr("[ERR] Error when getting parents for $className\n", Console::FG_RED);
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $className
+     * @param string $propName
+     * @return bool
+     */
+    protected function hasSetterInParents($className, $propName)
+    {
+        $class = $className;
+
+        try {
+            while ($parent = get_parent_class($class)) {
+                if (method_exists($parent, 'set' . ucfirst($propName))) {
+                    return true;
+                }
+                $class = $parent;
+            }
+        } catch (\Throwable $t) {
+            $this->stderr("[ERR] Error when getting parents for $className\n", Console::FG_RED);
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $className
+     * @param \ReflectionClass $ref
+     * @return bool
+     */
+    protected function isBaseObject($className, \ReflectionClass $ref)
+    {
+        $isDeprecatedObject = false;
+        if (PHP_VERSION_ID <= 70100) {
+            $isDeprecatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
+        }
+        return !$isDeprecatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
+    }
+
+    private function shouldSkipClass($className)
+    {
+        if (PHP_VERSION_ID > 70100) {
+            return $className === 'yii\base\Object';
+        }
+        return false;
     }
 }

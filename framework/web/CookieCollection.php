@@ -17,9 +17,8 @@ use yii\base\InvalidCallException;
  *
  * For more details and usage information on CookieCollection, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
  *
- * @property int $count The number of cookies in the collection. This property is read-only.
- * @property ArrayIterator $iterator An iterator for traversing the cookies in the collection. This property
- * is read-only.
+ * @property-read int $count The number of cookies in the collection.
+ * @property-read ArrayIterator $iterator An iterator for traversing the cookies in the collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -55,6 +54,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It will be implicitly called when you use `foreach` to traverse the collection.
      * @return ArrayIterator an iterator for traversing the cookies in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->_cookies);
@@ -66,6 +66,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It will be implicitly called when you use `count($collection)`.
      * @return int the number of cookies in the collection.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getCount();
@@ -83,7 +84,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     /**
      * Returns the cookie with the specified name.
      * @param string $name the cookie name
-     * @return Cookie the cookie with the specified name. Null if the named cookie does not exist.
+     * @return Cookie|null the cookie with the specified name. Null if the named cookie does not exist.
      * @see getValue()
      */
     public function get($name)
@@ -113,7 +114,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     public function has($name)
     {
         return isset($this->_cookies[$name]) && $this->_cookies[$name]->value !== ''
-            && ($this->_cookies[$name]->expire === null || $this->_cookies[$name]->expire >= time());
+            && ($this->_cookies[$name]->expire === null || $this->_cookies[$name]->expire === 0 || $this->_cookies[$name]->expire >= time());
     }
 
     /**
@@ -199,6 +200,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the cookie name
      * @return bool whether the named cookie exists
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($name)
     {
         return $this->has($name);
@@ -212,6 +214,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the cookie name
      * @return Cookie the cookie with the specified name, null if the named cookie does not exist.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($name)
     {
         return $this->get($name);
@@ -225,6 +228,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param string $name the cookie name
      * @param Cookie $cookie the cookie to be added
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($name, $cookie)
     {
         $this->add($cookie);
@@ -237,6 +241,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * This is equivalent to [[remove()]].
      * @param string $name the cookie name
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($name)
     {
         $this->remove($name);

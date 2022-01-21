@@ -262,7 +262,7 @@ class CsvDataProvider extends BaseDataProvider
     
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -273,7 +273,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -302,7 +302,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -324,7 +324,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
@@ -344,7 +344,7 @@ class CsvDataProvider extends BaseDataProvider
 
 While you can build conditions for active data provider manually as described in
 [Filtering Data](output-data-widgets.md#filtering-data) and [Separate Filter Form](output-data-widgets.md#separate-filter-form)
-sections of data widgets guide, Yii has data filters that are very useful if you need flexible filter condtions.
+sections of data widgets guide, Yii has data filters that are very useful if you need flexible filter conditions.
 Data filters could be used as follows:
 
 ```php

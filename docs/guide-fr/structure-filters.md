@@ -72,7 +72,7 @@ class ActionTimeFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         $time = microtime(true) - $this->_startTime;
-        Yii::trace("Action '{$action->uniqueId}' spent $time second.");
+        Yii::debug("Action '{$action->uniqueId}' spent $time second.");
         return parent::afterAction($action, $result);
     }
 }
@@ -88,6 +88,7 @@ Yii fournit un jeu de filtres couramment utilisés, que l'on trouve en premier l
 *AccessControl* (contrôle d'accès) fournit un contrôle d'accès simple basé sur un jeu de [[yii\filters\AccessControl::rules|règles]]. En particulier, avant qu'une action ne soit exécutée, *AccessControl* examine les règles listées et trouve la première qui  correspond aux variables du contexte courant (comme l'adresse IP, l'état de connexion de l'utilisateur, etc.). La règle qui correspond détermine si l'exécution de l'action requise doit être autorisée ou refusée. Si aucune des règles ne correspond, l'accès est refusé. 
 
 L'exemple suivant montre comment autoriser les utilisateurs authentifiés à accéder aux actions `create` et `update` tout en refusant l'accès à ces actions aux autres utilisateurs.
+
 ```php
 use yii\filters\AccessControl;
 
@@ -95,7 +96,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'only' => ['create', 'update'],
             'rules' => [
                 // autoriser les utilisateurs authentifiés
@@ -127,7 +128,7 @@ public function behaviors()
 {
     return [
         'basicAuth' => [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ],
     ];
 }
@@ -141,6 +142,7 @@ Les filtres de méthode d'authentification sont communément utilisés dans la m
 *ContentNegotiator* (négociateur de contenu) prend en charge la négociation des formats de réponse et la négociation de langue d'application. Il essaye de déterminer le format de la réponse et/ou la langue en examinant les paramètres de la méthode `GET` et ceux de l'entête HTTP `Accept`.
 
 Dans l'exemple qui suit, le filtre *ContentNegotiator* est configuré pour prendre en charge JSON et XML en tant que formats de réponse, et anglais (États-Unis) et allemand en tant que langues. 
+
 ```php
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
@@ -149,7 +151,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -172,7 +174,7 @@ use yii\web\Response;
 [
     'bootstrap' => [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -202,7 +204,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => HttpCache::className(),
+            'class' => HttpCache::class,
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -228,11 +230,11 @@ public function behaviors()
 {
     return [
         'pageCache' => [
-            'class' => PageCache::className(),
+            'class' => PageCache::class,
             'only' => ['index'],
             'duration' => 60,
             'dependency' => [
-                'class' => DbDependency::className(),
+                'class' => DbDependency::class,
                 'sql' => 'SELECT COUNT(*) FROM post',
             ],
             'variations' => [
@@ -262,7 +264,7 @@ public function behaviors()
 {
     return [
         'verbs' => [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'index'  => ['get'],
                 'view'   => ['get'],
@@ -289,7 +291,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
         ],
     ], parent::behaviors());
 }
@@ -316,7 +318,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
@@ -336,7 +338,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],

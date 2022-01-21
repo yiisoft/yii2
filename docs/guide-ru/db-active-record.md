@@ -32,7 +32,7 @@ Yii поддерживает работу с Active Record для следующ
 * SQLite 2 и 3: посредством [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 и выше: посредством [[yii\db\ActiveRecord]]
 * Oracle: посредством [[yii\db\ActiveRecord]]
-* CUBRID 9.3 и выше: посредством [[yii\db\ActiveRecord]] (Имейте ввиду, что вследствие
+* CUBRID 9.3 и выше: посредством [[yii\db\ActiveRecord]] (Имейте в виду, что вследствие
   [бага](http://jira.cubrid.org/browse/APIS-658) в PDO-расширении для CUBRID, заключение значений в кавычки не работает,
   поэтому необходимо использовать CUBRID версии 9.3 как на клиентской стороне, так и на сервере)
 * Sphinx: посредством [[yii\sphinx\ActiveRecord]], потребуется расширение `yii2-sphinx`
@@ -61,7 +61,7 @@ Yii поддерживает работу с Active Record для следующ
 [[yii\db\Connection::$tablePrefix|tablePrefix]] задан как `tbl_`, `Customer` преобразуется в `tbl_customer`, а
 `OrderItem` в `tbl_order_item`. 
 
-Если имя таблицы указано в формате `{{%TableName}}`, символ `%` заменяется префиксом. Например, , `{{%post}}` становится
+Если имя таблицы указано в формате `{{%TableName}}`, символ `%` заменяется префиксом. Например `{{%post}}` становится
 `{{tbl_post}}`. Фигуриные скобки используются для [экранирования в SQL-запросах](db-dao.md#quoting-table-and-column-names).
 
 В нижеследующем примере мы объявляем класс Active Record с названием `Customer` для таблицы `customer`.
@@ -219,6 +219,26 @@ $customers = Customer::findAll([
 ]);
 ```
 
+> Warning: Если вам нужно передать в эти методы данные, полученные от пользователя, убедитесь что передаваемое значение – это скаляр,
+> а если необходимо указать условия в формате массива – убедитесь, что пользовательские данные не могут изменить структуру этого массива.
+>
+> ```php
+> // yii\web\Controller гарантирует, что $id будет скаляром
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // явное указание имени столбца для поиска гарантирует поиск по столбцу `id`,
+> // и возвращение одной записи как для массива, так и для скаляра в принятом от пользователя поле `id` 
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // НЕ используйте этот код! Пользователь может передать в параметр `id` массив
+> // и осуществить поиск по имени столбца, которое не должно быть использовано для поиска по логике вашего приложения.
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
 > Note: Ни метод [[yii\db\ActiveRecord::findOne()]], ни [[yii\db\ActiveQuery::one()]] не добавляет условие `LIMIT 1` к
   генерируемым SQL-запросам. Если ваш запрос может вернуть много строк данных, вы должны вызвать метод `limit(1)` явно
   в целях улучшения производительности, например: `Customer::find()->limit(1)->one()`.
@@ -335,7 +355,7 @@ foreach (Customer::find()->each(10) as $customer) {
 
 // пакетная выборка с жадной загрузкой
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer - это объекта класса Customer
+    // $customer - это объект класса Customer
 }
 ```
 
@@ -365,7 +385,7 @@ $customer->save();
 
 Метод [[yii\db\ActiveRecord::save()|save()]] может вставить или обновить строку данных в зависимости от состояния
 Active Record объекта. Если объект создан с помощью оператора `new`, вызов метода [[yii\db\ActiveRecord::save()|save()]]
-приведёт к вставке новой строки данных; если же объект был получен с помощью запроса на получение данных, вызов 
+приведёт к вставке новой строки данных; если объект был получен с помощью запроса на получение данных, вызов 
 [[yii\db\ActiveRecord::save()|save()]] обновит строку таблицы, соответствующую объекту Active Record.
 
 Вы можете различать два состояния Active Record объекта с помощью проверки значения его свойства
@@ -488,7 +508,7 @@ $customer->loadDefaultValues();
 Однако, механизм приведения типов имеет несколько ограничений:
 
 * Числа с плавающей точкой не будут обработаны, а будут представленны как строки, в противном случае они могут потерять точность.
-* Конвертация целых чисел зависит от разрядности используемой операциооной системы. В частности: значения колонок, объявленных
+* Конвертация целых чисел зависит от разрядности используемой операционной системы. В частности: значения колонок, объявленных
   как 'unsigned integer' или 'big integer' будут приведены к целому типу PHP только на 64-х разрядных системах, в то время
   как на 32-х разрядных - они будут представленны как строки.
 
@@ -501,7 +521,25 @@ $customer->loadDefaultValues();
 
 > Совет: вы можете использовать поведение [[yii\behaviors\AttributeTypecastBehavior]] для того, чтобы производить
   приведение типов для ActiveRecord во время валидации или сохранения.
+  
+Начиная с 2.0.14, Yii ActiveRecord поддерживает сложные типы данных, такие как JSON или многомерные массивы.
 
+#### JSON в MySQL и PostgreSQL
+После заполнения данных, значение из столбца JSON будет автоматически декодировано из JSON в соответствии со стандартными правилами декодирования JSON.
+
+Чтобы сохранить значение атрибута в столбец JSON, ActiveRecord автоматически создаст объект [[yii\db\JsonExpression|JsonExpression]], который будет закодирован в строку JSON на уровне [QueryBuilder](db-query-builder.md).
+
+#### Массивы в PostgreSQL
+После заполнения данных значение из столбца `Array` будет автоматически декодировано из нотации PgSQL в объект [[yii\db\ArrayExpression|ArrayExpression]]. Он реализует интерфейс PHP `ArrayAccess`, так что вы можете использовать его в качестве массива, или вызвать `->getValue ()`, чтобы получить сам массив.
+
+Чтобы сохранить значение атрибута в столбец массива, ActiveRecord автоматически создаст объект [[yii\db\Array Expression|ArrayExpression]], который будет закодирован [QueryBuilder](db-query-builder.md) в строковое представление массива PgSQL.
+
+Можно также использовать условия для столбцов JSON:
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+Дополнительные сведения о системе построения выражений см. [Query Builder – добавление пользовательских условий и выражений](db-query-builder.md#adding-custom-conditions-and-expressions)
 
 ### Обновление нескольких строк данных <span id="updating-multiple-rows"></span>
 
@@ -651,7 +689,7 @@ try {
 ```
 
 > Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
-> `\Exception` реализует интерфейс [`\Throwable` interface](http://php.net/manual/ru/class.throwable.php)
+> `\Exception` реализует интерфейс [`\Throwable` interface](https://www.php.net/manual/ru/class.throwable.php)
 > начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 Второй способ заключается в том, чтобы перечислить операции с базой данных, которые требуют тразнакционного выполнения,
@@ -771,7 +809,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -779,7 +817,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -796,16 +834,17 @@ class Order extends ActiveRecord
   что покупатель может иметь много заказов в то время, как заказ может быть сделан лишь одним покупателем.
 - название связного Active Record класса: указывается в качестве первого параметра для метода 
   [[yii\db\ActiveRecord::hasMany()|hasMany()]] или для метода [[yii\db\ActiveRecord::hasOne()|hasOne()]]. Рекомендуется
-  использовать код `Xyz::className()`, чтобы получить строку с именем класса, при этом вы сможете воспользоваться
+  использовать код `Xyz::class`, чтобы получить строку с именем класса, при этом вы сможете воспользоваться
   возможностями авто-дополнения кода, встроенного в IDE, а также получите обработку ошибок на этапе компиляции.
 - связь между двумя типами данных: указываются столбцы с помощью которых два типа данных связаны. Значения массива - это
   столбцы  основного объекта данных (представлен классом Active Record, в котором объявляется связь), в то время как
   ключи массива - столбцы связанных данных.
 
   Есть простой способ запомнить это правило: как вы можете увидеть в примере выше, столбец связной Active Record
-  указывается сразу же после указания самого класса Active Record. Вы видите, что `customer_id` - это свойство класса
+  указывается сразу после указания самого класса Active Record. Вы видите, что `customer_id` - это свойство класса
   `Order`, а `id` - свойство класса `Customer`.
   
+> Warning: Имя связи `relation` зарезервировано. Его использование приведёт к ошибке `ArgumentCountError`.
 
 ### Доступ к связным данным <span id="accessing-relational-data"></span>
 
@@ -872,7 +911,7 @@ class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -894,7 +933,7 @@ $orders = $customer->bigOrders;
 
 При проектировании баз данных, когда между двумя таблицами имеется кратность связи many-to-many, обычно вводится 
 [промежуточная таблица](http://en.wikipedia.org/wiki/Junction_table). Например, таблицы `order` и `item` могут быть
-связаны посредством промежуточной таблицы с названием `order_item`. Один заказ будет соотносится с несколькими товарами,
+связаны посредством промежуточной таблицы с названием `order_item`. Один заказ будет соотноситься с несколькими товарами,
 в то время как один товар будет также соотноситься с несколькими заказами.
 
 При объявлении подобных связей вы можете пользоваться методом [[yii\db\ActiveQuery::via()|via()]] или методом
@@ -908,7 +947,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -921,12 +960,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -1109,7 +1148,7 @@ $customers = Customer::find()
 
 По умолчанию, метод [[yii\db\ActiveQuery::joinWith()|joinWith()]] будет использовать конструкцию `LEFT JOIN` для
 объединения основной таблицы со связной. Вы можете указать другой тип операции JOIN (например, `RIGHT JOIN`) с помощью
-третьего параметра этого метода - `$joinType`. Если же вам нужен `INNER JOIN`, вы можете вместо этого просто вызвать
+третьего параметра этого метода - `$joinType`. Если вам нужен `INNER JOIN`, вы можете вместо этого просто вызвать
 метод [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]].
 
 Вызов метода [[yii\db\ActiveQuery::joinWith()|joinWith()]] будет [жадно загружать](#lazy-eager-loading) связные данные
@@ -1176,7 +1215,7 @@ $query->joinWith([
 $query->joinWith(['orders o'])->orderBy('o.id');
 ```
 
-Этот синтаксис работает для простых связей. Если же необходимо использовать связующую таблицу, например 
+Этот синтаксис работает для простых связей. Если необходимо использовать связующую таблицу, например 
 `$query->joinWith(['orders.product'])`, то вызовы joinWith вкладываются друг в друга:
 
 ```php
@@ -1197,7 +1236,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1205,7 +1244,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1239,7 +1278,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1352,7 +1391,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // у покупателя может быть много комментариев
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1367,7 +1406,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // комментарий принадлежит одному покупателю
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1447,7 +1486,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1518,7 +1557,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1614,13 +1653,13 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
 
 При такой реализации, в случае когда 'ordersCount' присутсвует в разделе 'select' - значение 'Customer::ordersCount' будет
-заполнено из результатов запроса, в противном случае - оно булет вычислено по превому требованию на основании отношения `Customer::orders`.
+заполнено из результатов запроса, в противном случае - оно будет вычислено по первому требованию на основании отношения `Customer::orders`.
 
 Этот подход также можно использовать для быстрого доступа к некоторым данным отношений, в особенности для агрегации.
 Например:
@@ -1645,7 +1684,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 
     /**

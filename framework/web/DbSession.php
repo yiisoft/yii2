@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
@@ -74,6 +75,12 @@ class DbSession extends MultiFieldSession
      */
     public $sessionTable = '{{%session}}';
 
+    /**
+     * @var array Session fields to be written into session table columns
+     * @since 2.0.17
+     */
+    protected $fields = [];
+
 
     /**
      * Initializes the DbSession component.
@@ -87,9 +94,27 @@ class DbSession extends MultiFieldSession
     }
 
     /**
-     * Updates the current session ID with a newly generated one .
-     * Please refer to <http://php.net/session_regenerate_id> for more details.
-     * @param bool $deleteOldSession Whether to delete the old associated session file or not.
+     * Session open handler.
+     * @internal Do not call this method directly.
+     * @param string $savePath session save path
+     * @param string $sessionName session name
+     * @return bool whether session is opened successfully
+     */
+    public function openSession($savePath, $sessionName)
+    {
+        if ($this->getUseStrictMode()) {
+            $id = $this->getId();
+            if (!$this->getReadQuery($id)->exists($this->db)) {
+                //This session id does not exist, mark it for forced regeneration
+                $this->_forceRegenerateId = $id;
+            }
+        }
+
+        return parent::openSession($savePath, $sessionName);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function regenerateID($deleteOldSession = false)
     {
@@ -108,11 +133,13 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $query = new Query();
-        $row = $query->from($this->sessionTable)
-            ->where(['id' => $oldID])
-            ->createCommand($this->db)
-            ->queryOne();
+        $row = $this->db->useMaster(function() use ($oldID) {
+            return (new Query())->from($this->sessionTable)
+               ->where(['id' => $oldID])
+               ->createCommand($this->db)
+               ->queryOne();
+        });
+
         if ($row !== false) {
             if ($deleteOldSession) {
                 $this->db->createCommand()
@@ -133,6 +160,19 @@ class DbSession extends MultiFieldSession
     }
 
     /**
+     * Ends the current session and store session data.
+     * @since 2.0.17
+     */
+    public function close()
+    {
+        if ($this->getIsActive()) {
+            // prepare writeCallback fields before session closes
+            $this->fields = $this->composeFields();
+            YII_DEBUG ? session_write_close() : @session_write_close();
+        }
+    }
+
+    /**
      * Session read handler.
      * @internal Do not call this method directly.
      * @param string $id session ID
@@ -140,9 +180,7 @@ class DbSession extends MultiFieldSession
      */
     public function readSession($id)
     {
-        $query = new Query();
-        $query->from($this->sessionTable)
-            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
+        $query = $this->getReadQuery($id);
 
         if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
@@ -162,31 +200,36 @@ class DbSession extends MultiFieldSession
      */
     public function writeSession($id, $data)
     {
+        if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
+            //Ignore write when forceRegenerate is active for this id
+            return true;
+        }
+
         // exception must be caught in session write handler
-        // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
+        // https://www.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $query = new Query();
-            $exists = $query->select(['id'])
-                ->from($this->sessionTable)
-                ->where(['id' => $id])
-                ->createCommand($this->db)
-                ->queryScalar();
-            $fields = $this->composeFields($id, $data);
-            if ($exists === false) {
-                $this->db->createCommand()
-                    ->insert($this->sessionTable, $fields)
-                    ->execute();
-            } else {
-                unset($fields['id']);
-                $this->db->createCommand()
-                    ->update($this->sessionTable, $fields, ['id' => $id])
-                    ->execute();
+            // ensure backwards compatability (fixed #9438)
+            if ($this->writeCallback && !$this->fields) {
+                $this->fields = $this->composeFields();
             }
+            // ensure data consistency
+            if (!isset($this->fields['data'])) {
+                $this->fields['data'] = $data;
+            } else {
+                $_SESSION = $this->fields['data'];
+            }
+            // ensure 'id' and 'expire' are never affected by [[writeCallback]]
+            $this->fields = array_merge($this->fields, [
+                'id' => $id,
+                'expire' => time() + $this->getTimeout(),
+            ]);
+            $this->fields = $this->typecastFields($this->fields);
+            $this->db->createCommand()->upsert($this->sessionTable, $this->fields)->execute();
+            $this->fields = [];
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
         }
-
         return true;
     }
 
@@ -218,5 +261,35 @@ class DbSession extends MultiFieldSession
             ->execute();
 
         return true;
+    }
+
+    /**
+     * Generates a query to get the session from db
+     * @param string $id The id of the session
+     * @return Query
+     */
+    protected function getReadQuery($id)
+    {
+        return (new Query())
+            ->from($this->sessionTable)
+            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
+    }
+
+    /**
+     * Method typecasts $fields before passing them to PDO.
+     * Default implementation casts field `data` to `\PDO::PARAM_LOB`.
+     * You can override this method in case you need special type casting.
+     *
+     * @param array $fields Fields, that will be passed to PDO. Key - name, Value - value
+     * @return array
+     * @since 2.0.13
+     */
+    protected function typecastFields($fields)
+    {
+        if (isset($fields['data']) && !is_array($fields['data']) && !is_object($fields['data'])) {
+            $fields['data'] = new PdoValue($fields['data'], \PDO::PARAM_LOB);
+        }
+
+        return $fields;
     }
 }

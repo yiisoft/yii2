@@ -7,7 +7,7 @@ pero el hardware moderno hace posible que ese tipo de hash e incluso más fuerte
 
 Para poder proveer de una seguridad mayor para los passwords de los usuarios, incluso en el peor de los escenarios (tu aplicación sufre una brecha de seguridad),
 necesitas utilizar un algoritmo que resista los ataques de fuerza bruta. La mejor elección actualmente es `bcrypt`.
-En PHP, puedes generar un hash `bcrypt` utilizando la [función crypt](http://php.net/manual/en/function.crypt.php). Yii provee
+En PHP, puedes generar un hash `bcrypt` utilizando la [función crypt](https://www.php.net/manual/en/function.crypt.php). Yii provee
 dos funciones auxiliares que hacen que `crypt` genere y verifique los hash más fácilmente.
 
 Cuando un usuario provee un password por primera vez (por ej., en la registración), dicho password necesita ser pasado por un hash:

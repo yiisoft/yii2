@@ -1,7 +1,7 @@
 Guía Definitiva de Yii 2.0
 ==========================
 
-Este tutorial se publica bajo los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
+Este tutorial se publica bajo los [Términos de Documentación Yii](https://www.yiiframework.com/doc/terms/).
 
 Todos los derechos reservados.
 
@@ -18,6 +18,7 @@ Introducción
 Primeros pasos
 --------------
 
+* [Qué necesita saber](start-prerequisites.md)
 * [Instalar Yii](start-installation.md)
 * [Funcionamiento de aplicaciones](start-workflow.md)
 * [Hola a todos](start-hello.md)

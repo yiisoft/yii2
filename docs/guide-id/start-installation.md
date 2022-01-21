@@ -44,7 +44,7 @@ composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Perintah pertama menginstal [komposer aset Plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+Perintah pertama menginstal [komposer aset Plugin](https://github.com/fxpio/composer-asset-plugin)
 yang memungkinkan mengelola bower dan paket npm melalui Composer. Anda hanya perlu menjalankan perintah ini
 sekali untuk semua. Perintah kedua menginstal Yii dalam sebuah direktori bernama `basic`. Anda dapat memilih nama direktori yang berbeda jika Anda ingin.
 
@@ -67,7 +67,7 @@ Instalasi dari file Arsip <span id="installing-from-archive-file"></span>
 
 Instalasi Yii dari file arsip melibatkan tiga langkah:
 
-1. Download file arsip dari [yiiframework.com](http://www.yiiframework.com/download/).
+1. Download file arsip dari [yiiframework.com](https://www.yiiframework.com/download/).
 2. Uraikan file yang didownload ke folder yang bisa diakses web.
 3. Memodifikasi `config/web.php` dengan memasukkan kunci rahasia untuk `cookieValidationKey`.
    (Ini dilakukan secara otomatis jika Anda menginstal Yii menggunakan Composer):
@@ -97,7 +97,7 @@ Memverifikasi Instalasi <span id="memverifikasi instalasi"></span>
 --------------------------
 
 Setelah instalasi selesai, baik mengkonfigurasi web server Anda (lihat bagian berikutnya) atau menggunakan
-[Built-in web server PHP] (https://secure.php.net/manual/en/features.commandline.webserver.php) dengan menjalankan berikut
+[Built-in web server PHP] (https://www.php.net/manual/en/features.commandline.webserver.php) dengan menjalankan berikut
 konsol perintah sementara dalam proyek `web` direktori:
 
 ```bash
@@ -131,7 +131,7 @@ persyaratan Yii. Anda dapat memeriksa apakah persyaratan minimumnya cocok dengan
   ```
 
 Anda harus mengkonfigurasi instalasi PHP Anda sehingga memenuhi persyaratan minimal Yii. Yang paling penting, Anda
-harus memiliki PHP versi 5.4 atau lebih. Anda juga harus menginstal [PDO PHP Ekstensi](http://www.php.net/manual/en/pdo.installation.php)
+harus memiliki PHP versi 5.4 atau lebih. Anda juga harus menginstal [PDO PHP Ekstensi](https://www.php.net/manual/en/pdo.installation.php)
 dan driver database yang sesuai (seperti `pdo_mysql` untuk database MySQL), jika aplikasi Anda membutuhkan database.
 
 
@@ -187,9 +187,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Konfigurasi Nginx yang Direkomendasikan<span id="recommended-nginx-configuration"></span>
 
-Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](http://php.net/install.fpm).
+Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](https://www.php.net/install.fpm).
 Anda dapat menggunakan konfigurasi Nginx berikut, menggantikan `path/to/basic/web` dengan path yang sebenarnya untuk
-`basic/web` dan `mysite.local` dengan hostname yang sebenarnya untuk server.
+`basic/web` dan `mysite.test` dengan hostname yang sebenarnya untuk server.
 
 ```nginx
 server {
@@ -199,7 +199,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

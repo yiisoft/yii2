@@ -64,7 +64,7 @@ abstract class Cache extends Component implements CacheInterface
     /**
      * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
      * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
-     * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
+     * serializer (e.g. [igbinary](https://pecl.php.net/package/igbinary)), you may configure this property with
      * a two-element array. The first element specifies the serialization function, and the second the deserialization
      * function. If this property is set false, data will be directly sent to and retrieved from the underlying
      * cache component without any serialization or deserialization. You should not turn off serialization if
@@ -79,6 +79,20 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $defaultDuration = 0;
 
+    /**
+     * @var bool whether [igbinary serialization](https://pecl.php.net/package/igbinary) is available or not.
+     */
+    private $_igbinaryAvailable = false;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        $this->_igbinaryAvailable = \extension_loaded('igbinary');
+    }
 
     /**
      * Builds a normalized cache key from a given key.
@@ -95,7 +109,13 @@ abstract class Cache extends Component implements CacheInterface
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
-            $key = md5(json_encode($key));
+            if ($this->_igbinaryAvailable) {
+                $serializedKey = igbinary_serialize($key);
+            } else {
+                $serializedKey = serialize($key);
+            }
+
+            $key = md5($serializedKey);
         }
 
         return $this->keyPrefix . $key;
@@ -115,7 +135,7 @@ abstract class Cache extends Component implements CacheInterface
         if ($value === false || $this->serializer === false) {
             return $value;
         } elseif ($this->serializer === null) {
-            $value = unserialize($value);
+            $value = unserialize((string)$value);
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
@@ -241,14 +261,15 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
-    public function mset($items, $duration = 0, $dependency = null)
+    public function mset($items, $duration = null, $dependency = null)
     {
         return $this->multiSet($items, $duration, $dependency);
     }
@@ -259,15 +280,20 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      * @since 2.0.7
      */
-    public function multiSet($items, $duration = 0, $dependency = null)
+    public function multiSet($items, $duration = null, $dependency = null)
     {
+        if ($duration === null) {
+            $duration = $this->defaultDuration;
+        }
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -500,6 +526,7 @@ abstract class Cache extends Component implements CacheInterface
      * @param string $key a key identifying the cached value
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($key)
     {
         return $this->get($key) !== false;
@@ -511,6 +538,7 @@ abstract class Cache extends Component implements CacheInterface
      * @param string $key a key identifying the cached value
      * @return mixed the value stored in cache, false if the value is not in the cache or expired.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->get($key);
@@ -524,6 +552,7 @@ abstract class Cache extends Component implements CacheInterface
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         $this->set($key, $value);
@@ -534,6 +563,7 @@ abstract class Cache extends Component implements CacheInterface
      * This method is required by the interface [[\ArrayAccess]].
      * @param string $key the key of the value to be deleted
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         $this->delete($key);
@@ -548,8 +578,8 @@ abstract class Cache extends Component implements CacheInterface
      * ```php
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
-     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
-     *         return Products::find()->mostPopular()->limit(10)->all();
+     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function () use ($count) {
+     *         return Products::find()->mostPopular()->limit($count)->all();
      *     }, 1000);
      * }
      * ```
@@ -557,7 +587,9 @@ abstract class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
-     * In case $callable returns `false`, the value will not be cached.
+     * If you use $callable that can return `false`, then keep in mind that [[getOrSet()]] may work inefficiently
+     * because the [[yii\caching\Cache::get()]] method uses `false` return value to indicate the data item is not found
+     * in the cache. Thus, caching of `false` value will lead to unnecessary internal calls.
      * @param int $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,

@@ -134,4 +134,74 @@ HTML
         $form::end();
         ob_get_clean();
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        ob_start();
+        $form = ActiveForm::begin(
+            [
+                'action' => '/something',
+                'enableClientScript' => false,
+                'on init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                }
+            ]
+        );
+        ActiveForm::end();
+        ob_end_clean();
+        $this->assertTrue($initTriggered);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15476
+     * @see https://github.com/yiisoft/yii2/issues/16892
+     */
+    public function testValidationStateOnInput()
+    {
+        $model = new DynamicModel(['name']);
+        $model->addError('name', 'I have an error!');
+        ob_start();
+        $form = ActiveForm::begin([
+            'action' => '/something',
+            'enableClientScript' => false,
+            'validationStateOn' => ActiveForm::VALIDATION_STATE_ON_INPUT,
+        ]);
+        ActiveForm::end();
+        ob_end_clean();
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+<label class="control-label" for="dynamicmodel-name">Name</label>
+<input type="text" id="dynamicmodel-name" class="form-control has-error" name="DynamicModel[name]" aria-invalid="true">
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+        , (string) $form->field($model, 'name'));
+
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+
+<input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+            , (string) $form->field($model, 'name')->checkbox());
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+
+<input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+            , (string) $form->field($model, 'name')->radio());
+    }
 }

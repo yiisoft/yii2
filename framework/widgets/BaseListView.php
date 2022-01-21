@@ -40,14 +40,14 @@ abstract class BaseListView extends Widget
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      * used to render the pager. You can use a different widget class by configuring the "class" element.
      * Note that the widget must support the `pagination` property which will be populated with the
-     * [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]].
+     * [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]] and will overwrite this value.
      */
     public $pager = [];
     /**
      * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
      * used to render the sorter. You can use a different widget class by configuring the "class" element.
      * Note that the widget must support the `sort` property which will be populated with the
-     * [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]].
+     * [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]] and will overwrite this value.
      */
     public $sorter = [];
     /**
@@ -227,14 +227,18 @@ abstract class BaseListView extends Widget
             }
         }
 
-        return Yii::$app->getI18n()->format($summaryContent, [
+        if ($summaryContent === '') {
+            return '';
+        }
+
+        return Html::tag($tag, Yii::$app->getI18n()->format($summaryContent, [
             'begin' => $begin,
             'end' => $end,
             'count' => $count,
             'totalCount' => $totalCount,
             'page' => $page,
             'pageCount' => $pageCount,
-        ], Yii::$app->language);
+        ], Yii::$app->language), $summaryOptions);
     }
 
     /**

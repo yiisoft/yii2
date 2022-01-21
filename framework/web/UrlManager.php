@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
+use yii\di\Instance;
 use yii\helpers\Url;
 
 /**
@@ -89,7 +90,7 @@ class UrlManager extends Component
      * [
      *     'dashboard' => 'site/index',
      *
-     *     'POST <controller:[\w-]+>s' => '<controller>/create',
+     *     'POST <controller:[\w-]+>' => '<controller>/create',
      *     '<controller:[\w-]+>s' => '<controller>/index',
      *
      *     'PUT <controller:[\w-]+>/<id:\d+>'    => '<controller>/update',
@@ -118,12 +119,18 @@ class UrlManager extends Component
      */
     public $routeParam = 'r';
     /**
-     * @var CacheInterface|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string|bool the cache object or the application component ID of the cache object.
+     * This can also be an array that is used to create a [[CacheInterface]] instance in case you do not want to use
+     * an application component.
      * Compiled URL rules will be cached through this cache object, if it is available.
      *
      * After the UrlManager object is created, if you want to change this property,
      * you should only assign it with a cache object.
-     * Set this property to `false` if you do not want to cache the URL rules.
+     * Set this property to `false` or `null` if you do not want to cache the URL rules.
+     *
+     * Cache entries are stored for the time set by [[\yii\caching\Cache::$defaultDuration|$defaultDuration]] in
+     * the cache configuration, which is unlimited by default. You may want to tune this value if your [[rules]]
+     * change frequently.
      */
     public $cache = 'cache';
     /**
@@ -175,22 +182,11 @@ class UrlManager extends Component
             }
         }
 
-        if (!$this->enablePrettyUrl || empty($this->rules)) {
+        if (!$this->enablePrettyUrl) {
             return;
         }
-        if (is_string($this->cache)) {
-            $this->cache = Yii::$app->get($this->cache, false);
-        }
-        if ($this->cache instanceof CacheInterface) {
-            $cacheKey = $this->cacheKey;
-            $hash = md5(json_encode([$this->ruleConfig, $this->rules]));
-            if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
-                $this->rules = $data[0];
-            } else {
-                $this->rules = $this->buildRules($this->rules);
-                $this->cache->set($cacheKey, [$this->rules, $hash]);
-            }
-        } else {
+
+        if (!empty($this->rules)) {
             $this->rules = $this->buildRules($this->rules);
         }
     }
@@ -222,24 +218,26 @@ class UrlManager extends Component
 
     /**
      * Builds URL rule objects from the given rule declarations.
-     * @param array $rules the rule declarations. Each array element represents a single rule declaration.
+     *
+     * @param array $ruleDeclarations the rule declarations. Each array element represents a single rule declaration.
      * Please refer to [[rules]] for the acceptable rule formats.
      * @return UrlRuleInterface[] the rule objects built from the given rule declarations
      * @throws InvalidConfigException if a rule declaration is invalid
      */
-    protected function buildRules($rules)
+    protected function buildRules($ruleDeclarations)
     {
-        $compiledRules = [];
+        $builtRules = $this->getBuiltRulesFromCache($ruleDeclarations);
+        if ($builtRules !== false) {
+            return $builtRules;
+        }
+
+        $builtRules = [];
         $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
-        foreach ($rules as $key => $rule) {
+        foreach ($ruleDeclarations as $key => $rule) {
             if (is_string($rule)) {
                 $rule = ['route' => $rule];
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
-                    // rules that do not apply for GET requests should not be use to create urls
-                    if (!in_array('GET', $rule['verb'])) {
-                        $rule['mode'] = UrlRule::PARSING_ONLY;
-                    }
                     $key = $matches[4];
                 }
                 $rule['pattern'] = $key;
@@ -250,10 +248,67 @@ class UrlManager extends Component
             if (!$rule instanceof UrlRuleInterface) {
                 throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
             }
-            $compiledRules[] = $rule;
+            $builtRules[] = $rule;
         }
 
-        return $compiledRules;
+        $this->setBuiltRulesCache($ruleDeclarations, $builtRules);
+
+        return $builtRules;
+    }
+
+    /**
+     * @return CacheInterface|null|bool
+     */
+    private function ensureCache()
+    {
+        if (!$this->cache instanceof CacheInterface && $this->cache !== false && $this->cache !== null) {
+            try {
+                $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+            } catch (InvalidConfigException $e) {
+                Yii::warning('Unable to use cache for URL manager: ' . $e->getMessage());
+                $this->cache = null;
+            }
+        }
+
+        return $this->cache;
+    }
+
+    /**
+     * Stores $builtRules to cache, using $rulesDeclaration as a part of cache key.
+     *
+     * @param array $ruleDeclarations the rule declarations. Each array element represents a single rule declaration.
+     * Please refer to [[rules]] for the acceptable rule formats.
+     * @param UrlRuleInterface[] $builtRules the rule objects built from the given rule declarations.
+     * @return bool whether the value is successfully stored into cache
+     * @since 2.0.14
+     */
+    protected function setBuiltRulesCache($ruleDeclarations, $builtRules)
+    {
+        $cache = $this->ensureCache();
+        if (!$cache) {
+            return false;
+        }
+
+        return $cache->set([$this->cacheKey, $this->ruleConfig, $ruleDeclarations], $builtRules);
+    }
+
+    /**
+     * Provides the built URL rules that are associated with the $ruleDeclarations from cache.
+     *
+     * @param array $ruleDeclarations the rule declarations. Each array element represents a single rule declaration.
+     * Please refer to [[rules]] for the acceptable rule formats.
+     * @return UrlRuleInterface[]|false the rule objects built from the given rule declarations or boolean `false` when
+     * there are no cache items for this definition exists.
+     * @since 2.0.14
+     */
+    protected function getBuiltRulesFromCache($ruleDeclarations)
+    {
+        $cache = $this->ensureCache();
+        if (!$cache) {
+            return false;
+        }
+
+        return $cache->get([$this->cacheKey, $this->ruleConfig, $ruleDeclarations]);
     }
 
     /**
@@ -269,7 +324,7 @@ class UrlManager extends Component
             foreach ($this->rules as $rule) {
                 $result = $rule->parseRequest($this, $request);
                 if (YII_DEBUG) {
-                    Yii::trace([
+                    Yii::debug([
                         'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                         'match' => $result !== false,
                         'parent' => null,
@@ -284,7 +339,7 @@ class UrlManager extends Component
                 return false;
             }
 
-            Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
+            Yii::debug('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
             $suffix = (string) $this->suffix;
             $pathInfo = $request->getPathInfo();
@@ -314,7 +369,7 @@ class UrlManager extends Component
             return [$pathInfo, []];
         }
 
-        Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
+        Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
         $route = $request->getQueryParam($this->routeParam, '');
         if (is_array($route)) {
             $route = '';
@@ -397,7 +452,7 @@ class UrlManager extends Component
                     }
 
                     return $url . $baseUrl . $anchor;
-                } elseif (strpos($url, '//') === 0) {
+                } elseif (strncmp($url, '//', 2) === 0) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 2)) !== false) {
                         return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
                     }
@@ -506,7 +561,7 @@ class UrlManager extends Component
         $url = $this->createUrl($params);
         if (strpos($url, '://') === false) {
             $hostInfo = $this->getHostInfo();
-            if (strpos($url, '//') === 0) {
+            if (strncmp($url, '//', 2) === 0) {
                 $url = substr($hostInfo, 0, strpos($hostInfo, '://')) . ':' . $url;
             } else {
                 $url = $hostInfo . $url;

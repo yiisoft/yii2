@@ -13,10 +13,10 @@ Les scripts d'entrée des applications console sont généralement placés dans 
 des applications et sont nommés `yii` (avec le suffixe `.php`). Ils doivent être rendus exécutables afin que les 
 utilisateurs puissent lancer des applications console grâce à la commande `./yii <route> [arguments] [options]`.
 
-Les scipts d'entrée effectuent principalement les tâches suivantes :
+Les scripts d'entrée effectuent principalement les tâches suivantes :
 
 * Définir des constantes globales;
-* Enregistrer l'[chargeur automatique Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Enregistrer le [chargeur automatique Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Inclure le fichier de classe de [[Yii]];
 * Charger la configuration de l'application;
 * Créer et configurer une instance d'[application](structure-applications.md);
@@ -57,9 +57,9 @@ De même, le code qui suit est le code du script de démarrage d'une application
 /**
  * Yii console bootstrap file.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
@@ -109,5 +109,5 @@ if (!defined('YII_DEBUG')) {
 
 Clairement, le premier est plus succinct et plus aisé à comprendre.
 
-Les définitions de constantes doit être faites au tout début d'un script d'entrée pour qu'elles puissent prendre 
+Les définitions de constantes doivent être faites au tout début d'un script d'entrée pour qu'elles puissent prendre 
 effet quand d'autres fichiers PHP sont inclus.

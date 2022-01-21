@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ You may customize this behavior by configuring the [[yii\filters\AccessControl::
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -159,7 +159,7 @@ Role-Based Access Control (RBAC) provides a simple yet powerful centralized acce
 the [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
 with other more traditional access control schemes.
 
-Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 It provides the RBAC functionality through the [[yii\rbac\ManagerInterface|authManager]] [application component](structure-application-components.md).
 
 Using RBAC involves two parts of work. The first part is to build up the RBAC authorization data, and the second
@@ -225,6 +225,8 @@ return [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            // uncomment if you want to cache RBAC items hierarchy
+            // 'cache' => 'cache',
         ],
         // ...
     ],
@@ -264,7 +266,7 @@ Building authorization data is all about the following tasks:
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 If your permissions hierarchy is meant to be changed by developers only, you can use either migrations
 or a console command. Migration pro is that it could be executed along with other migrations. Console
-command pro is that you have a good overview of the hierarchy in the code rathe than it being scattered
+command pro is that you have a good overview of the hierarchy in the code rather than it being scattered
 among multiple migrations.
 
 Either way in the end you'll get the following RBAC hierarchy:
@@ -279,7 +281,7 @@ build the hierarchy itself won't be different.
 You can use [migrations](db-migrations.md)
 to initialize and modify hierarchy via APIs offered by `authManager`.
 
-Create new migration using `./yii migrate/create init_rbac` then impement creating a hierarchy:
+Create new migration using `./yii migrate/create init_rbac` then implement creating a hierarchy:
 
 ```php
 <?php
@@ -536,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -583,7 +585,7 @@ the access rule:
     'actions' => ['update'],
     'roles' => ['updatePost'],
     'roleParams' => function() {
-        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
     },
 ],
 ```
@@ -597,7 +599,7 @@ If the creation of role parameters is a simple operation, you may just specify a
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 
@@ -615,7 +617,7 @@ assign each user to an RBAC role. Let's use an example to show how this can be d
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
-You can set up the RBAC data as follows,
+You can set up the RBAC data as follows, first create a class:
 
 
 ```php
@@ -644,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+Then create your own command/migration as explained [in the previous section](#generating-rbac-data):
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;

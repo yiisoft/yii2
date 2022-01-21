@@ -14,7 +14,7 @@ de ID:
 
 * Inyección de constructores;
 * Inyección de setters y propiedades;
-* Inyección de [llamadas de retorno PHP](http://php.net/manual/es/language.types.callable.php);
+* Inyección de [llamadas de retorno PHP](https://www.php.net/manual/es/language.types.callable.php);
 
 ### Inyección de Constructores <span id="constructor-injection"></span>
 
@@ -75,7 +75,7 @@ En este caso, el contenedor usará una llamada de retorno PHP registrada para co
 clase. La llamada de retorno se responsabiliza de que dependencias debe inyectar al nuevo objeto creado. Por ejemplo,
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     return new Foo(new Bar);
 });
 

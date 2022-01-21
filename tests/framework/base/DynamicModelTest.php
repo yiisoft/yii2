@@ -72,6 +72,10 @@ class DynamicModelTest extends TestCase
         $model = new DynamicModel(compact('name', 'email'));
         $this->assertEquals($email, $model->email);
         $this->assertEquals($name, $model->name);
+        $this->assertTrue($model->canGetProperty('email'));
+        $this->assertTrue($model->canGetProperty('name'));
+        $this->assertTrue($model->canSetProperty('email'));
+        $this->assertTrue($model->canSetProperty('name'));
         $this->expectException('yii\base\UnknownPropertyException');
         $age = $model->age;
     }

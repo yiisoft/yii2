@@ -21,7 +21,6 @@ namespace PHPUnit\TextUI {
     if (!class_exists('\PHPUnit\TextUI\ResultPrinter') && class_exists('PHPUnit_TextUI_ResultPrinter')) {
         class ResultPrinter extends \PHPUnit_TextUI_ResultPrinter
         {
-
         }
     }
 }
@@ -30,7 +29,6 @@ namespace PHPUnit\Framework\Error {
     if (!class_exists('PHPUnit\Framework\Error\Notice') && class_exists('PHPUnit_Framework_Error_Notice')) {
         class Notice extends \PHPUnit_Framework_Error_Notice
         {
-            
         }
     }
 }

@@ -10,7 +10,7 @@ Its code is organized in a recommended way. Therefore, it can serve as a good st
     
 In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
+the [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) which is better used in a team development environment
 to develop applications with multiple tiers.
 
 > Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
@@ -28,7 +28,7 @@ If you do not already have Composer installed, you may do so by following the in
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 ```
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -85,7 +85,7 @@ Installing from an Archive File <span id="installing-from-archive-file"></span>
 
 Installing Yii from an archive file involves three steps:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/).
+1. Download the archive file from [yiiframework.com](https://www.yiiframework.com/download/).
 2. Unpack the downloaded file to a Web-accessible folder.
 3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
    (this is done automatically if you are installing Yii using Composer):
@@ -111,12 +111,36 @@ But there are other installation options available:
   you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
+Installing Assets <span id="installing-assets"></span>
+-----------------
+
+Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/) packages for the asset (CSS and JavaScript) libraries installation.
+It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
+Please refer to [Assets documentation](structure-assets.md) for more details.
+
+You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
+In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
+},
+```
+
+> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
+> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
+
+
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
 After installation is done, either configure your web server (see next section) or use the
-[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
-console command while in the project `web` directory:
+[built-in PHP web server](https://www.php.net/manual/en/features.commandline.webserver.php) by running the following
+console command while in the project root directory:
  
 ```bash
 php yii serve
@@ -149,7 +173,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -194,9 +218,14 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # use mod_rewrite for pretty URL support
     RewriteEngine on
+    
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+    
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    
     # Otherwise forward the request to index.php
     RewriteRule . index.php
 
@@ -207,9 +236,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
+To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://www.php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.local` with the actual hostname to serve.
+`basic/web` and `mysite.test` with the actual hostname to serve.
 
 ```nginx
 server {
@@ -219,7 +248,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 
@@ -261,3 +290,93 @@ in order to avoid many unnecessary system `stat()` calls.
 
 Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
 can properly detect if a connection is secure.
+
+### Recommended NGINX Unit Configuration <span id="recommended-nginx-unit-configuration"></span>
+
+You can run Yii-based apps using [NGINX Unit](https://unit.nginx.org/) with a PHP language module.
+Here is a sample configuration.
+
+```json
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes/yii"
+        }
+    },
+
+    "routes": {
+        "yii": [
+            {
+                "match": {
+                    "uri": [
+                        "!/assets/*",
+                        "*.php",
+                        "*.php/*"
+                    ]
+                },
+
+                "action": {
+                    "pass": "applications/yii/direct"
+                }
+            },
+            {
+                "action": {
+                    "share": "/path/to/app/web/",
+                    "fallback": {
+                        "pass": "applications/yii/index"
+                    }
+                }
+            }
+        ]
+    },
+
+    "applications": {
+        "yii": {
+            "type": "php",
+            "user": "www-data",
+            "targets": {
+                "direct": {
+                    "root": "/path/to/app/web/"
+                },
+
+                "index": {
+                    "root": "/path/to/app/web/",
+                    "script": "index.php"
+                }
+            }
+        }
+    }
+}
+```
+
+You can also [set up](https://unit.nginx.org/configuration/#php) your PHP environment or supply a custom `php.ini` in the same configuration.
+
+### IIS Configuration <span id="iis-configuration"></span>
+
+It's recommended to host the application in a virtual host (Web site) where document root points to `path/to/app/web` folder and that Web site is configured to run PHP. In that `web` folder you have to place a file named `web.config` i.e. `path/to/app/web/web.config`. Content of the file should be the following:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<system.webServer>
+<directoryBrowse enabled="false" />
+  <rewrite>
+    <rules>
+      <rule name="Hide Yii Index" stopProcessing="true">
+        <match url="." ignoreCase="false" />
+        <conditions>
+        <add input="{REQUEST_FILENAME}" matchType="IsFile" 
+              ignoreCase="false" negate="true" />
+        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" 
+              ignoreCase="false" negate="true" />
+        </conditions>
+        <action type="Rewrite" url="index.php" appendQueryString="true" />
+      </rule> 
+    </rules>
+  </rewrite>
+</system.webServer>
+</configuration>
+```
+Also the following list of Microsoft's official resources could be useful in order to configure PHP on IIS:
+ 1. [How to set up your first IIS Web site](https://docs.microsoft.com/en-us/iis/manage/creating-websites/scenario-build-a-static-website-on-iis)
+ 2. [Configure a PHP Website on IIS](https://docs.microsoft.com/en-us/iis/application-frameworks/scenario-build-a-php-website-on-iis/configure-a-php-website-on-iis)

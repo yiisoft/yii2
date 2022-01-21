@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -19,24 +20,88 @@ abstract class QueryTest extends DatabaseTestCase
         // default
         $query = new Query();
         $query->select('*');
-        $this->assertEquals(['*'], $query->select);
+        $this->assertEquals(['*' => '*'], $query->select);
         $this->assertNull($query->distinct);
-        $this->assertEquals(null, $query->selectOption);
+        $this->assertNull($query->selectOption);
 
         $query = new Query();
         $query->select('id, name', 'something')->distinct(true);
-        $this->assertEquals(['id', 'name'], $query->select);
+        $this->assertEquals(['id' => 'id', 'name' => 'name'], $query->select);
         $this->assertTrue($query->distinct);
         $this->assertEquals('something', $query->selectOption);
 
         $query = new Query();
         $query->addSelect('email');
-        $this->assertEquals(['email'], $query->select);
+        $this->assertEquals(['email' => 'email'], $query->select);
 
         $query = new Query();
         $query->select('id, name');
         $query->addSelect('email');
-        $this->assertEquals(['id', 'name', 'email'], $query->select);
+        $this->assertEquals(['id' => 'id', 'name' => 'name', 'email' => 'email'], $query->select);
+
+        $query = new Query();
+        $query->select('name, lastname');
+        $query->addSelect('name');
+        $this->assertEquals(['name' => 'name', 'lastname' => 'lastname'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['*', 'abc']);
+        $query->addSelect(['*', 'bca']);
+        $this->assertEquals(['*' => '*', 'abc' => 'abc', 'bca' => 'bca'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['field1 as a', 'field 1 as b']);
+        $this->assertEquals(['a' => 'field1', 'b' => 'field 1'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['field1 a', 'field 1 b']);
+        $this->assertEquals(['a' => 'field1', 'b' => 'field 1'], $query->select);
+
+        $query = new Query();
+        $query->select(['name' => 'firstname', 'lastname']);
+        $query->addSelect(['firstname', 'surname' => 'lastname']);
+        $query->addSelect(['firstname', 'lastname']);
+        $this->assertEquals(['name' => 'firstname', 'lastname' => 'lastname', 'firstname' => 'firstname', 'surname' => 'lastname'], $query->select);
+
+        $query = new Query();
+        $query->select('name, name, name as X, name as X');
+        $this->assertEquals(['name' => 'name', 'X' => 'name'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15676 */
+        $query = (new Query())->select('id');
+        $this->assertSame(['id' => 'id'], $query->select);
+        $query->select(['id', 'brand_id']);
+        $this->assertSame(['id' => 'id', 'brand_id' => 'brand_id'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15676 */
+        $query = (new Query())->select(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)'], $query->select);
+        $query->addSelect(['LEFT(name,7) as test']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
+        $query->addSelect(['LEFT(name,7) as test']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
+        $query->addSelect(['test' => 'LEFT(name,7)']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'test' => 'LEFT(name,7)'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15731 */
+        $selectedCols = [
+            'total_sum' => 'SUM(f.amount)',
+            'in_sum' => 'SUM(IF(f.type = :type_in, f.amount, 0))',
+            'out_sum' => 'SUM(IF(f.type = :type_out, f.amount, 0))',
+        ];
+        $query = (new Query())->select($selectedCols)->addParams([
+            ':type_in' => 'in',
+            ':type_out' => 'out',
+            ':type_partner' => 'partner',
+        ]);
+        $this->assertSame($selectedCols, $query->select);
+        $query->select($selectedCols);
+        $this->assertSame($selectedCols, $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/17384 */
+        $query = new Query();
+        $query->select('DISTINCT ON(tour_dates.date_from) tour_dates.date_from, tour_dates.id');
+        $this->assertEquals(['DISTINCT ON(tour_dates.date_from) tour_dates.date_from', 'tour_dates.id' => 'tour_dates.id'], $query->select);
     }
 
     public function testFrom()
@@ -46,7 +111,16 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user'], $query->from);
     }
 
+    public function testFromTableIsArrayWithExpression()
+    {
+        $query = new Query();
+        $tables = new Expression('(SELECT id,name FROM user) u');
+        $query->from($tables);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from[0]);
+    }
+
     use GetTablesAliasTestTrait;
+
     protected function createQuery()
     {
         return new Query();
@@ -266,8 +340,8 @@ abstract class QueryTest extends DatabaseTestCase
     public function testUnion()
     {
         $connection = $this->getConnection();
-        $query = new Query();
-        $query->select(['id', 'name'])
+        $query = (new Query())
+            ->select(['id', 'name'])
             ->from('item')
             ->limit(2)
             ->union(
@@ -285,10 +359,10 @@ abstract class QueryTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $result = (new Query())->from('customer')->where(['status' => 2])->one($db);
+        $result = (new Query())->from('customer')->where(['[[status]]' => 2])->one($db);
         $this->assertEquals('user3', $result['name']);
 
-        $result = (new Query())->from('customer')->where(['status' => 3])->one($db);
+        $result = (new Query())->from('customer')->where(['[[status]]' => 3])->one($db);
         $this->assertFalse($result);
     }
 
@@ -314,6 +388,14 @@ abstract class QueryTest extends DatabaseTestCase
             ->select('name')
             ->orderBy(['id' => SORT_DESC])
             ->indexBy('id')
+            ->column($db);
+        $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
+
+        // https://github.com/yiisoft/yii2/issues/17687
+        $result = (new Query())->from('customer')
+            ->select('name')
+            ->orderBy(['id' => SORT_DESC])
+            ->indexBy('customer.id')
             ->column($db);
         $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
 
@@ -376,7 +458,7 @@ abstract class QueryTest extends DatabaseTestCase
         $count = (new Query())->from('customer')->where(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
 
-        $count = (new Query())->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
+        $count = (new Query())->select('[[status]], COUNT([[id]]) cnt')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
 
         // testing that orderBy() should be ignored here as it does not affect the count anyway.
@@ -426,7 +508,7 @@ abstract class QueryTest extends DatabaseTestCase
      */
     public function testCountHavingWithoutGroupBy()
     {
-        if (!in_array($this->driverName, ['mysql'])) {
+        if (!\in_array($this->driverName, ['mysql'])) {
             $this->markTestSkipped("{$this->driverName} does not support having without group by.");
         }
 
@@ -574,5 +656,143 @@ abstract class QueryTest extends DatabaseTestCase
             'foo',
             '%ba',
         ]));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15355
+     */
+    public function testExpressionInFrom()
+    {
+        $db = $this->getConnection();
+        $query = (new Query())
+            ->from(
+                new \yii\db\Expression(
+                    '(SELECT [[id]], [[name]], [[email]], [[address]], [[status]] FROM {{customer}}) c'
+                )
+            )
+            ->where(['status' => 2]);
+
+        $result = $query->one($db);
+        $this->assertEquals('user3', $result['name']);
+    }
+
+    public function testQueryCache()
+    {
+        $db = $this->getConnection();
+        $db->enableQueryCache = true;
+        $db->queryCache = new ArrayCache();
+        $query = (new Query())
+            ->select(['name'])
+            ->from('customer');
+        $update = $db->createCommand('UPDATE {{customer}} SET [[name]] = :name WHERE [[id]] = :id');
+
+        $this->assertEquals('user1', $query->where(['id' => 1])->scalar($db), 'Asserting initial value');
+
+        // No cache
+        $update->bindValues([':id' => 1, ':name' => 'user11'])->execute();
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'Query reflects DB changes when caching is disabled');
+
+        // Connection cache
+        $db->cache(function (Connection $db) use ($query, $update) {
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Asserting initial value for user #2');
+
+            $update->bindValues([':id' => 2, ':name' => 'user22'])->execute();
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Query does NOT reflect DB changes when wrapped in connection caching');
+
+            $db->noCache(function () use ($query, $db) {
+                $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'Query reflects DB changes when wrapped in connection caching and noCache simultaneously');
+            });
+
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Cache does not get changes after getting newer data from DB in noCache block.');
+        }, 10);
+
+
+        $db->enableQueryCache = false;
+        $db->cache(function ($db) use ($query, $update) {
+            $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'When cache is disabled for the whole connection, Query inside cache block does not get cached');
+            $update->bindValues([':id' => 2, ':name' => 'user2'])->execute();
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db));
+        }, 10);
+
+
+        $db->enableQueryCache = true;
+        $query->cache();
+
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db));
+        $update->bindValues([':id' => 1, ':name' => 'user1'])->execute();
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'When both Connection and Query have cache enabled, we get cached value');
+        $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db), 'When Query has disabled cache, we get actual data');
+
+        $db->cache(function (Connection $db) use ($query, $update) {
+            $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db));
+            $this->assertEquals('user11', $query->cache()->where(['id' => 1])->scalar($db));
+        }, 10);
+    }
+
+
+    /**
+     * checks that all needed properties copied from source to new query
+     */
+    public function testQueryCreation()
+    {
+        $where = 'id > :min_user_id';
+        $limit = 50;
+        $offset = 2;
+        $orderBy = ['name' => SORT_ASC];
+        $indexBy = 'id';
+        $select = ['id' => 'id', 'name' => 'name', 'articles_count' => 'count(*)'];
+        $selectOption = 'SQL_NO_CACHE';
+        $from = 'recent_users';
+        $groupBy = 'id';
+        $having = ['>', 'articles_count', 0];
+        $params = [':min_user_id' => 100];
+        list($joinType, $joinTable, $joinOn) = $join =  ['INNER', 'articles', 'articles.author_id=users.id'];
+
+        $unionQuery = (new Query())
+            ->select('id, name, 1000 as articles_count')
+            ->from('admins');
+
+        $withQuery = (new Query())
+            ->select('id, name')
+            ->from('users')
+            ->where('DATE(registered_at) > "2020-01-01"');
+
+        // build target query
+        $sourceQuery = (new Query())
+            ->where($where)
+            ->limit($limit)
+            ->offset($offset)
+            ->orderBy($orderBy)
+            ->indexBy($indexBy)
+            ->select($select, $selectOption)
+            ->distinct()
+            ->from($from)
+            ->groupBy($groupBy)
+            ->having($having)
+            ->addParams($params)
+            ->join($joinType, $joinTable, $joinOn)
+            ->union($unionQuery)
+            ->withQuery($withQuery, $from);
+
+        $newQuery = Query::create($sourceQuery);
+
+        $this->assertEquals($where, $newQuery->where);
+        $this->assertEquals($limit, $newQuery->limit);
+        $this->assertEquals($offset, $newQuery->offset);
+        $this->assertEquals($orderBy, $newQuery->orderBy);
+        $this->assertEquals($indexBy, $newQuery->indexBy);
+        $this->assertEquals($select, $newQuery->select);
+        $this->assertEquals($selectOption, $newQuery->selectOption);
+        $this->assertTrue($newQuery->distinct);
+        $this->assertEquals([$from], $newQuery->from);
+        $this->assertEquals([$groupBy], $newQuery->groupBy);
+        $this->assertEquals($having, $newQuery->having);
+        $this->assertEquals($params, $newQuery->params);
+        $this->assertEquals([$join], $newQuery->join);
+        $this->assertEquals([['query' => $unionQuery, 'all' => false]], $newQuery->union);
+        $this->assertEquals(
+            [['query' => $withQuery, 'alias' => $from, 'recursive' => false]],
+            $newQuery->withQueries
+        );
     }
 }

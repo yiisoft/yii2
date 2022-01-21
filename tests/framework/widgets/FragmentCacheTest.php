@@ -194,5 +194,54 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
+    public function testVariations()
+    {
+        $this->setOutputCallback(function($output) {
+            return null;
+        });
+
+        ob_start();
+        ob_implicit_flush(false);
+        $view = new View();
+        $this->assertTrue($view->beginCache('test', ['variations' => ['ru']]), 'Cached fragment should not be exist');
+        echo 'cached fragment';
+        $view->endCache();
+
+        $cached = ob_get_clean();
+        $this->assertEquals('cached fragment', $cached);
+
+        ob_start();
+        ob_implicit_flush(false);
+        $this->assertFalse($view->beginCache('test', ['variations' => ['ru']]), 'Cached fragment should be exist');
+
+        $cachedEn = ob_get_clean();
+        $this->assertEquals($cached, $cachedEn);
+
+        $this->assertTrue($view->beginCache('test', ['variations' => ['en']]), 'Cached fragment should not be exist');
+        echo 'cached fragment';
+        $view->endCache();
+        $this->assertFalse($view->beginCache('test', ['variations' => ['en']]), 'Cached fragment should be exist');
+
+        //without variations
+        ob_start();
+        ob_implicit_flush(false);
+        $view = new View();
+        $this->assertTrue($view->beginCache('test'), 'Cached fragment should not be exist');
+        echo 'cached fragment';
+        $view->endCache();
+        $cached = ob_get_clean();
+        $this->assertEquals('cached fragment', $cached);
+
+        //with variations as a string
+        ob_start();
+        ob_implicit_flush(false);
+        $this->assertTrue($view->beginCache('test', ['variations' => 'uz']), 'Cached fragment should not be exist');
+        echo 'cached fragment';
+        $view->endCache();
+        $cached = ob_get_clean();
+        $this->assertEquals('cached fragment', $cached);
+        $this->assertFalse($view->beginCache('test', ['variations' => 'uz']), 'Cached fragment should be exist');
+    }
+
     // TODO test dynamic replacements
 }

@@ -9,8 +9,8 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * Session provides session data management and the related configurations.
@@ -45,26 +45,26 @@ use yii\base\InvalidParamException;
  *
  * For more details and usage information on Session, see the [guide article on sessions](guide:runtime-sessions-cookies).
  *
- * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
- * is read-only.
- * @property array $cookieParams The session cookie parameters. This property is read-only.
- * @property int $count The number of session variables. This property is read-only.
- * @property string $flash The key identifying the flash message. Note that flash messages and normal session
- * variables share the same name space. If you have a normal session variable using the same name, its value will
- * be overwritten by this method. This property is write-only.
+ * @property-read array $allFlashes Flash messages (key => message or key => [message1, message2]).
+ * @property-read string $cacheLimiter Current cache limiter.
+ * @property-read array $cookieParams The session cookie parameters.
+ * @property-read int $count The number of session variables.
+ * @property-write string $flash The key identifying the flash message. Note that flash messages and normal
+ * session variables share the same name space. If you have a normal session variable using the same name, its
+ * value will be overwritten by this method.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
- * started on every session initialization, defaults to 1 meaning 1% chance.
+ * started on every session initialization.
  * @property bool $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
- * @property bool $isActive Whether the session has started. This property is read-only.
- * @property SessionIterator $iterator An iterator for traversing the session variables. This property is
- * read-only.
+ * @property-read bool $isActive Whether the session has started.
+ * @property-read SessionIterator $iterator An iterator for traversing the session variables.
  * @property string $name The current session name.
  * @property string $savePath The current session save path, defaults to '/tmp'.
  * @property int $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up. The
  * default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
  * @property bool|null $useCookies The value indicating whether cookies should be used to store session IDs.
- * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property-read bool $useCustomStorage Whether to use custom storage.
+ * @property bool $useStrictMode Whether strict mode is enabled or not.
  * @property bool $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
  * false.
  *
@@ -73,6 +73,15 @@ use yii\base\InvalidParamException;
  */
 class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
+    /**
+     * @var string|null Holds the original session module (before a custom handler is registered) so that it can be
+     * restored when a Session component without custom handler is used after one that has.
+     */
+    static protected $_originalSessionModule = null;
+    /**
+     * Polyfill for ini directive session.use-strict-mode for PHP < 5.5.2.
+     */
+    static private $_useStrictModePolyfill = false;
     /**
      * @var string the name of the session variable that stores the flash message data.
      */
@@ -83,11 +92,20 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public $handler;
 
     /**
+     * @var string|null Holds the session id in case useStrictMode is enabled and the session id needs to be regenerated
+     */
+    protected $_forceRegenerateId = null;
+
+    /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
      * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
-     * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
+     * @see https://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
+    /**
+     * @var array|null is used for saving session between recreations due to session parameters update.
+     */
+    private $frozenSessionData;
 
 
     /**
@@ -129,7 +147,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         $this->setCookieParamsInternal();
 
-        @session_start();
+        YII_DEBUG ? session_start() : @session_start();
+
+        if ($this->getUseStrictMode() && $this->_forceRegenerateId) {
+            $this->regenerateID();
+            $this->_forceRegenerateId = null;
+        }
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
@@ -147,6 +170,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function registerSessionHandler()
     {
+        $sessionModuleName = session_module_name();
+        if (static::$_originalSessionModule === null) {
+            static::$_originalSessionModule = $sessionModuleName;
+        }
+
         if ($this->handler !== null) {
             if (!is_object($this->handler)) {
                 $this->handler = Yii::createObject($this->handler);
@@ -175,6 +203,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                     [$this, 'gcSession']
                 );
             }
+        } elseif (
+            $sessionModuleName !== static::$_originalSessionModule
+            && static::$_originalSessionModule !== null
+            && static::$_originalSessionModule !== 'user'
+        ) {
+            session_module_name(static::$_originalSessionModule);
         }
     }
 
@@ -186,6 +220,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->getIsActive()) {
             YII_DEBUG ? session_write_close() : @session_write_close();
         }
+
+        $this->_forceRegenerateId = null;
     }
 
     /**
@@ -256,7 +292,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Gets the session ID.
-     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
+     * This is a wrapper for [PHP session_id()](https://www.php.net/manual/en/function.session-id.php).
      * @return string the current session ID
      */
     public function getId()
@@ -266,7 +302,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the session ID.
-     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
+     * This is a wrapper for [PHP session_id()](https://www.php.net/manual/en/function.session-id.php).
      * @param string $value the session ID for the current session
      */
     public function setId($value)
@@ -277,7 +313,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Updates the current session ID with a newly generated one.
      *
-     * Please refer to <http://php.net/session_regenerate_id> for more details.
+     * Please refer to <https://www.php.net/session_regenerate_id> for more details.
      *
      * This method has no effect when session is not [[getIsActive()|active]].
      * Make sure to call [[open()]] before calling it.
@@ -301,7 +337,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Gets the name of the current session.
-     * This is a wrapper for [PHP session_name()](http://php.net/manual/en/function.session-name.php).
+     * This is a wrapper for [PHP session_name()](https://www.php.net/manual/en/function.session-name.php).
      * @return string the current session name
      */
     public function getName()
@@ -311,18 +347,20 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the name for the current session.
-     * This is a wrapper for [PHP session_name()](http://php.net/manual/en/function.session-name.php).
+     * This is a wrapper for [PHP session_name()](https://www.php.net/manual/en/function.session-name.php).
      * @param string $value the session name for the current session, must be an alphanumeric string.
      * It defaults to "PHPSESSID".
      */
     public function setName($value)
     {
+        $this->freeze();
         session_name($value);
+        $this->unfreeze();
     }
 
     /**
      * Gets the current session save path.
-     * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
+     * This is a wrapper for [PHP session_save_path()](https://www.php.net/manual/en/function.session-save-path.php).
      * @return string the current session save path, defaults to '/tmp'.
      */
     public function getSavePath()
@@ -332,9 +370,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the current session save path.
-     * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
+     * This is a wrapper for [PHP session_save_path()](https://www.php.net/manual/en/function.session-save-path.php).
      * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
-     * @throws InvalidParamException if the path is not a valid directory
+     * @throws InvalidArgumentException if the path is not a valid directory
      */
     public function setSavePath($value)
     {
@@ -342,13 +380,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if (is_dir($path)) {
             session_save_path($path);
         } else {
-            throw new InvalidParamException("Session save path is not a valid directory: $value");
+            throw new InvalidArgumentException("Session save path is not a valid directory: $value");
         }
     }
 
     /**
      * @return array the session cookie parameters.
-     * @see http://php.net/manual/en/function.session-get-cookie-params.php
+     * @see https://www.php.net/manual/en/function.session-get-cookie-params.php
      */
     public function getCookieParams()
     {
@@ -360,8 +398,18 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
-     * @throws InvalidParamException if the parameters are incomplete.
-     * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+     * Starting with Yii 2.0.21 `sameSite` is also supported. It requires PHP version 7.3.0 or higher.
+     * For securtiy, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
+     * To use this feature across different PHP versions check the version first. E.g.
+     * ```php
+     * [
+     *     'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
+     * ]
+     * ```
+     * See https://www.owasp.org/index.php/SameSite for more information about `sameSite`.
+     *
+     * @throws InvalidArgumentException if the parameters are incomplete.
+     * @see https://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     public function setCookieParams(array $value)
     {
@@ -371,16 +419,24 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the session cookie parameters.
      * This method is called by [[open()]] when it is about to open the session.
-     * @throws InvalidParamException if the parameters are incomplete.
-     * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+     * @throws InvalidArgumentException if the parameters are incomplete.
+     * @see https://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private function setCookieParamsInternal()
     {
         $data = $this->getCookieParams();
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
-            session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
+            if (PHP_VERSION_ID >= 70300) {
+                session_set_cookie_params($data);
+            } else {
+                if (!empty($data['samesite'])) {
+                    $data['path'] .= '; samesite=' . $data['samesite'];
+                }
+                session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
+            }
+
         } else {
-            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
+            throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
     }
 
@@ -413,6 +469,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseCookies($value)
     {
+        $this->freeze();
         if ($value === false) {
             ini_set('session.use_cookies', '0');
             ini_set('session.use_only_cookies', '0');
@@ -423,10 +480,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             ini_set('session.use_cookies', '1');
             ini_set('session.use_only_cookies', '0');
         }
+        $this->unfreeze();
     }
 
     /**
-     * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization, defaults to 1 meaning 1% chance.
+     * @return float the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
      */
     public function getGCProbability()
     {
@@ -435,17 +493,19 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @param float $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
-     * @throws InvalidParamException if the value is not between 0 and 100.
+     * @throws InvalidArgumentException if the value is not between 0 and 100.
      */
     public function setGCProbability($value)
     {
+        $this->freeze();
         if ($value >= 0 && $value <= 100) {
             // percent * 21474837 / 2147483647 ≈ percent * 0.01
             ini_set('session.gc_probability', floor($value * 21474836.47));
             ini_set('session.gc_divisor', 2147483647);
         } else {
-            throw new InvalidParamException('GCProbability must be a value between 0 and 100.');
+            throw new InvalidArgumentException('GCProbability must be a value between 0 and 100.');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -461,7 +521,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseTransparentSessionID($value)
     {
+        $this->freeze();
         ini_set('session.use_trans_sid', $value ? '1' : '0');
+        $this->unfreeze();
     }
 
     /**
@@ -478,7 +540,46 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setTimeout($value)
     {
+        $this->freeze();
         ini_set('session.gc_maxlifetime', $value);
+        $this->unfreeze();
+    }
+
+    /**
+     * @param bool $value Whether strict mode is enabled or not.
+     * When `true` this setting prevents the session component to use an uninitialized session ID.
+     * Note: Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.
+     * Warning! Although enabling strict mode is mandatory for secure sessions, the default value of 'session.use-strict-mode' is `0`.
+     * @see https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
+     * @since 2.0.38
+     */
+    public function setUseStrictMode($value)
+    {
+        if (PHP_VERSION_ID < 50502) {
+            if ($this->getUseCustomStorage() || !$value) {
+                self::$_useStrictModePolyfill = $value;
+            } else {
+                throw new InvalidConfigException('Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.');
+            }
+        } else {
+            $this->freeze();
+            ini_set('session.use_strict_mode', $value ? '1' : '0');
+            $this->unfreeze();
+        }
+    }
+
+    /**
+     * @return bool Whether strict mode is enabled or not.
+     * @see setUseStrictMode()
+     * @since 2.0.38
+     */
+    public function getUseStrictMode()
+    {
+        if (PHP_VERSION_ID < 50502) {
+            return self::$_useStrictModePolyfill;
+        }
+
+        return (bool)ini_get('session.use_strict_mode');
     }
 
     /**
@@ -559,6 +660,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by the interface [[\IteratorAggregate]].
      * @return SessionIterator an iterator for traversing the session variables.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $this->open();
@@ -580,6 +682,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by [[\Countable]] interface.
      * @return int number of items in the session.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getCount();
@@ -799,12 +902,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $_SESSION[$this->flashParam] = $counters;
         if (empty($_SESSION[$key])) {
             $_SESSION[$key] = [$value];
+        } elseif (is_array($_SESSION[$key])) {
+            $_SESSION[$key][] = $value;
         } else {
-            if (is_array($_SESSION[$key])) {
-                $_SESSION[$key][] = $value;
-            } else {
-                $_SESSION[$key] = [$_SESSION[$key], $value];
-            }
+            $_SESSION[$key] = [$_SESSION[$key], $value];
         }
     }
 
@@ -860,9 +961,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to check on
+     * @param int|string $offset the offset to check on
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $this->open();
@@ -872,9 +974,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to retrieve element.
+     * @param int|string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->open();
@@ -884,9 +987,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to set element
+     * @param int|string $offset the offset to set element
      * @param mixed $item the element value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $item)
     {
         $this->open();
@@ -895,11 +999,75 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to unset element
+     * @param int|string $offset the offset to unset element
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->open();
         unset($_SESSION[$offset]);
+    }
+
+    /**
+     * If session is started it's not possible to edit session ini settings. In PHP7.2+ it throws exception.
+     * This function saves session data to temporary variable and stop session.
+     * @since 2.0.14
+     */
+    protected function freeze()
+    {
+        if ($this->getIsActive()) {
+            if (isset($_SESSION)) {
+                $this->frozenSessionData = $_SESSION;
+            }
+            $this->close();
+            Yii::info('Session frozen', __METHOD__);
+        }
+    }
+
+    /**
+     * Starts session and restores data from temporary variable
+     * @since 2.0.14
+     */
+    protected function unfreeze()
+    {
+        if (null !== $this->frozenSessionData) {
+
+            YII_DEBUG ? session_start() : @session_start();
+
+            if ($this->getIsActive()) {
+                Yii::info('Session unfrozen', __METHOD__);
+            } else {
+                $error = error_get_last();
+                $message = isset($error['message']) ? $error['message'] : 'Failed to unfreeze session.';
+                Yii::error($message, __METHOD__);
+            }
+
+            $_SESSION = $this->frozenSessionData;
+            $this->frozenSessionData = null;
+        }
+    }
+
+    /**
+     * Set cache limiter
+     *
+     * @param string $cacheLimiter
+     * @since 2.0.14
+     */
+    public function setCacheLimiter($cacheLimiter)
+    {
+        $this->freeze();
+        session_cache_limiter($cacheLimiter);
+        $this->unfreeze();
+    }
+
+    /**
+     * Returns current cache limiter
+     *
+     * @return string current cache limiter
+     * @since 2.0.14
+     */
+    public function getCacheLimiter()
+    {
+        return session_cache_limiter();
     }
 }

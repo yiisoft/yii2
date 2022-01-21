@@ -8,7 +8,7 @@ ou de ses classes filles. Les trois fonctionnalités principales fournies par le
 * [Les événements](concept-events.md) ;
 * [Les comportements](concept-behaviors.md).
  
-Séparément et en combinaisons, ces fonctionnalités rendent les classes de Yii beaucoup plus personnalisables et faciles à utiliser. Par exemple, l'[[yii\jui\DatePicker|objet graphique de sélection de date]] inclus, un composant d'interface utilisateur, peut être utilisé dans une [vue](structure-view.md) pour générer un sélecteur de date interactif :
+Séparément et en combinaisons, ces fonctionnalités rendent les classes de Yii beaucoup plus personnalisables et faciles à utiliser. Par exemple, l'[[yii\jui\DatePicker|objet graphique de sélection de date]] inclus, un composant d'interface utilisateur, peut être utilisé dans une [vue](structure-views.md) pour générer un sélecteur de date interactif :
 
 ```php
 use yii\jui\DatePicker;
@@ -27,7 +27,7 @@ Tandis que les composants sont très puissants, ils sont un peu plus lourds que 
 
 Lorsque votre classe étend la classe [[yii\base\Component]] ou [[yii\base\BaseObject]], il est recommandé que suiviez ces conventions :
 
-- Si vous redéfinissez le constructeur, spécifiez un paramètre `$config` en tant que *dernier* paramètre du constructeur est passez le au constructeur du parent. 
+- Si vous redéfinissez le constructeur, spécifiez un paramètre `$config` en tant que *dernier* paramètre du constructeur et passez le au constructeur du parent. 
 - Appelez toujours le constructeur du parent *à la fin* de votre constructeur redéfini.
 - Si vous redéfinissez la méthode [[yii\base\BaseObject::init()]], assurez-vous que vous appelez la méthode `init()` mise en œuvre par le parent *au début* de votre méthodes `init()`.
 
@@ -67,7 +67,7 @@ Le respect de ces conseils rend vos composants  [configurables](concept-configur
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
 // alternatively
 $component = \Yii::createObject([
-    'class' => MyClass::className(),
+    'class' => MyClass::class,
     'prop1' => 3,
     'prop2' => 4,
 ], [1, 2]);

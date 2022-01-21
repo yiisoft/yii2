@@ -84,11 +84,11 @@ class CacheController extends Controller
         $foundCaches = array_keys($caches);
         $notFoundCaches = array_diff($cachesInput, array_keys($caches));
 
-        if ($notFoundCaches) {
+        if ($notFoundCaches !== []) {
             $this->notifyNotFoundCaches($notFoundCaches);
         }
 
-        if (!$foundCaches) {
+        if ($foundCaches === []) {
             $this->notifyNoCachesFound();
             return ExitCode::OK;
         }
@@ -290,7 +290,7 @@ class CacheController extends Controller
      */
     private function isCacheClass($className)
     {
-        return is_subclass_of($className, 'yii\caching\CacheInterface');
+        return is_subclass_of($className, 'yii\caching\CacheInterface') || $className === 'yii\caching\CacheInterface';
     }
 
     /**
@@ -300,6 +300,6 @@ class CacheController extends Controller
      */
     private function canBeFlushed($className)
     {
-        return !is_a($className, ApcCache::className(), true) || php_sapi_name() !== 'cli';
+        return !is_a($className, ApcCache::className(), true) || PHP_SAPI !== 'cli';
     }
 }

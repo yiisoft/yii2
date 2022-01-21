@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\Query;
+
 /**
  * @group db
  * @group mssql
@@ -121,8 +123,33 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO [type] ([int_col], [float_col], [char_col]) VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';
-        $data['wrongBehavior']['expected'] = 'INSERT INTO [type] ([int_col], [float_col], [char_col]) VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
+        $data['wrongBehavior']['expected'] = 'INSERT INTO [type] ([type].[int_col], [float_col], [char_col]) VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
+        $data['batchInsert binds params from expression']['expected'] = 'INSERT INTO [type] ([int_col]) VALUES (:qp1)';
+        unset($data['batchIsert empty rows represented by ArrayObject']);
 
         return $data;
+    }
+
+    public function testUpsertVarbinary()
+    {
+        $db = $this->getConnection();
+
+        $testData = json_encode(['test' => 'string', 'test2' => 'integer']);
+        $params = [];
+
+        $qb = $db->getQueryBuilder();
+        $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData] , ['blob_col' => $testData], $params);
+
+        $result = $db->createCommand($sql, $params)->execute();
+
+        $this->assertEquals(1, $result);
+
+        $query = (new Query())
+            ->select(['convert(nvarchar(max),blob_col) as blob_col'])
+            ->from('T_upsert_varbinary')
+            ->where(['id' => 1]);
+
+        $resultData = $query->createCommand($db)->queryOne();
+        $this->assertEquals($testData, $resultData['blob_col']);
     }
 }

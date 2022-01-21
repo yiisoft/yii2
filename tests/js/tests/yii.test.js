@@ -742,6 +742,7 @@ describe('yii', function () {
             'query parameters': ['/posts/index?foo=1&bar=2', {foo: '1', bar: '2'}],
             'query parameter with multiple values (not array)': ['/posts/index?foo=1&foo=2', {'foo': ['1', '2']}],
             'query parameter with multiple values (array)': ['/posts/index?foo[]=1&foo[]=2', {'foo[]': ['1', '2']}],
+            'query parameter with empty value': ['/posts/index?foo=1&foo2', {'foo': '1', 'foo2': ''}],
             'anchor': ['/posts/index#post', {}],
             'query parameters, anchor': ['/posts/index?foo=1&bar=2#post', {foo: '1', bar: '2'}],
             'relative url, query parameters': ['?foo=1&bar=2', {foo: '1', bar: '2'}],
@@ -1356,6 +1357,33 @@ describe('yii', function () {
                 assert.isFalse(yiiConfirmSpy.called);
                 assert.isFalse(yiiHandleActionStub.called);
                 assert.isTrue(extraEventHandlerSpy.calledOnce);
+            });
+        });
+
+        describe('disabled confirm dialog', function () {
+            it('confirm data param = false', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', false);
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+            it('confirm data param = empty', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', '');
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+            it('confirm data param = undefined', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', undefined);
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
             });
         });
 

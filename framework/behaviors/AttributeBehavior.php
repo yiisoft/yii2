@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * {
  *     return [
  *         [
- *             'class' => AttributeBehavior::className(),
+ *             'class' => AttributeBehavior::class,
  *             'attributes' => [
  *                 ActiveRecord::EVENT_BEFORE_INSERT => 'attribute1',
  *                 ActiveRecord::EVENT_BEFORE_UPDATE => 'attribute2',
@@ -93,7 +93,7 @@ class AttributeBehavior extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {
@@ -140,7 +140,7 @@ class AttributeBehavior extends Behavior
      */
     protected function getValue($event)
     {
-        if ($this->value instanceof Closure || is_array($this->value) && is_callable($this->value)) {
+        if ($this->value instanceof Closure || (is_array($this->value) && is_callable($this->value))) {
             return call_user_func($this->value, $event);
         }
 

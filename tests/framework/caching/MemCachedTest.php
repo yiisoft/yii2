@@ -27,9 +27,15 @@ class MemCachedTest extends CacheTestCase
             $this->markTestSkipped('memcached not installed. Skipping.');
         }
 
+        if (PHP_VERSION_ID >= 80100 && version_compare(phpversion('memcached'), '3.1.5', '<=')) {
+            $php_version = phpversion();
+            $memcached_version = phpversion('memcached');
+            $this->markTestSkipped("memcached version $memcached_version is not ready for PHP $php_version. Skipping.");
+        }
+
         // check whether memcached is running and skip tests if not.
         if (!@stream_socket_client('127.0.0.1:11211', $errorNumber, $errorDescription, 0.5)) {
-            $this->markTestSkipped('No redis server running at ' . '127.0.0.1:11211' . ' : ' . $errorNumber . ' - ' . $errorDescription);
+            $this->markTestSkipped('No memcached server running at ' . '127.0.0.1:11211' . ' : ' . $errorNumber . ' - ' . $errorDescription);
         }
 
         if ($this->_cacheInstance === null) {
@@ -41,16 +47,16 @@ class MemCachedTest extends CacheTestCase
 
     public function testExpire()
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test memcached expiry on travis-ci.');
+        if (getenv('GITHUB_ACTIONS') == 'true') {
+            $this->markTestSkipped('Can not reliably test memcached expiry on GitHub actions.');
         }
         parent::testExpire();
     }
 
     public function testExpireAdd()
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test memcached expiry on travis-ci.');
+        if (getenv('GITHUB_ACTIONS') == 'true') {
+            $this->markTestSkipped('Can not reliably test memcached expiry on GitHub actions.');
         }
         parent::testExpireAdd();
     }

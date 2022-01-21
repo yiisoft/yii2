@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * {
  *     return [
  *         [
- *             'class' => AttributesBehavior::className(),
+ *             'class' => AttributesBehavior::class,
  *             'attributes' => [
  *                 'attribute1' => [
  *                     ActiveRecord::EVENT_BEFORE_INSERT => new Expression('NOW()'),
@@ -122,7 +122,7 @@ class AttributesBehavior extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {

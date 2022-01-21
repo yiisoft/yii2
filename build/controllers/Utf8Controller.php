@@ -29,7 +29,7 @@ class Utf8Controller extends Controller
     public function actionCheckGuide($directory = null)
     {
         if ($directory === null) {
-            $directory = dirname(dirname(__DIR__)) . '/docs';
+            $directory = \dirname(\dirname(__DIR__)) . '/docs';
         }
         if (is_file($directory)) {
             $files = [$directory];
@@ -69,11 +69,11 @@ class Utf8Controller extends Controller
                 }
                 if ($ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
                     0x0080 <= $ord && $ord < 0x009F) {
-                    $this->found('CONTROL CHARARCTER', $c, $line, $pos, $file);
+                    $this->found('CONTROL CHARACTER', $c, $line, $pos, $file);
                     continue;
                 }
 //                if ($ord > 0x009F) {
-//                    $this->found("NON ASCII CHARARCTER", $c, $line, $pos, $file);
+//                    $this->found("NON ASCII CHARACTER", $c, $line, $pos, $file);
 //                    continue;
 //                }
             }
@@ -90,7 +90,7 @@ class Utf8Controller extends Controller
         }
 
         $hexcode = dechex($this->unicodeOrd($char));
-        $hexcode = str_repeat('0', max(4 - strlen($hexcode), 0)) . $hexcode;
+        $hexcode = str_repeat('0', max(4 - \strlen($hexcode), 0)) . $hexcode;
 
         $this->stdout("  at $line:$pos FOUND $what: 0x$hexcode '$char' http://unicode-table.com/en/$hexcode/\n");
     }
@@ -105,20 +105,20 @@ class Utf8Controller extends Controller
      */
     private function unicodeOrd($c)
     {
-        $h = ord($c[0]);
+        $h = \ord($c[0]);
         if ($h <= 0x7F) {
             return $h;
         } elseif ($h < 0xC2) {
             return false;
         } elseif ($h <= 0xDF) {
-            return ($h & 0x1F) << 6 | (ord($c[1]) & 0x3F);
+            return ($h & 0x1F) << 6 | (\ord($c[1]) & 0x3F);
         } elseif ($h <= 0xEF) {
-            return ($h & 0x0F) << 12 | (ord($c[1]) & 0x3F) << 6
-                                     | (ord($c[2]) & 0x3F);
+            return ($h & 0x0F) << 12 | (\ord($c[1]) & 0x3F) << 6
+                                     | (\ord($c[2]) & 0x3F);
         } elseif ($h <= 0xF4) {
-            return ($h & 0x0F) << 18 | (ord($c[1]) & 0x3F) << 12
-                                     | (ord($c[2]) & 0x3F) << 6
-                                     | (ord($c[3]) & 0x3F);
+            return ($h & 0x0F) << 18 | (\ord($c[1]) & 0x3F) << 12
+                                     | (\ord($c[2]) & 0x3F) << 6
+                                     | (\ord($c[3]) & 0x3F);
         }
 
         return false;

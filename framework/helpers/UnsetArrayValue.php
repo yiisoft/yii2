@@ -49,4 +49,16 @@ namespace yii\helpers;
  */
 class UnsetArrayValue
 {
+    /**
+     * Restores class state after using `var_export()`.
+     *
+     * @param array $state
+     * @return UnsetArrayValue
+     * @see https://www.php.net/manual/en/function.var-export.php
+     * @since 2.0.16
+     */
+    public static function __set_state($state)
+    {
+        return new self();
+    }
 }

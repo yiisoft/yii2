@@ -12,6 +12,8 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\helpers\IpHelper;
+use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\User;
 
@@ -56,22 +58,22 @@ class AccessRule extends Component
      *
      * If you are using RBAC (Role-Based Access Control), you may also specify role names.
      * In this case, [[User::can()]] will be called to check access.
-     * 
+     *
      * Note that it is preferred to check for permissions instead.
      *
      * If this property is not set or empty, it means this rule applies regardless of roles.
-     * @see $permissions
-     * @see $roleParams
+     * @see permissions
+     * @see roleParams
      */
     public $roles;
-    /** 
+    /**
      * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
-     * 
+     *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
-     * @see $roles
-     * @see $roleParams
+     * @see roles
+     * @see roleParams
      */
     public $permissions;
     /**
@@ -104,7 +106,7 @@ class AccessRule extends Component
      *
      * A reference to the [[AccessRule]] instance will be passed to the closure as the first parameter.
      *
-     * @see $roles
+     * @see roles
      * @since 2.0.12
      */
     public $roleParams = [];
@@ -112,8 +114,11 @@ class AccessRule extends Component
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
      * For example, '192.168.*' matches all IP addresses in the segment '192.168.'.
+     * It may also contain a pattern/mask like '172.16.0.0/12' which would match all IPs from the
+     * 20-bit private network block in RFC1918.
      * If not set or empty, it means this rule applies to all IP addresses.
      * @see Request::userIP
+     * @see IpHelper::inRange
      */
     public $ips;
     /**
@@ -198,7 +203,7 @@ class AccessRule extends Component
 
         $id = $controller->getUniqueId();
         foreach ($this->controllers as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;
             }
         }
@@ -216,31 +221,33 @@ class AccessRule extends Component
         $items = empty($this->roles) ? [] : $this->roles;
 
         if (!empty($this->permissions)) {
-           $items = array_merge($items, $this->permissions);
+            $items = array_merge($items, $this->permissions);
         }
 
         if (empty($items)) {
             return true;
         }
-      
+
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
 
         foreach ($items as $item) {
-            if ($item === '?' && $user->getIsGuest()) {
-                return true;
-            }
-
-            if ($item === '@' && !$user->getIsGuest()) {
-                return true;
-            }
-
-            if (!isset($roleParams)) {
-                $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
-            }
-            if ($user->can($item, $roleParams)) {
-                return true;
+            if ($item === '?') {
+                if ($user->getIsGuest()) {
+                    return true;
+                }
+            } elseif ($item === '@') {
+                if (!$user->getIsGuest()) {
+                    return true;
+                }
+            } else {
+                if (!isset($roleParams)) {
+                    $roleParams = !is_array($this->roleParams) && is_callable($this->roleParams) ? call_user_func($this->roleParams, $this) : $this->roleParams;
+                }
+                if ($user->can($item, $roleParams)) {
+                    return true;
+                }
             }
         }
 
@@ -257,12 +264,17 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' ||
-                $rule === $ip ||
-                (
-                    $ip !== null &&
-                    ($pos = strpos($rule, '*')) !== false &&
-                    strncmp($ip, $rule, $pos) === 0
+            if (
+                $rule === '*'
+                || $rule === $ip
+                || (
+                    $ip !== null
+                    && ($pos = strpos($rule, '*')) !== false
+                    && strncmp($ip, $rule, $pos) === 0
+                )
+                || (
+                    strpos($rule, '/') !== false
+                    && IpHelper::inRange($ip, $rule) === true
                 )
             ) {
                 return true;

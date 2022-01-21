@@ -7,8 +7,10 @@
 
 namespace yiiunit\framework\base;
 
+use Yii;
 use yii\base\Widget;
 use yii\base\WidgetEvent;
+use yii\di\Container;
 use yiiunit\TestCase;
 
 /**
@@ -47,6 +49,30 @@ class WidgetTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/19030
+     */
+    public function testDependencyInjection()
+    {
+        Yii::$container = new Container();
+        Yii::$container->setDefinitions([
+            TestWidgetB::className() => [
+                'class' => TestWidget::className()
+            ]
+        ]);
+
+        ob_start();
+        ob_implicit_flush(false);
+
+        $widget = TestWidgetB::begin(['id' => 'test']);
+        $this->assertTrue($widget instanceof TestWidget);
+        TestWidgetB::end();
+
+        $output = ob_get_clean();
+
+        $this->assertSame('<run-test>', $output);
+    }
+
+    /**
      * @depends testBeginEnd
      */
     public function testStackTracking()
@@ -54,6 +80,19 @@ class WidgetTest extends TestCase
         $this->expectException('yii\base\InvalidCallException');
         TestWidget::end();
     }
+
+    /**
+     * @depends testBeginEnd
+     */
+    public function testStackTrackingDisorder()
+    {
+        $this->expectException('yii\base\InvalidCallException');
+        TestWidgetA::begin();
+        TestWidgetB::begin();
+        TestWidgetA::end();
+        TestWidgetB::end();
+    }
+
 
     /**
      * @depends testWidget
@@ -99,4 +138,13 @@ class TestWidget extends Widget
     {
         return '<run-' . $this->id . '>';
     }
+}
+
+class TestWidgetA extends Widget
+{
+    public static $stack = [];
+}
+
+class TestWidgetB extends Widget
+{
 }

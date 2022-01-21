@@ -163,6 +163,8 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *    first record (or `null` if not found).
      *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
      *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
+     *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limited to simple filter conditions.
+     *  - a yii\db\Expression: The expression will be used directly. (@since 2.0.37)
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
      * instance.
@@ -192,8 +194,26 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
      * ```
      *
+     * If you need to pass user input to this method, make sure the input value is scalar or in case of
+     * array condition, make sure the array structure can not be changed from the outside:
+     *
+     * ```php
+     * // yii\web\Controller ensures that $id is scalar
+     * public function actionView($id)
+     * {
+     *     $model = Post::findOne($id);
+     *     // ...
+     * }
+     *
+     * // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+     * $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+     *
+     * // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+     * $model = Post::findOne(Yii::$app->request->get('id'));
+     * ```
+     *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition);
 
@@ -211,6 +231,8 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *  - an associative array of name-value pairs: query by a set of attribute values and return an array of records
      *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
      *    a non-associative array.
+     *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limted to simple filter conditions.
+     *  - a yii\db\Expression: The expression will be used directly. (@since 2.0.37)
      *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
      * instances.
@@ -240,6 +262,24 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
      * ```
      *
+     * If you need to pass user input to this method, make sure the input value is scalar or in case of
+     * array condition, make sure the array structure can not be changed from the outside:
+     *
+     * ```php
+     * // yii\web\Controller ensures that $id is scalar
+     * public function actionView($id)
+     * {
+     *     $model = Post::findOne($id);
+     *     // ...
+     * }
+     *
+     * // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+     * $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+     *
+     * // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+     * $model = Post::findOne(Yii::$app->request->get('id'));
+     * ```
+     *
      * @param mixed $condition primary key value or a set of column values
      * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
      */
@@ -256,7 +296,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * @param array $attributes attribute values (name-value pairs) to be saved for the record.
      * Unlike [[update()]] these are not going to be validated.
-     * @param array $condition the condition that matches the records that should get updated.
+     * @param mixed $condition the condition that matches the records that should get updated.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
      * @return int the number of rows updated

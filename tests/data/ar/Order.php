@@ -7,6 +7,8 @@
 
 namespace yiiunit\data\ar;
 
+use yii\db\ActiveQuery;
+
 /**
  * Class Order.
  *
@@ -14,6 +16,10 @@ namespace yiiunit\data\ar;
  * @property int $customer_id
  * @property int $created_at
  * @property string $total
+ *
+ * @property-read Item[] $expensiveItemsUsingViaWithCallable
+ * @property-read Item[] $cheapItemsUsingViaWithCallable
+ * @property-read Item[] $itemsFor8
  */
 class Order extends ActiveRecord
 {
@@ -76,6 +82,22 @@ class Order extends ActiveRecord
             ->via('orderItems', function ($q) {
                 // additional query configuration
             })->orderBy('item.id');
+    }
+
+    public function getExpensiveItemsUsingViaWithCallable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems', function (ActiveQuery $q) {
+                $q->where(['>=', 'subtotal', 10]);
+            });
+    }
+
+    public function getCheapItemsUsingViaWithCallable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems', function (ActiveQuery $q) {
+                $q->where(['<', 'subtotal', 10]);
+            });
     }
 
     public function getItemsIndexed()
@@ -148,26 +170,12 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
-//    public function getBooksQuerysyntax()
-//    {
-//        return $this->hasMany(Item::className(), ['id' => 'item_id'])
-//            ->onCondition(['{{@item}}.category_id' => 1])
-//            ->viaTable('order_item', ['order_id' => 'id']);
-//    }
-
     public function getBooksExplicitA()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
             ->onCondition(['bo.category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
-
-//    public function getBooksQuerysyntaxA()
-//    {
-//        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
-//            ->onCondition(['{{@item}}.category_id' => 1])
-//            ->viaTable('order_item', ['order_id' => 'id']);
-//    }
 
     public function getBookItems()
     {
@@ -214,5 +222,20 @@ class Order extends ActiveRecord
         return [
             0 => 'customer_id',
         ];
+    }
+
+    public function getQuantityOrderItems()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+    }
+
+    public function getOrderItemsFor8()
+    {
+        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id'])->andOnCondition(['subtotal' => 8.0]);
+    }
+
+    public function getItemsFor8()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItemsFor8');
     }
 }

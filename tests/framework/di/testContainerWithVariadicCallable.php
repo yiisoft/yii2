@@ -9,7 +9,7 @@ use yii\di\Container;
 use yiiunit\framework\di\stubs\QuxInterface;
 
 $container = new Container();
-$func = function(QuxInterface ...$quxes) {
+$func = function (QuxInterface ...$quxes) {
     return "That's a whole lot of quxes!";
 };
 $container->invoke($func);

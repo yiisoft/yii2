@@ -47,7 +47,7 @@ class Customer extends ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('[[id]]');
     }
 
     public function getExpensiveOrders()
@@ -95,11 +95,11 @@ class Customer extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return CustomerQuery
      */
     public static function find()
     {
-        return new CustomerQuery(get_called_class());
+        return new CustomerQuery(\get_called_class());
     }
 }

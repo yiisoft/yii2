@@ -19,6 +19,6 @@ Debido a que el trabajo de bootstrapping se tiene que ejecutar antes de gestiona
 
 Intenta no registrar demasiados componentes de bootstrapping. Un componente de bootstrapping sólo es necesario si tiene que interaccionar en todo el ciclo de vida de la gestión de la petición. Por ejemplo, si un modulo necesita registrar reglas de análisis de URL adicionales, se debe incluirse en la [propiedad bootstrap](structure-applications.md#bootstrap) para que la nueva regla de URL tenga efecto antes de que sea utilizada para resolver peticiones.
 
-En modo de producción, hay que habilitar la cache bytecode, así como [APC](http://php.net/manual/es/book.apc.php), para minimizar el tiempo necesario para incluir y analizar archivos PHP.
+En modo de producción, hay que habilitar la cache bytecode, así como [APC](https://www.php.net/manual/es/book.apc.php), para minimizar el tiempo necesario para incluir y analizar archivos PHP.
 
 Algunas grandes aplicaciones tienen [configuraciones](concept-configurations.md) de aplicación muy complejas que están dividida en muchos archivos de configuración más pequeños.

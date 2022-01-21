@@ -170,7 +170,7 @@ class ListWidget extends Widget
 Vous pouvez rendre une vue dans une autre vue en appelant les méthodes suivantes du  [[yii\base\View|composant view]]:
 
 * [[yii\base\View::render()|render()]]: rend une [vue nommée](#named-views).
-* [[yii\web\View::renderAjax()|renderAjax()]]: rend une  [vue nommée](#named-views) et injecte tous les fichiers et scripts JS/CSS enregistrés. On l'utilise ordinairement en réponse à une réquête Web AJAX.
+* [[yii\web\View::renderAjax()|renderAjax()]]: rend une  [vue nommée](#named-views) et injecte tous les fichiers et scripts JS/CSS enregistrés. On l'utilise ordinairement en réponse à une requête Web AJAX.
 * [[yii\base\View::renderFile()|renderFile()]]: rend une vue spécifiée en terme de chemin ou d'[alias](concept-aliases.md) de fichier de vue.
 
 Par exemple, le code suivant dans une vue, rend le fichier de vue `_overview.php` qui se trouve dans le même dossier que la vue courante. Rappelez-vous que `$this` dans une vue fait référence au composant [[yii\base\View|view]] :
@@ -435,14 +435,14 @@ Les composants View fournissent les fonctionnalités utiles suivantes relatives 
 * [mise en cache de fragments](caching-fragment.md): vous permet de mettre en cache un fragment de votre page Web.
 * [gestion des scripts client](output-client-scripts.md): prend en charge l'enregistrement et le rendu de code CSS et JavaScript. 
 * [gestion de paquets de ressources](structure-assets.md): prend en charge l'enregistrement et le rendu de [paquets de ressources](structure-assets.md).
-* [moteurs de modèle alternatif](tutorial-template-engines.md): vous permet d'utiliser d'autres moteur de modèles tels que [Twig](http://twig.sensiolabs.org/) et [Smarty](http://www.smarty.net/).
+* [moteurs de modèle alternatif](tutorial-template-engines.md): vous permet d'utiliser d'autres moteur de modèles tels que [Twig](https://twig.symfony.com/) et [Smarty](https://www.smarty.net/).
 
 Vous pouvez aussi utiliser les fonctionnalités suivantes qui, bien que mineures, sont néanmoins utiles, pour développer vos pages Web. 
 
 
 ### Définition du titre des pages <span id="setting-page-titles"></span>
 
-Chaque page Web doit avoir un titre. Normalement la balise titre est affichée dans une  [disposition](#layouts). Cependant, en pratique, le titre est souvent détérminé dans les vues de contenu plutôt que dans les dispositions. Pour résoudre ce problème,[[yii\web\View]] met à votre disposition la propriété [[yii\web\View::title|title]] qui vous permet de passer l'information de titre de la vue de contenu à la disposition.
+Chaque page Web doit avoir un titre. Normalement la balise titre est affichée dans une  [disposition](#layouts). Cependant, en pratique, le titre est souvent déterminé dans les vues de contenu plutôt que dans les dispositions. Pour résoudre ce problème,[[yii\web\View]] met à votre disposition la propriété [[yii\web\View::title|title]] qui vous permet de passer l'information de titre de la vue de contenu à la disposition.
 
 Pour utiliser cette fonctionnalité, dans chacune des vues de contenu, vous pouvez définir le titre de la page de la manière suivante :
 ```php
@@ -458,11 +458,11 @@ Ensuite dans la disposition, assurez-vous qui vous avez placé le code suivant d
 ```
 
 
-### Enregistrement des balises meta <span id="registering-meta-tags"></span>
+### Enregistrement des balises "meta" <span id="registering-meta-tags"></span>
 
-Généralement, les pages Web, ont besoin de générer des balises meta variées dont ont besoin diverses parties. Comme le titre des pages, les balises meta apparaissent dans la section `<head>` et sont généralement générées dans les dispositions.
+Généralement, les pages Web, ont besoin de générer des balises "meta" variées dont ont besoin diverses parties. Comme le titre des pages, les balises "meta" apparaissent dans la section `<head>` et sont généralement générées dans les dispositions.
 
-Si vous désirez spécifier quelles balises meta générer dans les vues de contenu, vous pouvez appeler [[yii\web\View::registerMetaTag()]] dans une vue de contenu comme illustrer ci-après :
+Si vous désirez spécifier quelles balises "meta" générer dans les vues de contenu, vous pouvez appeler [[yii\web\View::registerMetaTag()]] dans une vue de contenu comme illustrer ci-après :
 
 ```php
 <?php
@@ -470,7 +470,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ?>
 ```
 
-Le code ci-dessus enregistre une balise meta "mot clé" dans le composant view. La balise meta enregistrée est rendue après que le rendu de la disposition est terminé. Le code HTML suivant est généré et inséré à l'endroit où vous appelez  [[yii\web\View::head()]] dans la disposition :
+Le code ci-dessus enregistre une balise "meta" "mot clé" dans le composant view. La balise "meta" enregistrée est rendue après que le rendu de la disposition est terminé. Le code HTML suivant est généré et inséré à l'endroit où vous appelez  [[yii\web\View::head()]] dans la disposition :
 
 ```php
 <meta name="keywords" content="yii, framework, php">
@@ -479,7 +479,7 @@ Le code ci-dessus enregistre une balise meta "mot clé" dans le composant view. 
 Notez que si vous appelez [[yii\web\View::registerMetaTag()]] à de multiples reprises, elle enregistrera de multiples balises meta, que les balises soient les mêmes ou pas.
 
 Pour garantir qu'il n'y a qu'une instance d'un type de balise meta, vous pouvez spécifier une clé en tant que deuxième paramètre lors de l'appel de la méthode. 
-Par exemple, le code suivant, enregistre deux balises meta « description ». Cependant, seule la seconde sera rendue. 
+Par exemple, le code suivant, enregistre deux balises "meta" « description ». Cependant, seule la seconde sera rendue. 
 F
 
 ```php
@@ -490,21 +490,21 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 
 ### Enregistrement de balises liens <span id="registering-link-tags"></span>
 
-Comme les [balises meta](#registering-meta-tags), les balises liens sont utiles dans de nombreux cas, comme la personnalisation de favicon, le pointage sur les flux RSS ou la délégation d'OpenID à un autre serveur. Vous pouvez travailler avec les balises liens comme avec les balises meta en utilisant [[yii\web\View::registerLinkTag()]]. Par exemple, dans une vue de contenu, vous pouvez enregistrer une balise lien de la manière suivante :
+Comme les [balises meta](#registering-meta-tags), les balises liens sont utiles dans de nombreux cas, comme la personnalisation de favicon, le pointage sur les flux RSS ou la délégation d'OpenID à un autre serveur. Vous pouvez travailler avec les balises liens comme avec les balises "meta" en utilisant [[yii\web\View::registerLinkTag()]]. Par exemple, dans une vue de contenu, vous pouvez enregistrer une balise lien de la manière suivante :
 
 ```php
 $this->registerLinkTag([
     'title' => 'Live News for Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Le code suivant produit le résultat suivant :
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Comme avec  [[yii\web\View::registerMetaTag()|registerMetaTag()]], vous pouvez spécifier un clé lors de l'appel de [[yii\web\View::registerLinkTag()|registerLinkTag()]] pour éviter de générer des liens identiques.

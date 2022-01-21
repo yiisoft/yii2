@@ -7,8 +7,9 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\DummyCache;
 use yii\db\Connection;
-use yiiunit\TestCase as TestCase;
+use yiiunit\TestCase;
 
 abstract class DatabaseTestCase extends TestCase
 {
@@ -37,7 +38,7 @@ abstract class DatabaseTestCase extends TestCase
             $pdo_database = 'oci8';
         }
 
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
+        if (!\extension_loaded('pdo') || !\extension_loaded($pdo_database)) {
             $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
         $this->mockApplication();
@@ -118,13 +119,37 @@ abstract class DatabaseTestCase extends TestCase
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
             case 'cubrid':
-            case 'pgsql':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
+            case 'pgsql':
+                // more complex replacement needed to not conflict with postgres array syntax
+                return str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql));
             case 'sqlsrv':
                 return str_replace(['[[', ']]'], ['[', ']'], $sql);
             default:
                 return $sql;
         }
+    }
+    
+    /**
+     * @return \yii\db\Connection
+     */
+    protected function getConnectionWithInvalidSlave()
+    {
+        $config = array_merge($this->database, [
+            'serverStatusCache' => new DummyCache(),
+            'slaves' => [
+                [], // invalid config
+            ],
+        ]);
+
+        if (isset($config['fixture'])) {
+            $fixture = $config['fixture'];
+            unset($config['fixture']);
+        } else {
+            $fixture = null;
+        }
+
+        return $this->prepareDatabase($config, $fixture, true);
     }
 }

@@ -28,15 +28,15 @@ Yii 2.0 richiede PHP 5.4 o superiore, il che è un passaggio notevole rispetto a
 Di conseguenza ci sono diverse differenze a livello di linguaggio a cui devi fare attenzione.
 Di seguito un riepilogo delle principali differenze relative a PHP:
 
-- [Namespace](http://php.net/manual/en/language.namespaces.php).
-- [Funzioni anonime](http://php.net/manual/en/functions.anonymous.php).
+- [Namespace](https://www.php.net/manual/en/language.namespaces.php).
+- [Funzioni anonime](https://www.php.net/manual/en/functions.anonymous.php).
 - La sintassi breve per gli array `[...elementi...]` è utilizzabile invece di `array(...elementi...)`.
 - Le tag brevi per le echo `<?=` sono utilizzabili nei file delle viste. Il loro utilizzo è sicuro da PHP 5.4.
-- [Interfacce e classi SPL](http://php.net/manual/en/book.spl.php).
-- [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Data e ora](http://php.net/manual/en/book.datetime.php).
-- [Trait](http://php.net/manual/en/language.oop5.traits.php).
-- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 utilizza l'estensione PHP `intl` per le funzionalità di 
+- [Interfacce e classi SPL](https://www.php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://www.php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Data e ora](https://www.php.net/manual/en/book.datetime.php).
+- [Trait](https://www.php.net/manual/en/language.oop5.traits.php).
+- [intl](https://www.php.net/manual/en/book.intl.php). Yii 2.0 utilizza l'estensione PHP `intl` per le funzionalità di 
   internazionalizzazione.
 
 
@@ -285,7 +285,7 @@ Fai riferimento alla sezione [Console Commands](tutorial-console.md) per ulterio
 I18N
 ----
 
-Yii 2.0 ha rimosso la formattazione interna di date e numeri in favore del [modulo PECL di PHP](http://pecl.php.net/package/intl).
+Yii 2.0 ha rimosso la formattazione interna di date e numeri in favore del [modulo PECL di PHP](https://pecl.php.net/package/intl).
 
 La traduzione dei messaggi viene effettuata dal componente `i18n`.
 Questo componente gestisce una serie di sorgenti di messaggi, il che ti consente di usare diverse sorgenti di messaggio basate sulle

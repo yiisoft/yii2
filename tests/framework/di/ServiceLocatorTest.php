@@ -25,6 +25,10 @@ class TestClass extends BaseObject
     public $prop2;
 }
 
+class TestSubclass extends TestClass
+{
+}
+
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -67,6 +71,24 @@ class ServiceLocatorTest extends TestCase
         $this->assertSame($container->get($className), $object);
     }
 
+    public function testDi3Compatibility()
+    {
+        $config = [
+            'components' => [
+                'test' => [
+                    'class' => TestClass::className(),
+                ],
+            ],
+        ];
+
+        // User Defined Config
+        $config['components']['test']['__class'] = TestSubclass::className();
+
+        $app = new ServiceLocator($config);
+        $this->assertInstanceOf(TestSubclass::className(), $app->get('test'));
+    }
+
+
     public function testShared()
     {
         // with configuration: shared
@@ -94,21 +116,21 @@ class ServiceLocatorTest extends TestCase
     {
         $config = [
             'components' => [
-                'captcha' => [
+                'inputWidget' => [
                     'name' => 'foo bar',
-                    'class' => 'yii\captcha\Captcha',
+                    'class' => 'yii\widgets\InputWidget',
                 ],
             ],
         ];
 
         $app = new ServiceLocator($config);
 
-        $this->assertTrue(isset($app->captcha->name));
-        $this->assertNotEmpty($app->captcha->name);
+        $this->assertTrue(isset($app->inputWidget->name));
+        $this->assertNotEmpty($app->inputWidget->name);
 
-        $this->assertEquals('foo bar', $app->captcha->name);
+        $this->assertEquals('foo bar', $app->inputWidget->name);
 
-        $this->assertTrue(isset($app->captcha->name));
-        $this->assertNotEmpty($app->captcha->name);
+        $this->assertTrue(isset($app->inputWidget->name));
+        $this->assertNotEmpty($app->inputWidget->name);
     }
 }

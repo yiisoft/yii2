@@ -88,6 +88,7 @@ class Customer extends ActiveRecord
 ```
 
 ### Active records are called "models"
+
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
 classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
@@ -218,6 +219,25 @@ $customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```
+
+> Warning: If you need to pass user input to these methods, make sure the input value is scalar or in case of
+> array condition, make sure the array structure can not be changed from the outside:
+>
+> ```php
+> // yii\web\Controller ensures that $id is scalar
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // explicitly specifying the column to search, passing a scalar or array here will always result in finding a single record
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
 
 > Note: Neither [[yii\db\ActiveRecord::findOne()]] nor [[yii\db\ActiveQuery::one()]] will add `LIMIT 1` to 
   the generated SQL statement. If your query may return many rows of data, you should call `limit(1)` explicitly
@@ -453,8 +473,8 @@ If you are interested in the attribute values prior to their most recent modific
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
-> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), etc...
+> [intval()](https://www.php.net/manual/en/function.intval.php), [floatval()](https://www.php.net/manual/en/function.floatval.php),
+> [boolval](https://www.php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -472,7 +492,7 @@ $customer->loadDefaultValues();
 
 ### Attributes Typecasting <span id="attributes-typecasting"></span>
 
-Being populated by query results [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
+Being populated by query results, [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
 information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
 declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
 However, typecasting mechanism has several limitations:
@@ -490,7 +510,33 @@ converted during saving process.
 
 > Tip: you may use [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute values typecasting
   on ActiveRecord validation or saving.
+  
+Since 2.0.14, Yii ActiveRecord supports complex data types, such as JSON or multidimensional arrays.
 
+#### JSON in MySQL and PostgreSQL
+
+After data population, the value from JSON column will be automatically decoded from JSON according to standard JSON
+decoding rules.
+
+To save attribute value to a JSON column, ActiveRecord will automatically create a [[yii\db\JsonExpression|JsonExpression]] object
+that will be encoded to a JSON string on [QueryBuilder](db-query-builder.md) level.
+
+#### Arrays in PostgreSQL
+
+After data population, the value from Array column will be automatically decoded from PgSQL notation to an [[yii\db\ArrayExpression|ArrayExpression]]
+object. It implements PHP `ArrayAccess` interface, so you can use it as an array, or call `->getValue()` to get the array itself.
+
+To save attribute value to an array column, ActiveRecord will automatically create an [[yii\db\ArrayExpression|ArrayExpression]] object
+that will be encoded by [QueryBuilder](db-query-builder.md) to an PgSQL string representation of array.
+
+You can also use conditions for JSON columns:
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+
+To learn more about expressions building system read the [Query Builder – Adding custom Conditions and Expressions](db-query-builder.md#adding-custom-conditions-and-expressions)
+article.
 
 ### Updating Multiple Rows <span id="updating-multiple-rows"></span>
 
@@ -643,7 +689,7 @@ try {
 ```
 
 > Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://www.php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
@@ -697,9 +743,10 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
-   Be sure your version attribute has input validation rules and validates successfully.
-4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
+3. Implement [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] inside your model class to automatically parse its value from received requests.
+   Remove the version attribute from validation rules as [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] should handle it.
+4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+5. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
 For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
@@ -734,7 +781,29 @@ public function actionUpdate($id)
         // logic to resolve the conflict
     }
 }
+
+// ------ model code -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::class,
+    ];
+}
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
+> Note: Because [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] will ensure the record is only saved
+> if user submits a valid version number by directly parsing [[\yii\web\Request::getBodyParam()|getBodyParam()]], it
+> may be useful to extend your model class and do step 2 in parent model while attaching the behavior (step 3) to the child
+> class so you can have an instance dedicated to internal use while tying the other to controllers responsible of receiving 
+> end user inputs. Alternatively, you can implement your own logic by configuring its [[\yii\behaviors\OptimisticLockBehavior::$value|value]] property. 
 
 
 ## Working with Relational Data <span id="relational-data"></span>
@@ -758,7 +827,7 @@ class Customer extends ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -768,7 +837,7 @@ class Order extends ActiveRecord
 
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -786,7 +855,7 @@ While declaring a relation, you should specify the following information:
   declarations that a customer has many orders while an order only has one customer.
 - the name of the related Active Record class: specified as the first parameter to 
   either [[yii\db\ActiveRecord::hasMany()|hasMany()]] or [[yii\db\ActiveRecord::hasOne()|hasOne()]].
-  A recommended practice is to call `Xyz::className()` to get the class name string so that you can receive
+  A recommended practice is to call `Xyz::class` to get the class name string so that you can receive
   IDE auto-completion support as well as error detection at compiling stage. 
 - the link between the two types of data: specifies the column(s) through which the two types of data are related.
   The array values are the columns of the primary data (represented by the Active Record class that you are declaring
@@ -796,6 +865,7 @@ While declaring a relation, you should specify the following information:
   Active Record directly next to it. You see there that `customer_id` is a property of `Order` and `id` is a property
   of `Customer`.
   
+> Warning: Relation name `relation` is reserved. When used it will produce `ArgumentCountError`.
 
 ### Accessing Relational Data <span id="accessing-relational-data"></span>
 
@@ -864,7 +934,7 @@ class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -899,7 +969,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -912,12 +982,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -951,21 +1021,21 @@ class Customer extends ActiveRecord
     public function getPurchasedItems()
     {
         // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
                     ->via('orderItems');
     }
 
     public function getOrderItems()
     {
         // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
                     ->via('orders');
     }
 
     public function getOrders()
     {
         // same as above
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1136,7 +1206,9 @@ the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
 If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
-> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]
+  with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's
+  still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1176,7 +1248,7 @@ Note that this differs from our earlier example which only brings back customers
 
 #### Relation table aliases <span id="relation-table-aliases"></span>
 
-As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
+As noted before, when using JOIN in a query, we need to disambiguate column names. Therefore often an alias is
 defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
 
 ```php
@@ -1216,7 +1288,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1224,7 +1296,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1258,7 +1330,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1369,7 +1441,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // a customer has many comments
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1384,7 +1456,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // a comment has one customer
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1448,7 +1520,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
-  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
+  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
+  to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
 
 This allows you to write query building code like the following:
 
@@ -1467,7 +1540,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1478,7 +1551,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1501,7 +1574,7 @@ values from received data set.
 You are able to fetch additional columns or values from query and store it inside the Active Record.
 For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
 Each room stores information about its geometrical size using fields `length`, `width`, `height`.
-Imagine we need to retrieve list of all available rooms with their volume in descendant order.
+Imagine we need to retrieve list of all available rooms with their volume in descending order.
 So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
 to be displayed in the list.
 To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:
@@ -1544,7 +1617,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1639,7 +1712,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1670,7 +1743,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 
     /**

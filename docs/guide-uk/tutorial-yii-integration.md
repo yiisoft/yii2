@@ -89,7 +89,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
     composer install
 ```
 
-Перша команда встановлює [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
+Перша команда встановлює [composer asset plugin](https://github.com/fxpio/composer-asset-plugin),
 який дозволяє керувати залежностями пакунків Bower і NPM через Composer. Навіть якщо ви захочете використовувати тільки
 прошарки бази даних або інші, не повʼязані ресурсами, можливості Yii, вам все-одно необхідно встановити даний пакунок composer.
 
@@ -111,7 +111,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 Дивіться також загальний [розділ про встановлення Yii](start-installation.md#installing-via-composer), для отримання додаткової
 інформації про Composer та проблеми, які можуть виникнути під час встановлення.
 
-В іншому випадку, ви можете [завантажити](http://www.yiiframework.com/download/) файли релізу Yii і розархівувати його
+В іншому випадку, ви можете [завантажити](https://www.yiiframework.com/download/) файли релізу Yii і розархівувати його
 в каталог `BasePath/vendor`.
 
 Далі вам необхідно змінити вхідний скрипт сторонньої системи помістивши на його початок наступний код:

@@ -1,7 +1,7 @@
 Class Autoloading
 =================
 
-Yii relies on the [class autoloading mechanism](http://www.php.net/manual/en/language.oop5.autoload.php)
+Yii relies on the [class autoloading mechanism](https://www.php.net/manual/en/language.oop5.autoload.php)
 to locate and include all required class files. It provides a high-performance class autoloader that is compliant with the
 [PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md).
 The autoloader is installed when you include the `Yii.php` file.
@@ -15,7 +15,7 @@ Using the Yii Autoloader <span id="using-yii-autoloader"></span>
 
 To make use of the Yii class autoloader, you should follow two simple rules when creating and naming your classes:
 
-* Each class must be under a [namespace](http://php.net/manual/en/language.namespaces.php) (e.g. `foo\bar\MyClass`)
+* Each class must be under a [namespace](https://www.php.net/manual/en/language.namespaces.php) (e.g. `foo\bar\MyClass`)
 * Each class must be saved in an individual file whose path is determined by the following algorithm:
 
 ```php

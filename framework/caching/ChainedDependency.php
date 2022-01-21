@@ -58,7 +58,7 @@ class ChainedDependency extends Dependency
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isChanged($cache)
     {

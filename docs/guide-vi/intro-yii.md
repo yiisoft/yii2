@@ -2,7 +2,7 @@ Yii là gì
 ===========
 
 Yii là một PHP Framework mã nguồn mở và hoàn toàn miễn phí, có hiệu năng xử lý cao, phát triển tốt nhất trên các ứng dụng Web 2.0, sử dụng tối đa các thành phần (component-based PHP framework) để tăng tốc độ viết ứng dụng.
-Tên Yii (được phát âm là `Yee` hoặc `[ji:]`) ở Trung Quốc có nghĩa là  "thật đơn giản và luôn phát triển". Nghĩa thứ hai có thể đọc ngắn gọn là **Yes It Is**!
+Tên Yii (được phát âm là `Yee` hoặc `[ji:]`) ở Trung Quốc có nghĩa là  "thật đơn giản và luôn phát triển" (Hán tự "易", âm "dịch"). Nghĩa thứ hai có thể đọc ngắn gọn là **Yes It Is**!
 
 
 Yii thích hợp nhất để làm gì?
@@ -28,12 +28,12 @@ Nếu bạn có kinh nghiệm làm việc với các framework khác, bạn sẽ
   tận dụng lợi thế của kiến trúc mở rộng chuẩn Yii để sử dụng hoặc phát triển mở rộng phân phối..
 - Hiệu suất cao luôn luôn là một trong những mục tiêu chính của Yii.
 
-Yii không chỉ được phát triển từ một người, nó được hỗ trợ bởi [đội ngũ phát triển cốt lõi mạnh mẽ][about_yii], cũng như một cộng đồng lớn, trong đó các chuyên gia liên tục
+Yii không chỉ được phát triển từ một người, nó được hỗ trợ bởi [đội ngũ phát triển cốt lõi mạnh mẽ][yii_team], cũng như một cộng đồng lớn, trong đó các chuyên gia liên tục
 đóng góp cho sự phát triển của Yii. Nhóm nghiên cứu phát triển Yii giữ một mắt đóng trên các xu hướng phát triển Web mới nhất và trên thực hành tốt nhất và 
 các tính năng được tìm thấy trong các khuôn khổ và các dự án khác. Các thực hành tốt nhất và các tính năng được tìm thấy ở những nơi khác có liên quan nhất thường xuyên 
 được đưa vào khuôn khổ lõi và tiếp xúc thông qua giao diện đơn giản và thanh lịch.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Các phiên bản Yii
 ------------
@@ -51,5 +51,5 @@ Yii 2.0 đòi hỏi phiên bản PHP 5.4.0 hoặc cao hơn. Bạn có thể ch�
 kiểm tra xem những gì các đặc điểm cụ thể của từng cấu hình PHP.
 
 Để tìm hiểu Yii, bạn cần có kiến thức cơ bản về lập trình hướng đối tượng (OOP), vì Yii là một framework hướng đối tượng
-thuần túy. Yii 2.0 cũng sử dụng các tính năng PHP mới nhất, chẳng hạn như [namespaces](http://www.php.net/manual/en/language.namespaces.php) và [traits](http://www.php.net/manual/en/language.oop5.traits.php).
+thuần túy. Yii 2.0 cũng sử dụng các tính năng PHP mới nhất, chẳng hạn như [namespaces](https://www.php.net/manual/en/language.namespaces.php) và [traits](https://www.php.net/manual/en/language.oop5.traits.php).
 Hiểu được những khái niệm này sẽ giúp bạn nhanh chóng nắm bắt Yii 2.0.

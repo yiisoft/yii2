@@ -8,7 +8,7 @@
 return <<<CODE
 <?php
 
-use yii\db\Migration;
+{$namespace}use yii\db\Migration;
 
 /**
  * Class {$class}
@@ -16,7 +16,7 @@ use yii\db\Migration;
 class {$class} extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeUp()
     {
@@ -24,7 +24,7 @@ class {$class} extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeDown()
     {

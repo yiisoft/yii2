@@ -18,11 +18,18 @@ DROP TABLE IF EXISTS "negative_default_values";
 DROP TABLE IF EXISTS "animal";
 DROP TABLE IF EXISTS "default_pk";
 DROP TABLE IF EXISTS "document";
+DROP TABLE IF EXISTS "dossier";
+DROP TABLE IF EXISTS "employee";
+DROP TABLE IF EXISTS "department";
+DROP TABLE IF EXISTS "alpha";
+DROP TABLE IF EXISTS "beta";
 DROP VIEW IF EXISTS "animal_view";
 DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
+DROP TABLE IF EXISTS "T_upsert";
+DROP TABLE IF EXISTS "T_upsert_1";
 
 CREATE TABLE "profile" (
   id INTEGER NOT NULL,
@@ -101,6 +108,7 @@ CREATE TABLE "null_values" (
 );
 
 CREATE TABLE "negative_default_values" (
+  tinyint_col tinyint default '-123',
   smallint_col integer default '-123',
   int_col integer default '-123',
   bigint_col integer default '-123',
@@ -111,6 +119,7 @@ CREATE TABLE "negative_default_values" (
 CREATE TABLE "type" (
   int_col INTEGER NOT NULL,
   int_col2 INTEGER DEFAULT '1',
+  tinyint_col TINYINT(3) DEFAULT '1',
   smallint_col SMALLINT(1) DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
@@ -142,6 +151,40 @@ CREATE TABLE "document" (
   title VARCHAR(255) NOT NULL,
   content text,
   version INTEGER NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "department" (
+  id INTEGER NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "employee" (
+  id INTEGER NOT NULL,
+  department_id INTEGER NOT NULL,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id, department_id)
+);
+
+CREATE TABLE "dossier" (
+  id INTEGER NOT NULL,
+  department_id INTEGER NOT NULL,
+  employee_id INTEGER NOT NULL,
+  summary VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "alpha" (
+  id INTEGER NOT NULL,
+  string_identifier VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "beta" (
+  id INTEGER NOT NULL,
+  alpha_string_identifier VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -185,10 +228,39 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO "department" (id, title) VALUES (1, 'IT');
+INSERT INTO "department" (id, title) VALUES (2, 'accounting');
+
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
+
+INSERT INTO "alpha" (id, string_identifier) VALUES (1, '1');
+INSERT INTO "alpha" (id, string_identifier) VALUES (2, '1a');
+INSERT INTO "alpha" (id, string_identifier) VALUES (3, '01');
+INSERT INTO "alpha" (id, string_identifier) VALUES (4, '001');
+INSERT INTO "alpha" (id, string_identifier) VALUES (5, '2');
+INSERT INTO "alpha" (id, string_identifier) VALUES (6, '2b');
+INSERT INTO "alpha" (id, string_identifier) VALUES (7, '02');
+INSERT INTO "alpha" (id, string_identifier) VALUES (8, '002');
+
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (1, '1');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (2, '01');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (3, '001');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (4, '001');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (5, '2');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (6, '2b');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (7, '2b');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (8, '02');
 
 /**
  * (SqLite-)Database Schema for validator tests
@@ -269,4 +341,22 @@ CREATE TABLE "T_constraints_4"
     "C_col_1" INT NULL,
     "C_col_2" INT NOT NULL,
     CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);
+
+CREATE TABLE "T_upsert"
+(
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "ts" INT NULL,
+    "email" VARCHAR(128) NOT NULL UNIQUE,
+    "recovery_email" VARCHAR(128) NULL,
+    "address" TEXT NULL,
+    "status" SMALLINT NOT NULL DEFAULT 0,
+    "orders" INT NOT NULL DEFAULT 0,
+    "profile_id" INT NULL,
+    UNIQUE ("email", "recovery_email")
+);
+
+CREATE TABLE "T_upsert_1"
+(
+    "a" INTEGER NOT NULL PRIMARY KEY
 );

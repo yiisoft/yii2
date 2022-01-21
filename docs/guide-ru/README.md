@@ -1,7 +1,7 @@
 Полное руководство по Yii 2.0
 =============================
 
-Данное руководство выпущено в соответствии с [положениями о документации Yii](http://www.yiiframework.com/doc/terms/).
+Данное руководство выпущено в соответствии с [положениями о документации Yii](https://www.yiiframework.com/doc/terms/).
 
 All Rights Reserved.
 
@@ -79,9 +79,9 @@ All Rights Reserved.
 * [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ru/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ru/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ru/README.md)
 
 
 Получение данных от пользователя
@@ -92,6 +92,7 @@ All Rights Reserved.
 * [Загрузка файлов](input-file-upload.md)
 * [Табличный ввод](input-tabular-input.md)
 * [Работа с несколькими моделями](input-multiple-models.md)
+* [Расширение ActiveForm на стороне клиента](input-form-javascript.md)
 
 
 Отображение данных
@@ -102,7 +103,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* Работа с клиентскими скриптами
+* [Работа с клиентскими скриптами](output-client-scripts.md)
 * [Темизация](output-theming.md)
 
 
@@ -164,7 +165,6 @@ All Rights Reserved.
 Специальные темы
 ----------------
 
-
 * [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Создание приложения с нуля](tutorial-start-from-scratch.md)
 * [Консольные команды](tutorial-console.md)
@@ -175,21 +175,22 @@ All Rights Reserved.
 * [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * [Шаблонизаторы](tutorial-template-engines.md)
 * [Работа со сторонним кодом](tutorial-yii-integration.md)
+* [Использование Yii в качестве микро-framework'а](tutorial-yii-as-micro-framework.md)
 
 
 Виджеты
 -------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ru/README.md)
-* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ru/README.md)
 
 
 Хелперы

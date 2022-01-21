@@ -38,13 +38,17 @@ in the array if an end user requests for them via the `expand` query parameter. 
 // returns all fields as declared in fields()
 http://localhost/users
 
-// only returns field id and email, provided they are declared in fields()
+// only returns "id" and "email" fields, provided they are declared in fields()
 http://localhost/users?fields=id,email
 
-// returns all fields in fields() and field profile if it is in extraFields()
+// returns all fields in fields() and field "profile" if it is in extraFields()
 http://localhost/users?expand=profile
 
-// only returns field id, email and profile, provided they are in fields() and extraFields()
+// returns all fields in fields() and "author" from post if
+// it is in extraFields() of post model
+http://localhost/comments?expand=post.author
+
+// only returns "id" and "email" provided they are in fields() and "profile" if it is in extraFields()
 http://localhost/users?fields=id,email&expand=profile
 ```
 
@@ -78,7 +82,7 @@ public function fields()
 }
 
 // filter out some fields, best used when you want to inherit the parent implementation
-// and blacklist some sensitive fields.
+// and exclude some sensitive fields.
 public function fields()
 {
     $fields = parent::fields();

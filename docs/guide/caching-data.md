@@ -103,11 +103,14 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 
 Yii supports a wide range of cache storage. The following is a summary:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
+* [[yii\caching\ApcCache]]: uses PHP [APC](https://www.php.net/manual/en/book.apcu.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
   create a table as specified in [[yii\caching\DbCache::cacheTable]].
+* [[yii\caching\ArrayCache]]: provides caching for the current request only by storing the values in an array.
+  For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting
+  [[yii\caching\ArrayCache::$serializer]] to `false`.
 * [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
   The purpose of this component is to simplify the code that needs to check the availability of cache.
   For example, during development or if the server doesn't have actual cache support, you may configure
@@ -117,16 +120,16 @@ Yii supports a wide range of cache storage. The following is a summary:
   `Yii::$app->cache` might be `null`.
 * [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
+* [[yii\caching\MemCache]]: uses PHP [memcache](https://www.php.net/manual/en/book.memcache.php)
+  and [memcached](https://www.php.net/manual/en/book.memcached.php) extensions. This option can be considered as
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
 * [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](http://php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
-* [[yii\caching\ZendDataCache]]: uses
+  ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
+* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache) extension.
+* [[yii\caching\ZendDataCache]] _(deprecated)_: uses
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
@@ -307,24 +310,18 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Info: Some DBMS (e.g. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   also support query caching on the DB server-side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
+Since 2.0.14 you can use the following shortcuts:
 
-### Cache Flushing <span id="cache-flushing">
-
-When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
-
-You can flush the cache from the console by calling `yii cache/flush` as well.
- - `yii cache`: lists the available caches in application
- - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
- names separated with space)
- - `yii cache/flush-all`: flushes all cache components in the application
-
-> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
-components in your web and console application configs to reach the proper effect.
+```php
+(new Query())->cache(7200)->all();
+// and
+User::find()->cache(7200)->all();
+```
 
 
 ### Configurations <span id="query-caching-configs"></span>
@@ -419,4 +416,19 @@ handler for the column data.
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
 the caching will fail.
+
+
+## Cache Flushing <span id="cache-flushing"></span>
+
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+
+You can flush the cache from the console by calling `yii cache/flush` as well.
+ - `yii cache`: lists the available caches in application
+ - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ names separated with space)
+ - `yii cache/flush-all`: flushes all cache components in the application
+ - `yii cache/flush-schema db`: clears DB schema cache for a given connection component
+
+> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
+components in your web and console application configs to reach the proper effect.
 

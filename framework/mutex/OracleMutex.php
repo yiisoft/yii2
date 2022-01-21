@@ -67,7 +67,7 @@ class OracleMutex extends DbMutex
     public function init()
     {
         parent::init();
-        if (strpos($this->db->driverName, 'oci') !== 0 && strpos($this->db->driverName, 'odbc') !== 0) {
+        if (strncmp($this->db->driverName, 'oci', 3) !== 0 && strncmp($this->db->driverName, 'odbc', 4) !== 0) {
             throw new InvalidConfigException('In order to use OracleMutex connection must be configured to use Oracle database.');
         }
     }
