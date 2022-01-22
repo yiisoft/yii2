@@ -519,7 +519,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 
 フォーマットは複数形で使われるものと非常に近いものです。
 特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
-あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
+あるいは、その代りに、[unicode.org の規則のリファレンス](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html) を参照することも出来ます。
 
 
 #### 選択肢 <span id="selection"></span>
