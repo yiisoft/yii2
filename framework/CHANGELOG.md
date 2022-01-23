@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #19138: Allow digits in language code (ntesic)
 - Bug #19148: Fix undefined array key errors in `yii\db\ActiveRelationTrait` (stevekr)
 - Bug #19041: Fix PHP 8.1 issues (longthanhtran, samdark, pamparam83, sartor, githubjeka)
+- Enh #19171: Added `$pagination` and `$sort` to `\yii\rest\IndexAction` for easy configuration (rhertogh)
 
 
 2.0.44 December 30, 2021
