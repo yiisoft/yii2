@@ -461,7 +461,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 
 格式与复数使用的格式非常接近。 要了解您应为特定语言环境指定哪些参数，请参阅
 [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“复数规则，序数”。
-或者，您可以参考 [unicode.org上的规则参考](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html)。
+或者，您可以参考 [unicode.org上的规则参考](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html)。
 
 #### 选择（Selection） <span id="selection"></span>
 

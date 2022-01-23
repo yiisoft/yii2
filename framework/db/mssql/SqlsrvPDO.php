@@ -26,6 +26,7 @@ class SqlsrvPDO extends \PDO
      * @param string|null $sequence the sequence name. Defaults to null.
      * @return int last inserted ID value.
      */
+    #[\ReturnTypeWillChange]
     public function lastInsertId($sequence = null)
     {
         return !$sequence ? parent::lastInsertId() : parent::lastInsertId($sequence);
