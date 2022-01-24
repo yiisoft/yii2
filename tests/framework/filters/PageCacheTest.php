@@ -116,6 +116,16 @@ class PageCacheTest extends TestCase
                     'test-header-2' => false,
                 ],
             ]],
+            [[
+                'name' => 'originalNameHeaders',
+                'properties' => [
+                    'cacheHeaders' => ['Test-Header-1'],
+                ],
+                'headers' => [
+                    'Test-Header-1' => true,
+                    'Test-Header-2' => false,
+                ],
+            ]],
 
             // All together
             [[
@@ -233,11 +243,19 @@ class PageCacheTest extends TestCase
         }
         // Headers
         if (isset($testCase['headers'])) {
+            $headersExpected = false;
             foreach ($testCase['headers'] as $name => $expected) {
                 $this->assertSame($expected, Yii::$app->response->headers->has($name), $testCase['name']);
                 if ($expected) {
+                    $headersExpected = true;
                     $this->assertSame($headers[$name], Yii::$app->response->headers->get($name), $testCase['name']);
                 }
+            }
+            if ($headersExpected) {
+                $this->assertSame(
+                    \array_keys($testCase['headers']),
+                    \array_keys(Yii::$app->response->headers->toArray(true))
+                );
             }
         }
     }

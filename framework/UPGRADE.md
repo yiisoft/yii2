@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.44
+-----------------------
+
+* `yii\filters\PageCache::$cacheHeaders` now takes a case-sensitive list of header names since PageCache is no longer 
+  storing the normalized versions of them.
+
 Upgrade from Yii 2.0.43
 -----------------------
 
