@@ -55,7 +55,7 @@ Upgrade from Yii 2.0.44
 -----------------------
 
 * `yii\filters\PageCache::$cacheHeaders` now takes a case-sensitive list of header names since PageCache is no longer 
-  storing the normalized versions of them.
+  storing the normalized (lowercase) versions of them so make sure this list is properly updated.
 
 Upgrade from Yii 2.0.43
 -----------------------
