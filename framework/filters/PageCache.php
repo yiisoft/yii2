@@ -295,7 +295,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
             return;
         }
 
-        $all = $response->headers->toArray(true);
+        $all = $response->headers->toOriginalArray();
         if (is_array($this->cacheHeaders)) {
             $filtered = [];
             foreach ($this->cacheHeaders as $name) {

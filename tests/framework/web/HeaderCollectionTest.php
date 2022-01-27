@@ -43,14 +43,14 @@ class HeaderCollectionTest extends TestCase
         $this->assertSame('1', $headerCollection->get('x-hEadER'));
         $this->assertSame(['1'], $headerCollection->get('x-hEadER', null, false));
         $this->assertSame(['x-header' => ['1']], $headerCollection->toArray());
-        $this->assertSame(['X-Header' => ['1']], $headerCollection->toArray(true));
+        $this->assertSame(['X-Header' => ['1']], $headerCollection->toOriginalArray());
 
         $headerCollection->set('X-HEADER', '2');
         $this->assertSame('2', $headerCollection->get('X-Header'));
         $this->assertSame('2', $headerCollection->get('x-header'));
         $this->assertSame('2', $headerCollection->get('x-hEadER'));
         $this->assertSame(['x-header' => ['2']], $headerCollection->toArray());
-        $this->assertSame(['X-HEADER' => ['2']], $headerCollection->toArray(true));
+        $this->assertSame(['X-HEADER' => ['2']], $headerCollection->toOriginalArray());
 
         $headerCollection->offsetSet('X-HEADER', '3');
         $this->assertSame('3', $headerCollection->get('X-Header'));
@@ -77,7 +77,7 @@ class HeaderCollectionTest extends TestCase
         $this->assertSame('1', $headerCollection->get('x-hEadER'));
         $this->assertSame(['1'], $headerCollection->get('x-hEadER', null, false));
         $this->assertSame(['x-header' => ['1']], $headerCollection->toArray());
-        $this->assertSame(['X-Header' => ['1']], $headerCollection->toArray(true));
+        $this->assertSame(['X-Header' => ['1']], $headerCollection->toOriginalArray());
 
         $headerCollection->add('X-HEADER', '2');
         $this->assertSame('1', $headerCollection->get('X-Header'));
@@ -85,7 +85,7 @@ class HeaderCollectionTest extends TestCase
         $this->assertSame('1', $headerCollection->get('x-hEadER'));
         $this->assertSame(['1', '2'], $headerCollection->get('x-header', null, false));
         $this->assertSame(['x-header' => ['1', '2']], $headerCollection->toArray());
-        $this->assertSame(['X-Header' => ['1', '2']], $headerCollection->toArray(true));
+        $this->assertSame(['X-Header' => ['1', '2']], $headerCollection->toOriginalArray());
     }
 
     public function testRemover()
