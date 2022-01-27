@@ -112,7 +112,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // выведет: 1 январ
 - `long` будет отображать `6 October 2014` и `15:58:42 GMT` соответственно и
 - `full` будет отображать `Monday, 6 October 2014` и `15:58:42 GMT` соответственно.
 
-Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](http://site.icu-project.org/),
+Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](https://icu.unicode.org/),
 который описан в руководстве ICU по следующему адресу:
 <http://userguide.icu-project.org/formatparse/datetime>. Также вы можете использовать синтаксис, который распознаётся
 PHP-функцией [date()](https://www.php.net/manual/ru/function.date.php), используя строку с префиксом `php:`.

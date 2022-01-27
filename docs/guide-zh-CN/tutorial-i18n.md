@@ -744,7 +744,7 @@ Yii 使用 [PHP intl 扩展](https://www.php.net/manual/en/book.intl.php) 来提
 因此，当 I18N 对你来说必不可少时，强烈建议你安装 `intl`。
 
 [PHP intl 扩展](https://www.php.net/manual/en/book.intl.php) 是基于对于所有不同的语言环境
-提供格式化规则的 [ICU库](http://site.icu-project.org/)。
+提供格式化规则的 [ICU库](https://icu.unicode.org/)。
 不同版本的 ICU 中可能会产生不同日期和数值格式的结果。
 为了确保你的网站在所有环境产生相同的结果，
 建议你安装与 `intl` 扩展相同的版本（和 ICU 同一版本）。
