@@ -243,7 +243,7 @@ class PageCacheTest extends TestCase
         }
         // Headers
         if (isset($testCase['headers'])) {
-            $headersExpected = Yii::$app->response->headers->toArray(true);
+            $headersExpected = Yii::$app->response->headers->toOriginalArray();
             foreach ($testCase['headers'] as $name => $expected) {
                 $this->assertSame($expected, Yii::$app->response->headers->has($name), $testCase['name']);
                 if ($expected) {

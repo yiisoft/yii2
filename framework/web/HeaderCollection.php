@@ -177,15 +177,20 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns the collection as a PHP array.
      * @return array the array representation of the collection.
      * The array keys are header names, and the array values are the corresponding header values.
-     * Since 2.0.45 you can pass true here to get the headers list of original header names (case-sensitive) instead of
-     * default normalized (case-insensitive) ones.
      */
-    public function toArray($originalNames = false)
+    public function toArray()
     {
-        if ($originalNames === false) {
-            return $this->_headers;
-        }
+        return $this->_headers;
+    }
 
+    /**
+     * Returns the collection as a PHP array but instead of using normalized header names as keys (like [[toArray()]])
+     * it uses original header names (case-sensitive).
+     * @return array the array representation of the collection.
+     * @since 2.0.45
+     */
+    public function toOriginalArray()
+    {
         return \array_map(function ($normalizedName) {
             return $this->_headers[$normalizedName];
         }, \array_flip($this->_originalHeaderNames));
