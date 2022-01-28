@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.44-dev';
+        return '2.0.45-dev';
     }
 
     /**
@@ -130,7 +130,7 @@ class BaseYii
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1) !== 0) {
+        if (strncmp((string)$alias, '@', 1) !== 0) {
             // not an alias
             return $alias;
         }

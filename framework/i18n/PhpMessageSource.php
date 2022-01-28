@@ -72,7 +72,7 @@ class PhpMessageSource extends MessageSource
         $messageFile = $this->getMessageFilePath($category, $language);
         $messages = $this->loadMessagesFromFile($messageFile);
 
-        $fallbackLanguage = substr($language, 0, 2);
+        $fallbackLanguage = substr((string)$language, 0, 2);
         $fallbackSourceLanguage = substr($this->sourceLanguage, 0, 2);
 
         if ($fallbackLanguage !== '' && $language !== $fallbackLanguage) {
@@ -134,7 +134,7 @@ class PhpMessageSource extends MessageSource
     protected function getMessageFilePath($category, $language)
     {
         $language = (string) $language;
-        if ($language !== '' && !preg_match('/^[a-z_-]+$/i', $language)) {
+        if ($language !== '' && !preg_match('/^[a-z0-9_-]+$/i', $language)) {
             throw new InvalidArgumentException(sprintf('Invalid language code: "%s".', $language));
         }
         $messageFile = Yii::getAlias($this->basePath) . "/$language/";

@@ -106,7 +106,7 @@ class GettextMoFile extends GettextFile
         $messages = [];
         for ($i = 0; $i < $count; ++$i) {
             $id = $this->readString($fileHandle, $sourceLengths[$i], $sourceOffsets[$i]);
-            $separatorPosition = strpos($id, chr(4));
+            $separatorPosition = strpos((string)$id, chr(4));
 
 
             if ((!$context && $separatorPosition === false) || ($context && $separatorPosition !== false && strncmp($id, $context, $separatorPosition) === 0)) {

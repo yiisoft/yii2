@@ -14,40 +14,32 @@ use Yii;
  *
  * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
- * @property-read \yii\web\AssetManager $assetManager The asset manager application component. This property
- * is read-only.
- * @property-read \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is
- * returned if auth manager is not configured. This property is read-only.
+ * @property-read \yii\web\AssetManager $assetManager The asset manager application component.
+ * @property-read \yii\rbac\ManagerInterface|null $authManager The auth manager application component or null
+ * if it's not configured.
  * @property string $basePath The root directory of the application.
  * @property-read \yii\caching\CacheInterface $cache The cache application component. Null if the component is
- * not enabled. This property is read-only.
- * @property-write array $container Values given in terms of name-value pairs. This property is write-only.
- * @property-read \yii\db\Connection $db The database connection. This property is read-only.
+ * not enabled.
+ * @property-write array $container Values given in terms of name-value pairs.
+ * @property-read \yii\db\Connection $db The database connection.
  * @property-read \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
- * component. This property is read-only.
- * @property-read \yii\i18n\Formatter $formatter The formatter application component. This property is
- * read-only.
- * @property-read \yii\i18n\I18N $i18n The internationalization application component. This property is
- * read-only.
- * @property-read \yii\log\Dispatcher $log The log dispatcher application component. This property is
- * read-only.
- * @property-read \yii\mail\MailerInterface $mailer The mailer application component. This property is
- * read-only.
- * @property-read \yii\web\Request|\yii\console\Request $request The request component. This property is
- * read-only.
- * @property-read \yii\web\Response|\yii\console\Response $response The response component. This property is
- * read-only.
+ * component.
+ * @property-read \yii\i18n\Formatter $formatter The formatter application component.
+ * @property-read \yii\i18n\I18N $i18n The internationalization application component.
+ * @property-read \yii\log\Dispatcher $log The log dispatcher application component.
+ * @property-read \yii\mail\MailerInterface $mailer The mailer application component.
+ * @property-read \yii\web\Request|\yii\console\Request $request The request component.
+ * @property-read \yii\web\Response|\yii\console\Response $response The response component.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
- * @property-read \yii\base\Security $security The security application component. This property is read-only.
+ * @property-read \yii\base\Security $security The security application component.
  * @property string $timeZone The time zone used by this application.
- * @property-read string $uniqueId The unique ID of the module. This property is read-only.
- * @property-read \yii\web\UrlManager $urlManager The URL manager for this application. This property is
- * read-only.
+ * @property-read string $uniqueId The unique ID of the module.
+ * @property-read \yii\web\UrlManager $urlManager The URL manager for this application.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
  * @property-read View|\yii\web\View $view The view application component that is used to render various view
- * files. This property is read-only.
+ * files.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

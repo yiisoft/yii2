@@ -161,6 +161,11 @@ class BaseFileHelper
 
             throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
+
+        if (PHP_VERSION_ID >= 80100) {
+            return static::getMimeTypeByExtension($file, $magicFile);
+        }
+
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {
@@ -509,7 +514,7 @@ class BaseFileHelper
      *   * `false`: the directory will NOT be returned
      *
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
-     * See [[findFiles()]] for more options.
+     *   See [[findFiles()]] for more options.
      * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
      * @throws InvalidArgumentException if the dir is invalid.
      * @since 2.0.14
@@ -900,8 +905,8 @@ class BaseFileHelper
      */
     public static function changeOwnership($path, $ownership, $mode = null)
     {
-        if (!file_exists($path)) {
-            throw new InvalidArgumentException('Unable to change ownerhip, "' . $path . '" is not a file or directory.');
+        if (!file_exists((string)$path)) {
+            throw new InvalidArgumentException('Unable to change ownership, "' . $path . '" is not a file or directory.');
         }
 
         if (empty($ownership) && $ownership !== 0 && $mode === null) {

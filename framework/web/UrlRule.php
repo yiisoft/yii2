@@ -25,7 +25,7 @@ use yii\base\InvalidConfigException;
  * ```
  *
  * @property-read null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call.
- * `null` if rule does not provide info about create status. This property is read-only.
+ * `null` if rule does not provide info about create status.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -79,7 +79,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public $pattern;
     /**
-     * @var string the pattern used to parse and create the host info part of a URL (e.g. `http://example.com`).
+     * @var string|null the pattern used to parse and create the host info part of a URL (e.g. `http://example.com`).
      * @see pattern
      */
     public $host;
@@ -336,7 +336,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         // if host starts with relative scheme, then insert pattern to match any
-        if (strncmp($this->host, '//', 2) === 0) {
+        if ($this->host !== null && strncmp($this->host, '//', 2) === 0) {
             $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
         }
 

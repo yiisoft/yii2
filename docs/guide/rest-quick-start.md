@@ -195,6 +195,42 @@ Additionally, you can sort collections like `http://localhost/users?sort=email` 
 `http://localhost/users?filter[email][like]=gmail.com` could be implemented using
 data filters. See [Resources](rest-resources.md#filtering-collections) section for details.
 
+## Customizing Pagination and Sorting in the list<span id="customizing-pagination-and-sorting"></span>
+
+In order to change the default [pagination](output-pagination.md) and [sorting](output-sorting.md) of the model list
+you can configure the [[yii\rest\IndexAction]] in your controller. For example:
+
+```php
+<?php
+namespace app\controllers;
+
+use yii\rest\ActiveController;
+use yii\helpers\ArrayHelper;
+
+class UserController extends ActiveController
+{
+    public $modelClass = 'app\models\User';
+    
+    public function actions()
+    {
+        return ArrayHelper::merge(parent::actions(), [
+            'index' => [
+                'pagination' => [
+                    'pageSize' => 10,
+                ],
+                'sort' => [
+                    'defaultOrder' => [
+                        'created_at' => SORT_DESC,
+                    ],
+                ],
+            ],
+        ]);
+    }
+}
+```
+
+Please see [Extending ActiveController](rest-controllers#extending-active-controller) for more information on how to 
+configure actions of the ActiveController.
 
 ## Summary <span id="summary"></span>
 

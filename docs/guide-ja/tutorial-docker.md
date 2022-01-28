@@ -12,7 +12,7 @@ Docker コンテナの詳細については、[docker.com](https://www.docker.co
 - `docker`
 - `docker-compose`
 
-[ダウンロード・ページ](https://www.docker.com/community-edition) で Docker のツールを取得して下さい。
+[ダウンロード・ページ](https://www.docker.com/products/container-runtime) で Docker のツールを取得して下さい。
 
 ## インストール
 

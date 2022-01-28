@@ -82,7 +82,6 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * @since 2.0.7
      */
     public $prettyPrint = false;
-
     /**
      * @var bool Avoids objects with zero-indexed keys to be encoded as array
      * Json::encode((object)['test']) will be encoded as an object not array. This matches the behaviour of json_encode().
@@ -90,6 +89,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * @since 2.0.44
      */
     public $keepObjectType;
+
 
     /**
      * Formats the specified response.

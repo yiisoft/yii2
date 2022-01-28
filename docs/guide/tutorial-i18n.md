@@ -22,7 +22,7 @@ For consistency reasons, all locale IDs used in Yii applications should be canon
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
 More details about locale can be found in the
-[documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+[documentation of the ICU project](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 ### Language
 
@@ -246,7 +246,7 @@ full form: {name,type,style}
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 ```
 
-Complete format is described in the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html).
+Complete format is described in the [ICU documentation](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html).
 In the following we will show some common usages.
 
 
@@ -274,7 +274,7 @@ echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
 Characters used in the custom format could be found in
-[ICU API reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) under "Special Pattern Characters"
+[ICU API reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html) under "Special Pattern Characters"
 section.
  
  
@@ -302,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Formatting reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
@@ -325,7 +325,7 @@ You can also specify a custom pattern to format the time value:
 echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Formatting reference](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Spellout <span id="spellout"></span>
@@ -347,7 +347,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 Note that there should be no space after `spellout,` and before `%`.
 
 To get a list of options available for locale you're using check 
-"Numbering schemas, Spellout" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Spellout" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Ordinal <span id="ordinal"></span>
 
@@ -368,7 +368,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 Note that there should be no space after `ordinal,` and before `%`.
 
 To get a list of options available for locale you're using check 
-"Numbering schemas, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Ordinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Duration <span id="duration"></span>
 
@@ -389,7 +389,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 Note that there should be no space after `duration,` and before `%`.
 
 To get a list of options available for locale you're using check 
-"Numbering schemas, Duration" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+"Numbering schemas, Duration" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/).
 
 #### Plural <span id="plural"></span>
 
@@ -415,7 +415,7 @@ while `one` matches `21` or `101`:
 ```
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
-specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+specify for a particular locale, please refer to "Plural Rules, Cardinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
 Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
@@ -460,8 +460,8 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 The format is very close to what's used for plurals. To learn which arguments you should specify for a particular locale,
-please refer to "Plural Rules, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+please refer to "Plural Rules, Ordinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
+Alternatively you can refer to [rules reference at unicode.org](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html).
 
 #### Selection <span id="selection"></span>
 
@@ -743,7 +743,7 @@ such as the date and number formatting of the [[yii\i18n\Formatter]] class and t
 Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
 only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
-The [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
+The [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is based on the [ICU library](https://icu.unicode.org/) which
 provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
 formatting result of date and number values. To ensure your website produces the same results across all environments,
 it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)

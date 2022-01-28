@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
  * Schema is the class for retrieving metadata from an Oracle database.
  *
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
- * the sequence object. This property is read-only.
+ * the sequence object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

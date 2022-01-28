@@ -38,19 +38,18 @@ use yii\validators\Validator;
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
  * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
- * [[scenario]]. This property is read-only.
+ * [[scenario]].
  * @property array $attributes Attribute values (name => value).
- * @property-read array $errors An array of errors for all attributes. Empty array is returned if no error.
- * The result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is
- * read-only.
+ * @property-read array $errors Errors for all attributes or the specified attribute. Empty array is returned
+ * if no error. See [[getErrors()]] for detailed description. Note that when returning errors for all attributes,
+ * the result is a two-dimensional array, like the following: ```php [ 'username' => [ 'Username is required.',
+ * 'Username must contain only word characters.', ], 'email' => [ 'Email address is invalid.', ] ] ``` .
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
- * values are the corresponding error messages. An empty array will be returned if there is no error. This
- * property is read-only.
- * @property-read ArrayIterator $iterator An iterator for traversing the items in the list. This property is
- * read-only.
+ * values are the corresponding error messages. An empty array will be returned if there is no error.
+ * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
  * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
- * model. This property is read-only.
+ * model.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -561,7 +560,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Returns the errors for all attributes or a single attribute.
-     * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes. 
+     * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
      * See [[getErrors()]] for detailed description.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
@@ -996,6 +995,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * This method is required by the interface [[\IteratorAggregate]].
      * @return ArrayIterator an iterator for traversing the items in the list.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $attributes = $this->getAttributes();
@@ -1009,6 +1009,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @param string $offset the offset to check on.
      * @return bool whether or not an offset exists.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->$offset);
@@ -1021,6 +1022,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @param string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->$offset;
@@ -1033,6 +1035,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @param string $offset the offset to set element
      * @param mixed $value the element value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->$offset = $value;
@@ -1044,6 +1047,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param string $offset the offset to unset element
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->$offset = null;

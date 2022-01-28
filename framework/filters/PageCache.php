@@ -129,7 +129,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     public $cacheCookies = false;
     /**
      * @var bool|array a boolean value indicating whether to cache all HTTP headers, or an array of
-     * HTTP header names (case-insensitive) indicating which HTTP headers can be cached.
+     * HTTP header names (case-sensitive) indicating which HTTP headers can be cached.
      * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
      * @since 2.0.4
      */
@@ -253,40 +253,59 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         foreach (['format', 'version', 'statusCode', 'statusText'] as $name) {
             $data[$name] = $response->{$name};
         }
-        $this->insertResponseCollectionIntoData($response, 'headers', $data);
-        $this->insertResponseCollectionIntoData($response, 'cookies', $data);
+        $this->insertResponseHeaderCollectionIntoData($response, $data);
+        $this->insertResponseCookieCollectionIntoData($response, $data);
         $this->cache->set($this->calculateCacheKey(), $data, $this->duration, $this->dependency);
         $data['content'] = $this->updateDynamicContent($data['content'], $this->getDynamicPlaceholders());
         echo $data['content'];
     }
 
     /**
-     * Inserts (or filters/ignores according to config) response headers/cookies into a cache data array.
+     * Inserts (or filters/ignores according to config) response cookies into a cache data array.
      * @param Response $response the response.
-     * @param string $collectionName currently it's `headers` or `cookies`.
      * @param array $data the cache data.
      */
-    private function insertResponseCollectionIntoData(Response $response, $collectionName, array &$data)
+    private function insertResponseCookieCollectionIntoData(Response $response, array &$data)
     {
-        $property = 'cache' . ucfirst($collectionName);
-        if ($this->{$property} === false) {
+        if ($this->cacheCookies === false) {
             return;
         }
 
-        $all = $response->{$collectionName}->toArray();
-        if (is_array($this->{$property})) {
+        $all = $response->cookies->toArray();
+        if (is_array($this->cacheCookies)) {
             $filtered = [];
-            foreach ($this->{$property} as $name) {
-                if ($collectionName === 'headers') {
-                    $name = strtolower($name);
-                }
+            foreach ($this->cacheCookies as $name) {
                 if (isset($all[$name])) {
                     $filtered[$name] = $all[$name];
                 }
             }
             $all = $filtered;
         }
-        $data[$collectionName] = $all;
+        $data['cookies'] = $all;
+    }
+
+    /**
+     * Inserts (or filters/ignores according to config) response headers into a cache data array.
+     * @param Response $response the response.
+     * @param array $data the cache data.
+     */
+    private function insertResponseHeaderCollectionIntoData(Response $response, array &$data)
+    {
+        if ($this->cacheHeaders === false) {
+            return;
+        }
+
+        $all = $response->headers->toOriginalArray();
+        if (is_array($this->cacheHeaders)) {
+            $filtered = [];
+            foreach ($this->cacheHeaders as $name) {
+                if (isset($all[$name])) {
+                    $filtered[$name] = $all[$name];
+                }
+            }
+            $all = $filtered;
+        }
+        $data['headers'] = $all;
     }
 
     /**

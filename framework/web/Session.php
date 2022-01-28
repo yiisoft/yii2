@@ -45,28 +45,26 @@ use yii\base\InvalidConfigException;
  *
  * For more details and usage information on Session, see the [guide article on sessions](guide:runtime-sessions-cookies).
  *
- * @property-read array $allFlashes Flash messages (key => message or key => [message1, message2]). This
- * property is read-only.
- * @property-read string $cacheLimiter Current cache limiter. This property is read-only.
- * @property-read array $cookieParams The session cookie parameters. This property is read-only.
- * @property-read int $count The number of session variables. This property is read-only.
+ * @property-read array $allFlashes Flash messages (key => message or key => [message1, message2]).
+ * @property-read string $cacheLimiter Current cache limiter.
+ * @property-read array $cookieParams The session cookie parameters.
+ * @property-read int $count The number of session variables.
  * @property-write string $flash The key identifying the flash message. Note that flash messages and normal
  * session variables share the same name space. If you have a normal session variable using the same name, its
- * value will be overwritten by this method. This property is write-only.
+ * value will be overwritten by this method.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
  * started on every session initialization.
  * @property bool $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
- * @property-read bool $isActive Whether the session has started. This property is read-only.
- * @property-read SessionIterator $iterator An iterator for traversing the session variables. This property is
- * read-only.
+ * @property-read bool $isActive Whether the session has started.
+ * @property-read SessionIterator $iterator An iterator for traversing the session variables.
  * @property string $name The current session name.
  * @property string $savePath The current session save path, defaults to '/tmp'.
  * @property int $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up. The
  * default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
  * @property bool|null $useCookies The value indicating whether cookies should be used to store session IDs.
- * @property-read bool $useCustomStorage Whether to use custom storage. This property is read-only.
- * @property-read bool $useStrictMode Whether strict mode is enabled or not. This property is read-only.
+ * @property-read bool $useCustomStorage Whether to use custom storage.
+ * @property bool $useStrictMode Whether strict mode is enabled or not.
  * @property bool $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
  * false.
  *
@@ -662,6 +660,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by the interface [[\IteratorAggregate]].
      * @return SessionIterator an iterator for traversing the session variables.
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $this->open();
@@ -683,6 +682,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by [[\Countable]] interface.
      * @return int number of items in the session.
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->getCount();
@@ -964,6 +964,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset the offset to check on
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $this->open();
@@ -976,6 +977,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->open();
@@ -988,6 +990,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param int|string $offset the offset to set element
      * @param mixed $item the element value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $item)
     {
         $this->open();
@@ -998,6 +1001,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method is required by the interface [[\ArrayAccess]].
      * @param int|string $offset the offset to unset element
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->open();
