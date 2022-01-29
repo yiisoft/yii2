@@ -162,7 +162,7 @@ $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html).
 
 #### Даты
 
@@ -182,7 +182,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 echo \Yii::t('app', 'Today is {0, date,yyyy-MM-dd}', time());
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 #### Время
 
@@ -202,7 +202,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 echo \Yii::t('app', 'It is {0, date,HH:mm}', time());
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Числа прописью
@@ -560,7 +560,7 @@ class TranslationEventHandler
 установлено. Однако этот запасной вариант более или менее будет работать только для сайтов на английском языке, хотя даже для
 них большая часть широких возможностей расширения `intl` не будет доступна, поэтому его установка настоятельно рекомендуется.
 
-[PHP-расширение intl](https://www.php.net/manual/ru/book.intl.php) основано на [библиотеке ICU](http://site.icu-project.org/), которая
+[PHP-расширение intl](https://www.php.net/manual/ru/book.intl.php) основано на [библиотеке ICU](https://icu.unicode.org/), которая
 описывает правила форматирования для различных локалей. Поэтому следует помнить, что форматирование чисел и дат вместе с
 синтаксисом форматирования может отличаться в зависимости от версии библиотеки ICU, которая была скомпилирована в вашем
 дистрибутиве PHP.

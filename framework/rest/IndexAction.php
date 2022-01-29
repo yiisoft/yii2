@@ -10,6 +10,9 @@ namespace yii\rest;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\DataFilter;
+use yii\data\Pagination;
+use yii\data\Sort;
+use yii\helpers\ArrayHelper;
 
 /**
  * IndexAction implements the API endpoint for listing multiple models.
@@ -87,6 +90,24 @@ class IndexAction extends Action
 
 
     /**
+     * @var array|Pagination|false The pagination to be used by [[prepareDataProvider()]].
+     * If this is `false`, it means pagination is disabled.
+     * Note: if a Pagination object is passed, it's `params` will be set to the request parameters.
+     * @see Pagination
+     * @since 2.0.45
+     */
+    public $pagination = [];
+
+    /**
+     * @var array|Sort|false The sorting to be used by [[prepareDataProvider()]].
+     * If this is `false`, it means sorting is disabled.
+     * Note: if a Sort object is passed, it's `params` will be set to the request parameters.
+     * @see Sort
+     * @since 2.0.45
+     */
+    public $sort = [];
+
+    /**
      * @return ActiveDataProvider
      */
     public function run()
@@ -135,15 +156,39 @@ class IndexAction extends Action
             $query = call_user_func($this->prepareSearchQuery, $query, $requestParams);
         }
 
+        if (is_array($this->pagination)) {
+            $pagination = ArrayHelper::merge(
+                [
+                    'params' => $requestParams,
+                ],
+                $this->pagination
+            );
+        } else {
+            $pagination = $this->pagination;
+            if ($this->pagination instanceof Pagination) {
+                $pagination->params = $requestParams;
+            }
+        }
+
+        if (is_array($this->sort)) {
+            $sort = ArrayHelper::merge(
+                [
+                    'params' => $requestParams,
+                ],
+                $this->sort
+            );
+        } else {
+            $sort = $this->sort;
+            if ($this->sort instanceof Sort) {
+                $sort->params = $requestParams;
+            }
+        }
+
         return Yii::createObject([
             'class' => ActiveDataProvider::className(),
             'query' => $query,
-            'pagination' => [
-                'params' => $requestParams,
-            ],
-            'sort' => [
-                'params' => $requestParams,
-            ],
+            'pagination' => $pagination,
+            'sort' => $sort,
         ]);
     }
 }

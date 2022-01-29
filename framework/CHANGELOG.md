@@ -4,7 +4,13 @@ Yii Framework 2 Change Log
 2.0.45 under development
 ------------------------
 
-- no changes in this release.
+- Bug #19182: RBAC Migration failed when use oracle with oci8 (Murolike)
+- Bug #19138: Allow digits in language code (ntesic)
+- Bug #19148: Fix undefined array key errors in `yii\db\ActiveRelationTrait` (stevekr)
+- Bug #19041: Fix PHP 8.1 issues (longthanhtran, samdark, pamparam83, sartor, githubjeka)
+- Enh #19171: Added `$pagination` and `$sort` to `\yii\rest\IndexAction` for easy configuration (rhertogh)
+- Bug #19187: Fix `yii\filters\PageCache` to store original headers names instead of normalized ones (bizley)
+- Bug #19191: Change `\Exception` to `\Throwable` in `BadRequestHttpException` and `HttpException` (Dmitrijlin)
 
 
 2.0.44 December 30, 2021
