@@ -760,7 +760,7 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features
 described in this document. For example, an ICU version below 49 does not support using `#` placeholders in plural rules.
-Please refer to <http://site.icu-project.org/download> for a complete list of available ICU versions. Note that the version 
+Please refer to <https://icu.unicode.org/download> for a complete list of available ICU versions. Note that the version 
 numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.)
 
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
