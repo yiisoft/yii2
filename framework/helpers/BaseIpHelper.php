@@ -100,10 +100,11 @@ class BaseIpHelper
      *
      * @param string $ip the original valid IPv6 address
      * @return string the expanded IPv6 address
+     * @throws NotSupportedException
      */
     public static function expandIPv6($ip)
     {
-        $hex = unpack('H*hex', inet_pton($ip));
+        $hex = unpack('H*hex', self::inetPton(inet_pton($ip)));
         return substr(preg_replace('/([a-f0-9]{4})/i', '$1:', $hex['hex']), 0, -1);
     }
 
@@ -116,19 +117,25 @@ class BaseIpHelper
      */
     public static function ip2bin($ip)
     {
-        $ipBinary = null;
-        if (static::getIpVersion($ip) === self::IPV4) {
-            $ipBinary = pack('N', ip2long($ip));
-        } elseif (@inet_pton('::1') === false) {
-            throw new NotSupportedException('IPv6 is not supported by inet_pton()!');
-        } else {
-            $ipBinary = inet_pton($ip);
-        }
+        $ipBinary = static::getIpVersion($ip) === self::IPV4 ? pack('N', ip2long($ip)) : self::inetPton($ip);
 
         $result = '';
         for ($i = 0, $iMax = strlen($ipBinary); $i < $iMax; $i += 4) {
             $result .= str_pad(decbin(unpack('N', substr($ipBinary, $i, 4))[1]), 32, '0', STR_PAD_LEFT);
         }
         return $result;
+    }
+
+    /**
+     * @param string $ip
+     * @return false|string
+     * @throws NotSupportedException
+     */
+    public static function inetPton($ip)
+    {
+        if (@inet_pton('::1') === false) {
+            throw new NotSupportedException('IPv6 is not supported by inet_pton()!');
+        }
+        return inet_pton($ip);
     }
 }
