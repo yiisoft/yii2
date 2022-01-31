@@ -30,6 +30,10 @@ class BaseIpHelper
      */
     const IPV4_ADDRESS_LENGTH = 32;
 
+    /**
+     * The single ton for IP address version
+     */
+    private static $_ipVersion = [];
 
     /**
      * Gets the IP version. Does not perform IP address validation.
@@ -39,7 +43,10 @@ class BaseIpHelper
      */
     public static function getIpVersion($ip)
     {
-        return strpos($ip, ':') === false ? self::IPV4 : self::IPV6;
+        if (isset(self::$_ipVersion[$ip])) {
+            self::$_ipVersion[$ip] = strpos($ip, ':') === false ? self::IPV4 : self::IPV6;
+        }
+        return self::$_ipVersion[$ip];
     }
 
     /**
