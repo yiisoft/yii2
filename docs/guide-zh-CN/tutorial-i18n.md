@@ -764,6 +764,6 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 注意，版本编号在 4.8 之后发生了变化（如 ICU4.8，ICU49，50 ICU 等）。
 
 另外，ICU 库中时区数据库的信息可能过时。要更新时区数据库时详情请参阅
-[ICU 手册](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) 。
+[ICU 手册](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) 。
 而对于 ICU 输出格式使用的时区数据库，PHP 用的时区数据库可能跟它有关。
 你可以通过安装 [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb) 的最新版本来更新它。

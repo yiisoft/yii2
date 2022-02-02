@@ -764,6 +764,6 @@ Please refer to <https://icu.unicode.org/download> for a complete list of availa
 numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.)
 
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
-to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
+to the [ICU manual](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) for details
 on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
 used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb).
