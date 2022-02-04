@@ -28,6 +28,7 @@ use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\QuxFactory;
 use yiiunit\framework\di\stubs\UnionTypeNotNull;
 use yiiunit\framework\di\stubs\UnionTypeNull;
+use yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes;
 use yiiunit\framework\di\stubs\UnionTypeWithClass;
 use yiiunit\framework\di\stubs\Zeta;
 use yiiunit\TestCase;
@@ -672,5 +673,32 @@ class ContainerTest extends TestCase
 
         $this->expectException('TypeError');
         (new Container())->get(UnionTypeNotNull::className());
+    }
+
+    public function testResolveCallableDependenciesUnionTypes()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        $this->mockApplication([
+            'components' => [
+                Beta::className(),
+                'yiiunit\framework\di\stubs\QuxInterface' => Qux::className(),
+            ],
+        ]);
+
+        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withBetaUnion']);
+        $this->assertInstanceOf(Beta::classname(), $params[0]);
+
+        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withBetaUnionInverse']);
+        $this->assertInstanceOf(Beta::classname(), $params[0]);
+
+        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withBetaAndQuxUnion']);
+        $this->assertInstanceOf(Beta::classname(), $params[0]);
+
+        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withQuxAndBetaUnion']);
+        $this->assertInstanceOf(Qux::classname(), $params[0]);
     }
 }
