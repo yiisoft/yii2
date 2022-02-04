@@ -689,16 +689,18 @@ class ContainerTest extends TestCase
             ],
         ]);
 
-        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withBetaUnion']);
+        $className = 'yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes';
+
+        $params = Yii::$container->resolveCallableDependencies([$className, 'withBetaUnion']);
         $this->assertInstanceOf(Beta::classname(), $params[0]);
 
-        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withBetaUnionInverse']);
+        $params = Yii::$container->resolveCallableDependencies([$className, 'withBetaUnionInverse']);
         $this->assertInstanceOf(Beta::classname(), $params[0]);
 
-        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withBetaAndQuxUnion']);
+        $params = Yii::$container->resolveCallableDependencies([$className, 'withBetaAndQuxUnion']);
         $this->assertInstanceOf(Beta::classname(), $params[0]);
 
-        $params = Yii::$container->resolveCallableDependencies([StaticMethodsWithComplexTypes::class, 'withQuxAndBetaUnion']);
+        $params = Yii::$container->resolveCallableDependencies([$className, 'withQuxAndBetaUnion']);
         $this->assertInstanceOf(Qux::classname(), $params[0]);
     }
 }
