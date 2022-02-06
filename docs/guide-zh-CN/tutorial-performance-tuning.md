@@ -12,7 +12,7 @@
 
 - 使用最新稳定版本的 PHP。 PHP 的主要版本可能带来显著的性能提升。
 - 启用字节码缓存 [Opcache](https://www.php.net/opcache)（PHP 5.5或更高版本）
-  或 [APC](https://www.php.net/apc)
+  或 [APC](https://www.php.net/manual/en/book.apcu.php)
   （PHP 5.4或更早版本）。字节码缓存省去了每次解析和加载 PHP 脚本所带来的开销。
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
 
