@@ -8,6 +8,8 @@
 namespace yiiunit\framework\db\mysql;
 use yii\db\Expression;
 
+use yii\db\mysql\ColumnSchema;
+use yii\db\mysql\Schema;
 use yiiunit\framework\db\AnyCaseValue;
 
 /**
@@ -101,7 +103,7 @@ SQL;
          * We do not have a real database MariaDB >= 10.2.3 for tests, so we emulate the information that database
          * returns in response to the query `SHOW FULL COLUMNS FROM ...`
          */
-        $schema = new \yii\db\mysql\Schema();
+        $schema = new Schema();
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
@@ -114,9 +116,34 @@ SQL;
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(\yii\db\mysql\ColumnSchema::className(), $column);
+        $this->assertInstanceOf(ColumnSchema::className(), $column);
         $this->assertInstanceOf(Expression::className(), $column->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
+    }
+
+    /**
+     * When displayed in the INFORMATION_SCHEMA.COLUMNS table, a default CURRENT TIMESTAMP is provided
+     * as NULL.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19047
+     */
+    public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB()
+    {
+        $schema = new Schema();
+        $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
+            'field' => 'emulated_MariaDB_field',
+            'type' => 'timestamp',
+            'collation' => NULL,
+            'null' => 'NO',
+            'key' => '',
+            'default' => NULL,
+            'extra' => '',
+            'privileges' => 'select,insert,update,references',
+            'comment' => '',
+        ]]);
+
+        $this->assertInstanceOf(ColumnSchema::className(), $column);
+        $this->assertEquals(NULL, $column->defaultValue);
     }
 
     public function getExpectedColumns()
