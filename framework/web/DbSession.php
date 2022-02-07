@@ -151,11 +151,6 @@ class DbSession extends MultiFieldSession
                     ->insert($this->sessionTable, $row)
                     ->execute();
             }
-        } else {
-            // shouldn't reach here normally
-            $this->db->createCommand()
-                ->insert($this->sessionTable, $this->composeFields($newID, ''))
-                ->execute();
         }
     }
 
