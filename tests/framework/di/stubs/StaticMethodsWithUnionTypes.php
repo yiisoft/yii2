@@ -2,7 +2,8 @@
 
 namespace yiiunit\framework\di\stubs;
 
-class StaticMethodsWithComplexTypes
+// Syntax valid only for PHP 8.0+
+class StaticMethodsWithUnionTypes
 {
     public static function withBetaUnion(string | Beta $beta)
     {
@@ -17,14 +18,6 @@ class StaticMethodsWithComplexTypes
     }
 
     public static function withQuxAndBetaUnion(QuxInterface | Beta $betaOrQux)
-    {
-    }
-
-    public static function withQuxInterfaceAndQuxAnotherIntersection(QuxInterface & QuxAnother $Qux)
-    {
-    }
-
-    public static function withQuxAnotherAndQuxInterfaceIntersection(QuxAnother & QuxInterface $Qux)
     {
     }
 }

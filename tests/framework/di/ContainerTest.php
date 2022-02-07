@@ -692,7 +692,7 @@ class ContainerTest extends TestCase
             'class' => Qux::className(),
         ]);
 
-        $className = 'yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes';
+        $className = 'yiiunit\framework\di\stubs\StaticMethodsWithUnionTypes';
 
         $params = Yii::$container->resolveCallableDependencies([$className, 'withBetaUnion']);
         $this->assertInstanceOf(Beta::classname(), $params[0]);
@@ -718,7 +718,7 @@ class ContainerTest extends TestCase
             'class' => Qux::className(),
         ]);
 
-        $className = 'yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes';
+        $className = 'yiiunit\framework\di\stubs\StaticMethodsWithIntersectionTypes';
 
         $params = Yii::$container->resolveCallableDependencies([$className, 'withQuxInterfaceAndQuxAnotherIntersection']);
         $this->assertInstanceOf(Qux::classname(), $params[0]);
