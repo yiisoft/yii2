@@ -24,11 +24,11 @@ use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Kappa;
 use yiiunit\framework\di\stubs\Qux;
+use yiiunit\framework\di\stubs\QuxAnother;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\di\stubs\QuxFactory;
 use yiiunit\framework\di\stubs\UnionTypeNotNull;
 use yiiunit\framework\di\stubs\UnionTypeNull;
-use yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes;
 use yiiunit\framework\di\stubs\UnionTypeWithClass;
 use yiiunit\framework\di\stubs\Zeta;
 use yiiunit\TestCase;
@@ -685,8 +685,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 Beta::className(),
-                'yiiunit\framework\di\stubs\QuxInterface' => Qux::className(),
             ],
+        ]);
+
+        Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
+            'class' => Qux::className(),
         ]);
 
         $className = 'yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes';
@@ -702,5 +705,25 @@ class ContainerTest extends TestCase
 
         $params = Yii::$container->resolveCallableDependencies([$className, 'withQuxAndBetaUnion']);
         $this->assertInstanceOf(Qux::classname(), $params[0]);
+    }
+
+    public function testResolveCallableDependenciesIntersectionTypes()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.1');
+            return;
+        }
+
+        Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
+            'class' => Qux::className(),
+        ]);
+
+        $className = 'yiiunit\framework\di\stubs\StaticMethodsWithComplexTypes';
+
+        $params = Yii::$container->resolveCallableDependencies([$className, 'withQuxInterfaceAndQuxAnotherIntersection']);
+        $this->assertInstanceOf(Qux::classname(), $params[0]);
+
+        $params = Yii::$container->resolveCallableDependencies([$className, 'withQuxAnotherAndQuxInterfaceIntersection']);
+        $this->assertInstanceOf(QuxAnother::classname(), $params[0]);
     }
 }

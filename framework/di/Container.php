@@ -665,7 +665,7 @@ class Container extends Component
 
             if (PHP_VERSION_ID >= 80000) {
                 $class = $param->getType();
-                if ($class instanceof \ReflectionUnionType) {
+                if ($class instanceof \ReflectionUnionType || (PHP_VERSION_ID >= 80100 && $class instanceof \ReflectionIntersectionType)) {
                     $isClass = false;
                     foreach ($class->getTypes() as $type) {
                         if (!$type->isBuiltin()) {
@@ -674,8 +674,6 @@ class Container extends Component
                             break;
                         }
                     }
-                } elseif ($class instanceof \ReflectionIntersectionType) {
-                    throw new InvalidConfigException("Unable to resolve intersection types yet"); // TODO: decide strategy how to
                 } else {
                     $isClass = $class !== null && !$class->isBuiltin();
                 }

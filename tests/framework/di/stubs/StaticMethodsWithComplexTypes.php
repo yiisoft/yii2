@@ -12,11 +12,19 @@ class StaticMethodsWithComplexTypes
     {
     }
 
-    public static function withBetaAndQuxUnion(Beta | Qux $betaOrQux)
+    public static function withBetaAndQuxUnion(Beta | QuxInterface $betaOrQux)
     {
     }
 
-    public static function withQuxAndBetaUnion(Qux | Beta $betaOrQux)
+    public static function withQuxAndBetaUnion(QuxInterface | Beta $betaOrQux)
+    {
+    }
+
+    public static function withQuxInterfaceAndQuxAnotherIntersection(QuxInterface & QuxAnother $Qux)
+    {
+    }
+
+    public static function withQuxAnotherAndQuxInterfaceIntersection(QuxAnother & QuxInterface $Qux)
     {
     }
 }
