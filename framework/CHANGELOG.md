@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #19204: Support numbers in Inflector::camel2words (longthanhtran)
 - Bug #19004: Container::resolveCallableDependencies() unable to handle union and intersection types (sartor)
 - Bug #19047: Fix deprecated preg_match() passing null parameters #2 in db\mysql\Schema.php (longthanhtran)
+- Bug #19130: Fix DbSession breaks in some case (longthanhtran)
 
 
 2.0.44 December 30, 2021
