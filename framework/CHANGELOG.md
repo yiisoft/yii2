@@ -1,11 +1,10 @@
-Enh #18821: Allow `yii\db\ExpressionInterface` as column in `yii\db\conditions\InBuilder`
 Yii Framework 2 Change Log
 ==========================
 
 2.0.45 under development
 ------------------------
 
-- no changes in this release.
+- Enh #18821: Allow `yii\db\ExpressionInterface` as column in `yii\db\conditions\InBuilder` (ntesic)
 
 
 2.0.44 December 30, 2021
