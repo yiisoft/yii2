@@ -373,7 +373,7 @@ class BaseInflector
     {
         // Add a space before any uppercase letter preceded by a lowercase letter (xY => x Y)
         // and any uppercase letter preceded by an uppercase letter and followed by a lowercase letter (XYz => X Yz)
-        $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=\p{L})\p{Lu}(?=\p{Ll})/u', ' \0', $name);
+        $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=[\p{L}\d])\p{Lu}(?=\p{Ll})|(\d+)/u', ' \0', $name);
 
         $label = mb_strtolower(trim(str_replace(['-', '_', '.'], ' ', $label)), self::encoding());
 

@@ -665,7 +665,19 @@ class Container extends Component
 
             if (PHP_VERSION_ID >= 80000) {
                 $class = $param->getType();
-                $isClass = $class !== null && !$param->getType()->isBuiltin();
+                if ($class instanceof \ReflectionUnionType || (PHP_VERSION_ID >= 80100 && $class instanceof \ReflectionIntersectionType)) {
+                    $isClass = false;
+                    foreach ($class->getTypes() as $type) {
+                        if (!$type->isBuiltin()) {
+                            $class = $type;
+                            $isClass = true;
+                            break;
+                        }
+                    }
+                } else {
+                    $isClass = $class !== null && !$class->isBuiltin();
+                }
+
             } else {
                 $class = $param->getClass();
                 $isClass = $class !== null;

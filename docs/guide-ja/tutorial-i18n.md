@@ -826,10 +826,10 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 さらに、バージョン 49 以上の ICU を使用する事も推奨されます。そうすることによって、このドキュメントで説明されている全ての機能を使うことが出来るようになります。
 例えば、49 未満の ICU は、複数形規則における `#` プレースホルダをサポートしていません。
-入手できる ICU バージョン については、<http://site.icu-project.org/download> を参照してください。
+入手できる ICU バージョン については、<https://icu.unicode.org/download> を参照してください。
 バージョン番号の採番方式が 4.8 リリースの後に変更されたことに注意してください (すなわち、ICU 4.8、ICU 49、ICU 50、等々となっています)。
 
 これに加えて、ICU ライブラリとともに出荷されるタイム・ゾーン・データベースの情報も古くなっている可能性があります。
-タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) を参照してください。
+タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) を参照してください。
 出力の書式設定には ICU タイム・ゾーン・データベースが使用されますが、PHP によって使われるタイム・ゾーン・データベースも影響する可能性があります。
 PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](https://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。
