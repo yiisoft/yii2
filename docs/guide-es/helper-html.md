@@ -45,7 +45,7 @@ gestión adicional que se debe conocer:
 
 - Si un valor es `null`, el correspondiente atributo no se renderizará.
 - Los atributos cuyos valores son de tipo booleano serán tratados como
-  [atributos booleanos](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [atributos booleanos](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Los valores de los atributos se codificarán en HTML usando [[yii\helpers\Html::encode()|Html::encode()]].
 - El atributo "data" puede recibir un array. En este caso, se "expandirá" y se renderizará una lista de atributos
   `data` ej. `'data' => ['id' => 1, 'name' => 'yii']` se convierte en `data-id="1" data-name="yii"`.
