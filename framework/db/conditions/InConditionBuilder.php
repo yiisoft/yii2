@@ -7,6 +7,7 @@
 
 namespace yii\db\conditions;
 
+use yii\db\Expression;
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
@@ -66,7 +67,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
             $column = $column->current();
         }
 
-        if ($column instanceof ExpressionInterface) {
+        if ($column instanceof Expression) {
             $column = $column->expression;
         }
 
@@ -128,7 +129,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
             $column = $column->current();
         }
 
-        if ($column instanceof ExpressionInterface) {
+        if ($column instanceof Expression) {
             $column = $column->expression;
         }
 
@@ -163,7 +164,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         if (is_array($columns)) {
             foreach ($columns as $i => $col) {
-                if ($col instanceof ExpressionInterface) {
+                if ($col instanceof Expression) {
                     $col = $col->expression;
                 }
                 if (strpos($col, '(') === false) {
@@ -174,7 +175,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
             return '(' . implode(', ', $columns) . ") $operator $sql";
         }
 
-        if ($columns instanceof ExpressionInterface) {
+        if ($columns instanceof Expression) {
             $columns = $columns->expression;
         }
         if (strpos($columns, '(') === false) {
@@ -199,7 +200,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
         foreach ($values as $value) {
             $vs = [];
             foreach ($columns as $column) {
-                if ($column instanceof ExpressionInterface) {
+                if ($column instanceof Expression) {
                     $column = $column->expression;
                 }
                 if (isset($value[$column])) {
@@ -217,7 +218,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         $sqlColumns = [];
         foreach ($columns as $i => $column) {
-            if ($column instanceof ExpressionInterface) {
+            if ($column instanceof Expression) {
                 $column = $column->expression;
             }
             $sqlColumns[] = strpos($column, '(') === false ? $this->queryBuilder->db->quoteColumnName($column) : $column;
