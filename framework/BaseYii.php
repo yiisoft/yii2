@@ -130,7 +130,7 @@ class BaseYii
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1) !== 0) {
+        if (strncmp((string)$alias, '@', 1) !== 0) {
             // not an alias
             return $alias;
         }

@@ -29,7 +29,7 @@ class BaseStringHelper
      */
     public static function byteLength($string)
     {
-        return mb_strlen($string, '8bit');
+        return mb_strlen((string)$string, '8bit');
     }
 
     /**
@@ -148,7 +148,7 @@ class BaseStringHelper
             return static::truncateHtml($string, $count, $suffix);
         }
 
-        $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
+        $words = preg_split('/(\s+)/u', trim($string), 0, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
         }
@@ -316,7 +316,7 @@ class BaseStringHelper
      */
     public static function countWords($string)
     {
-        return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+        return count(preg_split('/\s+/u', $string, 0, PREG_SPLIT_NO_EMPTY));
     }
 
     /**
@@ -436,7 +436,7 @@ class BaseStringHelper
             $pattern .= 'i';
         }
 
-        return preg_match($pattern, $string) === 1;
+        return preg_match($pattern, (string)$string) === 1;
     }
 
     /**
@@ -450,8 +450,8 @@ class BaseStringHelper
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
-        $firstChar = mb_substr($string, 0, 1, $encoding);
-        $rest = mb_substr($string, 1, null, $encoding);
+        $firstChar = mb_substr((string)$string, 0, 1, $encoding);
+        $rest = mb_substr((string)$string, 1, null, $encoding);
 
         return mb_strtoupper($firstChar, $encoding) . $rest;
     }
