@@ -1136,7 +1136,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $order = Order::findOne(1);
         $itemsSQL = $order->getOrderItems()->joinWith('item')->createCommand()->rawSql;
-        $expectedSQL = $this->replaceQuotes('SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] WHERE [[order_item]].[[order_id]]=1');
+        $expectedSQL = $this->replaceQuotes('SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] [[OrderItem<item>]] ON [[order_item]].[[item_id]] = [[OrderItem<item>]].[[id]] WHERE [[order_item]].[[order_id]]=1');
         $this->assertEquals($expectedSQL, $itemsSQL);
 
         Order::$tableName = null;
@@ -2159,4 +2159,24 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             'item_id' => null,
         ]));
     }
+
+    public function testMakingAutomaticRelationUpTo30CharsUnique()
+    {
+        $customer = Customer::find()->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        $expectedSql = $this->replaceQuotes('SELECT [[customer]].* FROM [[customer]] LEFT JOIN [[order]] [[Customer<someVeryBigRelat_01>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelat_01>]].[[customer_id]] LEFT JOIN [[order]] [[Customer<someVeryBigRelat_02>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelat_02>]].[[customer_id]] LEFT JOIN [[order]] [[Customer<someVeryBigRelat_03>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelat_03>]].[[customer_id]]');
+        $this->assertEquals($expectedSql, $customer->createCommand()->sql);
+
+        $customer = Customer::find()->joinWith(['orders' => function ($q) {
+            $q->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        }]);
+        $expectedSql = $this->replaceQuotes('SELECT [[customer]].* FROM [[customer]] LEFT JOIN [[order]] [[Customer<orders>]] ON [[customer]].[[id]] = [[Customer<orders>]].[[customer_id]] LEFT JOIN [[order_item]] [[Order<someVeryBigRelation_01>]] ON [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_01>]].[[order_id]] AND [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_01>]].[[quantity]] LEFT JOIN [[order_item]] [[Order<someVeryBigRelation_02>]] ON [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_02>]].[[order_id]] AND [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_02>]].[[quantity]] LEFT JOIN [[order_item]] [[Order<someVeryBigRelation_03>]] ON [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_03>]].[[order_id]] AND [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_03>]].[[quantity]] ORDER BY [[Customer<orders>]].[[id]]');
+        $this->assertEquals($expectedSql, $customer->createCommand()->sql);
+
+        $customer = Customer::find()->joinWith(['orders' => function ($q) {
+            $q->joinWith(['someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        }, 'someVeryBigRelationThatIsNeedToBeStripped', 'someVeryBigRelationThatIsNeedToBeStrippedSecond', 'someVeryBigRelationThatIsNeedToBeStrippedThird']);
+        $expectedSql = $this->replaceQuotes('SELECT [[customer]].* FROM [[customer]] LEFT JOIN [[order]] [[Customer<orders>]] ON [[customer]].[[id]] = [[Customer<orders>]].[[customer_id]] LEFT JOIN [[order_item]] [[Order<someVeryBigRelation_01>]] ON [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_01>]].[[order_id]] AND [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_01>]].[[quantity]] LEFT JOIN [[order_item]] [[Order<someVeryBigRelation_02>]] ON [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_02>]].[[order_id]] AND [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_02>]].[[quantity]] LEFT JOIN [[order_item]] [[Order<someVeryBigRelation_03>]] ON [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_03>]].[[order_id]] AND [[Customer<orders>]].[[id]] = [[Order<someVeryBigRelation_03>]].[[quantity]] LEFT JOIN [[order]] [[Customer<someVeryBigRelat_01>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelat_01>]].[[customer_id]] LEFT JOIN [[order]] [[Customer<someVeryBigRelat_02>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelat_02>]].[[customer_id]] LEFT JOIN [[order]] [[Customer<someVeryBigRelat_03>]] ON [[customer]].[[id]] = [[Customer<someVeryBigRelat_03>]].[[customer_id]] ORDER BY [[Customer<orders>]].[[id]]');
+        $this->assertEquals($expectedSql, $customer->createCommand()->sql);
+    }
+
 }

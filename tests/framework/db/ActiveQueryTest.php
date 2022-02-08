@@ -145,13 +145,13 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals([
             [
                 'INNER JOIN',
-                'order',
-                '{{customer}}.[[id]] = {{order}}.[[customer_id]]'
+                ['Customer<orders>' => 'order'],
+                '{{customer}}.[[id]] = {{Customer<orders>}}.[[customer_id]]'
             ],
             [
                 'LEFT JOIN',
-                'order_item',
-                '{{order}}.[[id]] = {{order_item}}.[[order_id]]'
+                ['Order<orderItems>' => 'order_item'],
+                '{{Customer<orders>}}.[[id]] = {{Order<orderItems>}}.[[order_id]]'
             ],
         ], $query->join);
     }

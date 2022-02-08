@@ -238,4 +238,20 @@ class Order extends ActiveRecord
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItemsFor8');
     }
+
+    public function getSomeVeryBigRelationThatIsNeedToBeStripped()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+    }
+    
+    public function getSomeVeryBigRelationThatIsNeedToBeStrippedSecond()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+    }
+    
+    public function getSomeVeryBigRelationThatIsNeedToBeStrippedThird()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+    }
+
 }

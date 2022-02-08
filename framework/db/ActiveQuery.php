@@ -98,6 +98,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
+    /**
+     * @var array map of all joined relations with their aliases and tables
+     */
+
+    private $relationMap = [];
+    /**
+     * @var null name of relation that is called from parent model
+     */
+    private $relationName = null;
 
     /**
      * Constructor.
@@ -155,6 +164,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             list(, $alias) = $this->getTableNameAndAlias();
             $this->select = ["$alias.*"];
         }
+        $this->normalizeAliasConditionFromArray($this->where);
+        $this->normalizeAliasConditionFromArray($this->having);
+        $this->normalizeAliasConditionFromArray($this->on);
+        $this->normalizeAliasGroupBy($this->groupBy);
+        $this->normalizeAliasOrderBy($this->orderBy);
+        $this->normalizeAliasSelect($this->select);
 
         if ($this->primaryModel === null) {
             // eager loading
@@ -545,6 +560,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $fullName = $prefix === '' ? $name : "$prefix.$name";
                 if (!isset($relations[$fullName])) {
                     $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                    $relation->relationName = $name;
                     $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
                 } else {
                     $relation = $relations[$fullName];
@@ -560,6 +576,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $fullName = $prefix === '' ? $name : "$prefix.$name";
             if (!isset($relations[$fullName])) {
                 $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                $relation->relationName = $name; // Set relation name that could be used later for building alias
                 if ($callback !== null) {
                     call_user_func($callback, $relation);
                 }
@@ -633,6 +650,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         } elseif (is_array($via)) {
             // via relation
+            $via[1]->relationName = $via[0];
             $this->joinWithRelation($parent, $via[1], $joinType);
             $this->joinWithRelation($via[1], $child, $joinType);
             return;
@@ -640,7 +658,22 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
         list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
         list($childTable, $childAlias) = $child->getTableNameAndAlias();
-
+        if ($parentTable == $parentAlias) {
+            // No alias is set, we using autoalias
+            if ($parent->relationName) {
+                $parentAlias = $this->makeAutomaticRelationAlias($parent);
+                $parent->alias($parentAlias);
+                $this->relationMap[$parent->relationName] = ['alias' => $parentAlias, 'table' => $parentTable];
+            }
+        }
+        if ($childAlias == $childTable && $child->primaryModel) {
+            // No alias is set, we using autoalias
+            if ($child->relationName) {
+                $childAlias = $this->makeAutomaticRelationAlias($child);
+                $child->alias($childAlias);
+                $this->relationMap[$child->relationName] = ['alias' => $childAlias, 'table' => $childTable];
+            }
+        }
         if (!empty($child->link)) {
             if (strpos($parentAlias, '{{') === false) {
                 $parentAlias = '{{' . $parentAlias . '}}';
@@ -655,12 +688,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
             $on = implode(' AND ', $on);
             if (!empty($child->on)) {
+                $child->normalizeAliasConditionFromArray($child->on);
                 $on = ['and', $on, $child->on];
             }
         } else {
             $on = $child->on;
         }
         $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
+        $child->normalizeAliasConditionFromArray($child->where);
+        $child->normalizeAliasConditionFromArray($child->having);
+        $child->normalizeAliasGroupBy($child->groupBy);
+        $child->normalizeAliasOrderBy($child->orderBy);
+
 
         if (!empty($child->where)) {
             $this->andWhere($child->where);
@@ -853,4 +892,256 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $modelClass = $this->modelClass;
         return $modelClass::tableName();
     }
+
+    /**
+     * @param \yii\db\string $relation
+     * @param \yii\db\string $column
+     * @return string
+     */
+    public function getRelationColumn(string $relation, string $column)
+    {
+        $query = clone $this;
+        if (!$query->relationMap || !isset($query->relationMap[$relation])) {
+            if (!empty($query->joinWith)) {
+                $query->buildJoinWith();
+                $query->joinWith = null;
+            }
+            if (isset($query->relationMap[$relation])) {
+                list($table, $alias) = $query->getTableNameAndAlias();
+                return '{{' .  $query->relationMap[$relation]['alias'] . '}}.[[' . $column . ']]';
+            }
+        }
+        return $column;
+    }
+
+    /**
+     * @param      $condition
+     * @param null $currentOperator
+     * @param int  $position
+     */
+    private function normalizeAliasConditionFromArray(&$condition, $currentOperator = null, $position = 0)
+    {
+        $operators = [
+            'NOT',
+            'AND',
+            'OR',
+            'BETWEEN',
+            'NOT BETWEEN',
+            'IN',
+            'NOT IN',
+            'LIKE',
+            'NOT LIKE',
+            'OR LIKE',
+            'OR NOT LIKE',
+            'EXISTS',
+            'NOT EXISTS',
+        ];
+        if (is_array($condition)) {
+            if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
+                $i = $position;
+                while ($i < count($condition)) {
+                    $value = $condition[$i];
+                    if ($i === 0 && in_array(strtoupper($value), $operators)) {
+                        $currentOperator = $currentOperator?:$value;
+                        switch (strtoupper($value)) {
+                            case 'AND':
+                            case 'OR':
+                            case 'NOT':
+                                // do recursive from next key
+                                $this->normalizeAliasConditionFromArray($condition, $currentOperator, $i + 1);
+                                break;
+                            case 'BETWEEN':
+                            case 'NOT BETWEEN':
+                            case 'LIKE':
+                            case 'NOT LIKE':
+                                $this->normalizeAliasColumn($condition[$i+1]);
+                                break;
+                            case 'IN':
+                            case 'NOT IN':
+                                if (is_array($condition[$i + 1])) {
+                                    foreach ($condition[$i + 1] as &$val) {
+                                        $this->normalizeAliasColumn($val);
+                                    }
+                                } else {
+                                    $this->normalizeAliasColumn($condition[$i+1]);
+                                }
+                                break;
+                        }
+                        break;
+                    } else if (is_array($condition[$i])) {
+                        $this->normalizeAliasConditionFromArray($condition[$i]);
+                    }
+                    $i++;
+                }
+            } else {
+                // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+                $newCondition = [];
+                foreach ($condition as $column => $value) {
+                    $this->normalizeAliasColumn($column);
+                    $newCondition[$column] = $value;
+                }
+                $condition = $newCondition;
+                unset($newCondition);
+            }
+        } else if (is_string($condition)) {
+            // it is simple string, like andWhere('something = 2')
+            $this->normalizeAliasColumn($condition);
+        }
+    }
+
+    /**
+     * @param \yii\db\string $column
+     */
+    private function normalizeAliasColumn(&$column)
+    {
+        $prefix = '{{';
+        $suffix = '}}';
+        if (strpos($column, '>') === false && strpos($column, '<') === false) { // check if not already processed
+            list($table, $alias) = $this->getTableNameAndAlias();
+            $alias = str_replace(['{', '}', '%'], '', $alias);
+            $alias = '{{' . $alias . '}}';
+            if (strpos($column, '.') === false) { // no alias or table inside
+                if (strpos($column, '(') === false || strpos($column, 'BETWEEN') !== false || strpos($column, ' IN ') !== false) { // no database expression, or have IN or BETWEEN, Column is at beginning, append alias
+                    $column = $alias . '.' . $column;
+                } else if (substr_count($column, '(') <= 1) {
+                    if (strpos($column, 'IF(') === false) { // If not contain IF statement
+                        // try to append alias after "(", if it simple condition, at least we could process one column
+                        $column = substr($column, 0, strpos($column, '(') + 1) . $alias . '.' . substr($column, strpos($column, '(') + 1);
+                    }
+                }
+            } else if (substr_count($column, '.') === 1) { // there is already table or alias, but make sure it is just one
+                if (strpos($column, '(') === false || strpos($column, 'BETWEEN') !== false || strpos($column, ' IN ') !== false) { // no DB expression, or have IN or BETWEEN, Column is at beginning, append alias
+                    // lets find table or alias
+                    $presentAlias = substr($column, 0, strpos($column, '.'));
+                    $presentAlias = str_replace(['{', '}', '%'], '', $presentAlias);
+                    $presentColumn = substr($column, strpos($column, '.') + 1);
+                    // now try to find relation that have this table name
+                    $relation = array_keys(
+                        array_filter($this->relationMap, function($item) use ($presentAlias) {
+                            return $item['table'] === $presentAlias;}
+                        )
+                    );
+                    $relation = isset($relation[0]) ? $relation[0] : null;
+                    if ($relation) {
+                        $alias = $prefix . $this->relationMap[$relation]['alias'] . $suffix;
+                        $column = $alias . '.' . $presentColumn;
+                    } else if ($presentAlias == $table) { // column is prefixed with own table name, so we need to replace with current alias
+                        $column = $alias . '.' . $presentColumn;
+                    }
+                } else if (substr_count($column, '(') <= 1) {
+                    if (strpos($column, 'IF(') === false) { // If not contain IF statement
+                        // there is expression, try to replace alias, by finding everything after ( until ., but only if condition seems simple, when contains one (
+                        $operator = substr($column, 0, strpos($column, '(') + 1);
+                        $presentAlias = substr($column, strpos($column, '(') + 1, strpos($column, '.') - strpos($column, '(') - 2);
+                        $presentAlias = str_replace(['{', '}', '%'], '', $presentAlias);
+                        $presentColumn = substr($column, strpos($column, '.') + 1);
+                        // now try to find relation that have this table name
+                        $relation = array_keys(
+                            array_filter($this->relationMap, function($item) use ($presentAlias) {
+                                return $item['table'] === $presentAlias;}
+                            )
+                        );
+                        $relation = isset($relation[0]) ? $relation[0] : null;
+                        if ($relation) {
+                            $alias = $prefix . $this->relationMap[$relation]['alias'] . $suffix;
+                            $column = $operator . $alias . '.' . $presentColumn;
+                        } else if ($presentAlias == $table) { // column is prefixed with own table name, so we need to replace with current alias
+                            $column = $operator . $alias . '.' . $presentColumn;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $columns
+     */
+    private function normalizeAliasGroupBy(&$columns)
+    {
+        if ($columns) {
+            if (is_array($columns)) {
+                foreach ($columns as $column) {
+                    if (!$column instanceof ExpressionInterface) {
+                        $this->normalizeAliasColumn($column);
+                    }
+                }
+            } else if (is_string($columns)) {
+                $groups = explode(',', $columns);
+                foreach ($groups as &$group) {
+                    $this->normalizeAliasColumn($group);
+                }
+                $columns = implode(',', $group);
+            }
+        }
+    }
+
+    /**
+     * @param $columns
+     */
+    private function normalizeAliasOrderBy(&$columns)
+    {
+        if ($columns) {
+            $newColumns = [];
+            foreach ($columns as $column => $direction) {
+                if ($direction instanceof ExpressionInterface) {
+                    $newColumns[$column] = $direction;
+                } else {
+                    $this->normalizeAliasColumn($column);
+                    $newColumns[$column] = $direction;
+                }
+            }
+            $columns = $newColumns;
+            unset($newColumns);
+        }
+    }
+
+    /**
+     * @param $columns
+     */
+    private function normalizeAliasSelect(&$columns)
+    {
+        if (is_array($columns)) {
+            foreach ($columns as $key => &$column) {
+                if (strpos($column, '*') === false &&
+                    !$column instanceof ExpressionInterface &&
+                    strpos($column, 'COUNT') === false
+                ) {
+                    $this->normalizeAliasColumn($column);
+                }
+            }
+        } else if (is_string($columns)) {
+            $this->normalizeAliasColumn($column);
+        }
+    }
+
+    /**
+     * @param \yii\db\ActiveQuery $relation
+     * @return string
+     */
+    private function makeAutomaticRelationAlias(ActiveQuery $relation)
+    {
+        list($table, $alias) = $relation->getTableNameAndAlias();
+        if ($relation->relationName) {
+            $table = str_replace(['{', '}', '%'], '', $table);
+            $fqModelName = explode("\\", get_class($relation->primaryModel));
+            $modelName = (array_pop($fqModelName));
+            
+            if (strlen($modelName.$relation->relationName) > 25) {
+                // We need to limit alias to 32 chars, because Oracle support aliases up to 30 chars long
+                // Check if we already have relation alias with same name
+                $existingAliases = array_filter($this->relationMap, function($item) use ($modelName, $relation) {
+                        preg_match('/(\w+<\w+)_[0-9]{2}>/', $item['alias'], $matches);
+                        return isset($matches[1]) && $matches[1] && substr(substr($modelName, 0, 24). '<' . $relation->relationName, 0, 25) == $matches[1];
+                    }
+                );
+                // Limit alias to 30 chars
+                return substr(substr($modelName, 0, 24) . '<' . $relation->relationName, 0, 25) . '_' . sprintf("%02d", count($existingAliases) + 1) . '>';
+            }
+            
+            return $modelName. '<' . $relation->relationName . '>';
+        }
+        return $table;
+    }
+
 }

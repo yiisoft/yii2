@@ -185,6 +185,10 @@ class InConditionBuilder implements ExpressionBuilderInterface
         foreach ($values as $value) {
             $vs = [];
             foreach ($columns as $column) {
+                if (!isset($value[$column])) {
+                    // if column have alias and is not indexed with alias, remove it, use only what is behind first dot
+                    list(, $column) = explode('.', $column, 2) + [1 => $column];
+                }
                 if (isset($value[$column])) {
                     $vs[] = $this->queryBuilder->bindParam($value[$column], $params);
                 } else {
