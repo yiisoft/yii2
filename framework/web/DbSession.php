@@ -140,7 +140,7 @@ class DbSession extends MultiFieldSession
                ->queryOne();
         });
 
-        if ($row !== false) {
+        if ($row !== false && $this->getIsActive()) {
             if ($deleteOldSession) {
                 $this->db->createCommand()
                     ->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
