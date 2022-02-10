@@ -298,7 +298,7 @@ the operator can be one of the following:
   should be applied. Note that when using an escape mapping (or the third operand is not provided),
   the values will be automatically enclosed within a pair of percentage characters.
 
-  > Note: When using PostgreSQL you may also use [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
+  > Note: When using PostgreSQL you may also use [`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
   > instead of `like` for case-insensitive matching.
 
 - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`

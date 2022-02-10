@@ -140,7 +140,7 @@ the request with `http://localhost/users?fields=id,email&expand=profile` may ret
 
 ## Links <span id="links"></span>
 
-[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
+[HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
 promotes that RESTful APIs should return information that allows clients to discover actions supported for the returned
 resources. The key of HATEOAS is to return a set of hyperlinks with relation information when resource data are served
 by the APIs.

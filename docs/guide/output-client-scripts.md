@@ -35,10 +35,10 @@ determines at which position the script should be inserted into the page. Possib
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] for head section.
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] for right after opening `<body>`.
 - [[yii\web\View::POS_END|View::POS_END]] for right before closing `</body>`.
-- [[yii\web\View::POS_READY|View::POS_READY]] for executing code on the [document `ready` event](http://learn.jquery.com/using-jquery-core/document-ready/).
+- [[yii\web\View::POS_READY|View::POS_READY]] for executing code on the [document `ready` event](https://learn.jquery.com/using-jquery-core/document-ready/).
   This will automatically register [[yii\web\JqueryAsset|jQuery]] and wrap the code into the appropriate jQuery code. This is the default position.
 - [[yii\web\View::POS_LOAD|View::POS_LOAD]] for executing code on the
-  [document `load` event](http://learn.jquery.com/using-jquery-core/document-ready/). Same as the above, this will also register [[yii\web\JqueryAsset|jQuery]] automatically.
+  [document `load` event](https://learn.jquery.com/using-jquery-core/document-ready/). Same as the above, this will also register [[yii\web\JqueryAsset|jQuery]] automatically.
 
 The last argument is a unique script ID that is used to identify the script code block and replace an existing one with the same ID
 instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID. It is used to avoid registration of the same code muliple times.
