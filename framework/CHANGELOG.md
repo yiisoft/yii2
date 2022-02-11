@@ -1,21 +1,21 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.45 under development
+2.0.45 February 11, 2022
 ------------------------
 
-- Enh #18821: Allow `yii\db\ExpressionInterface` as column in `yii\db\conditions\InBuilder` (ntesic)
-- Bug #19182: RBAC Migration failed when use oracle with oci8 (Murolike)
+- Bug #19004: Container::resolveCallableDependencies() unable to handle union and intersection types (sartor)
+- Bug #19041: Fix PHP 8.1 issues (longthanhtran, samdark, pamparam83, sartor, githubjeka)
+- Bug #19047: Fix deprecated preg_match() passing null parameters #2 in db\mysql\Schema.php (longthanhtran)
+- Bug #19130: Fix DbSession breaks in some case (longthanhtran)
 - Bug #19138: Allow digits in language code (ntesic)
 - Bug #19148: Fix undefined array key errors in `yii\db\ActiveRelationTrait` (stevekr)
-- Bug #19041: Fix PHP 8.1 issues (longthanhtran, samdark, pamparam83, sartor, githubjeka)
-- Enh #19171: Added `$pagination` and `$sort` to `\yii\rest\IndexAction` for easy configuration (rhertogh)
+- Bug #19182: RBAC Migration failed when use oracle with oci8 (Murolike)
 - Bug #19187: Fix `yii\filters\PageCache` to store original headers names instead of normalized ones (bizley)
 - Bug #19191: Change `\Exception` to `\Throwable` in `BadRequestHttpException` and `HttpException` (Dmitrijlin)
 - Bug #19204: Support numbers in Inflector::camel2words (longthanhtran)
-- Bug #19004: Container::resolveCallableDependencies() unable to handle union and intersection types (sartor)
-- Bug #19047: Fix deprecated preg_match() passing null parameters #2 in db\mysql\Schema.php (longthanhtran)
-- Bug #19130: Fix DbSession breaks in some case (longthanhtran)
+- Enh #18821: Allow `yii\db\ExpressionInterface` as column in `yii\db\conditions\InBuilder` (ntesic)
+- Enh #19171: Added `$pagination` and `$sort` to `\yii\rest\IndexAction` for easy configuration (rhertogh)
 
 
 2.0.44 December 30, 2021

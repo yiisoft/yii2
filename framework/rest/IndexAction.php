@@ -87,8 +87,6 @@ class IndexAction extends Action
      * @since 2.0.13
      */
     public $dataFilter;
-
-
     /**
      * @var array|Pagination|false The pagination to be used by [[prepareDataProvider()]].
      * If this is `false`, it means pagination is disabled.
@@ -97,7 +95,6 @@ class IndexAction extends Action
      * @since 2.0.45
      */
     public $pagination = [];
-
     /**
      * @var array|Sort|false The sorting to be used by [[prepareDataProvider()]].
      * If this is `false`, it means sorting is disabled.
@@ -106,6 +103,7 @@ class IndexAction extends Action
      * @since 2.0.45
      */
     public $sort = [];
+
 
     /**
      * @return ActiveDataProvider
