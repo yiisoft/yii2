@@ -661,6 +661,20 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ]
             ],
             [
+                Schema::TYPE_TINYINT . ' ZEROFILL',
+                $this->tinyInteger()->zerofill(),
+                [
+                    'mysql' => 'tinyint(3) ZEROFILL'
+                ]
+            ],
+            [
+                Schema::TYPE_TINYINT . ' UNSIGNED ZEROFILL',
+                $this->tinyInteger()->unsigned()->zerofill(),
+                [
+                    'mysql' => 'tinyint(3) UNSIGNED ZEROFILL'
+                ]
+            ],
+            [
                 Schema::TYPE_TINYINT,
                 $this->tinyInteger(),
                 [
@@ -947,10 +961,42 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
+                Schema::TYPE_ZPK,
+                $this->primaryKey()->zerofill(),
+                [
+                    'mysql' => 'int(11) ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY'
+                ]
+            ],
+            [
+                Schema::TYPE_UZPK,
+                $this->primaryKey()->unsigned()->zerofill(),
+                [
+                    'mysql' => 'int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                    'pgsql' => 'serial NOT NULL PRIMARY KEY',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
+                ]
+            ],
+            [
                 Schema::TYPE_UBIGPK,
                 $this->bigPrimaryKey()->unsigned(),
                 [
                     'mysql' => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                    'pgsql' => 'bigserial NOT NULL PRIMARY KEY',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+                ],
+            ],
+            [
+                Schema::TYPE_ZBIGPK,
+                $this->bigPrimaryKey()->zerofill(),
+                [
+                    'mysql' => 'bigint(20) ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                ],
+            ],
+            [
+                Schema::TYPE_UZBIGPK,
+                $this->bigPrimaryKey()->unsigned()->zerofill(),
+                [
+                    'mysql' => 'bigint(20) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
                     'pgsql' => 'bigserial NOT NULL PRIMARY KEY',
                     'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],

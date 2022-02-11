@@ -30,8 +30,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public $typeMap = [
         Schema::TYPE_PK => 'NUMBER(10) NOT NULL PRIMARY KEY',
         Schema::TYPE_UPK => 'NUMBER(10) UNSIGNED NOT NULL PRIMARY KEY',
+        Schema::TYPE_ZPK => 'NUMBER(10) NOT NULL PRIMARY KEY',
+        Schema::TYPE_UZPK => 'NUMBER(10) UNSIGNED NOT NULL PRIMARY KEY',
         Schema::TYPE_BIGPK => 'NUMBER(20) NOT NULL PRIMARY KEY',
         Schema::TYPE_UBIGPK => 'NUMBER(20) UNSIGNED NOT NULL PRIMARY KEY',
+        Schema::TYPE_ZBIGPK => 'NUMBER(20) NOT NULL PRIMARY KEY',
+        Schema::TYPE_UZBIGPK => 'NUMBER(20) UNSIGNED NOT NULL PRIMARY KEY',
         Schema::TYPE_CHAR => 'CHAR(1)',
         Schema::TYPE_STRING => 'VARCHAR2(255)',
         Schema::TYPE_TEXT => 'CLOB',

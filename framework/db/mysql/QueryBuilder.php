@@ -29,8 +29,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public $typeMap = [
         Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_UPK => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_ZPK => 'int(11) ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UZPK => 'int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_UBIGPK => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_ZBIGPK => 'bigint(20) ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UZBIGPK => 'bigint(20) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',

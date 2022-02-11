@@ -70,6 +70,12 @@ class ColumnSchemaBuilder extends BaseObject
      */
     protected $isUnsigned = false;
     /**
+     * @var bool whether the column values should be filled with zeros. If this is `true`, and `ZEROFILL` keyword will
+     * be added.
+     * @since 2.0.46
+     */
+    protected $isZeroFill = false;
+    /**
      * @var string the column after which this column will be added.
      * @since 2.0.8
      */
@@ -88,8 +94,12 @@ class ColumnSchemaBuilder extends BaseObject
     public static $typeCategoryMap = [
         Schema::TYPE_PK => self::CATEGORY_PK,
         Schema::TYPE_UPK => self::CATEGORY_PK,
+        Schema::TYPE_ZPK => self::CATEGORY_PK,
+        Schema::TYPE_UZPK => self::CATEGORY_PK,
         Schema::TYPE_BIGPK => self::CATEGORY_PK,
         Schema::TYPE_UBIGPK => self::CATEGORY_PK,
+        Schema::TYPE_ZBIGPK => self::CATEGORY_PK,
+        Schema::TYPE_UZBIGPK => self::CATEGORY_PK,
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
@@ -219,8 +229,39 @@ class ColumnSchemaBuilder extends BaseObject
             case Schema::TYPE_BIGPK:
                 $this->type = Schema::TYPE_UBIGPK;
                 break;
+            case Schema::TYPE_ZPK:
+                $this->type = Schema::TYPE_UZPK;
+                break;
+            case Schema::TYPE_ZBIGPK:
+                $this->type = Schema::TYPE_UZBIGPK;
+                break;
         }
         $this->isUnsigned = true;
+        return $this;
+    }
+
+    /**
+     * Tell column to display values zero filled.
+     * @return $this
+     * @since 2.0.46
+     */
+    public function zerofill()
+    {
+        switch ($this->type) {
+            case Schema::TYPE_PK:
+                $this->type = Schema::TYPE_ZPK;
+                break;
+            case Schema::TYPE_BIGPK;
+                $this->type = Schema::TYPE_ZBIGPK;
+                break;
+            case Schema::TYPE_UPK:
+                $this->type = Schema::TYPE_UZPK;
+                break;
+            case Schema::TYPE_UBIGPK:
+                $this->type = Schema::TYPE_UZBIGPK;
+                break;
+        }
+        $this->isZeroFill = true;
         return $this;
     }
 
@@ -413,6 +454,16 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
+     * Builds the zerofill string for a column. Defaults to unsupported.
+     * @return string a string containing the ZEROFILL keyword.
+     * @since 2.0.46
+     */
+    protected function buildZerofillString()
+    {
+        return '';
+    }
+
+    /**
      * Builds the after constraint for the column. Defaults to unsupported.
      * @return string a string containing the AFTER constraint.
      * @since 2.0.8
@@ -474,6 +525,7 @@ class ColumnSchemaBuilder extends BaseObject
             '{type}' => $this->type,
             '{length}' => $this->buildLengthString(),
             '{unsigned}' => $this->buildUnsignedString(),
+            '{zerofill}' => $this->buildZerofillString(),
             '{notnull}' => $this->buildNotNullString(),
             '{unique}' => $this->buildUniqueString(),
             '{default}' => $this->buildDefaultString(),

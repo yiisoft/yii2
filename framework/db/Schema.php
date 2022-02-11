@@ -43,8 +43,12 @@ abstract class Schema extends BaseObject
     // The following are the supported abstract column data types.
     const TYPE_PK = 'pk';
     const TYPE_UPK = 'upk';
+    const TYPE_ZPK = 'zpk';
+    const TYPE_UZPK = 'uzpk';
     const TYPE_BIGPK = 'bigpk';
     const TYPE_UBIGPK = 'ubigpk';
+    const TYPE_ZBIGPK = 'zbigpk';
+    const TYPE_UZBIGPK = 'uzbigpk';
     const TYPE_CHAR = 'char';
     const TYPE_STRING = 'string';
     const TYPE_TEXT = 'text';
