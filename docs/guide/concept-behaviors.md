@@ -2,7 +2,7 @@ Behaviors
 =========
 
 Behaviors are instances of [[yii\base\Behavior]], or of a child class. Behaviors, also known
-as [mixins](http://en.wikipedia.org/wiki/Mixin), allow you to enhance the functionality
+as [mixins](https://en.wikipedia.org/wiki/Mixin), allow you to enhance the functionality
 of an existing [[yii\base\Component|component]] class without needing to change the class's inheritance.
 Attaching a behavior to a component "injects" the behavior's methods and properties into the component, making those methods and properties accessible as if they were defined in the component class itself. Moreover, a behavior
 can respond to the [events](concept-events.md) triggered by the component, which allows behaviors to also customize the normal

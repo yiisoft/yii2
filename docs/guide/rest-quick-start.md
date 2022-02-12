@@ -9,7 +9,7 @@ In particular, Yii supports the following features about RESTful APIs:
 * Customizable object serialization with support for selectable output fields;
 * Proper formatting of collection data and validation errors;
 * Collection pagination, filtering and sorting;
-* Support for [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
+* Support for [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS);
 * Efficient routing with proper HTTP verb check;
 * Built-in support for the `OPTIONS` and `HEAD` verbs;
 * Authentication and authorization;

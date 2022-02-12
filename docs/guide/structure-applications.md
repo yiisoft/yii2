@@ -275,7 +275,7 @@ including message translation, date formatting, number formatting, etc. For exam
 will use this property value by default to determine in which language the calendar should be displayed and how
 the date should be formatted.
 
-It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+It is recommended that you specify a language in terms of an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag).
 For example, `en` stands for English, while `en-US` stands for English (United States).
 
 More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
@@ -347,7 +347,7 @@ This property specifies the language that the application code is written in. Th
 meaning English (United States). You should configure this property if the text content in your code is not in English.
 
 Like the [language](#language) property, you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
+an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
 while `en-US` stands for English (United States).
 
 More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
