@@ -75,7 +75,7 @@ The formatter supports the following output formats that are related with date a
 - [[yii\i18n\Formatter::asDate()|date]]: the value is formatted as a date, e.g. `January 01, 2014`.
 - [[yii\i18n\Formatter::asTime()|time]]: the value is formatted as a time, e.g. `14:23`.
 - [[yii\i18n\Formatter::asDatetime()|datetime]]: the value is formatted as date and time, e.g. `January 01, 2014 14:23`.
-- [[yii\i18n\Formatter::asTimestamp()|timestamp]]: the value is formatted as a [unix timestamp](http://en.wikipedia.org/wiki/Unix_time), e.g. `1412609982`.
+- [[yii\i18n\Formatter::asTimestamp()|timestamp]]: the value is formatted as a [unix timestamp](https://en.wikipedia.org/wiki/Unix_time), e.g. `1412609982`.
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: the value is formatted as the time interval between a date
   and now in human readable form e.g. `1 hour ago`.
 - [[yii\i18n\Formatter::asDuration()|duration]]: the value is formatted as a duration in human readable format. e.g. `1 day, 2 minutes`.
