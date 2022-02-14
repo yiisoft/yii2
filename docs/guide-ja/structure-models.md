@@ -198,7 +198,7 @@ class User extends ActiveRecord
 > Info: 上記の例と後続の例では、モデル・クラスは [[yii\db\ActiveRecord]] を拡張するものとなっています。
   というのは、複数のシナリオを使用することは、通常は、[アクティブ・レコード](db-active-record.md) クラスで発生するからです。
 
-`seanarios()` メソッドは、キーがシナリオの名前であり、値が対応する *アクティブな属性* である配列を返します。
+`scenarios()` メソッドは、キーがシナリオの名前であり、値が対応する *アクティブな属性* である配列を返します。
 アクティブな属性とは、[一括代入](#massive-assignment) することが出来て、[検証](#validation-rules) の対象になる属性です。
 上記の例では、`login` シナリオにおいては `username` と `password` の属性がアクティブであり、
 一方、`register` シナリオにおいては、`username` と `password` に加えて `email` もアクティブです。
