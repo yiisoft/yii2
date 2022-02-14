@@ -2,7 +2,7 @@ Dependency Injection Container
 ==============================
 
 A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
-all their dependent objects. [Martin Fowler's article](http://martinfowler.com/articles/injection.html) has well
+all their dependent objects. [Martin Fowler's article](https://martinfowler.com/articles/injection.html) has well
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
@@ -544,7 +544,7 @@ Summary <span id="summary"></span>
 
 Both dependency injection and [service locator](concept-service-locator.md) are popular design patterns
 that allow building software in a loosely-coupled and more testable fashion. We highly recommend you to read
-[Martin's article](http://martinfowler.com/articles/injection.html) to get a deeper understanding of
+[Martin's article](https://martinfowler.com/articles/injection.html) to get a deeper understanding of
 dependency injection and service locator.
 
 Yii implements its [service locator](concept-service-locator.md) on top of the dependency injection (DI) container.

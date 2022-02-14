@@ -1,7 +1,7 @@
 Active Record
 =============
 
-[Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
+[Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
 for accessing and manipulating data stored in databases. An Active Record class is associated with a database table,
 an Active Record instance corresponds to a row of that table, and an *attribute* of an Active Record
 instance represents the value of a particular column in that row. Instead of writing raw SQL statements,

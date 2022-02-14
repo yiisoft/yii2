@@ -79,7 +79,7 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
     can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
     of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
