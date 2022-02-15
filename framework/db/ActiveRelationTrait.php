@@ -327,10 +327,15 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecordInterface|array $model the AR instance or an array of attributes
-     * @param string $attribute the attribute name to test
+     * Checks if the given attribute exists in the model or in an array of model attributes.
+     *
+     * > Note: An attributes of an ActiveRecord model represents the values of a particular column in database table.
+     * > You should NOT redeclare any of the attributes!
+     *
+     * @param ActiveRecordInterface|array $model the ActiveRecord instance or an array of model attributes
+     * @param string $attribute the attribute name to check
      * @return bool
-     * @since 2.0.45
+     * @since 2.0.46
      */
     protected function isModelAttribute($model, $attribute)
     {
