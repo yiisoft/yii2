@@ -69,8 +69,6 @@ Yii Framework 2 Change Log
 - Bug #14663: Do not convert int to string if database type of column is numeric (egorrishe)
 - Bug #18274: Fix `yii\log\Logger` to calculate profile timings no matter the value of the flush interval (bizley)
 - Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
-- Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
-- Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 - Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
