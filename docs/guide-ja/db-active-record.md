@@ -473,8 +473,8 @@ $post->updateCounters(['view_count' => 1]);
 > HTML フォームでは全ての値が文字列として表現されるからです。
 > 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように
 > [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
-> このフィルタは、[intval()](https://secure.php.net/manual/ja/function.intval.php), [floatval()](https://secure.php.net/manual/ja/function.floatval.php),
-> [boolval](https://secure.php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
+> このフィルタは、[intval()](https://www.php.net/manual/ja/function.intval.php), [floatval()](https://www.php.net/manual/ja/function.floatval.php),
+> [boolval](https://www.php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
 
 ### デフォルト属性値 <span id="default-attribute-values"></span>
 
@@ -689,7 +689,7 @@ try {
 ```
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの catch ブロックを持っています。
-> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://secure.php.net/manual/ja/class.throwable.php) を実装しています。
+> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://www.php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 第二の方法は、トランザクションのサポートが必要な DB 操作を [[yii\db\ActiveRecord::transactions()]]
@@ -792,6 +792,12 @@ public function behaviors()
         OptimisticLockBehavior::class,
     ];
 }
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
 > Note: [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] は、ユーザが正しいバージョン番号を送信したときにだけ
 > レコードが保存されるという事を保証します。そして、そのために、[[\yii\web\Request::getBodyParam()|getBodyParam()]] の結果を直接に解析します。
@@ -859,6 +865,8 @@ class Order extends ActiveRecord
   続けて書く、ということです。ご覧のように、`customer_id` は `Order` のプロパティであり、
   `id` は`Customer` のプロパティです。
   
+> Warning: リレーション名としては `relation` は予約済みで使えません。これを使うと `ArgumentCountError` となります。
+
 
 ### リレーショナル・データにアクセスする <span id="accessing-relational-data"></span>
 

@@ -48,8 +48,8 @@ use yii\base\NotSupportedException;
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
- * @property-read array $attributeNames Attribute names. This property is read-only.
- * @property-read array $validationAttributes List of attribute names. This property is read-only.
+ * @property-read array $attributeNames Attribute names.
+ * @property-read array $validationAttributes List of attribute names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

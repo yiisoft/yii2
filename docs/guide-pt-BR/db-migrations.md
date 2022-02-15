@@ -104,7 +104,7 @@ class m150101_185401_criar_tabela_noticias extends \yii\db\Migration
 ```
 
 > Observação: Nem todas as migrações são reversíveis. Por exemplo, se o método `up()` deleta um registro de uma tabela,
-  você possivelmente mente não será capaz de recuperar este registro com o método `down()`. Em alguns casos, você pode ter 
+  você possivelmente não será capaz de recuperar este registro com o método `down()`. Em alguns casos, você pode ter 
   tido muita preguiça e não ter implementado o método `down()`, porque não é muito comum reverter migrações de dados.
   Neste caso, você deve retornar `false` no método `down()` para indicar que a migração não é reversível.
 

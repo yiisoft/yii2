@@ -128,7 +128,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
         "forum": "https://forum.yiiframework.com/",
-        "wiki": "http://www.yiiframework.com/wiki/",
+        "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
@@ -185,7 +185,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 当你发布一个稳定版本时，你所依赖的包也应当使用稳定版本。
 
 大多数 JavaScript/CSS 包是用 [Bower](http://bower.io/) 来管理的，而非 Composer。你可使用 
-[Composer asset 插件](https://github.com/francoispluchino/composer-asset-plugin) 使之可以
+[Composer asset 插件](https://github.com/fxpio/composer-asset-plugin) 使之可以
 通过 Composer 来管理这类包。如果你的扩展依赖 Bower 软件包，你可以如下例所示那样简单地
 在 `composer.json` 文件的依赖中列出它。
 
@@ -383,7 +383,7 @@ Yii 提供了测试支持，使你更容易写单元测试、验收测试和功�
   代码注释生成漂亮的 API 文档。
 
 > Info: 虽然不做要求，我们还是建议你的扩展遵循某个编码规范。
-  你可以参照 [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style)。
+  你可以参照 [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md)。
 
 
 ## 核心扩展 <span id="core-extensions"></span>
@@ -399,14 +399,12 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
   提供了一套常用的认证客户端，例如 Facebook OAuth2 客户端、GitHub OAuth2 客户端。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap)：
   提供了一套挂件，封装了 [Bootstrap](http://getbootstrap.com/) 的组件和插件。
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception)：
-  提供了基于 [Codeception](http://codeception.com/) 的测试支持。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug)：
   提供了对 Yii 应用的调试支持。当使用该扩展是，
   在每个页面的底部将显示一个调试工具条。
   该扩展还提供了一个独立的页面，以显示更详细的调试信息。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch)：
-  提供对 [Elasticsearch](http://www.elasticsearch.org/) 的使用支持。它包含基本的查询/搜索支持，
+  提供对 [Elasticsearch](https://www.elastic.co/) 的使用支持。它包含基本的查询/搜索支持，
   并实现了 [Active Record](db-active-record.md) 模式让你可以将活动记录
   存储在 Elasticsearch 中。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker)：
@@ -421,7 +419,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui)：
   提供了一套封装 [JQuery UI](http://jqueryui.com/) 的挂件以及它们的交互。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb)：
-  提供了对 [MongoDB](http://www.mongodb.org/) 的使用支持。它包含基本
+  提供了对 [MongoDB](https://www.mongodb.com/) 的使用支持。它包含基本
   的查询、活动记录、数据迁移、缓存、代码生成等特性。
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue)：
   通过队列异步提供运行任务的支持。
@@ -439,7 +437,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)：
   提供了基于 [swiftmailer](http://swiftmailer.org/) 的邮件发送功能。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig)：
-  提供了一个基于 [Twig](http://twig.sensiolabs.org/) 的模板引擎。
+  提供了一个基于 [Twig](https://twig.symfony.com/) 的模板引擎。
 
 以下官方扩展适用于 Yii 2.1 及以上版本。
 您不需要为 Yii 2.0 安装它们，因为它们包含在核心框架中。

@@ -14,7 +14,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\Json;
 
 /**
- * PhpDocController is there to help maintaining PHPDoc annotation in class files.
+ * PhpDocController is there to help to maintain PHPDoc annotation in class files.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -733,19 +733,17 @@ class PhpDocController extends Controller
                 $docLine = ' * @property';
                 $note = '';
                 if (isset($prop['get'], $prop['set'])) {
-                    if ($prop['get']['type'] != $prop['set']['type']) {
+                    if ($prop['get']['type'] !== $prop['set']['type']) {
                         $note = ' Note that the type of this property differs in getter and setter.'
                                 . ' See [[get' . ucfirst($propName) . '()]]'
                                 . ' and [[set' . ucfirst($propName) . '()]] for details.';
                     }
                 } elseif (isset($prop['get'])) {
                     if (!$this->hasSetterInParents($className, $propName)) {
-                        $note = ' This property is read-only.';
                         $docLine .= '-read';
                     }
                 } elseif (isset($prop['set'])) {
                     if (!$this->hasGetterInParents($className, $propName)) {
-                        $note = ' This property is write-only.';
                         $docLine .= '-write';
                     }
                 } else {
@@ -754,7 +752,7 @@ class PhpDocController extends Controller
                 $docLine .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
                 $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
                 foreach ($comment as &$cline) {
-                    $cline = ltrim($cline, '* ');
+                    $cline = ltrim(rtrim($cline), '* ');
                 }
                 $docLine = wordwrap($docLine . implode(' ', $comment), 110, "\n * ") . "\n";
 
@@ -871,11 +869,11 @@ class PhpDocController extends Controller
      */
     protected function isBaseObject($className, \ReflectionClass $ref)
     {
-        $isDepreceatedObject = false;
+        $isDeprecatedObject = false;
         if (PHP_VERSION_ID <= 70100) {
-            $isDepreceatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
+            $isDeprecatedObject = $ref->isSubclassOf('yii\base\Object') || $className === 'yii\base\Object';
         }
-        return !$isDepreceatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
+        return !$isDeprecatedObject && !$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject';
     }
 
     private function shouldSkipClass($className)

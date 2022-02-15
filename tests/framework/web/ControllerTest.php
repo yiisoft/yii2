@@ -80,7 +80,6 @@ class ControllerTest extends TestCase
                 ],
             ],
         ]));
-        $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
         $params = [];
@@ -195,7 +194,6 @@ class ControllerTest extends TestCase
                 ],
             ],
         ]));
-        $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];

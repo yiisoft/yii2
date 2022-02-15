@@ -23,7 +23,7 @@ use yii\validators\IpValidator;
  *
  * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
  *
- * @property-read string $absoluteUrl The currently requested absolute URL. This property is read-only.
+ * @property-read string $absoluteUrl The currently requested absolute URL.
  * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
  * highest scores will be returned first. The array keys are the content types, while the array values are the
  * corresponding quality score and other parameters as given in the header.
@@ -31,65 +31,59 @@ use yii\validators\IpValidator;
  * represents the most preferred language.
  * @property-read array $authCredentials That contains exactly two elements: - 0: the username sent via HTTP
  * authentication, `null` if the username is not given - 1: the password sent via HTTP authentication, `null` if
- * the password is not given. This property is read-only.
+ * the password is not given.
  * @property-read string|null $authPassword The password sent via HTTP authentication, `null` if the password
- * is not given. This property is read-only.
+ * is not given.
  * @property-read string|null $authUser The username sent via HTTP authentication, `null` if the username is
- * not given. This property is read-only.
+ * not given.
  * @property string $baseUrl The relative URL for the application.
- * @property array $bodyParams The request parameters given in the request body.
- * @property-read string $contentType Request content-type. Null is returned if this information is not
- * available. This property is read-only.
- * @property-read CookieCollection $cookies The cookie collection. This property is read-only.
- * @property-read string $csrfToken The token used to perform CSRF validation. This property is read-only.
+ * @property array|object $bodyParams The request parameters given in the request body. Note that the type of
+ * this property differs in getter and setter. See [[getBodyParams()]] and [[setBodyParams()]] for details.
+ * @property-read string $contentType Request content-type. Empty string is returned if this information is
+ * not available.
+ * @property-read CookieCollection $cookies The cookie collection.
+ * @property-read string $csrfToken The token used to perform CSRF validation.
  * @property-read string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is
- * returned if no such header is sent. This property is read-only.
- * @property-read array $eTags The entity tags. This property is read-only.
- * @property-read HeaderCollection $headers The header collection. This property is read-only.
+ * returned if no such header is sent.
+ * @property-read array $eTags The entity tags.
+ * @property-read HeaderCollection $headers The header collection.
  * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
  * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
  * [[getHostInfo()]] for security related notes on this property.
- * @property-read string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`). This
- * property is read-only.
- * @property-read bool $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
- * @property-read bool $isDelete Whether this is a DELETE request. This property is read-only.
- * @property-read bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
- * read-only.
- * @property-read bool $isGet Whether this is a GET request. This property is read-only.
- * @property-read bool $isHead Whether this is a HEAD request. This property is read-only.
- * @property-read bool $isOptions Whether this is a OPTIONS request. This property is read-only.
- * @property-read bool $isPatch Whether this is a PATCH request. This property is read-only.
- * @property-read bool $isPjax Whether this is a PJAX request. This property is read-only.
- * @property-read bool $isPost Whether this is a POST request. This property is read-only.
- * @property-read bool $isPut Whether this is a PUT request. This property is read-only.
- * @property-read bool $isSecureConnection If the request is sent via secure channel (https). This property is
- * read-only.
+ * @property-read string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`).
+ * @property-read bool $isAjax Whether this is an AJAX (XMLHttpRequest) request.
+ * @property-read bool $isDelete Whether this is a DELETE request.
+ * @property-read bool $isFlash Whether this is an Adobe Flash or Adobe Flex request.
+ * @property-read bool $isGet Whether this is a GET request.
+ * @property-read bool $isHead Whether this is a HEAD request.
+ * @property-read bool $isOptions Whether this is a OPTIONS request.
+ * @property-read bool $isPatch Whether this is a PATCH request.
+ * @property-read bool $isPjax Whether this is a PJAX request.
+ * @property-read bool $isPost Whether this is a POST request.
+ * @property-read bool $isPut Whether this is a PUT request.
+ * @property-read bool $isSecureConnection If the request is sent via secure channel (https).
  * @property-read string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value
- * returned is turned into upper case. This property is read-only.
- * @property-read string|null $origin URL origin of a CORS request, `null` if not available. This property is
- * read-only.
+ * returned is turned into upper case.
+ * @property-read string|null $origin URL origin of a CORS request, `null` if not available.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property int $port Port number for insecure requests.
  * @property array $queryParams The request GET parameter values.
- * @property-read string $queryString Part of the request URL that is after the question mark. This property
- * is read-only.
+ * @property-read string $queryString Part of the request URL that is after the question mark.
  * @property string $rawBody The request body.
- * @property-read string|null $referrer URL referrer, null if not available. This property is read-only.
- * @property-read string|null $remoteHost Remote host name, `null` if not available. This property is
- * read-only.
- * @property-read string|null $remoteIP Remote IP address, `null` if not available. This property is
- * read-only.
+ * @property-read string|null $referrer URL referrer, null if not available.
+ * @property-read string|null $remoteHost Remote host name, `null` if not available.
+ * @property-read string|null $remoteIP Remote IP address, `null` if not available.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property int $securePort Port number for secure requests.
- * @property-read string $serverName Server name, null if not available. This property is read-only.
- * @property-read int|null $serverPort Server port number, null if not available. This property is read-only.
+ * @property-read string $serverName Server name, null if not available.
+ * @property-read int|null $serverPort Server port number, null if not available.
  * @property string $url The currently requested relative URL. Note that the URI returned may be URL-encoded
  * depending on the client.
- * @property-read string|null $userAgent User agent, null if not available. This property is read-only.
- * @property-read string|null $userHost User host name, null if not available. This property is read-only.
- * @property-read string|null $userIP User IP address, null if not available. This property is read-only.
+ * @property-read string|null $userAgent User agent, null if not available.
+ * @property-read string|null $userHost User host name, null if not available.
+ * @property-read string|null $userIP User IP address, null if not available.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -208,7 +202,7 @@ class Request extends \yii\base\Request
      * See [[IpValidator::::setRanges()|IpValidator::setRanges()]]
      * and [[IpValidator::networks]] for advanced matching.
      *
-     * @see $secureHeaders
+     * @see secureHeaders
      * @since 2.0.13
      */
     public $trustedHosts = [];
@@ -218,8 +212,8 @@ class Request extends \yii\base\Request
      * If the list contains the `Forwarded` header, processing will be done according to RFC 7239.
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-     * @see https://tools.ietf.org/html/rfc7239
-     * @see $trustedHosts
+     * @see https://datatracker.ietf.org/doc/html/rfc7239
+     * @see trustedHosts
      * @since 2.0.13
      */
     public $secureHeaders = [
@@ -240,8 +234,8 @@ class Request extends \yii\base\Request
      * It's not advisable to put insecure headers here.
      * To use the `Forwarded` header according to RFC 7239, the header must be added to [[secureHeaders]] list.
      * The match of header names is case-insensitive.
-     * @see $trustedHosts
-     * @see $secureHeaders
+     * @see trustedHosts
+     * @see secureHeaders
      * @since 2.0.13
      */
     public $ipHeaders = [
@@ -252,8 +246,8 @@ class Request extends \yii\base\Request
      * The array keys are header names and the array value is a list of header values that indicate a secure connection.
      * The match of header names and values is case-insensitive.
      * It's not advisable to put insecure headers here.
-     * @see $trustedHosts
-     * @see $secureHeaders
+     * @see trustedHosts
+     * @see secureHeaders
      * @since 2.0.13
      */
     public $secureProtocolHeaders = [
@@ -554,7 +548,7 @@ class Request extends \yii\base\Request
      * Request parameters are determined using the parsers configured in [[parsers]] property.
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
-     * @return array the request parameters given in the request body.
+     * @return array|object the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @see getMethod()
      * @see getBodyParam()
@@ -570,7 +564,7 @@ class Request extends \yii\base\Request
             }
 
             $rawContentType = $this->getContentType();
-            if (($pos = strpos($rawContentType, ';')) !== false) {
+            if (($pos = strpos((string)$rawContentType, ';')) !== false) {
                 // e.g. text/html; charset=UTF-8
                 $contentType = substr($rawContentType, 0, $pos);
             } else {
@@ -723,7 +717,7 @@ class Request extends \yii\base\Request
      *
      * By default this value is based on the user request information. This method will
      * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
-     * You may want to check out the [PHP documentation](https://secure.php.net/manual/en/reserved.variables.server.php)
+     * You may want to check out the [PHP documentation](https://www.php.net/manual/en/reserved.variables.server.php)
      * for more information on these variables.
      *
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
@@ -796,7 +790,7 @@ class Request extends \yii\base\Request
     public function getHostName()
     {
         if ($this->_hostName === null) {
-            $this->_hostName = parse_url($this->getHostInfo(), PHP_URL_HOST);
+            $this->_hostName = parse_url((string)$this->getHostInfo(), PHP_URL_HOST);
         }
 
         return $this->_hostName;
@@ -1171,7 +1165,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the user IP address from [[ipHeaders]].
      * @return string|null user IP address, null if not available
-     * @see $ipHeaders
+     * @see ipHeaders
      * @since 2.0.28
      */
     protected function getUserIpFromIpHeaders()
@@ -1216,9 +1210,9 @@ class Request extends \yii\base\Request
      *
      * @param string $ips comma separated IP list
      * @return string|null IP as string. Null is returned if IP can not be determined from header.
-     * @see $getUserHost
-     * @see $ipHeader
-     * @see $trustedHeaders
+     * @see getUserHost()
+     * @see ipHeaders
+     * @see getTrustedHeaders()
      * @since 2.0.28
      */
     protected function getUserIpFromIpHeader($ips)
@@ -1473,7 +1467,7 @@ class Request extends \yii\base\Request
      * contained in [[getRawBody()]] or, in the case of the HEAD method, the
      * media type that would have been sent had the request been a GET.
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
-     * @return string request content-type. Null is returned if this information is not available.
+     * @return string request content-type. Empty string is returned if this information is not available.
      * @link https://tools.ietf.org/html/rfc2616#section-14.17
      * HTTP 1.1 header field definitions
      */
@@ -1484,7 +1478,7 @@ class Request extends \yii\base\Request
         }
 
         //fix bug https://bugs.php.net/bug.php?id=66606
-        return $this->headers->get('Content-Type');
+        return $this->headers->get('Content-Type') ?: '';
     }
 
     private $_languages;

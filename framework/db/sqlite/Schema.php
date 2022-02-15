@@ -25,8 +25,7 @@ use yii\helpers\ArrayHelper;
  * Schema is the class for retrieving metadata from a SQLite (2/3) database.
  *
  * @property-write string $transactionIsolationLevel The transaction isolation level to use for this
- * transaction. This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]]. This
- * property is write-only.
+ * transaction. This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -306,7 +306,7 @@ class Menu extends Widget
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
             $route = Yii::getAlias($item['url'][0]);
-            if (strpos($route, '/') !== 0 && Yii::$app->controller) {
+            if (strncmp($route, '/', 1) !== 0 && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
             if (ltrim($route, '/') !== $this->route) {

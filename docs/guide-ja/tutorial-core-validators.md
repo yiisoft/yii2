@@ -82,7 +82,7 @@ public function rules()
   このバリデータが属性を検証するのに使用されるとき、このプロパティのデフォルト値はその属性の名前に接尾辞
   `_repeat` を付けた名前になります。
   例えば、検証される属性が `password` であれば、このプロパティのデフォルト値は `password_repeat` となります。
-- `compareValue`: 入力値が比較される定数値。
+- `compareValue`: 入力値が比較される定数値（または値を返すクロージャ）。
   このプロパティと `compareAttribute` の両方が指定された場合は、このプロパティが優先されます。
 - `operator`: 比較演算子。デフォルト値は `==` で、入力値が `compareAttribute` の値または `compareValue` と等しいことを検証することを意味します。
   次の演算子がサポートされています。
@@ -139,10 +139,10 @@ compare バリデータは、文字列や数値を比較するためにしか使
 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
 - `format`: 検証される値が従っているべき日付/時刻の書式。
-  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
+  これには [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax)
   で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
-  サポートされている書式については、<https://secure.php.net/manual/ja/datetime.createfromformat.php> を参照してください。
+  サポートされている書式については、<https://www.php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
 
 - `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
@@ -156,6 +156,7 @@ compare バリデータは、文字列や数値を比較するためにしか使
 
 `timestampAttribute` を使う場合、入力値が UNIX タイムスタンプに変換されること、そして、UNIX タイムスタンプは定義により UTC であることに注意して下さい。
 すなわち、[[yii\validators\DateValidator::timeZone|入力のタイム・ゾーン]] から UTC への変換が実行されます。
+（この動作は、2.0.39 以降では、[[yii\validators\DateValidator::$defaultTimeZone|$defaultTimeZone]] を設定して変更することが出来ます）
 
 - バージョン 2.0.4 以降では、タイムスタンプの [[yii\validators\DateValidator::$min|最小値]] または
   [[yii\validators\DateValidator::$max|最大値]] を指定することも出来ます。
@@ -191,8 +192,8 @@ compare バリデータは、文字列や数値を比較するためにしか使
 このバリデータはデータを検証しません。
 その代りに、検証される属性が空のときに、その属性にデフォルト値を割り当てます。
 
-- `value`: デフォルト値、または、デフォルト値を返す PHP コーラブル。
-  検証される属性が空のときにこのデフォルト値が割り当てられます。PHP コーラブルのシグニチャは、次のものでなければなりません。
+- `value`: デフォルト値、または、デフォルト値をコールバックとして返すクロージャ。
+  検証される属性が空のときにこの値が割り当てられます。クロージャのシグニチャは、次のものでなければなりません。
 
 ```php
 function foo($model, $attribute) {
@@ -270,24 +271,49 @@ function foo($model, $attribute) {
 ```php
 [
     // a1 の入力値が a1 のカラムに存在する必要がある
+    // すなわち、a1 = 1 は、"a1" カラムに 1 の値が存在する場合に有効
     ['a1', 'exist'],
+    // 以下と同義
+    ['a1', 'exist', 'targetAttribute' => 'a1'],
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a1']],
 
     // a1 の入力値が a2 のカラムに存在する必要がある
+    // すなわち、a1 = 2 は、"a2" カラムに 2 の値が存在する場合に有効
     ['a1', 'exist', 'targetAttribute' => 'a2'],
+    // 以下と同義
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a2']],
+
+    // a2 の入力値が a2 のカラムに存在する必要がある。a1 がエラー・メッセージを受ける
+    // すなわち、a2 = 2 は、"a2" カラムに 2 の値が存在する場合に有効
+    ['a1', 'exist', 'targetAttribute' => ['a2']],
+    // 以下と同義
+    ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2']],
 
     // a1 と a2 の両方が存在する必要がある。両者はともにエラー・メッセージを受け取る
+    // すなわち、a1 = 3, a2 = 4 は、"a1" カラムに 3, "a2" カラムに 4 が存在する場合に有効
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
+    // 以下と同義
+    [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 と a2 の両方が存在する必要がある。a1 のみがエラー・メッセージを受け取る
+    // すなわち、a1 = 5, a2 = 6 は、"a1" カラムに 5, "a2" カラムに 6 が存在する場合に有効
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
+    // 以下と同義
+    ['a1', 'exist', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a2 の値が a2 のカラム、a1 の値が a3 のカラムに存在する必要がある。a1 がエラー・メッセージを受け取る
+    // すなわち、a1 = 7, a2 = 8 は、"a3" カラムに 7, "a2" カラムに 8 が存在する場合に有効
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
+    // 以下と同義
+    ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2', 'a1' => 'a3']],
 
     // a1 が存在する必要がある。a1 が配列である場合は、その全ての要素が存在する必要がある
     ['a1', 'exist', 'allowArray' => true],
+    // すなわち、a1 = 9 は、"a1" カラムに 9 が存在する場合に有効
+    //           a1 = [9, 10] は、"a1" カラムに 9 と 10 が存在する場合に有効
 
     // type_id が ProductType クラスで定義されているテーブルの id カラムに存在する必要がある
+    // すなわち、type_id = 1 は ProductType のテーブルの "id" カラムに 1 が存在する場合に有効
     ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],    
     
     // 同上。定義済みの "type" リレーションを使用。
@@ -310,9 +336,18 @@ function foo($model, $attribute) {
   複数のカラムの存在を同時に検証するために配列を使うことが出来ます。
   配列の値は存在を検証するのに使用される属性であり、配列のキーは入力値が検証される属性です。
   キーと値が同じ場合は、値だけを指定することが出来ます。
+  検証されるモデルが ModelA であり、検証に使用されるモデルが ModelB であるとすると、
+  下記のように `targetAttribute` を構成することが出来ます。
+    - `null` => ModelA の現在検証されている属性の値が ModelB の同名の属性の保存されている値に対してチェックされる
+    - `'a'` => ModelA の現在検証されている属性の値が ModelB の属性 "a" の保存されている値に対してチェックされる
+    - `['a']` => ModelA の属性 "a" の値が ModelB の属性 "a" の保存されている値に対してチェックされる
+    - `['a' => 'a']` => 同上
+    - `['a', 'b']` => ModelA の属性 "a" の値が ModelB の属性 "a" の保存されている値に対してチェックされ、
+    同時に、ModelA の属性 "b" の値が ModelB の属性 "b" の保存されている値に対してチェックされる
+    - `['a' => 'b']` => ModelA の属性 "a" の値が ModelB の属性 "b" の保存されている値に対してチェックされる
+- `targetRelation`: バージョン 2.0.14 以降は簡便な `targetRelation` 属性が使えます。これは指定されたリレーションの定義によって `targetClass` と `targetAttribute` の属性をオーバーライドするものです。
 - `filter`: 入力値の存在をチェックするのに使用される DB クエリに適用される追加のフィルタ。
-  これには、文字列、または、追加のクエリ条件を表現する配列を使うことが出来ます
-  (クエリ条件の書式については、[[yii\db\Query::where()]] を参照してください)。
+  これには、追加のクエリ条件を表現する文字列または配列を使うことが出来ます (クエリ条件の書式については、[[yii\db\Query::where()]] を参照してください)。
   または、`function ($query)` というシグニチャを持つ無名関数でも構いません。
   `$query` は関数の中で修正できる [[yii\db\Query|Query]] オブジェクトです。
 - `allowArray`: 入力値が配列であることを許容するか否か。デフォルト値は `false`。
@@ -341,7 +376,7 @@ function foo($model, $attribute) {
   特殊文字 `*` によるワイルドカードのマスクを使って、一群の MIME タイプに一致させることも出来ます。
   例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。デフォルト値は `null` であり、すべての MIME タイプが許可されることを意味します。
-  MIME タイプの詳細については、[一般的なメディア・タイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
+  MIME タイプの詳細については、[一般的なメディア・タイプ](https://en.wikipedia.org/wiki/Media_type) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。デフォルト値は `null` であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。デフォルト値は `null` であり、上限値が無いことを意味します。
 - `maxFiles`: 指定された属性が保持しうる最大限のファイル数。
@@ -389,7 +424,7 @@ function foo($model, $attribute) {
 > Tip: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
 > Tip: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
-> 例えば、([intval](https://secure.php.net/manual/ja/function.intval.php) や [boolval](https://secure.php.net/manual/ja/function.boolval.php) 
+> 例えば、([intval](https://www.php.net/manual/ja/function.intval.php) や [boolval](https://www.php.net/manual/ja/function.boolval.php) 
 > などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、
 > それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >
@@ -638,19 +673,34 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
 ```php
 [
     // a1 の入力値が a1 のカラムにおいてユニークである必要がある
+    // すなわち、a1 = 1 は、"a1" カラムに 1 の値が存在しない場合に有効
     ['a1', 'unique'],
+    // 以下と同義
+    ['a1', 'unique', 'targetAttribute' => 'a1'],
+    ['a1', 'unique', 'targetAttribute' => ['a1' => 'a1']],
 
     // a1 の入力値が a2 のカラムにおいてユニークである必要がある
+    // すなわち、a1 = 2 は、"a2" カラムに 2 の値が存在しない場合に有効
     ['a1', 'unique', 'targetAttribute' => 'a2'],
+    // 以下と同義
+    ['a1', 'unique', 'targetAttribute' => ['a1' => 'a2']],
 
     // a1 と a2 の両方がユニークである必要がある。両者がともにエラー・メッセージを受け取る
+    // すなわち、a1 = 3, a2 = 4 は、"a1" カラムに 3 の値が存在せず、同時に、"a2" カラムに 4 の値が存在しない場合に有効
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
+    // 以下と同義
+    [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1' => 'a1', 'a2' => 'a2']],
 
     // a1 と a2 の両方がユニークである必要がある。a1 のみがエラー・メッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a2 の値が a2 のカラム、a1 の値が a3 のカラムにおいてユニークである必要がある。a1 がエラー・メッセージを受け取る
+    // すなわち、a1 = 5, a2 = 6 は、"a3" カラムに 5 の値が存在せず、同時に、"a2" カラムに 6 の値が存在しない場合に有効
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
+    
+    // type_id が ProductType クラスで定義されているテーブルの "id" カラムにおいてユニークである必要がある
+    // すなわち、type_id = 1 は ProductType のテーブルの "id" カラムに 1 が存在しない場合に有効
+    ['type_id', 'unique', 'targetClass' => ProductType::class, 'targetAttribute' => 'id'],
 ]
 ```
 
@@ -665,10 +715,19 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
   複数のカラムのユニーク性を同時に検証するために配列を使うことが出来ます。
   配列の値はユニーク性を検証するのに使用される属性であり、配列のキーはその入力値が検証される属性です。
   キーと値が同じ場合は、値だけを指定することが出来ます。
-- `filter`: 入力値のユニーク性をチェックするのに使用される DB クエリに適用される追加のフィルタ。
-  これには、文字列、または、追加のクエリ条件を表現する配列を使うことが出来ます
-  (クエリ条件の書式については、[[yii\db\Query::where()]] を参照してください)。
-  または、`function ($query)` というシグニチャを持つ無名関数でも構いません。`$query` は関数の中で修正できる [[yii\db\Query|Query]] オブジェクトです。
+  検証されるモデルが ModelA であり、検証に使用されるモデルが ModelB であるとすると、
+  下記のように `targetAttribute` を構成することが出来ます。
+    - `null` => ModelA の現在検証されている属性の値が ModelB の同名の属性の保存されている値に対してチェックされる
+    - `'a'` => ModelA の現在検証されている属性の値が ModelB の属性 "a" の保存されている値に対してチェックされる
+    - `['a']` => ModelA の属性 "a" の値が ModelB の属性 "a" の保存されている値に対してチェックされる
+    - `['a' => 'a']` => 同上
+    - `['a', 'b']` => ModelA の属性 "a" の値が ModelB の属性 "a" の保存されている値に対してチェックされ、
+    同時に、ModelA の属性 "b" の値が ModelB の属性 "b" の保存されている値に対してチェックされる
+    - `['a' => 'b']` => ModelA の属性 "a" の値が ModelB の属性 "b" の保存されている値に対してチェックされる
+- `filter`: 入力値がユニークであることをチェックするのに使用される DB クエリに適用される追加のフィルタ。
+  これには、追加のクエリ条件を表現する文字列または配列を使うことが出来ます (クエリ条件の書式については、[[yii\db\Query::where()]] を参照してください)。
+  これは、または、`function ($query)` というシグニチャを持つ無名関数でも構いません。
+  `$query` は関数の中で修正できる [[yii\db\Query|Query]] オブジェクトです。
 
 
 ## [[yii\validators\UrlValidator|url]] <span id="url"></span>

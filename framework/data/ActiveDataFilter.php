@@ -101,7 +101,7 @@ class ActiveDataFilter extends DataFilter
 
         if (!empty($parts)) {
             if (count($parts) > 1) {
-                $parts = array_merge(['AND'], $parts);
+                array_unshift($parts, 'AND');
             } else {
                 $parts = array_shift($parts);
             }

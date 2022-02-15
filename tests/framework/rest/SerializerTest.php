@@ -540,6 +540,7 @@ class TestModel3 extends Model implements \JsonSerializable
         return static::$extraFields;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getAttributes();
@@ -550,6 +551,7 @@ class TestModel4 implements \JsonSerializable
     public $field5 = 'test5';
     public $field6 = 'test6';
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

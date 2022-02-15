@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidRouteException;
 
 // define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
-// https://secure.php.net/manual/en/features.commandline.io-streams.php
+// https://www.php.net/manual/en/features.commandline.io-streams.php
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
@@ -50,10 +50,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * yii help
  * ```
  *
- * @property-read ErrorHandler $errorHandler The error handler application component. This property is
- * read-only.
- * @property-read Request $request The request component. This property is read-only.
- * @property-read Response $response The response component. This property is read-only.
+ * @property-read ErrorHandler $errorHandler The error handler application component.
+ * @property-read Request $request The request component.
+ * @property-read Response $response The response component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

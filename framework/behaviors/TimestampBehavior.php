@@ -84,7 +84,7 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case, when the value is `null`, the result of the PHP function [time()](https://secure.php.net/manual/en/function.time.php)
+     * In case, when the value is `null`, the result of the PHP function [time()](https://www.php.net/manual/en/function.time.php)
      * will be used as value.
      */
     public $value;
@@ -108,7 +108,7 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case, when the [[value]] is `null`, the result of the PHP function [time()](https://secure.php.net/manual/en/function.time.php)
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](https://www.php.net/manual/en/function.time.php)
      * will be used as value.
      */
     protected function getValue($event)

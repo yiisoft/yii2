@@ -117,6 +117,13 @@ class InflectorTest extends TestCase
         $this->assertEquals('Generate Csrf', Inflector::camel2words('generateCSRF'));
         $this->assertEquals('Generate Csrf Token', Inflector::camel2words('generateCSRFToken'));
         $this->assertEquals('Csrf Token Generator', Inflector::camel2words('CSRFTokenGenerator'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('foo bar'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('foo BAR'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('Foo Bar'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('FOO BAR'));
+        $this->assertEquals('Order 4 Other Phones', Inflector::camel2words('Order4OtherPhones'));
+        $this->assertEquals('I Have 23 Dogs', Inflector::camel2words('IHave23Dogs'));
+        $this->assertEquals('Con Chó Cười 34 Lần', Inflector::camel2words('ConChóCười34Lần'));
     }
 
     public function testCamel2id()

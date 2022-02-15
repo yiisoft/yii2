@@ -70,6 +70,8 @@ class BaseArrayHelper
             }
 
             return $object;
+        } elseif ($object instanceof \DateTimeInterface) {
+            return (array)$object;
         } elseif (is_object($object)) {
             if (!empty($properties)) {
                 $className = get_class($object);
@@ -615,7 +617,7 @@ class BaseArrayHelper
     {
         if ($caseSensitive) {
             // Function `isset` checks key faster but skips `null`, `array_key_exists` handles this case
-            // https://secure.php.net/manual/en/function.array-key-exists.php#107786
+            // https://www.php.net/manual/en/function.array-key-exists.php#107786
             if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
                 return true;
             }
@@ -647,7 +649,7 @@ class BaseArrayHelper
      * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
      * @param int|array $sortFlag the PHP sort flag. Valid values include
      * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
-     * Please refer to [PHP manual](https://secure.php.net/manual/en/function.sort.php)
+     * Please refer to [PHP manual](https://www.php.net/manual/en/function.sort.php)
      * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
      * @throws InvalidArgumentException if the $direction or $sortFlag parameters do not have
      * correct number of elements as that of $key.
@@ -698,7 +700,7 @@ class BaseArrayHelper
      * @param string $charset the charset that the data is using. If not set,
      * [[\yii\base\Application::charset]] will be used.
      * @return array the encoded data
-     * @see https://secure.php.net/manual/en/function.htmlspecialchars.php
+     * @see https://www.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
     {
@@ -731,7 +733,7 @@ class BaseArrayHelper
      * @param bool $valuesOnly whether to decode array values only. If false,
      * both the array keys and array values will be decoded.
      * @return array the decoded data
-     * @see https://secure.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see https://www.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function htmlDecode($data, $valuesOnly = true)
     {
@@ -829,14 +831,14 @@ class BaseArrayHelper
     /**
      * Check whether an array or [[Traversable]] contains an element.
      *
-     * This method does the same as the PHP function [in_array()](https://secure.php.net/manual/en/function.in-array.php)
+     * This method does the same as the PHP function [in_array()](https://www.php.net/manual/en/function.in-array.php)
      * but additionally works for objects that implement the [[Traversable]] interface.
      * @param mixed $needle The value to look for.
      * @param array|Traversable $haystack The set of values to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
      * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
      * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
-     * @see https://secure.php.net/manual/en/function.in-array.php
+     * @see https://www.php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
     public static function isIn($needle, $haystack, $strict = false)
@@ -859,11 +861,11 @@ class BaseArrayHelper
     /**
      * Checks whether a variable is an array or [[Traversable]].
      *
-     * This method does the same as the PHP function [is_array()](https://secure.php.net/manual/en/function.is-array.php)
+     * This method does the same as the PHP function [is_array()](https://www.php.net/manual/en/function.is-array.php)
      * but additionally works on objects that implement the [[Traversable]] interface.
      * @param mixed $var The variable being evaluated.
      * @return bool whether $var can be traversed via foreach
-     * @see https://secure.php.net/manual/en/function.is-array.php
+     * @see https://www.php.net/manual/en/function.is-array.php
      * @since 2.0.8
      */
     public static function isTraversable($var)
@@ -952,7 +954,7 @@ class BaseArrayHelper
                 continue;
             }
 
-            if (is_string($filter) && strpos($filter, '!') === 0) {
+            if (is_string($filter) && strncmp($filter, '!', 1) === 0) {
                 $excludeFilters[] = substr($filter, 1);
                 continue;
             }

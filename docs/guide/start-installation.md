@@ -85,7 +85,7 @@ Installing from an Archive File <span id="installing-from-archive-file"></span>
 
 Installing Yii from an archive file involves three steps:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/).
+1. Download the archive file from [yiiframework.com](https://www.yiiframework.com/download/).
 2. Unpack the downloaded file to a Web-accessible folder.
 3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
    (this is done automatically if you are installing Yii using Composer):
@@ -114,9 +114,9 @@ But there are other installation options available:
 Installing Assets <span id="installing-assets"></span>
 -----------------
 
-Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.com/) packages for the asset (CSS and JavaScript) libraries installation.
+Yii relies on [Bower](https://bower.io/) and/or [NPM](https://www.npmjs.com/) packages for the asset (CSS and JavaScript) libraries installation.
 It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
-This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
 Please refer to [Assets documentation](structure-assets.md) for more details.
 
 You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
@@ -139,7 +139,7 @@ Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
 After installation is done, either configure your web server (see next section) or use the
-[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+[built-in PHP web server](https://www.php.net/manual/en/features.commandline.webserver.php) by running the following
 console command while in the project root directory:
  
 ```bash
@@ -173,7 +173,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://secure.php.net/manual/en/pdo.installation.php)
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -184,9 +184,9 @@ Configuring Web Servers <span id="configuring-web-servers"></span>
   of deploying it to a production server.
 
 The application installed according to the above instructions should work out of box with either
-an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
+an [Apache HTTP server](https://httpd.apache.org/) or an [Nginx HTTP server](https://nginx.org/), on
 Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
-[HHVM](http://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
+[HHVM](https://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
 PHP, so you have to take some extra care when using HHVM.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
@@ -236,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://secure.php.net/install.fpm).
+To use [Nginx](https://wiki.nginx.org/), you should install PHP as an [FPM SAPI](https://www.php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
 `basic/web` and `mysite.test` with the actual hostname to serve.
 

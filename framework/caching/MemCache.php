@@ -56,7 +56,7 @@ use yii\base\InvalidConfigException;
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
  * @property-read \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache
- * component. This property is read-only.
+ * component.
  * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
  * property differs in getter and setter. See [[getServers()]] and [[setServers()]] for details.
  *
@@ -77,22 +77,22 @@ class MemCache extends Cache
      * By default the Memcached instances are destroyed at the end of the request. To create an instance that
      * persists between requests, you may specify a unique ID for the instance. All instances created with the
      * same ID will share the same connection.
-     * @see https://secure.php.net/manual/en/memcached.construct.php
+     * @see https://www.php.net/manual/en/memcached.construct.php
      */
     public $persistentId;
     /**
      * @var array options for Memcached. This property is used only when [[useMemcached]] is true.
-     * @see https://secure.php.net/manual/en/memcached.setoptions.php
+     * @see https://www.php.net/manual/en/memcached.setoptions.php
      */
     public $options;
     /**
      * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
-     * @see https://secure.php.net/manual/en/memcached.setsaslauthdata.php
+     * @see https://www.php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $username;
     /**
      * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
-     * @see https://secure.php.net/manual/en/memcached.setsaslauthdata.php
+     * @see https://www.php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $password;
 
@@ -249,8 +249,8 @@ class MemCache extends Cache
     /**
      * @param array $config list of memcache or memcached server configurations. Each element must be an array
      * with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
-     * @see https://secure.php.net/manual/en/memcache.addserver.php
-     * @see https://secure.php.net/manual/en/memcached.addserver.php
+     * @see https://www.php.net/manual/en/memcache.addserver.php
+     * @see https://www.php.net/manual/en/memcached.addserver.php
      */
     public function setServers($config)
     {
@@ -286,7 +286,7 @@ class MemCache extends Cache
      *
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached.
-     * @see [Memcache::set()](https://secure.php.net/manual/en/memcache.set.php)
+     * @see [Memcache::set()](https://www.php.net/manual/en/memcache.set.php)
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
@@ -308,7 +308,7 @@ class MemCache extends Cache
             $expire = $this->normalizeDuration($duration);
 
             // Memcached::setMulti() returns boolean
-            // @see https://secure.php.net/manual/en/memcached.setmulti.php
+            // @see https://www.php.net/manual/en/memcached.setmulti.php
             return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
         }
 
@@ -321,7 +321,7 @@ class MemCache extends Cache
      *
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
-     * @see [Memcache::set()](https://secure.php.net/manual/en/memcache.set.php)
+     * @see [Memcache::set()](https://www.php.net/manual/en/memcache.set.php)
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
@@ -356,8 +356,8 @@ class MemCache extends Cache
      * Normalizes duration value
      *
      * @see https://github.com/yiisoft/yii2/issues/17710
-     * @see https://secure.php.net/manual/en/memcache.set.php
-     * @see https://secure.php.net/manual/en/memcached.expiration.php
+     * @see https://www.php.net/manual/en/memcache.set.php
+     * @see https://www.php.net/manual/en/memcached.expiration.php
      *
      * @since 2.0.31
      * @param int $duration

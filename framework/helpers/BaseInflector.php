@@ -287,7 +287,7 @@ class BaseInflector
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
      * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
-     * @see https://secure.php.net/manual/en/transliterator.transliterate.php
+     * @see https://www.php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
 
@@ -371,11 +371,11 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = mb_strtolower(trim(str_replace([
-            '-',
-            '_',
-            '.',
-        ], ' ', preg_replace('/(?<!\p{Lu})(\p{Lu})|(\p{Lu})(?=\p{Ll})/u', ' \0', $name))), self::encoding());
+        // Add a space before any uppercase letter preceded by a lowercase letter (xY => x Y)
+        // and any uppercase letter preceded by an uppercase letter and followed by a lowercase letter (XYz => X Yz)
+        $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=[\p{L}\d])\p{Lu}(?=\p{Ll})|(\d+)/u', ' \0', $name);
+
+        $label = mb_strtolower(trim(str_replace(['-', '_', '.'], ' ', $label)), self::encoding());
 
         return $ucwords ? StringHelper::mb_ucwords($label, self::encoding()) : $label;
     }

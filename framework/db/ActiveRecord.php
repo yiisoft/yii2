@@ -70,8 +70,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
- * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
- * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
+ * @method ActiveQuery hasMany($class, array $link) See [[BaseActiveRecord::hasMany()]] for more info.
+ * @method ActiveQuery hasOne($class, array $link) See [[BaseActiveRecord::hasOne()]] for more info.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -115,9 +115,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function loadDefaultValues($skipIfSet = true)
     {
-        foreach (static::getTableSchema()->columns as $column) {
-            if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)) {
-                $this->{$column->name} = $column->defaultValue;
+        $columns = static::getTableSchema()->columns;
+        foreach ($this->attributes() as $name) {
+            if (isset($columns[$name])) {
+                $defaultValue = $columns[$name]->defaultValue;
+                if ($defaultValue !== null && (!$skipIfSet || $this->getAttribute($name) === null)) {
+                    $this->setAttribute($name, $defaultValue);
+                }
             }
         }
 
@@ -553,7 +557,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception|\Throwable in case insert failed.
+     * @throws \Exception in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -663,7 +667,7 @@ class ActiveRecord extends BaseActiveRecord
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
-     * @throws \Exception|\Throwable in case update failed.
+     * @throws \Exception in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -712,7 +716,7 @@ class ActiveRecord extends BaseActiveRecord
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
-     * @throws \Exception|\Throwable in case delete failed.
+     * @throws \Exception in case delete failed.
      */
     public function delete()
     {

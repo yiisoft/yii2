@@ -94,6 +94,13 @@ class BaseHtml
      * @since 2.0.3
      */
     public static $dataAttributes = ['aria', 'data', 'data-ng', 'ng'];
+    /**
+     * @var bool whether to removes duplicate class names in tag attribute `class`
+     * @see mergeCssClasses()
+     * @see renderTagAttributes()
+     * @since 2.0.44
+     */
+    public static $normalizeClassAttribute = false;
 
 
     /**
@@ -104,11 +111,11 @@ class BaseHtml
      * HTML entities in `$content` will not be further encoded.
      * @return string the encoded content
      * @see decode()
-     * @see https://secure.php.net/manual/en/function.htmlspecialchars.php
+     * @see https://www.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function encode($content, $doubleEncode = true)
     {
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
+        return htmlspecialchars((string)$content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
     }
 
     /**
@@ -117,7 +124,7 @@ class BaseHtml
      * @param string $content the content to be decoded
      * @return string the decoded content
      * @see encode()
-     * @see https://secure.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see https://www.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function decode($content)
     {
@@ -1745,7 +1752,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the checkboxes.
      * The array keys are the checkbox values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the checkbox list container tag.
      * The following options are specially handled:
      *
@@ -1787,7 +1793,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the radio buttons.
      * The array keys are the radio values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
@@ -1829,7 +1834,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the input fields.
      * The array keys are the input values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the input list. The supported special options
      * depend on the input type specified by `$type`.
      * @return string the generated input list
@@ -1984,6 +1988,11 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
+                    if (static::$normalizeClassAttribute === true && count($value) > 1) {
+                        // removes duplicate classes
+                        $value = explode(' ', implode(' ', $value));
+                        $value = array_unique($value);
+                    }
                     $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
@@ -2016,7 +2025,6 @@ class BaseHtml
      *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
-     * @see mergeCssClasses()
      * @see removeCssClass()
      */
     public static function addCssClass(&$options, $class)
@@ -2051,7 +2059,7 @@ class BaseHtml
             }
         }
 
-        return array_unique($existingClasses);
+        return static::$normalizeClassAttribute ? array_unique($existingClasses) : $existingClasses;
     }
 
     /**

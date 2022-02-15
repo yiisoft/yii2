@@ -245,7 +245,7 @@ class FileCache extends Cache
      */
     public function gc($force = false, $expiredOnly = true)
     {
-        if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
+        if ($force || random_int(0, 1000000) < $this->gcProbability) {
             $this->gcRecursive($this->cachePath, $expiredOnly);
         }
     }
@@ -261,7 +261,7 @@ class FileCache extends Cache
     {
         if (($handle = opendir($path)) !== false) {
             while (($file = readdir($handle)) !== false) {
-                if (strpos($file, '.') === 0) {
+                if (strncmp($file, '.', 1) === 0) {
                     continue;
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;

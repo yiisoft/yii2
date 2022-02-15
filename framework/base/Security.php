@@ -55,12 +55,12 @@ class Security extends Component
     ];
     /**
      * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
-     * @see [hash_algos()](https://secure.php.net/manual/en/function.hash-algos.php)
+     * @see [hash_algos()](https://www.php.net/manual/en/function.hash-algos.php)
      */
     public $kdfHash = 'sha256';
     /**
      * @var string Hash algorithm for message authentication. Recommend sha256, sha384 or sha512.
-     * @see [hash_algos()](https://secure.php.net/manual/en/function.hash-algos.php)
+     * @see [hash_algos()](https://www.php.net/manual/en/function.hash-algos.php)
      */
     public $macHash = 'sha256';
     /**
@@ -114,14 +114,6 @@ class Security extends Component
         }
 
         return $this->_useLibreSSL;
-    }
-
-    /**
-     * @return bool if operating system is Windows
-     */
-    private function isWindows()
-    {
-        return DIRECTORY_SEPARATOR !== '/';
     }
 
     /**
@@ -306,7 +298,7 @@ class Security extends Component
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
         if (function_exists('hash_hkdf')) {
-            $outputKey = hash_hkdf($algo, $inputKey, $length, $info, $salt);
+            $outputKey = hash_hkdf((string)$algo, (string)$inputKey, $length, (string)$info, (string)$salt);
             if ($outputKey === false) {
                 throw new InvalidArgumentException('Invalid parameters to hash_hkdf()');
             }
@@ -471,8 +463,6 @@ class Security extends Component
         return false;
     }
 
-    private $_randomFile;
-
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
@@ -493,84 +483,7 @@ class Security extends Component
             throw new InvalidArgumentException('First parameter ($length) must be greater than 0');
         }
 
-        // always use random_bytes() if it is available
-        if (function_exists('random_bytes')) {
-            return random_bytes($length);
-        }
-
-        // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
-        // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
-        // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
-        if (function_exists('openssl_random_pseudo_bytes')
-            && ($this->shouldUseLibreSSL() || $this->isWindows())
-        ) {
-            $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
-            if ($cryptoStrong === false) {
-                throw new Exception(
-                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP setup is insecure.'
-                );
-            }
-            if ($key !== false && StringHelper::byteLength($key) === $length) {
-                return $key;
-            }
-        }
-
-        // mcrypt_create_iv() does not use libmcrypt. Since PHP 5.3.7 it directly reads
-        // CryptGenRandom on Windows. Elsewhere it directly reads /dev/urandom.
-        if (function_exists('mcrypt_create_iv')) {
-            $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-            if (StringHelper::byteLength($key) === $length) {
-                return $key;
-            }
-        }
-
-        // If not on Windows, try to open a random device.
-        if ($this->_randomFile === null && !$this->isWindows()) {
-            // urandom is a symlink to random on FreeBSD.
-            $device = PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom';
-            // Check random device for special character device protection mode. Use lstat()
-            // instead of stat() in case an attacker arranges a symlink to a fake device.
-            $lstat = @lstat($device);
-            if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
-                $this->_randomFile = fopen($device, 'rb') ?: null;
-
-                if (is_resource($this->_randomFile)) {
-                    // Reduce PHP stream buffer from default 8192 bytes to optimize data
-                    // transfer from the random device for smaller values of $length.
-                    // This also helps to keep future randoms out of user memory space.
-                    $bufferSize = 8;
-
-                    if (function_exists('stream_set_read_buffer')) {
-                        stream_set_read_buffer($this->_randomFile, $bufferSize);
-                    }
-                    // stream_set_read_buffer() isn't implemented on HHVM
-                    if (function_exists('stream_set_chunk_size')) {
-                        stream_set_chunk_size($this->_randomFile, $bufferSize);
-                    }
-                }
-            }
-        }
-
-        if (is_resource($this->_randomFile)) {
-            $buffer = '';
-            $stillNeed = $length;
-            while ($stillNeed > 0) {
-                $someBytes = fread($this->_randomFile, $stillNeed);
-                if ($someBytes === false) {
-                    break;
-                }
-                $buffer .= $someBytes;
-                $stillNeed -= StringHelper::byteLength($someBytes);
-                if ($stillNeed === 0) {
-                    // Leaving file pointer open in order to make next generation faster by reusing it.
-                    return $buffer;
-                }
-            }
-            fclose($this->_randomFile);
-            $this->_randomFile = null;
-        }
-
-        throw new Exception('Unable to generate a random key');
+        return random_bytes($length);
     }
 
     /**
@@ -624,7 +537,7 @@ class Security extends Component
      * compute the hash doubles for every increment by one of $cost.
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
-     * might increase in future versions of PHP (https://secure.php.net/manual/en/function.password-hash.php)
+     * might increase in future versions of PHP (https://www.php.net/manual/en/function.password-hash.php)
      * @throws Exception on bad password parameter or cost parameter.
      * @see validatePassword()
      */
@@ -686,7 +599,7 @@ class Security extends Component
     /**
      * Generates a salt that can be used to generate a password hash.
      *
-     * The PHP [crypt()](https://secure.php.net/manual/en/function.crypt.php) built-in function
+     * The PHP [crypt()](https://www.php.net/manual/en/function.crypt.php) built-in function
      * requires, for the Blowfish hash algorithm, a salt string in a specific format:
      * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
      * from the alphabet "./0-9A-Za-z".

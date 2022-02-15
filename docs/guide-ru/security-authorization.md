@@ -153,7 +153,7 @@ class SiteController extends Controller
 Пожалуйста, обратитесь к [Wikipedia](https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%BE%D0%BC_%D0%BD%D0%B0_%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B5_%D1%80%D0%BE%D0%BB%D0%B5%D0%B9)
 для получения информации о сравнении RBAC с другими, более традиционными, системами контроля доступа.
 
-Yii реализует общую иерархическую RBAC, следуя [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii реализует общую иерархическую RBAC, следуя [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 Обеспечивается функциональность RBAC через [компонент приложения](structure-application-components.md) [[yii\rbac\ManagerInterface|authManager]].
 
 Использование RBAC состоит из двух частей. Первая часть — это создание RBAC данных авторизации, и вторая часть — это

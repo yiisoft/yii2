@@ -107,7 +107,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 > フォームおよびフォームの子要素は、フォームのプロパティと衝突するインプット名や id、たとえば `submit`、`length`、`method` などを使ってはなりません。
 > 名前の衝突は訳の分らない失敗を生じさせることがあります。
-> 命名規則の完全なリストを知り、この問題についてあなたのマークアップをチェックするためには、[DOMLint](http://kangax.github.io/domlint/) を参照してください。
+> 命名規則の完全なリストを知り、この問題についてあなたのマークアップをチェックするためには、[DOMLint](https://kangax.github.io/domlint/) を参照してください。
 
 フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、
 [[yii\helpers\Html|Html]] ヘルパ・クラスのメソッドを使うことが出来ます。

@@ -149,7 +149,7 @@ $query->from(['u' => $subQuery]);
 #### Префиксы
 
 Также может применяться [[yii\db\Connection::$tablePrefix|tablePrefix]] по умолчанию. Подробное описание смотрите
-в подразделе [«Экранирование имён таблиц и столбцов» раздела «Объекты доступа к данным (DAO)»](guide-db-dao.html#quoting-table-and-column-names).
+в подразделе [«Экранирование имён таблиц и столбцов» раздела «Объекты доступа к данным (DAO)»](db-dao.md#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -363,7 +363,7 @@ $query->filterWhere([
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 Метод [[yii\db\Query::orderBy()|orderBy()]] определяет фрагмент `ORDER BY` SQL выражения. Например,
- 
+
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
@@ -460,14 +460,14 @@ $query->limit(10)->offset(20);
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 Метод [[yii\db\Query::join()|join()]] определяет фрагмент `JOIN` SQL запроса.
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 Метод [[yii\db\Query::join()|join()]] принимает четыре параметра:
- 
+
 - `$type`: тип объединения, например, `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: имя таблицы, которая должна быть присоединена.
 - `$on`: необязательное условие объединения, то есть фрагмент `ON`. Пожалуйста, обратитесь к документации для

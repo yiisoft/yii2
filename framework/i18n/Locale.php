@@ -14,9 +14,9 @@ use yii\base\InvalidConfigException;
 /**
  * Locale provides various locale information via convenient methods.
  *
- * The class requires [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed.
+ * The class requires [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to be installed.
  *
- * @property-read string $currencySymbol This property is read-only.
+ * @property-read string $currencySymbol
  *
  * @since 2.0.14
  */

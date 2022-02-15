@@ -78,6 +78,22 @@ class MigrateControllerTest extends TestCase
         $this->assertFileContent($expectedFile, $class, $table, $namespace);
     }
 
+    /**
+     * Check config namespace but without input namespace
+     * @param mixed $expectedFile 
+     * @param mixed $migrationName 
+     * @param mixed $table 
+     * @param array $params 
+     */
+    protected function assertCommandCreatedFileWithoutNamespaceInput($expectedFile, $migrationName, $table, $params = [])
+    {
+        $params[0] = $migrationName;
+        list($config, $namespace, $class) = $this->prepareMigrationNameData($this->migrationNamespace . '\\' . $migrationName);
+
+        $this->runMigrateControllerAction('create', $params, $config);
+        $this->assertFileContent($expectedFile, $class, $table, $namespace);
+    }
+
     public function assertFileContentJunction($expectedFile, $class, $junctionTable, $firstTable, $secondTable, $namespace = null)
     {
         if ($namespace) {
@@ -95,6 +111,23 @@ class MigrateControllerTest extends TestCase
     protected function assertCommandCreatedJunctionFile($expectedFile, $migrationName, $junctionTable, $firstTable, $secondTable)
     {
         list($config, $namespace, $class) = $this->prepareMigrationNameData($migrationName);
+
+        $this->runMigrateControllerAction('create', [$migrationName], $config);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertFileContentJunction($expectedFile, $class, $junctionTable, $firstTable, $secondTable, $namespace);
+    }
+
+    /**
+     * Check config namespace but without input namespace
+     * @param mixed $expectedFile 
+     * @param mixed $migrationName 
+     * @param mixed $junctionTable 
+     * @param mixed $firstTable 
+     * @param mixed $secondTable 
+     */
+    protected function assertCommandCreatedJunctionFileWithoutNamespaceInput($expectedFile, $migrationName, $junctionTable, $firstTable, $secondTable)
+    {
+        list($config, $namespace, $class) = $this->prepareMigrationNameData($this->migrationNamespace . '\\' . $migrationName);
 
         $this->runMigrateControllerAction('create', [$migrationName], $config);
         $this->assertSame(ExitCode::OK, $this->getExitCode());
@@ -132,6 +165,9 @@ class MigrateControllerTest extends TestCase
                     body:text:notNull,
                     price:money(11,2):notNull,
                     parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')',
+            ],
+            'create_id_field_not_as_pk' => [
+                'fields' => 'id:integer(11):notNull',
             ],
             'create_fields_with_col_method_after_default_value' => [
                 'fields' => 'id:primaryKey,
@@ -229,6 +265,7 @@ class MigrateControllerTest extends TestCase
 
             ['create_fields', 'create_test_table', 'test', $params['create_fields']],
             ['create_fields', 'create_TEST_table', 'TEST', $params['create_fields']],
+            ['create_id_field_not_as_pk', 'create_test_table', 'test', $params['create_id_field_not_as_pk']],
             ['create_title_pk', 'create_test_table', 'test', $params['create_title_pk']],
             ['create_title_pk', 'create_TEST_table', 'TEST', $params['create_title_pk']],
             ['create_unsigned_pk', 'create_test_table', 'test', $params['create_unsigned_pk']],
@@ -314,6 +351,7 @@ class MigrateControllerTest extends TestCase
             $table,
             $params
         );
+        $this->assertCommandCreatedFileWithoutNamespaceInput($expectedFile, $migrationName, $table, $params);
     }
 
     /**
@@ -361,6 +399,13 @@ class MigrateControllerTest extends TestCase
         $this->assertCommandCreatedJunctionFile(
             'junction_test',
             $this->migrationNamespace . '\\' . $migrationName,
+            $junctionTable,
+            $firstTable,
+            $secondTable
+        );
+        $this->assertCommandCreatedJunctionFileWithoutNamespaceInput(
+            'junction_test',
+            $migrationName,
             $junctionTable,
             $firstTable,
             $secondTable

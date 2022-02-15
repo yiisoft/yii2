@@ -79,7 +79,7 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
     can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
     of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
@@ -201,7 +201,7 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
+The above example defines an asset bundle for the ["fontawesome" package](https://fontawesome.com/). By specifying 
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
@@ -257,7 +257,7 @@ requires global installation of a special Composer plugin by running the followi
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
+This command installs [composer asset plugin](https://github.com/fxpio/composer-asset-plugin/) globally
 which allows managing Bower and NPM package dependencies through Composer. After the plugin installation, 
 every single project on your computer will support Bower and NPM packages through `composer.json`. 
 
@@ -610,13 +610,13 @@ in extended syntax.
 Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
 the following syntax and file name extensions:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
+Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](https://lesscss.org/)
 you should install the `lessc` pre-processor command.
 
 You can customize the pre-processor commands and the supported extended syntax by configuring

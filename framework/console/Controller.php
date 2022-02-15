@@ -28,12 +28,10 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property-read string $help This property is read-only.
- * @property-read string $helpSummary This property is read-only.
- * @property-read array $passedOptionValues The properties corresponding to the passed options. This property
- * is read-only.
- * @property-read array $passedOptions The names of the options passed during execution. This property is
- * read-only.
+ * @property-read string $help The help information for this controller.
+ * @property-read string $helpSummary The one-line short summary describing this controller.
+ * @property-read array $passedOptionValues The properties corresponding to the passed options.
+ * @property-read array $passedOptions The names of the options passed during execution.
  * @property Request $request
  * @property Response $response
  *
@@ -226,7 +224,12 @@ class Controller extends \yii\base\Controller
                 }
                 $args[] = $actionParams[$key] = $params[$key];
                 unset($params[$key]);
-            } elseif (PHP_VERSION_ID >= 70100 && ($type = $param->getType()) !== null && !$type->isBuiltin()) {
+            } elseif (
+                PHP_VERSION_ID >= 70100
+                && ($type = $param->getType()) !== null
+                && $type instanceof \ReflectionNamedType
+                && !$type->isBuiltin()
+            ) {
                 try {
                     $this->bindInjectedParams($type, $name, $args, $requestedParams);
                 } catch (\yii\base\Exception $e) {
@@ -316,6 +319,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
+     * @param int ...$args additional parameters to decorate the output
      * @return int|bool Number of bytes printed or false on error
      */
     public function stderr($string)
@@ -539,60 +543,69 @@ class Controller extends \yii\base\Controller
      * The returned value should be an array. The keys are the argument names, and the values are
      * the corresponding help information. Each value must be an array of the following structure:
      *
-     * - required: boolean, whether this argument is required.
-     * - type: string, the PHP type of this argument.
-     * - default: string, the default value of this argument
-     * - comment: string, the comment of this argument
+     * - required: bool, whether this argument is required
+     * - type: string|null, the PHP type(s) of this argument
+     * - default: mixed, the default value of this argument
+     * - comment: string, the description of this argument
      *
-     * The default implementation will return the help information extracted from the doc-comment of
-     * the parameters corresponding to the action method.
+     * The default implementation will return the help information extracted from the Reflection or
+     * DocBlock of the parameters corresponding to the action method.
      *
-     * @param Action $action
+     * @param Action $action the action instance
      * @return array the help information of the action arguments
      */
     public function getActionArgsHelp($action)
     {
         $method = $this->getActionMethodReflection($action);
+
         $tags = $this->parseDocCommentTags($method);
-        $params = isset($tags['param']) ? (array) $tags['param'] : [];
+        $tags['param'] = isset($tags['param']) ? (array) $tags['param'] : [];
+        $phpDocParams = [];
+        foreach ($tags['param'] as $i => $tag) {
+            if (preg_match('/^(?<type>\S+)(\s+\$(?<name>\w+))?(?<comment>.*)/us', $tag, $matches) === 1) {
+                $key = empty($matches['name']) ? $i : $matches['name'];
+                $phpDocParams[$key] = ['type' => $matches['type'], 'comment' => $matches['comment']];
+            }
+        }
+        unset($tags);
 
         $args = [];
 
-        /** @var \ReflectionParameter $reflection */
-        foreach ($method->getParameters() as $i => $reflection) {
-            if (PHP_VERSION_ID >= 80000) {
-                $class = $reflection->getType();
-            } else {
-                $class = $reflection->getClass();
+        /** @var \ReflectionParameter $parameter */
+        foreach ($method->getParameters() as $i => $parameter) {
+            $type = null;
+            $comment = '';
+            if (PHP_MAJOR_VERSION > 5 && $parameter->hasType()) {
+                $reflectionType = $parameter->getType();
+                if (PHP_VERSION_ID >= 70100) {
+                    $types = method_exists($reflectionType, 'getTypes') ? $reflectionType->getTypes() : [$reflectionType];
+                    foreach ($types as $key => $reflectionType) {
+                        $types[$key] = $reflectionType->getName();
+                    }
+                    $type = implode('|', $types);
+                } else {
+                    $type = (string) $reflectionType;
+                }
+            }
+            // find PhpDoc tag by property name or position
+            $key = isset($phpDocParams[$parameter->name]) ? $parameter->name : (isset($phpDocParams[$i]) ? $i : null);
+            if ($key !== null) {
+                $comment = $phpDocParams[$key]['comment'];
+                if ($type === null && !empty($phpDocParams[$key]['type'])) {
+                    $type = $phpDocParams[$key]['type'];
+                }
+            }
+            // if type still not detected, then using type of default value
+            if ($type === null && $parameter->isDefaultValueAvailable() && $parameter->getDefaultValue() !== null) {
+                $type = gettype($parameter->getDefaultValue());
             }
 
-            if ($class !== null) {
-                continue;
-            }
-            $name = $reflection->getName();
-            $tag = isset($params[$i]) ? $params[$i] : '';
-            if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
-                $type = $matches[1];
-                $comment = $matches[3];
-            } else {
-                $type = null;
-                $comment = $tag;
-            }
-            if ($reflection->isDefaultValueAvailable()) {
-                $args[$name] = [
-                    'required' => false,
-                    'type' => $type,
-                    'default' => $reflection->getDefaultValue(),
-                    'comment' => $comment,
-                ];
-            } else {
-                $args[$name] = [
-                    'required' => true,
-                    'type' => $type,
-                    'default' => null,
-                    'comment' => $comment,
-                ];
-            }
+            $args[$parameter->name] = [
+                'required' => !$parameter->isOptional(),
+                'type' => $type,
+                'default' => $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null,
+                'comment' => $comment,
+            ];
         }
 
         return $args;

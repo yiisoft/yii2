@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### Prefixes
 Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. Implementation instructions
-are in the ["Quoting Tables" section of the "Database Access Objects" guide](guide-db-dao.html#quoting-table-and-column-names).
+are in the ["Quoting Tables" section of the "Database Access Objects" guide](db-dao.md#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -298,7 +298,7 @@ the operator can be one of the following:
   should be applied. Note that when using an escape mapping (or the third operand is not provided),
   the values will be automatically enclosed within a pair of percentage characters.
 
-  > Note: When using PostgreSQL you may also use [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
+  > Note: When using PostgreSQL you may also use [`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
   > instead of `like` for case-insensitive matching.
 
 - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
@@ -798,7 +798,7 @@ foreach ($query->each() as $username => $user) {
 #### Limitations of batch query in MySQL <span id="batch-query-mysql"></span>
 
 MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are 
-[`buffered`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
+[`buffered`](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
 of using the cursor to get the data, because it doesn't prevent the whole result set from being 
 loaded into the client's memory by the driver.
 

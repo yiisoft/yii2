@@ -89,7 +89,7 @@ use yii\helpers\Html;
 </p>
 
 <p dir="rtl">
-    ملاحظة:  في الشيفرة البرمجية أعلاه، تكون ال <code>message</code> مضمنة داخل ال  [[yii\helpers\Html::encode()]] قبل أن يتم طباعتها، هذا الأمر ضروري لأن ال parameter التي تأتي من المستخدم النهائي لا يجب الوثوق بها،  فهي يمكن أن تحتوي على شيفرات برمجية تستغل الضعف الحاص بك بموضوع الأمان مثل <a href="http://en.wikipedia.org/wiki/Cross-site_scripting">vulnerable to XSS attack</a> عن طريق دمج JS code مع ال parameter. 
+    ملاحظة:  في الشيفرة البرمجية أعلاه، تكون ال <code>message</code> مضمنة داخل ال  [[yii\helpers\Html::encode()]] قبل أن يتم طباعتها، هذا الأمر ضروري لأن ال parameter التي تأتي من المستخدم النهائي لا يجب الوثوق بها،  فهي يمكن أن تحتوي على شيفرات برمجية تستغل الضعف الحاص بك بموضوع الأمان مثل <a href="https://en.wikipedia.org/wiki/Cross-site_scripting">vulnerable to XSS attack</a> عن طريق دمج JS code مع ال parameter. 
 </p>
 
 <p dir="rtl">

@@ -114,6 +114,13 @@ class ArrayHelperTest extends TestCase
                 },
             ],
         ]));
+
+        // DateTime test
+        $this->assertEquals([
+            'date' => '2021-09-13 15:16:17.000000',
+            'timezone_type' => 3,
+            'timezone' => 'UTC',
+        ], ArrayHelper::toArray(new \DateTime('2021-09-13 15:16:17', new \DateTimeZone('UTC'))));
     }
 
     public function testRemove()
@@ -1470,6 +1477,7 @@ class ArrayAccessibleObject implements ArrayAccess
         $this->container = $container;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1479,16 +1487,19 @@ class ArrayAccessibleObject implements ArrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->container);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->offsetExists($offset) ? $this->container[$offset] : null;
@@ -1512,26 +1523,31 @@ class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements 
         return array_key_exists($keyIndex, $keys) ? $keys[$keyIndex] : false;
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->offsetGet($this->getContainerKey($this->position));
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->getContainerKey($this->position);
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->position;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         $key = $this->getContainerKey($this->position);

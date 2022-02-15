@@ -15,11 +15,11 @@ use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
 
 /**
- * Connection represents a connection to a database via [PDO](https://secure.php.net/manual/en/book.pdo.php).
+ * Connection represents a connection to a database via [PDO](https://www.php.net/manual/en/book.pdo.php).
  *
  * Connection works together with [[Command]], [[DataReader]] and [[Transaction]]
  * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
- * of the [PDO PHP extension](https://secure.php.net/manual/en/book.pdo.php).
+ * of the [PDO PHP extension](https://www.php.net/manual/en/book.pdo.php).
  *
  * Connection supports database replication and read-write splitting. In particular, a Connection component
  * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
@@ -111,24 +111,22 @@ use yii\caching\CacheInterface;
  * ```
  *
  * @property string $driverName Name of the DB driver.
- * @property-read bool $isActive Whether the DB connection is established. This property is read-only.
+ * @property-read bool $isActive Whether the DB connection is established.
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
- * the sequence object. This property is read-only.
+ * the sequence object.
  * @property-read Connection $master The currently active master connection. `null` is returned if there is no
- * master available. This property is read-only.
- * @property-read PDO $masterPdo The PDO instance for the currently active master connection. This property is
- * read-only.
+ * master available.
+ * @property-read PDO $masterPdo The PDO instance for the currently active master connection.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
  * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
- * @property-read Schema $schema The schema information for the database opened by this connection. This
- * property is read-only.
- * @property-read string $serverVersion Server version as a string. This property is read-only.
+ * @property-read Schema $schema The schema information for the database opened by this connection.
+ * @property-read string $serverVersion Server version as a string.
  * @property-read Connection $slave The currently active slave connection. `null` is returned if there is no
- * slave available and `$fallbackToMaster` is false. This property is read-only.
+ * slave available and `$fallbackToMaster` is false.
  * @property-read PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned
- * if no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
+ * if no slave connection is available and `$fallbackToMaster` is false.
  * @property-read Transaction|null $transaction The currently active transaction. Null if no active
- * transaction. This property is read-only.
+ * transaction.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -154,10 +152,10 @@ class Connection extends Component
 
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
-     * Please refer to the [PHP manual](https://secure.php.net/manual/en/pdo.construct.php) on
+     * Please refer to the [PHP manual](https://www.php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
-     * For [SQLite](https://secure.php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
+     * For [SQLite](https://www.php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
      *
      * @see charset
@@ -174,7 +172,7 @@ class Connection extends Component
     /**
      * @var array PDO attributes (name => value) that should be set when calling [[open()]]
      * to establish a DB connection. Please refer to the
-     * [PHP manual](https://secure.php.net/manual/en/pdo.setattribute.php) for
+     * [PHP manual](https://www.php.net/manual/en/pdo.setattribute.php) for
      * details about available attributes.
      */
     public $attributes;
@@ -499,7 +497,7 @@ class Connection extends Component
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
+     * @throws \Exception if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
@@ -540,7 +538,7 @@ class Connection extends Component
      * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
      * The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
+     * @throws \Exception if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see cache()
@@ -738,6 +736,11 @@ class Connection extends Component
                 $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
             }
         }
+
+        if (PHP_VERSION_ID >= 80100 && $this->getDriverName() === 'sqlite') {
+            $this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
+        }
+
         if (!$this->isSybase && in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
             $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
         }
@@ -802,7 +805,7 @@ class Connection extends Component
      * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
-     * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
+     * @throws \Exception if there is any exception during query. In this case the transaction will be rolled back.
      * @return mixed result of callback function
      */
     public function transaction(callable $callback, $isolationLevel = null)
@@ -923,7 +926,7 @@ class Connection extends Component
      * Returns the ID of the last inserted row or sequence value.
      * @param string $sequenceName name of the sequence object (required by some DBMS)
      * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @see https://secure.php.net/manual/en/pdo.lastinsertid.php
+     * @see https://www.php.net/manual/en/pdo.lastinsertid.php
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -935,7 +938,7 @@ class Connection extends Component
      * Note that if the parameter is not a string, it will be returned without change.
      * @param string $value string to be quoted
      * @return string the properly quoted string
-     * @see https://secure.php.net/manual/en/pdo.quote.php
+     * @see https://www.php.net/manual/en/pdo.quote.php
      */
     public function quoteValue($value)
     {
@@ -1006,7 +1009,7 @@ class Connection extends Component
     public function getDriverName()
     {
         if ($this->_driverName === null) {
-            if (($pos = strpos($this->dsn, ':')) !== false) {
+            if (($pos = strpos((string)$this->dsn, ':')) !== false) {
                 $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
             } else {
                 $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
@@ -1116,7 +1119,7 @@ class Connection extends Component
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
-     * @throws \Exception|\Throwable if there is any exception thrown from the callback
+     * @throws \Exception if there is any exception thrown from the callback
      */
     public function useMaster(callable $callback)
     {

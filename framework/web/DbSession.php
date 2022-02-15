@@ -140,7 +140,7 @@ class DbSession extends MultiFieldSession
                ->queryOne();
         });
 
-        if ($row !== false) {
+        if ($row !== false && $this->getIsActive()) {
             if ($deleteOldSession) {
                 $this->db->createCommand()
                     ->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
@@ -151,11 +151,6 @@ class DbSession extends MultiFieldSession
                     ->insert($this->sessionTable, $row)
                     ->execute();
             }
-        } else {
-            // shouldn't reach here normally
-            $this->db->createCommand()
-                ->insert($this->sessionTable, $this->composeFields($newID, ''))
-                ->execute();
         }
     }
 
@@ -206,7 +201,7 @@ class DbSession extends MultiFieldSession
         }
 
         // exception must be caught in session write handler
-        // https://secure.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
+        // https://www.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             // ensure backwards compatability (fixed #9438)
             if ($this->writeCallback && !$this->fields) {

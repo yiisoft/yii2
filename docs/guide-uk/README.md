@@ -1,7 +1,7 @@
 Повний посібник з Yii 2.0
 =========================
 
-Даний посібник випущено відповідно до [положень про документацію Yii](http://www.yiiframework.com/doc/terms/).
+Даний посібник випущено відповідно до [положень про документацію Yii](https://www.yiiframework.com/doc/terms/).
 
 All Rights Reserved.
 

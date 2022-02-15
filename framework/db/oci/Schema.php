@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
  * Schema is the class for retrieving metadata from an Oracle database.
  *
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
- * the sequence object. This property is read-only.
+ * the sequence object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -372,7 +372,7 @@ SQL;
 
     /**
      * @Overrides method in class 'Schema'
-     * @see https://secure.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
+     * @see https://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
      *
      * Returns the ID of the last inserted row or sequence value.
      * @param string $sequenceName name of the sequence object (required by some DBMS)
@@ -421,7 +421,7 @@ SQL;
                     if ($defaultValue !== null) {
                         if (
                             strlen($defaultValue) > 2
-                            && strpos($defaultValue, "'") === 0
+                            && strncmp($defaultValue, "'", 1) === 0
                             && substr($defaultValue, -1) === "'"
                         ) {
                             $defaultValue = substr($defaultValue, 1, -1);

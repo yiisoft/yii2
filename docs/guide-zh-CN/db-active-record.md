@@ -473,8 +473,8 @@ Active Record 自动维护脏属性列表。 它保存所有属性的旧值，
 > 其中每个值都表示为一个字符串类型。
 > 为了确保正确的类型，比如，整型需要用[过滤验证器](input-validation.md#data-filtering)：
 > `['attributeName', 'filter', 'filter' => 'intval']`。其他 PHP 类型转换函数一样适用，像
-> [intval()](https://secure.php.net/manual/en/function.intval.php)， [floatval()](https://secure.php.net/manual/en/function.floatval.php)，
-> [boolval](https://secure.php.net/manual/en/function.boolval.php)，等等
+> [intval()](https://www.php.net/manual/en/function.intval.php)， [floatval()](https://www.php.net/manual/en/function.floatval.php)，
+> [boolval](https://www.php.net/manual/en/function.boolval.php)，等等
 
 ### 默认属性值（Default Attribute Values） <span id="default-attribute-values"></span>
 
@@ -689,7 +689,7 @@ try {
 ```
 
 > Tip: 在上面的代码中，我们有两个catch块用于兼容
-> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
+> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](https://www.php.net/manual/en/class.throwable.php)
 > 由于 PHP 7.0 的改动，如果您的应用程序仅使用 PHP 7.0 及更高版本，您可以跳过 `\Exception` 部分。
 
 第二种方法是在 [[yii\db\ActiveRecord::transactions()]] 方法中列出需要事务支持的 DB 操作。 
@@ -792,6 +792,12 @@ public function behaviors()
         OptimisticLockBehavior::class,
     ];
 }
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
 > Note: 因为 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 仅仅在保存记录的时候被确认，
 > 如果用户提交的有效版本号被直接解析 ：[[\yii\web\Request::getBodyParam()|getBodyParam()]]，

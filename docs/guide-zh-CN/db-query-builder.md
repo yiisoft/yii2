@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### 前缀
 `from` 还可以应用默认的 [[yii\db\Connection::$tablePrefix|tablePrefix]] 前缀，实现细节请参考
-[“数据库访问对象指南”的“Quoting Tables”章节](guide-db-dao.html#quoting-table-and-column-names).
+[“数据库访问对象指南”的“Quoting Tables”章节](db-dao.md#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -539,14 +539,14 @@ $query->limit(10)->offset(20);
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 [[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 [[yii\db\Query::join()|join()]] 带有四个参数：
- 
+
 - `$type`：连接类型，例如，`'INNER JOIN'`，`'LEFT JOIN'`。
 - `$table`：将要连接的表名称。
 - `$on`：可选的，连接条件，即 `ON` 片段。有关指定条件的详细信息，请参阅 [where()](#where)。
@@ -771,7 +771,7 @@ foreach ($query->each() as $username => $user) {
 
 #### MySQL中批量查询的局限性（Limitations of batch query in MySQL） <span id="batch-query-mysql"></span>
 
-MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](https://secure.php.net/manual/en/mysqlinfo.concepts.buffering.php)，
+MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php)，
 这违背了使用游标（cursor）获取数据的目的，
 因为它不阻止驱动程序将整个结果集加载到客户端的内存中。
 

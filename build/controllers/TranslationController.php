@@ -29,7 +29,6 @@ class TranslationController extends Controller
      * @param string $sourcePath the directory where the original documentation files are
      * @param string $translationPath the directory where the translated documentation files are
      * @param string $title custom title to use for report
-     * @return string
      */
     public function actionReport($sourcePath, $translationPath, $title = 'Translation report')
     {

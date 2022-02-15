@@ -252,7 +252,6 @@ class DynamicModel extends Model
      * Sets the attribute labels in a massive way.
      *
      * @see attributeLabels()
-     * @see $_attributeLabels
      * @since 2.0.35
      *
      * @param array $labels Array of attribute labels
@@ -269,7 +268,6 @@ class DynamicModel extends Model
      * Sets a label for an attribute.
      *
      * @see attributeLabels()
-     * @see $_attributeLabels
      * @since 2.0.35
      *
      * @param string $attribute Attribute name

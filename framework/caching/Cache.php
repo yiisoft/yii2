@@ -135,7 +135,7 @@ abstract class Cache extends Component implements CacheInterface
         if ($value === false || $this->serializer === false) {
             return $value;
         } elseif ($this->serializer === null) {
-            $value = unserialize($value);
+            $value = unserialize((string)$value);
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
@@ -261,14 +261,15 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
-    public function mset($items, $duration = 0, $dependency = null)
+    public function mset($items, $duration = null, $dependency = null)
     {
         return $this->multiSet($items, $duration, $dependency);
     }
@@ -279,15 +280,20 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      * @since 2.0.7
      */
-    public function multiSet($items, $duration = 0, $dependency = null)
+    public function multiSet($items, $duration = null, $dependency = null)
     {
+        if ($duration === null) {
+            $duration = $this->defaultDuration;
+        }
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -520,6 +526,7 @@ abstract class Cache extends Component implements CacheInterface
      * @param string $key a key identifying the cached value
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($key)
     {
         return $this->get($key) !== false;
@@ -531,6 +538,7 @@ abstract class Cache extends Component implements CacheInterface
      * @param string $key a key identifying the cached value
      * @return mixed the value stored in cache, false if the value is not in the cache or expired.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->get($key);
@@ -544,6 +552,7 @@ abstract class Cache extends Component implements CacheInterface
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         $this->set($key, $value);
@@ -554,6 +563,7 @@ abstract class Cache extends Component implements CacheInterface
      * This method is required by the interface [[\ArrayAccess]].
      * @param string $key the key of the value to be deleted
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         $this->delete($key);
