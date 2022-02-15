@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.46 under development
 ------------------------
-
+- Enh #19240: Added `Yii::getAlias` to `AssetController::$cssCompressor` and `AssetController::$jsCompressor` (mikk150)
 - no changes in this release.
 
 
@@ -71,7 +71,6 @@ Yii Framework 2 Change Log
 - Bug #18648: Fix `yii\web\Request` to properly handle HTTP Basic Auth headers (olegbaturin)
 - Enh #18726: Added `yii\helpers\Json::$prettyPrint` (rhertogh)
 - Enh #18734: Added `yii\validators\EmailValidator::$enableLocalIDN` (brandonkelly)
-- Enh #19240: Added `Yii::getAlias` to `AssetController::$cssCompressor` and `AssetController::$jsCompressor` (mikk150)
 - Bug #18650: Refactor `framework/assets/yii.activeForm.js` arrow function into traditional function for IE11 compatibility (marcovtwout)
 - Bug #18678: Fix `yii\caching\DbCache` to use configured cache table name instead of the default one in case of MSSQL varbinary column type detection (aidanbek)
 - Bug #18749: Fix `yii\web\ErrorHandler::encodeHtml()` to support strings with invalid UTF symbols (vjik)
