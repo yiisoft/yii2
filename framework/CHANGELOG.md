@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
-- no changes in this release.
+- Enh #19236: Added `yii\db\ActiveRelationTrait::isModelAttribute()` to checking AR attributes strictly (WinterSilence)
 
 
 2.0.45 February 11, 2022
