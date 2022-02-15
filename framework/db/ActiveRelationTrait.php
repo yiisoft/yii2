@@ -292,7 +292,7 @@ trait ActiveRelationTrait
             $keys = null;
             if ($this->multiple && count($link) === 1) {
                 $primaryModelKey = reset($link);
-                $keys = isset($primaryModel[$primaryModelKey]) ? $primaryModel[$primaryModelKey] : null;
+                $keys = $this->isModelAttribute($primaryModel, $primaryModelKey) ? $primaryModel[$primaryModelKey] : null;
             }
             if (is_array($keys)) {
                 $value = [];
@@ -324,6 +324,21 @@ trait ActiveRelationTrait
         }
 
         return $models;
+    }
+
+    /**
+     * @param ActiveRecordInterface|array $model the AR instance or an array of attributes
+     * @param string $attribute the attribute name to test
+     * @return bool
+     * @since 2.0.45
+     */
+    protected function isModelAttribute($model, $attribute)
+    {
+        if ($model instanceof ActiveRecordInterface) {
+            return $model->hasAttribute($attribute);
+        }
+
+        return array_key_exists($attribute, $model);
     }
 
     /**
@@ -515,7 +530,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param array $models
+     * @param ActiveRecordInterface[]|array[] $models
      */
     private function filterByModels($models)
     {
@@ -528,7 +543,7 @@ trait ActiveRelationTrait
             // single key
             $attribute = reset($this->link);
             foreach ($models as $model) {
-                $value = isset($model[$attribute]) ? $model[$attribute] : null;
+                $value = $this->isModelAttribute($model, $attribute) ? $model[$attribute] : null;
                 if ($value !== null) {
                     if (is_array($value)) {
                         $values = array_merge($values, $value);
@@ -586,7 +601,7 @@ trait ActiveRelationTrait
     {
         $key = [];
         foreach ($attributes as $attribute) {
-            if (isset($model[$attribute])) {
+            if ($this->isModelAttribute($model, $attribute)) {
                 $key[] = $this->normalizeModelKey($model[$attribute]);
             }
         }
