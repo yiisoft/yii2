@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
-- Bug #19243. Handle `finfo_open` for tar.xz as `application/octet-stream` on php 8.1 (longthanhtran)
+- Bug #19243. Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
 
 
 2.0.45 February 11, 2022
