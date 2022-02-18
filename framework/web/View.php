@@ -377,7 +377,7 @@ class View extends \yii\base\View
      * can be added like the following:
      *
      * ```php
-     * $view->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => '/myicon.png']);
+     * $view->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => '@web/myicon.png']);
      * ```
      *
      * which will result in the following HTML: `<link rel="icon" type="image/png" href="/myicon.png">`.
@@ -392,6 +392,9 @@ class View extends \yii\base\View
      */
     public function registerLinkTag($options, $key = null)
     {
+        if (!empty($options['href']) && Url::isRelative($options['href'])) {
+            $options['href'] = Url::to($options['href']);
+        }
         if ($key === null) {
             $this->linkTags[] = Html::tag('link', '', $options);
         } else {
@@ -421,8 +424,9 @@ class View extends \yii\base\View
      * and [[registerAssetBundle()]] instead.
      *
      * @param string $url the CSS file to be registered.
-     * @param array $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
-     * the supported options. The following options are specially handled and are not treated as HTML attributes:
+     * @param array $options the HTML attributes for the link tag. If `rel` not defined, then using `rel="stylesheet"`.
+     * Please refer to [[Html::cssFile()]] for the supported options. The following options are specially handled and
+     * are not treated as HTML attributes:
      *
      * - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
      * - `appendTimestamp`: bool whether to append a timestamp to the URL.
@@ -434,6 +438,9 @@ class View extends \yii\base\View
      */
     public function registerCssFile($url, $options = [], $key = null)
     {
+        if (!isset($options['rel'])) {
+            $options['rel'] = 'stylesheet';
+        }
         $this->registerFile('css', $url, $options, $key);
     }
 
