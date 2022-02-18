@@ -532,7 +532,7 @@ that will be encoded by [QueryBuilder](db-query-builder.md) to an PgSQL string r
 You can also use conditions for JSON columns:
 
 ```php
-$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])])
 ```
 
 To learn more about expressions building system read the [Query Builder – Adding custom Conditions and Expressions](db-query-builder.md#adding-custom-conditions-and-expressions)
