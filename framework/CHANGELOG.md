@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - no changes in this release.
-
+- Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
 
 2.0.45 February 11, 2022
 ------------------------
