@@ -535,7 +535,7 @@ class FileValidatorTest extends TestCase
 
     public function validMimeTypes()
     {
-        return array_filter([
+        $validMimeTypes = array_filter([
             ['test.svg', 'image/*', 'svg'],
             ['test.jpg', 'image/*', 'jpg'],
             ['test.png', 'image/*', 'png'],
@@ -545,6 +545,14 @@ class FileValidatorTest extends TestCase
             ['test.odt', 'application/vnd*', 'odt'],
             ['test.tar.xz', 'application/x-xz', 'tar.xz'],
         ]);
+
+        if (PHP_VERSION_ID >= 80100) {
+            $v81_zx = ['test.tar.xz', 'application/octet-stream', 'tar.xz'];
+            array_pop($validMimeTypes);
+            $validMimeTypes[] = $v81_zx;
+        }
+
+        return $validMimeTypes;
     }
 
     public function invalidMimeTypes()
