@@ -11,11 +11,11 @@ Yii DAO también significa que tienes que tienes que tomar un esfuerzo adicional
 
 Yii DAO soporta las siguientes bases de datos:
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): versión 8.4 o superior.
-- [CUBRID](http://www.cubrid.org/): versión 9.3 o superior.
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): versión 8.4 o superior.
+- [CUBRID](https://www.cubrid.org/): versión 9.3 o superior.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): versión 2008 o superior.
 
@@ -396,7 +396,7 @@ En el momento de escribir esto, solo MSSQL y SQLite serán afectadas.
   puede especificar el nivel de aislamiento directamente cuando empieza la transacción. Se tiene que llamar a
   [[yii\db\Transaction::setIsolationLevel()]] después de que la transacción haya empezado.
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 ### Transacciones Anidadas <span id="nesting-transactions"></span>
@@ -437,7 +437,7 @@ try {
 
 ## Replicación y División Lectura-Escritura <span id="read-write-splitting"></span>
 
-Muchos DBMS soportan [replicación de bases de datos](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) para tener
+Muchos DBMS soportan [replicación de bases de datos](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) para tener
 una mejor disponibilidad de la base de datos y un mejor tiempo de respuesta del servidor. Con la replicación de bases
 de datos, los datos están replicados en los llamados *servidores maestros* (master servers) y *servidores esclavos*
 (slave servers). Todas las escrituras y actualizaciones deben hacerse en el servidor maestro, mientras que las lecturas

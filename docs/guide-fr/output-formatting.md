@@ -64,7 +64,7 @@ Le formateur prend en charge les formats de sortie suivants en relation avec les
 - [[yii\i18n\Formatter::asDate()|date]]: la valeur est formatée sous la forme d'une date, p. ex. `January 01, 2014`.
 - [[yii\i18n\Formatter::asTime()|time]]: la valeur est formatée sous la forme d'un temps, p. ex. `14:23`.
 - [[yii\i18n\Formatter::asDatetime()|datetime]]: la valeur est formatée sous la forme d'une date et d'un temps, p. ex. `January 01, 2014 14:23`.
-- [[yii\i18n\Formatter::asTimestamp()|timestamp]]: la valeur est formatée sous la forme d'un [horodatage unix ](http://en.wikipedia.org/wiki/Unix_time), p. ex. `1412609982`.
+- [[yii\i18n\Formatter::asTimestamp()|timestamp]]: la valeur est formatée sous la forme d'un [horodatage unix ](https://en.wikipedia.org/wiki/Unix_time), p. ex. `1412609982`.
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: la valeur est formatée sous la forme d'un intervalle de temps entre un temps et le temps actuel dans une forme lisible par l'homme, p.ex. `1 hour ago`.
 - [[yii\i18n\Formatter::asDuration()|duration]]: la valeur est formatée comme une durée dans un format lisible par l'homme, p. ex. `1 day, 2 minutes`.
 

@@ -145,8 +145,8 @@ Para conocer más detalles acerca del control de acceso en general, refiérase a
 ### Filtros del Método de Autenticación <span id="auth-method-filters"></span>
 
 Los filtros del método de autenticación se usan para autenticar a un usuario utilizando varios métodos, tales como la 
-[Autenticación de acceso básico HTTP](http://es.wikipedia.org/wiki/Autenticaci%C3%B3n_de_acceso_b%C3%A1sica), 
-[Oauth 2](http://oauth.net/2/). Estas clases de filtros se encuentran en el espacio de nombres `yii\filters\auth`.
+[Autenticación de acceso básico HTTP](https://es.wikipedia.org/wiki/Autenticaci%C3%B3n_de_acceso_b%C3%A1sica), 
+[Oauth 2](https://oauth.net/2/). Estas clases de filtros se encuentran en el espacio de nombres `yii\filters\auth`.
 
 El siguiente ejemplo muestra como usar [[yii\filters\auth\HttpBasicAuth]] para autenticar un usuario usando un token 
 de acceso basado en el método de Autenticación de acceso básico HTTP. Tenga en cuenta que para que esto funcione, la 
@@ -290,7 +290,7 @@ Por favor refiérase a [Caché de Páginas](caching-page.md) para obtener más d
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter implementa un algoritmo de para limitar la tasa de descarga basándose en 
-[leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket). Este se utiliza sobre todo en la implementación 
+[leaky bucket algorithm](https://en.wikipedia.org/wiki/Leaky_bucket). Este se utiliza sobre todo en la implementación 
 de APIs RESTful. Por favor, refiérase a la sección [limite de tasa](rest-rate-limiting.md) para obtener más detalles 
 acerca de el uso de este filtro.
 
