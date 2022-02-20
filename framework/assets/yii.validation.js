@@ -244,7 +244,15 @@ yii.validation = (function ($) {
 
             value = $input.val();
             if (!options.skipOnEmpty || !pub.isEmpty(value)) {
-                value = $.trim(value);
+                value = new String(value);
+                if (options.chars || !String.prototype.trim) {
+                    var chars = !options.chars
+                        ? ' \\s\xA0'
+                        : options.chars.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
+                    value = value.replace(new RegExp('^[' + chars + ']+|[' + chars + ']+$', 'g'), '');
+                } else {
+                    value = value.trim();
+                }
                 $input.val(value);
             }
 
