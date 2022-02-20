@@ -75,7 +75,9 @@ class FilterValidator extends Validator
     {
         $value = $model->$attribute;
         if (!$this->skipOnArray || !is_array($value)) {
-            $value = isset($value) ? $value : '';
+            if ($this->filter === 'trim' && $value === null) {
+                $value = '';
+            }
             $model->$attribute = call_user_func($this->filter, $value);
         }
     }
