@@ -1,7 +1,7 @@
 Contrôleurs
 ===========
 
-Les contrôleurs font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur). Ce sont des objets dont la classe étend [[yii\base\Controller]]. Ils sont chargés de traiter les requêtes et de générer les réponses. En particulier, après que l'objet [application](structure-applications.md) leur a passé le contrôle, ils analysent les données de la requête entrante, les transmettent aux [modèles](structure-models.md), injectent le résultat des modèles dans les [vues](structure-views.md) et, pour finir, génèrent les réponses sortantes. 
+Les contrôleurs font partie du modèle d'architecture [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur). Ce sont des objets dont la classe étend [[yii\base\Controller]]. Ils sont chargés de traiter les requêtes et de générer les réponses. En particulier, après que l'objet [application](structure-applications.md) leur a passé le contrôle, ils analysent les données de la requête entrante, les transmettent aux [modèles](structure-models.md), injectent le résultat des modèles dans les [vues](structure-views.md) et, pour finir, génèrent les réponses sortantes. 
 
 
 ## Actions <span id="actions"></span>

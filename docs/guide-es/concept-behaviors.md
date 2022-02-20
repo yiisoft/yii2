@@ -2,7 +2,7 @@ Comportamientos
 ===============
 
 Comportamientos son instancias de [[yii\base\Behavior]] o sus clases "hija". Comportamientos, también conocido como
-[mixins](http://en.wikipedia.org/wiki/Mixin), te permiten mejorar la funcionalidad de un [[yii\base\Component|componente]]
+[mixins](https://en.wikipedia.org/wiki/Mixin), te permiten mejorar la funcionalidad de un [[yii\base\Component|componente]]
 existente sin necesidad de modificar su herencia de clases.
 Cuando un comportamiento se une a un componente, "inyectará" sus métodos y propiedades dentro del componente, y podrás
 acceder a esos métodos y propiedades como si hubieran estado definidos por la clase de componente. Además, un

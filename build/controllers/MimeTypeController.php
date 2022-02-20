@@ -99,6 +99,11 @@ class MimeTypeController extends Controller
         $mimeMap = array_merge($mimeMap, $this->additionalMimeTypes);
         ksort($mimeMap);
         $array = VarDumper::export($mimeMap);
+
+        if (PHP_VERSION_ID >= 80100) {
+            $array = array_replace($array, array('xz' => 'application/octet-stream'));
+        }
+
         $content = <<<EOD
 <?php
 /**

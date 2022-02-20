@@ -296,7 +296,7 @@ L'opérande 2 peut être soit un tableau, soit un objet `Query`.
   Vous pouvez utiliser `false` ou un tableau vide pour indiquer que les valeurs sont déjà échappées et qu'aucun échappement ne doit être appliqué. 
   Notez que lorsqu'un tableau de mise en correspondance pour l'échappement est utilisé (ou quand le troisième opérande n'est pas fourni), les valeurs sont automatiquement entourées par une paire de caractères `%`. 
 
-  > Note: lors de l'utilisation de PostgreSQL vous pouvez aussi utiliser [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)   
+  > Note: lors de l'utilisation de PostgreSQL vous pouvez aussi utiliser [`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)   
   >à la place de `like` pour une mise en correspondance insensible à la casse.
 
 - `or like`: similaire à l'opérateur `like` sauf que `OR`est utilisé pour concaténer les prédicats `LIKE` 
