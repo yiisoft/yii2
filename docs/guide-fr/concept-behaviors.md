@@ -1,7 +1,7 @@
 Comportements
 =============
 
-Les comportements (*behaviors* sont des instances de la classe [[yii\base\Behavior]], ou de ses classes filles. Les comportements, aussi connus sous le nom de [mixins](http://en.wikipedia.org/wiki/Mixin), vous permettent d'améliorer les fonctionnalités d'une classe de [[yii\base\Component|composant]] existante sans avoir à modifier les héritages de cette classe. Le fait d'attacher un comportement à un composant injecte les méthodes et les propriétés de ce comportement dans le composant, rendant ces méthodes et ces propriétés accessibles comme si elles avaient été définies dans la classe du composant lui-même. En outre, un comportement peut répondre aux [événements](concept-events.md) déclenchés par le composant, ce qui permet aux comportements de personnaliser l'exécution normale du code du composant.
+Les comportements (*behaviors* sont des instances de la classe [[yii\base\Behavior]], ou de ses classes filles. Les comportements, aussi connus sous le nom de [mixins](https://en.wikipedia.org/wiki/Mixin), vous permettent d'améliorer les fonctionnalités d'une classe de [[yii\base\Component|composant]] existante sans avoir à modifier les héritages de cette classe. Le fait d'attacher un comportement à un composant injecte les méthodes et les propriétés de ce comportement dans le composant, rendant ces méthodes et ces propriétés accessibles comme si elles avaient été définies dans la classe du composant lui-même. En outre, un comportement peut répondre aux [événements](concept-events.md) déclenchés par le composant, ce qui permet aux comportements de personnaliser l'exécution normale du code du composant.
 
 
 Définition des comportements <span id="defining-behaviors"></span>

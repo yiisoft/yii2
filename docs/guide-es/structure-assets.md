@@ -74,7 +74,7 @@ A continuación se explicarán más detalladamente las propiedades del [[yii\web
       se puede determinar anteponiendo [[yii\web\AssetManager::basePath]] a la ruta relativa, y la URL actual de un
       archivo puede ser determinada anteponiendo [[yii\web\AssetManager::baseUrl]] a la ruta relativa.
     - una URL absoluta que represente un archivo JavaScript externo. Por ejemplo,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` o
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` o
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::css|css]]: un array que lista los archivos CSS que contiene este bundle. El formato de este
   array es el mismo que el de [[yii\web\AssetBundle::js|js]].
@@ -207,7 +207,7 @@ la opción de publicación `beforeCopy`, solo los subdirectorios `fonts` y `css`
 
 ### Bower y NPM Assets <span id="bower-npm-assets"></span>
 
-La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.com/).
+La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](https://bower.io/) y/o [NPM](https://www.npmjs.com/).
 Si tu aplicación o extensión usa estos paquetes, se recomienda seguir los siguientes pasos para gestionar los assets en
  la librería:
 
@@ -393,8 +393,8 @@ personalizar como se describe en la subsección [Personalización de Asset Bundl
 
 En lugar de escribir código CSS y/o JavaScript directamente, los desarrolladores a menudo escriben código usando una
 sintaxis extendida y usan herramientas especiales para convertirlos en CSS/JavaScript. Por ejemplo, para código CSS se
-puede usar [LESS](http://lesscss.org) o [SCSS](http://sass-lang.com/); y para JavaScript se puede usar
-[TypeScript](http://www.typescriptlang.org/).
+puede usar [LESS](https://lesscss.org) o [SCSS](https://sass-lang.com/); y para JavaScript se puede usar
+[TypeScript](https://www.typescriptlang.org/).
 
 Se pueden listar los archivos asset con sintaxis extendida (extended syntax) en [[yii\web\AssetBundle::css|css]] y
 [[yii\web\AssetBundle::js|js]] en un asset bundle. Por ejemplo:
@@ -460,7 +460,7 @@ Los tokens `{from}` y `{to}` en los comandos se reemplazarán por las rutas de o
 de destino de los archivos asset.
 
 > Info: Hay otras maneras de trabajar con las assets de sintaxis extendidas, además de la descrita
-  anteriormente. Por ejemplo, se pueden usar herramientas generadoras tales como [grunt](http://gruntjs.com/) para
+  anteriormente. Por ejemplo, se pueden usar herramientas generadoras tales como [grunt](https://gruntjs.com/) para
   monitorear y convertir automáticamente los assets de sintaxis extendidas. En este caso, se deben listar los archivos
   CSS/JavaScript resultantes en lugar de los archivos de originales.
 
@@ -641,5 +641,5 @@ El archivo de configuración generado se puede incluir en la configuración de l
 anterior subsección.
 
 > Info: Usar el comando `asset` no es la única opción de automatizar el proceso de combinación y compresión.
-  Se puede usar la excelente herramienta de ejecución de tareas [grunt](http://gruntjs.com/) para lograr el mismo
+  Se puede usar la excelente herramienta de ejecución de tareas [grunt](https://gruntjs.com/) para lograr el mismo
   objetivo.
