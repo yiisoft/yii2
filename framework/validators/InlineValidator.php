@@ -100,7 +100,7 @@ class InlineValidator extends Validator
             if ($current === null) {
                 $current = $model->$attribute;
             }
-            return $method($attribute, $this->params, $this, $current);
+            return $method($attribute, $this->params, $this, $current, $view);
         }
 
         return null;
