@@ -24,7 +24,7 @@ yii.validation = (function ($) {
             var valid = false;
             if (options.requiredValue === undefined) {
                 var isString = typeof value == 'string' || value instanceof String;
-                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? pub.trim(value) : value)) {
+                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? pub._trim(value) : value)) {
                     valid = true;
                 }
             } else if (!options.strict && value == options.requiredValue || options.strict && value === options.requiredValue) {
@@ -236,25 +236,27 @@ yii.validation = (function ($) {
             }
         },
 
+        _trim: function(value, options = {skipOnEmpty: false}) {
+            value = new String(value);
+            if (options.chars || !String.prototype.trim) {
+                var chars = !options.chars
+                    ? ' \\s\xA0'
+                    : options.chars.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
+
+                return value.replace(new RegExp('^[' + chars + ']+|[' + chars + ']+$', 'g'), '');
+            }
+ 
+            return value.trim();
+        },
+
         trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
             if ($input.is(':checkbox, :radio')) {
                 return value;
             }
 
-            value = $input.val();
-            if (!options.skipOnEmpty || !pub.isEmpty(value)) {
-                value = new String(value);
-                if (options.chars || !String.prototype.trim) {
-                    var chars = !options.chars
-                        ? ' \\s\xA0'
-                        : options.chars.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
-                    value = value.replace(new RegExp('^[' + chars + ']+|[' + chars + ']+$', 'g'), '');
-                } else {
-                    value = value.trim();
-                }
-                $input.val(value);
-            }
+            value = pub._trim($input.val(), options);
+            $input.val(value);
 
             return value;
         },
