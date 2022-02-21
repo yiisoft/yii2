@@ -24,7 +24,7 @@ yii.validation = (function ($) {
             var valid = false;
             if (options.requiredValue === undefined) {
                 var isString = typeof value == 'string' || value instanceof String;
-                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? $.trim(value) : value)) {
+                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? pub.trim(value) : value)) {
                     valid = true;
                 }
             } else if (!options.strict && value == options.requiredValue || options.strict && value === options.requiredValue) {
