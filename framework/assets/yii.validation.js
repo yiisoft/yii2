@@ -259,9 +259,11 @@ yii.validation = (function ($) {
                 return value;
             }
 
-            value = pub._trim($input.val(), options);
-            if (value !== $input.val()) {
-                $input.val(value);
+            value = $input.val();
+            var newValue = pub._trim(value, options);
+            if (newValue !== value) {
+                $input.val(newValue);
+                value = newValue;
             }
 
             return value;
