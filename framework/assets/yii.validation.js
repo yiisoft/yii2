@@ -236,7 +236,11 @@ yii.validation = (function ($) {
             }
         },
 
-        _trim: function(value, options = {skipOnEmpty: false}) {
+        _trim: function(value, options = {skipOnEmpty: true}) {
+            if (options.skipOnEmpty && pub.isEmpty(value)) {
+                return value;
+            }
+  
             value = new String(value);
             if (options.chars || !String.prototype.trim) {
                 var chars = !options.chars
@@ -255,9 +259,8 @@ yii.validation = (function ($) {
                 return value;
             }
 
-            value = $input.val();
-            if (!options.skipOnEmpty || !pub.isEmpty(value)) {
-                value = pub._trim(value, options);
+            value = pub._trim($input.val(), options);
+            if (value !== $input.val()) {
                 $input.val(value);
             }
 
