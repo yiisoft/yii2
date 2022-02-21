@@ -260,8 +260,10 @@ yii.validation = (function ($) {
             }
 
             value = $input.val();
-            var value = pub._trim(value, options);
-            $input.val(value);
+            if (!options.skipOnEmpty || !pub.isEmpty(value)) {
+                value = pub._trim(value, options);
+                $input.val(value);
+            }
 
             return value;
         },
