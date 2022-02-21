@@ -217,7 +217,7 @@ class ValidatorTest extends TestCase
 
     public function testClientValidateAttribute()
     {
-        $view = \Yii::$app->getView();
+        $view = new \yii\base\View();
         $val = new TestValidator();
         $this->assertNull(
             $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', $view)
