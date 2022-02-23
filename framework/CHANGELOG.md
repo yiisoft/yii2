@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
-
+- Bug #19266: Fix ArrayHelper::getValue() with Objects ignores default-value (HenryVolkmer)
 
 2.0.45 February 11, 2022
 ------------------------
