@@ -30,7 +30,7 @@ class InlineValidator extends Validator
      * called to perform the actual validation. The signature of the method should be like the following:
      *
      * ```php
-     * function customValidator(string $attribute, mixed $params, InlineValidator $validator, mixed $current) {}
+     * function(string $attribute, mixed $params, InlineValidator $validator, mixed $current) {}
      * ```
      *
      * - `$attribute` is the name of the attribute to be validated
@@ -48,7 +48,7 @@ class InlineValidator extends Validator
      * The signature of the method should be like the following:
      *
      * ```php
-     * function customClientValidator(string $attribute, mixed $params, InlineValidator $validator, mixed $current, View $view): string
+     * function(string $attribute, mixed $params, InlineValidator $validator, mixed $current, View $view): string
      * {
      *     $view->registerJs('JS validation function');
      *     return "calling JS validation function";
