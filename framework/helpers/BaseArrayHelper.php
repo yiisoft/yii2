@@ -199,7 +199,7 @@ class BaseArrayHelper
         }
 
         if (is_object($array) && property_exists($array, $key)) {
-            return $array->$key;
+            return $array->$key ?? $default;
         }
 
         if (static::keyExists($key, $array)) {
@@ -218,7 +218,7 @@ class BaseArrayHelper
             // this is expected to fail if the property does not exist, or __get() is not implemented
             // it is not reliably possible to check whether a property is accessible beforehand
             try {
-                return $array->$key;
+                return $array->$key ? $array->$key : $default;
             } catch (\Exception $e) {
                 if ($array instanceof ArrayAccess) {
                     return $default;

@@ -822,6 +822,16 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(23, ArrayHelper::getValue($object, 'id'));
     }
 
+    public function testDefaultValueObjects()
+    {
+        $object = new Post1();
+        $object->title = null;
+        $this->assertEquals('default value', ArrayHelper::getValue($object, 'title','default value'));
+
+        $object = new Post2(['content' => null]);
+        $this->assertEquals('default value', ArrayHelper::getValue($object, 'content','default value'));
+    }
+
     public function testGetValueNonexistingProperties1()
     {
         if (PHP_VERSION_ID < 80000) {
