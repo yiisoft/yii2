@@ -1,7 +1,7 @@
 Enregistrement actif (*Active Record*)
 ===================================== 
 
-L'[enregistrement actif](http://en.wikipedia.org/wiki/Active_record_pattern) fournit une interface orientée objet pour accéder aux données stockées dans une base de données et les manipuler. 
+L'[enregistrement actif](https://en.wikipedia.org/wiki/Active_record_pattern) fournit une interface orientée objet pour accéder aux données stockées dans une base de données et les manipuler. 
 Une classe d'enregistrement actif (ActiveRecord) est associée à une table de base de données, une instance de cette classe représente une ligne de cette table, et un *attribut* d'une instance d'enregistrement actif représente la valeur d'une colonne particulière dans cette ligne. 
 Au lieu d'écrire des instructions SQL brutes, 
 vous pouvez accéder aux attributs de l'objet enregistrement actif et appeler ses méthodes pour accéder aux données stockées dans les tables de la base de données et les manipuler. 
@@ -35,7 +35,7 @@ Yii assure la prise en charge de l'enregistrement actif (*Active Record*) pour l
 * Microsoft SQL Server 2008 ou versions postérieures : via [[yii\db\ActiveRecord]]
 * Oracle : via [[yii\db\ActiveRecord]]
 * CUBRID 9.3 ou versions postérieures : via [[yii\db\ActiveRecord]] 
-  (Notez que, à cause d'un [bogue](http://jira.cubrid.org/browse/APIS-658) dans l'extension CUBRID 9.3, l'entourage des valeurs par des marques de citation ne fonctionne pas, c'est pourquoi vous avez besoin de CUBRID 9.3 à la fois comme client et comme serveur)
+  (Notez que, à cause d'un [bogue](https://jira.cubrid.org/browse/APIS-658) dans l'extension CUBRID 9.3, l'entourage des valeurs par des marques de citation ne fonctionne pas, c'est pourquoi vous avez besoin de CUBRID 9.3 à la fois comme client et comme serveur)
 * Sphinx : via [[yii\sphinx\ActiveRecord]], requiert l'extension `yii2-sphinx`
 * ElasticSearch : via [[yii\elasticsearch\ActiveRecord]], requiert l'extension `yii2-elasticsearch`
 

@@ -648,7 +648,7 @@ en `safeDown()`. En el ejemplo anterior primero creamos la tabla y luego inserta
 que en `safeDown()` primero eliminamos el registro y posteriormente eliminamos la tabla.
 
 > Note: No todos los DBMS soportan transacciones. Y algunas consultas a la BD no pueden ser puestas en transacciones. Para algunos ejemplos,
-  por favor lee acerca de [commits implícitos](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). En estos casos,
+  por favor lee acerca de [commits implícitos](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). En estos casos,
   deberías igualmente implementar `up()` y `down()`.
 
 

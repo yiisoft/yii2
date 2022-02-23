@@ -1,7 +1,7 @@
 Models
 ======
 
-Models are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+Models are part of the [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are objects representing business data, rules and logic.
 
 You can create model classes by extending [[yii\base\Model]] or its child classes. The base class

@@ -41,7 +41,7 @@ Si la librería lleva su propio cargador automático (autoloader), puedes instal
 Es recomendable que la instalación se  termine antes de incluir el fichero `Yii.php` de forma que el cargador automático tenga precedencia al cargar
 de forma automática las clases.
 
-Si la librería no provee un cargador automático de clases, pero la denominación de sus clases sigue el [PSR-4](http://www.php-fig.org/psr/psr-4/),
+Si la librería no provee un cargador automático de clases, pero la denominación de sus clases sigue el [PSR-4](https://www.php-fig.org/psr/psr-4/),
 puedes usar el cargador automático de Yii para cargar de forma automática las clases. Todo lo que necesitas
 es declarar un [alias raíz](concept-aliases.md#defining-aliases) para cada espacio de nombres (namespace) raiz usado en sus clases. Por ejemplo,
 asume que has instalado una librería en el directorio `vendor/foo/bar`, y que las clases de la librería están bajo el espacio de nombres raiz `xyz`.

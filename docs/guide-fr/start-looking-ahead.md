@@ -35,4 +35,4 @@ Cette section va résumer les ressources Yii disponibles pour vous aider à êtr
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>
     - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow: <https://stackoverflow.com/questions/tagged/yii2>

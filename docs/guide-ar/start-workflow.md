@@ -75,7 +75,7 @@ basic/                  application base path
 </p>
 
 <p dir="rtl">
-    يعتمد ال Yii على إستخدام ال MVC، وال MVC هو أحد ال Architectural Pattern، وهي اختصار ل <a href="http://wikipedia.org/wiki/Model-view-controller">model-view-controller</a>،
+    يعتمد ال Yii على إستخدام ال MVC، وال MVC هو أحد ال Architectural Pattern، وهي اختصار ل <a href="https://wikipedia.org/wiki/Model-view-controller">model-view-controller</a>،
 هذا الأسلوب ينعكس في تنظيم المسارات الخاصة بالملفات كما في الشكل أعلاه. يحتوي المسار <code>models</code> على جميع الكلاس <a href="../guide/structure-models.md">(model classes)</a> ، ويحتوي مسار ال <code>views</code> على جميع الصفحات التي ستستخدم في العرض <a href="../guide/structure-controllers.md">(view scripts)</a>، ويحتوي مسار ال<code>controllers</code> على
     جميع <a href="../guide/structure-views.md">(controller classes)</a> 
 </p>
