@@ -13,7 +13,7 @@ namespace yii\validators;
  * The validation method must have the following signature:
  *
  * ```php
- * function foo($attribute, $params, $validator)
+ * function foo($attribute, $params, $validator, )
  * ```
  *
  * where `$attribute` refers to the name of the attribute being validated, while `$params` is an array representing the
@@ -30,12 +30,13 @@ class InlineValidator extends Validator
      * called to perform the actual validation. The signature of the method should be like the following:
      *
      * ```php
-     * function foo($attribute, $params, $validator)
+     * function customValidator(string $attribute, mixed $params, InlineValidator $validator, mixed $current) {}
      * ```
      *
-     * - `$attribute` is the name of the attribute to be validated;
-     * - `$params` contains the value of [[params]] that you specify when declaring the inline validation rule;
-     * - `$validator` is a reference to related [[InlineValidator]] object. This parameter is available since version 2.0.11.
+     * - `$attribute` is the name of the attribute to be validated
+     * - `$params` contains the value of [[params]] that you specify when declaring the inline validation rule
+     * - `$validator` is a reference to related [[InlineValidator]] object. This parameter is available since version 2.0.11
+     * - `$current` is the attribute value. This parameter is available since version 2.0.36
      */
     public $method;
     /**
@@ -47,13 +48,12 @@ class InlineValidator extends Validator
      * The signature of the method should be like the following:
      *
      * ```php
-     * function foo($attribute, $params, $validator)
+     * function customClientValidator(string $attribute, mixed $params, InlineValidator $validator, mixed $current, View $view): string
      * {
-     *     return "javascript";
+     *     $view->registerJs('JS validation function');
+     *     return "calling JS validation function";
      * }
      * ```
-     *
-     * where `$attribute` refers to the attribute name to be validated.
      *
      * Please refer to [[clientValidateAttribute()]] for details on how to return client validation code.
      */
