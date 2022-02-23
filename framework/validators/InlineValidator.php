@@ -50,12 +50,13 @@ class InlineValidator extends Validator
      * ```php
      * function(string $attribute, mixed $params, InlineValidator $validator, mixed $current, View $view): string
      * {
-     *     $view->registerJs('JS validation function');
+     *     // $view->registerJs('JS validation function');
+     *     // or \app\assets\ValidationAsset::register($view);
      *     return "calling JS validation function";
      * }
      * ```
      *
-     * Please refer to [[clientValidateAttribute()]] for details on how to return client validation code.
+     * Please refer to [[clientValidateAttribute()]] and docs/manual for details on how to return client validation code.
      */
     public $clientValidate;
     /**
