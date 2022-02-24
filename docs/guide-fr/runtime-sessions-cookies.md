@@ -120,7 +120,7 @@ La classe par défaut [[yii\web\Session]] stocke les données de session sous fo
 
 * [[yii\web\DbSession]]: stocke les données de session dans une base de données. 
 * [[yii\web\CacheSession]]: stocke les données de session dans un cache avec l'aide d'un [composant cache](caching-data.md#cache-components) configuré.
-* [[yii\redis\Session]]: stocke les données de session en utilisant le médium de stockage [redis](http://redis.io/) as the storage medium.
+* [[yii\redis\Session]]: stocke les données de session en utilisant le médium de stockage [redis](https://redis.io/) as the storage medium.
 * [[yii\mongodb\Session]]: stocke les données de session dans une base de données de documents [MongoDB](https://www.mongodb.com/).
 
 Toutes ces classes de session prennent en charge le même jeu de méthodes d'API. En conséquence, vous pouvez changer de support de stockage sans avoir à modifier le code de votre application qui utilise ces sessions. 

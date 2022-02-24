@@ -135,7 +135,7 @@ sera générée, dans laquelle le formulaire HTML sera affiché, ainsi que tout 
 > Note: Dans cet exemple très simple, nous effectuons le rendu de la page de confirmation après soumission de données
 valides. En pratique, vous devriez envisager d'utiliser [[yii\web\Controller::refresh()|refresh()]] ou 
 [[yii\web\Controller::redirect()|redirect()]] pour éviter les 
-[problèmes de multiple soumission de formulaire](http://fr.wikipedia.org/wiki/Post-Redirect-Get).
+[problèmes de multiple soumission de formulaire](https://fr.wikipedia.org/wiki/Post-Redirect-Get).
 
 
 Créer des Vues <span id="creating-views"></span>

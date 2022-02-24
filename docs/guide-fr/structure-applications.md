@@ -234,7 +234,7 @@ La valeur par défaut de cette propriété est  `en`, pour anglais. Vous devez c
 
 La valeur de cette propriété détermine des aspects variés de l'[internationalisation](tutorial-i18n.md) tels que la traduction des messages, le formatage des dates et des nombres, etc. Par exemple, l'objet graphique [[yii\jui\DatePicker]] utilise la valeur de cette propriété pour déterminer dans quelle langue le calendrier doit être affiché et comment les dates doivent être formatées. 
 
-La spécification de la langue par une  [étiquette IETF d'identification de langue ](http://en.wikipedia.org/wiki/IETF_language_tag) est recommandée. Par exemple, `en` signifie anglais, tandis que `en-US` signifie anglais (États-Unis)..
+La spécification de la langue par une  [étiquette IETF d'identification de langue ](https://en.wikipedia.org/wiki/IETF_language_tag) est recommandée. Par exemple, `en` signifie anglais, tandis que `en-US` signifie anglais (États-Unis)..
 
 Pour plus d'informations sur cette propriété, reportez-vous à la section [Internationalisation](tutorial-i18n.md).
 

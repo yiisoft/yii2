@@ -1,7 +1,7 @@
 Controladores
 =============
 
-Los controladores son parte del patrón o arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
+Los controladores son parte del patrón o arquitectura [MVC](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
 Son objetos que extienden de [[yii\base\Controller]] y se encargan de procesar los `requests` (consultas)
 generando `responses` (respuestas). Particularmente, después de tomar el control desde las [aplicaciones](structure-applications.md),
 los controladores analizarán los datos que entran en el `request`, los pasan a los [modelos](structure-models.md), inyectan los

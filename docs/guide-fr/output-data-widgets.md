@@ -664,4 +664,4 @@ Qui génère un composant graphique [[yii\widgets\Pjax|Pjax]] enveloppant les co
 Lectures complémentaires
 ------------------------
 
-- [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) d'Arno Slatius.
+- [Rendering Data in Yii 2 with GridView and ListView](https://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) d'Arno Slatius.

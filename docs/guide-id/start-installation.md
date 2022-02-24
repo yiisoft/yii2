@@ -142,9 +142,9 @@ Konfigurasi Web Server <span id="configuring-web-servers"></span>
   penggelaran itu untuk server produksi.
 
 Aplikasi yang diinstal sesuai dengan petunjuk di atas seharusnya bekerja dengan baik
-pada [Apache HTTP server](http://httpd.apache.org/) atau [Nginx HTTP server](http://nginx.org/), pada
+pada [Apache HTTP server](https://httpd.apache.org/) atau [Nginx HTTP server](https://nginx.org/), pada
 Windows, Mac OS X, atau Linux yang menjalankan PHP 5.4 atau lebih tinggi. Yii 2.0 juga kompatibel dengan facebook
-[HHVM](http://hhvm.com/). Namun, ada beberapa kasus di mana HHVM berperilaku berbeda dari PHP asli,
+[HHVM](https://hhvm.com/). Namun, ada beberapa kasus di mana HHVM berperilaku berbeda dari PHP asli,
 sehingga Anda harus mengambil beberapa perlakuan ekstra ketika menggunakan HHVM.
 
 Pada server produksi, Anda mungkin ingin mengkonfigurasi server Web Anda sehingga aplikasi dapat diakses
@@ -187,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Konfigurasi Nginx yang Direkomendasikan<span id="recommended-nginx-configuration"></span>
 
-Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](https://www.php.net/install.fpm).
+Untuk menggunakan [Nginx](https://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](https://www.php.net/install.fpm).
 Anda dapat menggunakan konfigurasi Nginx berikut, menggantikan `path/to/basic/web` dengan path yang sebenarnya untuk
 `basic/web` dan `mysite.test` dengan hostname yang sebenarnya untuk server.
 
