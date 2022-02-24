@@ -999,4 +999,19 @@ class BaseArrayHelper
 
         return $result;
     }
+
+    /**
+     * Sorts multidimensional array
+     * @param $array
+     * @return void
+     */
+    public static function sortMultidimensionalArray(&$array)
+    {
+        ksort($array);
+        foreach ($array as &$item) {
+            if (is_array($item)) {
+                $item = self::sortMultidimensionalArray($item);
+            }
+        }
+    }
 }
