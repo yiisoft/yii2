@@ -10,15 +10,6 @@ namespace yii\validators;
 /**
  * InlineValidator represents a validator which is defined as a method in the object being validated.
  *
- * The validation method must have the following signature:
- *
- * ```php
- * function foo($attribute, $params, $validator, )
- * ```
- *
- * where `$attribute` refers to the name of the attribute being validated, while `$params` is an array representing the
- * additional parameters supplied in the validation rule. Parameter `$validator` refers to the related
- * [[InlineValidator]] object and is available since version 2.0.11.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -56,7 +47,8 @@ class InlineValidator extends Validator
      * }
      * ```
      *
-     * Please refer to [[clientValidateAttribute()]] and docs/manual for details on how to return client validation code.
+     * Please refer to [[clientValidateAttribute()]] and [guide](guide:input-validation#client-side-validation) for details on how
+     * to return client validation code.
      */
     public $clientValidate;
     /**
