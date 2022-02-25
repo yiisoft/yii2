@@ -1449,10 +1449,14 @@ class ArrayHelperTest extends TestCase
         ArrayHelper::sortMultidimensionalArray($assoc_array);
         $this->assertEquals(['foo' => ['baz' => 2, 'bar' => 1]], $assoc_array);
 
-        // index array
-        $index_array = [['bar' => 1], ['baz' => 2]];
-        ArrayHelper::sortMultidimensionalArray($index_array);
-        $this->assertEquals([['baz' => 2], ['bar' => 1]], $index_array);
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+        } else {
+            // index array
+            $index_array = [['bar' => 1], ['baz' => 2]];
+            ArrayHelper::sortMultidimensionalArray($index_array);
+            $this->assertEquals([['baz' => 2], ['bar' => 1]], $index_array);
+        }
     }
 }
 
