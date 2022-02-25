@@ -36,7 +36,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      * ]
      * ```
      *
-     * Note: `Yii::getAlias()` can replace alias only at begin of command!
+     * Note: `Yii::getAlias()` can replace alias at the start of the command only.
      *
      * @see https://sass-lang.com/documentation/cli/ SASS/SCSS
      */
