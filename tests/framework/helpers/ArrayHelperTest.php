@@ -1436,6 +1436,24 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(42, ArrayHelper::getValue($model, 'magic'));
         $this->assertEquals('ta-da', ArrayHelper::getValue($model, 'moreMagic'));
     }
+
+    public function testSortMultidimensionalArray()
+    {
+        // empty array
+        $empty_array = [];
+        ArrayHelper::sortMultidimensionalArray($empty_array);
+        $this->assertEquals([], $empty_array);
+
+        // assoc array
+        $assoc_array = ['foo' => ['bar' => 1, 'baz' => 2]];
+        ArrayHelper::sortMultidimensionalArray($assoc_array);
+        $this->assertEquals(['foo' => ['baz' => 2, 'bar' => 1]], $assoc_array);
+
+        // index array
+        $index_array = [['bar' => 1], ['baz' => 2]];
+        ArrayHelper::sortMultidimensionalArray($index_array);
+        $this->assertEquals([['baz' => 2], ['bar' => 1]], $index_array);
+    }
 }
 
 class Post1

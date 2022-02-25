@@ -7,9 +7,9 @@
 
 namespace yii\helpers;
 
-use ArrayAccess;
-use Traversable;
 use Yii;
+use Traversable;
+use ArrayAccess;
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
 
@@ -1007,10 +1007,15 @@ class BaseArrayHelper
      */
     public static function sortMultidimensionalArray(&$array)
     {
-        ksort($array);
+        if (static::isIndexed($array)) {
+            sort($array);
+        } else {
+            ksort($array);
+        }
+
         foreach ($array as &$item) {
             if (is_array($item)) {
-                $item = self::sortMultidimensionalArray($item);
+                self::sortMultidimensionalArray($item);
             }
         }
     }
