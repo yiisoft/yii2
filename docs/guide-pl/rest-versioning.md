@@ -8,7 +8,7 @@ pełną wsteczną kompatybilność (BC = backward compatibility), kiedy to tylko
 może nie spełniać BC, należy wprowadzić ją w nowej wersji API, z kolejnym numerem. Istniejące klienty mogą wciąż używać starej, 
 działającej wersji API, a nowe lub uaktualnione klienty mogą otrzymać nową funkcjonalność oferowaną przez kolejną wersję API. 
 
-> Tip: Zapoznaj się z [Wersjonowaniem semantycznym](http://semver.org/lang/pl/), aby uzyskać więcej informacji na temat nazewnictwa 
+> Tip: Zapoznaj się z [Wersjonowaniem semantycznym](https://semver.org/lang/pl/), aby uzyskać więcej informacji na temat nazewnictwa 
   numerów wersji.
 
 Jedną z często spotykanych implementacji wersjonowania API jest dodawanie numeru wersji w adresach URL API.
