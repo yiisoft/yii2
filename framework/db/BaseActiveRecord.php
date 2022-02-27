@@ -1770,8 +1770,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $old_attribute = $this->oldAttributes[$attribute];
         if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
-            ArrayHelper::sortMultidimensionalArray($value);
-            ArrayHelper::sortMultidimensionalArray($old_attribute);
+            $value = ArrayHelper::recursiveSort($value);
+            $old_attribute = ArrayHelper::recursiveSort($old_attribute);
         }
 
         return $value !== $old_attribute;

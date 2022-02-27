@@ -1001,22 +1001,27 @@ class BaseArrayHelper
     }
 
     /**
-     * Sorts multidimensional array
-     * @param $array
-     * @return void
+     * Sorts array recursively.
+     *
+     * @param array         $array An array passing by reference.
+     * @param callable|null $sorter The array sorter. If omitted, sort index array by values, sort assoc array by keys.
+     * @return array
      */
-    public static function sortMultidimensionalArray(&$array)
+    public static function recursiveSort(array &$array, $sorter = null)
     {
-        if (static::isIndexed($array)) {
-            sort($array);
-        } else {
-            ksort($array);
-        }
-
-        foreach ($array as &$item) {
-            if (is_array($item)) {
-                self::sortMultidimensionalArray($item);
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                self::recursiveSort($value, $sorter);
             }
         }
+        unset($value);
+
+        if ($sorter === null) {
+            $sorter = static::isIndexed($array) ? 'sort' : 'ksort';
+        }
+
+        call_user_func_array($sorter, [&$array]);
+
+        return $array;
     }
 }

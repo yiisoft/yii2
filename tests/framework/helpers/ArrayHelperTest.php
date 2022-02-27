@@ -1437,16 +1437,16 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals('ta-da', ArrayHelper::getValue($model, 'moreMagic'));
     }
 
-    public function testSortMultidimensionalArray()
+    public function testRecursiveSort()
     {
         // empty array
         $empty_array = [];
-        ArrayHelper::sortMultidimensionalArray($empty_array);
+        ArrayHelper::recursiveSort($empty_array);
         $this->assertEquals([], $empty_array);
 
         // assoc array
         $assoc_array = ['foo' => ['bar' => 1, 'baz' => 2]];
-        ArrayHelper::sortMultidimensionalArray($assoc_array);
+        ArrayHelper::recursiveSort($assoc_array);
         $this->assertEquals(['foo' => ['baz' => 2, 'bar' => 1]], $assoc_array);
 
         if (PHP_VERSION_ID < 70000) {
@@ -1454,7 +1454,7 @@ class ArrayHelperTest extends TestCase
         } else {
             // index array
             $index_array = [['bar' => 1], ['baz' => 2]];
-            ArrayHelper::sortMultidimensionalArray($index_array);
+            ArrayHelper::recursiveSort($index_array);
             $this->assertEquals([['baz' => 2], ['bar' => 1]], $index_array);
         }
     }
