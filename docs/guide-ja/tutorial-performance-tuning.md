@@ -132,7 +132,7 @@ CREATE TABLE session (
 ただし、キャッシュ・ストレージの中には、容量の上限に達したときにキャッシュされたデータをフラッシュするものがあることに注意してください。
 この理由により、主として容量の上限が無い種類のキャッシュ・ストレージを使用すべきです。
 
-あなたのサーバに [Redis](http://redis.io/) がある場合は、[[yii\redis\Session]] によって redis
+あなたのサーバに [Redis](https://redis.io/) がある場合は、[[yii\redis\Session]] によって redis
 をセッション・ストレージとして使用することを強く推奨します。
 
 
@@ -218,7 +218,7 @@ composer dumpautoload -o
 - [Yii のデバッグ・ツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
 - [Blackfire](https://blackfire.io/)
 - [XHProf](https://www.php.net/manual/ja/book.xhprof.php)
-- [XDebug プロファイラ](http://xdebug.org/docs/profiler)
+- [XDebug プロファイラ](https://xdebug.org/docs/profiler)
 
 ## アプリケーションをスケーラブルなものにする覚悟を決める
 
