@@ -57,7 +57,7 @@ basic/                  bazowa ścieżka aplikacji
 Ogólnie pliki aplikacji mogą zostać podzielone na dwa typy: pliki w katalogu `basic/web` oraz pliki w innych katalogach.
 Dostęp do pierwszego typu można uzyskać przez HTTP (np. przez przeglądarkę), podczas gdy reszta nie może, i nie powinna być, dostępna publicznie.
 
-Yii implementuje wzór architektoniczny [model-widok-kontroler (MVC)](http://wikipedia.org/wiki/Model-view-controller), który jest odzwierciedleniem przedstawionej wyżej organizacji 
+Yii implementuje wzór architektoniczny [model-widok-kontroler (MVC)](https://wikipedia.org/wiki/Model-view-controller), który jest odzwierciedleniem przedstawionej wyżej organizacji 
 katalogów.
 Katalog `models` zawiera wszystkie [klasy modeli](structure-models.md), katalog `views` zawiera wszystkie [skrypty widoków](structure-views.md) oraz katalog `controllers` zawiera 
 wszystkie [klasy kontrolerów](structure-controllers.md).

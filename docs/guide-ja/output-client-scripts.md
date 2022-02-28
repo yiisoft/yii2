@@ -35,9 +35,9 @@ $this->registerJs(
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] - head セクション。
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] - 開始の `<body>` の直後。
 - [[yii\web\View::POS_END|View::POS_END]] - 終了の `</body>` の直前。
-- [[yii\web\View::POS_READY|View::POS_READY]] - [ドキュメントの `ready` イベント](http://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
+- [[yii\web\View::POS_READY|View::POS_READY]] - [ドキュメントの `ready` イベント](https://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
   これを指定すると、[[yii\web\JqueryAsset|jQuery]] が自動的に登録され、コードは適切な jQuery コードの中に包まれます。これがデフォルトの位置指定です。
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] - [ドキュメントの `load` イベント](http://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
+- [[yii\web\View::POS_LOAD|View::POS_LOAD]] - [ドキュメントの `load` イベント](https://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
   上記と同じく、これを指定すると、[[yii\web\JqueryAsset|jQuery]] が自動的に登録されます。
 
 最後の引数は、スクリプトのコード・ブロックを一意に特定するために使われるスクリプトのユニークな ID です。同じ ID のスクリプトが既にある場合は、新しいものを追加するのでなく、
