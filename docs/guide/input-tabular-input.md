@@ -92,8 +92,8 @@ public function actionCreate()
 {
     $settings = [];
     if ($this->request->isPost) {
-        $count = count($this->request->post($setting->tableName()));
-        for ($i = 1; $i < $count; $i++) {
+        $count = count($this->request->post($setting->tableName())) - 1;
+        for ($i = 0; $i < $count; $i++) {
             $settings[$i] = new Setting();
         }
         if (Setting::loadMultiple($settings, $this->request->post()) && Setting::validateMultiple($settings)) {
