@@ -46,7 +46,7 @@ class AppAsset extends AssetBundle
 * [[yii\web\AssetBundle::js|js]]: массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте. Заметьте, что только прямая косая черта (forward slash - "/") может быть использована, как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
   - относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
   - абсолютный URL, представленный внешним JavaScript файлом. Например,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::css|css]]: массив, перечисляющий CSS файлы, содержащиеся в данном комплекте. Формат этого массива такой же, как и у [[yii\web\AssetBundle::js|js]].
 * [[yii\web\AssetBundle::depends|depends]]: массив, перечисляющий имена комплектов ресурсов, от которых зависит данный комплект.
@@ -166,7 +166,7 @@ class FontAwesomeAsset extends AssetBundle
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
-Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.com/).
+Большинство JavaScript/CSS пакетов управляются [Bower](https://bower.io/) и/или [NPM](https://www.npmjs.com/).
 В мире PHP мы испольуем Composer для управления зависимостями, но он не позволяет устанавливать пакеты Bower и NPM, просто указывая их в `composer.json`.
 
 Чтобы получить такую возможность, нужно немного настроить Composer. Существует два варианта:
