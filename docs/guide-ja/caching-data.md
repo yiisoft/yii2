@@ -57,7 +57,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 キャッシュ・コンポーネントは通常グローバルに設定しアクセスできるように
 [アプリケーション・コンポーネント](structure-application-components.md) として登録されます。
-以下のコードは、二台のキャッシュ・サーバを用いる [Memcached](http://memcached.org/) を使うように
+以下のコードは、二台のキャッシュ・サーバを用いる [Memcached](https://memcached.org/) を使うように
 `cache` アプリケーション・コンポーネントを構成する方法を示すものです。
 
 ```php
@@ -124,13 +124,13 @@ Yii はさまざまなキャッシュ・ストレージをサポートしてい�
   [Memcached](https://www.php.net/manual/ja/book.memcached.php) 拡張モジュールを使用します。
   分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます
   (例えば、複数台のサーバで、ロード・バランサがある、などの場合) 。
-* [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュ・コンポーネントを実装しています。
+* [[yii\redis\Cache]]: [Redis](https://redis.io/) の key-value ストアに基づいてキャッシュ・コンポーネントを実装しています。
   (Redis の バージョン 2.6.12 以降が必要とされます) 。
-* [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) エクステンションを使用します。
+* [[yii\caching\WinCache]]: PHP の [WinCache](https://iis.net/downloads/microsoft/wincache-extension) エクステンションを使用します。
   ([参照リンク](https://www.php.net/manual/ja/book.wincache.php))
 * [[yii\caching\XCache]] _(非推奨)_: PHP の [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache) 拡張モジュールを使用します。
 * [[yii\caching\ZendDataCache]] _(非推奨)_:
-  キャッシュ・メディアとして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
+  キャッシュ・メディアとして [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   を使用します。
 
 
@@ -310,7 +310,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info: いくつかの DBMS (例えば [MySQL](http://dev.mysql.com/doc/refman/5.1/ja/query-cache.html))
+> Info: いくつかの DBMS (例えば [MySQL](https://dev.mysql.com/doc/refman/5.1/ja/query-cache.html))
   もデータベース・サーバ・サイドのクエリ・キャッシュをサポートしています。
   どちらのクエリ・キャッシュ・メカニズムを選んでも構いません。
   前述した Yii のクエリ・キャッシュにはキャッシュの依存を柔軟に指定できるという利点があり、潜在的にはより効率的です。
