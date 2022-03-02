@@ -129,7 +129,7 @@ class SiteController extends Controller
 その中で HTML フォームが (もし有れば) 検証エラーのメッセージとともに表示されます。
 
 > Note: この簡単な例では、有効なデータ送信に対して単純に確認ページを表示しています。
-  実際の仕事では、[フォーム送信の諸問題](http://en.wikipedia.org/wiki/Post/Redirect/Get) を避けるために、
+  実際の仕事では、[フォーム送信の諸問題](https://en.wikipedia.org/wiki/Post/Redirect/Get) を避けるために、
   [[yii\web\Controller::refresh()|refresh()]] または [[yii\web\Controller::redirect()|redirect()]] を使うことを考慮すべきです。
 
 

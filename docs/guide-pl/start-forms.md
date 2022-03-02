@@ -123,7 +123,7 @@ Jeśli nie zostały wysłane żadne dane lub dane zawierają błędy, zostanie w
 
 > Note: W tym prostym przykładzie po prostu renderujemy stronę z potwierdzeniem prawidłowego przesłania danych. 
 > W praktyce powinieneś rozważyć użycie [[yii\web\Controller::refresh()|refresh()]] lub [[yii\web\Controller::redirect()|redirect()]], aby uniknąć 
-> [problemów z ponownym przesłaniem formularza](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+> [problemów z ponownym przesłaniem formularza](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Tworzenie widoku <span id="creating-views"></span>
