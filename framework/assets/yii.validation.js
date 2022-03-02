@@ -12,6 +12,7 @@
 
 yii.validation = (function ($) {
     var pub = {
+
         isEmpty: function (value) {
             return value === null || value === undefined || ($.isArray(value) && value.length === 0) || value === '';
         },
@@ -24,7 +25,7 @@ yii.validation = (function ($) {
             var valid = false;
             if (options.requiredValue === undefined) {
                 var isString = typeof value == 'string' || value instanceof String;
-                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? pub._trim(value) : value)) {
+                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? trimString(value) : value)) {
                     valid = true;
                 }
             } else if (!options.strict && value == options.requiredValue || options.strict && value === options.requiredValue) {
@@ -236,23 +237,6 @@ yii.validation = (function ($) {
             }
         },
 
-        _trim: function(value, options = {skipOnEmpty: true}) {
-            if (options.skipOnEmpty && pub.isEmpty(value)) {
-                return value;
-            }
-  
-            value = new String(value);
-            if (options.chars || !String.prototype.trim) {
-                var chars = !options.chars
-                    ? ' \\s\xA0'
-                    : options.chars.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
-
-                return value.replace(new RegExp('^[' + chars + ']+|[' + chars + ']+$', 'g'), '');
-            }
- 
-            return value.trim();
-        },
-
         trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
             if ($input.is(':checkbox, :radio')) {
@@ -261,7 +245,7 @@ yii.validation = (function ($) {
 
             value = $input.val();
             if (!options.skipOnEmpty || !pub.isEmpty(value)) {
-                value = pub._trim(value, options);
+                value = trimString(value, options);
                 $input.val(value);
             }
 
@@ -482,6 +466,26 @@ yii.validation = (function ($) {
         if (options.maxHeight && image.height > options.maxHeight) {
             messages.push(options.overHeight.replace(/\{file\}/g, file.name));
         }
+    }
+
+    /**
+     * PHP: `trim($path, ' /')`, JS: `yii.helpers.trim(path, {chars: ' /'})`
+     */
+    function trimString(value, options = {skipOnEmpty: true, chars: null}) {
+        if (options.skipOnEmpty !== false && pub.isEmpty(value)) {
+            return value;
+        }
+
+        value = new String(value);
+        if (options.chars || !String.prototype.trim) {
+            var chars = !options.chars
+                ? ' \\s\xA0'
+                : options.chars.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
+
+            return value.replace(new RegExp('^[' + chars + ']+|[' + chars + ']+$', 'g'), '');
+        }
+
+        return value.trim();
     }
 
     return pub;
