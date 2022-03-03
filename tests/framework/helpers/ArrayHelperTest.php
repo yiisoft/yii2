@@ -1437,26 +1437,70 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals('ta-da', ArrayHelper::getValue($model, 'moreMagic'));
     }
 
-    public function testRecursiveSort()
+    /**
+     * @dataProvider dataProviderRecursiveSort
+     *
+     * @return void
+     */
+    public function testRecursiveSort($expected_result, $input_array)
     {
-        // empty array
-        $empty_array = [];
-        ArrayHelper::recursiveSort($empty_array);
-        $this->assertEquals([], $empty_array);
+        $actual = ArrayHelper::recursiveSort($input_array);
+        $this->assertEquals($expected_result, $actual);
+    }
 
-        // assoc array
-        $assoc_array = ['foo' => ['bar' => 1, 'baz' => 2]];
-        ArrayHelper::recursiveSort($assoc_array);
-        $this->assertEquals(['foo' => ['baz' => 2, 'bar' => 1]], $assoc_array);
-
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-        } else {
-            // index array
-            $index_array = [['bar' => 1], ['baz' => 2]];
-            ArrayHelper::recursiveSort($index_array);
-            $this->assertEquals([['baz' => 2], ['bar' => 1]], $index_array);
-        }
+    /**
+     * Data provider for [[testRecursiveSort()]].
+     * @return array test data
+     */
+    public function dataProviderRecursiveSort()
+    {
+        return [
+            //Normal index array
+            [
+                [1, 2, 3, 4],
+                [4, 1, 3, 2]
+            ],
+            //Normal associative array
+            [
+                ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                ['b' => 2, 'a' => 1, 'd' => 4, 'c' => 3],
+            ],
+            //Normal index array
+            [
+                [1, 2, 3, 4],
+                [4, 1, 3, 2]
+            ],
+            //Multidimensional associative array
+            [
+                [
+                    'a' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                    'b' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                    'c' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                    'd' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                ],
+                [
+                    'b' => ['a' => 1, 'd' => 4, 'b' => 2, 'c' => 3],
+                    'd' => ['b' => 2, 'c' => 3, 'a' => 1, 'd' => 4],
+                    'c' => ['c' => 3, 'a' => 1, 'd' => 4, 'b' => 2],
+                    'a' => ['d' => 4, 'b' => 2, 'c' => 3, 'a' => 1],
+                ],
+            ],
+            //Multidimensional associative array
+            [
+                [
+                    'a' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4]],
+                    'b' => ['a' => 1, 'b' => 2, 'c' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], 'd' => 4],
+                    'c' => ['a' => 1, 'b' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], 'c' => 3, 'd' => 4],
+                    'd' => ['a' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], 'b' => 2, 'c' => 3, 'd' => 4],
+                ],
+                [
+                    'b' => ['a' => 1, 'd' => 4, 'b' => 2, 'c' => ['b' => 2, 'c' => 3, 'a' => 1, 'd' => 4]],
+                    'd' => ['b' => 2, 'c' => 3, 'a' => ['a' => 1, 'd' => 4, 'b' => 2, 'c' => 3], 'd' => 4],
+                    'c' => ['c' => 3, 'a' => 1, 'd' => 4, 'b' => ['c' => 3, 'a' => 1, 'd' => 4, 'b' => 2]],
+                    'a' => ['d' => ['d' => 4, 'b' => 2, 'c' => 3, 'a' => 1], 'b' => 2, 'c' => 3, 'a' => 1],
+                ]
+            ],
+        ];
     }
 }
 
