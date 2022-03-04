@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -122,6 +123,10 @@ class AssetController extends Controller
      * @see https://github.com/yui/yuicompressor/
      */
     public $cssCompressor = 'java -jar yuicompressor.jar --type css {from} -o {to}';
+    /**
+     * @var array
+     */
+    public $compressorAdditionalParameters = [];
     /**
      * @var bool whether to delete asset source files after compression.
      * This option affects only those bundles, which have [[\yii\web\AssetBundle::sourcePath]] is set.
@@ -515,10 +520,10 @@ EOD;
         if (is_string($this->jsCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineJsFiles($inputFiles, $tmpFile);
-            $this->stdout(shell_exec(strtr($this->jsCompressor, [
+            $this->stdout(shell_exec(strtr($this->jsCompressor, ArrayHelper::merge($this->compressorAdditionalParameters, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
-            ])));
+            ]))));
             @unlink($tmpFile);
         } else {
             call_user_func($this->jsCompressor, $this, $inputFiles, $outputFile);
@@ -544,10 +549,10 @@ EOD;
         if (is_string($this->cssCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineCssFiles($inputFiles, $tmpFile);
-            $this->stdout(shell_exec(strtr($this->cssCompressor, [
+            $this->stdout(shell_exec(strtr($this->cssCompressor, ArrayHelper::merge($this->compressorAdditionalParameters, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
-            ])));
+            ]))));
             @unlink($tmpFile);
         } else {
             call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
