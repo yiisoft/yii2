@@ -1,7 +1,7 @@
 Visões (Views)
 ===========
 
-As views fazem parte da arquitetura [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+As views fazem parte da arquitetura [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
 São a parte do código responsável por apresentar dados aos usuários finais. Em um aplicação Web,
 views geralmente são criadas em termos de *view templates* (modelos de view)
  que são arquivos PHP contendo principalmente códigos HTML e
@@ -61,7 +61,7 @@ desencadeiam a [renderização da view ](#rendering-views).
 Ao criar views que geram páginas HTML, é importante que você codifique
 e/ou filtre os dados que vêm de usuários antes de exibí-los. Caso contrário,
 sua aplicação poderá estar sujeita a um ataque de
-[cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting).
+[cross-site scripting](https://en.wikipedia.org/wiki/Cross-site_scripting).
 
 Para exibir um texto simples, codifique-o antes por chamar o método
 [[yii\helpers\Html::encode()]]. Por exemplo, o código a seguir codifica o nome do

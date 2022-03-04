@@ -32,4 +32,4 @@ Bagian ini akan merangkum bacaan Yii yang tersedia untuk membantu anda menjadi l
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>
     - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow: <https://stackoverflow.com/questions/tagged/yii2>
