@@ -800,4 +800,28 @@ class ActiveRecord extends BaseActiveRecord
 
         return isset($transactions[$scenario]) && ($transactions[$scenario] & $operation);
     }
+
+    /**
+     * Saves AR models.
+     *
+     * @param ActiveRecord[] $models the models to be save
+     * @param bool $runValidation whether to perform validation
+     * @param string[]|null $attributeNames The attribute names to validate. If ommit, it means any attribute listed in
+     * the applicable validation rules should be validated.
+     * @return bool returns true, if all models successfully saved, returns false, if some models not saved (check by [[hasError()]])
+     * @see save()
+     * @since 2.0.46
+     */
+    public static function saveMultiple($models, $runValidation = true, $attributeNames = null)
+    {
+        $result = true;
+        /** @var ActiveRecord $model */
+        foreach ($models as $model) {
+            if (!$model->save($runValidation || $model->hasErrors(), $attributeNames)) {
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
 }
