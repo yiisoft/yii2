@@ -27,6 +27,13 @@ class UpdateAction extends Action
      */
     public $scenario = Model::SCENARIO_DEFAULT;
 
+    /**
+     * @var array|null A list of attributes which are updated. By default all attributes are updated. When working
+     * with user generated data it can be usefull to limit the attributes to update in order to prevent users from
+     * changing the payload. Another option to prevent this is working with scenarios.
+     * @since ...
+     */
+    public $attributeNames = null;
 
     /**
      * Updates an existing model.
@@ -45,7 +52,7 @@ class UpdateAction extends Action
 
         $model->scenario = $this->scenario;
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-        if ($model->save() === false && !$model->hasErrors()) {
+        if ($model->save(true, $this->attributeNames) === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
 
