@@ -802,7 +802,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Saves AR models.
+     * Saves multiple models.
      *
      * @param ActiveRecord[] $models the models to be save
      * @param bool $runValidation whether to perform validation
@@ -817,9 +817,7 @@ class ActiveRecord extends BaseActiveRecord
         $result = true;
         /** @var ActiveRecord $model */
         foreach ($models as $model) {
-            if (!$model->save($runValidation || $model->hasErrors(), $attributeNames)) {
-                $result = false;
-            }
+            $result = $model->save($runValidation || $model->hasErrors(), $attributeNames) && $result;
         }
 
         return $result;
