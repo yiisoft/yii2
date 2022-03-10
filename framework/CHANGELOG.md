@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
 - Enh #19295: Added alias `text/rtf` for mime-type `application/rtf` (lesha724);
 
+
 2.0.45 February 11, 2022
 ------------------------
 
