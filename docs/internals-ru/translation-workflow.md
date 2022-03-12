@@ -86,7 +86,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 
 ### Перевод рисунков
 
-Рисунки к документации содержатся в подпапке `images`. Все они созданы в [yED](http://www.yworks.com/en/products_yed_about.html).
+Рисунки к документации содержатся в подпапке `images`. Все они созданы в [yED](https://www.yworks.com/en/products_yed_about.html).
 При необходимости перевода исходный файл копируется в директорию `images` перевода, переводится и сохраняется в формате png.
 
 Подписи к рисункам переводятся.
