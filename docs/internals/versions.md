@@ -2,7 +2,7 @@ Yii Versioning
 ==============
 
 This document summarizes the versioning policy of Yii. Our current versioning strategy is
-a variant of [Semantic Versioning](http://semver.org/).
+a variant of [Semantic Versioning](https://semver.org/).
 
 Within the core developer team, we have emphasized several times that it is important to keep 2.0.x releases backwards
 compatible. But this is an ideal plan. In a real world this is hard to achieve. See [Backwards Compatibility](bc.md)
