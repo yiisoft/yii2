@@ -41,7 +41,7 @@ use yii\base\NotSupportedException;
  * - `required`: [[RequiredValidator]]
  * - `safe`: [[SafeValidator]]
  * - `string`: [[StringValidator]]
- * - `trim`: [[FilterValidator]]
+ * - `trim`: [[TrimValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
