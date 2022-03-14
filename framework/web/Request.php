@@ -752,6 +752,8 @@ class Request extends \yii\base\Request
             } else {
                 if ($this->headers->has('Host')) {
                     $this->_hostInfo = $http . '://' . $this->headers->get('Host');
+                } elseif (filter_has_var(INPUT_SERVER, 'SERVER_NAME')) {
+                    $this->_hostInfo = $http . '://' . filter_input(INPUT_SERVER, 'SERVER_NAME');
                 } elseif (isset($_SERVER['SERVER_NAME'])) {
                     $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
                 }
