@@ -105,7 +105,7 @@ Web-server sozlamasi<span id="configuring-web-servers"></span>
 
 > Info: Agar siz faqatgina freymvork bilan tanishishni boshlagan bo'lsangiz va uni ish  serveriga joylashtirmagan bo'lsangiz, ushbu bo'limni o'tkazib yuborishingiz mumkin. 
 
-Yuqoridagi ko'rsatmalarga muvofiq o'rnatilgan ilovalar Windows va Linux ostida PHP 5.4 va undan yuqori taxrirlarda o'rnatilgan [Apache](http://httpd.apache.org/) va [Nginx](http://nginx.org/) bilan ishlaydi.Yii 2.0 [HHVM](http://hhvm.com/) bilan ham mos keladi. Etiborli bo'ling, ba'zi hollarda, HHVM bilan ishlashda odatdagi PHPdan farq qiladi.
+Yuqoridagi ko'rsatmalarga muvofiq o'rnatilgan ilovalar Windows va Linux ostida PHP 5.4 va undan yuqori taxrirlarda o'rnatilgan [Apache](https://httpd.apache.org/) va [Nginx](https://nginx.org/) bilan ishlaydi.Yii 2.0 [HHVM](https://hhvm.com/) bilan ham mos keladi. Etiborli bo'ling, ba'zi hollarda, HHVM bilan ishlashda odatdagi PHPdan farq qiladi.
 
 Ish serverida siz `http://www.example.com/basic/web/index.php` dan `http://www.example.com/index.php` manziliga dastur URL manzilini o'zgartirishni xohlasangiz. 
 Buni amalga oshirish uchun veb-server parametrlarida ildiz katalogini `basic/web` ga o'zgartiring. Bundan tashqari, ["URL sozlamalari"](runtime-routing.md) qismidagi malumotga ko'ra, `index.php` yashirishi mumkin. Keyinchalik Apache va Nginx ni qanday sozlashni ko'rsatamiz.
@@ -139,7 +139,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Tavsiya etilgan Nginx sozlamalari <span id="recommended-nginx-configuration"></span>
 
-PHP Nginx uchun [FPM SAPI](https://www.php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](http://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
+PHP Nginx uchun [FPM SAPI](https://www.php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](https://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
 
 ```
 server {

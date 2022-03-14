@@ -1052,4 +1052,15 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     {
         $this->$offset = null;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_errors = null;
+        $this->_validators = null;
+    }
 }
