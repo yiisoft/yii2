@@ -91,9 +91,9 @@ class Validator extends Component
         'safe' => 'yii\validators\SafeValidator',
         'string' => 'yii\validators\StringValidator',
         'trim' => [
-            'class' => 'yii\validators\FilterValidator',
-            'filter' => 'trim',
+            'class' => 'yii\validators\TrimValidator',
             'skipOnArray' => true,
+            'skipOnEmpty' => false,
         ],
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
