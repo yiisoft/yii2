@@ -15,8 +15,8 @@ namespace yii\validators;
 class TrimValidator extends Validator
 {
     /**
-     * @var string The list of characters to strip, with `..` can specify a range of characters. For example, set
-     * '\/ ' to normalize path/namespace.
+     * @var string The list of characters to strip, with `..` can specify a range of characters.
+     * For example, set '\/ ' to normalize path or namespace.
      */
     public $chars;
     /**
