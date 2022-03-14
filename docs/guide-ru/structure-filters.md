@@ -139,7 +139,7 @@ public function behaviors()
 ### Фильтр метода аутентификации<span id="auth-method-filters"></span>
 
 Фильтр метода аутентификации используется для аутентификации пользователя различными способами, такими как
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](https://oauth.net/2/).
 Классы данных фильтров находятся в пространстве имён `yii\filters\auth`.
 
 Следующий пример показывает, как использовать [[yii\filters\auth\HttpBasicAuth]] для аутентификации пользователя с помощью

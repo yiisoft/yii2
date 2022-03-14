@@ -6,7 +6,8 @@ Yii Framework 2 Change Log
 
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
-- Bug #19256: Pass missed `$view` to user's callback in `InlineValidator::clientValidateAttribute()` (WinterSilence)
+- Bug #19256: Pass missed `$view` to user's callback in `yii\validators\InlineValidator::clientValidateAttribute()` (WinterSilence)
+- Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
 
 
 2.0.45 February 11, 2022
