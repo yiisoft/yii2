@@ -105,13 +105,12 @@ abstract class Dependency extends \yii\base\BaseObject
      */
     protected function generateReusableHash()
     {
-        $data = $this->data;
-        $this->data = null; // https://github.com/yiisoft/yii2/issues/3052
+        $clone = clone $this;
+        $clone->data = null; // https://github.com/yiisoft/yii2/issues/3052
 
         try {
-            $serialized = serialize($this);
+            $serialized = serialize($clone);
         } catch (\Exception $e) {
-            $clone = clone $this;
             // unserialeable properties are nulled
             foreach ($clone as $name => $value) {
                 if (is_object($value) && $value instanceof \Closure) {
@@ -120,8 +119,6 @@ abstract class Dependency extends \yii\base\BaseObject
             }
             $serialized = serialize($clone);
         }
-
-        $this->data = $data;
 
         return sha1($serialized);
     }
