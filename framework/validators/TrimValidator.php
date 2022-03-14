@@ -20,9 +20,10 @@ class TrimValidator extends Validator
      */
     public $chars;
     /**
-     * @var bool Skip trimming if value is array
+     * @var bool Whether the filter should be skipped if an array input is given.
+     * If true and an array input is given, the filter will not be applied.
      */
-    public $skipOnArray = true;
+    public $skipOnArray = false;
     /**
      * @inheritDoc
      */
@@ -49,7 +50,7 @@ class TrimValidator extends Validator
      */
     protected function trimValue($value)
     {
-        return $this->isEmpty($value) ? '' : trim((string) $value, $this->chars);
+        return $this->isEmpty($value) ? '' : trim((string) $value, $this->chars ?: " \n\r\t\v\x00");
     }
 
     /**
