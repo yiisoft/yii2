@@ -111,7 +111,7 @@ abstract class Dependency extends \yii\base\BaseObject
         try {
             $serialized = serialize($clone);
         } catch (\Exception $e) {
-            // unserialeable properties are nulled
+            // unserializable properties are nulled
             foreach ($clone as $name => $value) {
                 if (is_object($value) && $value instanceof \Closure) {
                     $clone->{$name} = null;
