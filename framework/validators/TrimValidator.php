@@ -15,10 +15,14 @@ namespace yii\validators;
 class TrimValidator extends Validator
 {
     /**
-     * @var string|null The list of characters to strip, with `..` can specify a range of characters.
-     * For example, use '\/ ' to normalize path/namespace.
+     * @var string The list of characters to strip, with `..` can specify a range of characters. For example, set
+     * '\/ ' to normalize path/namespace.
      */
     public $chars;
+    /**
+     * @var bool Skip trimming if value is array
+     */
+    public $skipOnArray = true;
     /**
      * @inheritDoc
      */
@@ -29,9 +33,12 @@ class TrimValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $value = $model->{$attribute};
-        if (!$this->skipOnEmpty || !$this->isEmpty($value)) {
-            $model->{$attribute} = is_array($value)
+        $value = $model->$attribute;
+        if (
+            (!$this->skipOnEmpty || !$this->isEmpty($value))
+            && (!$this->skipOnArray || !is_array($value))
+        ) {
+            $model->$attribute = is_array($value)
                 ? array_map([$this, 'trimValue'], $value)
                 : $this->trimValue($value);
         }
@@ -53,11 +60,14 @@ class TrimValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        if ($this->skipOnArray && is_array($model->$attribute)) {
+            return '';
+        }
+
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
-        $options = json_encode($options);
 
-        return 'value = yii.validation.trim($form, attribute, ' . $options . ', value);';
+        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options) . ', value);';
     }
 
     /**
@@ -66,6 +76,7 @@ class TrimValidator extends Validator
     public function getClientOptions($model, $attribute)
     {
         return [
+            'skipOnArray' => (bool) $this->skipOnArray,
             'skipOnEmpty' => (bool) $this->skipOnEmpty,
             'chars' => $this->chars ?: false,
         ];
