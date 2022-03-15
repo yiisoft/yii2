@@ -12,7 +12,6 @@
 
 yii.validation = (function ($) {
     var pub = {
-
         isEmpty: function (value) {
             return value === null || value === undefined || ($.isArray(value) && value.length === 0) || value === '';
         },
@@ -244,8 +243,17 @@ yii.validation = (function ($) {
             }
 
             value = $input.val();
-            if (!options.skipOnEmpty || !pub.isEmpty(value)) {
-                value = trimString(value, options);
+            if (
+                (!options.skipOnEmpty || !pub.isEmpty(value))
+                && (!options.skipOnArray || !Array.isArray(value))
+            ) {
+                if (Array.isArray(value)) {
+                    for (var i = 0; i < value.length; i++) {
+                        value[i] = trimString(value[i], options);
+                    }
+                } else {
+                    value = trimString(value, options);
+                }
                 $input.val(value);
             }
 
