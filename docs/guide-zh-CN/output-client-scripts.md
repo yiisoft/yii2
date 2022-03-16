@@ -35,9 +35,9 @@ $this->registerJs(
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] 用在 HEAD 部分。
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] 用在 `<body>` 标签的右边。
 - [[yii\web\View::POS_END|View::POS_END]] 用在 `</body>` 标签的左边。
-- [[yii\web\View::POS_READY|View::POS_READY]] 为了在 [`ready` 事件](http://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
+- [[yii\web\View::POS_READY|View::POS_READY]] 为了在 [`ready` 事件](https://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
   这里将自动注册 [[yii\web\JqueryAsset|jQuery]] 并将代码包装到适当的 jQuery 代码中。这是默认位置。
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] 为了在 [`load` 事件](http://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
+- [[yii\web\View::POS_LOAD|View::POS_LOAD]] 为了在 [`load` 事件](https://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
   与上面相同，这也将自动注册 [[yii\web\JqueryAsset|jQuery]]。
 
 最后一个参数是一个唯一的脚本 ID，主要是用于标识一段代码块，在添加一段新的代码块时，如果当前页面已经存在同样 ID 代码块时，那么将会被新的替换。

@@ -11,11 +11,11 @@ Yii DAO を使うときは、主として素の SQL と PHP 配列を扱う必�
 
 Yii 2.0 では、DAO は下記の DBMS のサポートを内蔵しています。
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): バージョン 8.4 以上。
-- [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): バージョン 8.4 以上。
+- [CUBRID](https://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
@@ -427,7 +427,7 @@ DBMS によっては、接続全体に対してのみ分離レベルの設定を
 すなわち、トランザクションを開始するときに、分離レベルを直接に指定することは出来ません。
 この場合、トランザクションを開始した後に [[yii\db\Transaction::setIsolationLevel()]] を呼び出す必要があります。
 
-[分離レベル]: http://ja.wikipedia.org/wiki/%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB
+[分離レベル]: https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB
 
 
 ### トランザクションを入れ子にする <span id="nesting-transactions"></span>
@@ -478,7 +478,7 @@ try {
 ## レプリケーションと読み書きの分離 <span id="read-write-splitting"></span>
 
 多くの DBMS は、データベースの可用性とサーバのレスポンス・タイムを向上させるために、
-[データベース・レプリケーション](http://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3#.E3.83.87.E3.83.BC.E3.82.BF.E3.83.99.E3.83.BC.E3.82.B9) をサポートしています。
+[データベース・レプリケーション](https://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3#.E3.83.87.E3.83.BC.E3.82.BF.E3.83.99.E3.83.BC.E3.82.B9) をサポートしています。
 データベース・レプリケーションによって、データはいわゆる *マスタ・サーバ* から *スレーブ・サーバ* に複製されます。
 データの書き込みと更新はすべてマスタ・サーバ上で実行されなければなりませんが、データの読み出しはスレーブ・サーバ上でも可能です。
 

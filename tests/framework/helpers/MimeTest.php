@@ -37,8 +37,8 @@ class MimeTest extends TestCase
 
     public function testMimeTypes()
     {
-        $this->assertSame(
-            [
+
+        $coreMimeTypes = [
                 '3dml' => 'text/vnd.in3d.3dml',
                 '3ds' => 'image/x-3ds',
                 '3g2' => 'video/3gpp2',
@@ -430,6 +430,7 @@ class MimeTest extends TestCase
                 'log' => 'text/plain',
                 'lostxml' => 'application/lost+xml',
                 'lrf' => 'application/octet-stream',
+                0 => 'application/vnd.lotus-1-2-3',
                 'lrm' => 'application/vnd.ms-lrm',
                 'ltf' => 'application/vnd.frogans.ltf',
                 'lvp' => 'audio/vnd.lucent.voice',
@@ -521,7 +522,6 @@ class MimeTest extends TestCase
                 'mseed' => 'application/vnd.fdsn.mseed',
                 'mseq' => 'application/vnd.mseq',
                 'msf' => 'application/vnd.epson.msf',
-                0 => 'application/vnd.lotus-1-2-3',
                 'msh' => 'model/mesh',
                 'msi' => 'application/x-msdownload',
                 'msl' => 'application/vnd.mobius.msl',
@@ -1024,7 +1024,13 @@ class MimeTest extends TestCase
                 'zir' => 'application/vnd.zul',
                 'zirz' => 'application/vnd.zul',
                 'zmm' => 'application/vnd.handheld-entertainment+xml',
-            ],
+            ];
+
+        if (PHP_VERSION_ID >= 80100) {
+            $coreMimeTypes = array_replace($coreMimeTypes, array('xz' => 'application/octet-stream'));
+        }
+
+        $this->assertSame($coreMimeTypes,
             require __DIR__ . '/../../../framework/helpers/mimeTypes.php'
         );
     }

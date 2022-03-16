@@ -39,8 +39,8 @@ use yii\validators\IpValidator;
  * @property string $baseUrl The relative URL for the application.
  * @property array|object $bodyParams The request parameters given in the request body. Note that the type of
  * this property differs in getter and setter. See [[getBodyParams()]] and [[setBodyParams()]] for details.
- * @property-read string $contentType Request content-type. Null is returned if this information is not
- * available.
+ * @property-read string $contentType Request content-type. Empty string is returned if this information is
+ * not available.
  * @property-read CookieCollection $cookies The cookie collection.
  * @property-read string $csrfToken The token used to perform CSRF validation.
  * @property-read string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is

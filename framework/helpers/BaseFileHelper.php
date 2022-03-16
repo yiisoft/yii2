@@ -162,10 +162,6 @@ class BaseFileHelper
             throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
 
-        if (PHP_VERSION_ID >= 80100) {
-            return static::getMimeTypeByExtension($file, $magicFile);
-        }
-
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {

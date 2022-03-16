@@ -36,7 +36,7 @@ Des options sont utilisées dans de nombreuses méthodes de la classe assistante
 
 - Si une valeur est `null`, l'attribut correspondant n'est pas rendu.
 - Les attributs du type booléen sont traités comme des 
-  [attributs booléens ](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [attributs booléens ](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Les valeurs des attributs sont encodés HTML à l'aide de la méthode [[yii\helpers\Html::encode()|Html::encode()]].
 - Si la valeur d'un attribut est un tableau, il est géré comme suit :
  

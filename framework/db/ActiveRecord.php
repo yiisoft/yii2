@@ -470,7 +470,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function attributes()
     {
-        return array_keys(static::getTableSchema()->columns);
+        return static::getTableSchema()->getColumnNames();
     }
 
     /**

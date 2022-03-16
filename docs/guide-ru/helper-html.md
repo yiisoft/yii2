@@ -45,7 +45,7 @@ Html-помощник
 
 - Если значение равно `null`, соответствующий атрибут не будет выведен.
 - Атрибуты, значения которых имеют тип boolean, будут интерпретированы как
-  [логические атрибуты](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [логические атрибуты](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Значения атрибутов будут экранированы с использованием метода [[yii\helpers\Html::encode()|Html::encode()]].
 - Если в качестве значения атрибута передан массив, он будет обработан следующим образом:
 

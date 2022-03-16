@@ -29,7 +29,7 @@
         {
             "name": "Carsten Brandt",
             "email": "mail@cebe.cc",
-            "homepage": "https://cebe.cc/",
+            "homepage": "https://www.cebe.cc/",
             "role": "Core framework development"
         },
         {
@@ -57,8 +57,8 @@
     ],
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "https://www.yiiframework.com/forum/",
-        "wiki": "https://www.yiiframework.com/wiki/",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki",
         "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },

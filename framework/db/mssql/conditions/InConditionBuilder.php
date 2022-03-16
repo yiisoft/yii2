@@ -8,7 +8,7 @@
 namespace yii\db\mssql\conditions;
 
 use yii\base\NotSupportedException;
-use yii\db\ExpressionInterface;
+use yii\db\Expression;
 
 /**
  * {@inheritdoc}
@@ -38,7 +38,7 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
     {
         $quotedColumns = [];
         foreach ($columns as $i => $column) {
-            if ($column instanceof ExpressionInterface) {
+            if ($column instanceof Expression) {
                 $column = $column->expression;
             }
             $quotedColumns[$i] = strpos($column, '(') === false ? $this->queryBuilder->db->quoteColumnName($column) : $column;
@@ -47,7 +47,7 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
         foreach ($values as $value) {
             $vs = [];
             foreach ($columns as $i => $column) {
-                if ($column instanceof ExpressionInterface) {
+                if ($column instanceof Expression) {
                     $column = $column->expression;
                 }
                 if (isset($value[$column])) {

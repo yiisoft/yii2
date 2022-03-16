@@ -175,7 +175,7 @@ use yii\widgets\ActiveForm;
 A view usa um poderoso [widget](structure-widgets.md) chamado
 [[yii\widgets\ActiveForm|ActiveForm]] para construir o formulário HTML. Os métodos
 `begin()` e `end()` do widget renderizam as tags de abertura e de fechamento do formulário.
-Entre as duas chamadas de métido, campos são criados pelo
+Entre as duas chamadas de método, campos são criados pelo
 método [[yii\widgets\ActiveForm::field()|field()]]. O primeiro campo é para o nome e o segundo é para o e-mail. Após os campos,
 o método [[yii\helpers\Html::submitButton()]] é chamado para criar um botão de envio do formulário (submit).
 

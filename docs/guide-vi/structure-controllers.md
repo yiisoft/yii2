@@ -1,7 +1,7 @@
 Bộ điều khiển (Controller)
 ===========
 
-Controller thuộc một phần trong mẫu thiết kế [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Controller thuộc một phần trong mẫu thiết kế [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
 Controller là đối tượng được kế thừa từ class [[yii\base\Controller]] và chịu trách nhiệm xứ lý các yêu cầu và gửi phản hồi
 . Đặc biệt, sau khi tiếp nhận các yêu cầu điều khiển từ [ứng dụng](structure-applications.md),
 controllers sẽ phân tích thông tin yêu cầu được gửi đến, gửi dữ liệu qua [models](structure-models.md) để xử lý, và gán kết quả xử lý từ model
