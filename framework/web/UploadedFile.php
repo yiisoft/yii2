@@ -190,7 +190,7 @@ class UploadedFile extends BaseObject
         }
 
         $targetFile = Yii::getAlias($file);
-        if ($this->_tempResource !== null) {
+        if (is_resource($this->_tempResource)) {
             $result = $this->copyTempFile($targetFile);
             return $deleteTempFile ? @fclose($this->_tempResource) : (bool) $result;
         }
