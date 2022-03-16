@@ -60,6 +60,7 @@ class UploadedFile extends BaseObject
     /**
      * @var string|null The full path as submitted by the browser. Note this value does not always
      * contain a real directory structure, and cannot be trusted. Available as of PHP 8.1. 
+     * @since 2.0.46
      */
     public $fullPath;
 
@@ -189,7 +190,7 @@ class UploadedFile extends BaseObject
         }
 
         $targetFile = Yii::getAlias($file);
-        if (is_resource($this->_tempResource)) {
+        if ($this->_tempResource !== null) {
             $result = $this->copyTempFile($targetFile);
             return $deleteTempFile ? @fclose($this->_tempResource) : (bool) $result;
         }
@@ -201,7 +202,7 @@ class UploadedFile extends BaseObject
      * Copy temporary file into file specified
      *
      * @param string $targetFile path of the file to copy to
-     * @return bool|int the total count of bytes copied, or false on failure
+     * @return int|false the total count of bytes copied, or false on failure
      * @since 2.0.32
      */
     protected function copyTempFile($targetFile)
@@ -305,11 +306,11 @@ class UploadedFile extends BaseObject
             self::$_files[$key] = [
                 'name' => $names,
                 'tempName' => $tempNames,
-                'tempResource' => $tempResources,
+                'tempResource' => is_resource($tempResources) ? $tempResources : null,
                 'type' => $types,
                 'size' => $sizes,
                 'error' => $errors,
-                'fullPath' => $fullPaths,
+                'fullPath' => is_string($fullPaths) ? $fullPaths : null,
             ];
         }
     }
