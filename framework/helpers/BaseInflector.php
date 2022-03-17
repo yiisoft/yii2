@@ -368,7 +368,7 @@ class BaseInflector
      */
     public static function camelize($word)
     {
-        if (empty($name)) {
+        if (empty($word)) {
             return (string) $word;
         }
         return str_replace(' ', '', StringHelper::mb_ucwords(preg_replace('/[^\pL\pN]+/u', ' ', $word), self::encoding()));
