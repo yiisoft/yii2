@@ -56,7 +56,6 @@ use yii\validators\Validator;
  */
 class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
-    use ArrayableTrait;
     use StaticInstanceTrait;
 
     /**
@@ -1037,7 +1036,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Sets the element value at the specified offset to null.
-     * This method is required by the SPL interface [[\ArrayAccess]].
+     * This method is required by the interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param string $offset the offset to unset element
      */
@@ -1045,6 +1044,18 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function offsetUnset($offset)
     {
         $this->$offset = null;
+    }
+
+    /**
+     * Returns the number of attributes in current scenario. 
+     *
+     * This method is required by the interface [[\Countable]].
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->activeAttributes());
     }
 
     /**
