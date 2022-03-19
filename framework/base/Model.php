@@ -56,6 +56,7 @@ use yii\validators\Validator;
  */
 class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
+    use ArrayableTrait;
     use StaticInstanceTrait;
 
     /**
