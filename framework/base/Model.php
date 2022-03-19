@@ -1037,7 +1037,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Sets the element value at the specified offset to null.
-     * This method is required by the interface [[\ArrayAccess]].
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param string $offset the offset to unset element
      */
