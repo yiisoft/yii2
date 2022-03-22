@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
 - Enh #19304: Add filtering validator `yii\validators\TrimValidator` (WinterSilence)
+- Enh #19309: Optimize `yii\base\Model::attributes()` (WinterSilence)
 
 
 2.0.45 February 11, 2022
