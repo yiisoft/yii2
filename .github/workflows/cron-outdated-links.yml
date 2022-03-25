@@ -14,5 +14,5 @@ jobs:
     steps:
       - name: Fix files
         shell: bash
-        # run `fix-links/index`
+        # run `FixLinksController::actionIndex()`
         run: './build/build fix-links'
