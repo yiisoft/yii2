@@ -124,7 +124,7 @@ class FixLinksController extends Controller
 
             if (!empty($outdated['updated'])) {
                 $outdated['updated'] = \call_user_func_array('array_merge', $outdated['updated']);
-                \file_put_contents($file, \strtr($content, \array_unique($outdated['updated'])));
+                \file_put_contents($file, \strtr($content, $outdated['updated']));
             }
             if (!empty($outdated['removed'])) {
                 $outdated['removed'] = \call_user_func_array('array_merge', $outdated['removed']);
