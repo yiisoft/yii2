@@ -54,7 +54,7 @@ for both A and B.
 Upgrade from Yii 2.0.45
 -----------------------
 
-* `trim` validator has been extracted into `yii\validators\TrimValidator` with `$chars` property to customize characters to trim:
+* `trim` validator has been extracted into `yii\validators\TrimValidator` with `chars` property to customize characters to trim:
     ```php
     public function rules()
     {
@@ -71,7 +71,7 @@ Upgrade from Yii 2.0.44
 * `yii\filters\PageCache::$cacheHeaders` now takes a case-sensitive list of header names since PageCache is no longer 
   storing the normalized (lowercase) versions of them so make sure this list is properly updated and your page cache 
   is recreated.
-* Added `$pagination` and `$sort` properties to `\yii\rest\IndexAction`.
+* Added `pagination` and `sort` properties into `\yii\rest\IndexAction`.
 
 Upgrade from Yii 2.0.43
 -----------------------
