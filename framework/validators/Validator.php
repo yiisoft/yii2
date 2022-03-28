@@ -41,7 +41,7 @@ use yii\base\NotSupportedException;
  * - `required`: [[RequiredValidator]]
  * - `safe`: [[SafeValidator]]
  * - `string`: [[StringValidator]]
- * - `trim`: [[FilterValidator]]
+ * - `trim`: [[TrimValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
@@ -91,8 +91,7 @@ class Validator extends Component
         'safe' => 'yii\validators\SafeValidator',
         'string' => 'yii\validators\StringValidator',
         'trim' => [
-            'class' => 'yii\validators\FilterValidator',
-            'filter' => 'trim',
+            'class' => 'yii\validators\TrimValidator',
             'skipOnArray' => true,
         ],
         'unique' => 'yii\validators\UniqueValidator',
