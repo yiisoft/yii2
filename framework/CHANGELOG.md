@@ -8,6 +8,9 @@ Yii Framework 2 Change Log
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
 - Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
+- Enh #19304: Add filtering validator `yii\validators\TrimValidator` (WinterSilence)
+- Enh #19309: Optimize `yii\base\Model::attributes()` (WinterSilence)
+- Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
 
 
 2.0.45 February 11, 2022
