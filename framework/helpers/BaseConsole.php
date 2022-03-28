@@ -998,7 +998,7 @@ class BaseConsole
      * @param int $total the total value of items that are to be done.
      * @param string $prefix an optional string to display before the progress bar.
      * Default to empty string which results in no prefix to be displayed.
-     * @param int|bool $width optional width of the progressbar. This can be an integer representing
+     * @param int|float|bool $width optional width of the progressbar. This can be an integer representing
      * the number of characters to display for the progress bar or a float between 0 and 1 representing the
      * percentage of screen with the progress bar may take. It can also be set to false to disable the
      * bar and only show progress information like percent, number of items and ETA.

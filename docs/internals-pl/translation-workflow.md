@@ -14,7 +14,7 @@ Aby rozpocząć tłumaczenie komunikatów:
 
 1. Sprawdź plik `framework/messages/config.php` i upewnij się, że Twój język jest wymieniony w sekcji `languages`. 
    Jeśli nie, dodaj go tam (pamiętaj, że lista powinna być posortowana alfabetycznie). Format kodu języka powinien być zgodny 
-   ze [specyfikacją IETF](http://en.wikipedia.org/wiki/IETF_language_tag) (przykładowo `ru`, `zh-CN`).
+   ze [specyfikacją IETF](https://en.wikipedia.org/wiki/IETF_language_tag) (przykładowo `ru`, `zh-CN`).
 2. Przejdź do folderu `framework` i uruchom `./yii message/extract @yii/messages/config.php --languages=<twoj_jezyk>`.
 3. Przetłumacz komunikaty w pliku `framework/messages/twoj_jezyk/yii.php`. Upewnij się, że zapisujesz plik z kodowaniem UTF-8.
 4. [Wyślij prośbę o dołączenie kodu](git-workflow.md).
