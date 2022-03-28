@@ -17,11 +17,12 @@ namespace yii\validators;
 class InlineValidator extends Validator
 {
     /**
-     * @var string|\Closure an anonymous function or the name of a model class method that will be
+     * @var string|callable an anonymous function or the name of a model class method that will be
      * called to perform the actual validation. The signature of the method should be like the following:
      *
      * ```php
-     * function (string $attribute, mixed $params, InlineValidator $validator, mixed $current) {}
+     * function (string $attribute, mixed $params, InlineValidator $validator, mixed $current): bool {
+     * }
      * ```
      *
      * - `$attribute` is the name of the attribute to be validated
