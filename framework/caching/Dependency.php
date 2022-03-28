@@ -101,7 +101,7 @@ abstract class Dependency extends \yii\base\BaseObject
      * Generates a unique hash that can be used for retrieving reusable dependency data.
      *
      * @return string a unique hash value for this cache dependency.
-     * @see $reusable
+     * @see reusable
      */
     protected function generateReusableHash()
     {
