@@ -265,8 +265,8 @@ class UploadedFile extends BaseObject
                         $info['type'],
                         $info['size'],
                         $info['error'],
-                        $info['full_path'],
-                        $resource
+                        isset($info['full_path']) ? $info['full_path'] : [],
+                        isset($info['tmp_resource']) ? $info['tmp_resource'] : []
                     );
                 }
             }
