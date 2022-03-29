@@ -78,19 +78,7 @@ class FixLinksController extends Controller
                 $outdated['updated'][] = $outdatedPart['updated'];
                 $outdated['removed'][] = $outdatedPart['removed'];
             }
-            $outdated['updated'] = array_filter($outdated['updated']);
-            $outdated['removed'] = array_filter($outdated['removed']);
-            if (!empty($outdated['updated'])) {
-                $outdated['updated'] = \call_user_func_array('array_merge', $outdated['updated']);
-                \file_put_contents($file, \strtr($content, $outdated['updated']));
-            }
-            if (!empty($outdated['removed'])) {
-                $outdated['removed'] = \call_user_func_array('array_merge', $outdated['removed']);
-                $this->stderr(
-                    "Outdated links in '$file':\n" . \implode("\n", \array_unique($outdated['removed'])) . "\n\n",
-                    Console::FG_RED
-                );
-            }
+            $this->fixAndReportOutdatedLinks($file, $content, $outdated['updated'], $outdated['removed']);
         }
     }
 
@@ -118,20 +106,32 @@ class FixLinksController extends Controller
                 $outdated['updated'][] = $outdatedPart['updated'];
                 $outdated['removed'][] = $outdatedPart['removed'];
             }
-            $outdated['updated'] = array_filter($outdated['updated']);
-            $outdated['removed'] = array_filter($outdated['removed']);
+            $this->fixAndReportOutdatedLinks($file, $content, $outdated['updated'], $outdated['removed']);
+        }
+    }
 
-            if (!empty($outdated['updated'])) {
-                $outdated['updated'] = \call_user_func_array('array_merge', $outdated['updated']);
-                \file_put_contents($file, \strtr($content, $outdated['updated']));
-            }
-            if (!empty($outdated['removed'])) {
-                $outdated['removed'] = \call_user_func_array('array_merge', $outdated['removed']);
-                $this->stderr(
-                    "Outdated links in '$file':\n" . \implode("\n", \array_unique($outdated['removed'])) . "\n\n",
-                    Console::FG_RED
-                );
-            }
+    /**
+     * @var string $file the file to fix
+     * @var string $content the file content
+     * @var array $updated the updated URLs
+     * @var array $removed the removed URLs
+     * @return void
+     */
+    private function fixAndReportOutdatedLinks($file, $content, array $updated, array $removed)
+    {
+        $updated = \array_filter($updated);
+        if (!empty($updated)) {
+            $updated = \call_user_func_array('array_merge', $updated);
+            \file_put_contents($file, \strtr($content, $updated));
+        }
+
+        $removed = \array_filter($removed);
+        if (!empty($removed)) {
+            $removed = \call_user_func_array('array_merge', $removed);
+            $this->stderr(
+                "Outdated links in '$file':\n" . \implode("\n", \array_unique($removed)) . "\n\n",
+                Console::FG_RED
+            );
         }
     }
 
