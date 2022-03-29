@@ -10,12 +10,12 @@ namespace yii\build\controllers;
 use yii\build\helpers\LinkChecker;
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use Yii;
 
 /**
- * Replaces outdated links(3xx response codes) add collect removed links (4xx response codes) in file
- * `./build/runtime/outdated-links.log`.
+ * Replaces outdated links(3xx response codes) add display removed links(4xx response codes).
  *
  * This method scan PHP sources(DocBlock) and documentation(Markdown).
  *
@@ -37,20 +37,6 @@ class FixLinksController extends Controller
      */
     public function actionIndex()
     {
-        Yii::$app->set(
-            'log',
-            [
-                'traceLevel' => 0,
-                'targets' => [
-                    [
-                        'class' => '\yii\log\FileTarget',
-                        'levels' => ['info'],
-                        'logVars' => [],
-                        'logFile' => '@runtime/outdated-links.log'
-                    ],
-                ],
-            ]
-        );
         $this->linkChecker = new LinkChecker();
         $this->fixSources();
         $this->fixDocs();
@@ -82,15 +68,28 @@ class FixLinksController extends Controller
         foreach ($files as $file) {
             $content = \file_get_contents($file);
             $tokens = \token_get_all($content);
+            $outdated = ['updated' => [], 'removed' => []];
             foreach ($tokens as $token) {
                 // check links only in comments
                 if (!\is_array($token) || !\in_array($token[0], [\T_COMMENT, \T_DOC_COMMENT], true)) {
                     continue;
                 }
-                $urls = $this->findOutdatedLinks($token[1]);
-                if (!empty($urls)) {
-                    \file_put_contents($file, \strtr($content, $urls));
-                }
+                $outdatedPart = $this->findOutdatedLinks($token[1]);
+                $outdated['updated'][] = $outdatedPart['updated'];
+                $outdated['removed'][] = $outdatedPart['removed'];
+            }
+            $outdated['updated'] = array_filter($outdated['updated']);
+            $outdated['removed'] = array_filter($outdated['removed']);
+            if (!empty($outdated['updated'])) {
+                $outdated['updated'] = \call_user_func_array('array_merge', $outdated['updated']);
+                \file_put_contents($file, \strtr($content, $outdated['updated']));
+            }
+            if (!empty($outdated['removed'])) {
+                $outdated['removed'] = \call_user_func_array('array_merge', $outdated['removed']);
+                $this->stderr(
+                    "Outdated links in '$file':\n" . \implode("\n", \array_unique($outdated['removed'])) . "\n\n",
+                    Console::FG_RED
+                );
             }
         }
     }
@@ -128,7 +127,10 @@ class FixLinksController extends Controller
             }
             if (!empty($outdated['removed'])) {
                 $outdated['removed'] = \call_user_func_array('array_merge', $outdated['removed']);
-                Yii::info("Outdated links in '$file':\n" . \implode("\n", \array_unique($outdated['removed'])) . "\n");
+                $this->stderr(
+                    "Outdated links in '$file':\n" . \implode("\n", \array_unique($outdated['removed'])) . "\n\n",
+                    Console::FG_RED
+                );
             }
         }
     }
