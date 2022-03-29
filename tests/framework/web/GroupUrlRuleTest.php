@@ -241,6 +241,21 @@ class GroupUrlRuleTest extends TestCase
                 ],
             ],
             [
+                'slash prefix',
+                [
+                    'prefix' => '/',
+                    'rules' => [
+                        'login' => 'user/login',
+                        'logout' => 'user/logout',
+                    ],
+                ],
+                [
+                    ['login', 'user/login'],
+                    ['logout', 'user/logout'],
+                    ['create', false],
+                ],
+            ],
+            [
                 'prefix only',
                 [
                     'prefix' => 'admin',
