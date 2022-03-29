@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Enh #19304: Add filtering validator `yii\validators\TrimValidator` (WinterSilence)
 - Enh #19309: Optimize `yii\base\Model::attributes()` (WinterSilence)
 - Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
+- Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 
 
 2.0.45 February 11, 2022
