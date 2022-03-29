@@ -256,8 +256,6 @@ class UploadedFile extends BaseObject
             self::$_files = [];
             if (isset($_FILES) && is_array($_FILES)) {
                 foreach ($_FILES as $key => $info) {
-                    $info['full_path'] = isset($info['full_path']) ? $info['full_path'] : [];
-                    $resource = isset($info['tmp_resource']) ? $info['tmp_resource'] : [];
                     self::loadFilesRecursive(
                         $key,
                         $info['name'],
