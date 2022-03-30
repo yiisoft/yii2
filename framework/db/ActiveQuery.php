@@ -81,12 +81,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     const EVENT_INIT = 'init';
 
     /**
-     * @var string the SQL statement to be executed for retrieving AR records.
+     * @var string|null the SQL statement to be executed for retrieving AR records.
      * This is set by [[ActiveRecord::findBySql()]].
      */
     public $sql;
     /**
-     * @var string|array the join condition to be used when this query is used in a relational context.
+     * @var string|array|null the join condition to be used when this query is used in a relational context.
      * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
      * Otherwise, the condition will be used in the WHERE part of a query.
      * Please refer to [[Query::where()]] on how to specify this parameter.
@@ -94,7 +94,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $on;
     /**
-     * @var array a list of relations that this query should be joined with
+     * @var array|null a list of relations that this query should be joined with
      */
     public $joinWith;
 
