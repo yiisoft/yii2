@@ -80,7 +80,7 @@ class User extends Component
      */
     public $enableSession = true;
     /**
-     * @var string|array the URL for login when [[loginRequired()]] is called.
+     * @var string|array|null the URL for login when [[loginRequired()]] is called.
      * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
      * The first element of the array should be the route to the login action, and the rest of
      * the name-value pairs are GET parameters used to construct the login URL. For example,
@@ -368,7 +368,7 @@ class User extends Component
 
     /**
      * Returns a value that uniquely represents the user.
-     * @return string|int the unique identifier for the user. If `null`, it means the user is a guest.
+     * @return string|int|null the unique identifier for the user. If `null`, it means the user is a guest.
      * @see getIdentity()
      */
     public function getId()
@@ -384,7 +384,7 @@ class User extends Component
      * This method reads the return URL from the session. It is usually used by the login action which
      * may call this method to redirect the browser to where it goes after successful authentication.
      *
-     * @param string|array $defaultUrl the default return URL in case it was not set previously.
+     * @param string|array|null $defaultUrl the default return URL in case it was not set previously.
      * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
      * Please refer to [[setReturnUrl()]] on accepted format of the URL.
      * @return string the URL that the user should be redirected to after login.

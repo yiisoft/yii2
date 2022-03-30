@@ -26,7 +26,7 @@ class Column extends BaseObject
      */
     public $grid;
     /**
-     * @var null|string the header cell content. Note that it will not be HTML-encoded.
+     * @var string|null the header cell content. Note that it will not be HTML-encoded.
      */
     public $header;
     /**

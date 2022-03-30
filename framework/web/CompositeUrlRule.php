@@ -130,7 +130,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      * For multiple rules statuses will be combined by bitwise `or` operator
      * (e.g. `UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_PARAMS_MISMATCH`).
      *
-     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * @return int|null Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
      * @see createStatus
      * @see https://www.php.net/manual/en/language.operators.bitwise.php
