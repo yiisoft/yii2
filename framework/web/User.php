@@ -112,7 +112,7 @@ class User extends Component
      */
     public $accessChecker;
     /**
-     * @var int the number of seconds in which the user will be logged out automatically
+     * @var int|null the number of seconds in which the user will be logged out automatically
      * regardless of activity.
      * Note that this will not work if [[enableAutoLogin]] is `true`.
      */
