@@ -30,7 +30,7 @@ use yii\helpers\Url;
 class AssetBundle extends BaseObject
 {
     /**
-     * @var string the directory that contains the source asset files for this asset bundle.
+     * @var string|null the directory that contains the source asset files for this asset bundle.
      * A source asset file is a file that is part of your source code repository of your Web application.
      *
      * You must set this property if the directory containing the source asset files is not Web accessible.

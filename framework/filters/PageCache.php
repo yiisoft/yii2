@@ -116,7 +116,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public $enabled = true;
     /**
-     * @var \yii\base\View the view component to use for caching. If not set, the default application view component
+     * @var \yii\base\View|null the view component to use for caching. If not set, the default application view component
      * [[\yii\web\Application::view]] will be used.
      */
     public $view;

@@ -69,7 +69,7 @@ class Dispatcher extends Component
     public $targets = [];
 
     /**
-     * @var Logger the logger.
+     * @var Logger|null the logger.
      */
     private $_logger;
 

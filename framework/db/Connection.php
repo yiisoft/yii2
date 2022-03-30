@@ -284,7 +284,7 @@ class Connection extends Component
         'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
     ];
     /**
-     * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
+     * @var string|null Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
      * @see pdo
      */
     public $pdoClass;
@@ -1004,7 +1004,7 @@ class Connection extends Component
     /**
      * Returns the name of the DB driver. Based on the the current [[dsn]], in case it was not set explicitly
      * by an end user.
-     * @return string name of the DB driver
+     * @return string|null name of the DB driver
      */
     public function getDriverName()
     {
