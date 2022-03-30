@@ -1110,9 +1110,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param bool $asArray whether to return the primary key value as an array. If `true`,
      * the return value will be an array with column names as keys and column values as values.
      * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-     * @property mixed The primary key value. An array (column name => column value) is returned if
-     * the primary key is composite. A string is returned otherwise (null will be returned if
-     * the key value is null).
      * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is `true`. A string is returned otherwise (null will be returned if
      * the key value is null).
@@ -1140,9 +1137,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param bool $asArray whether to return the primary key value as an array. If `true`,
      * the return value will be an array with column name as key and column value as value.
      * If this is `false` (default), a scalar value will be returned for non-composite primary key.
-     * @property mixed The old primary key value. An array (column name => column value) is
-     * returned if the primary key is composite. A string is returned otherwise (null will be
-     * returned if the key value is null).
      * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is `true`. A string is returned otherwise (null will be returned if
      * the key value is null).
