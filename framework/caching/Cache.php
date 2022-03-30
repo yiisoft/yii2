@@ -62,7 +62,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $keyPrefix;
     /**
-     * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
+     * @var array|null|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
      * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
      * serializer (e.g. [igbinary](https://pecl.php.net/package/igbinary)), you may configure this property with
      * a two-element array. The first element specifies the serialization function, and the second the deserialization
@@ -229,9 +229,9 @@ abstract class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * default [[defaultDuration]] value is used.
-     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
@@ -261,9 +261,9 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * default [[defaultDuration]] value is used.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
@@ -280,9 +280,9 @@ abstract class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * default [[defaultDuration]] value is used.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
@@ -319,7 +319,7 @@ abstract class Cache extends Component implements CacheInterface
      *
      * @param array $items the items to be cached, as key-value pairs.
      * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
@@ -336,7 +336,7 @@ abstract class Cache extends Component implements CacheInterface
      *
      * @param array $items the items to be cached, as key-value pairs.
      * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
@@ -370,7 +370,7 @@ abstract class Cache extends Component implements CacheInterface
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
@@ -590,9 +590,9 @@ abstract class Cache extends Component implements CacheInterface
      * If you use $callable that can return `false`, then keep in mind that [[getOrSet()]] may work inefficiently
      * because the [[yii\caching\Cache::get()]] method uses `false` return value to indicate the data item is not found
      * in the cache. Thus, caching of `false` value will lead to unnecessary internal calls.
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
-     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.
      * @return mixed result of $callable execution

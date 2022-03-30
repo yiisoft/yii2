@@ -126,7 +126,7 @@ abstract class Application extends Module
      */
     public $requestedRoute;
     /**
-     * @var Action the requested Action. If null, it means the request cannot be resolved into an action.
+     * @var Action|null the requested Action. If null, it means the request cannot be resolved into an action.
      */
     public $requestedAction;
     /**
@@ -517,7 +517,7 @@ abstract class Application extends Module
 
     /**
      * Returns the cache component.
-     * @return \yii\caching\CacheInterface the cache application component. Null if the component is not enabled.
+     * @return \yii\caching\CacheInterface|null the cache application component. Null if the component is not enabled.
      */
     public function getCache()
     {
@@ -643,7 +643,7 @@ abstract class Application extends Module
      * This method replaces the `exit()` function by ensuring the application life cycle is completed
      * before terminating the application.
      * @param int $status the exit status (value 0 means normal exit while other values mean abnormal exit).
-     * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
+     * @param Response|null $response the response to be sent. If not set, the default application [[response]] component will be used.
      * @throws ExitException if the application is in testing mode
      */
     public function end($status = 0, $response = null)

@@ -585,7 +585,7 @@ class BaseArrayHelper
      * @param array $array
      * @param string|\Closure $from
      * @param string|\Closure $to
-     * @param string|\Closure $group
+     * @param string|\Closure|null $group
      * @return array
      */
     public static function map($array, $from, $to, $group = null)
@@ -697,7 +697,7 @@ class BaseArrayHelper
      * @param array $data data to be encoded
      * @param bool $valuesOnly whether to encode array values only. If false,
      * both the array keys and array values will be encoded.
-     * @param string $charset the charset that the data is using. If not set,
+     * @param string|null $charset the charset that the data is using. If not set,
      * [[\yii\base\Application::charset]] will be used.
      * @return array the encoded data
      * @see https://www.php.net/manual/en/function.htmlspecialchars.php

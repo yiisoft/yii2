@@ -124,7 +124,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns all results as an array.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
      */
@@ -778,7 +778,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param array $link the link between the junction table and the table associated with [[primaryModel]].
      * The keys of the array represent the columns in the junction table, and the values represent the columns
      * in the [[primaryModel]] table.
-     * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
+     * @param callable|null $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the query object itself
      * @throws InvalidConfigException when query is not initialized properly

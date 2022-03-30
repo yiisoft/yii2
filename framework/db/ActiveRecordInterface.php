@@ -310,7 +310,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * Customer::deleteAll([status = 3]);
      * ```
      *
-     * @param array $condition the condition that matches the records that should get deleted.
+     * @param array|null $condition the condition that matches the records that should get deleted.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
      * @return int the number of rows deleted
@@ -335,7 +335,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attribute names that need to be saved. Defaults to `null`,
+     * @param array|null $attributeNames list of attribute names that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the saving succeeded (i.e. no validation errors occurred).
      */
@@ -356,7 +356,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
      */
@@ -377,7 +377,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributeNames list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return int|bool the number of rows affected, or `false` if validation fails
      * or updating process is stopped for other reasons.

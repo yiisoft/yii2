@@ -191,7 +191,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * ```
      *
      * @param int $batchSize the number of records to be fetched in each batch.
-     * @param Connection $db the database connection. If not set, the "db" application component will be used.
+     * @param Connection|null $db the database connection. If not set, the "db" application component will be used.
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
@@ -219,7 +219,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * ```
      *
      * @param int $batchSize the number of records to be fetched in each batch.
-     * @param Connection $db the database connection. If not set, the "db" application component will be used.
+     * @param Connection|null $db the database connection. If not set, the "db" application component will be used.
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
@@ -290,7 +290,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     /**
      * Returns the query result as a scalar value.
      * The value returned will be the first column in the first row of the query results.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
@@ -372,7 +372,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the sum of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the sum of the specified column values.
      */
@@ -389,7 +389,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the average of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
      */
@@ -633,7 +633,7 @@ PATTERN;
      * Starting from version 2.0.1, you may also select sub-queries as columns by specifying each such column
      * as a `Query` instance representing the sub-query.
      *
-     * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
+     * @param string|null $option additional option that should be appended to the 'SELECT' keyword. For example,
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
      * @return $this the query object itself
      */
@@ -1324,7 +1324,7 @@ PATTERN;
      * Use a negative number to indicate that query cache should not be used.
      * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
      * Defaults to `true`.
-     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached result.
+     * @param \yii\caching\Dependency|null $dependency the cache dependency associated with the cached result.
      * @return $this the Query object itself
      * @since 2.0.14
      */

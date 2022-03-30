@@ -34,7 +34,7 @@ class UnknownCommandException extends Exception
      * @param string $route the route of the command that could not be found.
      * @param Application $application the console application instance involved.
      * @param int $code the Exception code.
-     * @param \Exception $previous the previous exception used for the exception chaining.
+     * @param \Exception|null $previous the previous exception used for the exception chaining.
      */
     public function __construct($route, $application, $code = 0, \Exception $previous = null)
     {
