@@ -12,7 +12,7 @@ use yii\base\Component;
 use yii\base\Exception;
 
 /**
- * AssetConverter supports conversion of several popular script formats into JS or CSS scripts.
+ * AssetConverter supports conversion of several popular formats into JS or CSS files.
  *
  * It is used by [[AssetManager]] to convert files after they have been published.
  *
@@ -36,14 +36,14 @@ class AssetConverter extends Component implements AssetConverterInterface
      * ]
      * ```
      *
-     * Note: `Yii::getAlias()` can replace alias at the start of the command only.
+     * Note: `Yii::getAlias()` can replace alias at the begin of the command only.
      *
      * @see https://sass-lang.com/documentation/cli/ SASS/SCSS
      */
     public $commands = [
         'less' => ['css', 'lessc {from} {to} --no-color --source-map'],
         'scss' => ['css', 'sass --style=compressed {from} {to}'],
-        'sass' => ['css', 'sass --style=compressed --sourcemap=auto {from} {to}'],
+        'sass' => ['css', 'sass --style=compressed {from} {to}'],
         'styl' => ['css', 'stylus < {from} > {to}'],
         'coffee' => ['js', 'coffee -p {from} > {to}'],
         'ts' => ['js', 'tsc --out {to} {from}'],
