@@ -52,7 +52,7 @@ use yii\helpers\Url;
  * @property-read bool $isServerError Whether this response indicates a server error.
  * @property-read bool $isSuccessful Whether this response is successful.
  * @property int $statusCode The HTTP status code to send with the response.
- * @property-write \Exception|\Error|\Throwable $statusCodeByException The exception object.
+ * @property-write \Throwable $statusCodeByException The exception object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -297,7 +297,7 @@ class Response extends \yii\base\Response
 
     /**
      * Sets the response status code based on the exception.
-     * @param \Exception|\Error|\Throwable $e the exception object.
+     * @param \Throwable $e the exception object.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12

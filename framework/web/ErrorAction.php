@@ -75,7 +75,7 @@ class ErrorAction extends Action
     public $layout;
 
     /**
-     * @var \Exception the exception object, normally is filled on [[init()]] method call.
+     * @var \Throwable the exception object, normally is filled on [[init()]] method call.
      * @see findException() to know default way of obtaining exception.
      * @since 2.0.11
      */
@@ -157,7 +157,7 @@ class ErrorAction extends Action
      * Gets exception from the [[yii\web\ErrorHandler|ErrorHandler]] component.
      * In case there is no exception in the component, treat as the action has been invoked
      * not from error handler, but by direct route, so '404 Not Found' error will be displayed.
-     * @return \Exception
+     * @return \Throwable
      * @since 2.0.11
      */
     protected function findException()

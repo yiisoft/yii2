@@ -210,7 +210,7 @@ class Dispatcher extends Component
      * Generate target error message
      *
      * @param Target $target log target object
-     * @param \Throwable|\Exception $throwable catched exception
+     * @param \Throwable $throwable catched exception
      * @param string $method full method path
      * @return array generated error message data
      * @since 2.0.32
