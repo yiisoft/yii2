@@ -67,7 +67,7 @@ class ErrorAction extends Action
      */
     public $defaultMessage;
     /**
-     * @var string|false|null the name of the layout to be applied to this error action view.
+     * @var string|null|false the name of the layout to be applied to this error action view.
      * If not set, the layout configured in the controller will be used.
      * @see \yii\base\Controller::$layout
      * @since 2.0.14

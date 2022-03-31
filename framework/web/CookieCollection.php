@@ -212,7 +212,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It is implicitly called when you use something like `$cookie = $collection[$name];`.
      * This is equivalent to [[get()]].
      * @param string $name the cookie name
-     * @return Cookie the cookie with the specified name, null if the named cookie does not exist.
+     * @return Cookie|null the cookie with the specified name, null if the named cookie does not exist.
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($name)

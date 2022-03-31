@@ -544,7 +544,7 @@ class Component extends BaseObject
      * wildcard will be removed, while handlers registered with plain names matching this wildcard will remain.
      *
      * @param string $name event name
-     * @param callable $handler the event handler to be removed.
+     * @param callable|null $handler the event handler to be removed.
      * If it is null, all handlers attached to the named event will be removed.
      * @return bool if a handler is found and detached
      * @see on()
@@ -645,7 +645,7 @@ class Component extends BaseObject
     /**
      * Returns the named behavior object.
      * @param string $name the behavior name
-     * @return null|Behavior the behavior object, or null if the behavior does not exist
+     * @return Behavior|null the behavior object, or null if the behavior does not exist
      */
     public function getBehavior($name)
     {
@@ -703,7 +703,7 @@ class Component extends BaseObject
      * Detaches a behavior from the component.
      * The behavior's [[Behavior::detach()]] method will be invoked.
      * @param string $name the behavior's name.
-     * @return null|Behavior the detached behavior. Null if the behavior does not exist.
+     * @return Behavior|null the detached behavior. Null if the behavior does not exist.
      */
     public function detachBehavior($name)
     {
