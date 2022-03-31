@@ -59,7 +59,7 @@ class UploadedFile extends BaseObject
     public $error;
     /**
      * @var string|null The full path as submitted by the browser. Note this value does not always
-     * contain a real directory structure, and cannot be trusted. Available as of PHP 8.1. 
+     * contain a real directory structure, and cannot be trusted. Available as of PHP 8.1.
      * @since 2.0.46
      */
     public $fullPath;
@@ -103,7 +103,7 @@ class UploadedFile extends BaseObject
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return null|UploadedFile the instance of the uploaded file.
+     * @return UploadedFile|null the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified model attribute.
      * @see getInstanceByName()
      */
@@ -131,7 +131,7 @@ class UploadedFile extends BaseObject
      * Returns an uploaded file according to the given file input name.
      * The name can be a plain string or a string like an array element (e.g. 'Post[imageFile]', or 'Post[0][imageFile]').
      * @param string $name the name of the file input field.
-     * @return null|UploadedFile the instance of the uploaded file.
+     * @return UploadedFile|null the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified name.
      */
     public static function getInstanceByName($name)

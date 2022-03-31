@@ -250,7 +250,7 @@ class Pagination extends BaseObject implements Linkable
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
      * @param int $page the zero-based page number that the URL should point to.
-     * @param int $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
+     * @param int|null $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
      * @param bool $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the created URL
      * @see params
@@ -339,7 +339,7 @@ class Pagination extends BaseObject implements Linkable
      * Returns the value of the specified query parameter.
      * This method returns the named parameter value from [[params]]. Null is returned if the value does not exist.
      * @param string $name the parameter name
-     * @param string $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
+     * @param string|null $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
      * @return string|null the parameter value
      */
     protected function getQueryParam($name, $defaultValue = null)

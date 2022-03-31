@@ -132,7 +132,7 @@ class Validator extends Component
      */
     public $skipOnError = true;
     /**
-     * @var bool whether this validation rule should be skipped if the attribute value
+     * @var bool|null whether this validation rule should be skipped if the attribute value
      * is null or an empty string. This property is used only when validating [[yii\base\Model]].
      */
     public $skipOnEmpty = true;
@@ -271,7 +271,7 @@ class Validator extends Component
      * - If this is a string or an array, the intersection of [[getAttributeNames()]]
      *   and the specified attributes will be returned.
      *
-     * @return array list of attribute names.
+     * @return array|null list of attribute names.
      * @since 2.0.16
      */
     public function getValidationAttributes($attributes = null)
@@ -313,7 +313,7 @@ class Validator extends Component
      * Validates a given value.
      * You may use this method to validate a value out of the context of a data model.
      * @param mixed $value the data value to be validated.
-     * @param string $error the error message to be returned, if the validation fails.
+     * @param string|null $error the error message to be returned, if the validation fails.
      * @return bool whether the data is valid.
      */
     public function validate($value, &$error = null)
