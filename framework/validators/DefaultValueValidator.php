@@ -37,6 +37,11 @@ class DefaultValueValidator extends Validator
      */
     public $skipOnEmpty = false;
 
+    /**
+     * @var bool this property forces the use of $value as a callback method to get the default value.
+     */
+    public $forceValueCallback = false;
+
 
     /**
      * {@inheritdoc}
@@ -44,7 +49,7 @@ class DefaultValueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if ($this->isEmpty($model->$attribute)) {
-            if ($this->value instanceof \Closure) {
+            if ($this->value instanceof \Closure || $this->forceValueCallback) {
                 $model->$attribute = call_user_func($this->value, $model, $attribute);
             } else {
                 $model->$attribute = $this->value;
