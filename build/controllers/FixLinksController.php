@@ -143,18 +143,17 @@ class FixLinksController extends Controller
      */
     private function findOutdatedLinks($str)
     {
-        \preg_match_all(
+        if(!\preg_match_all(
             '%https?://(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+'
             . '(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*'
             . '\.[a-z\x{00a1}-\x{ffff}]{2,6}(?:[^\s}{)("]+)?%iu',
             $str,
             $urls
-        );
-        if (empty($urls)) {
+        )) {
             return [];
         }
         $outdated = ['updated' => [], 'removed' => []];
-        foreach (\array_unique($urls) as $url) {
+        foreach (\array_unique($urls[0]) as $url) {
             $url = \rtrim($url, ' ],\'`/');
             $activeUrl = $this->linkChecker->check($url);
             if ($activeUrl === false) {
