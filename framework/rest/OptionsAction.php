@@ -31,7 +31,7 @@ class OptionsAction extends \yii\base\Action
 
     /**
      * Responds to the OPTIONS request.
-     * @param string $id
+     * @param string|null $id
      */
     public function run($id = null)
     {

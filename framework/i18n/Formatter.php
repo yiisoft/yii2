@@ -1636,7 +1636,7 @@ class Formatter extends Component
     /**
      * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
      * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
-     * @param string $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param string|null $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $position internal position of size unit
      * @return string
      * @throws InvalidConfigException when INTL is not installed or does not contain required information

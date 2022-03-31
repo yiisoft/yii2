@@ -119,7 +119,7 @@ class DateValidator extends Validator
      */
     public $timeZone;
     /**
-     * @var string the name of the attribute to receive the parsing result.
+     * @var string|null the name of the attribute to receive the parsing result.
      * When this property is not null and the validation is successful, the named attribute will
      * receive the parsing result.
      *
@@ -160,7 +160,7 @@ class DateValidator extends Validator
      */
     public $timestampAttributeTimeZone = 'UTC';
     /**
-     * @var int|string upper limit of the date. Defaults to null, meaning no upper limit.
+     * @var int|string|null upper limit of the date. Defaults to null, meaning no upper limit.
      * This can be a unix timestamp or a string representing a date time value.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooBig for the customized message used when the date is too big.
@@ -168,7 +168,7 @@ class DateValidator extends Validator
      */
     public $max;
     /**
-     * @var int|string lower limit of the date. Defaults to null, meaning no lower limit.
+     * @var int|string|null lower limit of the date. Defaults to null, meaning no lower limit.
      * This can be a unix timestamp or a string representing a date time value.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooSmall for the customized message used when the date is too small.
@@ -186,13 +186,13 @@ class DateValidator extends Validator
      */
     public $tooSmall;
     /**
-     * @var string user friendly value of upper limit to display in the error message.
+     * @var string|null user friendly value of upper limit to display in the error message.
      * If this property is null, the value of [[max]] will be used (before parsing).
      * @since 2.0.4
      */
     public $maxString;
     /**
-     * @var string user friendly value of lower limit to display in the error message.
+     * @var string|null user friendly value of lower limit to display in the error message.
      * If this property is null, the value of [[min]] will be used (before parsing).
      * @since 2.0.4
      */

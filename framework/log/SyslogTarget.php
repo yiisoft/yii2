@@ -27,7 +27,7 @@ class SyslogTarget extends Target
      */
     public $facility = LOG_USER;
     /**
-     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](https://www.php.net/openlog).
+     * @var int|null openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](https://www.php.net/openlog).
      * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
      * @see https://www.php.net/openlog for available options.
      * @since 2.0.11

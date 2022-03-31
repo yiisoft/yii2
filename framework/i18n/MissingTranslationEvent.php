@@ -23,7 +23,7 @@ class MissingTranslationEvent extends Event
      */
     public $message;
     /**
-     * @var string the translated message. An event handler may overwrite this property
+     * @var string|null the translated message. An event handler may overwrite this property
      * with a translated version of [[message]] if possible. If not set (null), it means the message is not translated.
      */
     public $translatedMessage;

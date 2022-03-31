@@ -86,7 +86,7 @@ class IpValidator extends Validator
      */
     public $ipv4 = true;
     /**
-     * @var bool whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
+     * @var bool|null whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
      * The following values are possible:
      *
      * - `false` - the address must not have a subnet (default).
