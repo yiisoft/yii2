@@ -26,9 +26,9 @@ use yii\web\User;
 class AccessRule extends Component
 {
     /**
-     * @var bool|null whether this is an 'allow' rule or 'deny' rule.
+     * @var bool whether this is an 'allow' rule or 'deny' rule.
      */
-    public $allow;
+    public $allow = true;
     /**
      * @var array|null list of action IDs that this rule applies to. The comparison is case-sensitive.
      * If not set or empty, it means this rule applies to all actions.
