@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
+- Enh #19254: Support specifying custom characters for `yii.validation.trim()` and replace deprecated `jQuery.trim()` (WinterSilence)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
 - Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
 - Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
