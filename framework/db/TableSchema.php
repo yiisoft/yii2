@@ -39,7 +39,7 @@ class TableSchema extends BaseObject
      */
     public $primaryKey = [];
     /**
-     * @var string sequence name for the primary key. Null if no sequence.
+     * @var string|null sequence name for the primary key. Null if no sequence.
      */
     public $sequenceName;
     /**
