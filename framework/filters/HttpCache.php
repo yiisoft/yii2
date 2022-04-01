@@ -86,12 +86,12 @@ class HttpCache extends ActionFilter
      */
     public $params;
     /**
-     * @var string the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
+     * @var string|null the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
      * @see http://tools.ietf.org/html/rfc2616#section-14.9
      */
     public $cacheControlHeader = 'public, max-age=3600';
     /**
-     * @var string the name of the cache limiter to be set when [session_cache_limiter()](https://www.php.net/manual/en/function.session-cache-limiter.php)
+     * @var string|null the name of the cache limiter to be set when [session_cache_limiter()](https://www.php.net/manual/en/function.session-cache-limiter.php)
      * is called. The default value is an empty string, meaning turning off automatic sending of cache headers entirely.
      * You may set this property to be `public`, `private`, `private_no_expire`, and `nocache`.
      * Please refer to [session_cache_limiter()](https://www.php.net/manual/en/function.session-cache-limiter.php)
@@ -158,9 +158,9 @@ class HttpCache extends ActionFilter
     /**
      * Validates if the HTTP cache contains valid content.
      * If both Last-Modified and ETag are null, returns false.
-     * @param int $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
+     * @param int|null $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
      * If null, the Last-Modified header will not be validated.
-     * @param string $etag the calculated ETag value. If null, the ETag header will not be validated.
+     * @param string|null $etag the calculated ETag value. If null, the ETag header will not be validated.
      * @return bool whether the HTTP cache is still valid.
      */
     protected function validateCache($lastModified, $etag)

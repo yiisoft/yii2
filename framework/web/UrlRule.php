@@ -541,7 +541,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     /**
      * Returns status of the URL creation after the last [[createUrl()]] call.
      *
-     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * @return int|null Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
      * @see createStatus
      * @since 2.0.12

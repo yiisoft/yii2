@@ -992,7 +992,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Returns the migration history.
-     * @param int $limit the maximum number of records in the history to be returned. `null` for "no limit".
+     * @param int|null $limit the maximum number of records in the history to be returned. `null` for "no limit".
      * @return array the migration history
      */
     abstract protected function getMigrationHistory($limit);

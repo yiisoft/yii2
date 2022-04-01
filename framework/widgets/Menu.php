@@ -141,12 +141,12 @@ class Menu extends Widget
      */
     public $options = [];
     /**
-     * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
+     * @var string|null the CSS class that will be assigned to the first item in the main menu or each submenu.
      * Defaults to null, meaning no such CSS class will be assigned.
      */
     public $firstItemCssClass;
     /**
-     * @var string the CSS class that will be assigned to the last item in the main menu or each submenu.
+     * @var string|null the CSS class that will be assigned to the last item in the main menu or each submenu.
      * Defaults to null, meaning no such CSS class will be assigned.
      */
     public $lastItemCssClass;

@@ -46,7 +46,7 @@ class Locale extends Component
     /**
      * Returns a currency symbol
      *
-     * @param string $currencyCode the 3-letter ISO 4217 currency code to get symbol for. If null,
+     * @param string|null $currencyCode the 3-letter ISO 4217 currency code to get symbol for. If null,
      * method will attempt using currency code from [[locale]].
      * @return string
      */

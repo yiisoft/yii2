@@ -273,7 +273,7 @@ class Response extends \yii\base\Response
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
      * @param int $value the status code
-     * @param string $text the status text. If not set, it will be set automatically based on the status code.
+     * @param string|null $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
@@ -499,7 +499,7 @@ class Response extends \yii\base\Response
      * ```
      *
      * @param string $filePath the path of the file to be sent.
-     * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string|null $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
@@ -634,10 +634,10 @@ class Response extends \yii\base\Response
     /**
      * Sets a default set of HTTP headers for file downloading purpose.
      * @param string $attachmentName the attachment file name
-     * @param string $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
+     * @param string|null $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
      * @param bool $inline whether the browser should open the file within the browser window. Defaults to false,
      * meaning a download dialog will pop up.
-     * @param int $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
+     * @param int|null $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
      * @return $this the response object itself
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
@@ -743,7 +743,7 @@ class Response extends \yii\base\Response
      * ```
      *
      * @param string $filePath file name with full path
-     * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string|null $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`

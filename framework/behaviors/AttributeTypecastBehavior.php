@@ -214,7 +214,7 @@ class AttributeTypecastBehavior extends Behavior
 
     /**
      * Typecast owner attributes according to [[attributeTypes]].
-     * @param array $attributeNames list of attribute names that should be type-casted.
+     * @param array|null $attributeNames list of attribute names that should be type-casted.
      * If this parameter is empty, it means any attribute listed in the [[attributeTypes]]
      * should be type-casted.
      */
