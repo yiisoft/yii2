@@ -40,12 +40,7 @@ class DefaultValueValidator extends Validator
     /**
      * @var bool whether the [[value]] is callback. Default is `false`
      *
-     * If `$callableValue` set `true`, [[value]] will support follow callback styles:
-     *
-     *  - object method: `[$object, 'method']`
-     *  - static method: `['ClassName', 'staticMethod']`
-     *  - anonymous function: `function () { ... }`
-     *  - built-in function, For example: `'time'`
+     * If `$callableValue` set `true`, [[value]] will be used as callback.
      *
      * @since 2.0.46
      */
