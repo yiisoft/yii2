@@ -39,6 +39,7 @@ class DefaultValueValidator extends Validator
 
     /**
      * @var bool whether the [[value]] is callback.
+     * @since 2.0.46
      */
     public $callableValue = false;
 
