@@ -426,7 +426,7 @@ SQL;
                         ) {
                             $defaultValue = substr($defaultValue, 1, -1);
                         } else {
-                            $defaultValue = trim($defaultValue);
+                            $defaultValue = trim((string) $defaultValue);
                         }
                     }
                     $c->defaultValue = $c->phpTypecast($defaultValue);
@@ -594,9 +594,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) === '' ? null : (int) $length;
-        $column->precision = trim($precision) === '' ? null : (int) $precision;
-        $column->scale = trim($scale) === '' ? null : (int) $scale;
+        $column->size = trim((string) $length) === '' ? null : (int) $length;
+        $column->precision = trim((string) $precision) === '' ? null : (int) $precision;
+        $column->scale = trim((string) $scale) === '' ? null : (int) $scale;
     }
 
     /**
