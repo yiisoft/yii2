@@ -30,8 +30,8 @@ class ValidatorCollection extends ArrayObject implements Configurable
      */
     public $order = [
         'yii\validators\DefaultValueValidator',
-        'yii\validators\FilterValidator',
         'yii\validators\RequiredValidator',
+        'yii\validators\FilterValidator',
         'yii\captcha\CaptchaValidator',
     ];
 
@@ -52,7 +52,9 @@ class ValidatorCollection extends ArrayObject implements Configurable
     {
         parent::__construct();
         $this->owner = $model;
-        Yii::configure($this, $config);
+        if (!empty($config)) {
+            Yii::configure($this, $config);
+        }
     }
 
     /**
@@ -107,10 +109,16 @@ class ValidatorCollection extends ArrayObject implements Configurable
         $validators = \array_fill_keys($this->order, []);
         foreach ($this->getArrayCopy() as $validator) {
             $class = \get_class($validator);
+            if (!isset($validators[$class])) {
+                $validators[$class] = [];
+            }
             $validators[$class][] = $validator;
         }
-        $validators = \array_values(\array_filter($validators));
-        $this->exchangeArray(\call_user_func_array('array_merge', $validators));
+        $validators = \array_filter($validators);
+        if (!empty($validators)) {
+            $validators = \call_user_func_array('array_merge', $validators);
+            $this->exchangeArray($validators);
+        }
     }
 
     /**
