@@ -152,7 +152,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
 
         $validators = [];
         foreach ($this->getIterator() as $validator) {
-            if ($validator->isActive($scenario) && !empty($validator->getValidationAttributes($attributes))) {
+            if ($validator->isActive($scenario) && $validator->getValidationAttributes($attributes) !== []) {
                 $validators[] = $validator;
             }
         }
