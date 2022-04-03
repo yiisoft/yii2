@@ -159,7 +159,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * @param \Throwable|\Exception $e
+     * @param \Throwable $e
      */
     private function printException($e)
     {

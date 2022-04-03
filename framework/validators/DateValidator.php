@@ -72,7 +72,7 @@ class DateValidator extends Validator
      */
     public $type = self::TYPE_DATE;
     /**
-     * @var string the date format that the value being validated should follow.
+     * @var string|null the date format that the value being validated should follow.
      * This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP Datetime class.
@@ -104,14 +104,14 @@ class DateValidator extends Validator
      */
     public $format;
     /**
-     * @var string the locale ID that is used to localize the date parsing.
+     * @var string|null the locale ID that is used to localize the date parsing.
      * This is only effective when the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is installed.
      * If not set, the locale of the [[\yii\base\Application::formatter|formatter]] will be used.
      * See also [[\yii\i18n\Formatter::locale]].
      */
     public $locale;
     /**
-     * @var string the timezone to use for parsing date and time values.
+     * @var string|null the timezone to use for parsing date and time values.
      * This can be any value that may be passed to [date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
      * Refer to the [php manual](https://www.php.net/manual/en/timezones.php) for available timezones.
@@ -137,7 +137,7 @@ class DateValidator extends Validator
      */
     public $timestampAttribute;
     /**
-     * @var string the format to use when populating the [[timestampAttribute]].
+     * @var string|null the format to use when populating the [[timestampAttribute]].
      * The format can be specified in the same way as for [[format]].
      *
      * If not set, [[timestampAttribute]] will receive a UNIX timestamp.

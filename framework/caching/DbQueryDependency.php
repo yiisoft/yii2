@@ -41,7 +41,7 @@ class DbQueryDependency extends Dependency
      */
     public $query;
     /**
-     * @var string|callable method which should be invoked in over the [[query]] object.
+     * @var string|callable|null method which should be invoked in over the [[query]] object.
      *
      * If specified as a string an own query method with such name will be invoked, passing [[db]] value as its
      * first argument. For example: `exists`, `all`.

@@ -384,7 +384,7 @@ class BaseYii
 
     /**
      * Sets the logger object.
-     * @param Logger $logger the logger object.
+     * @param Logger|null $logger the logger object.
      */
     public static function setLogger($logger)
     {
