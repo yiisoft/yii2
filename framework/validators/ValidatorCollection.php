@@ -109,7 +109,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
             $class = \get_class($validator);
             $validators[$class][] = $validator;
         }
-        $validators = \array_values($validators);
+        $validators = \array_values(\array_filter($validators));
         $this->exchangeArray(\call_user_func_array('array_merge', $validators));
     }
 
@@ -124,7 +124,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
         $className = \ltrim($className, '\\');
 
         $validators = [];
-        foreach ($this->getIterator() as $validator) {
+        foreach ($this as $validator) {
             if ($className === \get_class($validator)) {
                 $validators[] = $validator;
             }
@@ -148,7 +148,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
         $scenario = $this->owner->getScenario();
 
         $validators = [];
-        foreach ($this->getIterator() as $validator) {
+        foreach ($this as $validator) {
             if ($validator->isActive($scenario) && $validator->getValidationAttributes($attribute ?: $attributes) !== []) {
                 $validators[] = $validator;
             }
