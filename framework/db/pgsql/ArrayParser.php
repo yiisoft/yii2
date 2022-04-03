@@ -80,7 +80,7 @@ class ArrayParser
      *
      * @param string $value
      * @param int $i parse starting position
-     * @return null|string
+     * @return string|null
      */
     private function parseString($value, &$i)
     {

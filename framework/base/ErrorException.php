@@ -38,7 +38,7 @@ class ErrorException extends \ErrorException
      * @param int $severity [optional]
      * @param string $filename [optional]
      * @param int $lineno [optional]
-     * @param \Throwable|\Exception $previous [optional]
+     * @param \Throwable|null $previous [optional]
      */
     public function __construct($message = '', $code = 0, $severity = 1, $filename = __FILE__, $lineno = __LINE__, $previous = null)
     {

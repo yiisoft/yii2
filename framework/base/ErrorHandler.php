@@ -38,7 +38,7 @@ abstract class ErrorHandler extends Component
      */
     public $memoryReserveSize = 262144;
     /**
-     * @var \Exception|null the exception that is being handled currently.
+     * @var \Throwable|null the exception that is being handled currently.
      */
     public $exception;
     /**
@@ -53,7 +53,7 @@ abstract class ErrorHandler extends Component
      */
     private $_memoryReserve;
     /**
-     * @var \Exception from HHVM error that stores backtrace
+     * @var \Throwable from HHVM error that stores backtrace
      */
     private $_hhvmException;
     /**
@@ -108,7 +108,7 @@ abstract class ErrorHandler extends Component
      *
      * This method is implemented as a PHP exception handler.
      *
-     * @param \Exception $exception the exception that is not caught
+     * @param \Throwable $exception the exception that is not caught
      */
     public function handleException($exception)
     {
@@ -153,8 +153,8 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles exception thrown during exception processing in [[handleException()]].
-     * @param \Exception|\Throwable $exception Exception that was thrown during main exception processing.
-     * @param \Exception $previousException Main exception processed in [[handleException()]].
+     * @param |\Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Throwable $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
     protected function handleFallbackExceptionMessage($exception, $previousException)
@@ -298,13 +298,13 @@ abstract class ErrorHandler extends Component
 
     /**
      * Renders the exception.
-     * @param \Exception|\Error|\Throwable $exception the exception to be rendered.
+     * @param \Throwable $exception the exception to be rendered.
      */
     abstract protected function renderException($exception);
 
     /**
      * Logs the given exception.
-     * @param \Exception $exception the exception to be logged
+     * @param \Throwable $exception the exception to be logged
      * @since 2.0.3 this method is now public.
      */
     public function logException($exception)
@@ -336,7 +336,7 @@ abstract class ErrorHandler extends Component
      *
      * This method can be used to convert exceptions inside of methods like `__toString()`
      * to PHP errors because exceptions cannot be thrown inside of them.
-     * @param \Exception|\Throwable $exception the exception to convert to a PHP error.
+     * @param \Throwable $exception the exception to convert to a PHP error.
      */
     public static function convertExceptionToError($exception)
     {
@@ -345,7 +345,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a simple string.
-     * @param \Exception|\Error|\Throwable $exception the exception being converted
+     * @param \Throwable $exception the exception being converted
      * @return string the string representation of the exception.
      */
     public static function convertExceptionToString($exception)
@@ -363,7 +363,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a string that has verbose information about the exception and its trace.
-     * @param \Exception|\Error|\Throwable $exception the exception being converted
+     * @param \Throwable $exception the exception being converted
      * @return string the string representation of the exception.
      *
      * @since 2.0.14

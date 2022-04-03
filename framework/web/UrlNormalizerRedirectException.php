@@ -38,11 +38,11 @@ class UrlNormalizerRedirectException extends \yii\base\Exception
      * @param int $statusCode HTTP status code used for redirection
      * @param bool|string $scheme the URI scheme to use in the generated URL for redirection.
      * This will be used as second parameter for [[\yii\helpers\Url::to()]]
-     * @param string $message the error message
+     * @param string|null $message the error message
      * @param int $code the error code
-     * @param \Exception $previous the previous exception used for the exception chaining
+     * @param \Throwable|null $previous the previous exception used for the exception chaining
      */
-    public function __construct($url, $statusCode = 302, $scheme = false, $message = null, $code = 0, \Exception $previous = null)
+    public function __construct($url, $statusCode = 302, $scheme = false, $message = null, $code = 0, $previous = null)
     {
         $this->url = $url;
         $this->scheme = $scheme;
