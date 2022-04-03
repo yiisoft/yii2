@@ -109,6 +109,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
             $class = \get_class($validator);
             $validators[$class][] = $validator;
         }
+        $validators = \array_values($validators);
         $this->exchangeArray(\call_user_func_array('array_merge', $validators));
     }
 
