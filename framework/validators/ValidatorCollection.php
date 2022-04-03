@@ -113,12 +113,12 @@ class ValidatorCollection extends ArrayObject implements Configurable
     }
 
     /**
-     * Finds validators by given class.
+     * Finds validators instances given class.
      *
      * @param string $className the class name to search
      * @return Validator[]
      */
-    public function getValidatorsByClass($className)
+    public function getClassValidators($className)
     {
         $className = \ltrim($className, '\\');
 
