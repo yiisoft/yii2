@@ -9,13 +9,13 @@ namespace yii\base;
 
 use ArrayAccess;
 use ArrayIterator;
-use ArrayObject;
 use IteratorAggregate;
 use ReflectionClass;
 use Yii;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
+use yii\validators\ValidatorCollection;
 
 /**
  * Model is the base class for data models.
@@ -37,19 +37,22 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
- * [[scenario]].
+ * @property-read Validator[] $activeValidators The validators applicable to the current [[scenario]].
  * @property array $attributes Attribute values (name => value).
  * @property-read array $errors Errors for all attributes or the specified attribute. Empty array is returned
  * if no error. See [[getErrors()]] for detailed description. Note that when returning errors for all attributes,
- * the result is a two-dimensional array, like the following: ```php [ 'username' => [ 'Username is required.',
- * 'Username must contain only word characters.', ], 'email' => [ 'Email address is invalid.', ] ] ``` .
+ * the result is a two-dimensional array, like the following:
+ * ```php
+ * [
+ *     'username' => ['Username is required.', 'Username must contain only word characters.'],
+ *     'email' => ['Email address is invalid.']
+ * ]
+ * ```.
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
  * values are the corresponding error messages. An empty array will be returned if there is no error.
- * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
+ * @property-read ArrayIterator $iterator An iterator for traversing the model attributes.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
- * model.
+ * @property-read ValidatorCollection|Validator[] $validators the collection of validators declared in the model.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -78,7 +81,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     private $_errors;
     /**
-     * @var ArrayObject list of validators
+     * @var ValidatorCollection|Validator[] the collection of validators declared in the model
      */
     private $_validators;
     /**
@@ -393,20 +396,20 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     }
 
     /**
-     * Returns all the validators declared in [[rules()]].
+     * Returns collection of the validators declared in [[rules()]].
      *
      * This method differs from [[getActiveValidators()]] in that the latter
      * only returns the validators applicable to the current [[scenario]].
      *
-     * Because this method returns an ArrayObject object, you may
+     * Because this method returns an object extended `ArrayObject`, you may
      * manipulate it by inserting or removing validators (useful in model behaviors).
-     * For example,
-     *
+     * For example:
      * ```php
      * $model->validators[] = $newValidator;
+     * $model->validators->append($newValidator2);
      * ```
      *
-     * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
+     * @return ValidatorCollection|Validator[] the collection of the validators declared in the model.
      */
     public function getValidators()
     {
@@ -419,64 +422,50 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Returns the validators applicable to the current [[scenario]].
+     *
      * @param string|null $attribute the name of the attribute whose applicable validators should be returned.
      * If this is null, the validators for ALL attributes in the model will be returned.
-     * @return \yii\validators\Validator[] the validators applicable to the current [[scenario]].
+     * @return Validator[] the validators applicable to the current [[scenario]].
      */
     public function getActiveValidators($attribute = null)
     {
-        $activeAttributes = $this->activeAttributes();
-        if ($attribute !== null && !in_array($attribute, $activeAttributes, true)) {
-            return [];
-        }
-        $scenario = $this->getScenario();
-        $validators = [];
-        foreach ($this->getValidators() as $validator) {
-            if ($attribute === null) {
-                $validatorAttributes = $validator->getValidationAttributes($activeAttributes);
-                $attributeValid = !empty($validatorAttributes);
-            } else {
-                $attributeValid = in_array($attribute, $validator->getValidationAttributes($attribute), true);
-            }
-            if ($attributeValid && $validator->isActive($scenario)) {
-                $validators[] = $validator;
-            }
-        }
-
-        return $validators;
+        return $this->getValidators()->getActiveValidators($attribute);
     }
 
     /**
      * Creates validator objects based on the validation rules specified in [[rules()]].
+     *
      * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
-     * @return ArrayObject validators
+     *
+     * @return ValidatorCollection the collection of validators
      * @throws InvalidConfigException if any validation rule configuration is invalid
      */
     public function createValidators()
     {
-        $validators = new ArrayObject();
+        $collection = Yii::createObject(ValidatorCollection::className(), [$this]);
         foreach ($this->rules() as $rule) {
             if ($rule instanceof Validator) {
-                $validators->append($rule);
+                $collection->append($rule);
             } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
                 $validator = Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
-                $validators->append($validator);
+                $collection->append($validator);
             } else {
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
             }
         }
+        $collection->sortByOrder();
 
-        return $validators;
+        return $collection;
     }
 
     /**
      * Returns a value indicating whether the attribute is required.
      * This is determined by checking if the attribute is associated with a
-     * [[\yii\validators\RequiredValidator|required]] validation rule in the
+     * [[RequiredValidator|required]] validation rule in the
      * current [[scenario]].
      *
      * Note that when the validator has a conditional validation applied using
-     * [[\yii\validators\RequiredValidator::$when|$when]] this method will return
+     * [[RequiredValidator::$when|$when]] this method will return
      * `false` regardless of the `when` condition because it may be called be
      * before the model is loaded with data.
      *
@@ -485,8 +474,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function isAttributeRequired($attribute)
     {
-        foreach ($this->getActiveValidators($attribute) as $validator) {
-            if ($validator instanceof RequiredValidator && $validator->when === null) {
+        foreach ($this->getValidators()->getClassValidators(RequiredValidator::className()) as $validator) {
+            if ($validator->when === null && !empty($validator->getValidationAttributes($attribute))) {
                 return true;
             }
         }
@@ -1055,6 +1044,10 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         parent::__clone();
 
         $this->_errors = null;
-        $this->_validators = null;
+        if ($this->_validators !== null) {
+            $this->_validators = clone $this->_validators;
+            // re-binds callbacks in validators to clone
+            $this->_validators->setOwner($this);
+        }
     }
 }
