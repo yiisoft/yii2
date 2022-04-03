@@ -141,18 +141,14 @@ class ValidatorCollection extends ArrayObject implements Configurable
     public function getActiveValidators($attribute = null)
     {
         $attributes = $this->owner->activeAttributes();
-        if ($attribute !== null) {
-            if (!\in_array($attribute, $attributes, true)) {
-                return [];
-            }
-            $attributes = [$attribute];
+        if ($attribute !== null && !\in_array($attribute, $attributes, true)) {
+            return [];
         }
-
         $scenario = $this->owner->getScenario();
 
         $validators = [];
         foreach ($this->getIterator() as $validator) {
-            if ($validator->isActive($scenario) && $validator->getValidationAttributes($attributes) !== []) {
+            if ($validator->isActive($scenario) && $validator->getValidationAttributes($attribute ?: $attributes) !== []) {
                 $validators[] = $validator;
             }
         }
