@@ -442,7 +442,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function createValidators()
     {
-        $collection = Yii::createObject(ValidatorCollection::className(), [$this]);
+        $collection = Yii::createObject('\yii\validators\ValidatorCollection', [$this]);
         foreach ($this->rules() as $rule) {
             if ($rule instanceof Validator) {
                 $collection->append($rule);
