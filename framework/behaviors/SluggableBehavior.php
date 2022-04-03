@@ -111,7 +111,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $uniqueValidator = [];
     /**
-     * @var callable slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
+     * @var callable|null slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
      * slug is not unique. This should be a PHP callable with following signature:
      *
      * ```php

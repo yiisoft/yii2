@@ -63,7 +63,7 @@ class AccessControl extends ActionFilter
      */
     public $user = 'user';
     /**
-     * @var callable a callback that will be called if the access should be denied
+     * @var callable|null a callback that will be called if the access should be denied
      * to the current user. This is the case when either no rule matches, or a rule with
      * [[AccessRule::$allow|$allow]] set to `false` matches.
      * If not set, [[denyAccess()]] will be called.

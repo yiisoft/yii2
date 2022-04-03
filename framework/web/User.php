@@ -98,21 +98,21 @@ class User extends Component
      */
     public $identityCookie = ['name' => '_identity', 'httpOnly' => true];
     /**
-     * @var int the number of seconds in which the user will be logged out automatically if the user
+     * @var int|null the number of seconds in which the user will be logged out automatically if the user
      * remains inactive. If this property is not set, the user will be logged out after
      * the current session expires (c.f. [[Session::timeout]]).
      * Note that this will not work if [[enableAutoLogin]] is `true`.
      */
     public $authTimeout;
     /**
-     * @var CheckAccessInterface|string|array The access checker object to use for checking access or the application
+     * @var CheckAccessInterface|string|array|null The access checker object to use for checking access or the application
      * component ID of the access checker.
      * If not set the application auth manager will be used.
      * @since 2.0.9
      */
     public $accessChecker;
     /**
-     * @var int the number of seconds in which the user will be logged out automatically
+     * @var int|null the number of seconds in which the user will be logged out automatically
      * regardless of activity.
      * Note that this will not work if [[enableAutoLogin]] is `true`.
      */

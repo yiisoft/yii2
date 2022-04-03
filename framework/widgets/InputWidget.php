@@ -43,15 +43,15 @@ class InputWidget extends Widget
      */
     public $field;
     /**
-     * @var Model the data model that this widget is associated with.
+     * @var Model|null the data model that this widget is associated with.
      */
     public $model;
     /**
-     * @var string the model attribute that this widget is associated with.
+     * @var string|null the model attribute that this widget is associated with.
      */
     public $attribute;
     /**
-     * @var string the input name. This must be set if [[model]] and [[attribute]] are not set.
+     * @var string|null the input name. This must be set if [[model]] and [[attribute]] are not set.
      */
     public $name;
     /**

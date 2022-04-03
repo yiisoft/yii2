@@ -351,7 +351,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array the array where to look the value from
-     * @param string $value the value to remove from the array
+     * @param mixed $value the value to remove from the array
      * @return array the items that were removed from the array
      * @since 2.0.11
      */
