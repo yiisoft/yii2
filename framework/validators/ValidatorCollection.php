@@ -29,9 +29,9 @@ class ValidatorCollection extends ArrayObject implements Configurable
      * @var string[] The validation order, an array of validator class names. The omitted validators adding at end.
      */
     public $order = [
-        'yii\validators\RequiredValidator',
         'yii\validators\DefaultValueValidator',
         'yii\validators\FilterValidator',
+        'yii\validators\RequiredValidator',
         'yii\captcha\CaptchaValidator',
     ];
 
