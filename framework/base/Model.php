@@ -475,7 +475,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function isAttributeRequired($attribute)
     {
         foreach ($this->getValidators()->getClassValidators(RequiredValidator::className()) as $validator) {
-            if ($validator->when === null && !empty($validator->getValidationAttributes($attribute))) {
+            if ($validator->when === null && $validator->getValidationAttributes($attribute) !== []) {
                 return true;
             }
         }
