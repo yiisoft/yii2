@@ -33,11 +33,11 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $version = '1.0';
     /**
-     * @var string the XML encoding. If not set, it will use the value of [[Response::charset]].
+     * @var string|null the XML encoding. If not set, it will use the value of [[Response::charset]].
      */
     public $encoding;
     /**
-     * @var string|string[]|false the name of the root element. If set to false, null or is empty then no root tag
+     * @var string|string[]|null|false the name of the root element. If set to false, null or is empty then no root tag
      * should be added.
      *
      * Since 2.0.44 URI namespace could be specified by passing `[namespace, tag name]` array.
