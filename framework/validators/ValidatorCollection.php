@@ -52,9 +52,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
     {
         parent::__construct();
         $this->owner = $model;
-        if (!empty($config)) {
-            Yii::configure($this, $config);
-        }
+        Yii::configure($this, $config);
     }
 
     /**
@@ -80,7 +78,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
         // re-bind callbacks to new owner/scope
         foreach ($this->getArrayCopy() as $validator) {
             foreach (\get_object_vars($validator) as $name => $value) {
-                if (is_scalar($value) || !\is_callable($value)) {
+                if (\is_scalar($value) || !\is_callable($value)) {
                     continue;
                 }
                 if (\is_object($value) && $value instanceof Closure) {
@@ -106,18 +104,14 @@ class ValidatorCollection extends ArrayObject implements Configurable
      */
     public function sortByOrder()
     {
-        $validators = \array_fill_keys($this->order, []);
-        foreach ($this->getArrayCopy() as $validator) {
-            $class = \get_class($validator);
-            if (!isset($validators[$class])) {
-                $validators[$class] = [];
+        if (!empty($this->getArrayCopy())) {
+            $validators = \array_fill_keys($this->order, []);
+            foreach ($this->getArrayCopy() as $validator) {
+                $class = \get_class($validator);
+                $validators[$class][] = $validator;
             }
-            $validators[$class][] = $validator;
-        }
-        $validators = \array_filter($validators);
-        if (!empty($validators)) {
-            $validators = \call_user_func_array('array_merge', $validators);
-            $this->exchangeArray($validators);
+            $validators = \array_values(\array_filter($validators));
+            $this->exchangeArray(\call_user_func_array('array_merge', $validators));
         }
     }
 
@@ -132,7 +126,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
         $className = \ltrim($className, '\\');
 
         $validators = [];
-        foreach ($this as $validator) {
+        foreach ($this->getIterator() as $validator) {
             if ($className === \get_class($validator)) {
                 $validators[] = $validator;
             }
@@ -150,14 +144,18 @@ class ValidatorCollection extends ArrayObject implements Configurable
     public function getActiveValidators($attribute = null)
     {
         $attributes = $this->owner->activeAttributes();
-        if ($attribute !== null && !\in_array($attribute, $attributes, true)) {
-            return [];
+        if ($attribute !== null) {
+            if (!\in_array($attribute, $attributes, true)) {
+                return [];
+            }
+            $attributes = [$attribute];
         }
+
         $scenario = $this->owner->getScenario();
 
         $validators = [];
-        foreach ($this as $validator) {
-            if ($validator->isActive($scenario) && $validator->getValidationAttributes($attribute ?: $attributes) !== []) {
+        foreach ($this->getIterator() as $validator) {
+            if ($validator->isActive($scenario) && $validator->getValidationAttributes($attributes) != []) {
                 $validators[] = $validator;
             }
         }
