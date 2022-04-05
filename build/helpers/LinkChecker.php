@@ -64,13 +64,18 @@ class LinkChecker
             $this->outdatedLinks[$url] = false;
         } elseif (isset($headers['Location'])) {
             // at redirect to new URL:
+            if (\is_array($headers['Location'])) {
+                $headers['Location'] = \reset($headers['Location']);
+            }
             $newUrl = \rtrim($headers['Location'], '/');
             $index = \array_search($newUrl, $this->activeLinks, true);
             if ($index !== false) {
-                $this->outdatedLinks[$url] &= $this->activeLinks[$index];
+                $this->outdatedLinks[$url] =& $this->activeLinks[$index];
             } else {
-                $this->outdatedLinks[$url] &= $this->activeLinks[] = $newUrl;
+                $this->activeLinks[] = $newUrl;
+                $this->outdatedLinks[$url] =& $this->activeLinks[\count($this->activeLinks) - 1];
             }
+            
         } else {
             list(, $responceCode) = \sscanf($headers[0], 'HTTP/1.%d %d');
             if ($responceCode === 200) {
