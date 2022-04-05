@@ -424,21 +424,22 @@ class ModelTest extends TestCase
     public function testDefaultScenarios()
     {
         $singer = new Singer();
-        $this->assertEqualsCanonicalizing(['default' => ['lastName', 'underscore_style', 'test']], $singer->scenarios());
+        $this->assertEquals(['default' => ['lastName', 'test', 'underscore_style']], $singer->scenarios());
 
         $scenarios = [
             'default' => ['id', 'name', 'description'],
             'administration' => ['name', 'description', 'is_disabled'],
         ];
         $model = new ComplexModel1();
-        $this->assertEqualsCanonicalizing($scenarios, $model->scenarios());
+        $this->assertEquals($scenarios, $model->scenarios());
+
         $scenarios = [
             'default' => ['id', 'name', 'description'],
             'suddenlyUnexpectedScenario' => ['name', 'description'],
             'administration' => ['id', 'name', 'description', 'is_disabled'],
         ];
         $model = new ComplexModel2();
-        $this->assertEqualsCanonicalizing($scenarios, $model->scenarios());
+        $this->assertEquals($scenarios, $model->scenarios());
     }
 
     public function testValidatorsWithDifferentScenarios()
