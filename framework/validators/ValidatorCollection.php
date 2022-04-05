@@ -104,7 +104,7 @@ class ValidatorCollection extends ArrayObject implements Configurable
      */
     public function sortByOrder()
     {
-        if (!empty($this->getArrayCopy())) {
+        if ($this->getArrayCopy() !== []) {
             $validators = \array_fill_keys($this->order, []);
             foreach ($this->getArrayCopy() as $validator) {
                 $class = \get_class($validator);
