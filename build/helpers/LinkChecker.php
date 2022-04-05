@@ -23,6 +23,10 @@ class LinkChecker
      * @var array the outdated links
      */
     protected $outdatedLinks = [];
+    /**
+     * @var string the regexp to to filter test/dummy links like as `https://www.example.com`
+     */
+    public $dummyLinkRegexp = '/^https?:\/\/(\w+\.)(myserver|example|site|test|demo|oauth)\./';
 
     /**
      * Checks if link is outdated and returns active/actual link.
@@ -34,7 +38,11 @@ class LinkChecker
     {
         $url = \rtrim($url, '/');
         if (!$this->isCheckedUrl($url)) {
-            $this->checkUrl($url);
+            if (\preg_match($this->dummyLinkRegexp, $url) === 1) {
+                $this->activeLinks[] = $url;
+            } else {
+                $this->checkUrl($url);
+            }
         }
 
         return isset($this->outdatedLinks[$url]) ? $this->outdatedLinks[$url] : $url;
