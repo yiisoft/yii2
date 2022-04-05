@@ -155,7 +155,7 @@ class FixLinksController extends Controller
 
         $outdated = ['updated' => [], 'removed' => []];
         foreach (\array_unique($urls[0]) as $url) {
-            $url = \rtrim($url, ' ],\'`/');
+            $url = \rtrim($url, ' ],\'`/>');
             $activeUrl = $this->linkChecker->check($url);
             if ($activeUrl === false) {
                 $outdated['removed'][] = $url;
