@@ -385,6 +385,7 @@ class MimeTest extends TestCase
                 'jam' => 'application/vnd.jam',
                 'jar' => 'application/java-archive',
                 'java' => 'text/x-java-source',
+                'jfif' => 'image/jpeg',
                 'jisp' => 'application/vnd.jisp',
                 'jlt' => 'application/vnd.hp-jlyt',
                 'jnlp' => 'application/x-java-jnlp-file',
