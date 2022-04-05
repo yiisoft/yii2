@@ -143,15 +143,16 @@ class FixLinksController extends Controller
      */
     private function findOutdatedLinks($str)
     {
-        if(!\preg_match_all(
+        if (!\preg_match_all(
             '%https?://(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+'
             . '(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*'
             . '\.[a-z\x{00a1}-\x{ffff}]{2,6}(?:[^\s}{)("]+)?%iu',
             $str,
             $urls
         )) {
-            return [];
+            return ['updated' => [], 'removed' => []];
         }
+
         $outdated = ['updated' => [], 'removed' => []];
         foreach (\array_unique($urls[0]) as $url) {
             $url = \rtrim($url, ' ],\'`/');
