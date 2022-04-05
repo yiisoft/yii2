@@ -84,7 +84,7 @@ class MessageController extends \yii\console\Controller
      */
     public $markUnused = true;
     /**
-     * @var array list of patterns that specify which files/directories should NOT be processed.
+     * @var array|null list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
@@ -99,7 +99,7 @@ class MessageController extends \yii\console\Controller
         '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
-     * @var array list of patterns that specify which files (not directories) should be processed.
+     * @var array|null list of patterns that specify which files (not directories) should be processed.
      * If empty or not set, all files will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.

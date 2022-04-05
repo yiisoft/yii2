@@ -85,7 +85,7 @@ class BaseMarkdown
     }
 
     /**
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * @param string|null $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
      * @return \cebe\markdown\Parser
      * @throws InvalidArgumentException when an undefined flavor is given.

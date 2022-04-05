@@ -34,13 +34,13 @@ use yii\db\TableSchema;
 class ActiveFixture extends BaseActiveFixture
 {
     /**
-     * @var string the name of the database table that this fixture is about. If this property is not set,
+     * @var string|null the name of the database table that this fixture is about. If this property is not set,
      * the table name will be determined via [[modelClass]].
      * @see modelClass
      */
     public $tableName;
     /**
-     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
+     * @var string|bool|null the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
      * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.

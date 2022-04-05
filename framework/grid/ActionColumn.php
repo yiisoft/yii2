@@ -38,7 +38,7 @@ class ActionColumn extends Column
      */
     public $headerOptions = ['class' => 'action-column'];
     /**
-     * @var string the ID of the controller that should handle the actions specified here.
+     * @var string|null the ID of the controller that should handle the actions specified here.
      * If not set, it will use the currently active controller. This property is mainly used by
      * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
      * to each action name to form the route of the action.
@@ -125,7 +125,7 @@ class ActionColumn extends Column
      */
     public $visibleButtons = [];
     /**
-     * @var callable a callback that creates a button URL using the specified model information.
+     * @var callable|null a callback that creates a button URL using the specified model information.
      * The signature of the callback should be the same as that of [[createUrl()]]
      * Since 2.0.10 it can accept additional parameter, which refers to the column instance itself:
      *
