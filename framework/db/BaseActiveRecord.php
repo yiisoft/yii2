@@ -1200,7 +1200,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, by creating a record based on the value of a column,
      * you may implement the so-called single-table inheritance mapping.
      * @param array $row row data to be populated into the record.
-     * @return static the newly created active record
+     * @return self the newly created active record
      */
     public static function instantiate($row)
     {
