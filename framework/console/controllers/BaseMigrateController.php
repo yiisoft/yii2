@@ -85,14 +85,14 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
     /**
-     * @var int the permission to be set for newly generated migration files.
+     * @var int|null the permission to be set for newly generated migration files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      * @since 2.0.43
      */
     public $newFileMode;
     /**
-     * @var string|int the user and/or group ownership to be set for newly generated migration files.
+     * @var string|int|null the user and/or group ownership to be set for newly generated migration files.
      * If not set, the ownership will be determined by the current environment.
      * @since 2.0.43
      * @see FileHelper::changeOwnership()
@@ -992,7 +992,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Returns the migration history.
-     * @param int $limit the maximum number of records in the history to be returned. `null` for "no limit".
+     * @param int|null $limit the maximum number of records in the history to be returned. `null` for "no limit".
      * @return array the migration history
      */
     abstract protected function getMigrationHistory($limit);

@@ -72,7 +72,7 @@ class DateValidator extends Validator
      */
     public $type = self::TYPE_DATE;
     /**
-     * @var string the date format that the value being validated should follow.
+     * @var string|null the date format that the value being validated should follow.
      * This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP Datetime class.
@@ -104,14 +104,14 @@ class DateValidator extends Validator
      */
     public $format;
     /**
-     * @var string the locale ID that is used to localize the date parsing.
+     * @var string|null the locale ID that is used to localize the date parsing.
      * This is only effective when the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is installed.
      * If not set, the locale of the [[\yii\base\Application::formatter|formatter]] will be used.
      * See also [[\yii\i18n\Formatter::locale]].
      */
     public $locale;
     /**
-     * @var string the timezone to use for parsing date and time values.
+     * @var string|null the timezone to use for parsing date and time values.
      * This can be any value that may be passed to [date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
      * Refer to the [php manual](https://www.php.net/manual/en/timezones.php) for available timezones.
@@ -119,7 +119,7 @@ class DateValidator extends Validator
      */
     public $timeZone;
     /**
-     * @var string the name of the attribute to receive the parsing result.
+     * @var string|null the name of the attribute to receive the parsing result.
      * When this property is not null and the validation is successful, the named attribute will
      * receive the parsing result.
      *
@@ -137,7 +137,7 @@ class DateValidator extends Validator
      */
     public $timestampAttribute;
     /**
-     * @var string the format to use when populating the [[timestampAttribute]].
+     * @var string|null the format to use when populating the [[timestampAttribute]].
      * The format can be specified in the same way as for [[format]].
      *
      * If not set, [[timestampAttribute]] will receive a UNIX timestamp.
@@ -160,7 +160,7 @@ class DateValidator extends Validator
      */
     public $timestampAttributeTimeZone = 'UTC';
     /**
-     * @var int|string upper limit of the date. Defaults to null, meaning no upper limit.
+     * @var int|string|null upper limit of the date. Defaults to null, meaning no upper limit.
      * This can be a unix timestamp or a string representing a date time value.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooBig for the customized message used when the date is too big.
@@ -168,7 +168,7 @@ class DateValidator extends Validator
      */
     public $max;
     /**
-     * @var int|string lower limit of the date. Defaults to null, meaning no lower limit.
+     * @var int|string|null lower limit of the date. Defaults to null, meaning no lower limit.
      * This can be a unix timestamp or a string representing a date time value.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooSmall for the customized message used when the date is too small.
@@ -186,13 +186,13 @@ class DateValidator extends Validator
      */
     public $tooSmall;
     /**
-     * @var string user friendly value of upper limit to display in the error message.
+     * @var string|null user friendly value of upper limit to display in the error message.
      * If this property is null, the value of [[max]] will be used (before parsing).
      * @since 2.0.4
      */
     public $maxString;
     /**
-     * @var string user friendly value of lower limit to display in the error message.
+     * @var string|null user friendly value of lower limit to display in the error message.
      * If this property is null, the value of [[min]] will be used (before parsing).
      * @since 2.0.4
      */

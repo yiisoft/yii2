@@ -42,13 +42,13 @@ use yii\helpers\Inflector;
 class UniqueValidator extends Validator
 {
     /**
-     * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
+     * @var string|null the name of the ActiveRecord class that should be used to validate the uniqueness
      * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
      * @see targetAttribute
      */
     public $targetClass;
     /**
-     * @var string|array the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that should be used to
+     * @var string|array|null the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that should be used to
      * validate the uniqueness of the current attribute value. If not set, it will use the name
      * of the attribute currently being validated. You may use an array to validate the uniqueness
      * of multiple columns at the same time. The array values are the attributes that will be
@@ -309,7 +309,7 @@ class UniqueValidator extends Validator
      * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
-     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @param string|null $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array
      */
     private function applyTableAlias($query, $conditions, $alias = null)

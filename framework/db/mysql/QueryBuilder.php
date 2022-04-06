@@ -357,7 +357,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * @param string $table table name
      * @param string $column column name
-     * @return null|string the column definition
+     * @return string|null the column definition
      * @throws Exception in case when table does not contain column
      */
     private function getColumnDefinition($table, $column)

@@ -37,7 +37,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      */
     private static $counter = 0;
     /**
-     * @var string an ID that uniquely identifies the data provider among all data providers.
+     * @var string|null an ID that uniquely identifies the data provider among all data providers.
      * Generated automatically the following way in case it is not set:
      *
      * - First data provider ID is empty.
