@@ -25,7 +25,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 {
     /**
      * Renders an exception using ansi format for console output.
-     * @param \Exception $exception the exception to be rendered.
+     * @param \Throwable $exception the exception to be rendered.
      */
     protected function renderException($exception)
     {

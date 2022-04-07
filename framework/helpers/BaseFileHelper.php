@@ -221,7 +221,7 @@ class BaseFileHelper
 
     /**
      * Loads MIME types from the specified file.
-     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return array the mapping from file extensions to MIME types
      */
@@ -242,7 +242,7 @@ class BaseFileHelper
 
     /**
      * Loads MIME aliases from the specified file.
-     * @param string $aliasesFile the path (or alias) of the file that contains MIME type aliases.
+     * @param string|null $aliasesFile the path (or alias) of the file that contains MIME type aliases.
      * If this is not set, the file specified by [[mimeAliasesFile]] will be used.
      * @return array the mapping from file extensions to MIME types
      * @since 2.0.14
