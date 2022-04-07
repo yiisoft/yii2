@@ -99,8 +99,14 @@
     },
     "autoload": {
         "psr-4": {
-            "yii\\": "framework/",
-            "yii\\cs\\": "cs/src/"
+            "yii\\": "framework/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "yii\\cs\\": "cs/src/",
+            "yii\\build\\": "build/",
+            "yiiunit\\": "tests/"
         }
     },
     "config": {

@@ -7,7 +7,6 @@
 
 namespace yii\di;
 
-use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 
@@ -174,7 +173,12 @@ class Instance
             }
 
             return Yii::$container->get($this->id);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            if ($this->optional) {
+                return null;
+            }
+            throw $e;
+        } catch (\Throwable $e) {
             if ($this->optional) {
                 return null;
             }
