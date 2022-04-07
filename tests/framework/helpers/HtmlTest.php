@@ -1080,6 +1080,23 @@ EOD;
         $data = ['1' => '1', '1.1' => '1.1', 'group' => ['1.10' => '1.10']];
         $attributes = ['strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.10'], $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="">Please select</option>
+<option value="1">Yes</option>
+<option value="0" selected>No</option>
+EOD;
+        $data = [true => 'Yes', false => 'No'];
+        $attributes = ['prompt' => 'Please select'];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="">Please select</option>
+<option value="1">Yes</option>
+<option value="0">No</option>
+EOD;
+        $attributes = ['prompt' => 'Please select', 'strict' => true];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
     }
 
     public function testRenderTagAttributes()
