@@ -16,6 +16,16 @@ namespace yii\build\helpers;
 class LinkChecker
 {
     /**
+     * @var string the regexp to to filter test/dummy links like as `https://www.example.com`
+     * @todo remove `yiiframework` after site fix
+     */
+    public $dummyLinkRegexp = '/^https?:\/\/(\w+\.)(myserver|example|site|test|demo|oauth|yiiframework)\./';
+    /**
+     * @var int[] the 3xx HTTP codes to ignore (add to active links)
+     */
+    public $skipHttpCodes = [300, 302, 307];
+
+    /**
      * @var array the active links
      */
     protected $activeLinks = [];
@@ -23,10 +33,6 @@ class LinkChecker
      * @var array the outdated links
      */
     protected $outdatedLinks = [];
-    /**
-     * @var string the regexp to to filter test/dummy links like as `https://www.example.com`
-     */
-    public $dummyLinkRegexp = '/^https?:\/\/(\w+\.)(myserver|example|site|test|demo|oauth)\./';
 
     /**
      * Checks if link is outdated and returns active/actual link.
@@ -60,6 +66,19 @@ class LinkChecker
     }
 
     /**
+     * Returns HTTP code of last response.
+     *
+     * @param string[] $headers the response headers
+     * @return int
+     */
+    protected function getResponceCode(array $headers)
+    {
+        list(, $responceCode) = \sscanf($headers[0], 'HTTP/1.%d %d');
+
+        return (int) $responceCode
+    }
+
+    /**
      * Checks link and stores result.
      *
      * @param string $url the link to test
@@ -70,27 +89,36 @@ class LinkChecker
         $headers = @\get_headers($url, true);
         if ($headers === false) {
             $this->outdatedLinks[$url] = false;
-        } elseif (isset($headers['Location'])) {
-            // at redirect to new URL:
-            if (\is_array($headers['Location'])) {
-                $headers['Location'] = \reset($headers['Location']);
-            }
-            $newUrl = \rtrim($headers['Location'], '/');
-            $index = \array_search($newUrl, $this->activeLinks, true);
-            if ($index !== false) {
-                $this->outdatedLinks[$url] =& $this->activeLinks[$index];
-            } else {
-                $this->activeLinks[] = $newUrl;
-                $this->outdatedLinks[$url] =& $this->activeLinks[\count($this->activeLinks) - 1];
-            }
-            
-        } else {
-            list(, $responceCode) = \sscanf($headers[0], 'HTTP/1.%d %d');
-            if ($responceCode === 200) {
+            return;
+        }
+        $code = $this->getResponceCode($headers);
+        if (isset($headers['Location'])) {
+            // at redirect
+            if (\in_array($code, $this->skipHttpCodes, true)) {
+                // ignore temporaty redirects
                 $this->activeLinks[] = $url;
             } else {
-                $this->outdatedLinks[$url] = false;
+                if (\is_array($headers['Location'])) {
+                    $headers['Location'] = \reset($headers['Location']);
+                }
+                $newUrl = \rtrim($headers['Location'], '/');
+                if (!\filter_var($newUrl, \FILTER_VALIDATE_URL)) {
+                    $parts = \parse_url($url);
+                    $newUrl = \ltrim($newUrl, '/');
+                    $newUrl = (isset($parts['scheme']) ? $parts['scheme'] . ':' : '') . "//$parts['host']/$newUrl";
+                }
+                $index = \array_search($newUrl, $this->activeLinks, true);
+                if ($index !== false) {
+                    $this->outdatedLinks[$url] =& $this->activeLinks[$index];
+                } else {
+                    $this->activeLinks[] = $newUrl;
+                    $this->outdatedLinks[$url] =& $this->activeLinks[\count($this->activeLinks) - 1];
+                }
             }
+        } elseif ($code === 200) {
+            $this->activeLinks[] = $url;
+        } else {
+            $this->outdatedLinks[$url] = false;
         }
     }
 }
