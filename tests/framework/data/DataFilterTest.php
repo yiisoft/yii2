@@ -339,8 +339,8 @@ class DataFilterTest extends TestCase
                     ],
                 ],
                 [
-                    'LIKE' => [
-                        'name' => 'foo',
+                    'name' => [
+                        'LIKE' => 'foo',
                     ],
                 ],
             ],
