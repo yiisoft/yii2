@@ -301,6 +301,9 @@ class BaseInflector
      */
     public static function pluralize($word)
     {
+        if (empty($word)) {
+            return (string) $word;
+        }
         if (isset(static::$specials[$word])) {
             return static::$specials[$word];
         }
@@ -320,6 +323,9 @@ class BaseInflector
      */
     public static function singularize($word)
     {
+        if (empty($word)) {
+            return (string) $word;
+        }
         $result = array_search($word, static::$specials, true);
         if ($result !== false) {
             return $result;
@@ -342,6 +348,9 @@ class BaseInflector
      */
     public static function titleize($words, $ucAll = false)
     {
+        if (empty($words)) {
+            return (string) $words;
+        }
         $words = static::humanize(static::underscore($words), $ucAll);
 
         return $ucAll ? StringHelper::mb_ucwords($words, self::encoding()) : StringHelper::mb_ucfirst($words, self::encoding());
@@ -359,6 +368,9 @@ class BaseInflector
      */
     public static function camelize($word)
     {
+        if (empty($word)) {
+            return (string) $word;
+        }
         return str_replace(' ', '', StringHelper::mb_ucwords(preg_replace('/[^\pL\pN]+/u', ' ', $word), self::encoding()));
     }
 
@@ -371,6 +383,9 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
+        if (empty($name)) {
+            return (string) $name;
+        }
         // Add a space before any uppercase letter preceded by a lowercase letter (xY => x Y)
         // and any uppercase letter preceded by an uppercase letter and followed by a lowercase letter (XYz => X Yz)
         $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=[\p{L}\d])\p{Lu}(?=\p{Ll})|(\d+)/u', ' \0', $name);
@@ -391,6 +406,9 @@ class BaseInflector
      */
     public static function camel2id($name, $separator = '-', $strict = false)
     {
+        if (empty($name)) {
+            return (string) $name;
+        }
         $regex = $strict ? '/\p{Lu}/u' : '/(?<!\p{Lu})\p{Lu}/u';
         if ($separator === '_') {
             return mb_strtolower(trim(preg_replace($regex, '_\0', $name), '_'), self::encoding());
@@ -409,6 +427,9 @@ class BaseInflector
      */
     public static function id2camel($id, $separator = '-')
     {
+        if (empty($id)) {
+            return (string) $id;
+        }
         return str_replace(' ', '', StringHelper::mb_ucwords(str_replace($separator, ' ', $id), self::encoding()));
     }
 
@@ -419,6 +440,9 @@ class BaseInflector
      */
     public static function underscore($words)
     {
+        if (empty($words)) {
+            return (string) $words;
+        }
         return mb_strtolower(preg_replace('/(?<=\\pL)(\\p{Lu})/u', '_\\1', $words), self::encoding());
     }
 
@@ -430,6 +454,9 @@ class BaseInflector
      */
     public static function humanize($word, $ucAll = false)
     {
+        if (empty($word)) {
+            return (string) $word;
+        }
         $word = str_replace('_', ' ', preg_replace('/_id$/', '', $word));
         $encoding = self::encoding();
 
@@ -447,6 +474,9 @@ class BaseInflector
      */
     public static function variablize($word)
     {
+        if (empty($word)) {
+            return (string) $word;
+        }
         $word = static::camelize($word);
 
         return mb_strtolower(mb_substr($word, 0, 1, self::encoding())) . mb_substr($word, 1, null, self::encoding());
@@ -461,6 +491,9 @@ class BaseInflector
      */
     public static function tableize($className)
     {
+        if (empty($className)) {
+            return (string) $className;
+        }
         return static::pluralize(static::underscore($className));
     }
 
@@ -479,6 +512,9 @@ class BaseInflector
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
+        if (empty($string)) {
+            return (string) $string;
+        }
         if ((string)$replacement !== '') {
             $parts = explode($replacement, static::transliterate($string));
         } else {
@@ -513,6 +549,9 @@ class BaseInflector
      */
     public static function transliterate($string, $transliterator = null)
     {
+        if (empty($string)) {
+            return (string) $string;
+        }
         if (static::hasIntl()) {
             if ($transliterator === null) {
                 $transliterator = static::$transliterator;
@@ -541,6 +580,9 @@ class BaseInflector
      */
     public static function classify($tableName)
     {
+        if (empty($tableName)) {
+            return (string) $tableName;
+        }
         return static::camelize(static::singularize($tableName));
     }
 

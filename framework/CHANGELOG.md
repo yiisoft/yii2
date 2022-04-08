@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 - Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
 - Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
+- Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 
 
 2.0.45 February 11, 2022
