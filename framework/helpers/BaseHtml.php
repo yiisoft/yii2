@@ -1915,7 +1915,7 @@ class BaseHtml
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && ($strict ? !strcmp($key, $selection) : $selection == $key)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection, $strict));
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
