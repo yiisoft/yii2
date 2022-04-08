@@ -14,6 +14,8 @@ Yii Framework 2 Change Log
 - Enh #19309: Optimize `yii\base\Model::attributes()` (WinterSilence)
 - Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
+- Bug #19237: Fix OCI PHP 8.1: trim(): Passing null to parameter #1 ($string)
+  of type string is deprecated (longthanhtran)
 
 
 2.0.45 February 11, 2022
