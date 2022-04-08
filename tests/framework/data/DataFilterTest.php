@@ -334,6 +334,18 @@ class DataFilterTest extends TestCase
             ],
             [
                 [
+                    'name' => [
+                        'like' => 'foo',
+                    ],
+                ],
+                [
+                    'name' => [
+                        'LIKE' => 'foo',
+                    ],
+                ],
+            ],
+            [
+                [
                     'and' => [
                         [
                             'name' => ['eq' => 'foo'],
