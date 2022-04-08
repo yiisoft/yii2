@@ -79,7 +79,7 @@ trait FixtureTrait
     /**
      * Loads the specified fixtures.
      * This method will call [[Fixture::load()]] for every fixture object.
-     * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
+     * @param Fixture[]|null $fixtures the fixtures to be loaded. If this parameter is not specified,
      * the return value of [[getFixtures()]] will be used.
      */
     public function loadFixtures($fixtures = null)
@@ -103,7 +103,7 @@ trait FixtureTrait
     /**
      * Unloads the specified fixtures.
      * This method will call [[Fixture::unload()]] for every fixture object.
-     * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
+     * @param Fixture[]|null $fixtures the fixtures to be loaded. If this parameter is not specified,
      * the return value of [[getFixtures()]] will be used.
      */
     public function unloadFixtures($fixtures = null)
@@ -151,7 +151,7 @@ trait FixtureTrait
     /**
      * Returns the named fixture.
      * @param string $name the fixture name. This can be either the fixture alias name, or the class name if the alias is not used.
-     * @return Fixture the fixture object, or null if the named fixture does not exist.
+     * @return Fixture|null the fixture object, or null if the named fixture does not exist.
      */
     public function getFixture($name)
     {

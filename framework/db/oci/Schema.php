@@ -411,7 +411,7 @@ SQL;
         $c->phpType = $this->getColumnPhpType($c);
 
         if (!$c->isPrimaryKey) {
-            if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
+            if (stripos((string) $column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
                 $defaultValue = $column['DATA_DEFAULT'];
@@ -594,9 +594,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) === '' ? null : (int) $length;
-        $column->precision = trim($precision) === '' ? null : (int) $precision;
-        $column->scale = trim($scale) === '' ? null : (int) $scale;
+        $column->size = trim((string) $length) === '' ? null : (int) $length;
+        $column->precision = trim((string) $precision) === '' ? null : (int) $precision;
+        $column->scale = trim((string) $scale) === '' ? null : (int) $scale;
     }
 
     /**

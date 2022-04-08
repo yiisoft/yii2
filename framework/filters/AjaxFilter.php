@@ -37,7 +37,7 @@ class AjaxFilter extends ActionFilter
      */
     public $errorMessage = 'Request must be XMLHttpRequest.';
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request|null the current request. If not set, the `request` application component will be used.
      */
     public $request;
 

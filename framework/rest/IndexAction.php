@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
 class IndexAction extends Action
 {
     /**
-     * @var callable a PHP callable that will be called to prepare a data provider that
+     * @var callable|null a PHP callable that will be called to prepare a data provider that
      * should return a collection of the models. If not set, [[prepareDataProvider()]] will be used instead.
      * The signature of the callable should be:
      *

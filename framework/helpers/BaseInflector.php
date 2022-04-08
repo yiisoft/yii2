@@ -506,7 +506,7 @@ class BaseInflector
      * of the helper.
      *
      * @param string $string input string
-     * @param string|\Transliterator $transliterator either a [[\Transliterator]] or a string
+     * @param string|\Transliterator|null $transliterator either a [[\Transliterator]] or a string
      * from which a [[\Transliterator]] can be built.
      * @return string
      * @since 2.0.7 this method is public.
@@ -586,8 +586,8 @@ class BaseInflector
      * ```
      *
      * @param array $words the words to be converted into an string
-     * @param string $twoWordsConnector the string connecting words when there are only two
-     * @param string $lastWordConnector the string connecting the last two words. If this is null, it will
+     * @param string|null $twoWordsConnector the string connecting words when there are only two
+     * @param string|null $lastWordConnector the string connecting the last two words. If this is null, it will
      * take the value of `$twoWordsConnector`.
      * @param string $connector the string connecting words other than those connected by
      * $lastWordConnector and $twoWordsConnector

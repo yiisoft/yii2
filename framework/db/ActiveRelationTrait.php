@@ -98,7 +98,7 @@ trait ActiveRelationTrait
      * ```
      *
      * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
-     * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
+     * @param callable|null $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the relation object itself.
      */
@@ -391,8 +391,8 @@ trait ActiveRelationTrait
     /**
      * @param array $models
      * @param array $link
-     * @param array $viaModels
-     * @param null|self $viaQuery
+     * @param array|null $viaModels
+     * @param self|null $viaQuery
      * @param bool $checkMultiple
      * @return array
      */
