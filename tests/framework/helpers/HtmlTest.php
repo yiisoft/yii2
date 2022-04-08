@@ -1114,6 +1114,8 @@ EOD;
         $data = [true => 'Yes', false => 'No'];
         $attributes = ['prompt' => 'Please select'];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
+        $attributes = ['prompt' => 'Please select'];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([false], $data, $attributes));
 
         $expected = <<<'EOD'
 <option value="">Please select</option>
