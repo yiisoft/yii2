@@ -26,7 +26,7 @@ use yii\helpers\FileHelper;
 class FileTarget extends Target
 {
     /**
-     * @var string log file path or [path alias](guide:concept-aliases). If not set, it will use the "@runtime/logs/app.log" file.
+     * @var string|null log file path or [path alias](guide:concept-aliases). If not set, it will use the "@runtime/logs/app.log" file.
      * The directory containing the log files will be automatically created if not existing.
      */
     public $logFile;
@@ -46,7 +46,7 @@ class FileTarget extends Target
      */
     public $maxLogFiles = 5;
     /**
-     * @var int the permission to be set for newly created log files.
+     * @var int|null the permission to be set for newly created log files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */

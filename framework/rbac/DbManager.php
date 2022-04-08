@@ -62,7 +62,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|array|string|null the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array

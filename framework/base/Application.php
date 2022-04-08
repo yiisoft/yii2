@@ -134,7 +134,7 @@ abstract class Application extends Module
      */
     public $requestedParams;
     /**
-     * @var array list of installed Yii extensions. Each array element represents a single extension
+     * @var array|null list of installed Yii extensions. Each array element represents a single extension
      * with the following structure:
      *
      * ```php

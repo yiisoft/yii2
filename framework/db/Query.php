@@ -452,7 +452,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * @param string|ExpressionInterface $selectExpression
      * @param Connection|null $db the database connection used to execute the query.
      * @return bool|string|null
-     * @throws \Exception if can't create command
+     * @throws \Throwable if can't create command
      */
     protected function queryScalar($selectExpression, $db)
     {

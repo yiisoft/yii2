@@ -104,7 +104,7 @@ class Validator extends Component
      */
     public $attributes = [];
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
+     * @var string|null the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
      *
      * - `{attribute}`: the label of the attribute being validated
@@ -132,7 +132,7 @@ class Validator extends Component
      */
     public $skipOnError = true;
     /**
-     * @var bool|null whether this validation rule should be skipped if the attribute value
+     * @var bool whether this validation rule should be skipped if the attribute value
      * is null or an empty string. This property is used only when validating [[yii\base\Model]].
      */
     public $skipOnEmpty = true;
@@ -144,14 +144,14 @@ class Validator extends Component
      */
     public $enableClientValidation = true;
     /**
-     * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
+     * @var callable|null a PHP callable that replaces the default implementation of [[isEmpty()]].
      * If not set, [[isEmpty()]] will be used to check if a value is empty. The signature
      * of the callable should be `function ($value)` which returns a boolean indicating
      * whether the value is empty.
      */
     public $isEmpty;
     /**
-     * @var callable a PHP callable whose return value determines whether this validator should be applied.
+     * @var callable|null a PHP callable whose return value determines whether this validator should be applied.
      * The signature of the callable should be `function ($model, $attribute)`, where `$model` and `$attribute`
      * refer to the model and the attribute currently being validated. The callable should return a boolean value.
      *
@@ -170,7 +170,7 @@ class Validator extends Component
      */
     public $when;
     /**
-     * @var string a JavaScript function name whose return value determines whether this validator should be applied
+     * @var string|null a JavaScript function name whose return value determines whether this validator should be applied
      * on the client-side. The signature of the function should be `function (attribute, value)`, where
      * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
      * and `value` the current value of the attribute.

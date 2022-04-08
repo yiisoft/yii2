@@ -411,7 +411,7 @@ SQL;
         $c->phpType = $this->getColumnPhpType($c);
 
         if (!$c->isPrimaryKey) {
-            if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
+            if (stripos((string) $column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
                 $defaultValue = (string) $column['DATA_DEFAULT'];

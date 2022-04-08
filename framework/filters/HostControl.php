@@ -91,7 +91,7 @@ class HostControl extends ActionFilter
      */
     public $allowedHosts;
     /**
-     * @var callable a callback that will be called if the current host does not match [[allowedHosts]].
+     * @var callable|null a callback that will be called if the current host does not match [[allowedHosts]].
      * If not set, [[denyAccess()]] will be called.
      *
      * The signature of the callback should be as follows:

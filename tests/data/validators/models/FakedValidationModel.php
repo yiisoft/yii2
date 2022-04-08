@@ -51,7 +51,7 @@ class FakedValidationModel extends Model
         return true;
     }
 
-    public function clientInlineVal($attribute, $params, $validator, $current)
+    public function clientInlineVal($attribute, $params, $validator, $current, $view = null)
     {
         return \func_get_args();
     }

@@ -97,33 +97,33 @@ class ActiveField extends Component
      */
     public $hintOptions = ['class' => 'hint-block'];
     /**
-     * @var bool whether to enable client-side data validation.
+     * @var bool|null whether to enable client-side data validation.
      * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
      */
     public $enableClientValidation;
     /**
-     * @var bool whether to enable AJAX-based data validation.
+     * @var bool|null whether to enable AJAX-based data validation.
      * If not set, it will take the value of [[ActiveForm::enableAjaxValidation]].
      */
     public $enableAjaxValidation;
     /**
-     * @var bool whether to perform validation when the value of the input field is changed.
+     * @var bool|null whether to perform validation when the value of the input field is changed.
      * If not set, it will take the value of [[ActiveForm::validateOnChange]].
      */
     public $validateOnChange;
     /**
-     * @var bool whether to perform validation when the input field loses focus.
+     * @var bool|null whether to perform validation when the input field loses focus.
      * If not set, it will take the value of [[ActiveForm::validateOnBlur]].
      */
     public $validateOnBlur;
     /**
-     * @var bool whether to perform validation while the user is typing in the input field.
+     * @var bool|null whether to perform validation while the user is typing in the input field.
      * If not set, it will take the value of [[ActiveForm::validateOnType]].
      * @see validationDelay
      */
     public $validateOnType;
     /**
-     * @var int number of milliseconds that the validation should be delayed when the user types in the field
+     * @var int|null number of milliseconds that the validation should be delayed when the user types in the field
      * and [[validateOnType]] is set `true`.
      * If not set, it will take the value of [[ActiveForm::validationDelay]].
      */

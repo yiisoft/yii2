@@ -163,7 +163,7 @@ class IpValidator extends Validator
      */
     public $wrongCidr;
     /**
-     * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
+     * @var string|null user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
      * but the CIDR prefix is not set.
      *
      * You may use the following placeholders in the message:
@@ -246,9 +246,7 @@ class IpValidator extends Validator
      * - Recursively substitutes aliases (described in [[networks]]) with their values.
      * - Removes duplicates
      *
-     * @property array the IPv4 or IPv6 ranges that are allowed or forbidden.
-     * See [[setRanges()]] for detailed description.
-     * @param array|string $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
+     * @param array|string|null $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
      *
      * When the array is empty, or the option not set, all IP addresses are allowed.
      *

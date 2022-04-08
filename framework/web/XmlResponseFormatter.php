@@ -33,7 +33,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $version = '1.0';
     /**
-     * @var string the XML encoding. If not set, it will use the value of [[Response::charset]].
+     * @var string|null the XML encoding. If not set, it will use the value of [[Response::charset]].
      */
     public $encoding;
     /**
