@@ -10,15 +10,6 @@ namespace yii\validators;
 /**
  * InlineValidator represents a validator which is defined as a method in the object being validated.
  *
- * The validation method must have the following signature:
- *
- * ```php
- * function foo($attribute, $params, $validator)
- * ```
- *
- * where `$attribute` refers to the name of the attribute being validated, while `$params` is an array representing the
- * additional parameters supplied in the validation rule. Parameter `$validator` refers to the related
- * [[InlineValidator]] object and is available since version 2.0.11.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -26,16 +17,18 @@ namespace yii\validators;
 class InlineValidator extends Validator
 {
     /**
-     * @var string|\Closure an anonymous function or the name of a model class method that will be
+     * @var string|callable an anonymous function or the name of a model class method that will be
      * called to perform the actual validation. The signature of the method should be like the following:
      *
      * ```php
-     * function foo($attribute, $params, $validator)
+     * function (string $attribute, mixed $params, InlineValidator $validator, mixed $current): bool {
+     * }
      * ```
      *
-     * - `$attribute` is the name of the attribute to be validated;
-     * - `$params` contains the value of [[params]] that you specify when declaring the inline validation rule;
-     * - `$validator` is a reference to related [[InlineValidator]] object. This parameter is available since version 2.0.11.
+     * - `$attribute` is the name of the attribute to be validated
+     * - `$params` contains the value of [[params]] that you specify when declaring the inline validation rule
+     * - `$validator` is a reference to related [[InlineValidator]] object. This parameter is available since version 2.0.11
+     * - `$current` is the attribute value. This parameter is available since version 2.0.36
      */
     public $method;
     /**
@@ -47,15 +40,16 @@ class InlineValidator extends Validator
      * The signature of the method should be like the following:
      *
      * ```php
-     * function foo($attribute, $params, $validator)
+     * function (string $attribute, mixed $params, InlineValidator $validator, mixed $current, View $view): string
      * {
-     *     return "javascript";
+     *     // $view->registerJs('JS validation function');
+     *     // or \app\assets\ValidationAsset::register($view);
+     *     return "calling JS validation function";
      * }
      * ```
      *
-     * where `$attribute` refers to the attribute name to be validated.
-     *
-     * Please refer to [[clientValidateAttribute()]] for details on how to return client validation code.
+     * Please refer to [[clientValidateAttribute()]] and [guide](guide:input-validation#client-side-validation) for details on how
+     * to return client validation code.
      */
     public $clientValidate;
     /**
@@ -100,7 +94,7 @@ class InlineValidator extends Validator
             if ($current === null) {
                 $current = $model->$attribute;
             }
-            return $method($attribute, $this->params, $this, $current);
+            return $method($attribute, $this->params, $this, $current, $view);
         }
 
         return null;

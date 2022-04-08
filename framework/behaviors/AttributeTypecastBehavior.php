@@ -121,7 +121,7 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $owner;
     /**
-     * @var array attribute typecast map in format: attributeName => type.
+     * @var array|null attribute typecast map in format: attributeName => type.
      * Type can be set via PHP callable, which accept raw value as an argument and should return
      * typecast result.
      * For example:

@@ -6,8 +6,11 @@ Yii Framework 2 Change Log
 
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
+- Bug #19256: Pass missed `$view` to user's callback in `yii\validators\InlineValidator::clientValidateAttribute()` (WinterSilence)
+- Enh #19270: Replace deprecated `scss` converter in `yii\web\AssetConverter::$commands` (WinterSilence)
 - Enh #19254: Support specifying custom characters for `yii.validation.trim()` and replace deprecated `jQuery.trim()` (WinterSilence)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
+- Enh #19295: Added alias `text/rtf` for mime-type `application/rtf` (lesha724)
 - Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
 - Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
 - Enh #19304: Add filtering validator `yii\validators\TrimValidator` (WinterSilence)
@@ -15,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 - Enh #19334: Add `yii\validators\DefaultValueValidator::$callableValue` to support multiple callback modes (eecjimmy)
+- Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
 
 
 2.0.45 February 11, 2022

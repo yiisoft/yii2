@@ -21,7 +21,7 @@ class NotInstantiableException extends InvalidConfigException
     /**
      * {@inheritdoc}
      */
-    public function __construct($class, $message = null, $code = 0, \Exception $previous = null)
+    public function __construct($class, $message = null, $code = 0, $previous = null)
     {
         if ($message === null) {
             $message = "Can not instantiate $class.";
