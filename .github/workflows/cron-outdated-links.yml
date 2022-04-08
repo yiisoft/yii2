@@ -1,18 +1,18 @@
-name: Fix outdated links in repository files
+name: Outdated links in repository files
 permissions:
-  contents: [read, write]
+  contents: read|write
 on:
   push:
     branches:
       - master
   schedule:
-    # Run everyday at 1:00 AM
-    - cron: '0 1 * * *'
+    # Run every week at 2:00
+    - cron: '0 2 */7 * *'
 jobs:
   link-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Fix files
+      - name: Display and fix outdated links
         shell: bash
-        # run `FixLinksController::actionIndex()`
+        # Run `FixLinksController::actionIndex()`, safe mode: off
         run: './build/build fix-links'
