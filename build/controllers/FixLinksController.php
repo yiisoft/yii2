@@ -30,6 +30,19 @@ class FixLinksController extends Controller
     private $linkChecker;
 
     /**
+     * @var bool the "safe mode" option: output outdated links instead of replacing them in files
+     */
+    public $safeMode = false;
+
+    /**
+     * @inheritDoc
+     */
+    public function options($actionID)
+    {
+        return \array_merge(parent::options($actionID), ['safeMode']);
+    }
+    
+    /**
      * Replaces updated links add log removed links.
      *
      * @return int
@@ -99,7 +112,7 @@ class FixLinksController extends Controller
         foreach ($files as $file) {
             $content = \file_get_contents($file);
             // ignore code examples
-            $parts = \preg_split('/(```.+?```|~~~.+?~~~)/s', $content, -1, \PREG_SPLIT_NO_EMPTY);
+            $parts = \preg_split('/(```.+?```|`.+?`|~~~.+?~~~)/s', $content, -1, \PREG_SPLIT_NO_EMPTY);
             $outdated = ['updated' => [], 'removed' => []];
             foreach ($parts as $value) {
                 $outdatedPart = $this->findOutdatedLinks($value);
@@ -122,16 +135,23 @@ class FixLinksController extends Controller
         $updated = \array_filter($updated);
         if (!empty($updated)) {
             $updated = \call_user_func_array('array_merge', $updated);
-            \file_put_contents($file, \strtr($content, $updated));
+            if ($this->safeMode) {
+                $this->stderr("Updated links in file '$file':\n", Console::FG_YELLOW);
+                foreach ($updated as $oldLink => $newLink) {
+                    $this->stderr("$oldLink > $newLink\n");
+                }
+            } else {
+                // Safe mode: off
+                \file_put_contents($file, \strtr($content, $updated));
+            }
         }
 
         $removed = \array_filter($removed);
         if (!empty($removed)) {
+            $this->stderr("Removed links in file '$file':\n", Console::FG_RED);
             $removed = \call_user_func_array('array_merge', $removed);
-            $this->stderr(
-                "Outdated links in '$file':\n" . \implode("\n", \array_unique($removed)) . "\n\n",
-                Console::FG_RED
-            );
+            $removed = \implode("\n", \array_unique($removed));
+            $this->stderr("$removed\n");
         }
     }
 
@@ -155,7 +175,7 @@ class FixLinksController extends Controller
 
         $outdated = ['updated' => [], 'removed' => []];
         foreach (\array_unique($urls[0]) as $url) {
-            $url = \rtrim($url, ' ],\'`/>');
+            $url = \rtrim($url, ' ],;\'"`>');
             $activeUrl = $this->linkChecker->check($url);
             if ($activeUrl === false) {
                 $outdated['removed'][] = $url;
