@@ -293,9 +293,7 @@ class AttributeTypecastBehavior extends Behavior
             }
 
             if ($type !== null) {
-                foreach ((array) $validator->attributes as $attribute) {
-                    $attributeTypes[ltrim($attribute, '!')] = $type;
-                }
+                $attributeTypes += array_fill_keys($validator->getAttributeNames(), $type);
             }
         }
 
@@ -312,16 +310,18 @@ class AttributeTypecastBehavior extends Behavior
         if ($this->typecastAfterValidate) {
             $events[Model::EVENT_AFTER_VALIDATE] = 'afterValidate';
         }
-        if ($this->typecastBeforeSave) {
-            $events[BaseActiveRecord::EVENT_BEFORE_INSERT] = 'beforeSave';
-            $events[BaseActiveRecord::EVENT_BEFORE_UPDATE] = 'beforeSave';
-        }
-        if ($this->typecastAfterSave) {
-            $events[BaseActiveRecord::EVENT_AFTER_INSERT] = 'afterSave';
-            $events[BaseActiveRecord::EVENT_AFTER_UPDATE] = 'afterSave';
-        }
-        if ($this->typecastAfterFind) {
-            $events[BaseActiveRecord::EVENT_AFTER_FIND] = 'afterFind';
+        if ($this->owner instanceof BaseActiveRecord) {
+            if ($this->typecastBeforeSave) {
+                $events[BaseActiveRecord::EVENT_BEFORE_INSERT] = 'beforeSave';
+                $events[BaseActiveRecord::EVENT_BEFORE_UPDATE] = 'beforeSave';
+            }
+            if ($this->typecastAfterSave) {
+                $events[BaseActiveRecord::EVENT_AFTER_INSERT] = 'afterSave';
+                $events[BaseActiveRecord::EVENT_AFTER_UPDATE] = 'afterSave';
+            }
+            if ($this->typecastAfterFind) {
+                $events[BaseActiveRecord::EVENT_AFTER_FIND] = 'afterFind';
+            }
         }
 
         return $events;
