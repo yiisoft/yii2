@@ -27,7 +27,7 @@ class Exception extends \yii\base\Exception
      * @param string $message PDO error message
      * @param array $errorInfo PDO error info
      * @param string $code PDO error code
-     * @param \Throwable|\Exception $previous The previous exception used for the exception chaining.
+     * @param \Throwable|null $previous The previous exception used for the exception chaining.
      */
     public function __construct($message, $errorInfo = [], $code = '', $previous = null)
     {

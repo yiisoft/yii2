@@ -36,7 +36,7 @@ class ActionFilter extends Behavior
      *
      * @see except
      */
-    public $only;
+    public $only = [];
     /**
      * @var array list of action IDs that this filter should not apply to.
      * @see only

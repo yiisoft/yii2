@@ -260,21 +260,15 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Returns the list of attribute names.
+     *
      * By default, this method returns all public non-static properties of the class.
      * You may override this method to change the default behavior.
-     * @return array list of attribute names.
+     *
+     * @return string[] list of attribute names.
      */
     public function attributes()
     {
-        $class = new ReflectionClass($this);
-        $names = [];
-        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            if (!$property->isStatic()) {
-                $names[] = $property->getName();
-            }
-        }
-
-        return $names;
+        return array_keys(Yii::getObjectVars($this));
     }
 
     /**

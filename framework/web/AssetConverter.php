@@ -12,7 +12,7 @@ use yii\base\Component;
 use yii\base\Exception;
 
 /**
- * AssetConverter supports conversion of several popular script formats into JS or CSS scripts.
+ * AssetConverter supports conversion of several popular formats into JS or CSS files.
  *
  * It is used by [[AssetManager]] to convert files after they have been published.
  *
@@ -25,6 +25,8 @@ class AssetConverter extends Component implements AssetConverterInterface
      * @var array the commands that are used to perform the asset conversion.
      * The keys are the asset file extension names, and the values are the corresponding
      * target script types (either "css" or "js") and the commands used for the conversion.
+     * 
+     * The command placeholders: `{from}` - source file, `{to}` - converted file.
      *
      * You may also use a [path alias](guide:concept-aliases) to specify the location of the command:
      *
@@ -33,11 +35,15 @@ class AssetConverter extends Component implements AssetConverterInterface
      *     'styl' => ['css', '@app/node_modules/bin/stylus < {from} > {to}'],
      * ]
      * ```
+     *
+     * Note: `Yii::getAlias()` can replace alias at the begin of the command only.
+     *
+     * @see https://sass-lang.com/documentation/cli/ SASS/SCSS
      */
     public $commands = [
         'less' => ['css', 'lessc {from} {to} --no-color --source-map'],
-        'scss' => ['css', 'sass {from} {to} --sourcemap'],
-        'sass' => ['css', 'sass {from} {to} --sourcemap'],
+        'scss' => ['css', 'sass --style=compressed {from} {to}'],
+        'sass' => ['css', 'sass --style=compressed {from} {to}'],
         'styl' => ['css', 'stylus < {from} > {to}'],
         'coffee' => ['js', 'coffee -p {from} > {to}'],
         'ts' => ['js', 'tsc --out {to} {from}'],

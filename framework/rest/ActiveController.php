@@ -127,7 +127,7 @@ class ActiveController extends Controller
      * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
      *
      * @param string $action the ID of the action to be executed
-     * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
+     * @param object|null $model the model to be accessed. If null, it means no specific model is being accessed.
      * @param array $params additional parameters
      * @throws ForbiddenHttpException if the user does not have access
      */

@@ -34,12 +34,12 @@ class StringValidator extends Validator
      */
     public $length;
     /**
-     * @var int maximum length. If not set, it means no maximum length limit.
+     * @var int|null maximum length. If not set, it means no maximum length limit.
      * @see tooLong for the customized message for a too long string.
      */
     public $max;
     /**
-     * @var int minimum length. If not set, it means no minimum length limit.
+     * @var int|null minimum length. If not set, it means no minimum length limit.
      * @see tooShort for the customized message for a too short string.
      */
     public $min;
@@ -60,7 +60,7 @@ class StringValidator extends Validator
      */
     public $notEqual;
     /**
-     * @var string the encoding of the string value to be validated (e.g. 'UTF-8').
+     * @var string|null the encoding of the string value to be validated (e.g. 'UTF-8').
      * If this property is not set, [[\yii\base\Application::charset]] will be used.
      */
     public $encoding;

@@ -38,7 +38,7 @@ class HttpException extends UserException
     /**
      * Constructor.
      * @param int $status HTTP status code, such as 404, 500, etc.
-     * @param string $message error message
+     * @param string|null $message error message
      * @param int $code error code
      * @param \Throwable|null $previous The previous exception used for the exception chaining.
      */

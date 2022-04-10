@@ -33,7 +33,7 @@ class MessageSource extends Component
      */
     public $forceTranslation = false;
     /**
-     * @var string the language that the original messages are in. If not set, it will use the value of
+     * @var string|null the language that the original messages are in. If not set, it will use the value of
      * [[\yii\base\Application::sourceLanguage]].
      */
     public $sourceLanguage;
