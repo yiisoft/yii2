@@ -308,6 +308,26 @@ class RequestTest extends TestCase
                     'example1.com',
                 ]
             ],
+            [
+                [
+                    'HTTP_HOST' => 'example1.com:8081',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8081',
+                    'example1.com',
+                ]
+            ],
+            [
+                [
+                    'HTTP_HOST' => 'example1.com:8080',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8080',
+                    'example1.com',
+                ]
+            ],
             // HTTP header missing
             [
                 [

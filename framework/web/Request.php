@@ -758,7 +758,7 @@ class Request extends \yii\base\Request
                     $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
                 }
 
-                if ($this->_hostInfo !== null) {
+                if ($this->_hostInfo !== null && !preg_match('/:\d+$/', $this->_hostInfo)) {
                     $port = $secure ? $this->getSecurePort() : $this->getPort();
                     if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
                         $this->_hostInfo .= ':' . $port;
