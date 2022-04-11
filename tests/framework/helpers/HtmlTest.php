@@ -775,6 +775,14 @@ EOD;
 <label><input type="checkbox" name="test[]" value="1.10"> 1.10</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['1.1'], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'], ['strict' => true]));
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', [1.1], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'], ['strict' => true]));
+
+        $expected = <<<'EOD'
+<div><label><input type="checkbox" name="test[]" value="1"> 1</label>
+<label><input type="checkbox" name="test[]" value="1.1" checked> 1.1</label>
+<label><input type="checkbox" name="test[]" value="1.10" checked> 1.10</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', [1.1], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10']));
     }
 
     public function testRadioListWithArrayExpression()
@@ -923,6 +931,14 @@ EOD;
 <label><input type="radio" name="test" value="1.10"> 1.10</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['1.1'], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'], ['strict' => true]));
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', [1.1], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'], ['strict' => true]));
+
+        $expected = <<<'EOD'
+<div><label><input type="radio" name="test" value="1"> 1</label>
+<label><input type="radio" name="test" value="1.1" checked> 1.1</label>
+<label><input type="radio" name="test" value="1.10" checked> 1.10</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['1.1'], ['1' => '1', '1.1' => '1.1', '1.10' => '1.10']));
     }
 
     public function testUl()
@@ -1069,6 +1085,15 @@ EOD;
         $data = ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'];
         $attributes = ['strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.1'], $data, $attributes));
+        $attributes = ['strict' => true];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([1.1], $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="1">1</option>
+<option value="1.1" selected>1.1</option>
+<option value="1.10" selected>1.10</option>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([1.1], $data));
 
         $expected = <<<'EOD'
 <option value="1">1</option>
@@ -1080,6 +1105,27 @@ EOD;
         $data = ['1' => '1', '1.1' => '1.1', 'group' => ['1.10' => '1.10']];
         $attributes = ['strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.10'], $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="">Please select</option>
+<option value="1">Yes</option>
+<option value="0" selected>No</option>
+EOD;
+        $data = [true => 'Yes', false => 'No'];
+        $attributes = ['prompt' => 'Please select'];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
+        //$attributes = ['prompt' => 'Please select'];
+        //$this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([false], $data, $attributes));
+
+        $expected = <<<'EOD'
+<option value="">Please select</option>
+<option value="1">Yes</option>
+<option value="0">No</option>
+EOD;
+        $attributes = ['prompt' => 'Please select', 'strict' => true];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
+        $attributes = ['prompt' => 'Please select', 'strict' => true];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([false], $data, $attributes));
     }
 
     public function testRenderTagAttributes()
