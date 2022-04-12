@@ -167,7 +167,9 @@ class DataColumn extends Column
         $provider = $this->grid->dataProvider;
 
         if ($this->label === null) {
-            if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
+            if ($this->attribute === null) {
+                $label = '';
+            } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
                 /* @var $modelClass Model */
                 $modelClass = $provider->query->modelClass;
                 $model = $modelClass::instance();
