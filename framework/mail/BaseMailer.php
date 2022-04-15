@@ -87,7 +87,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     public $fileTransportPath = '@runtime/mail';
     /**
-     * @var callable a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
+     * @var callable|null a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
      * The callback should return a file name which will be used to save the email message.
      * If not set, the file name will be generated based on the current timestamp.
      *

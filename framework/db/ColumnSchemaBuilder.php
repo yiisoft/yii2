@@ -124,8 +124,8 @@ class ColumnSchemaBuilder extends BaseObject
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
-     * @param int|string|array $length length or precision of the column. See [[$length]].
-     * @param \yii\db\Connection $db the current database connection. See [[$db]].
+     * @param int|string|array|null $length length or precision of the column. See [[$length]].
+     * @param \yii\db\Connection|null $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($type, $length = null, $db = null, $config = [])

@@ -84,7 +84,7 @@ class MessageController extends \yii\console\Controller
      */
     public $markUnused = true;
     /**
-     * @var array list of patterns that specify which files/directories should NOT be processed.
+     * @var array|null list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
@@ -99,7 +99,7 @@ class MessageController extends \yii\console\Controller
         '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
-     * @var array list of patterns that specify which files (not directories) should be processed.
+     * @var array|null list of patterns that specify which files (not directories) should be processed.
      * If empty or not set, all files will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
@@ -286,7 +286,7 @@ EOD;
      * This command will search through source code files and extract
      * messages that need to be translated in different languages.
      *
-     * @param string $configFile the path or alias of the configuration file.
+     * @param string|null $configFile the path or alias of the configuration file.
      * You may use the "yii message/config" command to generate
      * this file and then customize it for your needs.
      * @throws Exception on failure.

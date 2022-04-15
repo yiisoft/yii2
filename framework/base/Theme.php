@@ -74,7 +74,7 @@ use yii\helpers\FileHelper;
 class Theme extends Component
 {
     /**
-     * @var array the mapping between view directories and their corresponding themed versions.
+     * @var array|null the mapping between view directories and their corresponding themed versions.
      * This property is used by [[applyTo()]] when a view is trying to apply the theme.
      * [Path aliases](guide:concept-aliases) can be used when specifying directories.
      * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
