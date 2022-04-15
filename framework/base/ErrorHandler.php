@@ -153,7 +153,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles exception thrown during exception processing in [[handleException()]].
-     * @param |\Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Throwable $exception Exception that was thrown during main exception processing.
      * @param \Throwable $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
