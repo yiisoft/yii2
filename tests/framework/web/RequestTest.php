@@ -286,6 +286,48 @@ class RequestTest extends TestCase
                     'example1.com',
                 ]
             ],
+            // HTTP header missing with port 80
+            [
+                [
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_PORT' => 80,
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // normal with nonstandart port 8080
+            [
+                [
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8080',
+                    'example1.com',
+                ]
+            ],
+            [
+                [
+                    'HTTP_HOST' => 'example1.com:8081',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8081',
+                    'example1.com',
+                ]
+            ],
+            [
+                [
+                    'HTTP_HOST' => 'example1.com:8080',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8080',
+                    'example1.com',
+                ]
+            ],
             // HTTP header missing
             [
                 [
@@ -294,6 +336,28 @@ class RequestTest extends TestCase
                 [
                     'http://example2.com',
                     'example2.com',
+                ]
+            ],
+            // HTTP header missing with nonstandart port 8080
+            [
+                [
+                    'SERVER_NAME' => 'example1.com',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8080',
+                    'example1.com',
+                ]
+            ],
+            // HTTP header missing with port 80
+            [
+                [
+                    'SERVER_NAME' => 'example1.com',
+                    'SERVER_PORT' => 80,
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
                 ]
             ],
             // forwarded from untrusted server
