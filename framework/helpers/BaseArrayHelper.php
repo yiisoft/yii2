@@ -8,8 +8,8 @@
 namespace yii\helpers;
 
 use Yii;
-use Traversable;
 use ArrayAccess;
+use Traversable;
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
 
