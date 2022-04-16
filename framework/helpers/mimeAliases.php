@@ -5,6 +5,7 @@
  * This file contains aliases for MIME types.
  */
 return [
+    'text/rtf' => 'application/rtf',
     'text/xml' => 'application/xml',
     'image/svg' => 'image/svg+xml',
     'image/x-bmp' => 'image/bmp',

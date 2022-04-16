@@ -26,11 +26,11 @@ use yii\helpers\Html;
 class LinkSorter extends Widget
 {
     /**
-     * @var Sort the sort definition
+     * @var Sort|null the sort definition
      */
     public $sort;
     /**
-     * @var array list of the attributes that support sorting. If not set, it will be determined
+     * @var array|null list of the attributes that support sorting. If not set, it will be determined
      * using [[Sort::attributes]].
      */
     public $attributes;

@@ -18,6 +18,7 @@ class MimeTest extends TestCase
     {
         $this->assertSame(
             [
+                'text/rtf' => 'application/rtf',
                 'text/xml' => 'application/xml',
                 'image/svg' => 'image/svg+xml',
                 'image/x-bmp' => 'image/bmp',
@@ -37,7 +38,6 @@ class MimeTest extends TestCase
 
     public function testMimeTypes()
     {
-
         $coreMimeTypes = [
                 '3dml' => 'text/vnd.in3d.3dml',
                 '3ds' => 'image/x-3ds',
@@ -385,6 +385,7 @@ class MimeTest extends TestCase
                 'jam' => 'application/vnd.jam',
                 'jar' => 'application/java-archive',
                 'java' => 'text/x-java-source',
+                'jfif' => 'image/jpeg',
                 'jisp' => 'application/vnd.jisp',
                 'jlt' => 'application/vnd.hp-jlyt',
                 'jnlp' => 'application/x-java-jnlp-file',

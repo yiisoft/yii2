@@ -29,7 +29,7 @@ $ composer update
 
 ## 基本使用
 
-继续阅读请确保已安装并开启了 redis 服务，安装请参考[《Redis 安装》](http://mayanlong.com/archives/2016/359.html)。
+继续阅读请确保已安装并开启了 redis 服务，安装请参考[《Redis 安装》](https://mayanlong.com/archives/2016/359.html)。
 
 #### 1. 配置
 
@@ -156,7 +156,7 @@ $session = Yii::$app->session;
 
 ## ActiveRecord
 
-该扩展中的 `yii\redis\ActiveRecord` 实现了 Yii2 中的 ActiveRecord 相关接口，所以我们可以使用 AR 的方式操作 redis 数据库。关于如何使用 Yii 的 ActiveRecord，请阅读权威指南中有关 [ActiveRecord](http://www.yiichina.com/doc/guide/2.0/db-active-record) 的基础文档。 
+该扩展中的 `yii\redis\ActiveRecord` 实现了 Yii2 中的 ActiveRecord 相关接口，所以我们可以使用 AR 的方式操作 redis 数据库。关于如何使用 Yii 的 ActiveRecord，请阅读权威指南中有关 [ActiveRecord](https://www.yiichina.com/doc/guide/2.0/db-active-record) 的基础文档。 
 
 定义 redis ActiveRecord 类，我们的模型需要继承 `yii\redis\ActiveRecord`，并至少实现 `attributes()` 方法来定义模型的属性。 
 

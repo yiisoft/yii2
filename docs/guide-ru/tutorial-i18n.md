@@ -46,7 +46,7 @@ return [
 ```
 
 Формат для установки языка/локали: `ll-CC`, где `ll` — это двух или трёхбуквенный код языка в нижнем регистре в 
-соответствии со стандартом [ISO-639](http://www.loc.gov/standards/iso639-2/), а `CC` — это код страны в соответствии
+соответствии со стандартом [ISO-639](https://www.loc.gov/standards/iso639-2/), а `CC` — это код страны в соответствии
 со стандартом [ISO-3166](https://ru.wikipedia.org/wiki/ISO_3166-1#Список_кодов_по_ISO_3166).
 
 > Note: больше информации о синтаксисе и концепции локалей можно получить в [документации проекта ICU](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
@@ -268,7 +268,7 @@ for an argument: U_ARGUMENT_TYPE_MISMATCH":
 ```
 
 Подробная документация о формах склонений для различных языков доступна на сайте 
-[unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
+[unicode.org](https://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 #### Вариации
 

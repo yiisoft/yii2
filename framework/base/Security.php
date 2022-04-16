@@ -146,7 +146,7 @@ class Security extends Component
      * to hash input or output data.
      * @param string $data the data to encrypt
      * @param string $inputKey the input to use for encryption and authentication
-     * @param string $info optional context and application specific information, see [[hkdf()]]
+     * @param string|null $info optional context and application specific information, see [[hkdf()]]
      * @return string the encrypted data as byte string
      * @see decryptByKey()
      * @see encryptByPassword()
@@ -172,7 +172,7 @@ class Security extends Component
      * Verifies and decrypts data encrypted with [[encryptByKey()]].
      * @param string $data the encrypted data to decrypt
      * @param string $inputKey the input to use for encryption and authentication
-     * @param string $info optional context and application specific information, see [[hkdf()]]
+     * @param string|null $info optional context and application specific information, see [[hkdf()]]
      * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByKey()
      */
@@ -286,8 +286,8 @@ class Security extends Component
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $inputKey the source key
-     * @param string $salt the random salt
-     * @param string $info optional info to bind the derived key material to application-
+     * @param string|null $salt the random salt
+     * @param string|null $info optional info to bind the derived key material to application-
      * and context-specific information, e.g. a user ID or API version, see
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
      * @param int $length length of the output key in bytes. If 0, the output key is
@@ -529,7 +529,7 @@ class Security extends Component
      * ```
      *
      * @param string $password The password to be hashed.
-     * @param int $cost Cost parameter used by the Blowfish hash algorithm.
+     * @param int|null $cost Cost parameter used by the Blowfish hash algorithm.
      * The higher the value of cost,
      * the longer it takes to generate the hash and to verify a password against it. Higher cost
      * therefore slows down a brute-force attack. For best protection against brute-force attacks,

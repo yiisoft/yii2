@@ -89,7 +89,7 @@ use yii\helpers\Html;
 注意以上代码，`message` 参数在输出之前被 
 [[yii\helpers\Html::encode()|HTML-encoded]] 方法处理过。
 这很有必要，当参数来自于最终用户时，参数中可能隐含的恶意 JavaScript 代码会导致
-[跨站脚本（XSS）攻击](http://en.wikipedia.org/wiki/Cross-site_scripting)。
+[跨站脚本（XSS）攻击](https://en.wikipedia.org/wiki/Cross-site_scripting)。
 
 当然了，你大概会在 `say` 视图里放入更多内容。内容可以由 HTML 标签，纯文本，
 甚至 PHP 语句组成。实际上 `say` 视图就是一个由 [[yii\web\Controller::render()|render()]] 执行的 PHP 脚本。

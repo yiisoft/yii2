@@ -86,7 +86,7 @@ Bạn cần lưu trữ view `say` nằm ở đường dẫn `views/site/say.php`
 
 Lưu ý rằng, đoạn code trên, biến `message` đã được phương thức [[yii\helpers\Html::encode()|HTML-encoded]]
 mã hóa trước khi được in ra. Việc mã hóa là cần thiết khi gửi các tham số tới user, các tham số này có thể bị tấn công qua
-[XSS (cross-site scripting)](http://en.wikipedia.org/wiki/Cross-site_scripting) đây là kỹ thuật tấn công bằng cách chèn chèn các 
+[XSS (cross-site scripting)](https://en.wikipedia.org/wiki/Cross-site_scripting) đây là kỹ thuật tấn công bằng cách chèn chèn các 
 thẻ HTML hoặc đoạn mã JavaScript độc hại.
 
 Tất nhiên, bạn có thể thêm các nội dung ở view `say`.Nội dung bao gồm các thẻ HTML, dữ liệu văn bản, và cũng có thể là các câu lệnh PHP.

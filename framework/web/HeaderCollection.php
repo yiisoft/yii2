@@ -227,7 +227,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It is implicitly called when you use something like `$header = $collection[$name];`.
      * This is equivalent to [[get()]].
      * @param string $name the header name
-     * @return string the header value with the specified name, null if the named header does not exist.
+     * @return string|null the header value with the specified name, null if the named header does not exist.
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($name)

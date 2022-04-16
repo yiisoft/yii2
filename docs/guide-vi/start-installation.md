@@ -1,7 +1,7 @@
 Cài đặt Yii
 ==============
 
-Bạn có thể cài đặt Yii theo hai cách, dùng trình quản lý gói [Composer](http://getcomposer.org/) hoặc tải toàn bộ mã nguồn Yii về.
+Bạn có thể cài đặt Yii theo hai cách, dùng trình quản lý gói [Composer](https://getcomposer.org/) hoặc tải toàn bộ mã nguồn Yii về.
 Cách thứ nhất thường được khuyến khích dùng hơn, vì nó cho phép bạn cài đặt thêm các [Gói mở rộng (extensions)](structure-extensions.md)  hoặc cập nhật Yii đơn giản chỉ mới một dòng lệnh.
 
 Mặc định, sau khi cài đặt Yii sẽ cung cấp cho bạn một số tính năng cơ bản, như đăng nhập (login), form liên hệ (contact form), vv. 
@@ -120,9 +120,9 @@ Cấu hình máy chủ Web <span id="configuring-web-servers"></span>
 > Lưu ý: Lưu ý: Nếu bạn chỉ là chạy thử ứng dụng Yii thay vì được triển khai(deploying) trong một môi trường sản xuất,
   bạn có thể bỏ qua phần này.
 
-Các ứng dụng được cài đặt theo phương pháp trên, được chạy trong Windows, Max OS X, Linux hoặc máy chủ [Apache HTTP](http://httpd.apache.org/) 
-hoặc [Nginx HTTP server](http://nginx.org/) và PHP phiên bản 5.4 hoặc cao hơn đều có thể được chạy trực tiếp. Yii 2.0 cũng tương thích với HHVM, 
-do [HHVM](http://hhvm.com/)của Facebook và PHP tiêu chuẩn trên các khía cạnh trong một vài nơi một với trường hợp hơi khác nhau, 
+Các ứng dụng được cài đặt theo phương pháp trên, được chạy trong Windows, Max OS X, Linux hoặc máy chủ [Apache HTTP](https://httpd.apache.org/) 
+hoặc [Nginx HTTP server](https://nginx.org/) và PHP phiên bản 5.4 hoặc cao hơn đều có thể được chạy trực tiếp. Yii 2.0 cũng tương thích với HHVM, 
+do [HHVM](https://hhvm.com/)của Facebook và PHP tiêu chuẩn trên các khía cạnh trong một vài nơi một với trường hợp hơi khác nhau, 
 khi sử dụng HHVM đòi hỏi ít thay đổi.
 
 Trong môi trường máy chủ sản xuất, bạn có thể cấu hình máy chủ để ứng dụng có thể truy cập thông qua URL http://www.example.com/index.php 
@@ -161,7 +161,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Các khuyến nghị khi cấu hình Nginx <span id="recommended-nginx-configuration"></span>
 
-Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://www.php.net/install.fpm).
+Để sử dụng [Nginx](https://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://www.php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
 `basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 

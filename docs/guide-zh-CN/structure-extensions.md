@@ -75,7 +75,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 2. 如果有，则安装扩展提供的自动加载器。
 3. 按指导说明下载和安装所有依赖的扩展。
 
-如果扩展没有提供类的自动加载器，但也遵循了 [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) 
+如果扩展没有提供类的自动加载器，但也遵循了 [PSR-4 standard](https://www.php-fig.org/psr/psr-4/) 
 标准，那么你可以使用 Yii 提供的类自动加载器来加载扩展类。
 你需要做的仅仅是为扩展的根目录声明一个 [root alias](concept-aliases.md#defining-aliases)。
 例如，假设在 `vendor/mycompany/myext` 目录中安装了一个扩展，并且扩展类的命名空间为 `myext` ，
@@ -184,7 +184,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 确定你也为每一个依赖的包列出了适当的版本约束条件 (比如 `1.*`, `@stable`) 。
 当你发布一个稳定版本时，你所依赖的包也应当使用稳定版本。
 
-大多数 JavaScript/CSS 包是用 [Bower](http://bower.io/) 来管理的，而非 Composer。你可使用 
+大多数 JavaScript/CSS 包是用 [Bower](https://bower.io/) 来管理的，而非 Composer。你可使用 
 [Composer asset 插件](https://github.com/fxpio/composer-asset-plugin) 使之可以
 通过 Composer 来管理这类包。如果你的扩展依赖 Bower 软件包，你可以如下例所示那样简单地
 在 `composer.json` 文件的依赖中列出它。
@@ -240,8 +240,8 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 #### 命名空间 <span id="namespaces"></span>
 
 为避免冲突以及使你的扩展中的类能被自动加载，你的类应当使用命名空间，
-并使类的命名符合 [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) 或者
-[PSR-0 standard](http://www.php-fig.org/psr/psr-0/) 标准。
+并使类的命名符合 [PSR-4 standard](https://www.php-fig.org/psr/psr-4/) 或者
+[PSR-0 standard](https://www.php-fig.org/psr/psr-0/) 标准。
 
 你的类的命名空间应以 `vendorName\extensionName` 起始，其中 `extensionName` 
 和项目名相同，除了它没有 `yii2-` 前缀外。例如，对 `yiisoft/yii2-imagine` 扩展
@@ -351,7 +351,7 @@ Yii 提供了测试支持，使你更容易写单元测试、验收测试和功�
 #### 版本控制 <span id="versioning"></span>
 
 你应该为每一个扩展定一个版本号（如 `1.0.1`）。我们推荐你命名版本号时参照
-[semantic versioning](http://semver.org) 决定用什么样的版本号。
+[semantic versioning](https://semver.org) 决定用什么样的版本号。
 
 
 #### 发布 <span id="releasing"></span>
@@ -367,7 +367,7 @@ Yii 提供了测试支持，使你更容易写单元测试、验收测试和功�
 帮助其他人了解和使用你的扩展：
 
 * 根目录下的 readme 文件：它描述你的扩展是干什么的以及如何安装和使用。
-  我们推荐你用 [Markdown](http://daringfireball.net/projects/markdown/) 的格式
+  我们推荐你用 [Markdown](https://daringfireball.net/projects/markdown/) 的格式
   来写并将文件命名为 `readme.md`。
 * 根目录下的修改日志文件：它列举每个版本的发布做了哪些更改。该文件可以用 Markdown 根式
   编写并命名为 `changelog.md`。
@@ -398,7 +398,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient)：
   提供了一套常用的认证客户端，例如 Facebook OAuth2 客户端、GitHub OAuth2 客户端。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap)：
-  提供了一套挂件，封装了 [Bootstrap](http://getbootstrap.com/) 的组件和插件。
+  提供了一套挂件，封装了 [Bootstrap](https://getbootstrap.com/) 的组件和插件。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug)：
   提供了对 Yii 应用的调试支持。当使用该扩展是，
   在每个页面的底部将显示一个调试工具条。
@@ -415,9 +415,9 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient)：
   提供 HTTP 客户端。
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine)：
-  提供了基于 [Imagine](http://imagine.readthedocs.org/) 的常用图像处理功能。
+  提供了基于 [Imagine](https://imagine.readthedocs.org/) 的常用图像处理功能。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui)：
-  提供了一套封装 [JQuery UI](http://jqueryui.com/) 的挂件以及它们的交互。
+  提供了一套封装 [JQuery UI](https://jqueryui.com/) 的挂件以及它们的交互。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb)：
   提供了对 [MongoDB](https://www.mongodb.com/) 的使用支持。它包含基本
   的查询、活动记录、数据迁移、缓存、代码生成等特性。
@@ -425,14 +425,14 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
   通过队列异步提供运行任务的支持。
   它支持基于 DB，Redis，RabbitMQ，AMQP，Beanstalk 和 Gearman 的队列。
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis)：
-  提供了对 [redis](http://redis.io/) 的使用支持。它包含基本的
+  提供了对 [redis](https://redis.io/) 的使用支持。它包含基本的
   查询、活动记录、缓存等特性。
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell)：
-  提供基于 [psysh](http://psysh.org/) 的交互式 shell。
+  提供基于 [psysh](https://psysh.org/) 的交互式 shell。
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty)：
-  提供了一个基于 [Smarty](http://www.smarty.net/) 的模板引擎。
+  提供了一个基于 [Smarty](https://www.smarty.net/) 的模板引擎。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx)：
-  提供了对 [Sphinx](http://sphinxsearch.com) 的使用支持。它包含基本的
+  提供了对 [Sphinx](https://sphinxsearch.com) 的使用支持。它包含基本的
   查询、活动记录、代码生成等特性。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)：
   提供了基于 [swiftmailer](http://swiftmailer.org/) 的邮件发送功能。
@@ -447,7 +447,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery)：
   为 [jQuery](https://jquery.com/) 提供支持。
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput)：
-  提供基于 [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/) 的格式化输入小部件。
+  提供基于 [jQuery Input Mask plugin](https://robinherbots.github.io/Inputmask/) 的格式化输入小部件。
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql)：
   提供对使用 [MSSQL](https://www.microsoft.com/sql-server/) 的支持。
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle)：

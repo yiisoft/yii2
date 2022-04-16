@@ -34,7 +34,7 @@ Se a biblioteca não foi lançada como um pacote Composer, você deve seguir as 
 
 Se uma biblioteca possui o seu próprio carregador automático, você pode instalá-la no [script de entrada](structure-entry-scripts.md) de sua aplicação. Recomenda-se que a instalação seja feita antes de incluir o arquivo `Yii.php`. Isto porque a classe autoloader Yii pode ter precedência nas classes de carregamento automático da biblioteca a ser instalada.
 
-Se uma biblioteca não oferece um carregador automático de classe, mas seus nomes seguem o padrão [PSR-4](http://www.php-fig.org/psr/psr-4/), você pode usar a classe de autoloader do  Yii para carregar as classes. Tudo que você precisa fazer é apenas declarar um [alias](concept-aliases.md#defining-aliases) para cada namespace raiz utilizados em suas classes. Por exemplo, suponha que você tenha instalado uma biblioteca no diretório `vendor/foo/bar` e as classes de bibliotecas estão sob o namespace raiz `xyz`. Você pode incluir o seguinte código na configuração da sua aplicação:
+Se uma biblioteca não oferece um carregador automático de classe, mas seus nomes seguem o padrão [PSR-4](https://www.php-fig.org/psr/psr-4/), você pode usar a classe de autoloader do  Yii para carregar as classes. Tudo que você precisa fazer é apenas declarar um [alias](concept-aliases.md#defining-aliases) para cada namespace raiz utilizados em suas classes. Por exemplo, suponha que você tenha instalado uma biblioteca no diretório `vendor/foo/bar` e as classes de bibliotecas estão sob o namespace raiz `xyz`. Você pode incluir o seguinte código na configuração da sua aplicação:
 
 ```php
 [

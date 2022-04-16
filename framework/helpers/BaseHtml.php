@@ -572,7 +572,7 @@ class BaseHtml
 
     /**
      * Generates an input button.
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -592,7 +592,7 @@ class BaseHtml
      * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
      * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
      *
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -608,7 +608,7 @@ class BaseHtml
 
     /**
      * Generates a reset input button.
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
      * Attributes whose value is null will be ignored and not put in the tag returned.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -1914,7 +1914,7 @@ class BaseHtml
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
+                        (!ArrayHelper::isTraversable($selection) && ($strict ? !strcmp($key, $selection) : $selection == $key)
                         || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
                 }
                 $text = $encode ? static::encode($value) : $value;

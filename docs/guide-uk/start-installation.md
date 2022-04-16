@@ -147,9 +147,9 @@ http://localhost:8080/
   і не розгортаєте його на робочому сервері.
 
 Додаток, встановлений за інструкціями, наведеними вище, буде працювати одразу як
-з [Apache HTTP server](http://httpd.apache.org/), так і з [Nginx HTTP server](http://nginx.org/) на
+з [Apache HTTP server](https://httpd.apache.org/), так і з [Nginx HTTP server](https://nginx.org/) на
 Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище. Yii 2.0 також сумісний із віртуальною машиною Фейсбука
-[HHVM](http://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
+[HHVM](https://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
 ніж рідний PHP, тому ви повинні бути дуже уважними при використанні HHVM.  
 
 На робочому сервері вам напевно захочеться змінити URL додатку з `http://www.example.com/basic/web/index.php`
@@ -191,7 +191,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
-Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://www.php.net/install.fpm).
+Для використання [Nginx](https://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://www.php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
 `basic/web`, а `mysite.test` на актуальний домен.
 

@@ -130,7 +130,7 @@ class SiteController extends Controller
 
 > Note: 在这个简单例子里我们只是呈现了有效数据的确认页面。
   实践中你应该考虑使用 [[yii\web\Controller::refresh()|refresh()]] 
-  或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](http://en.wikipedia.org/wiki/Post/Redirect/Get)。
+  或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](https://en.wikipedia.org/wiki/Post/Redirect/Get)。
 
 
 创建视图 <span id="creating-views"></span>

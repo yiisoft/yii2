@@ -1,7 +1,7 @@
 视图
 =====
 
-视图是 [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分。
+视图是 [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分。
 它是展示数据到终端用户的代码，在网页应用中，
 根据*视图模板*来创建视图，视图模板为PHP脚本文件，
 主要包含HTML代码和展示类PHP代码，通过[[yii\web\View|view]]应用组件来管理，
@@ -52,7 +52,7 @@ $this->title = 'Login';
 
 当创建生成HTML页面的视图时，在显示之前将用户输入数据进行转码和过滤非常重要，
 否则，你的应用可能会被
-[跨站脚本](http://en.wikipedia.org/wiki/Cross-site_scripting) 攻击。
+[跨站脚本](https://en.wikipedia.org/wiki/Cross-site_scripting) 攻击。
 
 要显示纯文本，先调用 [[yii\helpers\Html::encode()]] 进行转码，
 例如如下代码将用户名在显示前先转码：

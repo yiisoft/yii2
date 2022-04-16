@@ -1,6 +1,6 @@
 <?php
 /* @var $this \yii\web\View */
-/* @var $exception \Exception */
+/* @var $exception \Throwable */
 /* @var $handler \yii\web\ErrorHandler */
 ?>
 <?php if (method_exists($this, 'beginPage')): ?>

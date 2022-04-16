@@ -4,8 +4,25 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
+- Bug #19349: Fix PHP 8.1 error when attribute and label of `yii\grid\DataColumn` are empty (githubjeka)
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
 - Bug #19235: Fix return type compatibility of `yii\web\SessionIterator` class methods for PHP 8.1 (virtual-designer)
+- Bug #19256: Pass missed `$view` to user's callback in `yii\validators\InlineValidator::clientValidateAttribute()` (WinterSilence)
+- Enh #19270: Replace deprecated `scss` converter in `yii\web\AssetConverter::$commands` (WinterSilence)
+- Enh #19254: Support specifying custom characters for `yii.validation.trim()` and replace deprecated `jQuery.trim()` (WinterSilence)
+- Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
+- Bug #19290: Fix `Request::getHostInfo()` doesn’t return the port if a Host header is used (lesha724)
+- Enh #19295: Added alias `text/rtf` for mime-type `application/rtf` (lesha724)
+- Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
+- Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
+- Enh #19304: Add filtering validator `yii\validators\TrimValidator` (WinterSilence)
+- Enh #19309: Optimize `yii\base\Model::attributes()` (WinterSilence)
+- Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
+- Bug #19324: Fix `yii\helpers\BaseHtml::renderSelectOptions()` giving wrong selection for boolean attributes (adnandautovic)
+- Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
+- Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
+- Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
+- Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 
 
 2.0.45 February 11, 2022

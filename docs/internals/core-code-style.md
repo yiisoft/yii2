@@ -281,7 +281,7 @@ if (!$model && null === $event)
 ```
 
 Prefer avoiding `else` after `return` where it makes sense.
-Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+Use [guard conditions](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
 
 ```php
 $result = $this->getResult();
@@ -362,7 +362,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Documentation
 -------------
 
-- Refer to [phpDoc](http://phpdoc.org/) for documentation syntax.
+- Refer to [phpDoc](https://phpdoc.org/) for documentation syntax.
 - Code without documentation is not allowed.
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
