@@ -794,11 +794,6 @@ class TranslationEventHandler
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>
 
-詳細は [データ・フォーマッタ](output-formatting.md) のセクションを参照してください。
-
-
-## 日付と数値をフォーマットする <span id="date-number"></span>
-
 詳細は [データのフォーマット](output-formatting.md) のセクションを参照して下さい。
 
 
