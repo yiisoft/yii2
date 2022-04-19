@@ -112,7 +112,7 @@ return [
 <li> <a href="https://github.com/sam-it/yii2-mariadb">MariaDB</a></li>
 </ul>
 
-## <div dir="rtl">إنشاء ال Active Record<span id="creating-active-record"></span>
+## <div dir="rtl">إنشاء ال Active Record</div> <span id="creating-active-record"></span>
 
 <p dir="rtl">
     لجلب البيانات وعرضها من جدول ال <code>country</code>، سنقوم بإضافة ال <a href="../guide/db-active-record.md">Active Record</a> الى ال class المسمى ب <code>country</code>، والموجود في المسار <code>models/Country.php</code>.
@@ -163,7 +163,7 @@ $country->save();
     ستجد معلومات أكثر تفصيلاً في الجزء الخاص بال <a href="../guide/db-active-record.md">Active Record</a>. بالإضافة الى ذلك، يمكنك التفاعل مباشرة مع قاعدة البيانات باستخدام lower-level data accessing والتي تسمى ب <a href="../guide/db-dao.md">Database Access Objects</a>.
 </p></blockquote>
 
-## <div dir="rtl">إنشاء ال Action</a> <span id="creating-action"></span>
+## <div dir="rtl">إنشاء ال Action</div> <span id="creating-action"></span>
 
 <p dir="rtl">
 لعرض بيانات ال country للمستخدمين، يلزمك إنشاء action جديد، وبدلاً من وضع ال action الجديد في ال <code>site</code> controller كما فعلنا في المرات السابقة، سنقوم بإنشاء controller جديد، ومن ثم سنقوم بوضع ال action بداخله، والسبب المنطقي لهذا العمل أنك ستقوم بتجميع الشيفرة البرمجية المسؤولة عن أداء وظائف معينة في مكان واحد، وبهذا فإن جميع الإجرائات التي تخص ال country من المنطقي أن تكون موجودة داخل ال <code>CountryController</code>، والآن لنقم بإنشاء هذا ال controller الجديد، وال action الجديد وسيكون باسم <code>index</code>، كما هو موضح أدناه: 
