@@ -165,7 +165,7 @@ Whether you want to alias the attribute with another name or to filter the joine
 ]
 ```
 
-## Configuring Filters For ActiveController <span id="configuring-filters-for-activecontroller"></span>
+## Configuring Filters For `ActiveController` <span id="configuring-filters-for-activecontroller"></span>
 
 [[yii\rest\ActiveController]] comes with the handy set of common REST actions that you can easily configure to use 
 filters as well through [[yii\rest\IndexAction::$dataFilter]] property. One of the possible ways of doing so is to use
