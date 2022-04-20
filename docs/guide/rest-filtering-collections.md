@@ -14,7 +14,7 @@ it to filter that list.
 
 ```php
 $filter = new ActiveDataFilter([
-    'searchModel' => 'app\models\PostSearch'
+    'searchModel' => 'app\models\PostSearch',
 ]);
 
 $filterCondition = null;
