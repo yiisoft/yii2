@@ -66,7 +66,7 @@ class IndexAction extends Action
     public $prepareSearchQuery;
     /**
      * @var DataFilter|null data filter to be used for the search filter composition.
-     * You must setup this field explicitly in order to enable filter processing.
+     * You must set up this field explicitly in order to enable filter processing.
      * For example:
      *
      * ```php
