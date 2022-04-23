@@ -464,7 +464,7 @@ echo Url::previous();
 [
     'PUT,POST post/<id:\d+>' => 'post/create',
     'DELETE post/<id:\d+>' => 'post/delete',
-    'post/<id:\d+>' => 'post/view',
+    'get/<id:\d+>' => 'post/view',
 ]
 ```
 
