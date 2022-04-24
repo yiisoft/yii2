@@ -815,11 +815,13 @@ class BaseArrayHelper
             return true;
         }
 
+        $keys = array_keys($array);
+
         if ($consecutive) {
-            return array_keys($array) === range(0, count($array) - 1);
+            return $keys === array_keys($keys);
         }
 
-        foreach ($array as $key => $value) {
+        foreach ($keys as $key) {
             if (!is_int($key)) {
                 return false;
             }
