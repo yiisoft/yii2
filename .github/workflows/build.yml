@@ -60,23 +60,8 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
         run: composer update $DEFAULT_COMPOSER_FLAGS
-      - name: PHP Unit tests for PHP 7.1
-        run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-        if: matrix.php == '7.1'
-      - name: PHP Unit tests for PHP >= 7.2
+      - name: PHP Unit tests
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-        env:
-          PHPUNIT_EXCLUDE_GROUP: mssql,oci,wincache,xcache,zenddata,cubrid
-        if: matrix.php >= '7.2'
-      - name: PHP Unit tests for PHP <= 7.0
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-        if: matrix.php <= '7.0'
-      - name: Code coverage
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-        if: matrix.php == '7.1'
-        continue-on-error: true # if is fork
 
   npm:
     name: NPM 6 on ubuntu-latest
