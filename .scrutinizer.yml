@@ -76,7 +76,7 @@ build:
           ramdisks:
             - /var/lib/data
 
-        mencached:
+        memcached:
           image: memcached
 
       tests:
