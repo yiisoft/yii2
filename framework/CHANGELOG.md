@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 - Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
+- Enh #19318: Add support for typecasting PHP 8.1 enums (EtienneBruines)
 
 
 2.0.45 February 11, 2022
