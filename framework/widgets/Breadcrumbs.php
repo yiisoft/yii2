@@ -125,12 +125,12 @@ class Breadcrumbs extends Widget
 
 
     /**
-     * Renders the widget.
+     * {@inheritdoc}
      */
     public function run()
     {
         if (empty($this->links)) {
-            return;
+            return '';
         }
         $links = [];
         if ($this->homeLink === null) {
@@ -147,7 +147,7 @@ class Breadcrumbs extends Widget
             }
             $links[] = $this->renderItem($link, isset($link['url']) ? $this->itemTemplate : $this->activeItemTemplate);
         }
-        echo Html::tag($this->tag, implode('', $links), $this->options);
+        return Html::tag($this->tag, implode('', $links), $this->options);
     }
 
     /**
