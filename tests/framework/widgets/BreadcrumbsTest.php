@@ -40,12 +40,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . '</ul>';
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertEquals($expectedHtml, $this->breadcrumbs->run());
     }
 
     public function testEmptyLinks()
@@ -62,12 +57,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . '</ul>';
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertEquals($expectedHtml, $this->breadcrumbs->run());
     }
 
 
@@ -81,12 +71,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . '</ul>';
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertEquals($expectedHtml, $this->breadcrumbs->run());
     }
 
     public function testRenderItemException()
@@ -179,12 +164,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "My Home Page\n"
             . "http://my.example.com/yii2/link/page\n";
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertEquals($expectedHtml, $this->breadcrumbs->run());
     }
 
     /**
