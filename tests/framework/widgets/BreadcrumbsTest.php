@@ -45,7 +45,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
 
     public function testEmptyLinks()
     {
-        $this->assertNull($this->breadcrumbs->run());
+        $this->assertEmpty($this->breadcrumbs->run());
     }
 
     public function testHomeLinkFalse()
