@@ -127,7 +127,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 > }
 > ```
 
-创建下拉列表 <span id="creating-activeform-dropdownlist"></span>
+创建下拉列表 <span id="creating-activeform-lists"></span>
 ------------
 
 有三种类型的列表：
