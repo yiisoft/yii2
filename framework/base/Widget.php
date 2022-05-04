@@ -217,7 +217,8 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Executes the widget.
-     * @return string the result of widget execution to be outputted.
+     *
+     * @return string|void the rendering result may be directly "echoed" or returned as a string
      */
     public function run()
     {
