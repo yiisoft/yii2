@@ -639,7 +639,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isAttributeDirty($name, $value))) {
                     $attributes[$name] = $value;
                 }
             }
@@ -1753,5 +1753,21 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             list($viaRelationName, $viaQuery) = $relation->via;
             $this->setRelationDependencies($name, $viaQuery, $viaRelationName);
         }
+    }
+
+    /**
+     * @param string $attribute
+     * @param mixed  $value
+     * @return bool
+     */
+    private function isAttributeDirty($attribute, $value)
+    {
+        $old_attribute = $this->oldAttributes[$attribute];
+        if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
+            $value = ArrayHelper::recursiveSort($value);
+            $old_attribute = ArrayHelper::recursiveSort($old_attribute);
+        }
+
+        return $value !== $old_attribute;
     }
 }

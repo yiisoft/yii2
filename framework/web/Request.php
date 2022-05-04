@@ -749,13 +749,20 @@ class Request extends \yii\base\Request
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('X-Original-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Original-Host'))[0]);
-            } elseif ($this->headers->has('Host')) {
-                $this->_hostInfo = $http . '://' . $this->headers->get('Host');
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
-                $port = $secure ? $this->getSecurePort() : $this->getPort();
-                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    $this->_hostInfo .= ':' . $port;
+            } else {
+                if ($this->headers->has('Host')) {
+                    $this->_hostInfo = $http . '://' . $this->headers->get('Host');
+                } elseif (filter_has_var(INPUT_SERVER, 'SERVER_NAME')) {
+                    $this->_hostInfo = $http . '://' . filter_input(INPUT_SERVER, 'SERVER_NAME');
+                } elseif (isset($_SERVER['SERVER_NAME'])) {
+                    $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+                }
+
+                if ($this->_hostInfo !== null && !preg_match('/:\d+$/', $this->_hostInfo)) {
+                    $port = $secure ? $this->getSecurePort() : $this->getPort();
+                    if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
+                        $this->_hostInfo .= ':' . $port;
+                    }
                 }
             }
         }

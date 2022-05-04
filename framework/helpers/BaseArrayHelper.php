@@ -7,9 +7,9 @@
 
 namespace yii\helpers;
 
+use Yii;
 use ArrayAccess;
 use Traversable;
-use Yii;
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
 
@@ -815,11 +815,13 @@ class BaseArrayHelper
             return true;
         }
 
+        $keys = array_keys($array);
+
         if ($consecutive) {
-            return array_keys($array) === range(0, count($array) - 1);
+            return $keys === array_keys($keys);
         }
 
-        foreach ($array as $key => $value) {
+        foreach ($keys as $key) {
             if (!is_int($key)) {
                 return false;
             }
@@ -998,5 +1000,30 @@ class BaseArrayHelper
         }
 
         return $result;
+    }
+
+    /**
+     * Sorts array recursively.
+     *
+     * @param array         $array An array passing by reference.
+     * @param callable|null $sorter The array sorter. If omitted, sort index array by values, sort assoc array by keys.
+     * @return array
+     */
+    public static function recursiveSort(array &$array, $sorter = null)
+    {
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                self::recursiveSort($value, $sorter);
+            }
+        }
+        unset($value);
+
+        if ($sorter === null) {
+            $sorter = static::isIndexed($array) ? 'sort' : 'ksort';
+        }
+
+        call_user_func_array($sorter, [&$array]);
+
+        return $array;
     }
 }
