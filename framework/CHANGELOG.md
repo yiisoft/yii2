@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
+- Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19272: Fix bug in dirty attributes check on multidimensional array (speedplli)
 - Bug #19349: Fix PHP 8.1 error when attribute and label of `yii\grid\DataColumn` are empty (githubjeka)
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
