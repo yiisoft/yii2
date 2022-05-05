@@ -26,7 +26,7 @@ Yii Framework 2 Change Log
 - Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
 - Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 - Bug #19368: Fix PHP 8.1 error when `$fileMimeType` is `null` in `yii\validators\FileValidator::validateMimeType()` (bizley)
-- Enh #19384: Normalize `setBodyParams()` and  `getBodyParam()` in `yii\web\Request` (WinterSilence, albertborsos) 
+- Enh #19384: Normalize `setBodyParams()` and `getBodyParam()` in `yii\web\Request` (WinterSilence, albertborsos) 
 
 
 2.0.45 February 11, 2022
