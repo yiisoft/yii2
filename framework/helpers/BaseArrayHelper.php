@@ -726,9 +726,11 @@ class BaseArrayHelper
 
     /**
      * Decodes HTML entities into the corresponding characters in an array of strings.
+     *
      * Only array values will be decoded by default.
      * If a value is an array, this method will also decode it recursively.
      * Only string values will be decoded.
+     *
      * @param array $data data to be decoded
      * @param bool $valuesOnly whether to decode array values only. If false,
      * both the array keys and array values will be decoded.
@@ -745,7 +747,7 @@ class BaseArrayHelper
             if (is_string($value)) {
                 $d[$key] = htmlspecialchars_decode($value, ENT_QUOTES);
             } elseif (is_array($value)) {
-                $d[$key] = static::htmlDecode($value);
+                $d[$key] = static::htmlDecode($value, $valuesOnly);
             } else {
                 $d[$key] = $value;
             }
