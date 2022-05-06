@@ -884,8 +884,8 @@ class BaseArrayHelper
      * This method will return `true`, if all elements of `$needles` are contained in
      * `$haystack`. If at least one element is missing, `false` will be returned.
      *
-     * @param array|Traversable $needles The values that must **all** be in `$haystack`.
-     * @param array|Traversable $haystack The set of value to search.
+     * @param iterable $needles The values that must **all** be in `$haystack`.
+     * @param iterable $haystack The set of value to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
      * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
@@ -942,7 +942,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array Source array
-     * @param array $filters Rules that define array keys which should be left or removed from results.
+     * @param iterable $filters Rules that define array keys which should be left or removed from results.
      * Each rule is:
      * - `var` - `$array['var']` will be left in result.
      * - `var.key` = only `$array['var']['key'] will be left in result.
@@ -1009,7 +1009,7 @@ class BaseArrayHelper
     /**
      * Sorts array recursively.
      *
-     * @param array         $array An array passing by reference.
+     * @param array $array An array passing by reference.
      * @param callable|null $sorter The array sorter. If omitted, sort index array by values, sort assoc array by keys.
      * @return array
      */
@@ -1017,7 +1017,7 @@ class BaseArrayHelper
     {
         foreach ($array as &$value) {
             if (is_array($value)) {
-                self::recursiveSort($value, $sorter);
+                static::recursiveSort($value, $sorter);
             }
         }
         unset($value);
