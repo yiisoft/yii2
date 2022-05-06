@@ -769,7 +769,7 @@ class BaseArrayHelper
      */
     public static function isAssociative($array, $allStrings = true)
     {
-        if (!is_array($array) || empty($array)) {
+        if (empty($array) || !is_array($array)) {
             return false;
         }
 
@@ -831,12 +831,13 @@ class BaseArrayHelper
     }
 
     /**
-     * Check whether an array or [[Traversable]] contains an element.
+     * Check whether an array values or [[Traversable]] properties contains given value.
      *
      * This method does the same as the PHP function [in_array()](https://www.php.net/manual/en/function.in-array.php)
      * but additionally works for objects that implement the [[Traversable]] interface.
+     *
      * @param mixed $needle The value to look for.
-     * @param array|Traversable $haystack The set of values to search.
+     * @param iterable $haystack The set of values to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
      * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
      * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
@@ -845,16 +846,18 @@ class BaseArrayHelper
      */
     public static function isIn($needle, $haystack, $strict = false)
     {
-        if ($haystack instanceof Traversable) {
-            foreach ($haystack as $value) {
-                if ($needle == $value && (!$strict || $needle === $value)) {
-                    return true;
-                }
-            }
-        } elseif (is_array($haystack)) {
-            return in_array($needle, $haystack, $strict);
-        } else {
+         if (!static::isTraversable($haystack)) {
             throw new InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+        }
+
+        if (is_array($haystack)) {
+            return in_array($needle, $haystack, $strict);
+        }
+   
+        foreach ($haystack as $value) {
+            if ($strict ? $needle === $value : $needle == $value) {
+                return true;
+            }
         }
 
         return false;
@@ -880,26 +883,27 @@ class BaseArrayHelper
      *
      * This method will return `true`, if all elements of `$needles` are contained in
      * `$haystack`. If at least one element is missing, `false` will be returned.
+     *
      * @param array|Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|Traversable $haystack The set of value to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
-     * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @since 2.0.7
      */
     public static function isSubset($needles, $haystack, $strict = false)
     {
-        if (is_array($needles) || $needles instanceof Traversable) {
-            foreach ($needles as $needle) {
-                if (!static::isIn($needle, $haystack, $strict)) {
-                    return false;
-                }
-            }
-
-            return true;
+        if (!static::isTraversable($needles)) {
+            throw new InvalidArgumentException('Argument $needles must be an array or implement Traversable');
         }
 
-        throw new InvalidArgumentException('Argument $needles must be an array or implement Traversable');
+        foreach ($needles as $needle) {
+            if (!static::isIn($needle, $haystack, $strict)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
