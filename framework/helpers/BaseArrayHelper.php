@@ -732,7 +732,7 @@ class BaseArrayHelper
      * Only string values will be decoded.
      *
      * @param array $data data to be decoded
-     * @param bool $valuesOnly whether to decode array values only. If false,
+     * @param bool $valuesOnly whether to decode array values only. If `false`,
      * both the array keys and array values will be decoded.
      * @return array the decoded data
      * @see https://www.php.net/manual/en/function.htmlspecialchars-decode.php
@@ -742,10 +742,10 @@ class BaseArrayHelper
         $d = [];
         foreach ($data as $key => $value) {
             if (!$valuesOnly && is_string($key)) {
-                $key = htmlspecialchars_decode($key, ENT_QUOTES);
+                $key = htmlspecialchars_decode($key, ENT_QUOTES | ENT_SUBSTITUTE);
             }
             if (is_string($value)) {
-                $d[$key] = htmlspecialchars_decode($value, ENT_QUOTES);
+                $d[$key] = htmlspecialchars_decode($value, ENT_QUOTES | ENT_SUBSTITUTE);
             } elseif (is_array($value)) {
                 $d[$key] = static::htmlDecode($value, $valuesOnly);
             } else {
