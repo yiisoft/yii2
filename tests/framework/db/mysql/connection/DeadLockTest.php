@@ -31,6 +31,11 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
+        $mysqlVersion = $this->getDb()->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        if (version_compare($mysqlVersion,'8.0.29', '>=')) {
+            $this->markTestSkipped('Test cannot be executed on MySQL 8.0.29 and newer');
+        }
+        
         if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
         }
