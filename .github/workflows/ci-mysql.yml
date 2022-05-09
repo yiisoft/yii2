@@ -19,7 +19,8 @@ jobs:
           - ubuntu-latest
 
         php-version:
-          - 7.4
+          - 7.4.28
+          - 7.4.29
 
         mysql-version:
           - latest
