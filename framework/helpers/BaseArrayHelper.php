@@ -846,7 +846,7 @@ class BaseArrayHelper
      */
     public static function isIn($needle, $haystack, $strict = false)
     {
-         if (!static::isTraversable($haystack)) {
+        if (!static::isTraversable($haystack)) {
             throw new InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
         }
 
