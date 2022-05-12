@@ -831,7 +831,7 @@ class BaseArrayHelper
     }
 
     /**
-     * Check whether an array values or [[Traversable]] properties contains given value.
+     * Check whether an array or [[Traversable]] contains an element.
      *
      * This method does the same as the PHP function [in_array()](https://www.php.net/manual/en/function.in-array.php)
      * but additionally works for objects that implement the [[Traversable]] interface.
