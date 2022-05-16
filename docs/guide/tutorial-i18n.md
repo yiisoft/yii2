@@ -19,7 +19,7 @@ For example, the ID `en-US` stands for the locale of "English and the United Sta
 
 For consistency reasons, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
-[ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
+[ISO-639](https://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
 More details about locale can be found in the
 [documentation of the ICU project](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
@@ -416,7 +416,7 @@ while `one` matches `21` or `101`:
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
 specify for a particular locale, please refer to "Plural Rules, Cardinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
+Alternatively you can refer to [rules reference at unicode.org](https://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
@@ -461,7 +461,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 
 The format is very close to what's used for plurals. To learn which arguments you should specify for a particular locale,
 please refer to "Plural Rules, Ordinal" at [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+Alternatively you can refer to [rules reference at unicode.org](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html).
 
 #### Selection <span id="selection"></span>
 
@@ -743,7 +743,7 @@ such as the date and number formatting of the [[yii\i18n\Formatter]] class and t
 Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
 only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
-The [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
+The [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is based on the [ICU library](https://icu.unicode.org/) which
 provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
 formatting result of date and number values. To ensure your website produces the same results across all environments,
 it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)
@@ -760,10 +760,10 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features
 described in this document. For example, an ICU version below 49 does not support using `#` placeholders in plural rules.
-Please refer to <http://site.icu-project.org/download> for a complete list of available ICU versions. Note that the version 
+Please refer to <https://icu.unicode.org/download> for a complete list of available ICU versions. Note that the version 
 numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.)
 
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
-to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
+to the [ICU manual](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) for details
 on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
 used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb).

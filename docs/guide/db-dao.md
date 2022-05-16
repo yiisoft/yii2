@@ -11,11 +11,11 @@ you have to take extra effort to create a database-agnostic application.
 
 In Yii 2.0, DAO supports the following databases out of the box:
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): version 8.4 or higher
+- [CUBRID](https://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 

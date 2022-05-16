@@ -196,7 +196,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Customer::deleteAll('status = 3');
      * ```
      *
-     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * @param string|array|null $condition the conditions that will be put in the WHERE part of the DELETE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @return int the number of rows deleted
      * @throws NotSupportedException if not overridden.
@@ -229,7 +229,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
      *    to resolve the conflict.
      *
-     * @return string the column name that stores the lock version of a table row.
+     * @return string|null the column name that stores the lock version of a table row.
      * If `null` is returned (default implemented), optimistic locking will not be supported.
      */
     public function optimisticLock()
@@ -639,7 +639,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isAttributeDirty($name, $value))) {
                     $attributes[$name] = $value;
                 }
             }
@@ -666,7 +666,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
+     * @param array|null $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the saving succeeded (i.e. no validation errors occurred).
      */
@@ -723,7 +723,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
+     * @param array|null $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return int|false the number of rows affected, or `false` if validation fails
      * or [[beforeSave()]] stops the updating process.
@@ -783,7 +783,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @see update()
-     * @param array $attributes attributes to update
+     * @param array|null $attributes attributes to update
      * @return int|false the number of rows affected, or false if [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException
      */
@@ -1110,9 +1110,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param bool $asArray whether to return the primary key value as an array. If `true`,
      * the return value will be an array with column names as keys and column values as values.
      * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-     * @property mixed The primary key value. An array (column name => column value) is returned if
-     * the primary key is composite. A string is returned otherwise (null will be returned if
-     * the key value is null).
      * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is `true`. A string is returned otherwise (null will be returned if
      * the key value is null).
@@ -1140,9 +1137,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param bool $asArray whether to return the primary key value as an array. If `true`,
      * the return value will be an array with column name as key and column value as value.
      * If this is `false` (default), a scalar value will be returned for non-composite primary key.
-     * @property mixed The old primary key value. An array (column name => column value) is
-     * returned if the primary key is composite. A string is returned otherwise (null will be
-     * returned if the key value is null).
      * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is `true`. A string is returned otherwise (null will be returned if
      * the key value is null).
@@ -1231,7 +1225,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * It can be declared in either the Active Record class itself or one of its behaviors.
      * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param bool $throwException whether to throw exception if the relation does not exist.
-     * @return ActiveQueryInterface|ActiveQuery the relational query object. If the relation does not exist
+     * @return ActiveQueryInterface|ActiveQuery|null the relational query object. If the relation does not exist
      * and `$throwException` is `false`, `null` will be returned.
      * @throws InvalidArgumentException if the named relation does not exist.
      */
@@ -1759,5 +1753,21 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             list($viaRelationName, $viaQuery) = $relation->via;
             $this->setRelationDependencies($name, $viaQuery, $viaRelationName);
         }
+    }
+
+    /**
+     * @param string $attribute
+     * @param mixed  $value
+     * @return bool
+     */
+    private function isAttributeDirty($attribute, $value)
+    {
+        $old_attribute = $this->oldAttributes[$attribute];
+        if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
+            $value = ArrayHelper::recursiveSort($value);
+            $old_attribute = ArrayHelper::recursiveSort($old_attribute);
+        }
+
+        return $value !== $old_attribute;
     }
 }

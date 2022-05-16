@@ -28,7 +28,7 @@ representan diferentes tipos de almacenamiento en caché, como por ejemplo en me
 
 Los Componentes de Caché están normalmente registrados como [componentes de la aplicación](structure-application-components.md) para que de esta forma puedan
 ser configurados y accesibles globalmente. El siguiente código muestra cómo configurar el componente de aplicación
-`cache` para usar [memcached](http://memcached.org/) con dos servidores caché:
+`cache` para usar [memcached](https://memcached.org/) con dos servidores caché:
 
 ```php
 'components' => [
@@ -73,14 +73,14 @@ Yii proporciona varios componentes de caché que pueden almacenar datos en difer
 se muestra un listado con los componentes de caché disponibles:
 
 * [[yii\caching\ApcCache]]: utiliza la extensión de PHP [APC](https://www.php.net/manual/es/book.apc.php). Esta opción puede ser considerada como la más rápida de entre todas las disponibles para una aplicación centralizada. (ej. un servidor, no dedicado al balance de carga, etc).
-* [[yii\caching\DbCache]]: utiliza una tabla de base de datos para almacenar los datos. Por defecto, se creará y usará como base de datos [SQLite3](http://sqlite.org/) en el directorio runtime. Se puede especificar explícitamente que base de datos va a ser utilizada configurando la propiedad `db`.
+* [[yii\caching\DbCache]]: utiliza una tabla de base de datos para almacenar los datos. Por defecto, se creará y usará como base de datos [SQLite3](https://sqlite.org/) en el directorio runtime. Se puede especificar explícitamente que base de datos va a ser utilizada configurando la propiedad `db`.
 * [[yii\caching\DummyCache]]: dummy cache (caché tonta) que no almacena en caché nada. El propósito de este componente es simplificar el código necesario para chequear la disponibilidad de caché. Por ejemplo, durante el desarrollo o si el servidor no tiene soporte de caché actualmente, puede utilizarse este componente de caché. Cuando este disponible un soporte en caché, puede cambiarse el componente correspondiente. En ambos casos, puede utilizarse el mismo código `Yii::$app->cache->get($key)` para recuperar un dato sin la preocupación de que `Yii::$app->cache` pueda ser `null`.
 * [[yii\caching\FileCache]]: utiliza un fichero estándar para almacenar los datos. Esto es adecuado para almacenar grandes bloques de datos (como páginas).
 * [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](https://www.php.net/manual/es/book.memcache.php) y [memcached](https://www.php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (ej. con varios servidores, con balance de carga, etc..)
-* [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](http://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
-* [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([ver también](https://www.php.net/manual/es/book.wincache.php)).
+* [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](https://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
+* [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension) ([ver también](https://www.php.net/manual/es/book.wincache.php)).
 * [[yii\caching\XCache]] _(deprecated)_: utiliza la extensión de PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
+* [[yii\caching\ZendDataCache]] _(deprecated)_: utiliza [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
 > Tip: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 

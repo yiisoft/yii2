@@ -11,11 +11,11 @@ DAO提供了简单高效的SQL查询，可以用在与数据库交互的各个�
 
 Yii DAO 支持下列现成的数据库：
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)：版本 8.4 或更高
-- [CUBRID](http://www.cubrid.org/)：版本 9.3 或更高。
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/)：版本 8.4 或更高
+- [CUBRID](https://www.cubrid.org/)：版本 9.3 或更高。
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx)：版本 2008 或更高。
 
@@ -421,7 +421,7 @@ Yii 为四个最常用的隔离级别提供了常量：
 因此，你不能在开启事务时直接指定隔离级别。
 你必须在事务开始后再调用 [[yii\db\Transaction::setIsolationLevel()]]。
 
-[隔离级别]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[隔离级别]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 ### 嵌套事务（Nesting Transactions） <span id="nesting-transactions"></span>
@@ -471,7 +471,7 @@ try {
 
 ## 复制和读写分离（Replication and Read-Write Splitting） <span id="read-write-splitting"></span>
 
-许多数据库支持[数据库复制](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)来获得更好的数据库可用性，
+许多数据库支持[数据库复制](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)来获得更好的数据库可用性，
 以及更快的服务器响应时间。通过数据库复制功能，
 数据从所谓的主服务器被复制到从服务器。所有的写和更新必须发生在主服务器上，
 而读可以发生在从服务器上。

@@ -463,7 +463,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param array|Query $columns the column data (name => value) to be saved into the table or instance
      * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
      * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
-     * @return array normalized columns
+     * @return array|Query normalized columns
      * @since 2.0.9
      */
     private function normalizeTableRowData($table, $columns)

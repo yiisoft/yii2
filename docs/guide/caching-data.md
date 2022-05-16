@@ -124,13 +124,13 @@ Yii supports a wide range of cache storage. The following is a summary:
   and [memcached](https://www.php.net/manual/en/book.memcached.php) extensions. This option can be considered as
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
-* [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
+* [[yii\redis\Cache]]: implements a cache component based on [Redis](https://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
-* [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
+* [[yii\caching\WinCache]]: uses PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
   ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
 * [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache) extension.
 * [[yii\caching\ZendDataCache]] _(deprecated)_: uses
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
+  [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
 

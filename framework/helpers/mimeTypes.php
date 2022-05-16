@@ -8,7 +8,7 @@
  * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
  */
-return [
+$mimeTypes = [
     '3dml' => 'text/vnd.in3d.3dml',
     '3ds' => 'image/x-3ds',
     '3g2' => 'video/3gpp2',
@@ -355,6 +355,7 @@ return [
     'jam' => 'application/vnd.jam',
     'jar' => 'application/java-archive',
     'java' => 'text/x-java-source',
+    'jfif' => 'image/jpeg',
     'jisp' => 'application/vnd.jisp',
     'jlt' => 'application/vnd.hp-jlyt',
     'jnlp' => 'application/x-java-jnlp-file',
@@ -400,6 +401,7 @@ return [
     'log' => 'text/plain',
     'lostxml' => 'application/lost+xml',
     'lrf' => 'application/octet-stream',
+    0 => 'application/vnd.lotus-1-2-3',
     'lrm' => 'application/vnd.ms-lrm',
     'ltf' => 'application/vnd.frogans.ltf',
     'lvp' => 'audio/vnd.lucent.voice',
@@ -491,7 +493,6 @@ return [
     'mseed' => 'application/vnd.fdsn.mseed',
     'mseq' => 'application/vnd.mseq',
     'msf' => 'application/vnd.epson.msf',
-    0 => 'application/vnd.lotus-1-2-3',
     'msh' => 'model/mesh',
     'msi' => 'application/x-msdownload',
     'msl' => 'application/vnd.mobius.msl',
@@ -995,3 +996,9 @@ return [
     'zirz' => 'application/vnd.zul',
     'zmm' => 'application/vnd.handheld-entertainment+xml',
 ];
+
+if (PHP_VERSION_ID >= 80100) {
+    $mimeTypes = array_replace($mimeTypes, array('xz' => 'application/octet-stream'));
+}
+
+return $mimeTypes;

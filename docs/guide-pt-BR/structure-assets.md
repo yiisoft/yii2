@@ -96,7 +96,7 @@ O bundle depende de outros dois bundles: [[yii\web\YiiAsset]] e
     arquivo pode ser determinado pela precedência do [[yii\web\AssetManager::baseUrl]] 
     no caminho relativo.
   - uma URL absoluta representando um arquivo JavaScript externo. Por exemplo, 
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou 
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::css|css]]: uma array listando os arquivos CSS contidos 
   neste bundle. O formato deste array é igual ao que foi mencionado no 
@@ -256,7 +256,7 @@ publicação `beforeCopy`, apenas os subdiretórios `fonts` e `css` serão publi
 
 ### Assets do Bower e NPM<span id="bower-npm-assets"></span>
 
-A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
+A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](https://bower.io/) 
 e/ou [NPM](https://www.npmjs.com/).
 Se sua aplicação ou extensão estiver usando um destes pacotes, é recomendado que 
 você siga os passos a seguir para gerenciar os assets na biblioteca:
@@ -506,8 +506,8 @@ conforme descrito na subseção [Personalizando os Asset Bundles](#customizing-a
 Ao invés de escrever diretamente códigos CSS e/ou JavaScript, os desenvolvedores 
 geralmente os escrevem em alguma sintaxe estendida e usam ferramentas especiais 
 para converte-los em CSS/JavaScript. Por exemplo, para o código CSS você pode 
-usar [LESS](http://lesscss.org/) ou [SCSS](http://sass-lang.com/); e para o 
-JavaScript você pode usar o [TypeScript](http://www.typescriptlang.org/).
+usar [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); e para o 
+JavaScript você pode usar o [TypeScript](https://www.typescriptlang.org/).
 
 Você pode listar os arquivos de asset em sintaxe estendida nas propriedades 
 [[yii\web\AssetBundle::css|css]] e [[yii\web\AssetBundle::js|js]] de um asset 
@@ -581,7 +581,7 @@ de asset fonte e pelo caminho do arquivo de asset de destino.
 
 > Informação: Existem outros modos de trabalhar com assets em sintaxe estendida, 
   além do descrito acima. Por exemplo, você pode usar ferramentas de compilação 
-  tais como o [grunt](http://gruntjs.com/) para monitorar e automatizar a conversão 
+  tais como o [grunt](https://gruntjs.com/) para monitorar e automatizar a conversão 
   de assets em sintaxe estendidas. Neste caso, você deve listar os arquivos de 
   CSS/JavaScript resultantes nos asset bundles ao invés dos arquivos originais.
 
@@ -795,7 +795,7 @@ conforme descrito na última subseção.
 
 > Informação: O uso do comando `asset` não é a única opção para automatizar o 
   processo de combinação e compressão de asset. Você pode usar a excelente 
-  ferramenta chamada [grunt](http://gruntjs.com/) para atingir o mesmo objetivo.
+  ferramenta chamada [grunt](https://gruntjs.com/) para atingir o mesmo objetivo.
 
 ### Agrupando Asset Bundles <span id="grouping-asset-bundles"></span>
 

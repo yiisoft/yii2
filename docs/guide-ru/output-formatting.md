@@ -112,7 +112,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // выведет: 1 январ
 - `long` будет отображать `6 October 2014` и `15:58:42 GMT` соответственно и
 - `full` будет отображать `Monday, 6 October 2014` и `15:58:42 GMT` соответственно.
 
-Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](http://site.icu-project.org/),
+Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](https://icu.unicode.org/),
 который описан в руководстве ICU по следующему адресу:
 <http://userguide.icu-project.org/formatparse/datetime>. Также вы можете использовать синтаксис, который распознаётся
 PHP-функцией [date()](https://www.php.net/manual/ru/function.date.php), используя строку с префиксом `php:`.
@@ -145,7 +145,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 
 > Note: Поскольку правила для часовых поясов принимаются различными правительствами и могут часто меняться,
 > вероятно, информация в базе данных часовых поясов на вашем сервере не самая свежая.
-> Как обновить базу вы можете узнать из [руководства ICU](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data).
+> Как обновить базу вы можете узнать из [руководства ICU](https://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data).
 > Смотрите также: [Настройка вашего PHP окружения для интернационализации](tutorial-i18n.md#setup-environment).
 
 Форматирование чисел <span id="numbers"></span>

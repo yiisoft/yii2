@@ -130,7 +130,7 @@ CREATE TABLE session (
 хранилища кеша могут *сбрасывать* закешированные данные при достижении лимитов хранилища. По этой причине, вы должны в 
 основном использовать хранилища кеша, которые не имеют таких лимитов.
 
-Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется выбрать его в качестве 
+Если на вашем сервере установлен [Redis](https://redis.io/), настоятельно рекомендуется выбрать его в качестве 
 хранилища сессий используя [[yii\redis\Session]].
 
 
@@ -212,5 +212,5 @@ composer dumpautoload -o
 Следующие инструменты для профилирования могут оказаться полезными:
 
 - [Отладочный тулбар Yii и отладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [Профайлер XDebug](http://xdebug.org/docs/profiler)
+- [Профайлер XDebug](https://xdebug.org/docs/profiler)
 - [XHProf](https://www.php.net/manual/en/book.xhprof.php)

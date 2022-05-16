@@ -30,7 +30,7 @@
             <li>Facebook: <a href="https://www.facebook.com/groups/yiitalk/">https://www.facebook.com/groups/yiitalk/</a></li>
             <li>Twitter: <a href="https://twitter.com/yiiframework">https://twitter.com/yiiframework</a></li>
             <li>LinkedIn: <a href="https://www.linkedin.com/groups/yii-framework-1483367">https://www.linkedin.com/groups/yii-framework-1483367</a></li>
-            <li>Stackoverflow: <a href="http://stackoverflow.com/questions/tagged/yii2">http://stackoverflow.com/questions/tagged/yii2</a></li>
+            <li>Stackoverflow: <a href="https://stackoverflow.com/questions/tagged/yii2">https://stackoverflow.com/questions/tagged/yii2</a></li>
         </ul>
     </li>
 </ul>

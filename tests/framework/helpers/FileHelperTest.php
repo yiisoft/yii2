@@ -717,6 +717,24 @@ class FileHelperTest extends TestCase
         $this->assertTrue(in_array(FileHelper::getMimeType($file), ['application/json', 'text/plain']));
     }
 
+    public function testGetUploadedImageMimeTypes()
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $phpunitPath = Yii::getAlias('@yiiunit');
+        $runtimeLocation = Yii::getAlias('@yiiunit/runtime');
+        $resourceSourceLocation = "{$phpunitPath}{$ds}framework{$ds}validators{$ds}data{$ds}mimeType";
+
+        $pngFile = "{$runtimeLocation}{$ds}php1234";
+        copy("{$resourceSourceLocation}{$ds}test.png", $pngFile);
+
+        $this->assertEquals('image/png', FileHelper::getMimeType($pngFile));
+
+        $jpgFile = "{$runtimeLocation}{$ds}php4567";
+        copy("{$resourceSourceLocation}{$ds}test.jpg", $jpgFile);
+
+        $this->assertEquals('image/jpeg', FileHelper::getMimeType($jpgFile));
+    }
+
     public function testNormalizePath()
     {
         $ds = DIRECTORY_SEPARATOR;

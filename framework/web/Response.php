@@ -52,7 +52,7 @@ use yii\helpers\Url;
  * @property-read bool $isServerError Whether this response indicates a server error.
  * @property-read bool $isSuccessful Whether this response is successful.
  * @property int $statusCode The HTTP status code to send with the response.
- * @property-write \Exception|\Error|\Throwable $statusCodeByException The exception object.
+ * @property-write \Throwable $statusCodeByException The exception object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -127,7 +127,7 @@ class Response extends \yii\base\Response
      */
     public $data;
     /**
-     * @var string the response content. When [[data]] is not null, it will be converted into [[content]]
+     * @var string|null the response content. When [[data]] is not null, it will be converted into [[content]]
      * according to [[format]] when the response is being sent out.
      * @see data
      */
@@ -142,7 +142,7 @@ class Response extends \yii\base\Response
      */
     public $stream;
     /**
-     * @var string the charset of the text response. If not set, it will use
+     * @var string|null the charset of the text response. If not set, it will use
      * the value of [[Application::charset]].
      */
     public $charset;
@@ -152,7 +152,7 @@ class Response extends \yii\base\Response
      */
     public $statusText = 'OK';
     /**
-     * @var string the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
+     * @var string|null the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
      * or '1.1' if that is not available.
      */
     public $version;
@@ -273,7 +273,7 @@ class Response extends \yii\base\Response
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
      * @param int $value the status code
-     * @param string $text the status text. If not set, it will be set automatically based on the status code.
+     * @param string|null $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
@@ -297,7 +297,7 @@ class Response extends \yii\base\Response
 
     /**
      * Sets the response status code based on the exception.
-     * @param \Exception|\Error|\Throwable $e the exception object.
+     * @param \Throwable $e the exception object.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
@@ -499,7 +499,7 @@ class Response extends \yii\base\Response
      * ```
      *
      * @param string $filePath the path of the file to be sent.
-     * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string|null $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
@@ -634,10 +634,10 @@ class Response extends \yii\base\Response
     /**
      * Sets a default set of HTTP headers for file downloading purpose.
      * @param string $attachmentName the attachment file name
-     * @param string $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
+     * @param string|null $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
      * @param bool $inline whether the browser should open the file within the browser window. Defaults to false,
      * meaning a download dialog will pop up.
-     * @param int $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
+     * @param int|null $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
      * @return $this the response object itself
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
@@ -743,7 +743,7 @@ class Response extends \yii\base\Response
      * ```
      *
      * @param string $filePath file name with full path
-     * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string|null $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`

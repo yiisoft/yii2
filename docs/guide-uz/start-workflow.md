@@ -48,7 +48,7 @@ basic/                  ilovaning ildiz katalogi
 
 Umuman olganda, Yii ilovasini ikki `basic/web` faylga bo'lish mumkin: `basic/web` joylashgan faylar va boshqa kataloglarda joylashgan faylar. Birinchisi `(basic/web)` internet orqali kirganda ochilishi kerak, ikkinchisi internet orqali ko'rinishi kerak bo'lmagan faylar, chunki ular ish faylari.
 
-Yii-da [MVC-arxetekturasi](http://ru.wikipedia.org/wiki/Model-View-Controller) asosida faylar va kataloglar joylashgan. [models](structure-models.md)katalogida Modellar mavjud , [Ko'rishlar](structure-views.md) ko'rinishlarda joylashgan va barcha dastur [Nazoratchilar](structure-controllers.md) katalogida. 
+Yii-da [MVC-arxetekturasi](https://ru.wikipedia.org/wiki/Model-View-Controller) asosida faylar va kataloglar joylashgan. [models](structure-models.md)katalogida Modellar mavjud , [Ko'rishlar](structure-views.md) ko'rinishlarda joylashgan va barcha dastur [Nazoratchilar](structure-controllers.md) katalogida. 
  
 Quyidagi diagrammada dasturning ichki tuzilmasi ko'rsatilgan. 
 

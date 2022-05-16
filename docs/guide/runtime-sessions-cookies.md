@@ -131,7 +131,7 @@ session classes implementing different session storage:
 
 * [[yii\web\DbSession]]: stores session data in a database table.
 * [[yii\web\CacheSession]]: stores session data in a cache with the help of a configured [cache component](caching-data.md#cache-components).
-* [[yii\redis\Session]]: stores session data using [redis](http://redis.io/) as the storage medium.
+* [[yii\redis\Session]]: stores session data using [redis](https://redis.io/) as the storage medium.
 * [[yii\mongodb\Session]]: stores session data in a [MongoDB](https://www.mongodb.com/).
 
 All these session classes support the same set of API methods. As a result, you can switch to a different

@@ -1,7 +1,7 @@
 Modèles
 =======
 
-Les modèles font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur).
+Les modèles font partie du modèle d'architecture [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur).
 Ces objets représentent les données à traiter, les règles et la logique de traitement. 
 
 Vous pouvez créer des classes de modèle en étendant la classe [[yii\base\Model]] ou ses classe filles. La classe de base [[yii\base\Model]] prend en charge des fonctionnalités nombreuses et utiles :

@@ -79,7 +79,7 @@ Chaque fichier JavaScript peut être spécifié dans l'un des formats suivants 
 Le chemin réel du fichier peut être déterminé en préfixant le chemin relatif avec le [[yii\web\AssetManager::basePath| chemin de base]], 
 et l'URL réelle du fichier peut être déterminée en préfixant le chemin relatif avec l'[[yii\web\AssetManager::baseUrl|URL de base]].
   - Une URL absolue représentant un fichier JavaScript externe. 
-Par exemple , `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou
+Par exemple , `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::depends|depends (dépendances)]]: 
 un tableau listant les paquets de ressources dont ce paquet dépend (brièvement expliqué).
@@ -206,7 +206,7 @@ L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesom
 
 ### Installation des ressources Bower et NPM  <span id="bower-npm-assets"></span>
 
-La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.com/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
+La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](https://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.com/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
 
 Pour cela, nous devons configurer quelque peu notre composer. Il y a deux options possibles :
 
@@ -468,7 +468,7 @@ Si votre code dépend de jQuery, jQuery UI ou Bootstrap, vous devriez utiliser l
 
 ## Conversion de ressources <span id="asset-conversion"></span>
 
-Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](http://lesscss.org/) ou [SCSS](http://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](http://www.typescriptlang.org/).
+Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](http://www.typescriptlang.org/).
 
 Vous pouvez lister les fichiers de ressources écrits dans une syntaxe  étendue dans les propriétés [[yii\web\AssetBundle::css|css]] et [[yii\web\AssetBundle::js|js]] d'un paquet de ressources. 
 

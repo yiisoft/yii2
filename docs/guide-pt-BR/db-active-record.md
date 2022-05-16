@@ -1,7 +1,7 @@
 Active Record
 =============
 
-O [Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) fornece uma interface orientada a objetos para acessar e manipular dados armazenados em bancos de dados. Uma classe Active Record está associado a uma tabela da base de dados, uma instância do Active Record corresponde a uma linha desta tabela, e um *atributo* desta instância representa o valor de uma coluna desta linha. Em vez de escrever instruções SQL a mão, você pode acessar os atributos do Active Record e chamar os métodos do Active Record para acessar e manipular  os dados armazenados nas tabelas do banco de dados.
+O [Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) fornece uma interface orientada a objetos para acessar e manipular dados armazenados em bancos de dados. Uma classe Active Record está associado a uma tabela da base de dados, uma instância do Active Record corresponde a uma linha desta tabela, e um *atributo* desta instância representa o valor de uma coluna desta linha. Em vez de escrever instruções SQL a mão, você pode acessar os atributos do Active Record e chamar os métodos do Active Record para acessar e manipular  os dados armazenados nas tabelas do banco de dados.
 
 Por exemplo, assumindo que `Customer` é uma classe Active Record que está associada com a tabela `customer` e `name` é uma coluna desta tabela. Você pode escrever o seguinte código para inserir uma nova linha na tabela `customer`:
 

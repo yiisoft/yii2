@@ -330,7 +330,7 @@ or explicitly set or filter the value by setting the [[yii\web\Request::setHostI
 
 For more information about the server configuration, please refer to the documentation of your webserver:
 
-- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Apache 2: <https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
 If you don't have access to the server configuration, you can setup [[yii\filters\HostControl]] filter at

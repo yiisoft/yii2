@@ -121,7 +121,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 --------------------------
 
 <p dir="rtl">
-    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.com/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/fxpio/composer-asset-plugin">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
+    تعتمد ال Yii على حزم <a href="https://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.com/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/fxpio/composer-asset-plugin">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
 <br /><br />
 قد ترغب في إدارة ال assets عبر  ال native Bower/NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
 </p>
@@ -191,7 +191,7 @@ http://localhost:8080/
 </p></blockquote>
 
 <p dir="rtl">
-    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="http://httpd.apache.org/">Apache HTTP</a> أو ال <a href="http://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="http://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
+    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="https://httpd.apache.org/">Apache HTTP</a> أو ال <a href="https://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="https://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
 </p>
 
 <p dir="rtl">
@@ -244,7 +244,7 @@ DocumentRoot "path/to/basic/web"
 -----------------------
 
 <p dir="rtl">
-    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="https://www.php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
+    لاستخدام <a href="https://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="https://www.php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
 </p>
 
 

@@ -60,7 +60,7 @@ class GroupUrlRule extends CompositeUrlRule
      */
     public $prefix;
     /**
-     * @var string the prefix for the route part of every rule declared in [[rules]].
+     * @var string|null the prefix for the route part of every rule declared in [[rules]].
      * The prefix and the route will be separated with a slash.
      * If this property is not set, it will take the value of [[prefix]].
      */
@@ -77,7 +77,7 @@ class GroupUrlRule extends CompositeUrlRule
      */
     public function init()
     {
-        $this->prefix = trim((string)$this->prefix);
+        $this->prefix = trim((string)$this->prefix, '/');
         $this->routePrefix = $this->routePrefix === null ? $this->prefix : trim($this->routePrefix, '/');
         parent::init();
     }

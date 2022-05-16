@@ -64,7 +64,7 @@ basic/                  path aplikasi dasar
 Secara umum, file dalam aplikasi dapat dibagi menjadi dua jenis: mereka yang di bawah `basic/web` dan mereka yang
 di bawah direktori lain. Yang pertama dapat langsung diakses melalui HTTP (yaitu, di browser), sedangkan yang kedua tidak dapat dan tidak seharusnya boleh.
 
-Yii mengimplementasikan pola arsitektur [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+Yii mengimplementasikan pola arsitektur [model-view-controller (MVC)](https://wikipedia.org/wiki/Model-view-controller),
 yang tercermin dalam organisasi direktori di atas. Direktori `models` berisi semua [Model kelas](structure-models.md),
 direktori `views` berisi semua [view script] structure-views.md), dan direktori `controllers` mengandung
 semua [kelas kontroler](structure-controllers.md).

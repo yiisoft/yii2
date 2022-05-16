@@ -1,7 +1,7 @@
 Vues
 =====
 
-Les vues font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur).
+Les vues font partie du modèle d'architecture [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur).
 Elles sont chargées de présenter les données à l'utilisateur final. Dans une application Web, les vues sont ordinairement créées en termes de *modèles de vue* qui sont des script PHP contenant principalement du code HTML et du code PHP relatif à la présentation. 
 
 Elles sont gérées par le [[yii\web\View|view]] [composant application](structure-application-components.md) qui fournit des méthodes d'usage courant pour faciliter la composition des vues et leur rendu. Par souci de simplicité, nous appellerons *vues* les modèles de vue et les fichiers de modèle de vue.
@@ -42,7 +42,7 @@ En plus de `$this`, il peut aussi y avoir d'autres variables prédéfinies dans 
 
 ### Sécurité <span id="security"></span>
 
-Lors de la création de vues qui génèrent des pages HTML, il est important que vous encodiez et/ou filtriez les données en provenance de l'utilisateur final avant des les présenter. Autrement, votre application serait sujette aux [attaques par injection de scripts (*cross-site scripting*)](http://en.wikipedia.org/wiki/Cross-site_scripting).
+Lors de la création de vues qui génèrent des pages HTML, il est important que vous encodiez et/ou filtriez les données en provenance de l'utilisateur final avant des les présenter. Autrement, votre application serait sujette aux [attaques par injection de scripts (*cross-site scripting*)](https://en.wikipedia.org/wiki/Cross-site_scripting).
 
 Pour afficher du texte simple, commencez par l'encoder en appelant la méthode [[yii\helpers\Html::encode()]]. Par exemple, le code suivant encode le nom d'utilisateur (*username*) avant de l'afficher :
 

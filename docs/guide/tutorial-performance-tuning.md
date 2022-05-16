@@ -11,7 +11,7 @@ factors and explain how you can improve your application performance by adjustin
 A well configured PHP environment is very important. In order to get maximum performance,
 
 - Use the latest stable PHP version. Major releases of PHP may bring significant performance improvements.
-- Enable bytecode caching with [Opcache](https://www.php.net/opcache) (PHP 5.5 or later) or [APC](https://www.php.net/apc) 
+- Enable bytecode caching with [Opcache](https://www.php.net/opcache) (PHP 5.5 or later) or [APC](https://www.php.net/manual/en/book.apcu.php) 
   (PHP 5.4). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
   incoming request.
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).

@@ -106,7 +106,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
 
     /**
      * Returns whether there is a cookie with the specified name.
-     * Note that if a cookie is marked for deletion from browser, this method will return false.
+     * Note that if a cookie is marked for deletion from browser or its value is an empty string, this method will return false.
      * @param string $name the cookie name
      * @return bool whether the named cookie exists
      * @see remove()
@@ -212,7 +212,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * It is implicitly called when you use something like `$cookie = $collection[$name];`.
      * This is equivalent to [[get()]].
      * @param string $name the cookie name
-     * @return Cookie the cookie with the specified name, null if the named cookie does not exist.
+     * @return Cookie|null the cookie with the specified name, null if the named cookie does not exist.
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($name)

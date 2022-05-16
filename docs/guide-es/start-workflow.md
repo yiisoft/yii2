@@ -63,7 +63,7 @@ basic/                  base path de la aplicación
 En general, los archivos de la aplicación pueden ser divididos en dos: aquellos bajo `basic/web` y aquellos bajo otros directorios.
 Los primeros pueden accederse directo por HTTP (ej., en un navegador), mientras que los últimos no pueden ni deben ser accedidos así.
 
-Yii implementa el patrón de diseño [modelo-vista-controlador (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+Yii implementa el patrón de diseño [modelo-vista-controlador (MVC)](https://wikipedia.org/wiki/Model-view-controller),
 que es reflejado en la estructura de directorios utilizada. El directorio `models` contiene todas las [clases del modelo](structure-models.md),
 el directorio `views` contiene todas las [vistas (templates)](structure-views.md), y el directorio `controllers` contiene
 todas las [clases de controladores](structure-controllers.md).

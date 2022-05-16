@@ -3,9 +3,9 @@
 
 Ви бажаєте взяти участь в розробці Yii? Чудово! Але, щоб підвищити шанси швидкого прийняття ваших змін, будь ласка,
 дотримуйтесь наступних кроків. Якщо ви новачок у Git та GitHub, спершу можете ознайомитись із
-[довідкою GitHub](http://help.github.com/), [тренером Git](https://try.github.com), [інтерактивним туром Git How To](http://githowto.com/)
-або почитати книгу [Магія Git](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/)
-чи [Розділ Git у Вікіпідручнику](http://uk.wikibooks.org/wiki/Git), щоб краще зрозуміти внутрішню структуру Git.
+[довідкою GitHub](https://help.github.com/), [тренером Git](https://try.github.com), [інтерактивним туром Git How To](https://githowto.com/)
+або почитати книгу [Магія Git](https://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/)
+чи [Розділ Git у Вікіпідручнику](https://uk.wikibooks.org/wiki/Git), щоб краще зрозуміти внутрішню структуру Git.
 
 Підготовка вашого середовища розробки
 -------------------------------------
@@ -13,7 +13,7 @@
 Наступні кроки створять середовище розробки для Yii, яке ви зможете використовувати для роботи
 над основним кодом фреймворку Yii. Ці кроки необхідні лише тоді, коли ви вперше долучаєтесь до співпраці.
 
-### 1. [Створіть форк](http://help.github.com/fork-a-repo/) репозиторію Yii на GitHub та клонуйте свій форк у своє середовище розробки
+### 1. [Створіть форк](https://help.github.com/fork-a-repo/) репозиторію Yii на GitHub та клонуйте свій форк у своє середовище розробки
 
 ```
 git clone git@github.com:ВАШЕ-ІМ’Я-НА-GITHUB/yii2.git
@@ -138,7 +138,7 @@ Enh #999: a description of the enhancement (Your Name)
 
 ### 6. Створіть комміт ваших змін
 
-Додайте файли/зміни, призначені для комміту, в [буферну зону](http://git.github.io/git-reference/basic/#add) за допомогою команди:
+Додайте файли/зміни, призначені для комміту, в [буферну зону](https://git.github.io/git-reference/basic/#add) за допомогою команди:
 
 ```
 git add path/to/my/file.php
@@ -202,7 +202,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 ### Примітка:
 
 Для виявлення регресу на ранніх стадіях кожне поєднання з кодовою базою Yii на GitHub опрацьовується у
-[Travis CI](http://travis-ci.com) для автоматичного запуску тестів. Оскільки основна команда розробників не бажає
+[Travis CI](https://travis-ci.com) для автоматичного запуску тестів. Оскільки основна команда розробників не бажає
 перевантажувати сервіс, додавайте [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) до
 опису поєднання, якщо ваш "pull request":
 

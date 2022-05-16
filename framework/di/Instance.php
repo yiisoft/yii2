@@ -7,7 +7,6 @@
 
 namespace yii\di;
 
-use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 
@@ -111,8 +110,8 @@ class Instance
      * You may specify a reference in terms of a component ID or an Instance object.
      * Starting from version 2.0.2, you may also pass in a configuration array for creating the object.
      * If the "class" value is not specified in the configuration array, it will use the value of `$type`.
-     * @param string $type the class/interface name to be checked. If null, type check will not be performed.
-     * @param ServiceLocator|Container $container the container. This will be passed to [[get()]].
+     * @param string|null $type the class/interface name to be checked. If null, type check will not be performed.
+     * @param ServiceLocator|Container|null $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid
      */
@@ -159,7 +158,7 @@ class Instance
 
     /**
      * Returns the actual object referenced by this Instance object.
-     * @param ServiceLocator|Container $container the container used to locate the referenced object.
+     * @param ServiceLocator|Container|null $container the container used to locate the referenced object.
      * If null, the method will first try `Yii::$app` then `Yii::$container`.
      * @return object the actual object referenced by this Instance object.
      */
@@ -174,7 +173,12 @@ class Instance
             }
 
             return Yii::$container->get($this->id);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            if ($this->optional) {
+                return null;
+            }
+            throw $e;
+        } catch (\Throwable $e) {
             if ($this->optional) {
                 return null;
             }

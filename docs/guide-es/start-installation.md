@@ -142,8 +142,8 @@ Configurar Servidores Web <span id="configuring-web-servers"></span>
   de poner la aplicación en un servidor de producción.
 
 La aplicación instalada siguiendo las instrucciones mencionadas debería estar lista para usar tanto
-con un [servidor HTTP Apache](http://httpd.apache.org/) como con un [servidor HTTP Nginx](http://nginx.org/),
-en Windows, Mac OS X, o Linux utilizando PHP 5.4 o mayor. Yii 2.0 también es compatible con [HHVM](http://hhvm.com/)
+con un [servidor HTTP Apache](https://httpd.apache.org/) como con un [servidor HTTP Nginx](https://nginx.org/),
+en Windows, Mac OS X, o Linux utilizando PHP 5.4 o mayor. Yii 2.0 también es compatible con [HHVM](https://hhvm.com/)
 de Facebook. De todos modos, hay algunos casos donde HHVM se comporta diferente del
 PHP oficial, por lo que tendrás que tener cuidados extra al utilizarlo.
 
@@ -187,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuración Recomendada de Nginx <span id="recommended-nginx-configuration"></span>
 
-Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://www.php.net/install.fpm).
+Para utilizar [Nginx](https://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://www.php.net/install.fpm).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
 `basic/web` y `mysite.test` con el hostname real a servir.
 

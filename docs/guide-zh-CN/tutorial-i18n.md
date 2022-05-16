@@ -461,7 +461,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 
 格式与复数使用的格式非常接近。 要了解您应为特定语言环境指定哪些参数，请参阅
 [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“复数规则，序数”。
-或者，您可以参考 [unicode.org上的规则参考](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html)。
+或者，您可以参考 [unicode.org上的规则参考](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html)。
 
 #### 选择（Selection） <span id="selection"></span>
 
@@ -744,7 +744,7 @@ Yii 使用 [PHP intl 扩展](https://www.php.net/manual/en/book.intl.php) 来提
 因此，当 I18N 对你来说必不可少时，强烈建议你安装 `intl`。
 
 [PHP intl 扩展](https://www.php.net/manual/en/book.intl.php) 是基于对于所有不同的语言环境
-提供格式化规则的 [ICU库](http://site.icu-project.org/)。
+提供格式化规则的 [ICU库](https://icu.unicode.org/)。
 不同版本的 ICU 中可能会产生不同日期和数值格式的结果。
 为了确保你的网站在所有环境产生相同的结果，
 建议你安装与 `intl` 扩展相同的版本（和 ICU 同一版本）。
@@ -760,10 +760,10 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 此外，还建议你所使用的 ICU 版本应等于或大于 49 的版本。这确保了可以使用本文档描述的所有功能。例如，
 低于 49 版本的 ICU 不支持使用 `#` 占位符来实现复数规则。
-请参阅 <http://site.icu-project.org/download> 获取可用 ICU 版本的完整列表。
+请参阅 <https://icu.unicode.org/download> 获取可用 ICU 版本的完整列表。
 注意，版本编号在 4.8 之后发生了变化（如 ICU4.8，ICU49，50 ICU 等）。
 
 另外，ICU 库中时区数据库的信息可能过时。要更新时区数据库时详情请参阅
-[ICU 手册](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) 。
+[ICU 手册](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) 。
 而对于 ICU 输出格式使用的时区数据库，PHP 用的时区数据库可能跟它有关。
 你可以通过安装 [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb) 的最新版本来更新它。

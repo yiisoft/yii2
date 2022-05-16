@@ -32,8 +32,8 @@ $this->registerJs(
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] в `<head>`
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] сразу после открытия тега `<body>`
 - [[yii\web\View::POS_END|View::POS_END]] сразу после закрытия тега `</body>`
-- [[yii\web\View::POS_READY|View::POS_READY]] для выполнения кода сразу после того, как DOM полностью загрузился. Этому соответствует [событие `ready`](http://learn.jquery.com/using-jquery-core/document-ready/). При этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]. Код будет обёрнут в соответствующий код jQuery. `POS_READY` является позицией по умолчанию.
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] для выполнения кода после того, как DOM полностью загрузился (включая картинки). [Событие `load`](http://learn.jquery.com/using-jquery-core/document-ready/). Так же, как и выше, при этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]
+- [[yii\web\View::POS_READY|View::POS_READY]] для выполнения кода сразу после того, как DOM полностью загрузился. Этому соответствует [событие `ready`](https://learn.jquery.com/using-jquery-core/document-ready/). При этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]. Код будет обёрнут в соответствующий код jQuery. `POS_READY` является позицией по умолчанию.
+- [[yii\web\View::POS_LOAD|View::POS_LOAD]] для выполнения кода после того, как DOM полностью загрузился (включая картинки). [Событие `load`](https://learn.jquery.com/using-jquery-core/document-ready/). Так же, как и выше, при этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]
 
 Последний аргумент — это уникальный ID, который используется для идентификации блока со скриптом. При повторной регистрации происходит замена существующего скрипта на новый. Если вы не зададите ID, вместо него будет использоваться сам код. Это помогает избежать регистрации одного и того же кода несколько раз.
 

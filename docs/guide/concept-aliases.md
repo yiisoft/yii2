@@ -116,7 +116,7 @@ Yii predefines a set of aliases to easily reference commonly used file paths and
   containing the [entry script](structure-entry-scripts.md).
 - `@web`, the base URL of the currently running Web application. It has the same value as [[yii\web\Request::baseUrl]].
 - `@vendor`, the [[yii\base\Application::vendorPath|Composer vendor directory]]. Defaults to `@app/vendor`.
-- `@bower`, the root directory that contains [bower packages](http://bower.io/). Defaults to `@vendor/bower`.
+- `@bower`, the root directory that contains [bower packages](https://bower.io/). Defaults to `@vendor/bower`.
 - `@npm`, the root directory that contains [npm packages](https://www.npmjs.com/). Defaults to `@vendor/npm`.
 
 The `@yii` alias is defined when you include the `Yii.php` file in your [entry script](structure-entry-scripts.md).

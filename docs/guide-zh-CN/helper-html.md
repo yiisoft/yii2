@@ -42,7 +42,7 @@ Yii 提供了一系列的静态方法来操作标签配置并基于这些配置�
 
 - 如果一个值为 null ，那么对应的属性将不会被渲染。
 - 如果是布尔类型的值的属性，将会被当做 
-  [布尔属性](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes) 来处理。
+  [布尔属性](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) 来处理。
 - 属性的值将会用 [[yii\helpers\Html::encode()|Html::encode()]] 方法进行 HTML 转码处理。
 - 如果一个属性的值是一个数组，那么它将会被如下处理：
     

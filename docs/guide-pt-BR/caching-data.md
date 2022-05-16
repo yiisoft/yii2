@@ -30,7 +30,7 @@ if ($data === false) {
 O cache de dados se baseia nos, então chamados, *Componentes de Cache* que representam vários armazenamentos de cache,
 como memória, arquivos, bancos de dados.
 
-Componentes de Cache são normalmente registrados como [componentes de aplicação](structure-application-components.md) para que possam ser globalmente configuráveis e acessíveis. O código a seguir exibe como configurar o componente de aplicação `cache` para usar [memcached](http://memcached.org/) com dois servidores de cache:
+Componentes de Cache são normalmente registrados como [componentes de aplicação](structure-application-components.md) para que possam ser globalmente configuráveis e acessíveis. O código a seguir exibe como configurar o componente de aplicação `cache` para usar [memcached](https://memcached.org/) com dois servidores de cache:
 
 ```php
 'components' => [
@@ -93,12 +93,12 @@ Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
   [memcached](https://www.php.net/manual/en/book.memcached.php). Esta opção pode ser considerada a mais rápida
   ao se implementar o cache em aplicações distribuídas (ex., vários servidores, balanceadores de carga, etc.)
 * [[yii\redis\Cache]]: implementa um componente de cache baseado em armazenamento chave-valor 
-  [Redis](http://redis.io/) (requer redis versão 2.6.12 ou mais recente).
-* [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
+  [Redis](https://redis.io/) (requer redis versão 2.6.12 ou mais recente).
+* [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
   ([veja também](https://www.php.net/manual/en/book.wincache.php)).
 * [[yii\caching\XCache]] _(deprecated)_: usa a extensão PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: usa
-  [Cache de Dados Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
+  [Cache de Dados Zend](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   como o meio de cache subjacente.
 
 

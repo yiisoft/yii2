@@ -63,7 +63,7 @@ basico/                  caminho base de sua aplicação
 Em geral, os arquivos na aplicação podem ser divididos em dois tipos: aqueles em `basico/web` e aqueles em outros diretórios.
 Os primeiros podem ser acessados diretamente via HTTP (ou seja, em um navegador), enquanto os demais não podem e deveriam ser acessados.
 
-O Yii implementa o padrão de arquitetura [modelo-visão-controlador (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+O Yii implementa o padrão de arquitetura [modelo-visão-controlador (MVC)](https://wikipedia.org/wiki/Model-view-controller),
 que se reflete na organização de diretórios acima. O diretório `models` contém
 todas as [classes de modelos](structure-models.md), o diretório `views` contém todos
 os [scripts de visões](structure-views.md), e o diretório `controllers` contém

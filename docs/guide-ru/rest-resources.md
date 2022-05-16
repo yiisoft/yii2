@@ -2,7 +2,7 @@
 =========
 
 RESTful API строятся вокруг доступа к *ресурсам* и управления ими. Вы можете думать о ресурсах как
-о [моделях](structure-models.md) из [MVC](http://ru.wikipedia.org/wiki/Model-View-Controller).
+о [моделях](structure-models.md) из [MVC](https://ru.wikipedia.org/wiki/Model-View-Controller).
 
 Хотя не существует никаких ограничений на то, как представить ресурс, в Yii ресурсы обычно представляются
 как объекты [[yii\base\Model]] или дочерние классы (например [[yii\db\ActiveRecord]]), потому как:
@@ -127,7 +127,7 @@ public function extraFields()
 
 ## Ссылки <span id="links"></span>
 
-Согласно [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), расшифровывающемуся как Hypermedia as the Engine of Application State,
+Согласно [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), расшифровывающемуся как Hypermedia as the Engine of Application State,
 RESTful API должны возвращать достаточно информации для того, чтобы клиенты могли определить возможные действия над ресурсами.
 Ключевой момент HATEOAS заключается в том, чтобы возвращать вместе с данными набора гиперссылок, указывающих на связанную
 с ресурсом информацию.
@@ -154,6 +154,7 @@ class User extends ActiveRecord implements Linkable
 ```
 
 При отправке ответа объект `User` содержит поле `_links`, значение которого — ссылки, связанные с объектом:
+
 ```
 {
     "id": 100,

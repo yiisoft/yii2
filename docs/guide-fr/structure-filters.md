@@ -117,7 +117,7 @@ Pour plus de détails sur le contrôle d'accès en général, reportez-vous à l
 ### Filtres de méthodes d'authentification <span id="auth-method-filters"></span>
 
 Les filtres de méthodes d'authentification sont utilisés pour authentifier un utilisateur qui utilise des méthodes d'authentification variées comme
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication) ou [OAuth 2](http://oauth.net/2/). Les classes de filtre sont dans l'espace de noms `yii\filters\auth`.
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication) ou [OAuth 2](https://oauth.net/2/). Les classes de filtre sont dans l'espace de noms `yii\filters\auth`.
 
 L'exemple qui suit montre comment vous pouvez utiliser [[yii\filters\auth\HttpBasicAuth]] pour authentifier un utilisateur qui utilise un jeton d'accès basé sur la méthode  *HTTP Basic Auth*. Notez qu'afin que cela fonctionne, votre [[yii\web\User::identityClass|classe *identity* de l'utilisateur]] doit implémenter l'interface [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
 
@@ -250,7 +250,7 @@ Reportez-vous à la section [Page Caching](caching-page.md) pour plus de détail
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-*RateLimiter* met en œuvre un algorithme de limitation de débit basé sur  l'[algorithme leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket). On l'utilise en premier lieu dans la mise en œuvre des API pleinement REST. Reportez-vous à la section [limitation de débit](rest-rate-limiting.md) pour plus de détails sur l'utilisation de ce filtre.
+*RateLimiter* met en œuvre un algorithme de limitation de débit basé sur  l'[algorithme leaky bucket](https://en.wikipedia.org/wiki/Leaky_bucket). On l'utilise en premier lieu dans la mise en œuvre des API pleinement REST. Reportez-vous à la section [limitation de débit](rest-rate-limiting.md) pour plus de détails sur l'utilisation de ce filtre.
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>

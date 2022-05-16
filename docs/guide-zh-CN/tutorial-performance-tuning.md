@@ -12,7 +12,7 @@
 
 - 使用最新稳定版本的 PHP。 PHP 的主要版本可能带来显著的性能提升。
 - 启用字节码缓存 [Opcache](https://www.php.net/opcache)（PHP 5.5或更高版本）
-  或 [APC](https://www.php.net/apc)
+  或 [APC](https://www.php.net/manual/en/book.apcu.php)
   （PHP 5.4或更早版本）。字节码缓存省去了每次解析和加载 PHP 脚本所带来的开销。
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
 
@@ -130,9 +130,9 @@ CREATE TABLE session (
 你也可以通过使用缓存来存储会话数据 [[yii\web\CacheSession]] 。
 理论上讲，你可以使用只要支持[数据缓存](caching-data.md#supported-cache-storage)。
 但是请注意，某些缓存的存储当达到存储限制会清除缓存数据。出于这个原因，你应主要在不存在存储限制时才使用这些缓存存储。
-如果你的服务器支持 [Redis](http://redis.io/)，强烈建议你通过使用 [[yii\redis\Session]] 来作为会话存储。
+如果你的服务器支持 [Redis](https://redis.io/)，强烈建议你通过使用 [[yii\redis\Session]] 来作为会话存储。
 
-如果您的服务器上有 [Redis](http://redis.io/)，
+如果您的服务器上有 [Redis](https://redis.io/)，
 强烈建议您使用 [[yii\redis\Session]] 作为会话存储。
 
 
@@ -218,8 +218,8 @@ composer dumpautoload -o
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
 - [XHProf](https://www.php.net/manual/en/book.xhprof.php)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [XDebug profiler](https://xdebug.org/docs/profiler)
 
 ## 准备扩展应用程序
 
-当没有任何帮助时，您可以尝试使您的应用程序可扩展。[Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) 中提供了一个很好的介绍。有关进一步阅读，请参阅 [Web apps performance and scaling](http://thehighload.com/).
+当没有任何帮助时，您可以尝试使您的应用程序可扩展。[Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) 中提供了一个很好的介绍。有关进一步阅读，请参阅 [Web apps performance and scaling](https://thehighload.com/).

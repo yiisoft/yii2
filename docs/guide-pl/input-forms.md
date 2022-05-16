@@ -99,7 +99,7 @@ Odnosząc się do [dokumentacji jQuery](https://api.jquery.com/submit), istnieje
 
 > Formularz i jego elementy podrzędne powinny nie używać nazw pól lub nazw identyfikatorów które tworzą konflikt z właściwościami formularza,
 > takich jak `submit`, `length` lub `method`. Konflikty nazw mogą powodować mylące błędy.
-> Kompletna lista zasad oraz walidator znaczników dla tych problemów znajduje się na stronie [DOMLint](http://kangax.github.io/domlint). 
+> Kompletna lista zasad oraz walidator znaczników dla tych problemów znajduje się na stronie [DOMLint](https://kangax.github.io/domlint). 
 
 Dodatkowe tagi HTML mogą zostać dodane do formularza używając czystego HTML'a lub używając metody z klasy pomocniczej - [[yii\helpers\Html|Html]],
 tak jak było to zrobione w przykładzie wyżej z [[yii\helpers\Html::submitButton()|submitButton()]].

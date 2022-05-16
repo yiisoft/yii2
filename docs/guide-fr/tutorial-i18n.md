@@ -10,7 +10,7 @@ Une *locale* est un jeu de paramètres qui définissent la langue de l'utilisate
 
 Elle est généralement identifiée par un identifiant (ID), lui-même constitué par un identifiant de langue et un identifiant de région. Par exemple, l'identifiant `en-US` représente la locale *anglais* pour la langue et   *États-Unis* pour la région. 
 
-Pour assurer la cohérence, tous les identifiants utilisés par les application Yii doivent être présentés sous leur forme canonique `ll-CC`, où `ll` est un code à 2 ou 3 lettres pour la langue conforme à la norme [ISO-639](http://www.loc.gov/standards/iso639-2/) et `CC` est un code à deux lettres pour le pays conforme à la norme [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
+Pour assurer la cohérence, tous les identifiants utilisés par les application Yii doivent être présentés sous leur forme canonique `ll-CC`, où `ll` est un code à 2 ou 3 lettres pour la langue conforme à la norme [ISO-639](https://www.loc.gov/standards/iso639-2/) et `CC` est un code à deux lettres pour le pays conforme à la norme [ISO-3166](https://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
 Pour plus de détails sur les locales, reportez-vous à la [documentation du projet ICU](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 Dans Yii, nous utilisons souvent le mot « langue » pour faire référence à la locale. 
@@ -327,7 +327,7 @@ tandis que  `one` correspond à  `21` ou `101`:
 ```
 
 Ces noms d'arguments spéciaux tels que  `other`, `few`, `many` et autres varient en fonction de la langue. Pour savoir lesquels utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Cardinal" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
-En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
+En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](https://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: le message en russe ci-dessus est principalement utilisé comme message traduit, pas comme message source, sauf si vous définissez la [[yii\base\Application::$sourceLanguage|langue source]] de votre application comme étant `ru-RU` et traduisez à partir du russe.
 >
@@ -375,7 +375,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 Le format est assez proche de celui utilisé pour le pluriel. Pour connaître quels arguments utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Ordinal" à [https://intl.rmcreative.ru/](https://intl.rmcreative.ru/). 
-En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html).
 
 #### Sélection <span id="selection"></span>
 
@@ -639,7 +639,7 @@ Reportez-vous à la section [Formatage des données](output-formatting.md) pour 
 
 Yii utilise l'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
 Les deux classes fournissent un mécanisme de remplacement lorsque l'extension `intl` n'est pas installée. Néanmoins, l'implémentation du mécanisme de remplacement ne fonctionne bien que quand la langue cible est l'anglais. C'est pourquoi, il est fortement recommandé d'installer `intl` quand c'est nécessaire.
-L'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](http://site.icu-project.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
+L'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](https://icu.unicode.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
 
 Pour savoir quelle version d'ICU est utilisée par PHP, vous pouvez exécuter le script suivant, qui vous restitue la version de PHP et d'ICU en cours d'utilisation. 
 
@@ -650,6 +650,6 @@ echo "ICU: " . INTL_ICU_VERSION . "\n";
 echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 ```
 
-Il est également recommandé d'utiliser une version d'ICU supérieure ou égale à 48. Cela garantit que toutes les fonctionnalités décrites dans ce document sont utilisables. Par exemple, une version d'ICU inférieure à 49 ne prend pas en charge la valeur à remplacer `#` dans les règles de pluralisation. Reportez-vous à  <http://site.icu-project.org/download> pour obtenir une liste complète des versions d'ICU disponibles. Notez que le numérotage des versions a changé après la version 4.8  (p. ex., ICU 4.8, ICU 49, ICU 50, etc.)
+Il est également recommandé d'utiliser une version d'ICU supérieure ou égale à 48. Cela garantit que toutes les fonctionnalités décrites dans ce document sont utilisables. Par exemple, une version d'ICU inférieure à 49 ne prend pas en charge la valeur à remplacer `#` dans les règles de pluralisation. Reportez-vous à  <https://icu.unicode.org/download> pour obtenir une liste complète des versions d'ICU disponibles. Notez que le numérotage des versions a changé après la version 4.8  (p. ex., ICU 4.8, ICU 49, ICU 50, etc.)
 
-En outre, les informations dans la base de donnée des fuseaux horaires fournie par la bibliothèque ICU peuvent être surannées. Reportez-vous au [manuel d'ICU](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) pour les détails sur la manière de mettre la base de données des fuseaux horaires à jour. Bien que la base de données des fuseaux horaires d'ICU soit utilisée pour le formatage, celle de PHP peut aussi être d'actualité. Vous pouvez la mettre à jour en installant la dernière version du [paquet `timezonedb` de pecl](https://pecl.php.net/package/timezonedb).
+En outre, les informations dans la base de donnée des fuseaux horaires fournie par la bibliothèque ICU peuvent être surannées. Reportez-vous au [manuel d'ICU](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) pour les détails sur la manière de mettre la base de données des fuseaux horaires à jour. Bien que la base de données des fuseaux horaires d'ICU soit utilisée pour le formatage, celle de PHP peut aussi être d'actualité. Vous pouvez la mettre à jour en installant la dernière version du [paquet `timezonedb` de pecl](https://pecl.php.net/package/timezonedb).

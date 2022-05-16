@@ -613,7 +613,7 @@ class DataFilter extends Model
      * Validates operator condition.
      * @param string $operator raw operator control keyword.
      * @param mixed $condition attribute condition.
-     * @param string $attribute attribute name.
+     * @param string|null $attribute attribute name.
      */
     protected function validateOperatorCondition($operator, $condition, $attribute = null)
     {

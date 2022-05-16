@@ -30,6 +30,7 @@ class MimeTypeController extends Controller
      * @var array MIME type aliases
      */
     private $aliases = [
+        'text/rtf' => 'application/rtf',
         'text/xml' => 'application/xml',
         'image/svg' => 'image/svg+xml',
         'image/x-bmp' => 'image/bmp',
@@ -99,6 +100,11 @@ class MimeTypeController extends Controller
         $mimeMap = array_merge($mimeMap, $this->additionalMimeTypes);
         ksort($mimeMap);
         $array = VarDumper::export($mimeMap);
+
+        if (PHP_VERSION_ID >= 80100) {
+            $array = array_replace($array, array('xz' => 'application/octet-stream'));
+        }
+
         $content = <<<EOD
 <?php
 /**

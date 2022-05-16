@@ -127,7 +127,7 @@ Nếu không có lỗi gì, action sẽ trả về (render) view tên là `entry
 
 > Lưu ý: ở bài hướng dẫn này, chúng ta chỉ xác nhận trang khi có dũ liệu hợp lệ. Bài thực hành này,
   bạn cần lưu ý việc sử dụng các phương thức [[yii\web\Controller::refresh()|refresh()]] hoặc [[yii\web\Controller::redirect()|redirect()]]
-  nhằm để tránh [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+  nhằm để tránh [form resubmission problems](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Tạo Views <span id="creating-views"></span>

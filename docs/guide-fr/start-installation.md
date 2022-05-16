@@ -91,7 +91,7 @@ Mais il y a d'autres options d'installation disponibles :
 Installer les Assets (ici bibliothèques CSS et JavaScript) <span id="installing-assets"></span>
 -----------------
 
-Yii s'appuie sur les paquets [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.com/) pour l'installation des bibliothèques CSS et JavaScript.
+Yii s'appuie sur les paquets [Bower](https://bower.io/) et/ou [NPM](https://www.npmjs.com/) pour l'installation des bibliothèques CSS et JavaScript.
 
 Il utilise Composer pour les obtenir, permettant ainsi aux versions de paquet de PHP et à celles de CSS/JavaScript, d'être résolues en même temps.
 Cela peut être obtenue soit en utilisant [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
@@ -153,8 +153,8 @@ Configuration du serveur Web <span id="configuring-web-servers"></span>
 
 > Note: si vous voulez juste tester Yii sans intention de l'utiliser sur un serveur de production, vous pouvez ignorer ce paragraphe.
 
-L'application installée selon les instructions ci-dessus devrait fonctionner *out of the box* (sans configuration supplémentaire) avec le [serveur HTTP Apache](http://httpd.apache.org/) ou le [serveur HTTP Nginx](http://nginx.org/), sous Windows, Mac OX X, ou Linux avec PHP 5.4 ou plus récent. Yii 2.0 est aussi compatible avec 
-[HHVM](http://hhvm.com/) de Facebook. Cependant, il existe des cas marginaux pour lesquels HHVM se comporte différemment du PHP natif; c'est pourquoi vous devez faire plus attention en utilisant HHVM.. 
+L'application installée selon les instructions ci-dessus devrait fonctionner *out of the box* (sans configuration supplémentaire) avec le [serveur HTTP Apache](https://httpd.apache.org/) ou le [serveur HTTP Nginx](https://nginx.org/), sous Windows, Mac OX X, ou Linux avec PHP 5.4 ou plus récent. Yii 2.0 est aussi compatible avec 
+[HHVM](https://hhvm.com/) de Facebook. Cependant, il existe des cas marginaux pour lesquels HHVM se comporte différemment du PHP natif; c'est pourquoi vous devez faire plus attention en utilisant HHVM.. 
 
 Sur un serveur de production, vous pouvez configurer votre serveur Web afin que l'application soit accessible via l'URL `http://www.example.com/index.php` au lieu de `http://www.example.com/basic/web/index.php`. Cela implique que le dossier racine de votre serveur Web pointe vers le dossier `basic/web`.
 Vous pouvez également cacher `index.php` dans l'URL, comme décrit dans la partie [Génération et traitement des URL](runtime-url-handling.md), vous y apprendrez comment configurer votre serveur Apache ou Nginx pour atteindre ces objectifs.

@@ -5,7 +5,7 @@ Una buena API ha de ser *versionada*: los cambios y las nuevas características 
 las APIs están destinadas a ser usadas por los clientes fuera de tu control. Por esta razón, compatibilidad hacia atrás (BC Backward compatibility)
 de las APIs ha de ser mantenida siempre que sea posible. Si es necesario un cambio que puede romper la BC, debes de introducirla en la nueva versión del API, e incrementar el número de versión. Los clientes que la usan pueden continuar usando la antigua versión de trabajo del API; los nuevos y actualizados clientes pueden obtener la nueva funcionalidad de la nueva versión del API.
 
-> Tip: referirse a [Semántica del versionado](http://semver.org/)
+> Tip: referirse a [Semántica del versionado](https://semver.org/)
 para más información en el diseño del número de versión del API.
 
 Una manera común de implementar el versionado de la API es embeber el número de versión en las URLs de la  API.

@@ -28,7 +28,7 @@ use yii\web\UploadedFile;
 class FileValidator extends Validator
 {
     /**
-     * @var array|string a list of file name extensions that are allowed to be uploaded.
+     * @var array|string|null a list of file name extensions that are allowed to be uploaded.
      * This can be either an array or a string consisting of file extension names
      * separated by space or comma (e.g. "gif, jpg").
      * Extension names are case-insensitive. Defaults to null, meaning all file name
@@ -42,7 +42,7 @@ class FileValidator extends Validator
      */
     public $checkExtensionByMimeType = true;
     /**
-     * @var array|string a list of file MIME types that are allowed to be uploaded.
+     * @var array|string|null a list of file MIME types that are allowed to be uploaded.
      * This can be either an array or a string consisting of file MIME types
      * separated by space or comma (e.g. "text/plain, image/png").
      * The mask with the special character `*` can be used to match groups of mime types.
@@ -52,13 +52,13 @@ class FileValidator extends Validator
      */
     public $mimeTypes;
     /**
-     * @var int the minimum number of bytes required for the uploaded file.
+     * @var int|null the minimum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * @see tooSmall for the customized message for a file that is too small.
      */
     public $minSize;
     /**
-     * @var int the maximum number of bytes required for the uploaded file.
+     * @var int|null the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
@@ -530,6 +530,9 @@ class FileValidator extends Validator
     protected function validateMimeType($file)
     {
         $fileMimeType = $this->getMimeTypeByFile($file->tempName);
+        if ($fileMimeType === null) {
+            return false;
+        }
 
         foreach ($this->mimeTypes as $mimeType) {
             if (strcasecmp($mimeType, $fileMimeType) === 0) {
@@ -548,11 +551,12 @@ class FileValidator extends Validator
      * Get MIME type by file path
      *
      * @param string $filePath
-     * @return string
+     * @return string|null
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.26
      */
-    protected function getMimeTypeByFile($filePath) {
+    protected function getMimeTypeByFile($filePath)
+    {
         return FileHelper::getMimeType($filePath);
     }
 }

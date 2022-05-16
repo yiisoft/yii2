@@ -39,8 +39,8 @@ use yii\validators\IpValidator;
  * @property string $baseUrl The relative URL for the application.
  * @property array|object $bodyParams The request parameters given in the request body. Note that the type of
  * this property differs in getter and setter. See [[getBodyParams()]] and [[setBodyParams()]] for details.
- * @property-read string $contentType Request content-type. Null is returned if this information is not
- * available.
+ * @property-read string $contentType Request content-type. Empty string is returned if this information is
+ * not available.
  * @property-read CookieCollection $cookies The cookie collection.
  * @property-read string $csrfToken The token used to perform CSRF validation.
  * @property-read string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is
@@ -749,13 +749,20 @@ class Request extends \yii\base\Request
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('X-Original-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Original-Host'))[0]);
-            } elseif ($this->headers->has('Host')) {
-                $this->_hostInfo = $http . '://' . $this->headers->get('Host');
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
-                $port = $secure ? $this->getSecurePort() : $this->getPort();
-                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    $this->_hostInfo .= ':' . $port;
+            } else {
+                if ($this->headers->has('Host')) {
+                    $this->_hostInfo = $http . '://' . $this->headers->get('Host');
+                } elseif (filter_has_var(INPUT_SERVER, 'SERVER_NAME')) {
+                    $this->_hostInfo = $http . '://' . filter_input(INPUT_SERVER, 'SERVER_NAME');
+                } elseif (isset($_SERVER['SERVER_NAME'])) {
+                    $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+                }
+
+                if ($this->_hostInfo !== null && !preg_match('/:\d+$/', $this->_hostInfo)) {
+                    $port = $secure ? $this->getSecurePort() : $this->getPort();
+                    if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
+                        $this->_hostInfo .= ':' . $port;
+                    }
                 }
             }
         }
@@ -1108,7 +1115,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the server name.
-     * @return string server name, null if not available
+     * @return string|null server name, null if not available
      */
     public function getServerName()
     {
@@ -1750,7 +1757,7 @@ class Request extends \yii\base\Request
 
     /**
      * Loads the CSRF token from cookie or session.
-     * @return string the CSRF token loaded from cookie or session. Null is returned if the cookie or session
+     * @return string|null the CSRF token loaded from cookie or session. Null is returned if the cookie or session
      * does not have CSRF token.
      */
     protected function loadCsrfToken()
@@ -1780,7 +1787,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * @return string the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
+     * @return string|null the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
      */
     public function getCsrfTokenFromHeader()
     {
@@ -1813,7 +1820,7 @@ class Request extends \yii\base\Request
      * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
      * is among GET, HEAD or OPTIONS.
      *
-     * @param string $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * @param string|null $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
      * This parameter is available since version 2.0.4.
      * @return bool whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.

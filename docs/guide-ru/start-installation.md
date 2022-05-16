@@ -132,9 +132,9 @@ php requirements.php
 > Info: можете пропустить этот подраздел если вы только начали знакомиться с фреймворком и пока не разворачиваете
   его на рабочем сервере.
 
-Приложение, установленное по инструкциям, приведённым выше, будет работать сразу как с [Apache](http://httpd.apache.org/),
-так и с [Nginx](http://nginx.org/) под Windows и Linux с установленным PHP 5.4 и выше. Yii 2.0 также совместим с
-[HHVM](http://hhvm.com/). Тем не менее, в некоторых случаях поведение при работе с HHVM отличается от обычного PHP.
+Приложение, установленное по инструкциям, приведённым выше, будет работать сразу как с [Apache](https://httpd.apache.org/),
+так и с [Nginx](https://nginx.org/) под Windows и Linux с установленным PHP 5.4 и выше. Yii 2.0 также совместим с
+[HHVM](https://hhvm.com/). Тем не менее, в некоторых случаях поведение при работе с HHVM отличается от обычного PHP.
 Будьте внимательны.
 
 На рабочем сервере вам наверняка захочется изменить URL приложения с `http://www.example.com/basic/web/index.php`
@@ -174,7 +174,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендуемые настройки Nginx <span id="recommended-nginx-configuration"></span>
 
-PHP должен быть установлен как [FPM SAPI](https://www.php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
+PHP должен быть установлен как [FPM SAPI](https://www.php.net/manual/ru/install.fpm.php) для [Nginx](https://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
 `mysite.test` на ваше имя хоста.
 

@@ -710,7 +710,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
-     * @param string $options additional SQL fragment that will be appended to the generated SQL.
+     * @param string|null $options additional SQL fragment that will be appended to the generated SQL.
      * @return string the SQL statement for creating a new DB table.
      */
     public function createTable($table, $columns, $options = null)
@@ -863,8 +863,8 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $refTable the table that the foreign key references to.
      * @param string|array $refColumns the name of the column that the foreign key references to.
      * If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string|null $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string|null $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return string the SQL statement for adding a foreign key constraint to an existing table.
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
@@ -1035,7 +1035,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence will be reset
-     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * @param array|string|null $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
@@ -1051,7 +1051,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * The sequence is reset such that the primary key of the next new row inserted
      * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence is reset
-     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * @param array|string|null $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      * @since 2.0.16
@@ -1228,7 +1228,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $columns
      * @param array $params the binding parameters to be populated
      * @param bool $distinct
-     * @param string $selectOption
+     * @param string|null $selectOption
      * @return string the SELECT clause built from [[Query::$select]].
      */
     public function buildSelect($columns, &$params, $distinct = false, $selectOption = null)

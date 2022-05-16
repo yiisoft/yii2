@@ -163,8 +163,8 @@ a seção [Autorização](security-authorization.md).
 
 O método de autenticação por filtros são usados para autenticar um usuário usando 
 vários métodos, tais como 
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), 
-[OAuth 2](http://oauth.net/2/). Todas estas classes de filtros estão localizadas 
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication), 
+[OAuth 2](https://oauth.net/2/). Todas estas classes de filtros estão localizadas 
 sob o namespace `yii\filters\auth`.
 
 O exemplo a seguir mostra como você pode usar o filtro 
@@ -323,7 +323,7 @@ detalhes sobre o uso do PageCache.
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 O filtro RateLimiter implementa um limitador de acesso baseado no 
-[algoritmo do balde furado (leaky bucket)](http://en.wikipedia.org/wiki/Leaky_bucket).
+[algoritmo do balde furado (leaky bucket)](https://en.wikipedia.org/wiki/Leaky_bucket).
 É usado principalmente na implementação de APIs RESTful. Por favor, consulte a 
 seção [Limitador de Acesso](rest-rate-limiting.md) para mais detalhes sobre o 
 uso deste filtro.

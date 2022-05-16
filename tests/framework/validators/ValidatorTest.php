@@ -217,19 +217,20 @@ class ValidatorTest extends TestCase
 
     public function testClientValidateAttribute()
     {
+        $view = new \yii\base\View();
         $val = new TestValidator();
         $this->assertNull(
-            $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', [])
-        ); //todo pass a view instead of array
+            $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', $view)
+        );
 
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
 
         $model = new FakedValidationModel();
         $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $val->clientValidate = 'clientInlineVal';
-        $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
+        $args = $val->clientValidateAttribute($model, 'val_attr_a', $view);
 
-        $this->assertCount(4, $args);
+        $this->assertCount(5, $args);
         $this->assertEquals('val_attr_a', $args[0]);
         $this->assertEquals(['foo' => 'bar'], $args[1]);
         $this->assertInstanceOf(InlineValidator::className(), $args[2]);

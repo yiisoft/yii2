@@ -187,11 +187,11 @@ Si vous appelez la méthode d'envoi de fichiers dans des endroits autres qu'une 
 
 Quelques serveurs Web assurent une prise en charge spéciale de l'envoi de fichiers appelée *X-Sendfile*. L'idée est de rediriger la requête d'un fichier sur le serveur Web qui sert directement le fichier. En conséquence, l'application Web peut terminer plus rapidement tandis que le serveur Web est en train d'envoyer le fichier. Pour utiliser cette fonctionnalité, vous pouvez appeler la méthode [[yii\web\Response::xSendFile()]]. La liste suivante résume, comment activer la fonctionnalité `X-Sendfile` pour quelques serveurs Web populaires :
 
-- Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
-- Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Apache: [X-Sendfile](https://tn123.org/mod_xsendfile)
+- Lighttpd v1.4: [X-LIGHTTPD-send-file](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Lighttpd v1.5: [X-Sendfile](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
 - Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
-- Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+- Cherokee: [X-Sendfile and X-Accel-Redirect](https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
 ## Envoi de la réponse <span id="sending-response"></span>

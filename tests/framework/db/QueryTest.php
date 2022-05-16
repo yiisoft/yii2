@@ -21,7 +21,7 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->select('*');
         $this->assertEquals(['*' => '*'], $query->select);
-        $this->assertNull($query->distinct);
+        $this->assertFalse($query->distinct);
         $this->assertNull($query->selectOption);
 
         $query = new Query();

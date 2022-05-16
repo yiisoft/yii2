@@ -159,7 +159,7 @@ class Sort extends BaseObject
      */
     public $defaultOrder;
     /**
-     * @var string the route of the controller action for displaying the sorted contents.
+     * @var string|null the route of the controller action for displaying the sorted contents.
      * If not set, it means using the currently requested route.
      */
     public $route;
@@ -168,7 +168,7 @@ class Sort extends BaseObject
      */
     public $separator = ',';
     /**
-     * @var array parameters (name => value) that should be used to obtain the current sort directions
+     * @var array|null parameters (name => value) that should be used to obtain the current sort directions
      * and to create new sort URLs. If not set, `$_GET` will be used instead.
      *
      * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
@@ -181,7 +181,7 @@ class Sort extends BaseObject
      */
     public $params;
     /**
-     * @var \yii\web\UrlManager the URL manager used for creating sort URLs. If not set,
+     * @var \yii\web\UrlManager|null the URL manager used for creating sort URLs. If not set,
      * the `urlManager` application component will be used.
      */
     public $urlManager;

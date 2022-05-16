@@ -76,7 +76,7 @@ Widok `say` powinien być zapisany w pliku `views/site/say.php`. Kiedy wywołana
 wg schematu `views/ControllerID/ViewName.php`.
 
 Zauważ, że w powyższym kodzie parametr `message` jest przetworzony za pomocą metody [[yii\helpers\Html::encode()|encode()]] przed wyświetleniem go. Jest to konieczne w przypadku 
-parametrów pochodzących od użytkownika, wrażliwych na ataki [XSS](http://en.wikipedia.org/wiki/Cross-site_scripting) przez podanie złośliwego kodu JavaScript.
+parametrów pochodzących od użytkownika, wrażliwych na ataki [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) przez podanie złośliwego kodu JavaScript.
 
 Naturalnie możesz umieścić więcej zawartości w widoku `say`. Zawartość może zawierać tagi HTML, czysty tekst, a nawet kod PHP.
 Tak naprawdę, widok `say` jest tylko skryptem PHP, który jest wywoływany przez metodę [[yii\web\Controller::render()|render()]].

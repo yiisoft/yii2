@@ -120,7 +120,7 @@ $session['captcha.lifetime'] = 3600;
 
 * [[yii\web\DbSession]]: сохраняет данные сессии в базе данных.
 * [[yii\web\CacheSession]]: хранение данных сессии в предварительно сконфигурированном компоненте кэша [кэш](caching-data.md#cache-components).
-* [[yii\redis\Session]]: хранение данных сессии в [redis](http://redis.io/).
+* [[yii\redis\Session]]: хранение данных сессии в [redis](https://redis.io/).
 * [[yii\mongodb\Session]]: хранение сессии в [MongoDB](https://www.mongodb.com/).
 
 Все эти классы поддерживают одинаковый набор методов API. В результате вы можете переключаться между различными хранилищами сессий без модификации кода приложения.

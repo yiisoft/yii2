@@ -88,7 +88,7 @@ es llamado en una acción, buscará un archivo PHP llamado `views/ControllerID/N
 
 Nota que en el código de arriba, el parámetro `message` es procesado por [[yii\helpers\Html::encode()|HTML-encoded]]
 antes de ser impreso. Esto es necesario ya que el parámetro viene de un usuario final, haciéndolo vulnerable a 
-[ataques cross-site scripting (XSS)](http://es.wikipedia.org/wiki/Cross-site_scripting) pudiendo inyectar código de Javascript malicioso dentro del parámetro.
+[ataques cross-site scripting (XSS)](https://es.wikipedia.org/wiki/Cross-site_scripting) pudiendo inyectar código de Javascript malicioso dentro del parámetro.
 
 Naturalmente, puedes colocar mas contenido en la vista `say`. El contenido puede consistir de etiquetas HTML, texto plano, e inclusive código PHP.
 De hecho, la vista `say` es sólo un script PHP que es ejecutado por el método [[yii\web\Controller::render()|render()]].

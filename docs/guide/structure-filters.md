@@ -142,7 +142,7 @@ For more details about access control in general, please refer to the [Authoriza
 ### Authentication Method Filters <span id="auth-method-filters"></span>
 
 Authentication method filters are used to authenticate a user using various methods, such as
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](https://oauth.net/2/).
 These filter classes are all under the `yii\filters\auth` namespace.
 
 The following example shows how you can use [[yii\filters\auth\HttpBasicAuth]] to authenticate a user using
@@ -289,7 +289,7 @@ Please refer to the [Page Caching](caching-page.md) section for more details abo
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-RateLimiter implements a rate limiting algorithm based on the [leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket).
+RateLimiter implements a rate limiting algorithm based on the [leaky bucket algorithm](https://en.wikipedia.org/wiki/Leaky_bucket).
 It is primarily used in implementing RESTful APIs. Please refer to the [Rate Limiting](rest-rate-limiting.md) section
 for details about using this filter.
 

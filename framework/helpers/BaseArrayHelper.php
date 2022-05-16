@@ -7,9 +7,9 @@
 
 namespace yii\helpers;
 
+use Yii;
 use ArrayAccess;
 use Traversable;
-use Yii;
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
 
@@ -351,7 +351,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array the array where to look the value from
-     * @param string $value the value to remove from the array
+     * @param mixed $value the value to remove from the array
      * @return array the items that were removed from the array
      * @since 2.0.11
      */
@@ -585,7 +585,7 @@ class BaseArrayHelper
      * @param array $array
      * @param string|\Closure $from
      * @param string|\Closure $to
-     * @param string|\Closure $group
+     * @param string|\Closure|null $group
      * @return array
      */
     public static function map($array, $from, $to, $group = null)
@@ -697,7 +697,7 @@ class BaseArrayHelper
      * @param array $data data to be encoded
      * @param bool $valuesOnly whether to encode array values only. If false,
      * both the array keys and array values will be encoded.
-     * @param string $charset the charset that the data is using. If not set,
+     * @param string|null $charset the charset that the data is using. If not set,
      * [[\yii\base\Application::charset]] will be used.
      * @return array the encoded data
      * @see https://www.php.net/manual/en/function.htmlspecialchars.php
@@ -815,11 +815,13 @@ class BaseArrayHelper
             return true;
         }
 
+        $keys = array_keys($array);
+
         if ($consecutive) {
-            return array_keys($array) === range(0, count($array) - 1);
+            return $keys === array_keys($keys);
         }
 
-        foreach ($array as $key => $value) {
+        foreach ($keys as $key) {
             if (!is_int($key)) {
                 return false;
             }
@@ -998,5 +1000,30 @@ class BaseArrayHelper
         }
 
         return $result;
+    }
+
+    /**
+     * Sorts array recursively.
+     *
+     * @param array         $array An array passing by reference.
+     * @param callable|null $sorter The array sorter. If omitted, sort index array by values, sort assoc array by keys.
+     * @return array
+     */
+    public static function recursiveSort(array &$array, $sorter = null)
+    {
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                self::recursiveSort($value, $sorter);
+            }
+        }
+        unset($value);
+
+        if ($sorter === null) {
+            $sorter = static::isIndexed($array) ? 'sort' : 'ksort';
+        }
+
+        call_user_func_array($sorter, [&$array]);
+
+        return $array;
     }
 }

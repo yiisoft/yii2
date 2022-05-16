@@ -519,7 +519,7 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 
 フォーマットは複数形で使われるものと非常に近いものです。
 特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
-あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
+あるいは、その代りに、[unicode.org の規則のリファレンス](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html) を参照することも出来ます。
 
 
 #### 選択肢 <span id="selection"></span>
@@ -794,11 +794,6 @@ class TranslationEventHandler
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>
 
-詳細は [データ・フォーマッタ](output-formatting.md) のセクションを参照してください。
-
-
-## 日付と数値をフォーマットする <span id="date-number"></span>
-
 詳細は [データのフォーマット](output-formatting.md) のセクションを参照して下さい。
 
 
@@ -810,7 +805,7 @@ Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や�
 従って、国際化機能が必要とされる場合は、`intl` をインストールすることが強く推奨されます。
 
 [PHP intl 拡張](https://www.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
-[ICU ライブラリ](http://site.icu-project.org/) に基礎を置いています。
+[ICU ライブラリ](https://icu.unicode.org/) に基礎を置いています。
 ICU のバージョンが異なると、日付や数値のフォーマットの結果も異なる場合があります。
 あなたのウェブ・サイトが全ての環境で同じ出力をすることを保証するためには、
 全ての環境において同じバージョンの PHP intl 拡張 (従って同じバージョンの ICU) をインストールすることが推奨されます。
@@ -826,10 +821,10 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 さらに、バージョン 49 以上の ICU を使用する事も推奨されます。そうすることによって、このドキュメントで説明されている全ての機能を使うことが出来るようになります。
 例えば、49 未満の ICU は、複数形規則における `#` プレースホルダをサポートしていません。
-入手できる ICU バージョン については、<http://site.icu-project.org/download> を参照してください。
+入手できる ICU バージョン については、<https://icu.unicode.org/download> を参照してください。
 バージョン番号の採番方式が 4.8 リリースの後に変更されたことに注意してください (すなわち、ICU 4.8、ICU 49、ICU 50、等々となっています)。
 
 これに加えて、ICU ライブラリとともに出荷されるタイム・ゾーン・データベースの情報も古くなっている可能性があります。
-タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) を参照してください。
+タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) を参照してください。
 出力の書式設定には ICU タイム・ゾーン・データベースが使用されますが、PHP によって使われるタイム・ゾーン・データベースも影響する可能性があります。
 PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](https://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。

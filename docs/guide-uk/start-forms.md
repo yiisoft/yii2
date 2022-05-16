@@ -130,7 +130,7 @@ HTML-формою та повідомленнями про присутні по
 
 > Note: У цьому дуже простому прикладі ми просто відобразили сторінку підтвердження відправлення даних. На практиці,
 ви повинні розглянути використання [[yii\web\Controller::refresh()|refresh()]] або [[yii\web\Controller::redirect()|redirect()]]
-для уникнення [проблеми повторного відправлення даних форми](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+для уникнення [проблеми повторного відправлення даних форми](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Створення представлення <span id="creating-views"></span>

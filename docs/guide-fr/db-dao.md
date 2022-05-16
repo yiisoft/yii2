@@ -7,11 +7,11 @@ Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous man
 
 Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les bases de données suivantes sans configuration supplémentaire :
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): version 8.4 ou plus récente.
-- [CUBRID](http://www.cubrid.org/): version 9.3 ou plus récente.
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): version 8.4 ou plus récente.
+- [CUBRID](https://www.cubrid.org/): version 9.3 ou plus récente.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 ou plus récente.
 
@@ -366,7 +366,7 @@ Notez que quelques systèmes de gestion de base de données autorisent la défin
 
 > Note: PostgreSQL n'autorise pas la définition du niveau d'isolation tant que la transaction n'a pas démarré, aussi ne pouvez-vous pas spécifier le niveau d'isolation directement en démarrant la transaction. Dans ce cas, vous devez appeler [[yii\db\Transaction::setIsolationLevel()]] après que la transaction a démarré.
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 ### Imbrication des transactions <span id="nesting-transactions"></span>
@@ -415,7 +415,7 @@ try {
 
 ## Réplication et éclatement lecture-écriture <span id="read-write-splitting"></span>
 
-Beaucoup de systèmes de gestion de bases de données prennent en charge la [réplication de la base de données](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) pour obtenir une meilleure disponibilité et des temps de réponse de serveur plus courts. Avec la réplication de la base de données, les données sont répliquées depuis les serveurs dits *serveurs maîtres* vers les serveurs dit *serveurs esclaves*. Toutes les écritures et les mises à jour ont lieu sur les serveurs maîtres, tandis que les lectures ont lieu sur les serveurs esclaves.
+Beaucoup de systèmes de gestion de bases de données prennent en charge la [réplication de la base de données](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) pour obtenir une meilleure disponibilité et des temps de réponse de serveur plus courts. Avec la réplication de la base de données, les données sont répliquées depuis les serveurs dits *serveurs maîtres* vers les serveurs dit *serveurs esclaves*. Toutes les écritures et les mises à jour ont lieu sur les serveurs maîtres, tandis que les lectures ont lieu sur les serveurs esclaves.
 
 Pour tirer parti de la réplication des bases de données et réaliser l'éclatement lecture-écriture, vous pouvez configurer un composant [[yii\db\Connection]] comme le suivant :
 

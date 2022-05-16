@@ -131,7 +131,7 @@ Yii は、また、さまざまなセッション・ストレージを実装す�
 
 * [[yii\web\DbSession]]: セッション・データをデータベース・テーブルを使って保存する。
 * [[yii\web\CacheSession]]: セッション・データを、構成された [キャッシュ・コンポーネント](caching-data.md#cache-components) の力を借りて、キャッシュを使って保存する。
-* [[yii\redis\Session]]: セッション・データを [redis](http://redis.io/) をストレージ媒体として使って保存する。
+* [[yii\redis\Session]]: セッション・データを [redis](https://redis.io/) をストレージ媒体として使って保存する。
 * [[yii\mongodb\Session]]: セッション・データを [MongoDB](https://www.mongodb.com/) に保存する。
 
 これらのセッション・クラスは全て一連の同じ API メソッドをサポートします。

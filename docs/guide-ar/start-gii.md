@@ -12,10 +12,10 @@
     <li>تفعيل ال Gii داخل التطبيق الخاص بك</li>
     <li>إستخدام ال Gii لإنشاء ال Active Record class</li>
     <li>إستخدام ال Gii لإنشاء الشيفرة البرمجية الخاصة بال CRUD إعتمادا على الجداول الموجودة في قاعدة البيانات</li>
-    <li>تخصيص (custmize) الشيفرة البرمجية التي سيتم إنتاجها من خلال ال Gii.</li>
+    <li>تخصيص (customize) الشيفرة البرمجية التي سيتم إنتاجها من خلال ال Gii.</li>
 </ul>
 
-## <div dir="rtl">البدء باستخدام ال Gii</a> <span id="starting-gii"></span>
+## <div dir="rtl">البدء باستخدام ال Gii</div> <span id="starting-gii"></span>
 
 <p dir="rtl">
     يتم تقديم ال <a href="https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide">Gii</a> داخل على ال Yii على أنه <a href="../guide/structure-modules.md">module</a>، ويمكنك تفعيله من خلال الإعدادات الخاصة به والتي تجدها داخل ال application، وبالتحديد داخل ال property التالية [[yii\base\Application::modules|modules]]، واعتمادا على كيفية إنشائك للمشروع، فيمكنك إيجاد الشيفرة البرمجية التالية موجودة بشكل مسبق داخل ال <code>config/web.php</code>:  

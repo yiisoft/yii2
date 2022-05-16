@@ -79,7 +79,7 @@ class AppAsset extends AssetBundle
     実際のファイルのパスは、この相対パスの前に [[yii\web\AssetManager::basePath]] を付けることによって決定されます。
     また、実際の URL は、この相対パスの前に [[yii\web\AssetManager::baseUrl]] を付けることによって決定されます。
   - 外部の JavaScript ファイルを表す絶対 URL。
-    例えば、`http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や
+    例えば、`https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
 * [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセット・バンドルの名前をリストする配列です
    (バンドルの依存関係については、すぐ後で説明します)。
@@ -207,7 +207,7 @@ class FontAwesomeAsset extends AssetBundle
 
 ### Bower と NPM のアセットのインストール <span id="bower-npm-assets"></span>
 
-ほとんどの JavaScript/CSS パッケージは、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) によって管理されています。
+ほとんどの JavaScript/CSS パッケージは、[Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) によって管理されています。
 PHP の世界には PHP の依存を管理する Composer がありますが、PHP のパッケージと全く同じように
 `composer.json` を使って Bower のパッケージも NPM のパッケージもロードすることが可能です。
 

@@ -1,7 +1,7 @@
 Model
 ======
 
-Model là phần trong mô hình [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Model là phần trong mô hình [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
 Là đối tượng đại diện cho phần dữ liệu, phương thức xử lý và nghiệp vụ logic.
 
 Bạn có thể tạo mới các lớp model bằng việc kế thừa từ lớp [[yii\base\Model]] hoặc các lớp con của nó. Lớp cơ sở

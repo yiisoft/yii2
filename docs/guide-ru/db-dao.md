@@ -12,11 +12,11 @@
 
 Yii DAO из коробки поддерживает следующие базы данных:
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): версии 8.4 или выше.
-- [CUBRID](http://www.cubrid.org/): версии 9.3 или выше.
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): версии 8.4 или выше.
+- [CUBRID](https://www.cubrid.org/): версии 9.3 или выше.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.
 
@@ -435,7 +435,7 @@ try {
 
 ## Репликация и разделение запросов на чтение и запись <span id="read-write-splitting"></span>
 
-Многие СУБД поддерживают [репликацию баз данных](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
+Многие СУБД поддерживают [репликацию баз данных](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 для лучшей доступности базы данных и уменьшения времени ответа сервера. С репликацией базы данных, данные копируются
 из *master servers* на *slave servers*. Все вставки и обновления должны происходить на основном сервере, хотя чтение
 может производится и с подчинённых серверов.
