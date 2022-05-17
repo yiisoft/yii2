@@ -1208,6 +1208,7 @@ class ArrayHelperTest extends TestCase
             'cde' => false,
             3 => 'blank',
             [
+                '<>' => 'a<>b',
                 '<a>' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
