@@ -148,7 +148,7 @@ keyword `like` and an attribute named `like`, specifying condition for such attr
 
 ## Handling The Null Values <span id="handling-the-null-values"></span>
 
-While it is easy to use `null` inside the JSON statement, it is not possible to sent it using the GET query without 
+While it is easy to use `null` inside the JSON statement, it is not possible to send it using the GET query without 
 confusing the literal `null` with the string `"null"`. Since 2.0.40 you can use [[yii\data\DataFilter::$nullValue]] 
 option to configure the word that will be used as a replacement for literal `null` (by default it's `"NULL"`).
 
