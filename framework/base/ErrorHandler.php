@@ -292,7 +292,11 @@ abstract class ErrorHandler extends Component
             if (defined('HHVM_VERSION')) {
                 flush();
             }
-            exit(1);
+
+            register_shutdown_function(function() {
+                exit(1);
+            });
+
         }
     }
 
