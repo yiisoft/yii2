@@ -27,9 +27,6 @@ use yii\web\HttpException;
 abstract class ErrorHandler extends Component
 {
     /**
-     * @event the shutdown handler
-     */
-    /**
      * @event Event an event that is triggered when the handler is called by shutdown function via [[handleFatalError()]].
      * @since 2.0.46
      */
