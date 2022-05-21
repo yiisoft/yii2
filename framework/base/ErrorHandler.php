@@ -66,6 +66,10 @@ abstract class ErrorHandler extends Component
      * @var bool whether this instance has been registered using `register()`
      */
     private $_registered = false;
+    /**
+     * @var string the current working directory
+     */
+    private $_workingDirectory;
 
 
     public function init()
@@ -76,6 +80,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Register this error handler.
+     *
      * @since 2.0.32 this will not do anything if the error handler was already registered
      */
     public function register()
@@ -93,6 +98,8 @@ abstract class ErrorHandler extends Component
             }
             register_shutdown_function([$this, 'handleFatalError']);
             $this->_registered = true;
+            // to restore working directory in shutdown handler
+            $this->_workingDirectory = getcwd();
         }
     }
 
@@ -270,7 +277,10 @@ abstract class ErrorHandler extends Component
     {
         $this->_memoryReserve = null;
 
-        $this->fixWorkingDirectory();
+        // fix working directory for some Web servers
+        if (!in_array(PHP_SAPI, ['cli', 'phpdbg'], true)) {
+            chdir($this->_workingDirector);
+        }
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
@@ -304,16 +314,6 @@ abstract class ErrorHandler extends Component
             $this->trigger(static::EVENT_SHUTDOWN);
 
             exit(1);
-        }
-    }
-
-    /**
-     * Fix working directory for some web servers.
-     */
-    protected function fixWorkingDirectory()
-    {
-        if (!in_array(PHP_SAPI, ['cli-server', 'cli', 'phpdbg'], true)) {
-            chdir(Yii::getAlias('@app'));
         }
     }
 
