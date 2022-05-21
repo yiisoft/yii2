@@ -27,6 +27,15 @@ use yii\web\HttpException;
 abstract class ErrorHandler extends Component
 {
     /**
+     * @event the shutdown handler
+     */
+    /**
+     * @event Event an event that is triggered when the handler is called by shutdown function via [[handleFatalError()]].
+     * @since 2.0.46
+     */
+    const EVENT_SHUTDOWN = 'shutdown';
+
+    /**
      * @var bool whether to discard any existing page output before error display. Defaults to true.
      */
     public $discardExistingOutput = true;
@@ -262,7 +271,9 @@ abstract class ErrorHandler extends Component
      */
     public function handleFatalError()
     {
-        unset($this->_memoryReserve);
+        $this->_memoryReserve = null;
+
+        $this->fixWorkingDirectory();
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
@@ -292,7 +303,20 @@ abstract class ErrorHandler extends Component
             if (defined('HHVM_VERSION')) {
                 flush();
             }
+
+            $this->trigger(static::EVENT_SHUTDOWN);
+
             exit(1);
+        }
+    }
+
+    /**
+     * Fix working directory for some web servers.
+     */
+    protected function fixWorkingDirectory()
+    {
+        if (!in_array(PHP_SAPI, ['cli-server', 'cli', 'phpdbg'], true)) {
+            chdir(Yii::getAlias('@app'));
         }
     }
 
