@@ -277,10 +277,8 @@ abstract class ErrorHandler extends Component
     {
         $this->_memoryReserve = null;
 
-        // fix working directory for some Web servers
-        if (!in_array(PHP_SAPI, ['cli', 'phpdbg'], true)) {
-            chdir($this->_workingDirector);
-        }
+        // fix working directory for some Web servers e.g. Apache
+        chdir($this->_workingDirector);
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
