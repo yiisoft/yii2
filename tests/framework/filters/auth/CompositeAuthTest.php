@@ -12,6 +12,7 @@ use yii\filters\auth\AuthMethod;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
+use yii\web\UnauthorizedHttpException;
 use yiiunit\framework\web\UserIdentity;
 
 /**
