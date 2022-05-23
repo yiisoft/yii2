@@ -274,8 +274,8 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     {
         $validator = new ExistValidator(['targetAttribute' => ['email', 'name']]);
         $customer = new Customer();
-        $customer->email = 'user1@example.com';
-        $customer->name = 'user1';
+        $customer->email = 'user11111@example.com';
+        $customer->name = 'user11111';
 
         $validator->validateAttribute($customer, 'email');
         $this->assertTrue($customer->hasErrors('email'));
