@@ -275,10 +275,11 @@ abstract class ErrorHandler extends Component
      */
     public function handleFatalError()
     {
-        $this->_memoryReserve = null;
-
         // fix working directory for some Web servers e.g. Apache
         chdir($this->_workingDirector);
+        // flush memory
+        $this->_workingDirector = null;
+        $this->_memoryReserve = null;
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
@@ -295,6 +296,7 @@ abstract class ErrorHandler extends Component
                 $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             }
             $this->exception = $exception;
+            unset($error);
 
             $this->logException($exception);
 
