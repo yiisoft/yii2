@@ -35,7 +35,7 @@ build:
 
       services:
         db-mysql:
-          image: mysql:8.0
+          image: mysql:5.7
 
           # Define any additional environment variables that are needed by the service.
           env:
