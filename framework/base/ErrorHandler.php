@@ -276,7 +276,7 @@ abstract class ErrorHandler extends Component
     public function handleFatalError()
     {
         // fix working directory for some Web servers e.g. Apache
-        chdir($this->_workingDirector);
+        chdir($this->_workingDirectory);
         // flush memory
         $this->_workingDirector = null;
         $this->_memoryReserve = null;
