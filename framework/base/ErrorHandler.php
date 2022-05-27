@@ -94,12 +94,14 @@ abstract class ErrorHandler extends Component
                 set_error_handler([$this, 'handleError']);
             }
             if ($this->memoryReserveSize > 0) {
-                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
+                $this->_memoryReserve = str_pad('x', $this->memoryReserveSize -1);
+            }
+            // to restore working directory in shutdown handler
+            if (PHP_SAPI, !== 'cli') {
+                $this->_workingDirectory = getcwd();
             }
             register_shutdown_function([$this, 'handleFatalError']);
             $this->_registered = true;
-            // to restore working directory in shutdown handler
-            $this->_workingDirectory = getcwd();
         }
     }
 
@@ -110,6 +112,8 @@ abstract class ErrorHandler extends Component
     public function unregister()
     {
         if ($this->_registered) {
+            $this->_memoryReserve = null;
+            $this->_workingDirectory = null;
             restore_error_handler();
             restore_exception_handler();
             $this->_registered = false;
@@ -275,11 +279,14 @@ abstract class ErrorHandler extends Component
      */
     public function handleFatalError()
     {
-        // fix working directory for some Web servers e.g. Apache
-        chdir($this->_workingDirectory);
-        // flush memory
-        $this->_workingDirector = null;
-        $this->_memoryReserve = null;
+        unset($this->_memoryReserve);
+
+        if (isset($this->_workingDirector)) {
+            // fix working directory for some Web servers e.g. Apache
+            chdir($this->_workingDirectory);
+            // flush memory
+            unset($this->_workingDirector);
+        }
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
@@ -304,6 +311,7 @@ abstract class ErrorHandler extends Component
                 $this->clearOutput();
             }
             $this->renderException($exception);
+            unset($exception);
 
             // need to explicitly flush logs because exit() next will terminate the app immediately
             Yii::getLogger()->flush(true);
@@ -312,7 +320,7 @@ abstract class ErrorHandler extends Component
             }
 
             $this->trigger(static::EVENT_SHUTDOWN);
-
+            
             exit(1);
         }
     }
@@ -358,6 +366,7 @@ abstract class ErrorHandler extends Component
      * This method can be used to convert exceptions inside of methods like `__toString()`
      * to PHP errors because exceptions cannot be thrown inside of them.
      * @param \Throwable $exception the exception to convert to a PHP error.
+     * @return never
      */
     public static function convertExceptionToError($exception)
     {
