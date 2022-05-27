@@ -97,7 +97,7 @@ abstract class ErrorHandler extends Component
                 $this->_memoryReserve = str_pad('x', $this->memoryReserveSize -1);
             }
             // to restore working directory in shutdown handler
-            if (PHP_SAPI, !== 'cli') {
+            if (PHP_SAPI !== 'cli') {
                 $this->_workingDirectory = getcwd();
             }
             register_shutdown_function([$this, 'handleFatalError']);
