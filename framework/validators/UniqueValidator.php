@@ -120,6 +120,39 @@ class UniqueValidator extends Validator
     /**
      * {@inheritdoc}
      */
+    public function validateAttributes($model, $attributes = null)
+    {
+
+        if (
+            !$this->skipOnError
+            || !is_array($attributes)
+            || count($attributes) < 2
+            || array_diff($attributes, (array) $this->targetAttribute) !== []
+        ) {
+            parent::validateAttributes($model, $attributes);
+            return;
+        }
+
+        $attributes = $this->getValidationAttributes($attributes);
+        // if any attribute skips validation, other attributes also skip it
+        foreach ($attributes as $attribute) {
+            $skip = ($this->skipOnError && $model->hasErrors($attribute))
+                || ($this->skipOnEmpty && $this->isEmpty($model->$attribute));
+            if ($skip) {
+                return;
+            }
+        }
+
+        foreach ($attributes as $attribute) {
+            if ($this->when === null || call_user_func($this->when, $model, $attribute)) {
+                $this->validateAttribute($model, $attribute);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
