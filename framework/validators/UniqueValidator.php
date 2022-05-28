@@ -95,6 +95,10 @@ class UniqueValidator extends Validator
      */
     public $forceMasterDb =  true;
 
+    /**
+     * @var bool
+     */
+    private $_isCombo = false;
 
     /**
      * {@inheritdoc}
@@ -102,10 +106,14 @@ class UniqueValidator extends Validator
     public function init()
     {
         parent::init();
+
+        $this->_isCombo = is_array($this->targetAttribute) && count($this->targetAttribute) > 1;
+
         if ($this->message !== null) {
             return;
         }
-        if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
+
+        if ($this->_isCombo) {
             // fallback for deprecated `comboNotUnique` property - use it as message if is set
             if ($this->comboNotUnique === null) {
                 $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
@@ -122,12 +130,12 @@ class UniqueValidator extends Validator
      */
     public function validateAttributes($model, $attributes = null)
     {
-
         if (
             !$this->skipOnError
+            || !$this->_isCombo
             || !is_array($attributes)
             || count($attributes) < 2
-            || array_diff($attributes, (array) $this->targetAttribute) !== []
+            || array_diff($attributes, $this->targetAttribute) !== []
         ) {
             parent::validateAttributes($model, $attributes);
             return;
