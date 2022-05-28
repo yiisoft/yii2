@@ -12,7 +12,12 @@ return [
     'messagePath' => __DIR__,
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
-    'languages' => ['af', 'ar', 'az', 'be', 'bg', 'bs', 'ca', 'cs', 'da', 'de', 'el', 'es', 'et', 'fa', 'fi', 'fr', 'he', 'hi', 'hr', 'hu', 'hy', 'id', 'it', 'ja', 'ka', 'kk', 'ko', 'kz', 'lt', 'lv', 'ms', 'nb-NO', 'nl', 'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sk', 'sl', 'sr', 'sr-Latn', 'sv', 'tg', 'th', 'tr', 'uk', 'uz', 'uz-Cy', 'vi', 'zh-CN', 'zh-TW'],
+    'languages' => [
+        'af', 'ar', 'az', 'be', 'bg', 'bs', 'ca', 'cs', 'da', 'de', 'el', 'es', 'et', 'fa', 'fi', 'fr', 'he', 'hi',
+        'pt-BR', 'ro', 'hr', 'hu', 'hy', 'id', 'it', 'ja', 'ka', 'kk', 'ko', 'kz', 'lt', 'lv', 'ms', 'nb-NO', 'nl',
+        'pl', 'pt', 'ru', 'sk', 'sl', 'sr', 'sr-Latn', 'sv', 'tg', 'th', 'tr', 'uk', 'uz', 'uz-Cy', 'vi', 'zh-CN',
+        'zh-TW'
+    ],
     // string, the name of the function for translating messages.
     // Defaults to 'Yii::t'. This is used as a mark to find the messages to be
     // translated. You may use a string for single function name or an array for
@@ -39,13 +44,13 @@ return [
     // Note, the '/' characters in a pattern matches both '/' and '\'.
     // See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
     'except' => [
-        '.svn',
-        '.git',
-        '.gitignore',
-        '.gitkeep',
-        '.hgignore',
-        '.hgkeep',
+        '.*',
+        '/.*',
         '/messages',
+        '/tests',
+        '/runtime',
+        '/vendor',
+        '/BaseYii.php',
     ],
     // array, list of patterns that specify which files (not directories) should be processed.
     // If empty or not set, all files will be processed.
@@ -53,9 +58,9 @@ return [
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
     'only' => ['*.php'],
     'phpFileHeader' => '/**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 ',
