@@ -158,7 +158,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->expectException('yii\web\UnauthorizedHttpException');
-        $this->assertEquals('success', $controller->run('a'));
+        $controller->run('a');
     }
 
     public function testRunWithOptionalAction()
