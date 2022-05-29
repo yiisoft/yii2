@@ -91,7 +91,7 @@ class TestController extends Controller
         return [
             'authenticator' => [
                 'class' => CompositeAuth::className(),
-                'authMethods' => $this->authMethods ? $this->authMethods : [
+                'authMethods' => $this->authMethods ?: [
                     TestAuth::className(),
                 ],
                 'optional' => $this->optional
