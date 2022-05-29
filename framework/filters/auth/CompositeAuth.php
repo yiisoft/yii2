@@ -70,9 +70,11 @@ class CompositeAuth extends AuthMethod
                 }
             }
 
-            $identity = $auth->authenticate($user, $request, $response);
-            if ($identity !== null) {
-                return $identity;
+            if (isset($this->owner->action) && $auth->isActive($this->owner->action)) {
+                $identity = $auth->authenticate($user, $request, $response);
+                if ($identity !== null) {
+                    return $identity;
+                }
             }
         }
 
