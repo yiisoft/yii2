@@ -153,6 +153,15 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $this->assertEquals('success', $controller->run('c'));
     }
 
+    public function testRunWithWrongToken()
+    {
+        /** @var TestController $controller */
+        Yii::$app->request->headers->set('X-Api-Key', 'wrong-user');
+        $controller = Yii::$app->createController('test')[0];
+        $this->expectException('yii\web\UnauthorizedHttpException');
+        $controller->run('a');
+    }
+
     public function testRunWithoutAuthHeader()
     {
         /** @var TestController $controller */
