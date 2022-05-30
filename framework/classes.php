@@ -347,6 +347,7 @@ return [
   'yii\validators\StringValidator' => YII2_PATH . '/validators/StringValidator.php',
   'yii\validators\UniqueValidator' => YII2_PATH . '/validators/UniqueValidator.php',
   'yii\validators\UrlValidator' => YII2_PATH . '/validators/UrlValidator.php',
+  'yii\validators\TrimValidator' => YII2_PATH . '/validators/TrimValidator.php',
   'yii\validators\ValidationAsset' => YII2_PATH . '/validators/ValidationAsset.php',
   'yii\validators\Validator' => YII2_PATH . '/validators/Validator.php',
   'yii\web\Application' => YII2_PATH . '/web/Application.php',
