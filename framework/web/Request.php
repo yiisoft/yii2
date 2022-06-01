@@ -597,8 +597,8 @@ class Request extends \yii\base\Request
 
     /**
      * Sets the request body parameters.
-     * @param array $values the request body parameters (name-value pairs)
-     * @see getBodyParam()
+     *
+     * @param array|object $values the request body parameters (name-value pairs)
      * @see getBodyParams()
      */
     public function setBodyParams($values)
@@ -608,7 +608,9 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the named request body parameter value.
+     *
      * If the parameter does not exist, the second parameter passed to this method will be returned.
+     *
      * @param string $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * @return mixed the parameter value
@@ -622,7 +624,7 @@ class Request extends \yii\base\Request
         if (is_object($params)) {
             // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
             try {
-                return $params->{$name};
+                return isset($params->{$name}) ? $params->{$name} : $defaultValue;
             } catch (\Exception $e) {
                 return $defaultValue;
             }

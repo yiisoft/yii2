@@ -1185,29 +1185,35 @@ class ArrayHelperTest extends TestCase
             3 => 'blank',
             [
                 '<>' => 'a&lt;&gt;b',
+                '&lt;a&gt;' => '&lt;a href=&quot;index.php?a=1&amp;b=2&quot;&gt;link&lt;/a&gt;',
                 '23' => true,
             ],
         ];
-        $this->assertEquals([
+
+        $expected = [
             'abc' => '123',
             '&lt;' => '>',
             'cde' => false,
             3 => 'blank',
             [
                 '<>' => 'a<>b',
+                '&lt;a&gt;' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
-        ], ArrayHelper::htmlDecode($array));
-        $this->assertEquals([
+        ];
+        $this->assertEquals($expected, ArrayHelper::htmlDecode($array));
+        $expected = [
             'abc' => '123',
             '<' => '>',
             'cde' => false,
             3 => 'blank',
             [
                 '<>' => 'a<>b',
+                '<a>' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
-        ], ArrayHelper::htmlDecode($array, false));
+        ];
+        $this->assertEquals($expected, ArrayHelper::htmlDecode($array, false));
     }
 
     public function testIsIn()

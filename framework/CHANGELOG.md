@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
+- Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19272: Fix bug in dirty attributes check on multidimensional array (speedplli)
 - Bug #19349: Fix PHP 8.1 error when attribute and label of `yii\grid\DataColumn` are empty (githubjeka)
 - Bug #19243: Handle `finfo_open` for tar.xz as `application/octet-stream` on PHP 8.1 (longthanhtran)
@@ -25,6 +26,12 @@ Yii Framework 2 Change Log
 - Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
 - Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 - Bug #19368: Fix PHP 8.1 error when `$fileMimeType` is `null` in `yii\validators\FileValidator::validateMimeType()` (bizley)
+- Enh #19384: Normalize `setBodyParams()` and `getBodyParam()` in `yii\web\Request` (WinterSilence, albertborsos)
+- Bug #19386: Fix recursive calling `yii\helpers\BaseArrayHelper::htmlDecode()` (WinterSilence)
+- Bug #19402: Add shutdown event and fix working directory in `yii\base\ErrorHandler` (WinterSilence)
+- Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
+- Bug #19403: Fix types in `yii\web\SessionIterator` (WinterSilence)
+- Enh #19420: Update list of JS callbacks in `yii\widgets\MaskedInput` (WinterSilence)
 
 
 2.0.45 February 11, 2022
