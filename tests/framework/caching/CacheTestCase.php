@@ -156,6 +156,13 @@ abstract class CacheTestCase extends TestCase
         $this->assertInstanceOf('stdClass', $cache['arrayaccess_test']);
     }
 
+    public function testGetValueNonExistent()
+    {
+        $cache = $this->getCacheInstance();
+
+        $this->assertFalse($this->invokeMethod($cache, 'getValue', ['non_existent_key']));
+    }
+
     public function testGetNonExistent()
     {
         $cache = $this->getCacheInstance();
