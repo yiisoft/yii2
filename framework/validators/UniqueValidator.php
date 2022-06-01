@@ -95,10 +95,6 @@ class UniqueValidator extends Validator
      */
     public $forceMasterDb =  true;
 
-    /**
-     * @var bool
-     */
-    private $_isCombo = false;
 
     /**
      * {@inheritdoc}
@@ -107,13 +103,11 @@ class UniqueValidator extends Validator
     {
         parent::init();
 
-        $this->_isCombo = is_array($this->targetAttribute) && count($this->targetAttribute) > 1;
-
         if ($this->message !== null) {
             return;
         }
 
-        if ($this->_isCombo) {
+        if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
             // fallback for deprecated `comboNotUnique` property - use it as message if is set
             if ($this->comboNotUnique === null) {
                 $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
@@ -130,19 +124,14 @@ class UniqueValidator extends Validator
      */
     public function validateAttributes($model, $attributes = null)
     {
-        if (
-            !$this->skipOnError
-            || !$this->_isCombo
-            || !is_array($attributes)
-            || count($attributes) < 2
-            || array_diff($attributes, $this->targetAttribute) !== []
-        ) {
+        $attributes = $this->getValidationAttributes($attributes);
+
+        if (!$this->skipOnError || !is_array($attributes) || count($attributes) < 2) {
             parent::validateAttributes($model, $attributes);
             return;
         }
 
-        $attributes = $this->getValidationAttributes($attributes);
-        // if any attribute skips validation, other attributes also skip it
+        // skipOnError: if any attribute skips validation, other attributes also skip it
         foreach ($attributes as $attribute) {
             $skip = ($this->skipOnError && $model->hasErrors($attribute))
                 || ($this->skipOnEmpty && $this->isEmpty($model->$attribute));
@@ -165,7 +154,7 @@ class UniqueValidator extends Validator
     {
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->getTargetClass($model);
-        $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        $targetAttribute = $this->targetAttribute ?: $attribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
         $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
@@ -204,7 +193,7 @@ class UniqueValidator extends Validator
      */
     private function getTargetClass($model)
     {
-        return $this->targetClass === null ? get_class($model) : $this->targetClass;
+        return $this->targetClass ?: get_class($model);
     }
 
     /**
