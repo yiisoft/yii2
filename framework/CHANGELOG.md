@@ -29,6 +29,8 @@ Yii Framework 2 Change Log
 - Enh #19384: Normalize `setBodyParams()` and `getBodyParam()` in `yii\web\Request` (WinterSilence, albertborsos)
 - Bug #19386: Fix recursive calling `yii\helpers\BaseArrayHelper::htmlDecode()` (WinterSilence)
 - Bug #19418: Fix `\yii\filters\auth\CompositeAuth` ignore `only` and `except` options (lesha724)
+- Bug #19402: Add shutdown event and fix working directory in `yii\base\ErrorHandler` (WinterSilence)
+- Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
 
 
 2.0.45 February 11, 2022
