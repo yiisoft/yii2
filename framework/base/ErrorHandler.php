@@ -281,11 +281,11 @@ abstract class ErrorHandler extends Component
     {
         unset($this->_memoryReserve);
 
-        if (isset($this->_workingDirector)) {
+        if (isset($this->_workingDirectory)) {
             // fix working directory for some Web servers e.g. Apache
             chdir($this->_workingDirectory);
             // flush memory
-            unset($this->_workingDirector);
+            unset($this->_workingDirectory);
         }
 
         // load ErrorException manually here because autoloading them will not work
@@ -320,7 +320,7 @@ abstract class ErrorHandler extends Component
             }
 
             $this->trigger(static::EVENT_SHUTDOWN);
-            
+
             exit(1);
         }
     }
