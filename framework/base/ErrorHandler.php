@@ -321,7 +321,10 @@ abstract class ErrorHandler extends Component
 
             $this->trigger(static::EVENT_SHUTDOWN);
 
-            exit(1);
+            // ensure it is called after user-defined shutdown functions
+            register_shutdown_function(function() {
+                exit(1);
+            });
         }
     }
 
