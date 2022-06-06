@@ -178,7 +178,7 @@ abstract class Target extends Component
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
-
+        $result['_REQUEST_BODY'] = Yii::$app->request->getBodyParams();
         return implode("\n\n", $result);
     }
 
