@@ -7,8 +7,10 @@
 
 namespace yii\base;
 
+use JsonSerializable;
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\web\Link;
 use yii\web\Linkable;
 
@@ -70,8 +72,13 @@ trait ArrayableTrait
      */
     public function fields()
     {
-        $fields = array_keys(Yii::getObjectVars($this));
-        return array_combine($fields, $fields);
+        $fields = Yii::getObjectVars($this);
+        if ($fields !== []) {
+            $fields = array_keys($fields);
+            $fields = array_combine($fields, $fields);
+        }
+
+        return $fields;
     }
 
     /**
@@ -129,15 +136,16 @@ trait ArrayableTrait
                 $nestedFields = $this->extractFieldsFor($fields, $field);
                 $nestedExpand = $this->extractFieldsFor($expand, $field);
                 if ($attribute instanceof Arrayable) {
-                    $attribute = $attribute->toArray($nestedFields, $nestedExpand);
-                } elseif ($attribute instanceof \JsonSerializable) {
+                    $attribute = $attribute->toArray($nestedFields, $nestedExpand, $recursive);
+                } elseif ($attribute instanceof JsonSerializable) {
                     $attribute = $attribute->jsonSerialize();
                 } elseif (is_array($attribute)) {
                     $attribute = array_map(
-                        function ($item) use ($nestedFields, $nestedExpand) {
+                        static function ($item) use ($nestedFields, $nestedExpand, $recursive) {
                             if ($item instanceof Arrayable) {
-                                return $item->toArray($nestedFields, $nestedExpand);
-                            } elseif ($item instanceof \JsonSerializable) {
+                                return $item->toArray($nestedFields, $nestedExpand, $recursive);
+                            }
+                            if ($item instanceof JsonSerializable) {
                                 return $item->jsonSerialize();
                             }
                             return $item;
@@ -158,7 +166,7 @@ trait ArrayableTrait
 
     /**
      * Extracts the root field names from nested fields.
-     * Nested fields are separated with dots (.). e.g: "item.id"
+     * Nested fields are separated with dots (`.`). e.g: "item.id"
      * The previous example would extract "item".
      *
      * @param array $fields The fields requested for extraction
@@ -169,20 +177,27 @@ trait ArrayableTrait
     {
         $result = [];
 
-        foreach ($fields as $field) {
-            $result[] = current(explode('.', $field, 2));
+        if (!in_array('*', $fields, true)) {
+            foreach ($fields as $field) {
+                list($rootField) = explode('.', $field, 2);
+                if ($rootField === '*') {
+                    $result = [];
+                    break;
+                }
+                $result[] = $rootField;
+            }
         }
 
-        if (in_array('*', $result, true)) {
-            $result = [];
+        if ($result !== []) {
+            $result = array_unique($result);
         }
 
-        return array_unique($result);
+        return $result;
     }
 
     /**
      * Extract nested fields from a fields collection for a given root field
-     * Nested fields are separated with dots (.). e.g: "item.id"
+     * Nested fields are separated with dots (`.`). e.g: "item.id"
      * The previous example would extract "id".
      *
      * @param array $fields The fields requested for extraction
@@ -194,13 +209,19 @@ trait ArrayableTrait
     {
         $result = [];
 
+        $rootField .= '.';
+        $rootFieldLength = strlen($rootField);
         foreach ($fields as $field) {
-            if (0 === strpos($field, "{$rootField}.")) {
-                $result[] = preg_replace('/^' . preg_quote($rootField, '/') . '\./i', '', $field);
+            if (StringHelper::startsWith($field, $rootField, false)) {
+                $result[] = substr($field, $rootFieldLength);
             }
         }
 
-        return array_unique($result);
+        if ($result !== []) {
+            $result = array_unique($result);
+        }
+
+        return $result;
     }
 
     /**
