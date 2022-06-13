@@ -1180,10 +1180,10 @@ class RequestTest extends TestCase
         return [
             'defaultPlain' => ['1.1.1.1', 80, null, null, 80],
             'defaultSSL' => ['1.1.1.1', 443, null, null, 443],
-            'untrustedForwardedSSL' => ['1.1.1.1', 80, 443, null, 80],
-            'untrustedForwardedPlain' => ['1.1.1.1', 443, 80, null, 443],
-            'trustedForwardedSSL' => ['1.1.1.1', 80, 443, ['1.1.1.1'], 443],
-            'rustedForwardedPlain' => ['1.1.1.1', 443, 80, ['1.1.1.1'], 80],
+            'untrustedForwardedSSL' => ['1.1.1.1', 80, 443, ['10.0.0.0/8'], 80],
+            'untrustedForwardedPlain' => ['1.1.1.1', 443, 80, ['10.0.0.0/8'], 443],
+            'trustedForwardedSSL' => ['10.10.10.10', 80, 443, ['10.0.0.0/8'], 443],
+            'trustedForwardedPlain' => ['10.10.10.10', 443, 80, ['10.0.0.0/8'], 80],
         ];
     }
 
