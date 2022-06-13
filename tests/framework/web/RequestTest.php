@@ -1175,6 +1175,33 @@ class RequestTest extends TestCase
         $this->assertSame($expectedUserIp, $request->getUserIP());
     }
 
+    public function trustedHostAndXForwardedPortDataProvider()
+    {
+        return [
+            'defaultPlain' => ['1.1.1.1', 80, null, null, 80],
+            'defaultSSL' => ['1.1.1.1', 443, null, null, 443],
+            'untrustedForwardedSSL' => ['1.1.1.1', 80, 443, null, 80],
+            'untrustedForwardedPlain' => ['1.1.1.1', 443, 80, null, 443],
+            'trustedForwardedSSL' => ['1.1.1.1', 80, 443, ['1.1.1.1'], 443],
+            'rustedForwardedPlain' => ['1.1.1.1', 443, 80, ['1.1.1.1'], 80],
+        ];
+    }
+
+    /**
+     * @dataProvider trustedHostAndXForwardedPortDataProvider
+     */
+    public function testTrustedHostAndXForwardedPort($remoteAddress, $requestPort, $xForwardedPort, $trustedHosts, $expectedPort)
+    {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['SERVER_PORT'] = $requestPort;
+        $_SERVER['HTTP_X_FORWARDED_PORT'] = $xForwardedPort;
+        $params = [
+            'trustedHosts' => $trustedHosts,
+        ];
+        $request = new Request($params);
+        $this->assertSame($expectedPort, $request->getServerPort());
+    }
+
     /**
      * @testWith    ["POST", "GET", "POST"]
      *              ["POST", "OPTIONS", "POST"]

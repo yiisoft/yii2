@@ -221,6 +221,7 @@ class Request extends \yii\base\Request
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+        'X-Forwarded-Port',
 
         // Microsoft:
         'Front-End-Https',
@@ -240,6 +241,18 @@ class Request extends \yii\base\Request
      */
     public $ipHeaders = [
         'X-Forwarded-For', // Common
+    ];
+    /**
+     * @var string[] List of headers where proxies store the real request port.
+     * It's not advisable to put insecure headers here.
+     * To use the `Forwarded Port`, the header must be added to [[secureHeaders]] list.
+     * The match of header names is case-insensitive.
+     * @see trustedHosts
+     * @see secureHeaders
+     * @since 2.0.46
+     */
+    public $portHeaders = [
+        'X-Forwarded-Port', // Common
     ];
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
@@ -1125,11 +1138,23 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns the server port number.
+     * Returns the server port number. If a port is specified via a forwarding header (e.g. 'X-Forwarded-Port')
+     * and the remote host is a "trusted host" the that port will be used (see [[portHeaders]]),
+     * otherwise the default server port will be returned.
      * @return int|null server port number, null if not available
+     * @see portHeaders
      */
     public function getServerPort()
     {
+        foreach ($this->portHeaders as $portHeader) {
+            if ($this->headers->has($portHeader)) {
+                $port = $this->headers->get($portHeader);
+                if ($port !== null) {
+                    return $port;
+                }
+            }
+        }
+
         return isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : null;
     }
 
