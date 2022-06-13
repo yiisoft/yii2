@@ -116,7 +116,7 @@ Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
   它是根据包含 [入口脚本](structure-entry-scripts.md) 的目录确定的。
 - `@web`，当前运行的Web应用程序的 base URL。它的值与 [[yii\web\Request::baseUrl]] 相同。
 - `@vendor`，[[yii\base\Application::vendorPath|Composer vendor 目录]]。
-- `@bower`，包含 [bower 包](http://bower.io/) 的根目录。默认为 `@vendor/bower`。
+- `@bower`，包含 [bower 包](https://bower.io/) 的根目录。默认为 `@vendor/bower`。
 - `@npm`，包含 [npm 包](https://www.npmjs.com/) 的根目录。默认为 `@vendor/npm`。
 
 `@yii` 别名是在[入口脚本](structure-entry-scripts.md)里包含 `Yii.php` 文件时定义的，

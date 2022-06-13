@@ -101,7 +101,7 @@ O Yii já predefine uma gama de aliases para referenciar facilmente caminhos de 
 - `@web`, a URL base da aplicacão sendo executada no momento. Esta tem o mesmo valor de [[yii\web\Request::baseUrl]].
 - `@vendor`, o [[yii\base\Application::vendorPath|caminho da pasta vendor do Composer]]. 
    Seu padrão é `@app/vendor`.
-- `@bower`, o caminho raiz que contém os [pacotes bower](http://bower.io/). Seu padrão é `@vendor/bower`.
+- `@bower`, o caminho raiz que contém os [pacotes bower](https://bower.io/). Seu padrão é `@vendor/bower`.
 - `@npm`, o caminho raiz que contém [pacotes npm](https://www.npmjs.com/). Seu padrão é `@vendor/npm`.
 
 O alias `@yii` é definido quando você inclui o arquivo `Yii.php` em seu [script de entrada](structure-entry-scripts.md).
