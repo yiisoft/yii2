@@ -345,7 +345,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @see http://www.cubrid.org/manual/91/en/sql/transaction.html#database-concurrency
+     * @see https://www.cubrid.org/manual/en/11.2/sql/transaction.html#database-concurrency
      */
     public function setTransactionIsolationLevel($level)
     {
