@@ -30,7 +30,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
-     * Please refer to [CUBRID manual](https://www.cubrid.org/manual/en/9.3.0/sql/datatype_index.html) for
+     * Please refer to [CUBRID manual](https://www.cubrid.org/manual/en/9.3.0/sql/datatype.html) for
      * details on data types.
      */
     public $typeMap = [
