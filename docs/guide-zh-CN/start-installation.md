@@ -114,7 +114,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 安装 Assets <span id="installing-assets"></span>
 -----------
 
-Yii依靠 [Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.com/) 软件包来安装 asset（CSS 和 JavaScript）库。
+Yii依靠 [Bower](https://bower.io/) 和/或 [NPM](https://www.npmjs.com/) 软件包来安装 asset（CSS 和 JavaScript）库。
 它使用Composer来获取这些库，允许 PHP 和 CSS/JavaScript 包版本同时解析。
 这可以通过使用 [asset-packagist.org](https://asset-packagist.org) 或 [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) 来实现。
 有关更多详细信息，请参阅 [Assets 文档](structure-assets.md)。

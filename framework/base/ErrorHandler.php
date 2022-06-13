@@ -27,6 +27,12 @@ use yii\web\HttpException;
 abstract class ErrorHandler extends Component
 {
     /**
+     * @event Event an event that is triggered when the handler is called by shutdown function via [[handleFatalError()]].
+     * @since 2.0.46
+     */
+    const EVENT_SHUTDOWN = 'shutdown';
+
+    /**
      * @var bool whether to discard any existing page output before error display. Defaults to true.
      */
     public $discardExistingOutput = true;
@@ -60,6 +66,10 @@ abstract class ErrorHandler extends Component
      * @var bool whether this instance has been registered using `register()`
      */
     private $_registered = false;
+    /**
+     * @var string the current working directory
+     */
+    private $_workingDirectory;
 
 
     public function init()
@@ -70,6 +80,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Register this error handler.
+     *
      * @since 2.0.32 this will not do anything if the error handler was already registered
      */
     public function register()
@@ -83,7 +94,11 @@ abstract class ErrorHandler extends Component
                 set_error_handler([$this, 'handleError']);
             }
             if ($this->memoryReserveSize > 0) {
-                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
+                $this->_memoryReserve = str_pad('', $this->memoryReserveSize, 'x');
+            }
+            // to restore working directory in shutdown handler
+            if (PHP_SAPI !== 'cli') {
+                $this->_workingDirectory = getcwd();
             }
             register_shutdown_function([$this, 'handleFatalError']);
             $this->_registered = true;
@@ -97,6 +112,8 @@ abstract class ErrorHandler extends Component
     public function unregister()
     {
         if ($this->_registered) {
+            $this->_memoryReserve = null;
+            $this->_workingDirectory = null;
             restore_error_handler();
             restore_exception_handler();
             $this->_registered = false;
@@ -264,6 +281,13 @@ abstract class ErrorHandler extends Component
     {
         unset($this->_memoryReserve);
 
+        if (isset($this->_workingDirectory)) {
+            // fix working directory for some Web servers e.g. Apache
+            chdir($this->_workingDirectory);
+            // flush memory
+            unset($this->_workingDirectory);
+        }
+
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
         if (!class_exists('yii\\base\\ErrorException', false)) {
@@ -279,6 +303,7 @@ abstract class ErrorHandler extends Component
                 $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             }
             $this->exception = $exception;
+            unset($error);
 
             $this->logException($exception);
 
@@ -286,13 +311,20 @@ abstract class ErrorHandler extends Component
                 $this->clearOutput();
             }
             $this->renderException($exception);
+            unset($exception);
 
             // need to explicitly flush logs because exit() next will terminate the app immediately
             Yii::getLogger()->flush(true);
             if (defined('HHVM_VERSION')) {
                 flush();
             }
-            exit(1);
+
+            $this->trigger(static::EVENT_SHUTDOWN);
+
+            // ensure it is called after user-defined shutdown functions
+            register_shutdown_function(function() {
+                exit(1);
+            });
         }
     }
 
@@ -337,6 +369,7 @@ abstract class ErrorHandler extends Component
      * This method can be used to convert exceptions inside of methods like `__toString()`
      * to PHP errors because exceptions cannot be thrown inside of them.
      * @param \Throwable $exception the exception to convert to a PHP error.
+     * @return never
      */
     public static function convertExceptionToError($exception)
     {
