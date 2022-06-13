@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
 - Bug #19403: Fix types in `yii\web\SessionIterator` (WinterSilence)
 - Enh #19420: Update list of JS callbacks in `yii\widgets\MaskedInput` (WinterSilence)
+- Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
 
 
 2.0.45 February 11, 2022
