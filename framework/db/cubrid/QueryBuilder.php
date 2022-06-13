@@ -61,7 +61,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @see https://www.cubrid.org/manual/en/11.2/sql/query/merge.html
+     * @see https://www.cubrid.org/manual/en/9.3.0/sql/query/merge.html
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
@@ -156,7 +156,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $sql = '';
         // limit is not optional in CUBRID
-        // https://www.cubrid.org/manual/en/9.1.0/sql/query/select.html#limit-clause
+        // https://www.cubrid.org/manual/en/9.3.0/sql/query/select.html#limit-clause
         // "You can specify a very big integer for row_count to display to the last row, starting from a specific row."
         if ($this->hasLimit($limit)) {
             $sql = 'LIMIT ' . $limit;

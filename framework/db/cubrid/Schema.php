@@ -30,7 +30,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
-     * Please refer to [CUBRID manual](https://www.cubrid.org/manual/en/11.2/sql/datatype_index.html) for
+     * Please refer to [CUBRID manual](https://www.cubrid.org/manual/en/9.3.0/sql/datatype_index.html) for
      * details on data types.
      */
     public $typeMap = [
@@ -345,7 +345,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @see https://www.cubrid.org/manual/en/11.2/sql/transaction.html#database-concurrency
+     * @see https://www.cubrid.org/manual/en/9.3.0/sql/transaction.html#database-concurrency
      */
     public function setTransactionIsolationLevel($level)
     {
