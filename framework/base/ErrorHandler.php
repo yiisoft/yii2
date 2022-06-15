@@ -276,6 +276,8 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles fatal PHP errors.
+     *
+     * @return void
      */
     public function handleFatalError()
     {
@@ -288,44 +290,52 @@ abstract class ErrorHandler extends Component
             unset($this->_workingDirectory);
         }
 
+        $error = error_get_last();
+        if ($error === null) {
+            return;
+        }
+
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
         if (!class_exists('yii\\base\\ErrorException', false)) {
             require_once __DIR__ . '/ErrorException.php';
         }
-
-        $error = error_get_last();
-
-        if (ErrorException::isFatalError($error)) {
-            if (!empty($this->_hhvmException)) {
-                $exception = $this->_hhvmException;
-            } else {
-                $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-            }
-            $this->exception = $exception;
-            unset($error);
-
-            $this->logException($exception);
-
-            if ($this->discardExistingOutput) {
-                $this->clearOutput();
-            }
-            $this->renderException($exception);
-            unset($exception);
-
-            // need to explicitly flush logs because exit() next will terminate the app immediately
-            Yii::getLogger()->flush(true);
-            if (defined('HHVM_VERSION')) {
-                flush();
-            }
-
-            $this->trigger(static::EVENT_SHUTDOWN);
-
-            // ensure it is called after user-defined shutdown functions
-            register_shutdown_function(function() {
-                exit(1);
-            });
+        if (!ErrorException::isFatalError($error)) {
+            return;
         }
+
+        if (empty($this->_hhvmException)) {
+            $this->exception = $this->_hhvmException;
+        } else {
+            $this->exception = new ErrorException(
+                $error['message'],
+                $error['type'],
+                $error['type'],
+                $error['file'],
+                $error['line']
+            );
+        }
+        unset($error);
+
+        $this->logException($this->exception);
+
+        if ($this->discardExistingOutput) {
+            $this->clearOutput();
+        }
+        $this->renderException($this->exception);
+
+        // need to explicitly flush logs because exit() next will terminate the app immediately
+        Yii::getLogger()->flush(true);
+        if (defined('HHVM_VERSION')) {
+            flush();
+        }
+
+        $this->trigger(static::EVENT_SHUTDOWN);
+
+        // ensure it is called after user-defined shutdown functions
+        register_shutdown_function(function () {
+            exit(1);
+        });
     }
 
     /**
