@@ -42,7 +42,7 @@ use yii\helpers\Url;
 class AssetManager extends Component
 {
     /**
-     * @var array|bool list of asset bundle configurations. This property is provided to customize asset bundles.
+     * @var array|false list of asset bundle configurations. This property is provided to customize asset bundles.
      * When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
      * the configuration will be applied to the bundle.
      *
@@ -74,7 +74,7 @@ class AssetManager extends Component
      */
     public $baseUrl = '@web/assets';
     /**
-     * @var array mapping from source asset files (keys) to target asset files (values).
+     * @var string[] mapping from source asset files (keys) to target asset files (values).
      *
      * This property is provided to support fixing incorrect asset file paths in some asset bundles.
      * When an asset bundle is registered with a view, each relative asset file in its [[AssetBundle::css|css]]
@@ -136,7 +136,7 @@ class AssetManager extends Component
      */
     public $dirMode = 0775;
     /**
-     * @var callback a PHP callback that is called before copying each sub-directory or file.
+     * @var callable|null a PHP callback that is called before copying each sub-directory or file.
      * This option is used only when publishing a directory. If the callback returns false, the copy
      * operation for the sub-directory or file will be cancelled.
      *
@@ -147,7 +147,7 @@ class AssetManager extends Component
      */
     public $beforeCopy;
     /**
-     * @var callback a PHP callback that is called after a sub-directory or file is successfully copied.
+     * @var callable|null a PHP callback that is called after a sub-directory or file is successfully copied.
      * This option is used only when publishing a directory. The signature of the callback is the same as
      * for [[beforeCopy]].
      * This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
@@ -198,6 +198,9 @@ class AssetManager extends Component
      */
     public $hashCallback;
 
+    /**
+     * @var array
+     */
     private $_dummyBundles = [];
 
 
@@ -214,6 +217,9 @@ class AssetManager extends Component
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
+    /**
+     * @var bool|null
+     */
     private $_isBasePathPermissionChecked;
 
     /**
@@ -354,7 +360,7 @@ class AssetManager extends Component
     /**
      * @param AssetBundle $bundle
      * @param string $asset
-     * @return string|bool
+     * @return string|false
      */
     protected function resolveAsset($bundle, $asset)
     {
@@ -376,6 +382,9 @@ class AssetManager extends Component
         return false;
     }
 
+    /**
+     * @var AssetConverterInterface
+     */
     private $_converter;
 
     /**

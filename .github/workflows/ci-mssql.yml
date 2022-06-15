@@ -16,30 +16,30 @@ jobs:
     strategy:
       matrix:
         include:
-          - php: '7.0'
+          - php: 7.0
             extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.1'
+            mssql: server:2017-latest
+          - php: 7.1
             extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.2'
+            mssql: server:2017-latest
+          - php: 7.2
             extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.3'
+            mssql: server:2017-latest
+          - php: 7.3
             extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.4'
+            mssql: server:2017-latest
+          - php: 7.4
             extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2017-latest'
-          - php: '7.4'
+            mssql: server:2017-latest
+          - php: 7.4
             extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2019-latest'
-          - php: '8.0'
+            mssql: server:2019-latest
+          - php: 8.0
             extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2017-latest'
-          - php: '8.0'
+            mssql: server:2017-latest
+          - php: 8.0
             extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2019-latest'
+            mssql: server:2019-latest
 
     services:
       mssql:
@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
 
       - name: Create MS SQL Database
         run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
@@ -71,7 +71,7 @@ jobs:
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
       - name: Cache dependencies installed with composer
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
           key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}

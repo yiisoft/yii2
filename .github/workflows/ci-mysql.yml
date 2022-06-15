@@ -19,10 +19,10 @@ jobs:
           - ubuntu-latest
 
         php-version:
-          - "7.4"
+          - 7.4
 
         mysql-version:
-          - "latest"
+          - latest
 
     services:
       mysql:
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup cache environment
         id: cache-env
@@ -47,7 +47,7 @@ jobs:
           key: ${{ env.key }}
 
       - name: Cache extensions
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ${{ steps.cache-env.outputs.dir }}
           key: ${{ steps.cache-env.outputs.key }}

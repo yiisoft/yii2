@@ -154,6 +154,7 @@ class User extends ActiveRecord implements Linkable
 ```
 
 При отправке ответа объект `User` содержит поле `_links`, значение которого — ссылки, связанные с объектом:
+
 ```
 {
     "id": 100,

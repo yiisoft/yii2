@@ -597,8 +597,8 @@ class Request extends \yii\base\Request
 
     /**
      * Sets the request body parameters.
-     * @param array $values the request body parameters (name-value pairs)
-     * @see getBodyParam()
+     *
+     * @param array|object $values the request body parameters (name-value pairs)
      * @see getBodyParams()
      */
     public function setBodyParams($values)
@@ -608,7 +608,9 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the named request body parameter value.
+     *
      * If the parameter does not exist, the second parameter passed to this method will be returned.
+     *
      * @param string $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * @return mixed the parameter value
@@ -622,7 +624,7 @@ class Request extends \yii\base\Request
         if (is_object($params)) {
             // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
             try {
-                return $params->{$name};
+                return isset($params->{$name}) ? $params->{$name} : $defaultValue;
             } catch (\Exception $e) {
                 return $defaultValue;
             }
@@ -749,13 +751,20 @@ class Request extends \yii\base\Request
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('X-Original-Host')) {
                 $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Original-Host'))[0]);
-            } elseif ($this->headers->has('Host')) {
-                $this->_hostInfo = $http . '://' . $this->headers->get('Host');
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
-                $port = $secure ? $this->getSecurePort() : $this->getPort();
-                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    $this->_hostInfo .= ':' . $port;
+            } else {
+                if ($this->headers->has('Host')) {
+                    $this->_hostInfo = $http . '://' . $this->headers->get('Host');
+                } elseif (filter_has_var(INPUT_SERVER, 'SERVER_NAME')) {
+                    $this->_hostInfo = $http . '://' . filter_input(INPUT_SERVER, 'SERVER_NAME');
+                } elseif (isset($_SERVER['SERVER_NAME'])) {
+                    $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+                }
+
+                if ($this->_hostInfo !== null && !preg_match('/:\d+$/', $this->_hostInfo)) {
+                    $port = $secure ? $this->getSecurePort() : $this->getPort();
+                    if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
+                        $this->_hostInfo .= ':' . $port;
+                    }
                 }
             }
         }

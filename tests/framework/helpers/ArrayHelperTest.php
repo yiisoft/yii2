@@ -1185,29 +1185,35 @@ class ArrayHelperTest extends TestCase
             3 => 'blank',
             [
                 '<>' => 'a&lt;&gt;b',
+                '&lt;a&gt;' => '&lt;a href=&quot;index.php?a=1&amp;b=2&quot;&gt;link&lt;/a&gt;',
                 '23' => true,
             ],
         ];
-        $this->assertEquals([
+
+        $expected = [
             'abc' => '123',
             '&lt;' => '>',
             'cde' => false,
             3 => 'blank',
             [
                 '<>' => 'a<>b',
+                '&lt;a&gt;' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
-        ], ArrayHelper::htmlDecode($array));
-        $this->assertEquals([
+        ];
+        $this->assertEquals($expected, ArrayHelper::htmlDecode($array));
+        $expected = [
             'abc' => '123',
             '<' => '>',
             'cde' => false,
             3 => 'blank',
             [
                 '<>' => 'a<>b',
+                '<a>' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
-        ], ArrayHelper::htmlDecode($array, false));
+        ];
+        $this->assertEquals($expected, ArrayHelper::htmlDecode($array, false));
     }
 
     public function testIsIn()
@@ -1435,6 +1441,72 @@ class ArrayHelperTest extends TestCase
         $model = new MagicModel();
         $this->assertEquals(42, ArrayHelper::getValue($model, 'magic'));
         $this->assertEquals('ta-da', ArrayHelper::getValue($model, 'moreMagic'));
+    }
+
+    /**
+     * @dataProvider dataProviderRecursiveSort
+     *
+     * @return void
+     */
+    public function testRecursiveSort($expected_result, $input_array)
+    {
+        $actual = ArrayHelper::recursiveSort($input_array);
+        $this->assertEquals($expected_result, $actual);
+    }
+
+    /**
+     * Data provider for [[testRecursiveSort()]].
+     * @return array test data
+     */
+    public function dataProviderRecursiveSort()
+    {
+        return [
+            //Normal index array
+            [
+                [1, 2, 3, 4],
+                [4, 1, 3, 2]
+            ],
+            //Normal associative array
+            [
+                ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                ['b' => 2, 'a' => 1, 'd' => 4, 'c' => 3],
+            ],
+            //Normal index array
+            [
+                [1, 2, 3, 4],
+                [4, 1, 3, 2]
+            ],
+            //Multidimensional associative array
+            [
+                [
+                    'a' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                    'b' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                    'c' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                    'd' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4],
+                ],
+                [
+                    'b' => ['a' => 1, 'd' => 4, 'b' => 2, 'c' => 3],
+                    'd' => ['b' => 2, 'c' => 3, 'a' => 1, 'd' => 4],
+                    'c' => ['c' => 3, 'a' => 1, 'd' => 4, 'b' => 2],
+                    'a' => ['d' => 4, 'b' => 2, 'c' => 3, 'a' => 1],
+                ],
+            ],
+            //Multidimensional associative array
+            [
+                [
+                    'a' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4]],
+                    'b' => ['a' => 1, 'b' => 2, 'c' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], 'd' => 4],
+                    'c' => ['a' => 1, 'b' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], 'c' => 3, 'd' => 4],
+                    'd' => ['a' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], 'b' => 2, 'c' => 3, 'd' => 4],
+                ],
+                [
+                    'b' => ['a' => 1, 'd' => 4, 'b' => 2, 'c' => ['b' => 2, 'c' => 3, 'a' => 1, 'd' => 4]],
+                    'd' => ['b' => 2, 'c' => 3, 'a' => ['a' => 1, 'd' => 4, 'b' => 2, 'c' => 3], 'd' => 4],
+                    'c' => ['c' => 3, 'a' => 1, 'd' => 4, 'b' => ['c' => 3, 'a' => 1, 'd' => 4, 'b' => 2]],
+                    'a' => ['d' => ['d' => 4, 'b' => 2, 'c' => 3, 'a' => 1], 'b' => 2, 'c' => 3, 'a' => 1],
+                ]
+            ],
+        ];
     }
 }
 

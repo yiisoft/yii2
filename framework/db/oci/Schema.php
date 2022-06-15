@@ -414,7 +414,7 @@ SQL;
             if (stripos((string) $column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
-                $defaultValue = $column['DATA_DEFAULT'];
+                $defaultValue = (string) $column['DATA_DEFAULT'];
                 if ($c->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
                     $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
                 } else {
