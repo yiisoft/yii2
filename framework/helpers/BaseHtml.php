@@ -1842,8 +1842,17 @@ class BaseHtml
     {
         $name = ArrayHelper::remove($options, 'name', static::getInputName($model, $attribute));
         $selection = ArrayHelper::remove($options, 'value', static::getAttributeValue($model, $attribute));
-        if (!array_key_exists('unselect', $options) && !$model->hasProperty($attribute)) {
+        if (!array_key_exists('unselect', $options)) {
             $options['unselect'] = '';
+            if ($model->hasProperty($attribute)) {
+                $value = $model->$attribute;
+                try {
+                    $model->$attribute = '';
+                } catch (\Exception $e) {
+                    unset($options['unselect']);
+                }
+                $model->$attribute = $value;
+            }
         }
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
