@@ -15,9 +15,9 @@ use yii\helpers\FileHelper;
 use Yii;
 
 /**
- * Replaces outdated links(3xx response codes) add display removed links(4xx response codes).
+ * Replaces outdated links (3xx response codes) add display removed links (4xx response codes).
  *
- * This method scan PHP sources(DocBlock) and documentation(Markdown).
+ * This method scan PHP sources (DocBlock) and documentation (Markdown).
  *
  * @author Anton Fedonyuk <info@ensostudio.ru>
  * @since 2.0.46
@@ -32,7 +32,7 @@ class FixLinksController extends Controller
     /**
      * @var bool the "safe mode" option: output outdated links instead of replacing them in files
      */
-    public $safeMode = false;
+    public $safeMode = true;
 
     /**
      * @inheritDoc
@@ -41,9 +41,9 @@ class FixLinksController extends Controller
     {
         return \array_merge(parent::options($actionID), ['safeMode']);
     }
-    
+
     /**
-     * Replaces updated links add log removed links.
+     * Replaces outdated links add log removed links.
      *
      * @return int
      * @throws \yii\base\InvalidConfigException
@@ -52,6 +52,33 @@ class FixLinksController extends Controller
     {
         $this->linkChecker = new LinkChecker();
         $this->fixSources();
+        $this->fixDocs();
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * Replaces outdated links add log removed links in PHP sources (DocBlock).
+     *
+     * @return int
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionSources()
+    {
+        $this->linkChecker = new LinkChecker();
+        $this->fixSources();
+
+        return ExitCode::OK;
+    }
+    /**
+     * Replaces outdated links add log removed links in Markdown documentation.
+     *
+     * @return int
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionDocs()
+    {
+        $this->linkChecker = new LinkChecker();
         $this->fixDocs();
 
         return ExitCode::OK;
