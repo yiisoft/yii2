@@ -115,9 +115,7 @@ class ResponseTest extends \yiiunit\TestCase
     public function testSendContentAsFile()
     {
         ob_start();
-        $this->response->sendContentAsFile('test', 'test.txt', [
-            'mimeType' => 'text/plain',
-        ])->send();
+        $this->response->sendContentAsFile('test', 'test.txt')->send();
         $content = ob_get_clean();
 
         static::assertEquals('test', $content);
@@ -132,7 +130,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $this->assertEquals('/', $this->response->redirect('')->headers->get('location'));
-        $this->assertEquals('/', $this->response->redirect(null)->headers->get('location'));
+        $this->assertFalse($this->response->redirect(null)->headers->get('location'));
         $this->assertEquals(
             'http://some-external-domain.com',
             $this->response->redirect('http://some-external-domain.com')->headers->get('location')
