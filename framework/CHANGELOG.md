@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #19324: Fix `yii\helpers\BaseHtml::renderSelectOptions()` giving wrong selection for boolean attributes (adnandautovic)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 - Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
+- Enh #19318: Add support for typecasting PHP 8.1 enums (EtienneBruines)
 - Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
 - Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 - Bug #19368: Fix PHP 8.1 error when `$fileMimeType` is `null` in `yii\validators\FileValidator::validateMimeType()` (bizley)
