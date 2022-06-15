@@ -14,5 +14,5 @@ jobs:
     steps:
       - name: Display and fix outdated links
         shell: bash
-        # Run `FixLinksController::actionIndex()`, safe mode: off
+        # Run `FixLinksController::actionIndex()`, safe mode: on
         run: './build/build fix-links'
