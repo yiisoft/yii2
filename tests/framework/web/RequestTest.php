@@ -360,6 +360,30 @@ class RequestTest extends TestCase
                     'example1.com',
                 ]
             ],
+            // X-Original-Host
+            [
+                [
+                    'HTTP_X_ORIGINAL_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+            [
+                [
+                    'HTTP_X_ORIGINAL_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
             // forwarded from untrusted server
             [
                 [
@@ -370,6 +394,33 @@ class RequestTest extends TestCase
                 [
                     'http://example1.com',
                     'example1.com',
+                ]
+            ],
+            // forwarded from untrusted server with local port
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example1.com:8080',
+                    'example1.com',
+                ]
+            ],
+            // forwarded from trusted proxy with local port
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                    'SERVER_PORT' => 8080,
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
                 ]
             ],
             // forwarded from trusted proxy
