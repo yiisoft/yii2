@@ -1643,8 +1643,8 @@ class Formatter extends Component
      */
     private function getUnitMessage($unitType, $unitFormat, $system, $position)
     {
-        if (isset($this->_unitMessages[$unitType][$system][$position])) {
-            return $this->_unitMessages[$unitType][$system][$position];
+        if (isset($this->_unitMessages[$unitType][$unitFormat][$system][$position])) {
+            return $this->_unitMessages[$unitType][$unitFormat][$system][$position];
         }
         if (!$this->_intlLoaded) {
             throw new InvalidConfigException('Format of ' . $unitType . ' is only supported when PHP intl extension is installed.');
@@ -1676,7 +1676,7 @@ class Formatter extends Component
             $message[] = "$key{{$value}}";
         }
 
-        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
+        return $this->_unitMessages[$unitType][$unitFormat][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
     }
 
     /**

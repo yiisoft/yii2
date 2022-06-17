@@ -23,17 +23,20 @@ Yii Framework 2 Change Log
 - Bug #19324: Fix `yii\helpers\BaseHtml::renderSelectOptions()` giving wrong selection for boolean attributes (adnandautovic)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 - Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
+- Enh #19318: Add support for typecasting PHP 8.1 enums (EtienneBruines)
 - Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
 - Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 - Bug #19368: Fix PHP 8.1 error when `$fileMimeType` is `null` in `yii\validators\FileValidator::validateMimeType()` (bizley)
 - Enh #19384: Normalize `setBodyParams()` and `getBodyParam()` in `yii\web\Request` (WinterSilence, albertborsos)
 - Bug #19386: Fix recursive calling `yii\helpers\BaseArrayHelper::htmlDecode()` (WinterSilence)
+- Bug #19418: Fix `yii\filters\auth\CompositeAuth` ignoring `only` and `except` options (lesha724)
 - Enh #19401: Delay `exit(1)` in `yii\base\ErrorHandler::handleFatalError` (arrilot)
 - Bug #19402: Add shutdown event and fix working directory in `yii\base\ErrorHandler` (WinterSilence)
 - Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
 - Bug #19403: Fix types in `yii\web\SessionIterator` (WinterSilence)
 - Enh #19420: Update list of JS callbacks in `yii\widgets\MaskedInput` (WinterSilence)
 - Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
+- Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
 
 
 2.0.45 February 11, 2022
