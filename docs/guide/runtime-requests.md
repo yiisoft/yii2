@@ -151,8 +151,9 @@ You should not blindly trust headers provided by proxies unless you explicitly t
 Since 2.0.13 Yii supports configuring trusted proxies via the 
 [[yii\web\Request::trustedHosts|trustedHosts]],
 [[yii\web\Request::secureHeaders|secureHeaders]], 
-[[yii\web\Request::ipHeaders|ipHeaders]] and
-[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+[[yii\web\Request::ipHeaders|ipHeaders]],
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]] and
+[[yii\web\Request::portHeaders|portHeaders]] (since 2.0.46)
 properties of the `request` component.
 
 The following is a request config for an application that runs behind an array of reverse proxies,
@@ -184,6 +185,7 @@ In case your proxies are using different headers you can use the request configu
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+        'X-Forwarded-Port',
         'X-Proxy-User-Ip',
         'Front-End-Https',
     ],
