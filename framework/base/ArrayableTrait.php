@@ -10,7 +10,6 @@ namespace yii\base;
 use JsonSerializable;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\helpers\StringHelper;
 use yii\web\Link;
 use yii\web\Linkable;
 
@@ -212,7 +211,7 @@ trait ArrayableTrait
         $rootField .= '.';
         $rootFieldLength = strlen($rootField);
         foreach ($fields as $field) {
-            if (StringHelper::startsWith($field, $rootField, false)) {
+            if (0 === strpos($field, $rootField)) {
                 $result[] = substr($field, $rootFieldLength);
             }
         }
