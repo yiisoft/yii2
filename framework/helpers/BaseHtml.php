@@ -1850,6 +1850,9 @@ class BaseHtml
                     $model->$attribute = '';
                 } catch (\Exception $e) {
                     unset($options['unselect']);
+                // PHP 7+
+                } catch (\Throwable $e) {
+                    unset($options['unselect']);
                 }
                 $model->$attribute = $value;
             }
