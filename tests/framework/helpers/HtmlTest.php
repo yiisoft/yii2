@@ -2054,6 +2054,23 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testActiveCheckboxList_typedModel()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped('PHP less than 7.4');
+        }
+        $model = new \yiiunit\data\helpers\TypedModel();
+
+        $expected = <<<'HTML'
+<div id="typedmodel-ids"><label><input type="checkbox" name="TypedModel[ids][]" value="1"> a</label><label></div>
+HTML;
+        $actual = Html::activeCheckboxList($model, 'ids', [1 => 'a']);
+        $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
     public function testActiveCheckboxList_options()
     {
         $model = new HtmlTestModel();
