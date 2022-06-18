@@ -2065,7 +2065,7 @@ HTML;
         $model = new \yiiunit\data\helpers\TypedModel();
 
         $expected = <<<'HTML'
-<div id="typedmodel-ids"><label><input type="checkbox" name="TypedModel[ids][]" value="1"> a</label><label></div>
+<div id="typedmodel-ids"><label><input type="checkbox" name="TypedModel[ids][]" value="1"> a</label></div>
 HTML;
         $actual = Html::activeCheckboxList($model, 'ids', [1 => 'a']);
         $this->assertEqualsWithoutLE($expected, $actual);
