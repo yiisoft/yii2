@@ -276,8 +276,6 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles fatal PHP errors.
-     *
-     * @return void
      */
     public function handleFatalError()
     {
