@@ -135,14 +135,14 @@ trait ArrayableTrait
                 $nestedFields = $this->extractFieldsFor($fields, $field);
                 $nestedExpand = $this->extractFieldsFor($expand, $field);
                 if ($attribute instanceof Arrayable) {
-                    $attribute = $attribute->toArray($nestedFields, $nestedExpand, $recursive);
+                    $attribute = $attribute->toArray($nestedFields, $nestedExpand);
                 } elseif ($attribute instanceof JsonSerializable) {
                     $attribute = $attribute->jsonSerialize();
                 } elseif (is_array($attribute)) {
                     $attribute = array_map(
-                        static function ($item) use ($nestedFields, $nestedExpand, $recursive) {
+                        static function ($item) use ($nestedFields, $nestedExpand) {
                             if ($item instanceof Arrayable) {
-                                return $item->toArray($nestedFields, $nestedExpand, $recursive);
+                                return $item->toArray($nestedFields, $nestedExpand);
                             }
                             if ($item instanceof JsonSerializable) {
                                 return $item->jsonSerialize();
