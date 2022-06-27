@@ -75,7 +75,7 @@ To do so, you should:
 2. install the class autoloaders provided by the extensions, if any.
 3. download and install all dependent extensions as instructed.
 
-If an extension does not have a class autoloader but follows the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
+If an extension does not have a class autoloader but follows the [PSR-4 standard](https://www.php-fig.org/psr/psr-4/),
 you may use the class autoloader provided by Yii to autoload the extension classes. All you need to do is just to
 declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
 assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
@@ -240,8 +240,8 @@ we introduce some common and recommended practices in creating high quality exte
 #### Namespaces <span id="namespaces"></span>
 
 To avoid name collisions and make the classes in your extension autoloadable, you should use namespaces and
-name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
-[PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
+name the classes in your extension by following the [PSR-4 standard](https://www.php-fig.org/psr/psr-4/) or
+[PSR-0 standard](https://www.php-fig.org/psr/psr-0/).
 
 Your class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
 in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
