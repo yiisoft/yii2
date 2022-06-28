@@ -43,7 +43,7 @@ Struktur aplikasi <span id="application-structure"></span>
 
 Direktori yang paling penting dan file dalam aplikasi Anda (dengan asumsi direktori root aplikasi adalah `basic`):
 
-```js
+```
 basic/                  path aplikasi dasar
     composer.json       digunakan oleh Composer, package information
     config/             berisi konfigurasi aplikasi dan yang lain

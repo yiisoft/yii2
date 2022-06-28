@@ -37,7 +37,7 @@ Cấu trúc ứng dụng (Application Structure) <span id="application-structure
 
 Những thư mục và tập tin quan trọng nhất của ứng dụng (giả sử thư mục gốc của ứng dụng tên là `basic`):
 
-```js
+```
 basic/                  Thư mục gốc ứng dụng
     composer.json       Tập tin cấu hình Composer, mô tả thông tin gói
     config/             Chứa các cấu hình ứng dụng và cấu hình khác
