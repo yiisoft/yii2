@@ -36,7 +36,7 @@ Struktura aplikacji <span id="application-structure"></span>
 
 Najważniejsze katalogi oraz pliki w Twojej aplikacji to (zakładając, że główny katalog aplikacji to `basic`):
 
-```js
+```
 basic/                  bazowa ścieżka aplikacji
     composer.json       plik używany przez Composer, opisuje informacje paczek
     config/             zawiera wszystkie konfiguracje, w tym aplikacji

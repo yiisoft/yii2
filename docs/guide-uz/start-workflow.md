@@ -28,7 +28,7 @@ Yii web-ilovasi tuzilmasi <span id="application-structure"></span>
 
 Quyidagida veb-ilovaning tuzilmasi asosiy kataloglari va fayllari ro'yxati berilgan (ilovaning `basic` katalogga o'rnatilgan deb hisoblaymiz): 
 
-```js
+```
 basic/                  ilovaning ildiz katalogi
     composer.json       Composer ishlatadigan fayl
     config/             Sozlamalar (konfiguratsion) fayl
