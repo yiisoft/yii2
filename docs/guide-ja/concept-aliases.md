@@ -116,7 +116,7 @@ Yii では、一般的に使用されるファイルのパスと URL を簡単�
   エントリス・クリプトを含むディレクトリによって決定されます。
 - `@web`, 現在実行中のウェブ・アプリケーションのベース URL。これは、 [[yii\web\Request::baseUrl]] と同じ値を持ちます。
 - `@vendor`, [[yii\base\Application::vendorPath|Composer のベンダー・ディレクトリ]] 。デフォルトは `@app/vendor` 。
-- `@bower`, [bower パッケージ](http://bower.io/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/bower` 。
+- `@bower`, [bower パッケージ](https://bower.io/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/bower` 。
 - `@npm`, [npm パッケージ](https://www.npmjs.com/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/npm` 。
 
 `@yii` エイリアスは [エントリ・スクリプト](structure-entry-scripts.md) に `Yii.php` ファイルを読み込んだ時点で定義されます。

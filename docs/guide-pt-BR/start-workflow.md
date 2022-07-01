@@ -42,7 +42,7 @@ Estrutura da Aplicação <span id="application-structure"></span>
 
 Os diretórios e arquivos mais importantes em sua aplicação, assumindo que o diretório raiz dela é o `basico`, são:
 
-```js
+```
 basico/                  caminho base de sua aplicação
     composer.json       usado pelo Composer, descreve informações de pacotes
     config/             contém as configurações da aplicação e outras

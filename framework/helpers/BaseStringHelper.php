@@ -108,6 +108,10 @@ class BaseStringHelper
     /**
      * Truncates a string to the number of characters specified.
      *
+     * In order to truncate for an exact length, the $suffix char length must be counted towards the $length. For example
+     * to have a string which is exactly 255 long with $suffix `...` of 3 chars, then `StringHelper::truncate($string, 252, '...')` 
+     * must be used to ensure you have 255 long string afterwards.
+     *
      * @param string $string The string to truncate.
      * @param int $length How many characters from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.

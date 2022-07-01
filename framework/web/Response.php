@@ -885,26 +885,29 @@ class Response extends \yii\base\Response
             $url[0] = '/' . ltrim($url[0], '/');
         }
         $request = Yii::$app->getRequest();
-        $url = Url::to($url);
-        if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
-            $url = $request->getHostInfo() . $url;
+        $normalizedUrl = Url::to($url);
+        if (
+            $normalizedUrl !== null
+            && strncmp($normalizedUrl, '/', 1) === 0
+            && strncmp($normalizedUrl, '//', 2) !== 0
+        ) {
+            $normalizedUrl = $request->getHostInfo() . $normalizedUrl;
         }
 
-        if ($checkAjax) {
-            if ($request->getIsAjax()) {
-                if (in_array($statusCode, [301, 302]) && preg_match('/Trident\/|MSIE[ ]/', (string)$request->userAgent)) {
-                    $statusCode = 200;
-                }
-                if ($request->getIsPjax()) {
-                    $this->getHeaders()->set('X-Pjax-Url', $url);
-                } else {
-                    $this->getHeaders()->set('X-Redirect', $url);
-                }
+        if ($checkAjax && $request->getIsAjax()) {
+            if (
+                in_array($statusCode, [301, 302])
+                && preg_match('/Trident\/|MSIE[ ]/', (string)$request->userAgent)
+            ) {
+                $statusCode = 200;
+            }
+            if ($request->getIsPjax()) {
+                $this->getHeaders()->set('X-Pjax-Url', $normalizedUrl);
             } else {
-                $this->getHeaders()->set('Location', $url);
+                $this->getHeaders()->set('X-Redirect', $normalizedUrl);
             }
         } else {
-            $this->getHeaders()->set('Location', $url);
+            $this->getHeaders()->set('Location', $normalizedUrl);
         }
 
         $this->setStatusCode($statusCode);

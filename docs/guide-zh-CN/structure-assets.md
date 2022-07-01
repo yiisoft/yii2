@@ -207,7 +207,7 @@ class FontAwesomeAsset extends AssetBundle
 
 ### Bower 和 NPM 资源安装 <span id="bower-npm-assets"></span>
 
-大多数 JavaScript/CSS 包使用 [Bower](http://bower.io/) 或 [NPM](https://www.npmjs.com/) 来管理。
+大多数 JavaScript/CSS 包使用 [Bower](https://bower.io/) 或 [NPM](https://www.npmjs.com/) 来管理。
 在 PHP 中，我们用 Composer 来管理 PHP 依赖。像 PHP 包一样，
 也可以使用 `composer.json` 管理 Bower 和 NPM 包。
 
