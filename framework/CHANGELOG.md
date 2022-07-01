@@ -13,7 +13,6 @@ Yii Framework 2 Change Log
 - Enh #19270: Replace deprecated `scss` converter in `yii\web\AssetConverter::$commands` (WinterSilence)
 - Enh #19254: Support specifying custom characters for `yii.validation.trim()` and replace deprecated `jQuery.trim()` (WinterSilence)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
-- Bug #19290: Fix `Request::getHostInfo()` doesn’t return the port if a Host header is used (lesha724)
 - Enh #19295: Added alias `text/rtf` for mime-type `application/rtf` (lesha724)
 - Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
 - Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
