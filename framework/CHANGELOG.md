@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Bug #19400: Fix passing null in `yii\web\Response::redirect()` (bizley)
 - Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
 - Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
+- Bug #19454: FIX PDO exception code not properly passed to `yii\db\Exception` (Roguyt)
 
 
 2.0.45 February 11, 2022
