@@ -694,14 +694,14 @@ class BaseConsole
 
         if (static::isRunningOnWindows()) {
             $output = [];
-            exec('mode con', $output);
+            @exec('mode con', $output);
             if (isset($output[1]) && strpos($output[1], 'CON') !== false) {
                 return $size = [(int) preg_replace('~\D~', '', $output[4]), (int) preg_replace('~\D~', '', $output[3])];
             }
         } else {
             // try stty if available
             $stty = [];
-            if (exec('stty -a 2>&1', $stty)) {
+            if (@exec('stty -a 2>&1', $stty)) {
                 $stty = implode(' ', $stty);
 
                 // Linux stty output
@@ -716,7 +716,7 @@ class BaseConsole
             }
 
             // fallback to tput, which may not be updated on terminal resize
-            if (($width = (int) exec('tput cols 2>&1')) > 0 && ($height = (int) exec('tput lines 2>&1')) > 0) {
+            if (($width = (int) @exec('tput cols 2>&1')) > 0 && ($height = (int) @exec('tput lines 2>&1')) > 0) {
                 return $size = [$width, $height];
             }
 
