@@ -5,7 +5,7 @@
 代码，APIs 是为了给超出控制的客户端使用。因此，
 应该尽可能的保持向后兼容性，如果有一些变化不能向后兼容，你应该在新版本的 API 中采用它同时增加版本号。现有客户端可以继续使用旧版本的 API；新的或升级的客户端可以在新的 API 版本中获得新的功能。
 
-> Tip: 可以参考 [Semantic Versioning](http://semver.org/) 
+> Tip: 可以参考 [Semantic Versioning](https://semver.org/) 
 来获取更多关于设计 API 版本号的信息
 
 关于如何实现 API 版本，一个常见的做法是在 API 的 URL 中嵌入版本号。例如，
