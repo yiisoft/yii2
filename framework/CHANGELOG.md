@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
+- Bug #19469: Fix a virtual relation not working because of new isset checks in `\yii\db\ActiveRelationTrait` (wvanheumen)
 - Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19272: Fix bug in dirty attributes check on multidimensional array (speedplli)
 - Bug #19349: Fix PHP 8.1 error when attribute and label of `yii\grid\DataColumn` are empty (githubjeka)
@@ -13,7 +14,6 @@ Yii Framework 2 Change Log
 - Enh #19270: Replace deprecated `scss` converter in `yii\web\AssetConverter::$commands` (WinterSilence)
 - Enh #19254: Support specifying custom characters for `yii.validation.trim()` and replace deprecated `jQuery.trim()` (WinterSilence)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
-- Bug #19290: Fix `Request::getHostInfo()` doesn’t return the port if a Host header is used (lesha724)
 - Enh #19295: Added alias `text/rtf` for mime-type `application/rtf` (lesha724)
 - Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
 - Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
@@ -23,13 +23,23 @@ Yii Framework 2 Change Log
 - Bug #19324: Fix `yii\helpers\BaseHtml::renderSelectOptions()` giving wrong selection for boolean attributes (adnandautovic)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
 - Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
+- Enh #19318: Add support for typecasting PHP 8.1 enums (EtienneBruines)
 - Bug #19237: Fix OCI PHP 8.1 passing `null` to trim() (longthanhtran)
 - Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 - Bug #19368: Fix PHP 8.1 error when `$fileMimeType` is `null` in `yii\validators\FileValidator::validateMimeType()` (bizley)
 - Enh #19384: Normalize `setBodyParams()` and `getBodyParam()` in `yii\web\Request` (WinterSilence, albertborsos)
 - Bug #19386: Fix recursive calling `yii\helpers\BaseArrayHelper::htmlDecode()` (WinterSilence)
 - Enh #19413: Replace Bower packages to NPM, add PHP extensions to `require` in `composer.json` and update related files (WinterSilence)
+- Bug #19418: Fix `yii\filters\auth\CompositeAuth` ignoring `only` and `except` options (lesha724)
+- Enh #19401: Delay `exit(1)` in `yii\base\ErrorHandler::handleFatalError` (arrilot)
+- Bug #19402: Add shutdown event and fix working directory in `yii\base\ErrorHandler` (WinterSilence)
 - Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
+- Bug #19403: Fix types in `yii\web\SessionIterator` (WinterSilence)
+- Enh #19420: Update list of JS callbacks in `yii\widgets\MaskedInput` (WinterSilence)
+- Bug #19400: Fix passing null in `yii\web\Response::redirect()` (bizley)
+- Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
+- Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
+- Bug #19454: Fix PDO exception code not properly passed to `yii\db\Exception` (Roguyt)
 
 
 2.0.45 February 11, 2022

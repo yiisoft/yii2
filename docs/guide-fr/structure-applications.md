@@ -296,7 +296,7 @@ Plus tard, si vous changez d'avis à propos de la taille de ces vignettes, il vo
 Cette propriété spécifie la langue dans laquelle l'application est écrite. La valeur par défaut est  `'en-US'`,
 pour (anglais — États-Unis). Vous devriez configurer cette propriété si les textes dans votre code ne sont pas en anglais US. 
 
-Comme pour la propriété [language (langue)](#language), vous devez configurer cette propriété à l'aide d'une [étiquette IETF d'identification de langue](http://en.wikipedia.org/wiki/IETF_language_tag). Par exemple, `en` signifie `anglais`,
+Comme pour la propriété [language (langue)](#language), vous devez configurer cette propriété à l'aide d'une [étiquette IETF d'identification de langue](https://en.wikipedia.org/wiki/IETF_language_tag). Par exemple, `en` signifie `anglais`,
 tandis que `en-US` signifie for `anglais-États-Unis`).
 
 Pour plus d'informations sur cette propriété, reportez-vous à la section [Internationalisation](tutorial-i18n.md).

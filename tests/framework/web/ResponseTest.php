@@ -12,8 +12,8 @@ use Exception;
 use RuntimeException;
 use Yii;
 use yii\helpers\StringHelper;
+use yii\web\Cookie;
 use yii\web\HttpException;
-use yii\web\Request;
 use yii\web\Response;
 use yiiunit\framework\web\mocks\TestRequestComponent;
 
@@ -60,7 +60,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
     {
-        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+        $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
         $fullContent = file_get_contents($dataFile);
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
         ob_start();
@@ -71,9 +71,12 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals(206, $this->response->statusCode);
         $headers = $this->response->headers;
         $this->assertEquals('bytes', $headers->get('Accept-Ranges'));
-        $this->assertEquals('bytes ' . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
+        $this->assertEquals(
+            'bytes ' . $expectedHeader . '/' . StringHelper::byteLength($fullContent),
+            $headers->get('Content-Range')
+        );
         $this->assertEquals('text/plain', $headers->get('Content-Type'));
-        $this->assertEquals("$length", $headers->get('Content-Length'));
+        $this->assertEquals((string)$length, $headers->get('Content-Length'));
     }
 
     public function wrongRanges()
@@ -96,7 +99,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         $this->expectException('yii\web\RangeNotSatisfiableHttpException');
 
-        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+        $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
         $this->response->sendFile($dataFile);
     }
@@ -112,9 +115,7 @@ class ResponseTest extends \yiiunit\TestCase
     public function testSendContentAsFile()
     {
         ob_start();
-        $this->response->sendContentAsFile('test', 'test.txt')->send([
-            'mimeType' => 'text/plain',
-        ]);
+        $this->response->sendContentAsFile('test', 'test.txt')->send();
         $content = ob_get_clean();
 
         static::assertEquals('test', $content);
@@ -128,18 +129,46 @@ class ResponseTest extends \yiiunit\TestCase
     public function testRedirect()
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
-        $this->assertEquals($this->response->redirect('')->headers->get('location'), '/');
-        $this->assertEquals($this->response->redirect('http://some-external-domain.com')->headers->get('location'), 'http://some-external-domain.com');
-        $this->assertEquals($this->response->redirect('/')->headers->get('location'), '/');
-        $this->assertEquals($this->response->redirect('/something-relative')->headers->get('location'), '/something-relative');
-        $this->assertEquals($this->response->redirect(['/'])->headers->get('location'), '/index.php?r=');
-        $this->assertEquals($this->response->redirect(['view'])->headers->get('location'), '/index.php?r=view');
-        $this->assertEquals($this->response->redirect(['/controller'])->headers->get('location'), '/index.php?r=controller');
-        $this->assertEquals($this->response->redirect(['/controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
-        $this->assertEquals($this->response->redirect(['//controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
-        $this->assertEquals($this->response->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
-        $this->assertEquals($this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
-        $this->assertEquals($this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+        $this->assertEquals('/', $this->response->redirect('')->headers->get('location'));
+        $this->assertFalse($this->response->redirect(null)->headers->get('location'));
+        $this->assertEquals(
+            'http://some-external-domain.com',
+            $this->response->redirect('http://some-external-domain.com')->headers->get('location')
+        );
+        $this->assertEquals('/', $this->response->redirect('/')->headers->get('location'));
+        $this->assertEquals(
+            '/something-relative',
+            $this->response->redirect('/something-relative')->headers->get('location')
+        );
+        $this->assertEquals('/index.php?r=', $this->response->redirect(['/'])->headers->get('location'));
+        $this->assertEquals(
+            '/index.php?r=view',
+            $this->response->redirect(['view'])->headers->get('location')
+        );
+        $this->assertEquals(
+            '/index.php?r=controller',
+            $this->response->redirect(['/controller'])->headers->get('location')
+        );
+        $this->assertEquals(
+            '/index.php?r=controller%2Findex',
+            $this->response->redirect(['/controller/index'])->headers->get('location')
+        );
+        $this->assertEquals(
+            '/index.php?r=controller%2Findex',
+            $this->response->redirect(['//controller/index'])->headers->get('location')
+        );
+        $this->assertEquals(
+            '/index.php?r=controller%2Findex&id=3',
+            $this->response->redirect(['//controller/index', 'id' => 3])->headers->get('location')
+        );
+        $this->assertEquals(
+            '/index.php?r=controller%2Findex&id_1=3&id_2=4',
+            $this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location')
+        );
+        $this->assertEquals(
+            '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29',
+            $this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location')
+        );
     }
 
     /**
@@ -171,18 +200,30 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function dataProviderAjaxRedirectInternetExplorer11() {
         return [
-            ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]],                   // Firefox
-            ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]],                        // IE 11
-            ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko', [301 => 200, 302 => 200]],    // IE 11
-            ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36', [301 => 301, 302 => 302]],      // Chrome
-            ['Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136', [301 => 301, 302 => 302]],    // Edge
-            ['Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.2; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Tablet PC 2.0)', [301 => 200, 302 => 200]],                // special windows versions (for tablets or IoT devices)
+            ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]], // Firefox
+            ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]], // IE 11
+            [ // IE 11
+                'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko',
+                [301 => 200, 302 => 200]
+            ],
+            [ // Chrome
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+                [301 => 301, 302 => 302]
+            ],
+            [ // Edge
+                'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136',
+                [301 => 301, 302 => 302]
+            ],
+            [ // special windows versions (for tablets or IoT devices)
+                'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.2; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Tablet PC 2.0)',
+                [301 => 200, 302 => 200]
+            ],
         ];
     }
 
     /**
      * @dataProvider dataProviderSetStatusCodeByException
-     * @param \Exception $exception
+     * @param Exception $exception
      * @param int $statusCode
      */
     public function testSetStatusCodeByException($exception, $statusCode)
@@ -198,9 +239,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         $stream = fopen('php://output', 'r+');
         ob_start();
-        $this->response
-            ->sendStreamAsFile($stream, 'test-stream')
-            ->send();
+        $this->response->sendStreamAsFile($stream, 'test-stream')->send();
         ob_get_clean();
         static::assertEquals(200, $this->response->statusCode);
     }
@@ -321,20 +360,23 @@ class ResponseTest extends \yiiunit\TestCase
     public function testSendFileWithInvalidCharactersInFileName()
     {
         $response = new Response();
-        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+        $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
 
         $response->sendFile($dataFile, "test\x7Ftest.txt");
 
-        $this->assertSame("attachment; filename=\"test_test.txt\"; filename*=utf-8''test%7Ftest.txt", $response->headers['content-disposition']);
+        $this->assertSame(
+            "attachment; filename=\"test_test.txt\"; filename*=utf-8''test%7Ftest.txt",
+            $response->headers['content-disposition']
+        );
     }
 
     public function testSameSiteCookie()
     {
         $response = new Response();
-        $response->cookies->add(new \yii\web\Cookie([
+        $response->cookies->add(new Cookie([
             'name'     => 'test',
             'value'    => 'testValue',
-            'sameSite' => \yii\web\Cookie::SAME_SITE_STRICT,
+            'sameSite' => Cookie::SAME_SITE_STRICT,
         ]));
 
         ob_start();
@@ -378,7 +420,7 @@ class ResponseTest extends \yiiunit\TestCase
     protected function assertSettingStreamToNullOn($statusCode)
     {
         $response = new Response();
-        $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
+        $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
 
         $response->sendFile($dataFile);
         $response->setStatusCode($statusCode);

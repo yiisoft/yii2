@@ -42,7 +42,7 @@
 
 应用中最重要的目录和文件（假设应用根目录是 `basic`）：
 
-```js
+```
 basic/                  应用根目录
     composer.json       Composer 配置文件, 描述包信息
     config/             包含应用配置及其它配置
@@ -63,7 +63,7 @@ basic/                  应用根目录
 一般来说，应用中的文件可被分为两类：在 `basic/web` 下的和在其它目录下的。
 前者可以直接通过 HTTP 访问（例如浏览器），后者不能也不应该被直接访问。
 
-Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-view-controller)设计模式，这点在上述目录结构中也得以体现。
+Yii 实现了[模型-视图-控制器 (MVC)](https://wikipedia.org/wiki/Model-view-controller)设计模式，这点在上述目录结构中也得以体现。
 `models` 目录包含了所有[模型类](structure-models.md)，
 `views` 目录包含了所有[视图脚本](structure-views.md)，
 `controllers` 目录包含了所有[控制器类](structure-controllers.md)。

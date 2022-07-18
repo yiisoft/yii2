@@ -34,14 +34,15 @@ class FormatterTest extends TestCase
             'timeZone' => 'UTC',
             'language' => 'ru-RU',
         ]);
-        $this->formatter = new Formatter(['locale' => 'en-US']);
+        if (!isset($this->formatter)) {
+            $this->formatter = new Formatter(['locale' => 'en-US']);
+        }
     }
 
     protected function tearDown()
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
-        $this->formatter = null;
     }
 
     public function testFormat()
