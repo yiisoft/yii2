@@ -351,7 +351,7 @@ acceptance tests and functionality tests. For more details, please refer to the 
 #### Versioning <span id="versioning"></span>
 
 You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
-[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+[semantic versioning](https://semver.org) practice when determining what version numbers should be used.
 
 
 #### Releasing <span id="releasing"></span>
