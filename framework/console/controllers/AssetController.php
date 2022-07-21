@@ -544,7 +544,7 @@ EOD;
         if (is_string($this->cssCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineCssFiles($inputFiles, $tmpFile);
-            $this->stdout(shell_exec(strtr($this->cssCompressor, [
+            $this->stdout((string)shell_exec(strtr($this->cssCompressor, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
             ])));
