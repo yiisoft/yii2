@@ -579,8 +579,8 @@ as described in the [Customizing Asset Bundle](#customizing-asset-bundles) subse
 ## Asset Conversion <span id="asset-conversion"></span>
 
 Instead of directly writing CSS and/or JavaScript code, developers often write them in some extended syntax and
-use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](http://lesscss.org/)
-or [SCSS](http://sass-lang.com/); and for JavaScript you may use [TypeScript](http://www.typescriptlang.org/).
+use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](https://lesscss.org/)
+or [SCSS](https://sass-lang.com/); and for JavaScript you may use [TypeScript](https://www.typescriptlang.org/).
 
 You can list the asset files in extended syntax in the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties of an asset bundle. For example,
 
