@@ -427,7 +427,7 @@ Usage of other levels will result in an exception being thrown.
 specify the isolation level directly when starting the transaction.
 You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 ### Nesting Transactions <span id="nesting-transactions"></span>
@@ -477,7 +477,7 @@ try {
 
 ## Replication and Read-Write Splitting <span id="read-write-splitting"></span>
 
-Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
+Many DBMS support [database replication](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 to get better database availability and faster server response time. With database replication, data are replicated
 from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
 while reads may also take place on the slave servers.

@@ -468,7 +468,7 @@ Si votre code dépend de jQuery, jQuery UI ou Bootstrap, vous devriez utiliser l
 
 ## Conversion de ressources <span id="asset-conversion"></span>
 
-Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](http://www.typescriptlang.org/).
+Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](https://www.typescriptlang.org/).
 
 Vous pouvez lister les fichiers de ressources écrits dans une syntaxe  étendue dans les propriétés [[yii\web\AssetBundle::css|css]] et [[yii\web\AssetBundle::js|js]] d'un paquet de ressources. 
 

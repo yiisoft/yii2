@@ -577,8 +577,8 @@ Yii框架定义许多资源包，如下资源包是最常用，
 ## 资源转换 <span id="asset-conversion"></span>
 
 除了直接编写 CSS 或 JavaScript 代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成 CSS/JavaScript。
-例如，对于 CSS 代码可使用 [LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
-对于 JavaScript 可使用 [TypeScript](http://www.typescriptlang.org/)。
+例如，对于 CSS 代码可使用 [LESS](https://lesscss.org/) 或 [SCSS](https://sass-lang.com/)，
+对于 JavaScript 可使用 [TypeScript](https://www.typescriptlang.org/)。
 
 可将使用扩展语法的资源文件列到资源包的 [[yii\web\AssetBundle::css|css]] 和 [[yii\web\AssetBundle::js|js]] 中，如下所示：
 

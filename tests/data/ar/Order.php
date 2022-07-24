@@ -25,6 +25,8 @@ class Order extends ActiveRecord
 {
     public static $tableName;
 
+    public $virtualCustomerId = null;
+
     public static function tableName()
     {
         return static::$tableName ?: 'order';
@@ -238,4 +240,10 @@ class Order extends ActiveRecord
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItemsFor8');
     }
+
+    public function getVirtualCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'virtualCustomerId']);
+    }
+
 }

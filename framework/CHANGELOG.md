@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
+- Bug #19469: Fix a virtual relation not working because of new isset checks in `\yii\db\ActiveRelationTrait` (wvanheumen)
 - Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19272: Fix bug in dirty attributes check on multidimensional array (speedplli)
 - Bug #19349: Fix PHP 8.1 error when attribute and label of `yii\grid\DataColumn` are empty (githubjeka)
@@ -38,7 +39,7 @@ Yii Framework 2 Change Log
 - Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
 - Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
 - Bug #19454: Fix PDO exception code not properly passed to `yii\db\Exception` (Roguyt)
-
+- Bug #19477: cast shell_exec() output to string (schmunk42)
 
 2.0.45 February 11, 2022
 ------------------------

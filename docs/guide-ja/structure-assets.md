@@ -579,8 +579,8 @@ return [
 ## アセット変換 <span id="asset-conversion"></span>
 
 直接に CSS および/または JavaScript のコードを書く代りに、何らかの拡張構文を使って書いたものを特別なツールを使って CSS/JavaScript に変換する、ということを開発者はしばしば行います。
-例えば、CSS コードのためには、[LESS](http://lesscss.org/) や [SCSS](http://sass-lang.com/) を使うことが出来ます。
-また、JavaScript のためには、[TypeScript](http://www.typescriptlang.org/) を使うことが出来ます。
+例えば、CSS コードのためには、[LESS](https://lesscss.org/) や [SCSS](https://sass-lang.com/) を使うことが出来ます。
+また、JavaScript のためには、[TypeScript](https://www.typescriptlang.org/) を使うことが出来ます。
 
 拡張構文を使ったアセット・ファイルをアセット・バンドルの中の [[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] のリストに挙げることが出来ます。例えば、
 

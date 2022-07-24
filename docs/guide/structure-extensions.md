@@ -351,7 +351,7 @@ acceptance tests and functionality tests. For more details, please refer to the 
 #### Versioning <span id="versioning"></span>
 
 You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
-[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+[semantic versioning](https://semver.org) practice when determining what version numbers should be used.
 
 
 #### Releasing <span id="releasing"></span>
@@ -367,7 +367,7 @@ In the releases of your extension, in addition to code files, you should also co
 help other people learn about and use your extension:
 
 * A readme file in the package root directory: it describes what your extension does and how to install and use it.
-  We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
+  We recommend you write it in [Markdown](https://daringfireball.net/projects/markdown/) format and name the file
   as `readme.md`.
 * A changelog file in the package root directory: it lists what changes are made in each release. The file
   may be written in Markdown format and named as `changelog.md`.
