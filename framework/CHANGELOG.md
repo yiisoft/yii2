@@ -40,7 +40,7 @@ Yii Framework 2 Change Log
 - Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
 - Bug #19454: Fix PDO exception code not properly passed to `yii\db\Exception` (Roguyt)
 - Bug #19477: cast shell_exec() output to string (schmunk42)
-- Bud #19481: Exception is always empty in ErrorHandler when handling fatal error
+- Bud #19481: Exception is always empty in ErrorHandler when handling fatal error (Renkas)
 
 2.0.45 February 11, 2022
 ------------------------
