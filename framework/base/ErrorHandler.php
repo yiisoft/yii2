@@ -302,7 +302,7 @@ abstract class ErrorHandler extends Component
             return;
         }
 
-        if (empty($this->_hhvmException)) {
+        if (!empty($this->_hhvmException)) {
             $this->exception = $this->_hhvmException;
         } else {
             $this->exception = new ErrorException(
