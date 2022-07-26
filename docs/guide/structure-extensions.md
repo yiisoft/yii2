@@ -398,7 +398,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient):
   provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
 - [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap):
-  provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
+  provides a set of widgets that encapsulate the [Bootstrap](https://getbootstrap.com/) components and plugins.
 - [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug):
   provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
   at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
