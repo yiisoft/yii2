@@ -695,7 +695,7 @@ class BaseConsole
         }
 
         if ($execDisabled === null) {
-            $execDisabled = in_array('exec', explode(',', ini_get('disable_functions')), true);
+            $execDisabled = !function_exists('ini_get') || preg_match('/(\bexec\b)/i', ini_get('disable_functions'));
             if ($execDisabled) {
                 return $size = false;
             }
