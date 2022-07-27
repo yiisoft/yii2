@@ -688,8 +688,17 @@ class BaseConsole
     public static function getScreenSize($refresh = false)
     {
         static $size;
-        if ($size !== null && !$refresh) {
+        static $execDisabled;
+
+        if ($size !== null && ($execDisabled || !$refresh)) {
             return $size;
+        }
+
+        if ($execDisabled === null) {
+            $execDisabled = !function_exists('ini_get') || preg_match('/(\bexec\b)/i', ini_get('disable_functions'));
+            if ($execDisabled) {
+                return $size = false;
+            }
         }
 
         if (static::isRunningOnWindows()) {

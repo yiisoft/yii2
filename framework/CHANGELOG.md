@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.46 under development
 ------------------------
 
+- Bug #19471: Enable console commands on hostings with disabled `exec()` function (WinterSilence, lubosdz)
 - Bug #19469: Fix a virtual relation not working because of new isset checks in `\yii\db\ActiveRelationTrait` (wvanheumen)
 - Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19272: Fix bug in dirty attributes check on multidimensional array (speedplli)
