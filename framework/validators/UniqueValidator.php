@@ -102,9 +102,11 @@ class UniqueValidator extends Validator
     public function init()
     {
         parent::init();
+
         if ($this->message !== null) {
             return;
         }
+
         if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
             // fallback for deprecated `comboNotUnique` property - use it as message if is set
             if ($this->comboNotUnique === null) {
@@ -120,11 +122,39 @@ class UniqueValidator extends Validator
     /**
      * {@inheritdoc}
      */
+    public function validateAttributes($model, $attributes = null)
+    {
+        $attributes = $this->getValidationAttributes($attributes);
+
+        if (!$this->skipOnError || !is_array($attributes) || count($attributes) < 2) {
+            parent::validateAttributes($model, $attributes);
+            return;
+        }
+
+        // skipOnError: if any attribute skips validation, other attributes also skip it
+        foreach ($attributes as $attribute) {
+            $skip = ($this->skipOnError && $model->hasErrors($attribute))
+                || ($this->skipOnEmpty && $this->isEmpty($model->$attribute));
+            if ($skip) {
+                return;
+            }
+        }
+
+        foreach ($attributes as $attribute) {
+            if ($this->when === null || call_user_func($this->when, $model, $attribute)) {
+                $this->validateAttribute($model, $attribute);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->getTargetClass($model);
-        $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        $targetAttribute = $this->targetAttribute ?: $attribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
         $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
@@ -163,7 +193,7 @@ class UniqueValidator extends Validator
      */
     private function getTargetClass($model)
     {
-        return $this->targetClass === null ? get_class($model) : $this->targetClass;
+        return $this->targetClass ?: get_class($model);
     }
 
     /**
