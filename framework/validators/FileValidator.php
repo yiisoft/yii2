@@ -432,7 +432,7 @@ class FileValidator extends Validator
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.file(attribute, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**
