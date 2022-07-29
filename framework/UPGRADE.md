@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.45
+-----------------------
+
+* `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
+  the files is done only by copy.
+
 Upgrade from Yii 2.0.44
 -----------------------
 
