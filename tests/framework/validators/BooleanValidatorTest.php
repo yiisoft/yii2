@@ -85,7 +85,7 @@ class BooleanValidatorTest extends TestCase
         $obj->attrD = [];
 
         $this->assertEquals(
-            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \"true\" or \"false\".","skipOnEmpty":1,"strict":1});',
+            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
             $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
         );
     }
