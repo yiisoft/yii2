@@ -505,6 +505,33 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         ActiveRecord::$db = $this->getConnection();
     }
+
+    public function testSecondTargetAttributeWithError()
+    {
+        $validator = new UniqueValidator(['targetAttribute' => ['email', 'name']]);
+        $customer = new Customer();
+        $customer->email = 'user1@example.com';
+        $customer->name = 'user1';
+
+        $validator->validateAttribute($customer, 'email');
+        $this->assertTrue($customer->hasErrors('email'));
+
+        $customer->clearErrors();
+
+        $customer->addError('name', 'error');
+        $validator->validateAttribute($customer, 'email');
+        $this->assertFalse($customer->hasErrors('email')); // validator should be skipped
+
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['email', 'name'],
+            'skipOnError' => false,
+        ]);
+
+        $customer->clearErrors();
+        $customer->addError('name', 'error');
+        $validator->validateAttribute($customer, 'email');
+        $this->assertTrue($customer->hasErrors('email')); // validator should not be skipped
+    }
 }
 
 class WithCustomer extends Customer {
