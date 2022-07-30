@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.45
+-----------------------
+
+* Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted so it works as in pre-2.0.45. If you need
+  2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
+
 Upgrade from Yii 2.0.44
 -----------------------
 
