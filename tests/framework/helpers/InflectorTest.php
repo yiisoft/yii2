@@ -121,9 +121,6 @@ class InflectorTest extends TestCase
         $this->assertEquals('Foo Bar', Inflector::camel2words('foo BAR'));
         $this->assertEquals('Foo Bar', Inflector::camel2words('Foo Bar'));
         $this->assertEquals('Foo Bar', Inflector::camel2words('FOO BAR'));
-        $this->assertEquals('Order 4 Other Phones', Inflector::camel2words('Order4OtherPhones'));
-        $this->assertEquals('I Have 23 Dogs', Inflector::camel2words('IHave23Dogs'));
-        $this->assertEquals('Con Chó Cười 34 Lần', Inflector::camel2words('ConChóCười34Lần'));
     }
 
     public function testCamel2id()
