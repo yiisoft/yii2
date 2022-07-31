@@ -132,7 +132,7 @@ You may also store session data in a cache by using [[yii\web\CacheSession]]. In
 when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
 storage limit.
 
-If you have [Redis](http://redis.io/) on your server, it is highly recommended you use it as session storage by using
+If you have [Redis](https://redis.io/) on your server, it is highly recommended you use it as session storage by using
 [[yii\redis\Session]].
 
 

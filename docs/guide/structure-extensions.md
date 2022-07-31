@@ -425,7 +425,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   provides the supports for running tasks asynchronously via queues.
   It supports queues based on DB, Redis, RabbitMQ, AMQP, Beanstalk and Gearman.
 - [yiisoft/yii2-redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis):
-  provides the support for using [redis](http://redis.io/). It includes features such as basic query,
+  provides the support for using [redis](https://redis.io/). It includes features such as basic query,
   Active Record, caching, etc.
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
   provides an interactive shell based on [psysh](http://psysh.org/).
