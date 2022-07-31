@@ -16,7 +16,7 @@ Możesz zdefiniować alias do ścieżki pliku lub adresu URL wywołując [[Yii::
 Yii::setAlias('@foo', '/path/to/foo');
 
 // alias do adresu URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // alias istniejącego pliku, zawierającego klasę \foo\Bar
 Yii::setAlias('@foo/Bar.php', '/zdecydowanie/nie/foo/Bar.php');
@@ -43,7 +43,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -57,7 +57,7 @@ Dotyczy to zarówno bazowych aliasów, jak i pochodnych:
 
 ```php
 echo Yii::getAlias('@foo');               // wyświetla: /ścieżka/do/foo
-echo Yii::getAlias('@bar');               // wyświetla: http://www.example.com
+echo Yii::getAlias('@bar');               // wyświetla: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // wyświetla: /ścieżka/do/foo/bar/file.php
 ```
 

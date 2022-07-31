@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -159,12 +159,12 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     {
         $link = [
             'label' => 'demo',
-            'url' => 'http://example.com',
+            'url' => 'https://example.com',
             'class' => 'external',
         ];
         $method = $this->reflectMethod();
         $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
-        $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
+        $this->assertEquals('<li><a class="external" href="https://example.com">demo</a></li>' . "\n", $result);
     }
 
     public function testTag()

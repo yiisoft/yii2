@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -28,7 +28,7 @@ class HtmlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'url' => '/test',
                     'scriptUrl' => '/index.php',
-                    'hostInfo' => 'http://www.example.com',
+                    'hostInfo' => 'https://www.example.com',
                     'enableCsrfValidation' => false,
                 ],
                 'response' => [
@@ -92,19 +92,19 @@ class HtmlTest extends TestCase
 
     public function testCssFile()
     {
-        $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
+        $this->assertEquals('<link href="https://example.com" rel="stylesheet">', Html::cssFile('https://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
-        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
-        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
-        $this->assertEquals('<noscript><link href="http://example.com" rel="stylesheet"></noscript>', Html::cssFile('http://example.com', ['noscript' => true]));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="https://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('https://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="https://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('https://example.com', ['condition' => '(gte IE 9)|(!IE)']));
+        $this->assertEquals('<noscript><link href="https://example.com" rel="stylesheet"></noscript>', Html::cssFile('https://example.com', ['noscript' => true]));
     }
 
     public function testJsFile()
     {
-        $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
+        $this->assertEquals('<script src="https://example.com"></script>', Html::jsFile('https://example.com'));
         $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
-        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
-        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="http://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="https://example.com"></script>' . "\n<![endif]-->", Html::jsFile('https://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="https://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('https://example.com', ['condition' => '(gte IE 9)|(!IE)']));
     }
 
     public function testCsrfMetaTagsDisableCsrfValidation()

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -111,7 +111,7 @@ HTML
     public function testRegisterClientScript()
     {
         $this->mockWebApplication();
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
+        $_SERVER['REQUEST_URI'] = 'https://example.com/';
 
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');

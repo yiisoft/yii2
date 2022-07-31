@@ -285,7 +285,7 @@ public function behaviors()
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 Ограничитель количества запросов в единицу времени *(RateLimiter)* реализует алгоритм ограничения запросов, основанный на
-[алгоритме leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket). В основном, он используется при создании RESTful API.
+[алгоритме leaky bucket](https://en.wikipedia.org/wiki/Leaky_bucket). В основном, он используется при создании RESTful API.
 Подробнее об использовании данного фильтра можно прочитать в разделе [Ограничение запросов](rest-rate-limiting.md).
 
 
@@ -346,7 +346,7 @@ public function behaviors()
 Фильтрация Cors может быть настроена с помощью свойства [[yii\filters\Cors::$cors|$cors]].
 
 * `cors['Origin']`: массив, используемый для определения источников. Может принимать значение `['*']` (все) или
-  `['http://www.myserver.net', 'http://www.myotherserver.com']`. По умолчанию значение равно `['*']`.
+  `['https://www.myserver.net', 'https://www.myotherserver.com']`. По умолчанию значение равно `['*']`.
 * `cors['Access-Control-Request-Method']`: массив разрешенных типов запроса, таких как `['GET', 'OPTIONS', 'HEAD']`.
   Значение по умолчанию `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: массив разрешенных заголовков. Может быть `['*']` то есть все заголовки или
@@ -355,7 +355,7 @@ public function behaviors()
   Может принимать значения `true`, `false` или `null` (не установлено). Значение по умолчанию `null`.
 * `cors['Access-Control-Max-Age']`: определяет *срок жизни запроса, перед его началом*. По умолчанию `86400`.
 
-Например, разрешим CORS для источника : `http://www.myserver.net` с методами `GET`, `HEAD` и `OPTIONS` :
+Например, разрешим CORS для источника : `https://www.myserver.net` с методами `GET`, `HEAD` и `OPTIONS` :
 
 ```php
 use yii\filters\Cors;
@@ -367,7 +367,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -389,7 +389,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

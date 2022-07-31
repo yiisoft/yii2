@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\di;
@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
  *
  * A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
  * all their dependent objects. For more information about DI, please refer to
- * [Martin Fowler's article](http://martinfowler.com/articles/injection.html).
+ * [Martin Fowler's article](https://martinfowler.com/articles/injection.html).
  *
  * Container supports constructor injection as well as property injection.
  *

@@ -9,7 +9,7 @@
 来获取更多关于设计 API 版本号的信息
 
 关于如何实现 API 版本，一个常见的做法是在 API 的 URL 中嵌入版本号。例如，
-`http://example.com/v1/users` 代表 `/users` 版本 1 的 API。
+`https://example.com/v1/users` 代表 `/users` 版本 1 的 API。
 
 另一种 API 版本化的方法，
 最近用的非常多的是把版本号放入 HTTP 请求头，通常是通过 `Accept` 头，如下：
@@ -90,8 +90,8 @@ return [
 ];
 ```
 
-因此，`http://example.com/v1/users` 将返回版本 1 的用户列表，
-而 `http://example.com/v2/users` 将返回版本 2 的用户。
+因此，`https://example.com/v1/users` 将返回版本 1 的用户列表，
+而 `https://example.com/v2/users` 将返回版本 2 的用户。
 
 使用模块， 将不同版本的代码隔离。 通过共用基类和其他类
 跨模块重用代码也是有可能的。

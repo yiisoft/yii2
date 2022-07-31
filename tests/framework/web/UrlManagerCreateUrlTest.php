@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -60,7 +60,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $config = array_merge([
             'baseUrl' => '',
             'scriptUrl' => '/index.php',
-            'hostInfo' => 'http://www.example.com',
+            'hostInfo' => 'https://www.example.com',
             'cache' => null,
             'showScriptName' => $showScriptName,
         ], $config);
@@ -80,14 +80,14 @@ class UrlManagerCreateUrlTest extends TestCase
             // method name, $showScriptName, expected URL prefix
             ['createUrl', true, '/index.php', []],
             ['createUrl', false, '', []],
-            ['createAbsoluteUrl', true, 'http://www.example.com/index.php', []],
-            ['createAbsoluteUrl', false, 'http://www.example.com', []],
+            ['createAbsoluteUrl', true, 'https://www.example.com/index.php', []],
+            ['createAbsoluteUrl', false, 'https://www.example.com', []],
 
             // with different baseUrl
             ['createUrl', true, '/test/index.php', $baseUrlConfig],
             ['createUrl', false, '/test', $baseUrlConfig],
-            ['createAbsoluteUrl', true, 'http://www.example.com/test/index.php', $baseUrlConfig],
-            ['createAbsoluteUrl', false, 'http://www.example.com/test', $baseUrlConfig],
+            ['createAbsoluteUrl', true, 'https://www.example.com/test/index.php', $baseUrlConfig],
+            ['createAbsoluteUrl', false, 'https://www.example.com/test', $baseUrlConfig],
         ];
     }
 
@@ -557,12 +557,12 @@ class UrlManagerCreateUrlTest extends TestCase
                 'host' => 'http://<lang:en|fr>.example.com',
             ],
             // note: baseUrl is not included in the pattern
-            'http://www.example.com/login' => 'site/login',
+            'https://www.example.com/login' => 'site/login',
         ];
         $manager = $this->getUrlManager($config, $showScriptName);
         // first rule matches
         $urlParams = ['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en'];
-        $expected = "http://en.example.com$prefix/post/1/sample+post";
+        $expected = "https://en.example.com$prefix/post/1/sample+post";
         $this->assertEquals($expected, $manager->createUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, true));
@@ -571,13 +571,13 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals(substr($expected, 5), $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
 
         $urlParams = ['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en', '#' => 'testhash'];
-        $expected = "http://en.example.com$prefix/post/1/sample+post#testhash";
+        $expected = "https://en.example.com$prefix/post/1/sample+post#testhash";
         $this->assertEquals($expected, $manager->createUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
 
         // second rule matches
         $urlParams = ['site/login'];
-        $expected = "http://www.example.com$prefix/login";
+        $expected = "https://www.example.com$prefix/login";
         $this->assertEquals($expected, $manager->createUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, true));
@@ -588,7 +588,7 @@ class UrlManagerCreateUrlTest extends TestCase
         // none of the rules matches
         $urlParams = ['post/index', 'page' => 1];
         $this->assertEquals("$prefix/post/index?page=1", $manager->createUrl($urlParams));
-        $expected = "http://www.example.com$prefix/post/index?page=1";
+        $expected = "https://www.example.com$prefix/post/index?page=1";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, true));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, 'http'));
@@ -597,7 +597,7 @@ class UrlManagerCreateUrlTest extends TestCase
 
         $urlParams = ['post/index', 'page' => 1, '#' => 'testhash'];
         $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
-        $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
+        $expected = "https://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
     }
 
@@ -680,14 +680,14 @@ class UrlManagerCreateUrlTest extends TestCase
 
         $urlParams = ['post/index', 'page' => 1, '#' => 'testhash'];
         $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
-        $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
+        $expected = "https://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
     }
 
     public function multipleHostsRulesDataProvider()
     {
         return [
-            ['http://example.com'],
+            ['https://example.com'],
             ['https://example.com'],
             ['http://example.fr'],
             ['https://example.fr'],
@@ -707,7 +707,7 @@ class UrlManagerCreateUrlTest extends TestCase
             'enablePrettyUrl' => true,
             'cache' => null,
             'rules' => [
-                ['host' => 'http://example.com', 'pattern' => '<slug:(search)>', 'route' => 'products/search', 'defaults' => ['lang' => 'en']],
+                ['host' => 'https://example.com', 'pattern' => '<slug:(search)>', 'route' => 'products/search', 'defaults' => ['lang' => 'en']],
                 ['host' => 'http://example.fr', 'pattern' => '<slug:(search)>', 'route' => 'products/search', 'defaults' => ['lang' => 'fr']],
             ],
             'hostInfo' => $host,
@@ -717,9 +717,9 @@ class UrlManagerCreateUrlTest extends TestCase
         $url = $manager->createAbsoluteUrl(['products/search', 'lang' => 'en', 'slug' => 'search'], 'https');
         $this->assertEquals('https://example.com/search', $url);
         $url = $manager->createUrl(['products/search', 'lang' => 'en', 'slug' => 'search']);
-        $this->assertEquals('http://example.com/search', $url);
+        $this->assertEquals('https://example.com/search', $url);
         $url = $manager->createUrl(['products/search', 'lang' => 'en', 'slug' => 'search', 'param1' => 'value1']);
-        $this->assertEquals('http://example.com/search?param1=value1', $url);
+        $this->assertEquals('https://example.com/search?param1=value1', $url);
         $url = $manager->createAbsoluteUrl(['products/search', 'lang' => 'fr', 'slug' => 'search'], 'https');
         $this->assertEquals('https://example.fr/search', $url);
         $url = $manager->createUrl(['products/search', 'lang' => 'fr', 'slug' => 'search']);

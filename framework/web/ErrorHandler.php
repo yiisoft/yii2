@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -238,7 +238,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         }
 
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
-        $url = "http://www.yiiframework.com/doc-2.0/$page.html";
+        $url = "https://www.yiiframework.com/doc-2.0/$page.html";
         if ($method) {
             $url .= "#$method()-detail";
         }
@@ -396,8 +396,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
     public function createServerInformationLink()
     {
         $serverUrls = [
-            'http://httpd.apache.org/' => ['apache'],
-            'http://nginx.org/' => ['nginx'],
+            'https://httpd.apache.org/' => ['apache'],
+            'https://nginx.org/' => ['nginx'],
             'http://lighttpd.net/' => ['lighttpd'],
             'http://gwan.com/' => ['g-wan', 'gwan'],
             'http://iis.net/' => ['iis', 'services'],

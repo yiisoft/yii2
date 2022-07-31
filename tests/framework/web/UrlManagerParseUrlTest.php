@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -57,7 +57,7 @@ class UrlManagerParseUrlTest extends TestCase
         ], $config));
     }
 
-    protected function getRequest($pathInfo, $hostInfo = 'http://www.example.com', $method = 'GET', $config = [])
+    protected function getRequest($pathInfo, $hostInfo = 'https://www.example.com', $method = 'GET', $config = [])
     {
         $config['pathInfo'] = $pathInfo;
         $config['hostInfo'] = $hostInfo;

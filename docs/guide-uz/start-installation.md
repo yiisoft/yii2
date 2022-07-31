@@ -107,7 +107,7 @@ Web-server sozlamasi<span id="configuring-web-servers"></span>
 
 Yuqoridagi ko'rsatmalarga muvofiq o'rnatilgan ilovalar Windows va Linux ostida PHP 5.4 va undan yuqori taxrirlarda o'rnatilgan [Apache](https://httpd.apache.org/) va [Nginx](https://nginx.org/) bilan ishlaydi.Yii 2.0 [HHVM](https://hhvm.com/) bilan ham mos keladi. Etiborli bo'ling, ba'zi hollarda, HHVM bilan ishlashda odatdagi PHPdan farq qiladi.
 
-Ish serverida siz `http://www.example.com/basic/web/index.php` dan `http://www.example.com/index.php` manziliga dastur URL manzilini o'zgartirishni xohlasangiz. 
+Ish serverida siz `https://www.example.com/basic/web/index.php` dan `https://www.example.com/index.php` manziliga dastur URL manzilini o'zgartirishni xohlasangiz. 
 Buni amalga oshirish uchun veb-server parametrlarida ildiz katalogini `basic/web` ga o'zgartiring. Bundan tashqari, ["URL sozlamalari"](runtime-routing.md) qismidagi malumotga ko'ra, `index.php` yashirishi mumkin. Keyinchalik Apache va Nginx ni qanday sozlashni ko'rsatamiz.
 
 > Info: Veb-serverning `basic/web` ildiz katalogini o'rnatib, siz ruxsat berilmagan kirish kodidan va `basic/web` sahifadagi ma'lumotlardan himoya qilasiz. Bu ilovani yanada xavfsiz holga keltiradi. 

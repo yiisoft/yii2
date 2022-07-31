@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -421,8 +421,8 @@ EOF;
                 '123<script src="/assetSources/js/jquery.js"></script>4',
             ],
             [
-                'js', 'http://example.com/assetSources/js/jquery.js', false,
-                '123<script src="http://example.com/assetSources/js/jquery.js"></script>4',
+                'js', 'https://example.com/assetSources/js/jquery.js', false,
+                '123<script src="https://example.com/assetSources/js/jquery.js"></script>4',
             ],
             [
                 'js', '//example.com/assetSources/js/jquery.js', false,
@@ -447,8 +447,8 @@ EOF;
                 '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
             ],
             [
-                'css', 'http://example.com/assetSources/css/stub.css', false,
-                '1<link href="http://example.com/assetSources/css/stub.css" rel="stylesheet">234',
+                'css', 'https://example.com/assetSources/css/stub.css', false,
+                '1<link href="https://example.com/assetSources/css/stub.css" rel="stylesheet">234',
             ],
             [
                 'css', '//example.com/assetSources/css/stub.css', false,
@@ -667,7 +667,7 @@ class TestAssetPerFileOptions extends AssetBundle
 class TestNonRelativeAsset extends AssetBundle
 {
     public $basePath = '@webroot/js';
-    public $baseUrl = 'http://example.com/js/';
+    public $baseUrl = 'https://example.com/js/';
     public $js = [
         'jquery.js',
     ];

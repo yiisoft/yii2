@@ -228,7 +228,7 @@ use yii\widgets\LinkPager;
 浏览器访问下面的 URL 看看能否工作：
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 ![国家列表](images/start-country-list.png)
@@ -238,7 +238,7 @@ http://hostname/index.php?r=country/index
 也就是第二页记录。如果观察仔细点你还会看到浏览器的 URL 变成了：
 
 ```
-http://hostname/index.php?r=country/index&page=2
+https://hostname/index.php?r=country/index&page=2
 ```
 
 在这个场景里，[[yii\data\Pagination|Pagination]] 提供了为数据结果集分页的所有功能：

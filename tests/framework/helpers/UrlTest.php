@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -31,14 +31,14 @@ class UrlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'cookieValidationKey' => '123',
                     'scriptUrl' => '/base/index.php',
-                    'hostInfo' => 'http://example.com/',
+                    'hostInfo' => 'https://example.com/',
                     'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
                     'class' => 'yii\web\UrlManager',
                     'baseUrl' => '/base',
                     'scriptUrl' => '/base/index.php',
-                    'hostInfo' => 'http://example.com/',
+                    'hostInfo' => 'https://example.com/',
                 ],
                 'user' => [
                     'identityClass' => UserIdentity::className(),
@@ -85,7 +85,7 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=page%2Fview', Url::toRoute(''));
         // a slash will be an absolute route representing the default route
         $this->assertEquals('/base/index.php?r=', Url::toRoute('/'));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', Url::toRoute('', true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', Url::toRoute('', true));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', Url::toRoute('', 'https'));
         $this->assertEquals('//example.com/base/index.php?r=page%2Fview', Url::toRoute('', ''));
 
@@ -93,7 +93,7 @@ class UrlTest extends TestCase
         // will be prepended with uniqueId;
         $this->assertEquals('/base/index.php?r=page%2Fedit', Url::toRoute('edit'));
         $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20]));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], true));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], 'https'));
         $this->assertEquals('//example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], ''));
 
@@ -102,7 +102,7 @@ class UrlTest extends TestCase
         $this->mockAction('default', 'index', 'stats');
         $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', Url::toRoute('user/view'));
         $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42]));
-        $this->assertEquals('http://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], true));
+        $this->assertEquals('https://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], true));
         $this->assertEquals('https://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], 'https'));
         $this->assertEquals('//example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], ''));
 
@@ -166,9 +166,9 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', Url::to(['@pageEdit', 'id' => 20]));
         \Yii::setAlias('@pageEdit', null);
 
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', Url::to(['edit', 'id' => 20], true));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit', Url::to(['edit'], true));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', Url::to([''], true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', Url::to(['edit', 'id' => 20], true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit', Url::to(['edit'], true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', Url::to([''], true));
 
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', Url::to(['edit', 'id' => 20], 'https'));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit', Url::to(['edit'], 'https'));
@@ -177,7 +177,7 @@ class UrlTest extends TestCase
         // is an empty string: the currently requested URL will be returned;
         $this->mockAction('page', 'view', null, ['id' => 10]);
         $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', Url::to(''));
-        $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('', true));
+        $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('', true));
         $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('', 'https'));
 
         // is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
@@ -194,12 +194,12 @@ class UrlTest extends TestCase
         $this->assertEquals('java/script:test/me1', Url::to('java/script:test/me1'));
         $this->assertEquals('#test/me1', Url::to('#test/me1'));
         $this->assertEquals('.test/me1', Url::to('.test/me1'));
-        $this->assertEquals('http://example.com/test/me1', Url::to('test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', Url::to('test/me1', true));
         $this->assertEquals('https://example.com/test/me1', Url::to('test/me1', 'https'));
         $this->assertEquals('https://example.com/test/test/me1', Url::to('@web4/test/me1', 'https'));
 
         $this->assertEquals('/test/me1', Url::to('/test/me1'));
-        $this->assertEquals('http://example.com/test/me1', Url::to('/test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', Url::to('/test/me1', true));
         $this->assertEquals('https://example.com/test/me1', Url::to('/test/me1', 'https'));
         $this->assertEquals('./test/me1', Url::to('./test/me1'));
 
@@ -208,19 +208,19 @@ class UrlTest extends TestCase
         $this->assertEquals('https://test.example.com/test/me1', Url::to('@web1', 'https'));
 
         $this->assertEquals('test/me2', Url::to('@web2'));
-        $this->assertEquals('http://example.com/test/me2', Url::to('@web2', true));
+        $this->assertEquals('https://example.com/test/me2', Url::to('@web2', true));
         $this->assertEquals('https://example.com/test/me2', Url::to('@web2', 'https'));
 
         $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3'));
-        $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3', true));
+        $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3', true));
         $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3', 'https'));
 
         $this->assertEquals('/test', Url::to('@web4'));
-        $this->assertEquals('http://example.com/test', Url::to('@web4', true));
+        $this->assertEquals('https://example.com/test', Url::to('@web4', true));
         $this->assertEquals('https://example.com/test', Url::to('@web4', 'https'));
 
         $this->assertEquals('#test', Url::to('@web5'));
-        $this->assertEquals('http://example.com/#test', Url::to('@web5', true));
+        $this->assertEquals('https://example.com/#test', Url::to('@web5', true));
         $this->assertEquals('https://example.com/#test', Url::to('@web5', 'https'));
         $this->assertEquals('//example.com/#test', Url::to('@web5', ''));
 
@@ -275,7 +275,7 @@ class UrlTest extends TestCase
     {
         $this->mockAction('page', 'view', null, ['id' => 10]);
         $this->assertEquals('/base', Url::base());
-        $this->assertEquals('http://example.com/base', Url::base(true));
+        $this->assertEquals('https://example.com/base', Url::base(true));
         $this->assertEquals('https://example.com/base', Url::base('https'));
         $this->assertEquals('//example.com/base', Url::base(''));
     }
@@ -283,7 +283,7 @@ class UrlTest extends TestCase
     public function testHome()
     {
         $this->assertEquals('/base/index.php', Url::home());
-        $this->assertEquals('http://example.com/base/index.php', Url::home(true));
+        $this->assertEquals('https://example.com/base/index.php', Url::home(true));
         $this->assertEquals('https://example.com/base/index.php', Url::home('https'));
         $this->assertEquals('//example.com/base/index.php', Url::home(''));
     }
@@ -291,7 +291,7 @@ class UrlTest extends TestCase
     public function testCanonical()
     {
         $this->mockAction('page', 'view', null, ['id' => 10]);
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview&id=10', Url::canonical());
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview&id=10', Url::canonical());
         $this->removeMockedAction();
     }
 
@@ -300,7 +300,7 @@ class UrlTest extends TestCase
         $this->assertTrue(Url::isRelative('/test/index.php'));
         $this->assertTrue(Url::isRelative('index.php'));
         $this->assertFalse(Url::isRelative('//example.com/'));
-        $this->assertFalse(Url::isRelative('http://example.com/'));
+        $this->assertFalse(Url::isRelative('https://example.com/'));
         $this->assertFalse(Url::isRelative('https://example.com/'));
     }
 

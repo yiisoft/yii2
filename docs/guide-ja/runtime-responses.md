@@ -169,7 +169,7 @@ public function actionInfo()
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -180,7 +180,7 @@ public function actionOld()
 メソッド・チェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: デフォルトでは、[[yii\web\Response::redirect()]] メソッドはレスポンスのステータス・コードを 302 にセットします。

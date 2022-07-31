@@ -187,7 +187,7 @@ use yii\widgets\ActiveForm;
 用浏览器访问下面的 URL 看它能否工作：
 
 ```
-http://hostname/index.php?r=site/entry
+https://hostname/index.php?r=site/entry
 ```
 
 你会看到一个包含两个输入框的表单的页面。每个输入框的前面都有一个标签指明应该输入的数据类型。

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -639,7 +639,7 @@ class Formatter extends Component
      * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
@@ -676,7 +676,7 @@ class Formatter extends Component
      * If null, [[timeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
@@ -713,7 +713,7 @@ class Formatter extends Component
      * If null, [[datetimeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.

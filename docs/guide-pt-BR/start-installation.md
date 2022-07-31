@@ -191,8 +191,8 @@ no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior. O Yii 2.0 também é c
 com o [HHVM](https://hhvm.com/) do Facebook. No entanto, existem alguns casos extremos em que o HHVM se comporta diferentemente do PHP nativo, então você terá que ter um cuidado extra quando usar o HHVM.
 
 Em um servidor de produção, você pode querer configurar o seu servidor Web de
-modo que a aplicação possa ser acessada pela URL `http://www.example.com/index.php`
-ao invés de `http://www.example.com/basico/web/index.php`. Tal configuração requer que
+modo que a aplicação possa ser acessada pela URL `https://www.example.com/index.php`
+ao invés de `https://www.example.com/basico/web/index.php`. Tal configuração requer que
 você aponte a raiz dos documentos de seu servidor Web para o diretório `basico/web`.
 Você também pode querer ocultar o `index.php` da URL, conforme descrito na seção
 [Roteamento e Criação de URL](runtime-routing.md). Nessa sub-seção, você

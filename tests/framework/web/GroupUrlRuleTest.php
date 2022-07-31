@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -43,7 +43,7 @@ class GroupUrlRuleTest extends TestCase
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
-        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $request = new Request(['hostInfo' => 'https://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;

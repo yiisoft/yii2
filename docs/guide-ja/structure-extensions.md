@@ -432,10 +432,10 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
   [Smarty](https://www.smarty.net/) に基づいたテンプレート・エンジンを提供します。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  [Sphinx](http://sphinxsearch.com) の使用に対するサポートを提供します。
+  [Sphinx](https://sphinxsearch.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、コード生成などの機能を含みます。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
+  [swiftmailer](https://swiftmailer.symfony.com/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
   [Twig](https://twig.symfony.com/) に基づいたテンプレート・エンジンを提供します。
 

@@ -1,7 +1,7 @@
 活动记录（Active Record）
 ======================
 
-[Active Record](http://zh.wikipedia.org/wiki/Active_Record) 提供了一个面向对象的接口，
+[Active Record](https://zh.wikipedia.org/wiki/%E4%B8%BB%E5%8A%A8%E8%AE%B0%E5%BD%95) 提供了一个面向对象的接口，
 用以访问和操作数据库中的数据。Active Record 类与数据库表关联，
 Active Record 实例对应于该表的一行，
 Active Record 实例的*属性*表示该行中特定列的值。

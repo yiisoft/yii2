@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -101,7 +101,7 @@ abstract class Application extends Module
     public $charset = 'UTF-8';
     /**
      * @var string the language that is meant to be used for end users. It is recommended that you
-     * use [IETF language tags](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
+     * use [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
      * for English, while `en-US` stands for English (United States).
      * @see sourceLanguage
      */

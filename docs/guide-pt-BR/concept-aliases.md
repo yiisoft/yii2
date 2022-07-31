@@ -51,7 +51,7 @@ O mesmo método pode resolver também um alias derivado em seu caminho de arquiv
 
 ```php
 echo Yii::getAlias('@foo');               // exibe: /caminho/para/foo
-echo Yii::getAlias('@bar');               // exibe: http://www.example.com
+echo Yii::getAlias('@bar');               // exibe: https://www.example.com
 echo Yii::getAlias('@foo/bar/arquivo.php');  // exibe: /caminho/para/foo/bar/arquivo.php
 ```
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -49,7 +49,7 @@ class UrlManagerTest extends TestCase
         // set default values if they are not set
         $config = array_merge([
             'scriptUrl' => '/index.php',
-            'hostInfo' => 'http://www.example.com',
+            'hostInfo' => 'https://www.example.com',
             'showScriptName' => $showScriptName,
             'enableStrictParsing' => $enableStrictParsing,
         ], $config);
@@ -153,19 +153,19 @@ class UrlManagerTest extends TestCase
     {
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createAbsoluteUrl('post/view');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view']);
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', true);
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], true);
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', 'http');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], 'http');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', 'https');
         $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
@@ -185,7 +185,7 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
 
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'http');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
 
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
         $this->assertEquals('//www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);

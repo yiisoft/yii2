@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
@@ -16,7 +16,7 @@ use yii\helpers\VarDumper;
  * MimeTypeController generates a map of file extensions to MIME types.
  *
  * It uses `mime.types` file from apache http located under
- * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  *
  * This file has been placed in the public domain for unlimited redistribution,
  * so we can use it and ship it with Yii.
@@ -67,7 +67,7 @@ class MimeTypeController extends Controller
         }
 
         $this->stdout('Downloading mime-type file from apache httpd repository...');
-        if ($apacheMimeTypesFileContent = file_get_contents('http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=co')) {
+        if ($apacheMimeTypesFileContent = file_get_contents('https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=co')) {
             $this->stdout("Done.\n", Console::FG_GREEN);
             $this->generateMimeTypesFile($outFile, $apacheMimeTypesFileContent);
             $this->generateMimeAliasesFile($aliasesOutFile);
@@ -113,7 +113,7 @@ class MimeTypeController extends Controller
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
  */
 return $array;

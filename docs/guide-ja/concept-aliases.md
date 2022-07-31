@@ -18,7 +18,7 @@ Yii はすでに利用可能な多くの事前定義エイリアスを持って�
 Yii::setAlias('@foo', '/path/to/foo');
 
 // URL のエイリアス
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // \foo\Bar クラスを保持する具体的なファイルのエイリアス
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // /path/to/foo を表示
-echo Yii::getAlias('@bar');               // http://www.example.com を表示
+echo Yii::getAlias('@bar');               // https://www.example.com を表示
 echo Yii::getAlias('@foo/bar/file.php');  // /path/to/foo/bar/file.php を表示
 ```
 

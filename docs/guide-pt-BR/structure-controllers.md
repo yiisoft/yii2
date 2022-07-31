@@ -1,7 +1,7 @@
 Controllers (Controladores)
 ===========
 
-Os controllers (controladores) fazem parte da arquitetura [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Os controllers (controladores) fazem parte da arquitetura [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
 São objetos de classes que estendem de [[yii\base\Controller]] e são responsáveis
 pelo processamento das requisições e por gerar respostas. Em particular, após
 assumir o controle de [applications](structure-applications.md), controllers
@@ -88,7 +88,7 @@ ou o seguinte formato se o controller estiver em um módulo:
 IDdoModule/IDdoController/IDdoAction
 ```
 
-Portanto, se um usuário fizer uma requisição com a URL `http://hostname/index.php?r=site/index`,
+Portanto, se um usuário fizer uma requisição com a URL `https://hostname/index.php?r=site/index`,
 a ação `index` do controller `site` será executada. Para mais detalhes sobre como
 as ações são resolvidas pelas rotas, por favor consulte a seção [Roteamento e Criação de URL](runtime-routing.md).
 
@@ -194,7 +194,7 @@ Quando uma requisição não especificar uma [rota](#id-da-rota), será utilizad
 rota especificada pela propriedade.
 Para as [[yii\web\Application|aplicações Web]], este valor é `'site'`, enquanto
 para as [[yii\console\Application|aplicações console]] é `help`. Portanto, se uma
-URL for `http://hostname/index.php`, o controller `site` será utilizado nesta requisição.
+URL for `https://hostname/index.php`, o controller `site` será utilizado nesta requisição.
 
 Você pode alterar o controller padrão como a seguinte [configuração da aplicação](structure-applications.md#application-configurations):
 
@@ -349,8 +349,8 @@ retorna um objeto de resposta):
 ```php
 public function actionForward()
 {
-    // redireciona o navegador do usuário para http://example.com
-    return $this->redirect('http://example.com');
+    // redireciona o navegador do usuário para https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -384,14 +384,14 @@ class PostController extends Controller
 
 A seguir, os parâmetros da ação serão populados em diferentes requisições:
 
-* `http://hostname/index.php?r=post/view&id=123`: o parâmetro `$id` receberá
+* `https://hostname/index.php?r=post/view&id=123`: o parâmetro `$id` receberá
   o valor `'123'`, enquanto o `$version` continuará com o valor nulo porque não
   existe o parâmetro `version` na URL.
-* `http://hostname/index.php?r=post/view&id=123&version=2`: os parâmetros `$id`
+* `https://hostname/index.php?r=post/view&id=123&version=2`: os parâmetros `$id`
   e `$version` serão receberão os valores `'123'` e `'2'`, respectivamente.
-* `http://hostname/index.php?r=post/view`: uma exceção [[yii\web\BadRequestHttpException]]
+* `https://hostname/index.php?r=post/view`: uma exceção [[yii\web\BadRequestHttpException]]
   será lançada porque o parâmetro obrigatório `$id` não foi informado na requisição.
-* `http://hostname/index.php?r=post/view&id[]=123`: uma exceção [[yii\web\BadRequestHttpException]]
+* `https://hostname/index.php?r=post/view&id[]=123`: uma exceção [[yii\web\BadRequestHttpException]]
   será lançada porque o parâmetro `$id` foi informado com um valor array `['123']`
   na qual não era esperado.
 
@@ -405,9 +405,9 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Agora, se a requisição for `http://hostname/index.php?r=post/view&id[]=123`, o
+Agora, se a requisição for `https://hostname/index.php?r=post/view&id[]=123`, o
 parâmetro `$id` receberá o valor `['123']`. Se a requisição for
-`http://hostname/index.php?r=post/view&id=123`, o parâmetro `$id` ainda receberá
+`https://hostname/index.php?r=post/view&id=123`, o parâmetro `$id` ainda receberá
 um array como valor pois o valor escalar `'123'` será convertido automaticamente
 em um array.
 

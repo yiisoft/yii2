@@ -102,7 +102,7 @@ use yii\helpers\Html;
 创建完动作和视图后，你就可以通过下面的 URL 访问新页面了：
 
 ```
-http://hostname/index.php?r=site/say&message=Hello+World
+https://hostname/index.php?r=site/say&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

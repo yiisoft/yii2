@@ -1,13 +1,13 @@
 Chạy ứng dụng
 ====================
 
-Sau khi cài đặt Yii, ứng dụng Yii của bạn đã được chạy, tùy thuộc vào cấu hình bạn có thể truy cập qua URL `http://hostname/basic/web/index.php`
-hoặc `http://hostname/index.php`. Bài hướng dẫn này sẽ mô tả chức năng của ứng dụng và cách tổ chức code trong ứng dụng,
+Sau khi cài đặt Yii, ứng dụng Yii của bạn đã được chạy, tùy thuộc vào cấu hình bạn có thể truy cập qua URL `https://hostname/basic/web/index.php`
+hoặc `https://hostname/index.php`. Bài hướng dẫn này sẽ mô tả chức năng của ứng dụng và cách tổ chức code trong ứng dụng,
 và làm thế nào để xử lý các yêu cầu của ứng dụng.
 
 > Lưu ý: Để đơn giản, xuyên suốt các bài hướng dẫn "Getting Started" này, giả sử rằng chúng ta đã thiết lập `basic/web`
   như thư mục gốc trong máy chủ Web, và cấu hình URL dể truy cập vào ứng dụng của ban thành
-  `http://hostname/index.php` hoặc điều tương tự. Tùy theo yêu cầu của bạn, bạn hãy điều chình 
+  `https://hostname/index.php` hoặc điều tương tự. Tùy theo yêu cầu của bạn, bạn hãy điều chình 
   URLs sao cho phù hợp với ứng dụng.
 
 
@@ -16,7 +16,7 @@ Chức năng <span id="functionality"></span>
 
 Mẫu ứng dụng *Basic Application* bao gồm 4 trang cơ bản:
 
-* Trang chủ (homepage), được hiển thị khi bạn truy cập vào URL `http://hostname/index.php`,
+* Trang chủ (homepage), được hiển thị khi bạn truy cập vào URL `https://hostname/index.php`,
 * Trang "About",
 * Trang "Contact", trang hiển thị form contact cho phép user liên hệ với bạn qua email,
 * Trang "Login", trang hiển thị form login cho phép bạn có thể xác thực user. Hãy thử đăng nhập với
