@@ -627,7 +627,7 @@ class Security extends Component
 
     /**
      * Performs string comparison using timing attack resistant approach.
-     * @see http://codereview.stackexchange.com/questions/13512
+     * @see https://codereview.stackexchange.com/q/13512
      * @param string $expected string to compare.
      * @param string $actual user-supplied string.
      * @return bool whether strings are equal.

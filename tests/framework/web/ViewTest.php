@@ -248,9 +248,9 @@ class ViewTest extends TestCase
 
         // absolute link
         $view = new View();
-        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
+        $view->registerJsFile('https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertContains('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         $view = new View();
@@ -261,10 +261,10 @@ class ViewTest extends TestCase
             $html);
 
         $view = new View();
-        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
+        $view->registerJsFile('https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertContains('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         \Yii::$app->assetManager->appendTimestamp = false;
@@ -304,9 +304,9 @@ class ViewTest extends TestCase
 
         // absolute link
         $view = new View();
-        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
+        $view->registerJsFile('https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertContains('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
         $view = new View();
@@ -317,10 +317,10 @@ class ViewTest extends TestCase
             $html);
 
         $view = new View();
-        $view->registerJsFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
+        $view->registerJsFile('https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ['depends' => 'yii\web\AssetBundle']);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
+        $this->assertContains('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>',
             $html);
 
     }

@@ -348,7 +348,7 @@ class BaseFormatConverter
      *
      * Pattern constructs that are not supported by the jQuery UI format will be removed.
      *
-     * [jQuery UI date format]: http://api.jqueryui.com/datepicker/#utility-formatDate
+     * [jQuery UI date format]: https://api.jqueryui.com/datepicker/#utility-formatDate
      * [ICU format]: https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
      *
      * @param string $pattern date format pattern in ICU format.
@@ -498,7 +498,7 @@ class BaseFormatConverter
      * Pattern constructs that are not supported by the jQuery UI format will be removed.
      *
      * [php date() function format]: https://www.php.net/manual/en/function.date.php
-     * [jQuery UI date format]: http://api.jqueryui.com/datepicker/#utility-formatDate
+     * [jQuery UI date format]: https://api.jqueryui.com/datepicker/#utility-formatDate
      *
      * @param string $pattern date format pattern in php date()-function format.
      * @return string The converted date format pattern.

@@ -98,7 +98,7 @@ class Utf8Controller extends Controller
     /**
      * Equivalent for ord() just for unicode.
      *
-     * https://stackoverflow.com/a/10333324/3364821
+     * https://stackoverflow.com/questions/10333098/utf-8-safe-equivalent-of-ord-or-charcodeat-in-php/10333324#10333324
      *
      * @param $c
      * @return bool|int

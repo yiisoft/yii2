@@ -193,7 +193,7 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @link https://blogs.msdn.microsoft.com/ieinternals/2013/09/21/internet-explorer-11s-many-user-agent-strings/
-     * @link https://stackoverflow.com/a/31279980/6856708
+     * @link https://stackoverflow.com/questions/30591706/what-is-the-user-agent-string-name-for-microsoft-edge/31279980#31279980
      * @link https://developers.whatismybrowser.com/useragents/explore/software_name/chrome/
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
      * @return array

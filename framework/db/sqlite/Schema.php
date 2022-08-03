@@ -362,7 +362,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
      * @throws NotSupportedException when unsupported isolation levels are used.
      * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
-     * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
+     * @see https://www.sqlite.org/pragma.html#pragma_read_uncommitted
      */
     public function setTransactionIsolationLevel($level)
     {

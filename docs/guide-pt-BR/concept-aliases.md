@@ -15,7 +15,7 @@ Você pode definir um alias para um caminho de arquivo ou URL chamando [[Yii::se
 Yii::setAlias('@foo', '/caminho/para/foo');
 
 // um alias de uma URL
-Yii::setAlias('@bar', 'http://www.exemplo.com.br');
+Yii::setAlias('@bar', 'https://www.exemplo.com.br');
 ```
 
 > Observação: O caminho do arquivo ou URL sendo *apelidado* (aliased) *não* necessariamente refere-se a um arquivo ou a recursos existentes.
@@ -37,7 +37,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/caminho/para/foo',
-        '@bar' => 'http://www.exemplo.com.br',
+        '@bar' => 'https://www.exemplo.com.br',
     ],
 ];
 ```

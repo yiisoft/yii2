@@ -246,8 +246,8 @@ class BaseInflector
      * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`.
      *
      * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
-     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * For detailed information see [unicode normalization forms](https://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see https://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
@@ -261,8 +261,8 @@ class BaseInflector
      * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`.
      *
      * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
-     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * For detailed information see [unicode normalization forms](https://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see https://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
@@ -277,8 +277,8 @@ class BaseInflector
      * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`.
      *
      * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
-     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * For detailed information see [unicode normalization forms](https://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see https://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */

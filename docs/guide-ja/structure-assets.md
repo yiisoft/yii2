@@ -461,10 +461,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // 効力を持たない!
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // 効力を持たない!
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // 効力を持たない!
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // 効力を持たない!
                 ],
             ],
         ],

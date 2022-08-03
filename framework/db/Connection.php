@@ -321,7 +321,7 @@ class Connection extends Component
         'cubrid' => 'yii\db\Command', // CUBRID
     ];
     /**
-     * @var bool whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
+     * @var bool whether to enable [savepoint](https://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
      */
     public $enableSavepoint = true;

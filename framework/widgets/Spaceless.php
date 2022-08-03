@@ -41,9 +41,9 @@ use yii\base\Widget;
  *
  * Note, never use this method with `pre` or `textarea` tags. It's not that trivial to deal with such tags
  * as it may seem at first sight. For this case you should consider using
- * [HTML Tidy Project](http://tidy.sourceforge.net/) instead.
+ * [HTML Tidy Project](https://www.html-tidy.org/) instead.
  *
- * @see http://tidy.sourceforge.net/
+ * @see https://www.html-tidy.org/
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */

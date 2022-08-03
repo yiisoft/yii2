@@ -385,7 +385,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function createHttpStatusLink($statusCode, $statusDescription)
     {
-        return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int) $statusCode . '" target="_blank">HTTP ' . (int) $statusCode . ' &ndash; ' . $statusDescription . '</a>';
+        return '<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int) $statusCode . '" target="_blank">HTTP ' . (int) $statusCode . ' &ndash; ' . $statusDescription . '</a>';
     }
 
     /**
@@ -398,9 +398,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $serverUrls = [
             'https://httpd.apache.org/' => ['apache'],
             'https://nginx.org/' => ['nginx'],
-            'http://lighttpd.net/' => ['lighttpd'],
+            'https://www.lighttpd.net/' => ['lighttpd'],
             'http://gwan.com/' => ['g-wan', 'gwan'],
-            'http://iis.net/' => ['iis', 'services'],
+            'https://www.iis.net/' => ['iis', 'services'],
             'https://www.php.net/manual/en/features.commandline.webserver.php' => ['development'],
         ];
         if (isset($_SERVER['SERVER_SOFTWARE'])) {
@@ -423,7 +423,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function createFrameworkVersionLink()
     {
-        return '<a href="http://github.com/yiisoft/yii2/" target="_blank">' . $this->htmlEncode(Yii::getVersion()) . '</a>';
+        return '<a href="https://github.com/yiisoft/yii2/" target="_blank">' . $this->htmlEncode(Yii::getVersion()) . '</a>';
     }
 
     /**

@@ -223,8 +223,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in MySQL
-            // http://stackoverflow.com/a/271650/1106908
-            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
+            // https://stackoverflow.com/questions/255517/mysql-offset-infinite-rows/271650#271650
+            // https://dev.mysql.com/doc/refman/5.7/en/select.html#idm46193796386608
             $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
         }
 

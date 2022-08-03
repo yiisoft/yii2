@@ -519,7 +519,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
-     * @see http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
+     * @see https://weblogs.sqlteam.com/dang/2009/01/31/upsert-race-condition-with-merge/
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {

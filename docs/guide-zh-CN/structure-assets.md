@@ -459,10 +459,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // 这行代码不起作用！
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // 这行代码不起作用！
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // 这行代码不起作用！
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // 这行代码不起作用！
                 ],
             ],
         ],

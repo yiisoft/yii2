@@ -511,7 +511,7 @@ window.yii = (function ($) {
         return false;
     }
 
-    // https://stackoverflow.com/a/6969486/3364821
+    // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
     function escapeRegExp(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }

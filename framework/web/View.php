@@ -373,7 +373,7 @@ class View extends \yii\base\View
     /**
      * Registers a link tag.
      *
-     * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
+     * For example, a link tag for a custom [favicon](https://www.w3.org/2005/10/howto-favicon)
      * can be added like the following:
      *
      * ```php
