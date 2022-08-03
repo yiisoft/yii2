@@ -417,7 +417,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-imagine](https://www.yiiframework.com/extension/yiisoft/yii2-imagine):
   provides commonly used image manipulation functions based on [Imagine](https://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
-  provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
+  provides a set of widgets that encapsulate the [JQuery UI](https://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
   provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
