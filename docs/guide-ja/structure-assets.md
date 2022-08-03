@@ -461,10 +461,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // 効力を持たない!
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // 効力を持たない!
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // 効力を持たない!
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // 効力を持たない!
                 ],
             ],
         ],
@@ -644,7 +644,7 @@ return [
 コマンドの中の `{from}` と `{to}` のトークンは、ソースのアセット・ファイルのパスとターゲットのアセット・ファイルのパスに置き換えられます。
 
 > Info: 上記で説明した方法の他にも、拡張構文のアセットを扱う方法はあります。
-  例えば、[grunt](http://gruntjs.com/) のようなビルド・ツールを使って、拡張構文のアセットをモニターし、
+  例えば、[grunt](https://gruntjs.com/) のようなビルド・ツールを使って、拡張構文のアセットをモニターし、
   自動的に変換することが出来ます。
   この場合は、元のファイルではなく、結果として作られる CSS/JavaScript ファイルをアセット・バンドルのリストに挙げなければなりません。
 
@@ -840,7 +840,7 @@ yii asset assets.php config/assets-prod.php
 
 
 > Info: `asset` コマンドを使うことは、アセットの結合・圧縮のプロセスを自動化する唯一の選択肢ではありません。
-  優秀なタスク実行ツールである [grunt](http://gruntjs.com/) を使っても、同じ目的を達することが出来ます。
+  優秀なタスク実行ツールである [grunt](https://gruntjs.com/) を使っても、同じ目的を達することが出来ます。
 
 
 ### アセット・バンドルをグループ化する <span id="grouping-asset-bundles"></span>

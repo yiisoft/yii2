@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -990,7 +990,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Note that no automatic type conversion performed by default. You may use
      * [[\yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute typecasting.
-     * See http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#attributes-typecasting.
+     * See https://www.yiiframework.com/doc-2.0/guide-db-active-record.html#attributes-typecasting.
      */
     public function afterSave($insert, $changedAttributes)
     {

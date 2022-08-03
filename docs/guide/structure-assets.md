@@ -461,10 +461,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // makes NO effect!
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // makes NO effect!
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // makes NO effect!
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // makes NO effect!
                 ],
             ],
         ],
@@ -644,7 +644,7 @@ asset file extension names and the commands for performing the asset conversion.
 in the commands will be replaced with the source asset file paths and the target asset file paths.
 
 > Info: There are other ways of working with assets in extended syntax, besides the one described above.
-  For example, you can use build tools such as [grunt](http://gruntjs.com/) to monitor and automatically
+  For example, you can use build tools such as [grunt](https://gruntjs.com/) to monitor and automatically
   convert assets in extended syntax. In this case, you should list the resulting CSS/JavaScript files in
   asset bundles rather than the original files.
 
@@ -840,7 +840,7 @@ the last subsection.
 
 
 > Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
-  You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
+  You can use the excellent task runner tool [grunt](https://gruntjs.com/) to achieve the same goal.
 
 
 ### Grouping Asset Bundles <span id="grouping-asset-bundles"></span>

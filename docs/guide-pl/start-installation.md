@@ -192,7 +192,7 @@ z [facebookowym HHVM](https://hhvm.com), są jednak przypadki, gdzie Yii zachowu
 dlatego powinieneś zachować szczególną ostrożność używając HHVM.
 
 Na serwerze produkcyjnym możesz skonfigurować swój host tak, aby aplikacja była dostępna pod adresem 
-`http://www.example.com/index.php` zamiast `http://www.example.com/basic/web/index.php`. Taka konfiguracja wymaga wskazania 
+`https://www.example.com/index.php` zamiast `https://www.example.com/basic/web/index.php`. Taka konfiguracja wymaga wskazania 
 głównego katalogu serwera jako katalogu `basic/web`. Jeśli chcesz ukryć `index.php` w adresie URL, skorzystaj z informacji 
 opisanych w dziale [routing i tworzenie adresów URL](runtime-routing.md).  
 W tej sekcji dowiesz się, jak skonfigurować Twój serwer Apache lub Nginx, aby osiągnąć te cele.

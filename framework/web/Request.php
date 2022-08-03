@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -48,7 +48,7 @@ use yii\validators\IpValidator;
  * @property-read array $eTags The entity tags.
  * @property-read HeaderCollection $headers The header collection.
  * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
- * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
+ * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
  * [[getHostInfo()]] for security related notes on this property.
  * @property-read string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`).
  * @property-read bool $isAjax Whether this is an AJAX (XMLHttpRequest) request.
@@ -115,7 +115,7 @@ class Request extends \yii\base\Request
      * You also need to include CSRF meta tags in your pages by using [[\yii\helpers\Html::csrfMetaTags()]].
      *
      * @see Controller::enableCsrfValidation
-     * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
+     * @see https://en.wikipedia.org/wiki/Cross-site_request_forgery
      */
     public $enableCsrfValidation = true;
     /**
@@ -746,10 +746,10 @@ class Request extends \yii\base\Request
      * > application level in order to protect against such kind of attack.
      *
      * @property string|null schema and hostname part (with port number if needed) of the request URL
-     * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+     * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * See [[getHostInfo()]] for security related notes on this property.
      * @return string|null schema and hostname part (with port number if needed) of the request URL
-     * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+     * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
      */
     public function getHostInfo()
@@ -963,7 +963,7 @@ class Request extends \yii\base\Request
         $pathInfo = urldecode($pathInfo);
 
         // try to encode in UTF8 if not so
-        // http://w3.org/International/questions/qa-forms-utf-8.html
+        // https://www.w3.org/International/questions/qa-forms-utf-8.en.html
         if (!preg_match('%^(?:
             [\x09\x0A\x0D\x20-\x7E]              # ASCII
             | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
@@ -1756,7 +1756,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the token used to perform CSRF validation.
      *
-     * This token is generated in a way to prevent [BREACH attacks](http://breachattack.com/). It may be passed
+     * This token is generated in a way to prevent [BREACH attacks](https://en.wikipedia.org/wiki/BREACH). It may be passed
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
      * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).

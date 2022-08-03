@@ -114,7 +114,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // выведет: 1 январ
 
 Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](https://icu.unicode.org/),
 который описан в руководстве ICU по следующему адресу:
-<http://userguide.icu-project.org/formatparse/datetime>. Также вы можете использовать синтаксис, который распознаётся
+<https://unicode-org.github.io/icu/userguide/format_parse/datetime/>. Также вы можете использовать синтаксис, который распознаётся
 PHP-функцией [date()](https://www.php.net/manual/ru/function.date.php), используя строку с префиксом `php:`.
 
 ```php

@@ -350,13 +350,13 @@ Also check the section on [REST Controllers](rest-controllers.md#cors) if you wa
 
 The Cors filtering could be tuned using the [[yii\filters\Cors::$cors|$cors]] property.
 
-* `cors['Origin']`: array used to define allowed origins. Can be `['*']` (everyone) or `['http://www.myserver.net', 'http://www.myotherserver.com']`. Default to `['*']`.
+* `cors['Origin']`: array used to define allowed origins. Can be `['*']` (everyone) or `['https://www.myserver.net', 'https://www.myotherserver.com']`. Default to `['*']`.
 * `cors['Access-Control-Request-Method']`: array of allowed verbs like `['GET', 'OPTIONS', 'HEAD']`.  Default to `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: array of allowed headers. Can be `['*']` all headers or specific ones `['X-Request-With']`. Default to `['*']`.
 * `cors['Access-Control-Allow-Credentials']`: define if current request can be made using credentials. Can be `true`, `false` or `null` (not set). Default to `null`.
 * `cors['Access-Control-Max-Age']`: define lifetime of pre-flight request. Default to `86400`.
 
-For example, allowing CORS for origin : `http://www.myserver.net` with method `GET`, `HEAD` and `OPTIONS` :
+For example, allowing CORS for origin : `https://www.myserver.net` with method `GET`, `HEAD` and `OPTIONS` :
 
 ```php
 use yii\filters\Cors;
@@ -368,7 +368,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -389,7 +389,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

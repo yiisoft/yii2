@@ -148,7 +148,7 @@ Windows, Mac OS X, atau Linux yang menjalankan PHP 5.4 atau lebih tinggi. Yii 2.
 sehingga Anda harus mengambil beberapa perlakuan ekstra ketika menggunakan HHVM.
 
 Pada server produksi, Anda mungkin ingin mengkonfigurasi server Web Anda sehingga aplikasi dapat diakses
-melalui URL `http://www.example.com/index.php` bukannya `http://www.example.com/dasar/web/index.php`. konfigurasi seperti itu
+melalui URL `https://www.example.com/index.php` bukannya `https://www.example.com/dasar/web/index.php`. konfigurasi seperti itu
 membutuhkan root dokumen server Web Anda menunjuk ke folder `basic/web`. Anda mungkin juga
 ingin menyembunyikan `index.php` dari URL, seperti yang dijelaskan pada bagian [Routing dan Penciptaan URL](runtime-routing.md).
 Dalam bagian ini, Anda akan belajar bagaimana untuk mengkonfigurasi Apache atau Nginx server Anda untuk mencapai tujuan tersebut.

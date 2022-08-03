@@ -21,7 +21,7 @@
 Yii::setAlias('@foo', '/path/to/foo');
 
 // псевдонім URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 ```
 
 > Note: псевдонім шляху до файлу або URL *не* обовʼязково вказує на наявний файл або ресурс.
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // виведе: /path/to/foo
-echo Yii::getAlias('@bar');               // виведе: http://www.example.com
+echo Yii::getAlias('@bar');               // виведе: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // виведе: /path/to/foo/bar/file.php
 ```
 

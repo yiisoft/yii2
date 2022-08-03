@@ -1,7 +1,7 @@
 模型
 ======
 
-模型是 [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分，
+模型是 [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分，
 是代表业务数据、规则和逻辑的对象。
 
 可通过继承 [[yii\base\Model]] 或它的子类定义模型类，

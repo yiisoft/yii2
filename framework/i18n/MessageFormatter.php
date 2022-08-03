@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -12,7 +12,7 @@ use yii\base\Component;
 use yii\base\NotSupportedException;
 
 /**
- * MessageFormatter allows formatting messages via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
+ * MessageFormatter allows formatting messages via [ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/).
  *
  * This class enhances the message formatter class provided by the PHP intl extension.
  *
@@ -70,7 +70,7 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Formats a message via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
+     * Formats a message via [ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/).
      *
      * It uses the PHP intl extension's [MessageFormatter](https://www.php.net/manual/en/class.messageformatter.php)
      * and works around some issues.
@@ -132,7 +132,7 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
+     * Parses an input string according to an [ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/) pattern.
      *
      * It uses the PHP intl extension's [MessageFormatter::parse()](https://www.php.net/manual/en/messageformatter.parsemessage.php)
      * and adds support for named arguments.
@@ -341,7 +341,7 @@ class MessageFormatter extends Component
     private function parseToken($token, $args, $locale)
     {
         // parsing pattern based on ICU grammar:
-        // http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
+        // https://unicode-org.github.io/icu-docs/#/icu4c/classMessageFormat.html
         $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         $param = trim($token[0]);
         if (isset($args[$param])) {
@@ -374,7 +374,7 @@ class MessageFormatter extends Component
             case 'none':
                 return $arg;
             case 'select':
-                /* http://icu-project.org/apiref/icu4c/classicu_1_1SelectFormat.html
+                /* https://unicode-org.github.io/icu-docs/#/icu4c/classicu_1_1SelectFormat.html
                 selectStyle = (selector '{' message '}')+
                 */
                 if (!isset($token[2])) {
@@ -397,7 +397,7 @@ class MessageFormatter extends Component
                 }
                 break;
             case 'plural':
-                /* http://icu-project.org/apiref/icu4c/classicu_1_1PluralFormat.html
+                /* https://unicode-org.github.io/icu-docs/#/icu4c/classicu_1_1PluralFormat.html
                 pluralStyle = [offsetValue] (selector '{' message '}')+
                 offsetValue = "offset:" number
                 selector = explicitValue | keyword

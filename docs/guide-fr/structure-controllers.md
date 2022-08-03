@@ -72,7 +72,7 @@ ou dans le format suivant si le contrôleur appartient à un module :
 identifiant_de_module/identifiant_de_contrôleur/identifiant_d_action
 ```
 
-Ainsi si un utilisateur requiert l'URL `http://hostname/index.php?r=site/index`, l'action `index` dans le contrôleur `site` sera exécutée. Pour plus de détails sur la façon dont les routes sont résolues, reportez-vous à la section [Routage et génération d'URL](runtime-routing.md).
+Ainsi si un utilisateur requiert l'URL `https://hostname/index.php?r=site/index`, l'action `index` dans le contrôleur `site` sera exécutée. Pour plus de détails sur la façon dont les routes sont résolues, reportez-vous à la section [Routage et génération d'URL](runtime-routing.md).
 
 
 ## Création des contrôleurs <span id="creating-controllers"></span>
@@ -143,7 +143,7 @@ Vous pouvez configurer [[yii\base\Application::controllerMap|controller map]] da
 
 ### Contrôleur par défaut <span id="default-controller"></span>
 
-Chaque application possède un contrôleur par défaut spécifié via la propriété [[yii\base\Application::defaultRoute]]. Lorsqu'une requête ne précise aucune [route](#routes), c'est la route spécifiée par cette propriété qui est utilisée. Pour les [[yii\web\Application|applications Web]], sa valeur est `'site'`, tandis que pour les [[yii\console\Application|applications de console]], c'est `help`. Par conséquent, si une URL est de la forme `http://hostname/index.php`, c'est le contrôleur `site` qui prend la requête en charge.
+Chaque application possède un contrôleur par défaut spécifié via la propriété [[yii\base\Application::defaultRoute]]. Lorsqu'une requête ne précise aucune [route](#routes), c'est la route spécifiée par cette propriété qui est utilisée. Pour les [[yii\web\Application|applications Web]], sa valeur est `'site'`, tandis que pour les [[yii\console\Application|applications de console]], c'est `help`. Par conséquent, si une URL est de la forme `https://hostname/index.php`, c'est le contrôleur `site` qui prend la requête en charge.
 
 Vous pouvez changer de contrôleur par défaut en utilisant la  [configuration d'application](structure-applications.md#application-configurations) suivante :
 
@@ -263,8 +263,8 @@ Dans les exemples ci-dessus, les valeurs de retour des actions sont toutes des c
 ```php
 public function actionForward()
 {
-    // redirect the user browser to http://example.com
-    return $this->redirect('http://example.com');
+    // redirect the user browser to https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -289,10 +289,10 @@ class PostController extends Controller
 
 En fonction de la requête, les paramètres de l'action seront établis comme suit :
 
-* `http://hostname/index.php?r=post/view&id=123`: le paramètre `$id` reçoit la valeur `'123'`,  tandis que le paramètre `$version` reste `null` (sa valeur par défaut) car la requête ne contient aucun paramètre `version`.
-* `http://hostname/index.php?r=post/view&id=123&version=2`: les paramètres `$id` et `$version` reçoivent les valeurs `'123'` et `'2'`, respectivement.
-* `http://hostname/index.php?r=post/view`: une exception [[yii\web\BadRequestHttpException]] est levée car le paramètre obligatoire `$id` n'est pas fourni par la requête.
-* `http://hostname/index.php?r=post/view&id[]=123`: une exception [[yii\web\BadRequestHttpException]] est levée car le paramètre `$id` reçoit, de manière inattendue,  un tableau (`['123']`).
+* `https://hostname/index.php?r=post/view&id=123`: le paramètre `$id` reçoit la valeur `'123'`,  tandis que le paramètre `$version` reste `null` (sa valeur par défaut) car la requête ne contient aucun paramètre `version`.
+* `https://hostname/index.php?r=post/view&id=123&version=2`: les paramètres `$id` et `$version` reçoivent les valeurs `'123'` et `'2'`, respectivement.
+* `https://hostname/index.php?r=post/view`: une exception [[yii\web\BadRequestHttpException]] est levée car le paramètre obligatoire `$id` n'est pas fourni par la requête.
+* `https://hostname/index.php?r=post/view&id[]=123`: une exception [[yii\web\BadRequestHttpException]] est levée car le paramètre `$id` reçoit, de manière inattendue,  un tableau (`['123']`).
 
 Si vous voulez que votre paramètre d'action accepte un tableau, il faut, dans la définition de la méthode, faire allusion à son type, avec `array`, comme ceci :
 
@@ -303,7 +303,7 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Désormais, si la requête est `http://hostname/index.php?r=post/view&id[]=123`, le paramètre `$id` accepte la valeur `['123']`. Si la requête est  `http://hostname/index.php?r=post/view&id=123`, le paramètre `$id` accepte également la valeur transmise par la requête parce que les valeurs scalaires sont automatiquement convertie en tableau (*array*).
+Désormais, si la requête est `https://hostname/index.php?r=post/view&id[]=123`, le paramètre `$id` accepte la valeur `['123']`. Si la requête est  `https://hostname/index.php?r=post/view&id=123`, le paramètre `$id` accepte également la valeur transmise par la requête parce que les valeurs scalaires sont automatiquement convertie en tableau (*array*).
 
 Les exemples qui précèdent montrent essentiellement comment les paramètres d'action fonctionnent dans les applications Web. Pour les applications de console, reportez-vous à la section  [Commandes de console](tutorial-console.md) pour plus de détails.
 

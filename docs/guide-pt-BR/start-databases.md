@@ -241,7 +241,7 @@ Conferindo <span id="trying-it-out"></span>
 Para ver se todo os códigos acima funcionam, use o seu navegador para acessar a seguinte URL:
 
 ```
-http://hostname/index.php?r=pais/index
+https://hostname/index.php?r=pais/index
 ```
 
 ![Lista de Países](images/start-country-list.png)
@@ -253,7 +253,7 @@ página de registros. Observe mais cuidadosamente e você perceberá que a URL n
 browser mudou para
 
 ```
-http://hostname/index.php?r=pais/index&page=2
+https://hostname/index.php?r=pais/index&page=2
 ```
 
 Por trás das cortinas, [[yii\data\Pagination|Pagination]] está fornecendo toda

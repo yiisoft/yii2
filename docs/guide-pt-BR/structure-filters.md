@@ -389,7 +389,7 @@ public function behaviors()
 A filtragem da classe Cors pode ser ajustado pela propriedade `cors`.
 
 * `cors['Origin']`: array usado para definir as origens permitidas. Pode ser 
-  `['*']` (qualquer um) ou `['http://www.myserver.net', 'http://www.myotherserver.com']`.
+  `['*']` (qualquer um) ou `['https://www.myserver.net', 'https://www.myotherserver.com']`.
   O padrão é `['*']`.
 * `cors['Access-Control-Request-Method']`: array com os métodos de requisição 
   permitidos, tais como `['GET', 'OPTIONS', 'HEAD']`. O padrão é 
@@ -403,7 +403,7 @@ A filtragem da classe Cors pode ser ajustado pela propriedade `cors`.
 * `cors['Access-Control-Max-Age']`: define o tempo de vida do pré-processamento 
   (pre-flight) da requisição. O padrão é `86400`.
 
-Por exemplo, permitindo CORS para a origem: `http://www.myserver.net` com os 
+Por exemplo, permitindo CORS para a origem: `https://www.myserver.net` com os 
 métodos `GET`, `HEAD` e `OPTIONS`:
 
 ```php
@@ -416,7 +416,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -438,7 +438,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

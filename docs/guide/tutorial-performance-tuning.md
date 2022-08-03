@@ -218,7 +218,7 @@ The following profiling tools may be useful:
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
 - [XHProf](https://www.php.net/manual/en/book.xhprof.php)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [XDebug profiler](https://xdebug.org/docs/profiler)
 
 ## Prepare application for scaling
 

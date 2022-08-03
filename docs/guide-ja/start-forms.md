@@ -187,7 +187,7 @@ use yii\widgets\ActiveForm;
 どのように動作するかを見るために、ブラウザで下記の URL にアクセスしてください。
 
 ```
-http://hostname/index.php?r=site%2Fentry
+https://hostname/index.php?r=site%2Fentry
 ```
 
 二つのインプット・フィールドを持つフォームを表示するページが表示されるでしょう。それぞれのインプット・フィールドの前には、どんなデータを入力すべきかを示すラベルがあります。

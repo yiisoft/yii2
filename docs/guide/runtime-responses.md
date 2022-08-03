@@ -169,7 +169,7 @@ you can call its shortcut version [[yii\web\Controller::redirect()]]. For exampl
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -180,7 +180,7 @@ In places other than an action method, you should call [[yii\web\Response::redir
 a chained call to the [[yii\web\Response::send()]] method to ensure no extra content will be appended to the response.
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: By default, the [[yii\web\Response::redirect()]] method sets the response status code to be 302 which instructs

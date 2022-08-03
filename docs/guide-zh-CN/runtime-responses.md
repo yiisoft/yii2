@@ -169,7 +169,7 @@ Yii提供对它提供了特别的支持。
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -180,7 +180,7 @@ public function actionOld()
 [[yii\web\Response::send()]] 方法来确保没有其他内容追加到响应中。
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: [[yii\web\Response::redirect()]] 方法默认会设置响应状态码为 302，该状态码会告诉浏览器请求的资源

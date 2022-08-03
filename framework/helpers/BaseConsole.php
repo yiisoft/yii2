@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -301,7 +301,7 @@ class BaseConsole
      *
      * @param int $colorCode xterm color code
      * @return string
-     * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+     * @see https://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
     public static function xtermFgColor($colorCode)
     {
@@ -316,7 +316,7 @@ class BaseConsole
      *
      * @param int $colorCode xterm color code
      * @return string
-     * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+     * @see https://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
     public static function xtermBgColor($colorCode)
     {
@@ -432,14 +432,14 @@ class BaseConsole
     public static function ansiToHtml($string, $styleMap = [])
     {
         $styleMap = [
-            // http://www.w3.org/TR/CSS2/syndata.html#value-def-color
+            // https://www.w3.org/TR/CSS2/syndata.html#value-def-color
             self::FG_BLACK => ['color' => 'black'],
             self::FG_BLUE => ['color' => 'blue'],
             self::FG_CYAN => ['color' => 'aqua'],
             self::FG_GREEN => ['color' => 'lime'],
             self::FG_GREY => ['color' => 'silver'],
-            // http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
-            // http://dev.w3.org/csswg/css-color/#valuedef-rebeccapurple
+            // https://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
+            // https://drafts.csswg.org/css-color/#valuedef-rebeccapurple
             self::FG_PURPLE => ['color' => 'rebeccapurple'],
             self::FG_RED => ['color' => 'red'],
             self::FG_YELLOW => ['color' => 'yellow'],

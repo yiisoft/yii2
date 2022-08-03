@@ -428,14 +428,14 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   provides the support for using [redis](https://redis.io/). It includes features such as basic query,
   Active Record, caching, etc.
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
-  provides an interactive shell based on [psysh](http://psysh.org/).
+  provides an interactive shell based on [psysh](https://psysh.org/).
 - [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty):
-  provides a template engine based on [Smarty](http://www.smarty.net/).
+  provides a template engine based on [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx):
-  provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
+  provides the support for using [Sphinx](https://sphinxsearch.com/). It includes features such as basic query,
   Active Record, code generation, etc.
 - [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
-  provides email sending features based on [swiftmailer](http://swiftmailer.org/).
+  provides email sending features based on [swiftmailer](https://swiftmailer.symfony.com/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
   provides a template engine based on [Twig](https://twig.symfony.com/).
 
@@ -447,7 +447,7 @@ You don't need to install them for Yii 2.0, since they are included in the core 
 - [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
   provides a support for [jQuery](https://jquery.com/).
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
-  provides a masked input widget based on [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
+  provides a masked input widget based on [jQuery Input Mask plugin](https://robinherbots.github.io/Inputmask/).
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
   provides the support for using [MSSQL](https://www.microsoft.com/sql-server/).
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):

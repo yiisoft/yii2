@@ -326,7 +326,7 @@ Si vous désirez utiliser utiliser un style externe d'un fichier CSS :
 génère
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -373,7 +373,7 @@ Pour générer une balise image, utilisez le code suivant :
 
 qui génère
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 En plus des [alias](concept-aliases.md), le premier argument accepte les routes, les paramètres et les URL, tout comme [Url::to()](helper-url.md).

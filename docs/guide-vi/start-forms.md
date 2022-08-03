@@ -182,7 +182,7 @@ Thử xem kết quả <span id="trying-it-out"></span>
 Truy cập vào URL sau để xem kết quả:
 
 ```
-http://hostname/index.php?r=site/entry
+https://hostname/index.php?r=site/entry
 ```
 
 Bạn sẽ thấy trang Web cùng với việc hiển thị form chứa 2 trường để nhập dữ liệu . Trước mỗi trường nhập liệu, có nhãn được chỉ định những dữ liệu nhập vào . 
