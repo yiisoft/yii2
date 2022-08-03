@@ -304,11 +304,11 @@
                 "yii2"
             ],
             "support": {
-                "forum": "https://www.yiiframework.com/forum/",
+                "forum": "http://www.yiiframework.com/forum/",
                 "irc": "irc://irc.freenode.net/yii",
                 "issues": "https://github.com/yiisoft/yii2-composer/issues",
                 "source": "https://github.com/yiisoft/yii2-composer",
-                "wiki": "https://www.yiiframework.com/wiki/"
+                "wiki": "http://www.yiiframework.com/wiki/"
             },
             "funding": [
                 {
