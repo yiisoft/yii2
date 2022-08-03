@@ -168,9 +168,9 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', 'https');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], 'https');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', '');
         $this->assertEquals('//www.example.com/index.php?r=post%2Fview', $url);
