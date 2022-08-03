@@ -49,7 +49,7 @@ class UrlManagerTest extends TestCase
         // set default values if they are not set
         $config = array_merge([
             'scriptUrl' => '/index.php',
-            'hostInfo' => 'https://www.example.com',
+            'hostInfo' => 'http://www.example.com',
             'showScriptName' => $showScriptName,
             'enableStrictParsing' => $enableStrictParsing,
         ], $config);

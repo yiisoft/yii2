@@ -159,12 +159,12 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     {
         $link = [
             'label' => 'demo',
-            'url' => 'https://example.com',
+            'url' => 'http://example.com',
             'class' => 'external',
         ];
         $method = $this->reflectMethod();
         $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
-        $this->assertEquals('<li><a class="external" href="https://example.com">demo</a></li>' . "\n", $result);
+        $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
     }
 
     public function testTag()

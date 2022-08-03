@@ -111,7 +111,7 @@ HTML
     public function testRegisterClientScript()
     {
         $this->mockWebApplication();
-        $_SERVER['REQUEST_URI'] = 'https://example.com/';
+        $_SERVER['REQUEST_URI'] = 'http://example.com/';
 
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');

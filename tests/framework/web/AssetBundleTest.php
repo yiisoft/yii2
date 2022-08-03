@@ -421,8 +421,8 @@ EOF;
                 '123<script src="/assetSources/js/jquery.js"></script>4',
             ],
             [
-                'js', 'https://example.com/assetSources/js/jquery.js', false,
-                '123<script src="https://example.com/assetSources/js/jquery.js"></script>4',
+                'js', 'http://example.com/assetSources/js/jquery.js', false,
+                '123<script src="http://example.com/assetSources/js/jquery.js"></script>4',
             ],
             [
                 'js', '//example.com/assetSources/js/jquery.js', false,
@@ -447,8 +447,8 @@ EOF;
                 '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
             ],
             [
-                'css', 'https://example.com/assetSources/css/stub.css', false,
-                '1<link href="https://example.com/assetSources/css/stub.css" rel="stylesheet">234',
+                'css', 'http://example.com/assetSources/css/stub.css', false,
+                '1<link href="http://example.com/assetSources/css/stub.css" rel="stylesheet">234',
             ],
             [
                 'css', '//example.com/assetSources/css/stub.css', false,

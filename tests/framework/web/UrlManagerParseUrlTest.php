@@ -57,7 +57,7 @@ class UrlManagerParseUrlTest extends TestCase
         ], $config));
     }
 
-    protected function getRequest($pathInfo, $hostInfo = 'https://www.example.com', $method = 'GET', $config = [])
+    protected function getRequest($pathInfo, $hostInfo = 'http://www.example.com', $method = 'GET', $config = [])
     {
         $config['pathInfo'] = $pathInfo;
         $config['hostInfo'] = $hostInfo;
