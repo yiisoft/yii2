@@ -557,12 +557,12 @@ class UrlManagerCreateUrlTest extends TestCase
                 'host' => 'http://<lang:en|fr>.example.com',
             ],
             // note: baseUrl is not included in the pattern
-            'https://www.example.com/login' => 'site/login',
+            'http://www.example.com/login' => 'site/login',
         ];
         $manager = $this->getUrlManager($config, $showScriptName);
         // first rule matches
         $urlParams = ['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en'];
-        $expected = "https://en.example.com$prefix/post/1/sample+post";
+        $expected = "http://en.example.com$prefix/post/1/sample+post";
         $this->assertEquals($expected, $manager->createUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, true));
@@ -571,13 +571,13 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals(substr($expected, 5), $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
 
         $urlParams = ['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en', '#' => 'testhash'];
-        $expected = "https://en.example.com$prefix/post/1/sample+post#testhash";
+        $expected = "http://en.example.com$prefix/post/1/sample+post#testhash";
         $this->assertEquals($expected, $manager->createUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
 
         // second rule matches
         $urlParams = ['site/login'];
-        $expected = "https://www.example.com$prefix/login";
+        $expected = "http://www.example.com$prefix/login";
         $this->assertEquals($expected, $manager->createUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, true));
@@ -588,7 +588,7 @@ class UrlManagerCreateUrlTest extends TestCase
         // none of the rules matches
         $urlParams = ['post/index', 'page' => 1];
         $this->assertEquals("$prefix/post/index?page=1", $manager->createUrl($urlParams));
-        $expected = "https://www.example.com$prefix/post/index?page=1";
+        $expected = "http://www.example.com$prefix/post/index?page=1";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, true));
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, 'http'));
@@ -597,7 +597,7 @@ class UrlManagerCreateUrlTest extends TestCase
 
         $urlParams = ['post/index', 'page' => 1, '#' => 'testhash'];
         $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
-        $expected = "https://www.example.com$prefix/post/index?page=1#testhash";
+        $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
     }
 

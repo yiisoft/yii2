@@ -215,7 +215,7 @@ class FormatterTest extends TestCase
 
     public function testAsUrl()
     {
-        $value = 'https://www.yiiframework.com/';
+        $value = 'http://www.yiiframework.com/';
         $this->assertSame("<a href=\"$value\">$value</a>", $this->formatter->asUrl($value));
         $this->assertSame("<a href=\"$value\">$value</a>", $this->formatter->asUrl($value, ['scheme' => null]));
         $this->assertSame("<a href=\"$value\">$value</a>", $this->formatter->asUrl($value, ['scheme' => false]));
@@ -234,7 +234,7 @@ class FormatterTest extends TestCase
         $this->assertSame("<a href=\"$value\">$value</a>", $this->formatter->asUrl($value, ['scheme' => false]));
         $this->assertSame("<a href=\"$value\">$value</a>", $this->formatter->asUrl($value, ['scheme' => null]));
         $this->assertSame(
-            "<a href=\"https://www.yiiframework.com/\">$value</a>",
+            "<a href=\"http://www.yiiframework.com/\">$value</a>",
             $this->formatter->asUrl($value, ['scheme' => 'http'])
         );
         $this->assertSame("<a href=\"$value\">$value</a>", $this->formatter->asUrl($value, ['scheme' => 'https']));

@@ -49,7 +49,7 @@ class UrlRuleTest extends TestCase
             'cache' => null,
             'normalizer' => false,
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -73,7 +73,7 @@ class UrlRuleTest extends TestCase
             'cache' => null,
             'normalizer' => UrlNormalizer::className(),
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -104,7 +104,7 @@ class UrlRuleTest extends TestCase
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -133,7 +133,7 @@ class UrlRuleTest extends TestCase
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -162,7 +162,7 @@ class UrlRuleTest extends TestCase
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -190,7 +190,7 @@ class UrlRuleTest extends TestCase
                 'action' => null,
             ],
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -219,7 +219,7 @@ class UrlRuleTest extends TestCase
                 'action' => $normalizerAction,
             ],
         ]);
-        $request = new Request(['hostInfo' => 'https://en.example.com']);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -243,7 +243,7 @@ class UrlRuleTest extends TestCase
             'cache' => null,
         ]);
         $request = new Request([
-            'hostInfo' => 'https://en.example.com',
+            'hostInfo' => 'http://en.example.com',
             'pathInfo' => 'post/1-a/',
         ]);
 
@@ -700,7 +700,7 @@ class UrlRuleTest extends TestCase
                 ],
                 [
                     ['post/index', ['page' => 1, 'tag' => 'a'], false],
-                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'https://en.example.com/post/a'],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
                 ],
             ],
             [
@@ -712,7 +712,7 @@ class UrlRuleTest extends TestCase
                 ],
                 [
                     ['post/index', ['page' => 1, 'tag' => 'a'], false],
-                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'https://en.example.com/post/a'],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
                 ],
             ],
             [
@@ -1195,7 +1195,7 @@ class UrlRuleTest extends TestCase
             [
                 'host info + defaults', // https://github.com/yiisoft/yii2/issues/6871
                 [
-                    'pattern' => 'https://en.example.com/<page>',
+                    'pattern' => 'http://en.example.com/<page>',
                     'route' => 'post/index',
                     'defaults' => ['page' => 1],
                 ],
@@ -1302,7 +1302,7 @@ class UrlRuleTest extends TestCase
             list($route, $params, $expected, $status) = $test;
 
             $this->mockWebApplication();
-            Yii::$app->set('request', new Request(['hostInfo' => 'https://example.com', 'scriptUrl' => '/index.php']));
+            Yii::$app->set('request', new Request(['hostInfo' => 'http://example.com', 'scriptUrl' => '/index.php']));
 
             $manager = new UrlManager([
                 'cache' => null,

@@ -667,7 +667,7 @@ class TestAssetPerFileOptions extends AssetBundle
 class TestNonRelativeAsset extends AssetBundle
 {
     public $basePath = '@webroot/js';
-    public $baseUrl = 'https://example.com/js/';
+    public $baseUrl = 'http://example.com/js/';
     public $js = [
         'jquery.js',
     ];
