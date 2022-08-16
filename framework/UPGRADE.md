@@ -56,6 +56,8 @@ Upgrade from Yii 2.0.45
 
 * Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted so it works as in pre-2.0.45. If you need
   2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
+* `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
+  the files is done only by copy.
 
 Upgrade from Yii 2.0.44
 -----------------------

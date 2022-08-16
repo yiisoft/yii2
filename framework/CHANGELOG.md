@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #19477: cast shell_exec() output to string (schmunk42)
 - Bug #19481: Exception is always empty in ErrorHandler when handling fatal error (Renkas)
 - Bug #19462: Fix validator client options to encode HTML tags (bizley)
+- Bug #19259: Fix `yii\log\FileTarget` locking and always rotate files only by copy (bizley, mikehaertl)
 
 2.0.45 February 11, 2022
 ------------------------
