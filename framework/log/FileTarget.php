@@ -73,7 +73,7 @@ class FileTarget extends Target
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this.
      * @deprecated since 2.0.46 and setting it to false has no effect anymore
-     * since rotating is now always done by copy
+     * since rotating is now always done by copy.
      */
     public $rotateByCopy = true;
 
