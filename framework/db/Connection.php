@@ -110,21 +110,22 @@ use yii\caching\CacheInterface;
  * ],
  * ```
  *
- * @property string $driverName Name of the DB driver.
+ * @property string|null $driverName Name of the DB driver. Note that the type of this property differs in
+ * getter and setter. See [[getDriverName()]] and [[setDriverName()]] for details.
  * @property-read bool $isActive Whether the DB connection is established.
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
  * the sequence object.
- * @property-read Connection $master The currently active master connection. `null` is returned if there is no
- * master available.
+ * @property-read Connection|null $master The currently active master connection. `null` is returned if there
+ * is no master available.
  * @property-read PDO $masterPdo The PDO instance for the currently active master connection.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
  * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
  * @property-read Schema $schema The schema information for the database opened by this connection.
  * @property-read string $serverVersion Server version as a string.
- * @property-read Connection $slave The currently active slave connection. `null` is returned if there is no
- * slave available and `$fallbackToMaster` is false.
- * @property-read PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned
- * if no slave connection is available and `$fallbackToMaster` is false.
+ * @property-read Connection|null $slave The currently active slave connection. `null` is returned if there is
+ * no slave available and `$fallbackToMaster` is false.
+ * @property-read PDO|null $slavePdo The PDO instance for the currently active slave connection. `null` is
+ * returned if no slave connection is available and `$fallbackToMaster` is false.
  * @property-read Transaction|null $transaction The currently active transaction. Null if no active
  * transaction.
  *

@@ -18,8 +18,8 @@ use Yii;
  * @property-read \yii\rbac\ManagerInterface|null $authManager The auth manager application component or null
  * if it's not configured.
  * @property string $basePath The root directory of the application.
- * @property-read \yii\caching\CacheInterface $cache The cache application component. Null if the component is
- * not enabled.
+ * @property-read \yii\caching\CacheInterface|null $cache The cache application component. Null if the
+ * component is not enabled.
  * @property-write array $container Values given in terms of name-value pairs.
  * @property-read \yii\db\Connection $db The database connection.
  * @property-read \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
