@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19467: Revert changes in `Inflector::camel2words()` introduced in #19204 (samdark)
-- Bug #19471: Enable console commands on hostings with disabled `exec()` function (WinterSilence, lubosdz)
+- Bug #19471: Enable console commands on hosting with disabled `exec()` function (WinterSilence, lubosdz)
 - Bug #19469: Fix a virtual relation not working because of new isset checks in `\yii\db\ActiveRelationTrait` (wvanheumen)
 - Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19272: Fix bug in dirty attributes check on multidimensional array (speedplli)
@@ -16,7 +16,7 @@ Yii Framework 2 Change Log
 - Enh #19270: Replace deprecated `scss` converter in `yii\web\AssetConverter::$commands` (WinterSilence)
 - Enh #19254: Support specifying custom characters for `yii.validation.trim()` and replace deprecated `jQuery.trim()` (WinterSilence)
 - Bug #19291: Reset errors and validators in `yii\base\Model::__clone()` (WinterSilence)
-- Enh #19295: Added alias `text/rtf` for mime-type `application/rtf` (lesha724)
+- Enh #19295: Add alias `text/rtf` for mime-type `application/rtf` (lesha724)
 - Enh #19308: Add `yii\web\UploadedFile::$fullPath` represents 'full_path' key added in PHP 8.1 (WinterSilence)
 - Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
 - Enh #19304: Add filtering validator `yii\validators\TrimValidator` (WinterSilence)
@@ -42,7 +42,7 @@ Yii Framework 2 Change Log
 - Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
 - Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
 - Bug #19454: Fix PDO exception code not properly passed to `yii\db\Exception` (Roguyt)
-- Bug #19477: cast shell_exec() output to string (schmunk42)
+- Bug #19477: Cast shell_exec() output to string (schmunk42)
 - Bug #19481: Exception is always empty in ErrorHandler when handling fatal error (Renkas)
 - Bug #19462: Fix validator client options to encode HTML tags (bizley)
 - Bug #19259: Fix `yii\log\FileTarget` locking and always rotate files only by copy (bizley, mikehaertl)
