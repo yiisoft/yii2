@@ -997,6 +997,7 @@ class DbManager extends BaseManager
     {
         if ($this->cache !== null) {
             $this->cache->delete($this->cacheKey);
+            $this->cache->delete($this->getUserRolesCacheKey());
             $this->items = null;
             $this->rules = null;
             $this->parents = null;
