@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
-- no changes in this release.
+- Bug #14388: Fixed fixture loading order in output message (manchenkoff)
 
 
 2.0.46 August 18, 2022
