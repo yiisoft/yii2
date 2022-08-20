@@ -156,6 +156,13 @@ class CompareValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_o' => 5, 'attr_o_repeat' => 5]);
         $val->validateAttribute($model, 'attr_o');
         $this->assertTrue($model->hasErrors('attr_o'));
+        // compareAttribute has validation error
+        $val = new CompareValidator(['compareAttribute' => 'attr_x']);
+        $model = FakedValidationModel::createWithAttributes(['attr_x' => 10, 'attr_y' => 10]);
+        $model->addError('attr_x', 'invalid value');
+        $val->validateAttribute($model, 'attr_y');
+        $this->assertTrue($model->hasErrors('attr_x'));
+        $this->assertTrue($model->hasErrors('attr_y'));
     }
 
     public function testAttributeErrorMessages()
@@ -168,6 +175,7 @@ class CompareValidatorTest extends TestCase
 
         foreach ($this->getTestDataForMessages() as $data) {
             $model->clearErrors($data[0]);
+            $model->clearErrors($data[2]);
             $validator = new CompareValidator();
             $validator->operator = $data[1];
             $validator->message = null;

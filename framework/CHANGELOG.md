@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
-- no changes in this release.
+- Bug #12636: Fix CompareValidator successful state when compareAttribute has an error
 
 
 2.0.46 August 18, 2022
