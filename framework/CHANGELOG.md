@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
-- no changes in this release.
+- Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
 
 
 2.0.46 August 18, 2022
