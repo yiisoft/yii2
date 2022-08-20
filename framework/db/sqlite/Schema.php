@@ -7,6 +7,7 @@
 
 namespace yii\db\sqlite;
 
+use Yii;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
@@ -16,7 +17,6 @@ use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
-use yii\db\SqlToken;
 use yii\db\TableSchema;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
@@ -206,7 +206,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::class, [$this->db]);
     }
 
     /**
@@ -215,7 +215,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return Yii::createObject(ColumnSchemaBuilder::class, [$type, $length]);
     }
 
     /**
