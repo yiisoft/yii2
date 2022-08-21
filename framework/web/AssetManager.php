@@ -476,6 +476,10 @@ class AssetManager extends Component
             throw new InvalidArgumentException("The file or directory to be published does not exist: $path");
         }
 
+        if (!is_readable($path)) {
+            throw new InvalidArgumentException("The file or directory to be published is not readable: $path");
+        }
+
         if (is_file($src)) {
             return $this->_published[$path] = $this->publishFile($src);
         }
