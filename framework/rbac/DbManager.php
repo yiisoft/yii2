@@ -87,6 +87,10 @@ class DbManager extends BaseManager
      * @since 2.0.3
      */
     public $cacheKey = 'rbac';
+    /**
+     * @var string the key used to store user RBAC roles in cache
+     */
+    public $rolesCacheSuffix = 'roles';
 
     /**
      * @var Item[] all auth items (name => Item)
@@ -105,10 +109,6 @@ class DbManager extends BaseManager
      * @since `protected` since 2.0.38
      */
     protected $checkAccessAssignments = [];
-    /**
-     * @var string the key used to store user RBAC roles in cache
-     */
-    protected $rolesCacheSuffix = '.roles';
 
 
     /**
@@ -475,7 +475,7 @@ class DbManager extends BaseManager
             return [];
         }
 
-        if ($this->cache instanceof CacheInterface) {
+        if ($this->cache !== null) {
             $data = $this->cache->get($this->getUserRolesCacheKey());
 
             if ($data !== false) {
@@ -494,7 +494,7 @@ class DbManager extends BaseManager
             $roles[$row['name']] = $this->populateItem($row);
         }
 
-        if ($this->cache instanceof CacheInterface) {
+        if ($this->cache !== null) {
             $this->cache->set($this->getUserRolesCacheKey(), $roles);
         }
 
@@ -1075,6 +1075,6 @@ class DbManager extends BaseManager
 
     private function getUserRolesCacheKey()
     {
-        return $this->cacheKey + '.' + $this->rolesCacheSuffix;
+        return $this->cacheKey . $this->rolesCacheSuffix;
     }
 }
