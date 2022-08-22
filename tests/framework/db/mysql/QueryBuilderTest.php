@@ -208,14 +208,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testResetSequence()
     {
-        $qb = $this->getQueryBuilder();
+        $command = $this->getQueryBuilder();
 
         $expected = 'ALTER TABLE `item` AUTO_INCREMENT=6';
-        $sql = $qb->resetSequence('item');
+        $sql = $command->resetSequence('item');
         $this->assertEquals($expected, $sql);
 
         $expected = 'ALTER TABLE `item` AUTO_INCREMENT=4';
-        $sql = $qb->resetSequence('item', 4);
+        $sql = $command->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
 
@@ -398,14 +398,14 @@ MySqlStatement;
     public function testDefaultValues()
     {
         $db = $this->getConnection();
-        $qb = $db->getQueryBuilder();
+        $command = $db->createCommand();
 
         // primary key columns should have NULL as value
-        $sql = $qb->insert('null_values', [], []);
+        $sql = $command->insert('null_values', []);
         $this->assertEquals("INSERT INTO `null_values` (`id`) VALUES (NULL)", $sql);
         
         // non-primary key columns should have DEFAULT as value
-        $sql = $qb->insert('negative_default_values', [], []);
+        $sql = $command->insert('negative_default_values', []);
         $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);
     }
 }
