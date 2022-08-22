@@ -401,11 +401,11 @@ MySqlStatement;
         $command = $db->createCommand();
 
         // primary key columns should have NULL as value
-        $sql = $command->insert('null_values', []);
+        $sql = $command->insert('null_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `null_values` (`id`) VALUES (NULL)", $sql);
         
         // non-primary key columns should have DEFAULT as value
-        $sql = $command->insert('negative_default_values', []);
+        $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);
     }
 }
