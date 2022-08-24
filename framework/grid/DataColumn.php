@@ -216,10 +216,10 @@ class DataColumn extends Column
                 $error = '';
             }
             if (is_array($this->filter)) {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => '', 'strict' => true], $this->filterInputOptions);
                 return Html::activeDropDownList($model, $this->filterAttribute, $this->filter, $options) . $error;
             } elseif ($this->format === 'boolean') {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => '', 'strict' => true], $this->filterInputOptions);
                 return Html::activeDropDownList($model, $this->filterAttribute, [
                     1 => $this->grid->formatter->booleanFormat[1],
                     0 => $this->grid->formatter->booleanFormat[0],
