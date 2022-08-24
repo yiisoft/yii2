@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -14,7 +14,7 @@ use ReflectionFunction;
  * The flexible comparation.
  *
  * @author info@ensostudio.ru
- * @since 2.0.46
+ * @since 2.0.47
  */
 abstract class BaseComparator
 {
