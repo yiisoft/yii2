@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #16658: Fix file readability check on publishing assets by `yii\web\AssetManager` (manchenkoff)
+- Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 
 
 2.0.46 August 18, 2022
