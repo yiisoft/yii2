@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15500: Fix saving empty records to MySQL (manchenkoff)
+- Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 
 
 2.0.46 August 18, 2022
