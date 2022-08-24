@@ -208,14 +208,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testResetSequence()
     {
-        $command = $this->getQueryBuilder();
+        $qb = $this->getQueryBuilder();
 
         $expected = 'ALTER TABLE `item` AUTO_INCREMENT=6';
-        $sql = $command->resetSequence('item');
+        $sql = $qb->resetSequence('item');
         $this->assertEquals($expected, $sql);
 
         $expected = 'ALTER TABLE `item` AUTO_INCREMENT=4';
-        $sql = $command->resetSequence('item', 4);
+        $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
 
