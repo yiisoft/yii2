@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
-- no changes in this release.
+- Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 
 
 2.0.46 August 18, 2022
