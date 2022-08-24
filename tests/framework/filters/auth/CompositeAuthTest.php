@@ -256,7 +256,6 @@ class CompositeAuthTest extends \yiiunit\TestCase
     {
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
         $controller = new TestController('test', Yii::$app, ['authMethods' => $authMethods]);
-        $controller->authMethods = $authMethods;
         if ($expectedAuth) {
             $this->assertEquals('success', $controller->run($actionId));
         } else {
