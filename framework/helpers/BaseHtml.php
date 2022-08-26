@@ -1912,14 +1912,16 @@ class BaseHtml
             } else {
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
-                if (!array_key_exists('selected', $attrs) && $selection !== null) {
-                    if (ArrayHelper::isTraversable($selection)) {
+                if (!array_key_exists('selected', $attrs)) {
+                    if ($selection === null) {
+                        $attrs['selected'] = false;
+                    } elseif (ArrayHelper::isTraversable($selection)) {
                         $attrs['selected'] = ArrayHelper::isIn($key, $selection, $strict);
                     } elseif ($strict) {
                         $attrs['selected'] = $selection === $key;
                     } else {
                         if (is_int($key)) {
-                            // to prevent error at comparing with an object $selection
+                            // to prevent error at comparing with an object
                             $key = (string) $key;
                         }
                         $attrs['selected'] = $selection == $key;
