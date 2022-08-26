@@ -1916,6 +1916,10 @@ class BaseHtml
                     if ($selection === null) {
                         $attrs['selected'] = false;
                     } elseif (ArrayHelper::isTraversable($selection)) {
+                        if (!$strict && is_int($key)) {
+                            // to prevent error at comparing with an object
+                            $key = (string) $key;
+                        }
                         $attrs['selected'] = ArrayHelper::isIn($key, $selection, $strict);
                     } elseif ($strict) {
                         $attrs['selected'] = $selection === $key;
