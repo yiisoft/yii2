@@ -10,6 +10,8 @@ namespace yii\behaviors;
 use yii\base\Behavior;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
+use yii\base\ModelEvent;
+use yii\db\AfterSaveEvent;
 use yii\db\BaseActiveRecord;
 use yii\helpers\StringHelper;
 use yii\validators\BooleanValidator;
@@ -328,41 +330,52 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Handles owner 'afterValidate' event, ensuring attribute typecasting.
+     * Handles owner 'afterValidate' event, ensuring attribute type casting.
+     *
      * @param \yii\base\Event $event event instance.
      */
     public function afterValidate($event)
     {
         if (!$this->owner->hasErrors()) {
-            $this->typecastAttributes();
+            $this->typecastAttributes($this->owner->activeAttributes());
         }
     }
 
     /**
-     * Handles owner 'beforeInsert' and 'beforeUpdate' events, ensuring attribute typecasting.
-     * @param \yii\base\Event $event event instance.
+     * Handles owner 'beforeInsert' and 'beforeUpdate' events, ensuring attribute type casting.
+     *
+     * @param \yii\base\Event|ModelEvent $event event instance.
      */
     public function beforeSave($event)
     {
-        $this->typecastAttributes();
+        if (!$event instanceof ModelEvent || $event->isValid) {
+            $this->typecastAttributes($this->owner->activeAttributes());
+        }
     }
 
     /**
-     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
-     * @param \yii\base\Event $event event instance.
+     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute type casting.
+     *
+     * @param \yii\base\Event|AfterSaveEvent $event event instance.
      * @since 2.0.14
      */
     public function afterSave($event)
     {
-        $this->typecastAttributes();
+        if (!$event instanceof AfterSaveEvent || !empty($event->changedAttributes)) {
+            $attributes = $event instanceof AfterSaveEvent
+                ? array_keys($event->changedAttributes)
+                : $this->owner->activeAttributes();
+            $this->typecastAttributes($attributes);
+        }
     }
 
     /**
-     * Handles owner 'afterFind' event, ensuring attribute typecasting.
+     * Handles owner 'afterFind' event, ensuring attribute type casting.
+     *
      * @param \yii\base\Event $event event instance.
      */
     public function afterFind($event)
     {
-        $this->typecastAttributes();
+        $this->typecastAttributes($this->owner->activeAttributes());
     }
 }
