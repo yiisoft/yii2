@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 - Bug #19524: Fix comparasion in `BaseHtml::renderSelectOptions()` (WinterSilence)
+- Bug #19517: Fix regression in `CompositeAuth::authenticate()` introduced in #19418 (WinterSilence)
 
 
 2.0.46 August 18, 2022
