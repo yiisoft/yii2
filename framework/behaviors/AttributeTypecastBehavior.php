@@ -330,6 +330,17 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
+     * Returns the attributes to type casting.
+     *
+     * @param string[] $attributes the attribute names
+     * @return string[]
+     */
+    protected function filterAttributes(array $attributes)
+    {
+        return array_intersect($attributes, array_keys($this->attributeTypes));
+    }
+
+    /**
      * Handles owner 'afterValidate' event, ensuring attribute type casting.
      *
      * @param \yii\base\Event $event event instance.
@@ -337,7 +348,7 @@ class AttributeTypecastBehavior extends Behavior
     public function afterValidate($event)
     {
         if (!$this->owner->hasErrors()) {
-            $this->typecastAttributes($this->owner->activeAttributes());
+            $this->typecastAttributes($this->filterAttributes($this->owner->activeAttributes()));
         }
     }
 
@@ -349,7 +360,7 @@ class AttributeTypecastBehavior extends Behavior
     public function beforeSave($event)
     {
         if (!$event instanceof ModelEvent || $event->isValid) {
-            $this->typecastAttributes($this->owner->activeAttributes());
+            $this->typecastAttributes($this->filterAttributes($this->owner->activeAttributes()));
         }
     }
 
@@ -365,7 +376,7 @@ class AttributeTypecastBehavior extends Behavior
             $attributes = $event instanceof AfterSaveEvent
                 ? array_keys($event->changedAttributes)
                 : $this->owner->activeAttributes();
-            $this->typecastAttributes($attributes);
+            $this->typecastAttributes($this->filterAttributes($attributes));
         }
     }
 
@@ -376,6 +387,6 @@ class AttributeTypecastBehavior extends Behavior
      */
     public function afterFind($event)
     {
-        $this->typecastAttributes($this->owner->activeAttributes());
+        $this->typecastAttributes($this->filterAttributes($this->owner->activeAttributes()));
     }
 }
