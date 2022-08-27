@@ -310,6 +310,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
             ['amount', 'integer'],
             ['price', 'number'],
             ['isActive', 'boolean'],
+            ['callback', 'safe'],
         ];
     }
 
