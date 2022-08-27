@@ -101,7 +101,46 @@ abstract class BaseComparator
     }
 
     /**
-     * Compares two values.
+     * Gets the PHP type of a variable.
+     *
+     * @param mixed $value the variable being type checked
+     * @return string the type name
+     */
+    public static function getType($value)
+    {
+        $aliases = [
+            'NULL' => 'null',
+            'boolean' => 'bool',
+            'integer' => 'int',
+            'double' => 'float',
+            'resource (closed)' => 'resource',
+        ];
+        $type = gettype($value);
+
+        return isset($aliases[$type]) ? $aliases[$type] : $type;
+    }
+
+    /**
+     * Checks whether PHP types are comparable (non-strict comparison).
+     *
+     * @param string $type the first type name
+     * @param string $type2 the second type name
+     * @return bool
+     */
+    public function canCompare($type, $type2)
+    {
+        if (
+            ($type === 'object' && in_array($type2, ['int', 'float'], true))
+            || ($type2 === 'object' && in_array($type, ['int', 'float'], true))
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks is the values are equal/same.
      *
      * @param mixed $value the first value to compare
      * @param mixed $value2 the second value to compare
@@ -109,21 +148,25 @@ abstract class BaseComparator
      */
     public static function compare($value, $value2)
     {
-        if ($value === $value2 || (!static::hasFlag(static::STRICT) && $value == $value2)) {
+        if ($value === $value2) {
             return true;
         }
 
-        $type = gettype($value);
-        $type2 = gettype($value2);
+        $type = static::getType($value);
+        $type2 = static::gettype($value2);
+
         if (static::hasFlag(static::STRICT) && $type !== $type2) {
             return false;
         }
 
-        if ($type === 'double' || $type2 === 'double') {
-            $type = $type2 = 'float';
-        } elseif ($type === 'string' || $type2 === 'string') {
-            $type = $type2 = 'string';
+        if (
+            !static::hasFlag(static::STRICT)
+            && static:canCompare($type, $type2)
+            && $value == $value2
+        ) {
+            return true;
         }
+
         if (
             $type === $type2
             && in_array($type, ['array', 'object', 'resource', 'float', 'string'], true)
@@ -171,8 +214,8 @@ abstract class BaseComparator
      */
     protected static function compareStrings($string, $string2)
     {
-        $number = (string) $number;
-        $number2 = (string) $number2;
+        $string = (string) $string;
+        $string2 = (string) $string2;
 
         $diff = static::hasFlag(static::EQUAL_STRING) ? strcasecmp($string, $string2) : strcmp($string, $string2);
 
@@ -188,7 +231,7 @@ abstract class BaseComparator
      */
     protected static function compareArrays(array $array, array $array2)
     {
-        if (count($array) !== count($array2)) {
+        if (count($array, COUNT_RECURSIVE) !== count($array2, COUNT_RECURSIVE)) {
             return false;
         }
 
