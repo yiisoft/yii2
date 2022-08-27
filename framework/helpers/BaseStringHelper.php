@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -109,7 +109,7 @@ class BaseStringHelper
      * Truncates a string to the number of characters specified.
      *
      * In order to truncate for an exact length, the $suffix char length must be counted towards the $length. For example
-     * to have a string which is exactly 255 long with $suffix `...` of 3 chars, then `StringHelper::truncate($string, 252, '...')` 
+     * to have a string which is exactly 255 long with $suffix `...` of 3 chars, then `StringHelper::truncate($string, 252, '...')`
      * must be used to ensure you have 255 long string afterwards.
      *
      * @param string $string The string to truncate.

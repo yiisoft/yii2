@@ -351,7 +351,7 @@ acceptance tests and functionality tests. For more details, please refer to the 
 #### Versioning <span id="versioning"></span>
 
 You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
-[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+[semantic versioning](https://semver.org) practice when determining what version numbers should be used.
 
 
 #### Releasing <span id="releasing"></span>
@@ -367,7 +367,7 @@ In the releases of your extension, in addition to code files, you should also co
 help other people learn about and use your extension:
 
 * A readme file in the package root directory: it describes what your extension does and how to install and use it.
-  We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
+  We recommend you write it in [Markdown](https://daringfireball.net/projects/markdown/) format and name the file
   as `readme.md`.
 * A changelog file in the package root directory: it lists what changes are made in each release. The file
   may be written in Markdown format and named as `changelog.md`.
@@ -398,7 +398,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient):
   provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
 - [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap):
-  provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
+  provides a set of widgets that encapsulate the [Bootstrap](https://getbootstrap.com/) components and plugins.
 - [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug):
   provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
   at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
@@ -415,9 +415,9 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-httpclient](https://www.yiiframework.com/extension/yiisoft/yii2-httpclient):
   provides an HTTP client.
 - [yiisoft/yii2-imagine](https://www.yiiframework.com/extension/yiisoft/yii2-imagine):
-  provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
+  provides commonly used image manipulation functions based on [Imagine](https://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
-  provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
+  provides a set of widgets that encapsulate the [JQuery UI](https://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
   provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
@@ -425,17 +425,17 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   provides the supports for running tasks asynchronously via queues.
   It supports queues based on DB, Redis, RabbitMQ, AMQP, Beanstalk and Gearman.
 - [yiisoft/yii2-redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis):
-  provides the support for using [redis](http://redis.io/). It includes features such as basic query,
+  provides the support for using [redis](https://redis.io/). It includes features such as basic query,
   Active Record, caching, etc.
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
-  provides an interactive shell based on [psysh](http://psysh.org/).
+  provides an interactive shell based on [psysh](https://psysh.org/).
 - [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty):
-  provides a template engine based on [Smarty](http://www.smarty.net/).
+  provides a template engine based on [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx):
-  provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
+  provides the support for using [Sphinx](https://sphinxsearch.com/). It includes features such as basic query,
   Active Record, code generation, etc.
 - [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
-  provides email sending features based on [swiftmailer](http://swiftmailer.org/).
+  provides email sending features based on [swiftmailer](https://swiftmailer.symfony.com/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
   provides a template engine based on [Twig](https://twig.symfony.com/).
 
@@ -447,7 +447,7 @@ You don't need to install them for Yii 2.0, since they are included in the core 
 - [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
   provides a support for [jQuery](https://jquery.com/).
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
-  provides a masked input widget based on [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
+  provides a masked input widget based on [jQuery Input Mask plugin](https://robinherbots.github.io/Inputmask/).
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
   provides the support for using [MSSQL](https://www.microsoft.com/sql-server/).
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):

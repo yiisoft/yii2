@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -18,8 +18,8 @@ use Yii;
  * @property-read \yii\rbac\ManagerInterface|null $authManager The auth manager application component or null
  * if it's not configured.
  * @property string $basePath The root directory of the application.
- * @property-read \yii\caching\CacheInterface $cache The cache application component. Null if the component is
- * not enabled.
+ * @property-read \yii\caching\CacheInterface|null $cache The cache application component. Null if the
+ * component is not enabled.
  * @property-write array $container Values given in terms of name-value pairs.
  * @property-read \yii\db\Connection $db The database connection.
  * @property-read \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
@@ -101,7 +101,7 @@ abstract class Application extends Module
     public $charset = 'UTF-8';
     /**
      * @var string the language that is meant to be used for end users. It is recommended that you
-     * use [IETF language tags](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
+     * use [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
      * for English, while `en-US` stands for English (United States).
      * @see sourceLanguage
      */

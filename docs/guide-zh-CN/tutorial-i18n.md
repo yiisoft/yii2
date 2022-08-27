@@ -19,8 +19,8 @@ Yii 提供的国际化功能支持全方位信息翻译，
 
 在 Yii 应用程序中使用的所有区域 ID 应该规范化为 `ll-CC`，
 其中 `ll` 是根据两个或三个字母的小写字母语言代码
-[ISO-639](http://www.loc.gov/standards/iso639-2/) 和 `CC` 是两个字母的国别代码
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html)。
+[ISO-639](https://www.loc.gov/standards/iso639-2/) 和 `CC` 是两个字母的国别代码
+[ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes)。
 有关区域设置的更多细节可以看
 [ICU 项目文档](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)。
 

@@ -156,7 +156,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // 创建一个带锚定的URL：/index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// 创建一个绝对路径URL：http://www.example.com/index.php?r=post%2Findex
+// 创建一个绝对路径URL：https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
 // 创建一个带https协议的绝对路径URL：https://www.example.com/index.php?r=post%2Findex
@@ -214,11 +214,11 @@ use yii\helpers\Url;
 // 当前请求URL：/index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
-// 设定了别名的URL：http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// 设定了别名的URL：https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// 绝对URL：http://example.com/images/logo.gif
+// 绝对URL：https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -442,18 +442,18 @@ echo Url::previous();
 ### 带服务名称的规则 <span id="rules-with-server-names"></span>
 
 可以在URL规则中设置Web服务的名称，如果你需要使你的应用程序在不同的Web服务名称下表现不同的话。
-例如，下面的规则将URL`http://admin.example.com/login`解析成路由`admin/user/login`，
-URL`http://www.example.com/login`解析成路由`site/login`。
+例如，下面的规则将URL`https://admin.example.com/login`解析成路由`admin/user/login`，
+URL`https://www.example.com/login`解析成路由`site/login`。
 
 ```php
 [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 你还可以在服务名称中嵌入参数用来动态的提取服务名称。例如，下面的规则
-将URL`http://en.example.com/posts`解析成路由`post/index`且参数`language=en`。
+将URL`https://en.example.com/posts`解析成路由`post/index`且参数`language=en`。
 
 ```php
 [
@@ -464,8 +464,8 @@ URL`http://www.example.com/login`解析成路由`site/login`。
 从版本 2.0.11 开始，你还可以使用不带协议类型的模式来同时匹配 `http` 和 `https`。
 规则语法和上面相比只是忽略掉 `http:` 部分，例如：`'//www.example.com/login' => 'site/login'`。
 
-> Note: 带服务名称的规则**不应该**包含任何子目录。例如，如果程序入口脚本在 `http://www.example.com/sandbox/blog/index.php`，
-  应该使用 `http://www.example.com/posts` 代替 `http://www.example.com/sandbox/blog/posts`。
+> Note: 带服务名称的规则**不应该**包含任何子目录。例如，如果程序入口脚本在 `https://www.example.com/sandbox/blog/index.php`，
+  应该使用 `https://www.example.com/posts` 代替 `https://www.example.com/sandbox/blog/posts`。
   这样才可以将你的应用部署到任何目录而不需要更改 URL 规则。Yii 将会自动的检测应用程序所在的根目录。
 
 
@@ -631,8 +631,8 @@ class CarUrlRule extends BaseObject implements UrlRuleInterface
 ## URL规范化 <span id="url-normalization"></span>
 
 从 2.0.10 版开始[[yii\web\UrlManager|Url管理器]]可以配置用[[yii\web\UrlNormalizer|URL规范器]]来处理
-相同URL的不同格式，例如是否带结束斜线。因为技术上来说 `http://example.com/path`
-和 `http://example.com/path/` 是完全不同的 URL，两个地址返回相同的内容会导致SEO排名降低。
+相同URL的不同格式，例如是否带结束斜线。因为技术上来说 `https://example.com/path`
+和 `https://example.com/path/` 是完全不同的 URL，两个地址返回相同的内容会导致SEO排名降低。
 默认情况下 URL 规范器会合并连续的斜线，根据配置决定是否添加或删除结尾斜线，
 并且会使用[永久重定向](https://en.wikipedia.org/wiki/HTTP_301)将地址重新跳转到规范化后的URL。
 URL规范器可以针对URL管理器全局配置，也可以针对规则单独配置 - 默认每个规则都使用URL管理器中的规范器。

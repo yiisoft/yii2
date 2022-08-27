@@ -468,7 +468,7 @@ Si votre code dépend de jQuery, jQuery UI ou Bootstrap, vous devriez utiliser l
 
 ## Conversion de ressources <span id="asset-conversion"></span>
 
-Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](http://www.typescriptlang.org/).
+Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](https://www.typescriptlang.org/).
 
 Vous pouvez lister les fichiers de ressources écrits dans une syntaxe  étendue dans les propriétés [[yii\web\AssetBundle::css|css]] et [[yii\web\AssetBundle::js|js]] d'un paquet de ressources. 
 
@@ -522,7 +522,7 @@ return [
 
 Dans la syntaxe précédente, nous spécifions les syntaxes étendues prises en charge via la propriété [[yii\web\AssetConverter::commands]]. Les clés du tableau sont les extensions de nom de fichier (sans le point de tête), et les valeurs sont les extensions des fichiers de ressources résultants ainsi que les commandes pour effectuer les conversions. Les valeurs à remplacer `{from}` et `{to}` dans les commandes doivent être remplacées par les chemins de fichiers de ressources sources et les chemins de fichiers de ressources cibles.
 
-> Info: il y a d'autres manières de travailler avec les ressources en syntaxe étendue, en plus de celle décrite ci-dessus. Par exemple, vous pouvez utiliser des outils de compilation comme [grunt](http://gruntjs.com/) pour surveiller et convertir automatiquement des ressources écrites en syntaxe étendue. Dans ce cas, vous devez lister les fichiers CSS/JavaScript résultants dans des paquets de ressources plutôt que les fichiers originaux. 
+> Info: il y a d'autres manières de travailler avec les ressources en syntaxe étendue, en plus de celle décrite ci-dessus. Par exemple, vous pouvez utiliser des outils de compilation comme [grunt](https://gruntjs.com/) pour surveiller et convertir automatiquement des ressources écrites en syntaxe étendue. Dans ce cas, vous devez lister les fichiers CSS/JavaScript résultants dans des paquets de ressources plutôt que les fichiers originaux. 
 
 
 ## Combinaison et compression de ressources <span id="combining-compressing-assets"></span>
@@ -664,7 +664,7 @@ yii asset assets.php config/assets-prod.php
 Le fichier de configuration peut être inclus dans la configuration de l'application comme décrit dans la dernière sous-section . 
 
 
-> Info: l'utilisation de la commande `asset` n'est pas la seule option pour automatiser la combinaison et la compression des ressources. Vous pouvez utiliser l'excellent outil d'exécution de tâches [grunt](http://gruntjs.com/) pour arriver au même résultat. 
+> Info: l'utilisation de la commande `asset` n'est pas la seule option pour automatiser la combinaison et la compression des ressources. Vous pouvez utiliser l'excellent outil d'exécution de tâches [grunt](https://gruntjs.com/) pour arriver au même résultat. 
 
 
 ### Regroupement des paquets de ressources  <span id="grouping-asset-bundles"></span>

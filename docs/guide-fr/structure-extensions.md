@@ -317,7 +317,7 @@ Yii fournit les extensions du noyau suivantes (ou ["les extensions officielles"]
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell): fournit un interprète de commandes (shell) basé sur [psysh](https://psysh.org/).
 - [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx) : fournit la prise en charge de [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la génération de code, etc.
-- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](http://swiftmailer.org/).
+- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](https://swiftmailer.symfony.com/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig) : fournit un moteur de modèles basé sur [Twig](https://twig.symfony.com/).
 
 Les extensions officielles suivantes sont valables pour les versions Yii 2.1 et plus récentes. Vous n'avez pas besoin de les installer car elles sont incluse dans le cœur du framework.

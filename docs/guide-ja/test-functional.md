@@ -11,8 +11,8 @@ POST や GET のパラメータなどの環境変数を設定しておいてか�
 
 機能テストは Codeception フレームワークの助けを借りて実装されています。これにつては、優れたドキュメントがあります。
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Functional Tests](https://codeception.com/docs/04-FunctionalTests)
 
 ## ベーシック・テンプレート、アドバンスト・テンプレートのテストを実行する
 

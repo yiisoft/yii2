@@ -435,6 +435,6 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   [Sphinx](https://sphinxsearch.com). incluye características como consultas básicas, Active Record, code generation,
   etc.
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer): proporciona características de envío de
-  correos electrónicos basadas en [swiftmailer](http://swiftmailer.org/).
+  correos electrónicos basadas en [swiftmailer](https://swiftmailer.symfony.com/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig): proporciona un motor de plantillas basado en
   [Twig](https://twig.symfony.com/).

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console;
@@ -32,8 +32,6 @@ use yii\helpers\Inflector;
  * @property-read string $helpSummary The one-line short summary describing this controller.
  * @property-read array $passedOptionValues The properties corresponding to the passed options.
  * @property-read array $passedOptions The names of the options passed during execution.
- * @property Request $request
- * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

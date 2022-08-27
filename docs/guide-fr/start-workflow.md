@@ -1,13 +1,13 @@
 Fonctionnement des applications
 ===============================
 
-Après avoir installé Yii, vous obtenez une application Yii fonctionnelle accessible via l'URL `http://hostname/basic/web/index.php` ou `http://hostname/index.php`, en fonction
+Après avoir installé Yii, vous obtenez une application Yii fonctionnelle accessible via l'URL `https://hostname/basic/web/index.php` ou `https://hostname/index.php`, en fonction
 de votre configuration. Cette section vous initiera aux fonctionnalités intégrées à l'application,
 à la manière dont le code est organisé et à la gestion des requêtes par l'application.
 
 > Info: pour simplifier, au long de ce tutoriel de démarrage, nous supposerons que `basic/web` est la racine de votre 
  serveur Web, et que vous avez configuré l'URL pour accéder à votre application comme suit ou de façon similaire : 
-  `http://hostname/index.php`.
+  `https://hostname/index.php`.
   Pour vos besoins, merci d'ajuster les URLs dans notre description comme il convient.
 
 Notez que contrairement au framework lui-même, après avoir installé un modèle de projet, vous êtes entièrement libre d'en disposer. Vous êtes libre d'ajouter ou de supprimer du code selon vos besoins. 
@@ -17,7 +17,7 @@ Fonctionnalité <span id="Functionality"></span>
 
 L'application basique installée contient quatre pages :
 
-* La page d'accueil, affichée quand vous accédez à l'URL `http://hostname/index.php`,
+* La page d'accueil, affichée quand vous accédez à l'URL `https://hostname/index.php`,
 * la page "About" (À Propos),
 * la page "Contact", qui présente un formulaire de contact permettant aux utilisateurs finaux de vous contacter par courriel,
 * et la page "Login" (Connexion), qui présente un formulaire de connexion qui peut être utilisé pour authentifier des utilisateurs finaux. Essayez de vous connecter

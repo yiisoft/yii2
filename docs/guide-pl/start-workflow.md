@@ -1,11 +1,11 @@
 Uruchamianie aplikacji
 ====================
 
-Po zainstalowaniu Yii posiadasz działającą aplikację Yii dostępną pod adresem `http://hostname/basic/web/index.php` lub `http://hostname/index.php`, zależnie od Twojej konfiguracji.
+Po zainstalowaniu Yii posiadasz działającą aplikację Yii dostępną pod adresem `https://hostname/basic/web/index.php` lub `https://hostname/index.php`, zależnie od Twojej konfiguracji.
 Ta sekcja wprowadzi Cię do wbudowanych funkcjonalności aplikacji, pokaże jak zorganizowany jest jej kod oraz jak aplikacja obsługuje żądania.
 
 > Info: Dla uproszczenia zakładamy, że ustawiłeś główny katalog serwera na `basic/web`, według poradnika "Instalacja Yii", oraz skonfigurowałeś adres URL tak, aby Twoja aplikacja była 
-> dostępna pod adresem `http://hostname/index.php`.
+> dostępna pod adresem `https://hostname/index.php`.
 > Dla Twoich potrzeb dostosuj odpowiednio adres URL w naszych opisach.
 
 Należy pamiętać, że w przeciwieństwie do samego frameworka, po zainstalowaniu szablonu projektu należy on w całości do Ciebie. Możesz dowolnie dodawać, modyfikować lub usuwać kod, 
@@ -16,7 +16,7 @@ Funkcjonalność <span id="functionality"></span>
 
 Zainstalowana podstawowa aplikacja posiada cztery strony:
 
-* stronę główną, która jest wyświetlana przy wywołaniu adresu `http://hostname/index.php`,
+* stronę główną, która jest wyświetlana przy wywołaniu adresu `https://hostname/index.php`,
 * strona informacyjna `About`,
 * strona kontaktowa `Contact`, gdzie wyświetlany jest formularz kontaktowy, pozwalający użytkownikowi skontaktować się z Tobą przez email,
 * strona logowania `Login`, gdzie wyświetlany jest formularz logowania, który może być użyty do uwierzytelniania użytkowników. Zaloguj się danymi "admin/admin", przez co pozycja 

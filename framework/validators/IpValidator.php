@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -32,9 +32,8 @@ use yii\web\JsExpression;
  * ['ip_address', 'ip', 'expandIPv6' => true], // expands IPv6 address to a full notation format
  * ```
  *
- * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. See [[setRanges()]] for
- * detailed description. Note that the type of this property differs in getter and setter. See [[getRanges()]]
- * and [[setRanges()]] for details.
+ * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. Note that the type of this
+ * property differs in getter and setter. See [[getRanges()]] and [[setRanges()]] for details.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7

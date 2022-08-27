@@ -1,7 +1,7 @@
 コントローラ
 ============
 
-コントローラは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
+コントローラは [MVC](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
 それは [[yii\base\Controller]] を拡張したクラスのオブジェクトであり、リクエストの処理とレスポンスの生成について責任を負います。
 具体的には、コントローラは、[アプリケーション](structure-applications.md) から制御を引き継いだ後、
 入ってきたリクエストのデータを分析し、それを [モデル](structure-models.md) に引き渡して、
@@ -83,7 +83,7 @@ ControllerID/ActionID
 ModuleID/ControllerID/ActionID
 ```
 
-ですから、ユーザが `http://hostname/index.php?r=site/index` という URL でリクエストをした場合は、
+ですから、ユーザが `https://hostname/index.php?r=site/index` という URL でリクエストをした場合は、
 `site` コントローラの中の `index` アクションが実行されます。
 ルートがどのようにしてアクションとして解決されるかについての詳細は、[ルーティングと URL 生成](runtime-routing.md) のセクションを参照してください。
 
@@ -179,7 +179,7 @@ class SiteController extends Controller
 全てのアプリケーションは、それぞれ、[[yii\base\Application::defaultRoute]] プロパティによって指定されるデフォルト・コントローラを持ちます。
 リクエストが [ルート](#routes) を指定していない場合、このプロパティによって指定されたルートが使われます。
 [[yii\web\Application|ウェブ・アプリケーション]] では、この値は `'site'` であり、一方、[[yii\console\Application|コンソール・アプリケーション]] では、`help` です。
-従って、URL が `http://hostname/index.php` である場合は、`site` コントローラがリクエストを処理することになります。
+従って、URL が `https://hostname/index.php` である場合は、`site` コントローラがリクエストを処理することになります。
 
 次のように [アプリケーションの構成情報](structure-applications.md#application-configurations) を構成して、デフォルト・コントローラを変更することが出来ます。
 
@@ -323,8 +323,8 @@ class HelloWorldAction extends Action
 ```php
 public function actionForward()
 {
-    // ユーザのブラウザを http://example.com にリダイレクトする
-    return $this->redirect('http://example.com');
+    // ユーザのブラウザを https://example.com にリダイレクトする
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -354,13 +354,13 @@ class PostController extends Controller
 
 アクション・パラメータには、次のように、さまざまなリクエストに応じて異なる値が投入されます。
 
-* `http://hostname/index.php?r=post/view&id=123`: `$id` パラメータには `'123'` という値が入れられます。
+* `https://hostname/index.php?r=post/view&id=123`: `$id` パラメータには `'123'` という値が入れられます。
   一方、`version` というクエリ・パラメータは無いので、`$version` は `null` のままになります。
-* `http://hostname/index.php?r=post/view&id=123&version=2`: `$id` および `$version` パラメータに、
+* `https://hostname/index.php?r=post/view&id=123&version=2`: `$id` および `$version` パラメータに、
   それぞれ、`'123'` と `'2'` が入ります。
-* `http://hostname/index.php?r=post/view`: 必須の `$id` パラメータがリクエストで提供されていないため、
+* `https://hostname/index.php?r=post/view`: 必須の `$id` パラメータがリクエストで提供されていないため、
   [[yii\web\BadRequestHttpException]] 例外が投げられます。
-* `http://hostname/index.php?r=post/view&id[]=123`: `$id` パラメータが予期しない配列値 `['123']` を受け取ろうとするため、
+* `https://hostname/index.php?r=post/view&id[]=123`: `$id` パラメータが予期しない配列値 `['123']` を受け取ろうとするため、
   [[yii\web\BadRequestHttpException]] 例外が投げられます。
 
 アクション・パラメータに配列値を受け取らせたい場合は、次のように、パラメータに `array` の型ヒントを付けなければなりません。
@@ -372,8 +372,8 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-このようにすると、リクエストが `http://hostname/index.php?r=post/view&id[]=123` である場合は、`$id` パラメータは `['123']` という値を受け取ります。
-リクエストが `http://hostname/index.php?r=post/view&id=123` である場合も、スカラ値 `'123'` が自動的に配列に変換されるため、
+このようにすると、リクエストが `https://hostname/index.php?r=post/view&id[]=123` である場合は、`$id` パラメータは `['123']` という値を受け取ります。
+リクエストが `https://hostname/index.php?r=post/view&id=123` である場合も、スカラ値 `'123'` が自動的に配列に変換されるため、
 `$id` パラメータは引き続き同じ配列値を受け取ります。
 
 上記の例は主としてウェブ・アプリケーションでのアクション・パラメータの動作を示すものです。

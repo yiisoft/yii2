@@ -297,7 +297,7 @@ $query->where([$column => $value]);
   当使用转义映射（又或者没有提供第三个操作数的时候），第二个操作数的值的前后
   将会被加上百分号。
 
-> Note: 当使用 PostgreSQL 的时候你还可以使用 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)，
+> Note: 当使用 PostgreSQL 的时候你还可以使用 [`ilike`](https://www.postgresql.org/docs/8.3/functions-matching.html#FUNCTIONS-LIKE)，
 > 该方法对大小写不敏感。
 
 - `or like`：用法和 `like` 操作符类似，区别在于当第二个操作数为数组时，

@@ -1,7 +1,7 @@
 安装 Yii
 ==============
 
-你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个归档文件。
+你可以通过两种方式安装 Yii：使用 [Composer](https://getcomposer.org/) 或下载一个归档文件。
 推荐使用前者，这样只需执行一条简单的命令就可以安装新的[扩展](structure-extensions.md)或更新 Yii 了。
 
 标准安装完Yii之后，框架和一个项目模板两者都下载并安装好了。
@@ -184,13 +184,13 @@ http://localhost:8080/
   本小节可以跳过。
 
 通过上述方法安装的应用程序在 Windows，Max OS X，
-Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)
-或 [Nginx HTTP 服务器](http://nginx.org/)且PHP版本为5.4或更高都可以直接运行。
-Yii 2.0 也兼容 Facebook 公司的 [HHVM](http://hhvm.com/)，
+Linux 中的 [Apache HTTP 服务器](https://httpd.apache.org/)
+或 [Nginx HTTP 服务器](https://nginx.org/)且PHP版本为5.4或更高都可以直接运行。
+Yii 2.0 也兼容 Facebook 公司的 [HHVM](https://hhvm.com/)，
 由于 HHVM 和标准 PHP 在边界案例上有些地方略有不同，在使用 HHVM 时需稍作处理。
 
 在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过
-URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。
+URL `https://www.example.com/index.php` 访问而不是 `https://www.example.com/basic/web/index.php`。
 这种配置需要将 Web 服务器的文档根目录(document root)指向 `basic/web` 目录。
 可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md)一章中有介绍，
 你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
@@ -234,7 +234,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推荐使用的 Nginx 配置 <span id="recommended-nginx-configuration"></span>
 
-为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](https://www.php.net/install.fpm) 了。
+为了使用 [Nginx](https://www.nginx.com/resources/wiki/)，你应该已经将 PHP 安装为 [FPM SAPI](https://www.php.net/install.fpm) 了。
 你可以使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，
 `mysite.local` 替换为实际的主机名以提供服务。
 

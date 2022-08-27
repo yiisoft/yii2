@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -443,7 +443,7 @@ class AssetManager extends Component
      * that holds the published assets. This problem can be avoided altogether by 'requesting'
      * in advance all the resources that are supposed to trigger a 'publish()' call, and doing
      * that in the application deployment phase, before system goes live. See more in the following
-     * discussion: http://code.google.com/p/yii/issues/detail?id=2579
+     * discussion: https://code.google.com/archive/p/yii/issues/2579
      *
      * @param string $path the asset (file or directory) to be published
      * @param array $options the options to be applied when publishing a directory.

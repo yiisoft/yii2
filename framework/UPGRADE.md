@@ -12,7 +12,7 @@ Upgrading in general is as simple as updating your dependency in your composer.j
 running `composer update`. In a big application however there may be more things to consider,
 which are explained in the following.
 
-> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
+> Note: This document assumes you have composer [installed globally](https://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
 so that you can run the `composer` command. If you have a `composer.phar` file inside of your project you need to
 replace `composer` with `php composer.phar` in the following.
 
@@ -50,6 +50,14 @@ See the following notes on which changes to consider when upgrading from one ver
 if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
+
+Upgrade from Yii 2.0.45
+-----------------------
+
+* Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted, so it works as in pre-2.0.45. If you need
+  2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
+* `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
+  the files is done only by copy.
 
 Upgrade from Yii 2.0.44
 -----------------------
@@ -459,7 +467,7 @@ Upgrade from Yii 2.0.13
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
   Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
   space to customization. In case you rely on that property or override any of default condition builders, follow the 
-  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  special [guide article](https://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
   to update your code.
 
 * Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
@@ -490,7 +498,7 @@ Upgrade from Yii 2.0.12
   was insecure as the header could have been set by a malicious client on a non-HTTPS connection.
   With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
   `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
-  this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+  this in the Request configuration. See the [guide](https://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
 
   This setting also affects you when Yii is running on IIS webserver, which sets the `X-Rewrite-Url` header.
   This header is now filtered by default and must be listed in trusted hosts to be detected by Yii:
@@ -683,7 +691,7 @@ Upgrade from Yii 2.0.6
   initialization to support wider range of allowed characters. Because of this change:
 
   - You are required to flush your application cache to remove outdated `UrlRule` serialized objects.
-    See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
+    See the [Cache Flushing Guide](https://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
   - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
     in order to replace temporary IDs with parameter names after doing matching.
 
@@ -759,7 +767,7 @@ If you've extended `yii\base\Security` to override any of the config constants y
 Upgrade from Yii 2.0.0
 ----------------------
 
-* Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
+* Upgraded Twitter Bootstrap to [version 3.3.x](https://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
   If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
   adding the following line in the `require` section:
 

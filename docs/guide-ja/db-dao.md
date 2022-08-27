@@ -275,7 +275,7 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
 ```php
 Yii::$app->db->createCommand()->upsert('pages', [
     'name' => 'フロント・ページ',
-    'url' => 'http://example.com/', // url はユニーク
+    'url' => 'https://example.com/', // url はユニーク
     'visits' => 0,
 ], [
     'visits' => new \yii\db\Expression('visits + 1'),

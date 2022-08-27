@@ -102,7 +102,7 @@ Trying it Out <span id="trying-it-out"></span>
 Setelah membuat action dan view, Anda dapat mengakses halaman baru dengan mengakses URL berikut:
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

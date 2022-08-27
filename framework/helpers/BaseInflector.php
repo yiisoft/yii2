@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -246,8 +246,8 @@ class BaseInflector
      * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`.
      *
      * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
-     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * For detailed information see [unicode normalization forms](https://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see https://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
@@ -261,8 +261,8 @@ class BaseInflector
      * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`.
      *
      * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
-     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * For detailed information see [unicode normalization forms](https://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see https://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
@@ -277,8 +277,8 @@ class BaseInflector
      * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`.
      *
      * Used in [[transliterate()]].
-     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
-     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * For detailed information see [unicode normalization forms](https://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see https://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
      * @since 2.0.7
      */
@@ -388,7 +388,7 @@ class BaseInflector
         }
         // Add a space before any uppercase letter preceded by a lowercase letter (xY => x Y)
         // and any uppercase letter preceded by an uppercase letter and followed by a lowercase letter (XYz => X Yz)
-        $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=[\p{L}\d])\p{Lu}(?=\p{Ll})|(\d+)/u', ' \0', $name);
+        $label = preg_replace('/(?<=\p{Ll})\p{Lu}|(?<=\p{L})\p{Lu}(?=\p{Ll})/u', ' \0', $name);
 
         $label = mb_strtolower(trim(str_replace(['-', '_', '.'], ' ', $label)), self::encoding());
 
