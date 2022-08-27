@@ -127,7 +127,7 @@ abstract class BaseComparator
      * @param string $type2 the second type name
      * @return bool
      */
-    public function canCompare($type, $type2)
+    public static function canCompare($type, $type2)
     {
         if (
             ($type === 'object' && in_array($type2, ['int', 'float'], true))
