@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
-- Bug #19521: Fix #19418 changes in `CompositeAuth::authenticate()` (WinterSilence)
+- Bug #19521: Fix #19418 regression in `CompositeAuth::authenticate()` (WinterSilence)
 
 
 2.0.46 August 18, 2022
