@@ -1922,7 +1922,7 @@ class BaseHtml
                         $attrs['selected'] = false;
                     } else {
                         $attrs['selected'] = ArrayHelper::isIn(
-                            $strict || (!is_int($key) && !is_float($key)) ? $key : (string) $key,
+                            $strict ? $key : (string) $key,
                             $multipleSelection ? $selection : [$selection],
                             $strict
                         );
