@@ -214,17 +214,17 @@ class AttributeTypecastBehavior extends Behavior
 
     /**
      * Typecast owner attributes according to [[attributeTypes]].
+     *
      * @param array|null $attributeNames list of attribute names that should be type-casted.
      * If this parameter is empty, it means any attribute listed in the [[attributeTypes]]
      * should be type-casted.
      */
     public function typecastAttributes($attributeNames = null)
     {
-        $attributeTypes = [];
-
         if ($attributeNames === null) {
             $attributeTypes = $this->attributeTypes;
         } else {
+            $attributeTypes = [];
             foreach ($attributeNames as $attribute) {
                 if (!isset($this->attributeTypes[$attribute])) {
                     throw new InvalidArgumentException("There is no type mapping for '{$attribute}'.");
@@ -233,6 +233,10 @@ class AttributeTypecastBehavior extends Behavior
             }
         }
 
+        $attributeTypes = array_intersect_key(
+            $attributeTypes,
+            array_flip($this->owner->activeAttributes())
+        );
         foreach ($attributeTypes as $attribute => $type) {
             $value = $this->owner->{$attribute};
             if ($this->skipOnNull && $value === null) {
@@ -244,13 +248,15 @@ class AttributeTypecastBehavior extends Behavior
 
     /**
      * Casts the given value to the specified type.
+     *
      * @param mixed $value value to be type-casted.
-     * @param string|callable $type type name or typecast callable.
+     * @param string|callable $type type name or typecast callback: `function (mixed $value): mixed`
+     * 
      * @return mixed typecast result.
      */
     protected function typecastValue($value, $type)
     {
-        if (is_scalar($type)) {
+        if (!is_callable($type)) {
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = $value->__toString();
             }
