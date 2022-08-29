@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
+- Bug #15500: Fix saving empty records to MySQL (manchenkoff)
 - Bug #14388: Fixed fixture loading order in output message (manchenkoff)
 - Bug #16658: Fix file readability check on publishing assets by `yii\web\AssetManager` (manchenkoff)
 - Bug #15557: Fix empty fields exclusion in safe attributes of `yii\base\Model` (manchenkoff)
