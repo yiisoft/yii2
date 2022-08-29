@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
+- Bug #16658: Fix file readability check on publishing assets by `yii\web\AssetManager` (manchenkoff)
 - Bug #15557: Fix empty fields exclusion in safe attributes of `yii\base\Model` (manchenkoff)
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 - Bug #19517: Fix regression in `CompositeAuth::authenticate()` introduced in #19418 (WinterSilence)
