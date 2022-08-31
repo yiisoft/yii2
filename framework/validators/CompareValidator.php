@@ -152,14 +152,14 @@ class CompareValidator extends Validator
             $compareValue = $model->$compareAttribute;
             $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
 
-            if ($model->hasErrors($compareAttribute)) {
+            if ($model->hasErrors($compareAttribute) && $this->skipOnError !== true) {
                 $this->addError(
-                    $model, 
-                    $attribute, 
-                    Yii::t('yii', '{compareAttribute} is invalid.'), 
+                    $model,
+                    $attribute,
+                    Yii::t('yii', '{compareAttribute} is invalid.'),
                     ['compareAttribute' => $compareLabel]
                 );
-    
+
                 return;
             }
         }

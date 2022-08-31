@@ -157,12 +157,19 @@ class CompareValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_o');
         $this->assertTrue($model->hasErrors('attr_o'));
         // compareAttribute has validation error
-        $val = new CompareValidator(['compareAttribute' => 'attr_x']);
+        $val = new CompareValidator(['compareAttribute' => 'attr_x', 'skipOnError' => false]);
         $model = FakedValidationModel::createWithAttributes(['attr_x' => 10, 'attr_y' => 10]);
         $model->addError('attr_x', 'invalid value');
         $val->validateAttribute($model, 'attr_y');
         $this->assertTrue($model->hasErrors('attr_x'));
         $this->assertTrue($model->hasErrors('attr_y'));
+        // compareAttribute has validation error but rule has skipOnError
+        $val = new CompareValidator(['compareAttribute' => 'attr_x', 'skipOnError' => true]);
+        $model = FakedValidationModel::createWithAttributes(['attr_x' => 10, 'attr_y' => 10]);
+        $model->addError('attr_x', 'invalid value');
+        $val->validateAttribute($model, 'attr_y');
+        $this->assertTrue($model->hasErrors('attr_x'));
+        $this->assertFalse($model->hasErrors('attr_y'));
     }
 
     public function testAttributeErrorMessages()
