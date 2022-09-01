@@ -152,7 +152,7 @@ class CompareValidator extends Validator
             $compareValue = $model->$compareAttribute;
             $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
 
-            if ($model->hasErrors($compareAttribute) && $this->skipOnError !== true) {
+            if (!$this->skipOnError && $model->hasErrors($compareAttribute)) {
                 $this->addError(
                     $model,
                     $attribute,
