@@ -470,7 +470,7 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
 
         $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
+            'id' => 'custom-textinput-id',
             'name' => $this->attributeName,
             'container' => '.field-custom-textinput-id',
             'input' => '#custom-textinput-id',
