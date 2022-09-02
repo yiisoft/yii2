@@ -197,6 +197,10 @@ class View extends Component implements DynamicContentAwareInterface
         if ($this->defaultExtension !== 'php' && !is_file($path)) {
             $path = $file . '.php';
         }
+        
+         if (!is_file($viewFile)) {
+            throw new ViewNotFoundException("The view file does not exist: $path");
+        }
 
         return $path;
     }
