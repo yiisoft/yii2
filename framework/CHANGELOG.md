@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 - Bug #19517: Fix regression in `CompositeAuth::authenticate()` introduced in #19418 (WinterSilence)
 - Bug #19537: Fix default expression detection for MariaDB `date` and `time` columns (bizley)
+- Bug #19533: Fix "passing null to parameter #1 ($string) of type string is deprecated" (samdark)
 
 
 2.0.46 August 18, 2022
