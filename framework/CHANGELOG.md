@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
+- Bug #12636: Fix CompareValidator successful state when compareAttribute has an error (manchenkoff)
 - Bug #15500: Fix saving empty records to MySQL (manchenkoff)
 - Bug #14388: Fixed fixture loading order in output message (manchenkoff)
 - Bug #16658: Fix file readability check on publishing assets by `yii\web\AssetManager` (manchenkoff)
