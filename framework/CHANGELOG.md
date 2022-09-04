@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #15557: Fix empty fields exclusion in safe attributes of `yii\base\Model` (manchenkoff)
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 - Bug #19517: Fix regression in `CompositeAuth::authenticate()` introduced in #19418 (WinterSilence)
+- Bug #19537: Fix default expression detection for MariaDB `date` and `time` columns (bizley)
 
 
 2.0.46 August 18, 2022
