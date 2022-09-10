@@ -256,7 +256,10 @@ class AttributeTypecastBehavior extends Behavior
      */
     protected function typecastValue($value, $type)
     {
-        if (!is_callable($type)) {
+        if (
+            in_array($type, [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_BOOLEAN, self::TYPE_STRING], true)
+            || !is_callable($type)
+        ) {
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = $value->__toString();
             }
