@@ -143,7 +143,7 @@ Vous pouvez rediriger le navigateur sur une URL en appelant la méthode [[yii\we
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -152,7 +152,7 @@ Dans le code précédent, la méthode d'action retourne le résultat de la méth
 Dans des endroits autres que les méthodes d'action, vous devez appeler la méthode [[yii\web\Response::redirect()]] directement, suivi d'un appel chaîné à la méthode [[yii\web\Response::send()]] pour garantir qu'aucun contenu supplémentaire ne sera ajouté à la réponse. 
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: par défaut la méthode [[yii\web\Response::redirect()]] définit le code d'état à 302 pour indiquer au navigateur que la ressource requise est *temporairement* située sous un URI différent. Vous pouvez passer un code 301 pour dire au navigateur que la ressource a été déplacée *de manière permanente*.

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -107,6 +107,10 @@ class BaseStringHelper
 
     /**
      * Truncates a string to the number of characters specified.
+     *
+     * In order to truncate for an exact length, the $suffix char length must be counted towards the $length. For example
+     * to have a string which is exactly 255 long with $suffix `...` of 3 chars, then `StringHelper::truncate($string, 252, '...')`
+     * must be used to ensure you have 255 long string afterwards.
      *
      * @param string $string The string to truncate.
      * @param int $length How many characters from original string to include into truncated string.
@@ -472,7 +476,7 @@ class BaseStringHelper
             return $string;
         }
 
-        $parts = preg_split('/(\s+[^\w]+\s+|^[^\w]+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $parts = preg_split('/(\s+\W+\s+|^\W+\s+|\s+)/u', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         $ucfirstEven = trim(mb_substr($parts[0], -1, 1, $encoding)) === '';
         foreach ($parts as $key => $value) {
             $isEven = (bool)($key % 2);

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -10,7 +10,7 @@ namespace yii\caching;
 /**
  * XCache provides XCache caching in terms of an application component.
  *
- * To use this application component, the [XCache PHP extension](http://xcache.lighttpd.net/) must be loaded.
+ * To use this application component, the [XCache PHP extension](https://github.com/lighttpd/xcache) must be loaded.
  * Also note that the [[flush()]] functionality will work correctly only if "xcache.admin.enable_auth"
  * is set to "Off" in php.ini.
  *

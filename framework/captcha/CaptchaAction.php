@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\captcha;
@@ -17,7 +17,7 @@ use yii\web\Response;
  * CaptchaAction renders a CAPTCHA image.
  *
  * CaptchaAction is used together with [[Captcha]] and [[\yii\captcha\CaptchaValidator]]
- * to provide the [CAPTCHA](http://en.wikipedia.org/wiki/Captcha) feature.
+ * to provide the [CAPTCHA](https://en.wikipedia.org/wiki/CAPTCHA) feature.
  *
  * By configuring the properties of CaptchaAction, you may customize the appearance of
  * the generated CAPTCHA images, such as the font color, the background color, etc.

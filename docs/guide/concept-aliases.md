@@ -18,7 +18,7 @@ You can define an alias for a file path or URL by calling [[Yii::setAlias()]]:
 Yii::setAlias('@foo', '/path/to/foo');
 
 // an alias of a URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // an alias of a concrete file that contains a \foo\Bar class
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ The same method can also resolve a derived alias into the corresponding file pat
 
 ```php
 echo Yii::getAlias('@foo');               // displays: /path/to/foo
-echo Yii::getAlias('@bar');               // displays: http://www.example.com
+echo Yii::getAlias('@bar');               // displays: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // displays: /path/to/foo/bar/file.php
 ```
 

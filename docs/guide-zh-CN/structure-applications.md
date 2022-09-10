@@ -275,7 +275,7 @@ Yii 遵循一个默认的 [规则](#controllerNamespace) 指定控制器 ID 到�
 例如 [[yii\jui\DatePicker]] 小部件会根据该属性
 展示对应语言的日历以及日期格式。
 
-推荐遵循 [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag) 来设置语言，
+推荐遵循 [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) 来设置语言，
 例如 `en` 代表英文， `en-US` 代表英文(美国).
 
 该属性的更多信息可参考 [国际化](tutorial-i18n.md) 一节.
@@ -347,7 +347,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 如果应用不是英文请修改该属性。
 
 和 [语言](#language) 属性类似，配置该属性需遵循 
-[IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+[IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag).
 例如 `en` 代表英文， `en-US` 代表英文(美国)。
 
 该属性的更多信息可参考 [国际化](tutorial-i18n.md) 一节.

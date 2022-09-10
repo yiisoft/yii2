@@ -9,7 +9,7 @@ Yii 提供了一整套用来简化实现 RESTful 风格的 Web Service 服务的
 * 支持可选输出字段的定制对象序列化；
 * 适当的格式的数据采集和验证错误；
 * 集合分页，过滤和排序；
-* 支持 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS)；
+* 支持 [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)；
 * 有适当 HTTP 动词检查的高效的路由；
 * 内置 `OPTIONS` 和 `HEAD` 动词的支持；
 * 认证和授权；

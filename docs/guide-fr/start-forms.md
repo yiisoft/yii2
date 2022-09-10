@@ -193,7 +193,7 @@ Essayer <span id="trying-it-out"></span>
 Pour voir comment ça fonctionne, utilisez votre navigateur pour accéder à l'URL suivante :
 
 ```
-http://hostname/index.php?r=site/entry
+https://hostname/index.php?r=site/entry
 ```
 
 Vous verrez une page affichant un formulaire comportant deux champs de saisie. Devant chaque champ de saisie, une

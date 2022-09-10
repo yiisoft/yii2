@@ -58,7 +58,7 @@ such as memory, files, databases.
 Cache components are usually registered as [application components](structure-application-components.md) so
 that they can be globally configurable
 and accessible. The following code shows how to configure the `cache` application component to use
-[memcached](http://memcached.org/) with two cache servers:
+[memcached](https://memcached.org/) with two cache servers:
 
 ```php
 'components' => [

@@ -132,7 +132,7 @@ You may also store session data in a cache by using [[yii\web\CacheSession]]. In
 when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
 storage limit.
 
-If you have [Redis](http://redis.io/) on your server, it is highly recommended you use it as session storage by using
+If you have [Redis](https://redis.io/) on your server, it is highly recommended you use it as session storage by using
 [[yii\redis\Session]].
 
 
@@ -218,7 +218,7 @@ The following profiling tools may be useful:
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
 - [XHProf](https://www.php.net/manual/en/book.xhprof.php)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [XDebug profiler](https://xdebug.org/docs/profiler)
 
 ## Prepare application for scaling
 

@@ -1,8 +1,8 @@
 <?php
     /**
-     * @link http://www.yiiframework.com/
+     * @link https://www.yiiframework.com/
      * @copyright Copyright (c) 2008 Yii Software LLC
-     * @license http://www.yiiframework.com/license/
+     * @license https://www.yiiframework.com/license/
      */
 
     /**
@@ -122,4 +122,4 @@
         '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{йил} one{# йил} few{# йил} many{# йил} other{# йил}} аввал',
         '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{соат} one{# соат} few{# соат} many{# соат} other{# соат}} аввал',
     ];
-    
+

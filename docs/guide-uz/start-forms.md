@@ -154,7 +154,7 @@ Keling, sinab ko'raylik <span id="trying-it-out"></span>
 Ish jarayonida yaratilgan bor narsani ko'rish uchun, browserni ochib quydagi URLni kiritaylik:
 
 ```
-http://hostname/index.php?r=site%2Fentry
+https://hostname/index.php?r=site%2Fentry
 ```
 
 Siz ikkta maydoni o'z ichiga olgan shaklni ko'rishingiz mumkin. Har bir maydon oldida esa yorlig' bor, u yorlig'lar, qanaqa

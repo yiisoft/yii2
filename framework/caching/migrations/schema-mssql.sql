@@ -3,9 +3,9 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  * @since 2.0.7
  */
 if object_id('[cache]', 'U') is not null

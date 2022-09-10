@@ -71,7 +71,7 @@ Le formateur prend en charge les formats de sortie suivants en relation avec les
 Les formats par défaut pour les dates et les temps utilisés pour les méthodes [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
 et [[yii\i18n\Formatter::asDatetime()|datetime]] peuvent être configurés globalement en configurant [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], et [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
-Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](http://userguide.icu-project.org/formatparse/datetime). Vous pouvez aussi utiliser la [syntaxe date() de PHP](https://www.php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
+Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](https://unicode-org.github.io/icu/userguide/format_parse/datetime/). Vous pouvez aussi utiliser la [syntaxe date() de PHP](https://www.php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
 
 ```php
 // format ICU
@@ -107,7 +107,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
-> Note: comme les fuseaux horaires sont assujettis à des règles fixées par les gouvernements du monde entier, et que ces règles peuvent varier fréquemment, il est vraisemblable que vous n'ayez pas la dernière information dans la base de données des fuseaux horaires installée sur votre système. Vous pouvez vous reporter au [manuel d'ICU](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) pour des informations sur la manière de mettre cette base de données à jour. Reportez-vous aussi au tutoriel [Configurer votre environnement PHP pour l'internationalisation](tutorial-i18n.md#setup-environment).
+> Note: comme les fuseaux horaires sont assujettis à des règles fixées par les gouvernements du monde entier, et que ces règles peuvent varier fréquemment, il est vraisemblable que vous n'ayez pas la dernière information dans la base de données des fuseaux horaires installée sur votre système. Vous pouvez vous reporter au [manuel d'ICU](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) pour des informations sur la manière de mettre cette base de données à jour. Reportez-vous aussi au tutoriel [Configurer votre environnement PHP pour l'internationalisation](tutorial-i18n.md#setup-environment).
 
 
 ## Formatage des nombres <span id="numbers"></span>

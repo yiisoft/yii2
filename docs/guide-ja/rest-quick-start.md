@@ -9,7 +9,7 @@ Yii は、RESTful ウェブサービス API を実装する仕事を簡単にす
 * 出力フィールドの選択をサポートした、カスタマイズ可能なオブジェクトのシリアライゼーション
 * コレクション・データと検証エラーの適切な書式設定
 * コレクションのページネーション、フィルタリングおよびソーティング
-* [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) のサポート
+* [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) のサポート
 * HTTP 動詞を適切にチェックする効率的なルーティング
 * `OPTIONS` および `HEAD` 動詞のサポートを内蔵
 * 認証と権限付与

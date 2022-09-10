@@ -275,7 +275,7 @@ if (YII_ENV_DEV) {
 そして日付をどのように書式設定すべきかを、デフォルトでは、
 このプロパティを使用して決定します。
 
-言語を指定するのには、[IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うことが推奨されます。
+言語を指定するのには、[IETF 言語タグ](https://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うことが推奨されます。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
 このプロパティに関する詳細は [国際化](tutorial-i18n.md) のセクションで読むことが出来ます。
@@ -347,7 +347,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 あなたのコードのテキストのコンテントが英語以外で書かれているときは、このプロパティを構成しなければなりません。
 
 [language](#language) プロパティと同様に、このプロパティは
-[IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従って構成しなければなりません。
+[IETF 言語タグ](https://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従って構成しなければなりません。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
 このプロパティに関する詳細は [国際化](tutorial-i18n.md) のセクションで読むことが出来ます。

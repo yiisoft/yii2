@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\cubrid;
@@ -156,7 +156,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $sql = '';
         // limit is not optional in CUBRID
-        // http://www.cubrid.org/manual/90/en/LIMIT%20Clause
+        // https://www.cubrid.org/manual/en/9.3.0/sql/query/select.html#limit-clause
         // "You can specify a very big integer for row_count to display to the last row, starting from a specific row."
         if ($this->hasLimit($limit)) {
             $sql = 'LIMIT ' . $limit;
@@ -181,7 +181,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @see http://www.cubrid.org/manual/93/en/sql/schema/table.html#drop-index-clause
+     * @see https://www.cubrid.org/manual/en/9.3.0/sql/schema/table.html#drop-index-clause
      */
     public function dropIndex($name, $table)
     {

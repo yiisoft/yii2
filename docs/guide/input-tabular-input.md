@@ -92,7 +92,7 @@ public function actionCreate()
 {
     $settings = [];
     if ($this->request->isPost) {
-        $count = count($this->request->post($setting->tableName())) - 1;
+        $count = count($this->request->post($setting->tableName()));
         for ($i = 0; $i < $count; $i++) {
             $settings[$i] = new Setting();
         }

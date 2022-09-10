@@ -14,7 +14,7 @@ módulo. Dentro de este directorio, hay subdirectorios tales como 'controllers',
 controladores, modelos, vistas y otro código, exactamente como una aplicación. El siguiente ejemplo muestra el 
 contenido dentro de un módulo:
 
-```js
+```
 forum/
     Module.php                   archivo clase módulo
     controllers/                 contiene archivos de la clase controlador
