@@ -1879,9 +1879,6 @@ class BaseHtml
         $multipleSelection = $selection !== null && ArrayHelper::isTraversable($selection);
         if ($multipleSelection) {
             $selection = ArrayHelper::toArray($selection);
-            if (!$strict) {
-                $selection = array_map('strval', $selection);
-            }
         }
 
         if (isset($tagOptions['prompt'])) {
@@ -1922,7 +1919,7 @@ class BaseHtml
                         $attrs['selected'] = false;
                     } else {
                         $attrs['selected'] = ArrayHelper::isIn(
-                            $strict ? $key : (string) $key,
+                            $key,
                             $multipleSelection ? $selection : [$selection],
                             $strict
                         );
