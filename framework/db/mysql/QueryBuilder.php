@@ -259,10 +259,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$columns instanceof Query && empty($names)) {
             $tableSchema = $this->db->getSchema()->getTableSchema($table);
             if ($tableSchema !== null) {
-                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
+                if (!empty($tableSchema->primaryKey)) {
+                    $columns = $tableSchema->primaryKey;
+                    $defaultValue = 'NULL';
+                } else {
+                    $columns = [reset($tableSchema->columns)->name];
+                    $defaultValue = 'DEFAULT';
+                }
+                
                 foreach ($columns as $name) {
                     $names[] = $this->db->quoteColumnName($name);
-                    $placeholders[] = 'DEFAULT';
+                    $placeholders[] = $defaultValue;
                 }
             }
         }
