@@ -1871,7 +1871,8 @@ class BaseHtml
      */
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
-        if (ArrayHelper::isTraversable($selection)) {
+        $multipleSelection = $selection !== null && ArrayHelper::isTraversable($selection);
+        if ($multipleSelection) {
             $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
@@ -1913,9 +1914,14 @@ class BaseHtml
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
-                    $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && ($strict ? !strcmp($key, $selection) : $selection == $key)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
+                    // Converts $key to string to prevent possible errors at non-strict comparison
+                    if ($selection === null) {
+                        $attrs['selected'] = false;
+                    } elseif ($multipleSelection) {
+                        $attrs['selected'] = ArrayHelper::isIn((string) $key, $selection, $strict);
+                    } else {
+                        $attrs['selected'] = $strict ? !strcmp($key, $selection) : $selection == (string) $key;
+                    }
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
