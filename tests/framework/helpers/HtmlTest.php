@@ -1085,7 +1085,7 @@ EOD;
         $data = ['1' => '1', '1.1' => '1.1', '1.10' => '1.10'];
         $attributes = ['strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['1.1'], $data, $attributes));
-        $attributes = ['strict' => true];
+        $attributes = ['strict' => false];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([1.1], $data, $attributes));
 
         $expected = <<<'EOD'
