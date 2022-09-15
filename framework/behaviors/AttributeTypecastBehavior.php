@@ -257,31 +257,30 @@ class AttributeTypecastBehavior extends Behavior
     protected function typecastValue($value, $type)
     {
         if (
-            in_array($type, [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_BOOLEAN, self::TYPE_STRING], true)
-            || !is_callable($type)
+            !in_array($type, [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_BOOLEAN, self::TYPE_STRING], true)
+            && is_callable($type)
         ) {
-            if (is_object($value) && method_exists($value, '__toString')) {
-                $value = $value->__toString();
-            }
-
-            switch ($type) {
-                case self::TYPE_INTEGER:
-                    return (int) $value;
-                case self::TYPE_FLOAT:
-                    return (float) $value;
-                case self::TYPE_BOOLEAN:
-                    return (bool) $value;
-                case self::TYPE_STRING:
-                    if (is_float($value)) {
-                        return StringHelper::floatToString($value);
-                    }
-                    return (string) $value;
-                default:
-                    throw new InvalidArgumentException("Unsupported type '{$type}'");
-            }
+            return call_user_func($type, $value);
         }
 
-        return call_user_func($type, $value);
+        if (is_object($value) && method_exists($value, '__toString')) {
+            $value = $value->__toString();
+        }
+        switch ($type) {
+            case self::TYPE_INTEGER:
+                return (int) $value;
+            case self::TYPE_FLOAT:
+                return (float) $value;
+            case self::TYPE_BOOLEAN:
+                return (bool) $value;
+            case self::TYPE_STRING:
+                if (is_float($value)) {
+                    return StringHelper::floatToString($value);
+                }
+                return (string) $value;
+        }
+
+        throw new InvalidArgumentException("Unsupported type '$type'");
     }
 
     /**
