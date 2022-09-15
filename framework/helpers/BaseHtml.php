@@ -1917,7 +1917,7 @@ class BaseHtml
                     if ($selection === null) {
                         $attrs['selected'] = false;
                     } else {
-                            // to prevent error at comparing with an object(s)
+                        // to prevent error at comparing with an object(s)
                         if (!$strict && (is_int($key) || is_float($key))) {
                             $key = (string) $key;
                         }
