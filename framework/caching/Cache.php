@@ -60,8 +60,17 @@ abstract class Cache extends Component implements CacheInterface
      *
      * To ensure interoperability, only alphanumeric characters should be used.
      *
-     * since 2.0.X its allowed to use a closure function, this can be usefull when working with environment variables or
-     * any other environment depending cache prefix.
+     * Since 2.0.47 its allowed to use a closure function, this can be usefull when working with environment variables or
+     * any dynamic calculated cache key. Keep in mind to use alphanumeric characters:
+     *
+     * ```php
+     * 'cache' => [
+     *     'class' => 'yii\caching\FileCache',
+     *     'keyPrefix' => function() {
+     *         return YII_ENV;
+     *     }
+     * ]
+     * ```
      */
     public $keyPrefix;
     /**
@@ -121,7 +130,7 @@ abstract class Cache extends Component implements CacheInterface
             $key = md5($serializedKey);
         }
         
-        $prefix = is_callable($this->keyPrefix) ? call_user_func($this->keyPrefix, $key, $this) : $this->keyPrefix;
+        $prefix = is_callable($this->keyPrefix) ? call_user_func($this->keyPrefix, $this) : $this->keyPrefix;
 
         return $prefix . $key;
     }
