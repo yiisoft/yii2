@@ -60,8 +60,8 @@ abstract class Cache extends Component implements CacheInterface
      *
      * To ensure interoperability, only alphanumeric characters should be used.
      *
-     * Since 2.0.47 its allowed to use a closure function, this can be usefull when working with environment variables or
-     * any dynamic calculated cache key. Keep in mind to use alphanumeric characters:
+     * Since 2.0.47 its allowed to use a closure function, this can be useful when working with environment variables or
+     * any dynamic calculated cache prefx. Keep in mind to use alphanumeric characters as mentioned above:
      *
      * ```php
      * 'cache' => [
