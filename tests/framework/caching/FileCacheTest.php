@@ -86,28 +86,10 @@ class FileCacheTest extends CacheTestCase
     public function testCallableKeyPrefix()
     {
         $time = time();
-        $key = uniqid('uid-cache_');
         $cache = $this->getCacheInstance();
-        $cache->flush();
-
-        $cache->directoryLevel = 1;
         $cache->keyPrefix = function() use ($time) { return 'dynamicprefix'.$time; };
-        $normalizeKey = $cache->buildKey($key);
-        $expectedDirectoryName = substr($normalizeKey, 6, 2);
-
-        $value = \time();
-
-        $refClass = new \ReflectionClass($cache);
-
-        $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
-        $refMethodGet = $refClass->getMethod('get');
-        $refMethodSet = $refClass->getMethod('set');
-
-        $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
-
-        $this->assertTrue($refMethodSet->invoke($cache, $key, $value));
-        $this->assertContains('dynamicprefix'.$time, basename($cacheFile));
+        
+        $this->assertSame('dynamicprefix'.$time.'barfoo', $cache->buildKey('barfoo'));
     }
 
     public function testCacheRenewalOnDifferentOwnership()
