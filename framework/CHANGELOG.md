@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 - Bug #19517: Fix regression in `CompositeAuth::authenticate()` introduced in #19418 (WinterSilence)
 - Bug #19537: Fix default expression detection for MariaDB `date` and `time` columns (bizley)
+- Enh #19584: `yii\caching\Cache` allows closure for `$keyPrefix` in order to generate more dynamic globale cache prefixes (nadar)
 
 
 2.0.46 August 18, 2022
