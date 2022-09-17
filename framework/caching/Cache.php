@@ -54,11 +54,14 @@ use yii\helpers\StringHelper;
 abstract class Cache extends Component implements CacheInterface
 {
     /**
-     * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
+     * @var string|callable A string prefixed to every cache key so that it is unique globally in the whole cache storage.
      * It is recommended that you set a unique cache key prefix for each application if the same cache
      * storage is being used by different applications.
      *
      * To ensure interoperability, only alphanumeric characters should be used.
+     *
+     * since 2.0.X its allowed to use a closure function, this can be usefull when working with environment variables or
+     * any other environment depending cache prefix.
      */
     public $keyPrefix;
     /**
@@ -117,8 +120,10 @@ abstract class Cache extends Component implements CacheInterface
 
             $key = md5($serializedKey);
         }
+        
+        $prefix = is_callable($this->keyPrefix) ? call_user_func($this->keyPrefix, $key, $this) : $this->keyPrefix;
 
-        return $this->keyPrefix . $key;
+        return $prefix . $key;
     }
 
     /**
