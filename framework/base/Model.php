@@ -779,6 +779,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Returns the attribute names that are safe to be massively assigned in the current scenario.
+     *
      * @return string[] safe attribute names
      */
     public function safeAttributes()
@@ -790,7 +791,11 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         }
         $attributes = [];
         foreach ($scenarios[$scenario] as $attribute) {
-            if (strlen($attribute) !== 0 && strncmp($attribute, '!', 1) !== 0 && !in_array('!' . $attribute, $scenarios[$scenario])) {
+            if (
+                $attribute !== ''
+                && strncmp($attribute, '!', 1) !== 0
+                && !in_array('!' . $attribute, $scenarios[$scenario])
+            ) {
                 $attributes[] = $attribute;
             }
         }
