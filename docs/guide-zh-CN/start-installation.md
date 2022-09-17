@@ -139,7 +139,7 @@ Yii依靠 [Bower](https://bower.io/) 和/或 [NPM](https://www.npmjs.com/) 软�
 ------------
 
 当安装完成之后，
-或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://www.php.net/manual/en/features.commandline.webserver.php)，
+或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://www.php.net/manual/zh/features.commandline.webserver.php)，
 当在项目 `web` 目录下可以通过下面的命令:
  
 ```bash
@@ -234,7 +234,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推荐使用的 Nginx 配置 <span id="recommended-nginx-configuration"></span>
 
-为了使用 [Nginx](https://www.nginx.com/resources/wiki/)，你应该已经将 PHP 安装为 [FPM SAPI](https://www.php.net/install.fpm) 了。
+为了使用 [Nginx](https://www.nginx.com/resources/wiki/)，你应该已经将 PHP 安装为 [FPM SAPI](https://www.php.net/manual/zh/install.fpm.php) 了。
 你可以使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，
 `mysite.local` 替换为实际的主机名以提供服务。
 
