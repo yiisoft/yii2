@@ -897,7 +897,7 @@ class Response extends \yii\base\Response
         if ($checkAjax && $request->getIsAjax()) {
             if (
                 in_array($statusCode, [301, 302])
-                && preg_match('/Trident\/|MSIE[ ]/', (string)$request->userAgent)
+                && preg_match('/Trident\/|MSIE /', (string)$request->userAgent)
             ) {
                 $statusCode = 200;
             }

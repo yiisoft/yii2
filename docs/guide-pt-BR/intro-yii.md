@@ -65,5 +65,5 @@ detalhados para recursos específicos executando o verificador de requisitos
 
 Utilizar o Yii requer conhecimentos básicos sobre programação orientada a objetos
 (OOP), uma vez que o Yii é um framework puramente OOP.
-O Yii 2.0 também utiliza as funcionalides mais recentes do PHP, tais como [namespaces](https://www.php.net/manual/en/language.namespaces.php) e [traits](https://www.php.net/manual/en/language.oop5.traits.php). Compreender esses conceitos lhe ajudará a entender mais facilmente o Yii 2.0.
+O Yii 2.0 também utiliza as funcionalides mais recentes do PHP, tais como [namespaces](https://www.php.net/manual/pt_BR/language.namespaces.php) e [traits](https://www.php.net/manual/pt_BR/language.oop5.traits.php). Compreender esses conceitos lhe ajudará a entender mais facilmente o Yii 2.0.
 

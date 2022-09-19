@@ -990,7 +990,7 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
+            '/function getVersion\(\)\R {4}\{\R {8}return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
             $frameworkPath . '/BaseYii.php');
     }

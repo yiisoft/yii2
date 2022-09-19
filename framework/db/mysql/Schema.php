@@ -293,7 +293,7 @@ SQL;
              *
              * See details here: https://mariadb.com/kb/en/library/now/#description
              */
-            if (($column->type === 'timestamp' || $column->type === 'datetime')
+            if (in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
                 && isset($info['default'])
                 && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
