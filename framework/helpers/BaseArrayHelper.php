@@ -213,7 +213,7 @@ class BaseArrayHelper
                     break;
                 }
             }
-            if(!is_null($classKey)) {
+            if(!is_null($classKey) && property_exists($array, $classKey)) {
                 return $array->$classKey;
             }
         }
