@@ -182,9 +182,10 @@ class BaseArrayHelper
      * The possibility to pass an array of keys is available since version 2.0.4.
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
+     * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return mixed the value of the element if found, default value otherwise
      */
-    public static function getValue($array, $key, $default = null)
+    public static function getValue($array, $key, $default = null, $caseSensitive = true)
     {
         if ($key instanceof \Closure) {
             return $key($array, $default);
@@ -211,7 +212,15 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
-        if (static::keyExists($key, $array)) {
+        if (static::keyExists($key, $array, $caseSensitive)) {
+            if(!$caseSensitive) {
+                foreach (array_keys($array) as $k) {
+                    if (strcasecmp($key, $k) === 0) {
+                        $key = $k;
+                        break;
+                    }
+                }
+            }
             return $array[$key];
         }
         if (is_object($array)) {
