@@ -199,8 +199,23 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_object($array) && property_exists($array, $key)) {
-            return $array->$key;
+        if (is_object($array)) {
+            if(property_exists($array, $key)) {
+                return $array->$key;
+            }
+            // Refer to the official PHP example:
+            // https://www.php.net/manual/en/function.get-class-vars.php
+            $classVars = get_class_vars(get_class($array));
+            $classKey = null;
+            foreach (array_keys($classVars) as $k) {
+                if (strcasecmp($key, $k) === 0) {
+                    $classKey = $k;
+                    break;
+                }
+            }
+            if(!is_null($classKey)) {
+                return $array->$classKey;
+            }
         }
 
         if (static::keyExists($key, $array)) {
