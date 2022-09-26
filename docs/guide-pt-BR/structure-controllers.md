@@ -1,7 +1,7 @@
 Controllers (Controladores)
 ===========
 
-Os controllers (controladores) fazem parte da arquitetura [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Os controllers (controladores) fazem parte da arquitetura [MVC](https://pt.wikipedia.org/wiki/MVC).
 São objetos de classes que estendem de [[yii\base\Controller]] e são responsáveis
 pelo processamento das requisições e por gerar respostas. Em particular, após
 assumir o controle de [applications](structure-applications.md), controllers
