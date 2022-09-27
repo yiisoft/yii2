@@ -163,7 +163,7 @@ $container->set('yii\db\Connection');
 // register an interface
 // When a class depends on the interface, the corresponding class
 // will be instantiated as the dependent object
-$container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
+$container->set('yii\mail\MailInterface', 'yii\symfonymailer\Mailer');
 
 // register an alias name. You can use $container->get('foo')
 // to create an instance of Connection

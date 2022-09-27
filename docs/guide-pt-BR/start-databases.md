@@ -55,7 +55,7 @@ Configurando uma Conexão de BD <span id="configuring-db-connection"></span>
 ------------------------------
 
 Antes de prosseguir, certifique-se de que você possui instalados tanto a
-extensão [PDO](https://www.php.net/manual/en/book.pdo.php) do PHP quanto o driver
+extensão [PDO](https://www.php.net/manual/pt_BR/book.pdo.php) do PHP quanto o driver
 PDO para o gerenciador de banco de dados que você está usando (por exemplo, `pdo_mysql` para o MySQL).
 Este é um requisito básico se a sua aplicação usa um banco de dados relacional.
 

@@ -1,7 +1,7 @@
 控制器
 ===========
 
-控制器是 [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分，
+控制器是 [MVC](https://zh.wikipedia.org/wiki/MVC) 模式中的一部分，
 是继承[[yii\base\Controller]]类的对象，负责处理请求和生成响应。
 具体来说，控制器从[应用主体](structure-applications.md)
 接管控制后会分析请求数据并传送到[模型](structure-models.md)，
