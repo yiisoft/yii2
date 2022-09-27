@@ -171,7 +171,7 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $typecastAfterSave = false;
     /**
-     * @var bool whether to perform typecasting after retrieving owner model data from
+     * @var bool whether to perform type casting after retrieving owner model data from
      * the database (after find or refresh).
      * This option may be disabled in order to achieve better performance.
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after find
@@ -179,6 +179,11 @@ class AttributeTypecastBehavior extends Behavior
      * Note that changing this option value will have no effect after this behavior has been attached to the model.
      */
     public $typecastAfterFind = false;
+    /**
+     * @var bool whether to type cast only active attributes, by default, cast all attributes in [[attributeTypes]]
+     * @since 2.0.47
+     */
+    public $typecastOnlyActiveAttributes = false;
 
     /**
      * @var array internal static cache for auto detected [[attributeTypes]] values
@@ -232,11 +237,12 @@ class AttributeTypecastBehavior extends Behavior
                 $attributeTypes[$attribute] = $this->attributeTypes[$attribute];
             }
         }
-
-        $attributeTypes = array_intersect_key(
-            $attributeTypes,
-            array_flip($this->owner->activeAttributes())
-        );
+        if ($this->typecastOnlyActiveAttributes) {
+            $attributeTypes = array_intersect_key(
+                $attributeTypes,
+                array_flip($this->owner->activeAttributes())
+            );
+        }
         foreach ($attributeTypes as $attribute => $type) {
             $value = $this->owner->{$attribute};
             if ($this->skipOnNull && $value === null) {
