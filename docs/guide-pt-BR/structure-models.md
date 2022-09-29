@@ -1,7 +1,7 @@
 Models (Modelos)
 ================
 
-Os models (modelos) fazem parte da arquitetura [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Os models (modelos) fazem parte da arquitetura [MVC](https://pt.wikipedia.org/wiki/MVC).
 Eles representam os dados, as regras e a lógica de negócio.
 
 Você pode criar uma classe model estendendo de [[yii\base\Model]] ou de seus filhos.
