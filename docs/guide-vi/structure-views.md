@@ -1,7 +1,7 @@
 Views (Giao diện)
 =====
 
-Views là phần trong mô hình [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Views là phần trong mô hình [MVC](https://vi.wikipedia.org/wiki/MVC).
 Thành phần này chịu trách nhiệm chính trong việc hiển thị dữ liệu tới người dùng. Tại ứng dụng Web, views thường được tạo
 cùng với các *bản mẫu giao diện (view template)* là những file kịch bản của PHP có chứa các mã HTML và mã PHP.
 Các file giao diện được quản lý bởi [[yii\web\View|view]] [là thành phần ứng dụng](structure-application-components.md) thành phần này có chứa các phương thức chung
@@ -50,7 +50,7 @@ hoặc các đối tượng khác được cho vào từ việc [xuất bản vi
 
 Khi tạo views được sinh bởi các trang HTML, điều quan trọng là bạn mã hóa và/hoặc lọc dữ liệu đến từ người dùng
 cuối trước khi hiển thị lên. Nếu không thì, ứng dụng của bạn có thể bị tấn công bởi
-[cross-site scripting](https://en.wikipedia.org/wiki/Cross-site_scripting).
+[cross-site scripting](https://vi.wikipedia.org/wiki/Cross-site_scripting).
 
 Để hiển thị các nội dung thuần, hãy encode trước bằng việc gọi phương thức [[yii\helpers\Html::encode()]]. Ví dụ, đoạn mã sau sẽ
 encodes thông tin user name trước khi được hiển thị:
