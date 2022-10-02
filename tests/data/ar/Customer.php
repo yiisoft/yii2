@@ -87,6 +87,20 @@ class Customer extends ActiveRecord
         })->orderBy('id');
     }
 
+    // get OrderItems objects via orders
+    public function getOrderItems2()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+            ->via('orders');
+    }
+
+    //get Items objects via Orders via OrderItems
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems2');
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
         ActiveRecordTest::$afterSaveInsert = $insert;
