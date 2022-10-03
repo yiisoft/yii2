@@ -806,7 +806,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             $lazyItemsCount += count($customer->items);
         }
 
-        //eager loaded items
         $this->assertEquals($eagerItemsCount, $lazyItemsCount);
     }
 
