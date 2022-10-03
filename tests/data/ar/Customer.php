@@ -87,7 +87,6 @@ class Customer extends ActiveRecord
         })->orderBy('id');
     }
 
-    // get OrderItems objects via orders
     public function getOrderItems2()
     {
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
