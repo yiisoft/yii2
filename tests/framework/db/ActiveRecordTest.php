@@ -794,11 +794,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testJoinWithEager()
     {
-        $eagerCustomers=Customer::find()
-            ->joinWith([
-                'items',
-            ])
-            ->all();
+        $eagerCustomers = Customer::find()->joinWith(['items'])->all();
         $eagerItemsCount=0;
         foreach ($eagerCustomers as $customer) $eagerItemsCount+=count($customer->items);
 
