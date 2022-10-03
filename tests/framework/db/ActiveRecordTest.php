@@ -800,8 +800,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             $eagerItemsCount += count($customer->items);
         }
 
-        $lazyCustomers=Customer::find()
-            ->all();
+        $lazyCustomers = Customer::find()->all();
         $lazyItemsCount=0;
         foreach ($lazyCustomers as $customer) $lazyItemsCount+=count($customer->items);
 
