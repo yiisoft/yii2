@@ -235,7 +235,7 @@ echo Url::home();
 echo Url::base();
 
 // l'URL canonique de l'URL couramment requise 
-// voir https://en.wikipedia.org/wiki/Canonical_link_element
+// voir https://fr.wikipedia.org/wiki/%C3%89l%C3%A9ment_de_lien_canonique
 echo Url::canonical();
 
 // mémorise l'URL couramment requise et la retrouve dans les requêtes subséquentes
@@ -635,7 +635,7 @@ Depuis la version 2.0.10, le [[yii\web\UrlManager|gestionnaire d'URL]] peut êtr
 
 Parce que, techniquement,  `https://example.com/path`
 et `https://example.com/path/` sont des URL différentes, servir le même  contenu pour chacune d'elles peut dégrader le classement SEO.
-Par défaut, le normalisateur fusionne les barres obliques de division consécutives, ajoute ou retire des barres de division de fin selon que le suffixe comporte une barre de division de fin ou pas, et redirige vers la version normalisée de l'URL en utilisant la [redirection permanente](https://en.wikipedia.org/wiki/HTTP_301).
+Par défaut, le normalisateur fusionne les barres obliques de division consécutives, ajoute ou retire des barres de division de fin selon que le suffixe comporte une barre de division de fin ou pas, et redirige vers la version normalisée de l'URL en utilisant la [redirection permanente](https://fr.wikipedia.org/wiki/HTTP_301).
 Le normalisateur peut être configuré globalement pour le gestionnaire d'URL ou individuellement pour chacune des règles — par défaut, chacune des règles utilise le normalisateur du gestionnaire d'URL. 
 Vous pouvez définir [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] à `false` pour désactiver la normalisation pour une règle d'URL particulière.
 
