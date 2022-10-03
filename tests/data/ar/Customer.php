@@ -93,7 +93,6 @@ class Customer extends ActiveRecord
             ->via('orders');
     }
 
-    //get Items objects via Orders via OrderItems
     public function getItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
