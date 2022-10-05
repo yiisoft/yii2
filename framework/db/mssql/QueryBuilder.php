@@ -493,6 +493,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 if ($column->isComputed) {
                     continue;
                 }
+                if ($column->type === 'timestamp') {
+                    continue;
+                }
                 $quoteColumnName = $this->db->quoteColumnName($column->name);
                 $cols[] = $quoteColumnName . ' '
                     . $column->dbType
