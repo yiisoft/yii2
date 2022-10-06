@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #19530: Fix specifying the field id for `yii\widgets\ActiveField` (kv4nt)
 - Bug #19537: Fix default expression detection for MariaDB `date` and `time` columns (bizley)
 - Bug #19589: Fix Error reporting in to the `BaseArrayHelper::getValue()` (lav45)
+- Bug #19316: Fix MysqlMutex with same connection but difference database (kamarton)
 - Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
 
 
