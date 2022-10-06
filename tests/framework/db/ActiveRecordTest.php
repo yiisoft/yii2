@@ -787,6 +787,28 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotEmpty($rows);
     }
 
+    /**
+     * Test joinWith eager loads via relation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19507
+     */
+    public function testJoinWithEager()
+    {
+        $eagerCustomers = Customer::find()->joinWith(['items'])->all();
+        $eagerItemsCount = 0;
+        foreach ($eagerCustomers as $customer) {
+            $eagerItemsCount += count($customer->items);
+        }
+
+        $lazyCustomers = Customer::find()->all();
+        $lazyItemsCount = 0;
+        foreach ($lazyCustomers as $customer) {
+            $lazyItemsCount += count($customer->items);
+        }
+
+        $this->assertEquals($eagerItemsCount, $lazyItemsCount);
+    }
+
     public function aliasMethodProvider()
     {
         return [
