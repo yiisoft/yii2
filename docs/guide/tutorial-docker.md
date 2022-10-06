@@ -24,7 +24,7 @@ CONTAINER ID   IMAGE   COMMAND   CREATED   STATUS   PORTS
 
 This means your Docker daemon is up and running.
 
-Additionally run `docker-compose version`, your output should look like this
+Additionally, run `docker-compose version`, your output should look like this
 
 ```
 docker-compose version 1.20.0, build unknown
