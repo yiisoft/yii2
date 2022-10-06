@@ -38,6 +38,7 @@ class MysqlMutex extends DbMutex
 {
     /**
      * @var Expression|string|null prefix value. If null (by default) then connection's current database name is used.
+     * @since 2.0.47
      */
     public $keyPrefix = null;
 
