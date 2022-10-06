@@ -16,6 +16,7 @@ create table [session]
 (
     [id] varchar(256) not null,
     [expire] integer,
+    /* For legacy SQL Server: [data] nvarchar(max), */
     [data] varbinary(max),
     primary key ([id])
 );
