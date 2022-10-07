@@ -31,10 +31,8 @@ class m160313_153426_session_init extends Migration
             case 'sqlsrv':
             case 'mssql':
             case 'dblib':
-                $version = $this->db->createCommand("SELECT SERVERPROPERTY('productversion')")->queryScalar();
-                $version = explode('.', $version, 2);
-                // "varbinary(max)" added in SQL Server 2012 (version 11.*)
-                if ($version < 11) {
+                // "varbinary(max)" added in SQL Server 2012 (version 11.0.0)
+                if (version_compare($this->getDb()->getServerVersion(), '11.0.0') < 0) {
                     $dataType = $this->text();
                 }
                 break;
