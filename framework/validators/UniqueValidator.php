@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -122,9 +122,15 @@ class UniqueValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        if ($this->skipOnError) {
+            foreach ((array)$targetAttribute as $k => $v) {
+                if ($model->hasErrors(is_int($k) ? $v : $k)) {
+                    return;
+                }
+            }
+        }
+
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
         $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
@@ -136,6 +142,8 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
+        /* @var $targetClass ActiveRecordInterface */
+        $targetClass = $this->getTargetClass($model);
         $db = $targetClass::getDb();
 
         $modelExists = false;

@@ -1,7 +1,7 @@
 Behaviors (Comportamentos)
 =========
 
-Behaviors são instâncias de  [[yii\base\Behavior]], ou de uma classe-filha, também conhecido como [mixins](http://en.wikipedia.org/wiki/Mixin), permite melhorar a funcionalidade de uma classe [[yii\base\Component|componente]]  existente sem a necessidade de mudar a herança dela.
+Behaviors são instâncias de  [[yii\base\Behavior]], ou de uma classe-filha, também conhecido como [mixins](https://en.wikipedia.org/wiki/Mixin), permite melhorar a funcionalidade de uma classe [[yii\base\Component|componente]]  existente sem a necessidade de mudar a herança dela.
 Anexar um behavior a um componente "introduz" os métodos e propriedades do behavior dentro do componente, tornando esses métodos e propriedades acessíveis como se estes fossem definidos na própria classe do componente. Além disso, um behavior pode responder a um [evento](concept-events.md) disparado pelo componente, o que permite a customização do código normal.
 
 

@@ -1,9 +1,9 @@
 Ilovani ishga tushirish
 ====================
 
-`http://hostname/basic/web/index.php` o'rnatganingizdan so'ng, asosiy dastur `http://hostname/basic/web/index.php` URL manzilida yoki `http://hostname/index.php` orqali Veb-server sozlamalariga qarab mavjud bo'ladi. Ushbu bo'lim - kodni tashkil qilishning umumiy ta'rifi, o'rnatilgan funksionallik va murojaatlar bilan ishlash. 
+`https://hostname/basic/web/index.php` o'rnatganingizdan so'ng, asosiy dastur `https://hostname/basic/web/index.php` URL manzilida yoki `https://hostname/index.php` orqali Veb-server sozlamalariga qarab mavjud bo'ladi. Ushbu bo'lim - kodni tashkil qilishning umumiy ta'rifi, o'rnatilgan funksionallik va murojaatlar bilan ishlash. 
 
-> Info: Ushbu qo'llanmada Yii `basic/web` katalogiga o'rnatilganini inobatga oladi va u o'z navbatida veb-server sozlamalaridagi ildiz katalogi sifatida o'rnatiladi. Natijada `http://hostname/index.php` URL manziliga kirish orqali `basic/web` joylashgan ilovaga kirishingiz mumkin. Boshlang'ich konfiguratsiya jarayonida batafsil ma'lumotni [Yii-ni o'rnatish bo'limida](start-installation.md) topishingiz mumkin.
+> Info: Ushbu qo'llanmada Yii `basic/web` katalogiga o'rnatilganini inobatga oladi va u o'z navbatida veb-server sozlamalaridagi ildiz katalogi sifatida o'rnatiladi. Natijada `https://hostname/index.php` URL manziliga kirish orqali `basic/web` joylashgan ilovaga kirishingiz mumkin. Boshlang'ich konfiguratsiya jarayonida batafsil ma'lumotni [Yii-ni o'rnatish bo'limida](start-installation.md) topishingiz mumkin.
 
 Freymvorkdan farqli o'laroq, dastur o'rnatilgandan so'ng, u sizniki bolib qoladi. Siz o`zingizni kodingizni o'zingiz xohlagan tarzda o'zgartirishingiz mumkin. 
 
@@ -12,7 +12,7 @@ Funksionallik <span id="functionality"></span>
 
 Oddiy dastur uchun o'rnatilgan shablon to'rtta sahifadan iborat:
 
-* `http://hostname/index.php` URL manziliga `http://hostname/index.php` ko'rsatiladigan asosiy sahifa 
+* `https://hostname/index.php` URL manziliga `https://hostname/index.php` ko'rsatiladigan asosiy sahifa 
 * "About" ("Biz haqimizda") sahifasi
 * "Kontakt" sahifasida qayta aloqa shakli joylashgan ushbu shakl orqali u dasturchiga murojaat qilishi mumkin 
 * "Kirish" sahifasida avtorizatsiya shakl ko'rsatiladi. Foydalanuvchi nomi / parol bilan "login / admin" bilan tizimga kirishingiz mumkin. Asosiy menyu "Login" menyusi "Logout" menyusiga o`zgarishiga etibor bering. 

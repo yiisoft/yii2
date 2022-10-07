@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -25,7 +25,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      * @var array the commands that are used to perform the asset conversion.
      * The keys are the asset file extension names, and the values are the corresponding
      * target script types (either "css" or "js") and the commands used for the conversion.
-     * 
+     *
      * The command placeholders: `{from}` - source file, `{to}` - converted file.
      *
      * You may also use a [path alias](guide:concept-aliases) to specify the location of the command:

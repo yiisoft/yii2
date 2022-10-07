@@ -2,7 +2,7 @@
 ================
 
 依存注入 (DI) コンテナは、オブジェクトとそれが依存するすべてのオブジェクトを、インスタンス化し、設定する方法を知っているオブジェクトです。
-なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
+なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](https://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
 ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
@@ -541,7 +541,7 @@ $reader = $container->get('app\storage\DocumentsReader');
 
 依存注入と [サービス・ロケータ](concept-service-locator.md) はともに、疎結合でよりテストしやすい方法でのソフトウェア構築を可能にする、
 定番のデザインパターンです。
-依存注入とサービス・ロケータへのより深い理解を得るために、 [Martin の記事](http://martinfowler.com/articles/injection.html)
+依存注入とサービス・ロケータへのより深い理解を得るために、 [Martin の記事](https://martinfowler.com/articles/injection.html)
 を読むことを強くお勧めします。
 
 Yii はその [サービス・ロケータ](concept-service-locator.md) を、依存注入 (DI) コンテナの上に実装しています。

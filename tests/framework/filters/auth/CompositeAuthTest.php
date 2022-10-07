@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters\auth;
@@ -91,9 +91,7 @@ class TestController extends Controller
         return [
             'authenticator' => [
                 'class' => CompositeAuth::className(),
-                'authMethods' => $this->authMethods ?: [
-                    TestAuth::className(),
-                ],
+                'authMethods' => $this->authMethods ?: [TestAuth::className()],
                 'optional' => $this->optional
             ],
         ];
@@ -257,12 +255,10 @@ class CompositeAuthTest extends \yiiunit\TestCase
     public function testCompositeAuth($authMethods, $actionId, $expectedAuth)
     {
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
-        /** @var TestController $controller */
-        $controller = Yii::$app->createController('test')[0];
-        $controller->authMethods = $authMethods;
-        if( $expectedAuth)
+        $controller = new TestController('test', Yii::$app, ['authMethods' => $authMethods]);
+        if ($expectedAuth) {
             $this->assertEquals('success', $controller->run($actionId));
-        else {
+        } else {
             $this->expectException('yii\web\UnauthorizedHttpException');
             $controller->run($actionId);
         }

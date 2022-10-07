@@ -75,7 +75,7 @@ return [
 - [[yii\i18n\Formatter::asDate()|date]]：这个变量将被格式化为日期 `January 01, 2014`。
 - [[yii\i18n\Formatter::asTime()|time]]：这个变量将被格式化为时间 `14:23`。
 - [[yii\i18n\Formatter::asDatetime()|datetime]]：这个变量将被格式化为日期+时间 `January 01, 2014 14:23`。
-- [[yii\i18n\Formatter::asTimestamp()|timestamp]]：这个变量将被格式化为 UNIX 时间戳 [unix timestamp](http://en.wikipedia.org/wiki/Unix_time)，例如 `1412609982`。
+- [[yii\i18n\Formatter::asTimestamp()|timestamp]]：这个变量将被格式化为 UNIX 时间戳 [unix timestamp](https://en.wikipedia.org/wiki/Unix_time)，例如 `1412609982`。
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]：这个变量将被格式化为人类可读的
   当前相对时间 `1 hour ago`。
 - [[yii\i18n\Formatter::asDuration()|duration]]：这个变量将被格式化为人类可读的时长 `1 day, 2 minutes`。
@@ -85,7 +85,7 @@ return [
 你可以对他们进行一些自己的配置，只需在配置文件里配置 [[yii\i18n\Formatter::dateFormat|dateFormat]], 
 [[yii\i18n\Formatter::timeFormat|timeFormat]], 和 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]] 即可。
 
-同时，你还可以配置它使用 [ICU syntax](http://userguide.icu-project.org/formatparse/datetime)，
+同时，你还可以配置它使用 [ICU syntax](https://unicode-org.github.io/icu/userguide/format_parse/datetime/)，
 同时你也可以配置它使用 [PHP date() 语法](https://www.php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
 例如，
 
@@ -150,7 +150,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 
 > 不同的政府和地区政策决定不同的时区，
 > 你在你的时区数据库中可能拿不到最新的数据。
-> 这时你可以戳 [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) 来查看如何更新时区。
+> 这时你可以戳 [ICU manual](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) 来查看如何更新时区。
 > 同时，这篇也可以作为参考 [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment)。
 
 

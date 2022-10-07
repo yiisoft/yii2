@@ -222,7 +222,7 @@ Essayer <span id="trying-it-out"></span>
 Pour voir comment tout le code ci-dessus fonctionne, pointez votre navigateur sur l'URL suivante :
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 ![Liste de Pays](images/start-country-list.png)
@@ -233,7 +233,7 @@ page d'enregistrements.
 Observez plus attentivement et vous noterez que l'URL dans le navigateur devient
 
 ```
-http://hostname/index.php?r=country/index&page=2
+https://hostname/index.php?r=country/index&page=2
 ```
 
 En coulisse, [[yii\data\Pagination|Pagination]] fournit toutes les fonctionnalités permettant de paginer un ensemble de données :

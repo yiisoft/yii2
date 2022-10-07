@@ -156,7 +156,7 @@ Configuration du serveur Web <span id="configuring-web-servers"></span>
 L'application installée selon les instructions ci-dessus devrait fonctionner *out of the box* (sans configuration supplémentaire) avec le [serveur HTTP Apache](https://httpd.apache.org/) ou le [serveur HTTP Nginx](https://nginx.org/), sous Windows, Mac OX X, ou Linux avec PHP 5.4 ou plus récent. Yii 2.0 est aussi compatible avec 
 [HHVM](https://hhvm.com/) de Facebook. Cependant, il existe des cas marginaux pour lesquels HHVM se comporte différemment du PHP natif; c'est pourquoi vous devez faire plus attention en utilisant HHVM.. 
 
-Sur un serveur de production, vous pouvez configurer votre serveur Web afin que l'application soit accessible via l'URL `http://www.example.com/index.php` au lieu de `http://www.example.com/basic/web/index.php`. Cela implique que le dossier racine de votre serveur Web pointe vers le dossier `basic/web`.
+Sur un serveur de production, vous pouvez configurer votre serveur Web afin que l'application soit accessible via l'URL `https://www.example.com/index.php` au lieu de `https://www.example.com/basic/web/index.php`. Cela implique que le dossier racine de votre serveur Web pointe vers le dossier `basic/web`.
 Vous pouvez également cacher `index.php` dans l'URL, comme décrit dans la partie [Génération et traitement des URL](runtime-url-handling.md), vous y apprendrez comment configurer votre serveur Apache ou Nginx pour atteindre ces objectifs.
 
 > Note: en utilisant `basic/web` comme dossier racine, vous empêchez également aux utilisateurs finaux d'accéder à votre code d'application privé et fichiers de données sensibles qui sont stockés dans le dossier `basic`. Refuser l'accès à ces ressources est une amélioration de la sécurité.
@@ -194,7 +194,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuration Nginx recommandée <span id="recommended-nginx-configuration"></span>
 
-Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](https://www.php.net/install.fpm).
+Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](https://www.php.net/manual/fr/install.fpm.php).
 Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.test` par le nom d'hôte de votre serveur.
 
 ```nginx

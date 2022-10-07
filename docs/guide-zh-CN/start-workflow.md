@@ -2,13 +2,13 @@
 ====================
 
 安装 Yii 后，就有了一个可运行的 Yii 应用，
-根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。
+根据配置的不同，可以通过 `https://hostname/basic/web/index.php` 或 `https://hostname/index.php` 访问。
 本章节将介绍应用的内建功能，如何组织代码，
 以及一般情况下应用如何处理请求。
 
 > Info: 为简单起见，在整个“入门”板块都假定你已经把
   `basic/web` 设为 Web 服务器根目录并配置完毕，
-  你访问应用的地址会是 `http://hostname/index.php` 或类似的。
+  你访问应用的地址会是 `https://hostname/index.php` 或类似的。
   请按需调整 URL。
 
 注意项目模板和框架完全不同，安装完之后全都归你了。你可以根据你的需要自由的添加或删除代码和
@@ -20,7 +20,7 @@
 
 一个安装完的基本应用包含四页：
 
-* 主页，当你访问 `http://hostname/index.php` 时显示,
+* 主页，当你访问 `https://hostname/index.php` 时显示,
 * “About”页，
 * “Contact”页， 显示一个联系表单，允许终端用户通过 Email 联系你，
 * “Login”页， 显示一个登录表单，用来验证终端用户。试着用“admin/admin”登录，
@@ -63,7 +63,7 @@ basic/                  应用根目录
 一般来说，应用中的文件可被分为两类：在 `basic/web` 下的和在其它目录下的。
 前者可以直接通过 HTTP 访问（例如浏览器），后者不能也不应该被直接访问。
 
-Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-view-controller)设计模式，这点在上述目录结构中也得以体现。
+Yii 实现了[模型-视图-控制器 (MVC)](https://wikipedia.org/wiki/Model-view-controller)设计模式，这点在上述目录结构中也得以体现。
 `models` 目录包含了所有[模型类](structure-models.md)，
 `views` 目录包含了所有[视图脚本](structure-views.md)，
 `controllers` 目录包含了所有[控制器类](structure-controllers.md)。

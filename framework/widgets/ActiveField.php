@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -847,7 +847,7 @@ class ActiveField extends Component
         $options = [];
 
         $inputID = $this->getInputId();
-        $options['id'] = Html::getInputId($this->model, $this->attribute);
+        $options['id'] = $inputID ?: Html::getInputId($this->model, $this->attribute);
         $options['name'] = $this->attribute;
 
         $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";

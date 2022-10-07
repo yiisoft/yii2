@@ -9,7 +9,7 @@ env:
   jquery: true
   node: true
 
-# http://eslint.org/docs/rules/
+# https://eslint.org/docs/latest/rules/
 rules:
   # Possible Errors
   comma-dangle: [2, never]

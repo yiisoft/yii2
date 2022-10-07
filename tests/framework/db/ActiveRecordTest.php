@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db;
@@ -785,6 +785,28 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             },
         ])->all();
         $this->assertNotEmpty($rows);
+    }
+
+    /**
+     * Test joinWith eager loads via relation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19507
+     */
+    public function testJoinWithEager()
+    {
+        $eagerCustomers = Customer::find()->joinWith(['items'])->all();
+        $eagerItemsCount = 0;
+        foreach ($eagerCustomers as $customer) {
+            $eagerItemsCount += count($customer->items);
+        }
+
+        $lazyCustomers = Customer::find()->all();
+        $lazyItemsCount = 0;
+        foreach ($lazyCustomers as $customer) {
+            $lazyItemsCount += count($customer->items);
+        }
+
+        $this->assertEquals($eagerItemsCount, $lazyItemsCount);
     }
 
     public function aliasMethodProvider()

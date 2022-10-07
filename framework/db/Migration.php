@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -28,7 +28,7 @@ use yii\helpers\StringHelper;
  * the whole migration can be reverted in a whole.
  *
  * Note that some DB queries in some DBMS cannot be put into a transaction. For some examples,
- * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+ * please refer to [implicit commit](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
  * you should still implement `up()` and `down()`, instead.
  *
  * Migration provides a set of convenient methods for manipulating database data and schema.
@@ -175,7 +175,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
+     * please refer to [implicit commit](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return false|void|mixed return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -192,7 +192,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
+     * please refer to [implicit commit](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return false|void|mixed return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.

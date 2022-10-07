@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -302,7 +302,7 @@ abstract class ErrorHandler extends Component
             return;
         }
 
-        if (empty($this->_hhvmException)) {
+        if (!empty($this->_hhvmException)) {
             $this->exception = $this->_hhvmException;
         } else {
             $this->exception = new ErrorException(

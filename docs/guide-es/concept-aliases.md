@@ -18,7 +18,7 @@ Para definir un alias puedes llamar a [[Yii::setAlias()]] para una determinada r
 Yii::setAlias('@foo', '/path/to/foo');
 
 // una alias de un URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 ```
 
 > Note: Una ruta de archivo o URL en alias NO debe necesariamente referirse a un archivo o recurso existente.
@@ -44,7 +44,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -58,7 +58,7 @@ además resolver un alias derivado en su correspondiente ruta de archivo o URL. 
 
 ```php
 echo Yii::getAlias('@foo');               // muestra: /path/to/foo
-echo Yii::getAlias('@bar');               // muestra: http://www.example.com
+echo Yii::getAlias('@bar');               // muestra: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // muestra: /path/to/foo/bar/file.php
 ```
 

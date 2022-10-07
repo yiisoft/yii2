@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\grid;
@@ -216,10 +216,10 @@ class DataColumn extends Column
                 $error = '';
             }
             if (is_array($this->filter)) {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => '', 'strict' => true], $this->filterInputOptions);
                 return Html::activeDropDownList($model, $this->filterAttribute, $this->filter, $options) . $error;
             } elseif ($this->format === 'boolean') {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => '', 'strict' => true], $this->filterInputOptions);
                 return Html::activeDropDownList($model, $this->filterAttribute, [
                     1 => $this->grid->formatter->booleanFormat[1],
                     0 => $this->grid->formatter->booleanFormat[0],

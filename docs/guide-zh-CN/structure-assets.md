@@ -79,7 +79,7 @@ class AppAsset extends AssetBundle
     [[yii\web\AssetManager::basePath]]，文件实际的 URL
     在该路径前加上 [[yii\web\AssetManager::baseUrl]]。
   - 绝对 URL 地址表示为外部 JavaScript 文件，如
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`。
 * [[yii\web\AssetBundle::depends|depends]]：一个列出该资源包依赖的
   其他资源包（后两节有详细介绍）。
@@ -459,10 +459,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // 这行代码不起作用！
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // 这行代码不起作用！
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // 这行代码不起作用！
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // 这行代码不起作用！
                 ],
             ],
         ],
@@ -577,8 +577,8 @@ Yii框架定义许多资源包，如下资源包是最常用，
 ## 资源转换 <span id="asset-conversion"></span>
 
 除了直接编写 CSS 或 JavaScript 代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成 CSS/JavaScript。
-例如，对于 CSS 代码可使用 [LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
-对于 JavaScript 可使用 [TypeScript](http://www.typescriptlang.org/)。
+例如，对于 CSS 代码可使用 [LESS](https://lesscss.org/) 或 [SCSS](https://sass-lang.com/)，
+对于 JavaScript 可使用 [TypeScript](https://www.typescriptlang.org/)。
 
 可将使用扩展语法的资源文件列到资源包的 [[yii\web\AssetBundle::css|css]] 和 [[yii\web\AssetBundle::js|js]] 中，如下所示：
 
@@ -642,7 +642,7 @@ return [
 命令中的标记 `{from}` 和 `{to}` 会分别被源资源文件路径和目标资源文件路径替代。
 
 > Info: 除了以上方式，也有其他的方式来处理扩展语法资源，
-  例如，可使用编译工具如[grunt](http://gruntjs.com/)
+  例如，可使用编译工具如[grunt](https://gruntjs.com/)
   来监控并自动转换扩展语法资源，此时，
   应使用资源包中编译后的CSS/JavaScript文件而不是原始文件。
 
@@ -838,7 +838,7 @@ yii asset assets.php config/assets-prod.php
 
 
 > Info: 使用 `asset` 命令并不是合并和压缩资源的唯一方法。
-  你也可以使用能够自动运行设定任务的项目构建工具 [grunt](http://gruntjs.com/) 来实现同样的目的。
+  你也可以使用能够自动运行设定任务的项目构建工具 [grunt](https://gruntjs.com/) 来实现同样的目的。
 
 
 ### 资源包分组 <span id="grouping-asset-bundles"></span>

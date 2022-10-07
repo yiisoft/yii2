@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\mutex;
 
 use yii\base\InvalidConfigException;
+use yii\db\Expression;
 
 /**
  * MysqlMutex implements mutex "lock" mechanism via MySQL locks.
@@ -36,6 +37,12 @@ use yii\base\InvalidConfigException;
 class MysqlMutex extends DbMutex
 {
     /**
+     * @var Expression|string|null prefix value. If null (by default) then connection's current database name is used.
+     * @since 2.0.47
+     */
+    public $keyPrefix = null;
+
+    /**
      * Initializes MySQL specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not MySQL connection.
      */
@@ -45,6 +52,9 @@ class MysqlMutex extends DbMutex
         if ($this->db->driverName !== 'mysql') {
             throw new InvalidConfigException('In order to use MysqlMutex connection must be configured to use MySQL database.');
         }
+        if ($this->keyPrefix === null) {
+            $this->keyPrefix = new Expression('DATABASE()');
+        }
     }
 
     /**
@@ -52,15 +62,15 @@ class MysqlMutex extends DbMutex
      * @param string $name of the lock to be acquired.
      * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
-     * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_get-lock
+     * @see https://dev.mysql.com/doc/refman/8.0/en/miscellaneous-functions.html#function_get-lock
      */
     protected function acquireLock($name, $timeout = 0)
     {
         return $this->db->useMaster(function ($db) use ($name, $timeout) {
             /** @var \yii\db\Connection $db */
             return (bool) $db->createCommand(
-                'SELECT GET_LOCK(:name, :timeout)',
-                [':name' => $this->hashLockName($name), ':timeout' => $timeout]
+                'SELECT GET_LOCK(CONCAT(:prefix, :name), :timeout)',
+                [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix]
             )->queryScalar();
         });
     }
@@ -69,15 +79,15 @@ class MysqlMutex extends DbMutex
      * Releases lock by given name.
      * @param string $name of the lock to be released.
      * @return bool release result.
-     * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_release-lock
+     * @see https://dev.mysql.com/doc/refman/8.0/en/miscellaneous-functions.html#function_release-lock
      */
     protected function releaseLock($name)
     {
         return $this->db->useMaster(function ($db) use ($name) {
             /** @var \yii\db\Connection $db */
             return (bool) $db->createCommand(
-                'SELECT RELEASE_LOCK(:name)',
-                [':name' => $this->hashLockName($name)]
+                'SELECT RELEASE_LOCK(CONCAT(:prefix, :name))',
+                [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix]
             )->queryScalar();
         });
     }
