@@ -26,7 +26,7 @@ Like [data caching](caching-data.md), a unique `$id` is needed to identify a con
 
 To delete fragment caching you can use
 ```php
-Yii::$app->cache->delete(['yii\widgets\FragmentCache',$id]);
+Yii::$app->cache->delete(['yii\widgets\FragmentCache', $id]);
 ```
 
 
