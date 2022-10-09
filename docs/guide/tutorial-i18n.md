@@ -449,7 +449,7 @@ locale you are translating to:
 ```php
 $n = 3;
 echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
-// For English, it outputs:
+// For English it outputs:
 // You are the 3rd visitor
 
 // Translation

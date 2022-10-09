@@ -64,7 +64,7 @@ In some cases any form of automated testing could be overkill:
 - Project is simple and isn't getting any more complex.
 - It's a one-time project that will no longer be worked on.
 
-Still if you have timed it's good to automate testing in these cases as well.
+Still if you have time it's good to automate testing in these cases as well.
 
 ## Further reading
 
