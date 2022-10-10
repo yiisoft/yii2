@@ -341,7 +341,7 @@ class BaseFormatConverter
 
     /**
      * Converts a date format pattern from [ICU format](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax)
-     * to [jQuery UI date format][https://api.jqueryui.com/datepicker/#utility-formatDate].
+     * to [jQuery UI date format](https://api.jqueryui.com/datepicker/#utility-formatDate).
      *
      * Pattern constructs that are not supported by the jQuery UI format will be removed.
      *
@@ -484,7 +484,7 @@ class BaseFormatConverter
 
     /**
      * Converts a date format pattern from [PHP `date()` function format](https://www.php.net/manual/en/function.date)
-     * to [jQuery UI date format][https://api.jqueryui.com/datepicker/#utility-formatDate].
+     * to [jQuery UI date format](https://api.jqueryui.com/datepicker/#utility-formatDate).
      *
      * The conversion is limited to date patterns that do not use escaped characters.
      * Patterns like `jS \o\f F Y` which will result in a date like `1st of December 2014` may not be converted correctly
