@@ -21,4 +21,13 @@ class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
     {
         return ['mssql', 'sqlsrv', 'dblib'];
     }
+
+    protected function buildObjectForSerialization()
+    {
+        $object = parent::buildObjectForSerialization();
+        $object->binary = unpack('H*', $object->binary);
+        $object->binary = base_convert($object->binary[1], 16, 2);
+
+        return $object;
+    }
 }
