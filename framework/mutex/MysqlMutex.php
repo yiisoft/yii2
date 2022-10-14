@@ -69,7 +69,7 @@ class MysqlMutex extends DbMutex
         return $this->db->useMaster(function ($db) use ($name, $timeout) {
             /** @var \yii\db\Connection $db */
             return (bool) $db->createCommand(
-                'SELECT GET_LOCK(CONCAT(:prefix, :name), :timeout)',
+                'SELECT GET_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64), :timeout)',
                 [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix]
             )->queryScalar();
         });
@@ -86,7 +86,7 @@ class MysqlMutex extends DbMutex
         return $this->db->useMaster(function ($db) use ($name) {
             /** @var \yii\db\Connection $db */
             return (bool) $db->createCommand(
-                'SELECT RELEASE_LOCK(CONCAT(:prefix, :name))',
+                'SELECT RELEASE_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64))',
                 [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix]
             )->queryScalar();
         });
