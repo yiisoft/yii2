@@ -396,7 +396,7 @@ En el momento de escribir esto, solo MSSQL y SQLite serán afectadas.
   puede especificar el nivel de aislamiento directamente cuando empieza la transacción. Se tiene que llamar a
   [[yii\db\Transaction::setIsolationLevel()]] después de que la transacción haya empezado.
 
-[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://es.wikipedia.org/wiki/Aislamiento_(ACID)#Niveles_de_aislamiento
 
 
 ### Transacciones Anidadas <span id="nesting-transactions"></span>
@@ -437,7 +437,7 @@ try {
 
 ## Replicación y División Lectura-Escritura <span id="read-write-splitting"></span>
 
-Muchos DBMS soportan [replicación de bases de datos](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) para tener
+Muchos DBMS soportan [replicación de bases de datos](https://es.wikipedia.org/wiki/Replicaci%C3%B3n_(inform%C3%A1tica)) para tener
 una mejor disponibilidad de la base de datos y un mejor tiempo de respuesta del servidor. Con la replicación de bases
 de datos, los datos están replicados en los llamados *servidores maestros* (master servers) y *servidores esclavos*
 (slave servers). Todas las escrituras y actualizaciones deben hacerse en el servidor maestro, mientras que las lecturas
