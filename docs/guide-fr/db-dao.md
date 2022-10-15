@@ -1,7 +1,7 @@
 Objets d'accès aux bases de données
 ===================================
 
-Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](https://www.php.net/manual/en/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
+Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](https://www.php.net/manual/fr/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
 
 Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous manipulez des requêtes SQL et des tableaux PHP. En conséquence, cela reste le moyen le plus efficace pour accéder aux bases de données. Néanmoins, étant donné que la syntaxe du langage SQL varie selon le type de base de données, l'utilisation des objets d'accès aux bases de données de Yii signifie également que vous avez à faire un travail supplémentaire pour créer une application indifférente au type de base de données.
 
@@ -59,7 +59,7 @@ Vous pouvez ensuite accéder à la base de données via l'expression `Yii::$app-
 
 > Tip: vous pouvez configurer plusieurs composants d'application « base de données » si votre application a besoin d'accéder à plusieurs bases de données.
 
-Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](https://www.php.net/manual/en/pdo.construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
+Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](https://www.php.net/manual/fr/pdo.construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -164,7 +164,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-La liaison des paramètres est implémentée via des [instructions préparées](https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php). En plus d'empêcher les attaques par injection SQL, cela peut aussi améliorer la performance en préparant l'instruction SQL une seule fois et l'exécutant de multiples fois avec des paramètres différents. Par exemple :
+La liaison des paramètres est implémentée via des [instructions préparées](https://www.php.net/manual/fr/mysqli.quickstart.prepared-statements.php). En plus d'empêcher les attaques par injection SQL, cela peut aussi améliorer la performance en préparant l'instruction SQL une seule fois et l'exécutant de multiples fois avec des paramètres différents. Par exemple :
 
 ```php
 $command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
@@ -330,7 +330,7 @@ try {
 En appelant la méthode [[yii\db\Connection::beginTransaction()|beginTransaction()]], une nouvelle transaction est démarrée. La transaction est représentée sous forme d'objet [[yii\db\Transaction]] stocké dans la variable `$transaction`. Ensuite, les requêtes à exécuter sont placées dans un bloc `try...catch...`. Si toutes les requêtes réussissent, la méthode [[yii\db\Transaction::commit()|commit()]] est appelée pour entériner la transaction. Autrement, si une exception a été levée et capturée, la méthode [[yii\db\Transaction::rollBack()|rollBack()]] est appelée pour défaire les changements faits par les requêtes de la transaction antérieures à celle qui a échoué. `throw $e` est alors à nouveau exécutée comme si l'exception n'avait jamais été capturée, ce qui permet au processus normal de gestion des erreurs de s'en occuper.
 
 > Note: dans le code précédent nous avons deux blocs « catch » pour compatibilité
-> avec PHP 5.x et PHP 7.x. `\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
+> avec PHP 5.x et PHP 7.x. `\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/fr/class.throwable.php)
 > depuis PHP 7.0, ainsi vous pouvez sauter la partie avec `\Exception` si votre application utilise seulement PHP 7.0 et plus récent.
 
 ### Spécification de niveaux d'isolation <span id="specifying-isolation-levels"></span>
@@ -366,7 +366,7 @@ Notez que quelques systèmes de gestion de base de données autorisent la défin
 
 > Note: PostgreSQL n'autorise pas la définition du niveau d'isolation tant que la transaction n'a pas démarré, aussi ne pouvez-vous pas spécifier le niveau d'isolation directement en démarrant la transaction. Dans ce cas, vous devez appeler [[yii\db\Transaction::setIsolationLevel()]] après que la transaction a démarré.
 
-[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://fr.wikipedia.org/wiki/Isolation_(informatique)
 
 
 ### Imbrication des transactions <span id="nesting-transactions"></span>
@@ -415,7 +415,7 @@ try {
 
 ## Réplication et éclatement lecture-écriture <span id="read-write-splitting"></span>
 
-Beaucoup de systèmes de gestion de bases de données prennent en charge la [réplication de la base de données](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) pour obtenir une meilleure disponibilité et des temps de réponse de serveur plus courts. Avec la réplication de la base de données, les données sont répliquées depuis les serveurs dits *serveurs maîtres* vers les serveurs dit *serveurs esclaves*. Toutes les écritures et les mises à jour ont lieu sur les serveurs maîtres, tandis que les lectures ont lieu sur les serveurs esclaves.
+Beaucoup de systèmes de gestion de bases de données prennent en charge la [réplication de la base de données](https://fr.wikipedia.org/wiki/R%C3%A9plication_(informatique)) pour obtenir une meilleure disponibilité et des temps de réponse de serveur plus courts. Avec la réplication de la base de données, les données sont répliquées depuis les serveurs dits *serveurs maîtres* vers les serveurs dit *serveurs esclaves*. Toutes les écritures et les mises à jour ont lieu sur les serveurs maîtres, tandis que les lectures ont lieu sur les serveurs esclaves.
 
 Pour tirer parti de la réplication des bases de données et réaliser l'éclatement lecture-écriture, vous pouvez configurer un composant [[yii\db\Connection]] comme le suivant :
 
