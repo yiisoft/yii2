@@ -771,7 +771,7 @@ foreach ($query->each() as $username => $user) {
 
 #### MySQL中批量查询的局限性（Limitations of batch query in MySQL） <span id="batch-query-mysql"></span>
 
-MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php)，
+MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](https://www.php.net/manual/zh/mysqlinfo.concepts.buffering.php)，
 这违背了使用游标（cursor）获取数据的目的，
 因为它不阻止驱动程序将整个结果集加载到客户端的内存中。
 
