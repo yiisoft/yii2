@@ -16,7 +16,6 @@ Yii Framework 2 Change Log
 - Bug #19589: Fix Error reporting in to the `BaseArrayHelper::getValue()` (lav45)
 - Bug #19316: Fix MysqlMutex with same connection but difference database (kamarton)
 - Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
-- Bug #19265: Fix phpdoc duration in `FileCache:setValue()` (kamarton)
 
 2.0.46 August 18, 2022
 ----------------------
