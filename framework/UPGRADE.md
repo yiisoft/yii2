@@ -51,6 +51,14 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.46
+-----------------------
+
+* Applications that change the underlying `authKey` of an authenticated identity, instead of calling
+  `yii\web\User::switchIdentity()` or `yii\web\User::login()` to recreate the active session with the new `authKey`,
+  should now call `yii\web\User::userAuthKeyUpdated()`. `yii\web\User::userAuthKeyUpdated()` recreates the active session 
+  and IdentityCookie (if exists) with the new `authKey`.
+
 Upgrade from Yii 2.0.45
 -----------------------
 

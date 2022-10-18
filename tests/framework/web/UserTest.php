@@ -41,8 +41,134 @@ class UserTest extends TestCase
     protected function tearDown()
     {
         Yii::$app->session->removeAll();
+        UserIdentity::reset();
         static::$time = null;
         parent::tearDown();
+    }
+
+    /**
+     * Make sure autologin works after changing authKey
+     * @see https://github.com/yiisoft/yii2/issues/19621
+     */
+    public function testIssue19621()
+    {
+        global $cookiesMock;
+        $cookiesMock = new CookieCollection();
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'authTimeout' => 10,
+                    'enableAutoLogin' => true,
+                    'autoRenewCookie' => true,
+                ],
+                'response' => [
+                    'class' => MockResponse::className(),
+                ],
+                'request' => [
+                    'class' => MockRequest::className(),
+                ],
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->removeAll();
+        static::$time = \time();
+        $user = UserIdentity::findIdentity('user1');
+        $user->setAuthKey('authKey1');
+        Yii::$app->user->login($user, 30);
+
+        // User is logged in
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // Auth key changed, session is still valid
+        $user = UserIdentity::findIdentity('user1');
+        $user->setAuthKey('authKey2');
+        Yii::$app->user->userAuthKeyUpdated($user);
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is still valid
+        Yii::$app->session->removeAll();
+        static::$time += 15;
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+
+        // Calling userAuthKeyUpdated with incorrect user doesn't change authKey nor user
+        $user = UserIdentity::findIdentity('user2');
+        $user->setAuthKey('authKey3');
+        Yii::$app->user->userAuthKeyUpdated($user);
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+        $this->assertSame('user1', Yii::$app->user->id);
+        
+        // IdentityCookie is still valid and for correct user
+        Yii::$app->session->removeAll();
+        static::$time += 15;
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+        $this->assertSame('user1', Yii::$app->user->id);
+
+
+        // User is logged out
+        Yii::$app->user->logout();
+        $this->mockWebApplication($appConfig);
+        $this->assertTrue(Yii::$app->user->isGuest);
+
+
+        // Calling userAuthKeyUpdated will not log in user
+        $user = UserIdentity::findIdentity('user1');
+        $user->setAuthKey('authKey4');
+        Yii::$app->user->userAuthKeyUpdated($user);
+        $this->assertTrue(Yii::$app->user->isGuest);
+
+
+        // User is logged in without rememberMe
+        Yii::$app->user->login($user, 0);
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // Calling userAuthKeyUpdated will update session
+        $user = UserIdentity::findIdentity('user1');
+        $user->setAuthKey('authKey5');
+        Yii::$app->user->userAuthKeyUpdated($user);
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // but will not create IdentityCookie
+        Yii::$app->session->removeAll();
+        static::$time += 15;
+        $this->mockWebApplication($appConfig);
+        $this->assertTrue(Yii::$app->user->isGuest);
+        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
+        
+        // User is logged in with rememberMe
+        $user = UserIdentity::findIdentity('user1');
+        Yii::$app->user->login($user, 30);
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // app is started with [[autoRenewCookie]] = `false`; 
+        // Calling userAuthKeyUpdated will update session
+        $noRenewConfig = $appConfig;
+        $noRenewConfig['components']['user']['autoRenewCookie'] = false;
+        $this->mockWebApplication($noRenewConfig);
+        Yii::$app->user->isGuest;
+        $user = UserIdentity::findIdentity('user1');
+        $user->setAuthKey('authKey6');
+        Yii::$app->user->userAuthKeyUpdated($user);
+        $this->mockWebApplication($noRenewConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // but IdentityCookie is removed since it's invalid
+        Yii::$app->session->removeAll();
+        static::$time += 15;
+        $this->mockWebApplication($noRenewConfig);
+        $this->assertTrue(Yii::$app->user->isGuest);
+        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
     }
 
     public function testLoginExpires()
