@@ -2,7 +2,7 @@ Comportamientos
 ===============
 
 Comportamientos son instancias de [[yii\base\Behavior]] o sus clases "hija". Comportamientos, también conocido como
-[mixins](https://en.wikipedia.org/wiki/Mixin), te permiten mejorar la funcionalidad de un [[yii\base\Component|componente]]
+[mixins](https://es.wikipedia.org/wiki/Mixin), te permiten mejorar la funcionalidad de un [[yii\base\Component|componente]]
 existente sin necesidad de modificar su herencia de clases.
 Cuando un comportamiento se une a un componente, "inyectará" sus métodos y propiedades dentro del componente, y podrás
 acceder a esos métodos y propiedades como si hubieran estado definidos por la clase de componente. Además, un
@@ -309,7 +309,7 @@ $user->touch('login_time');
 Comparación con Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-Mientras que los comportamientos son similares a [traits](https://www.php.net/traits) en cuanto que ambos "inyectan" sus
+Mientras que los comportamientos son similares a [traits](https://www.php.net/manual/es/language.oop5.traits.php) en cuanto que ambos "inyectan" sus
 métodos  y propiedades a la clase primaria, son diferentes en muchos aspectos. Tal y como se describe abajo, los dos
 tienen sus ventajas y desventajas. Son más como complementos el uno al otro en lugar de alternativas.
 
