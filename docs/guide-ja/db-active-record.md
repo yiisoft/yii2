@@ -956,7 +956,7 @@ $orders = $customer->bigOrders;
 ### 中間テーブルによるリレーション <span id="junction-table"></span>
 
 データベースの設計において、二つの関連するテーブル間の多重性が多対多である場合は、通常、
-[中間テーブル](https://en.wikipedia.org/wiki/Junction_table) が導入されます。
+[中間テーブル](https://ja.wikipedia.org/wiki/%E9%80%A3%E6%83%B3%E3%82%A8%E3%83%B3%E3%83%86%E3%82%A3%E3%83%86%E3%82%A3) が導入されます。
 例えば、`order` テーブルと `item` テーブルは、`order_item` と言う名前の中間テーブルによって関連付けることが出来ます。
 このようにすれば、一つの注文を複数の商品に対応させ、また、一つの商品を複数の注文に対応させることが出来ます。
 
