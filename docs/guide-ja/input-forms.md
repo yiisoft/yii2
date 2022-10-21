@@ -241,7 +241,7 @@ Pjax::end();
 
 このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、
 ファイルと送信ボタンの値に対する唯一の公式なサポートは、
-`FormData` クラスに対する [ブラウザのサポート](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+`FormData` クラスに対する [ブラウザのサポート](https://developer.mozilla.org/ja/docs/Web/API/FormData#%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E5%AE%9F%E8%A3%85%E7%8A%B6%E6%B3%81)
 に依存しているということを意味します。
 
 さらに読むべき文書 <span id="further-reading"></span>
