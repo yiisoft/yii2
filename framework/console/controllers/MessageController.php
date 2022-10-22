@@ -477,7 +477,7 @@ EOD;
         $tokens = token_get_all($subject);
         foreach ((array) $translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
-            array_shift($translatorTokens);
+            $translatorTokens = array_slice($translatorTokens, 2);
             $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($tokens, $translatorTokens, $ignoreCategories));
         }
 
@@ -574,7 +574,7 @@ EOD;
                         $buffer[] = $token;
                     }
                     $pendingParenthesisCount++;
-                } elseif (isset($token[0]) && !in_array($token[0], [T_WHITESPACE, T_COMMENT])) {
+                } elseif (!is_array($token) || !in_array($token[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
                     // ignore comments and whitespaces
                     $buffer[] = $token;
                 }
