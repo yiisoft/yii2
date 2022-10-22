@@ -34,7 +34,7 @@ component's behavior:
 ]
 ```
 
-In the code above, both Smarty and Twig are configured to be useable by the view files. But in order to get these extensions into your project, you need to also modify
+In the code above, both Smarty and Twig are configured to be usable by the view files. But in order to get these extensions into your project, you need to also modify
 your `composer.json` file to include them, too:
 
 ```
