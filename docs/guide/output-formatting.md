@@ -85,7 +85,7 @@ and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized glob
 [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], and
 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
-You can specify date and time formats using the [ICU syntax](http://userguide.icu-project.org/formatparse/datetime).
+You can specify date and time formats using the [ICU syntax](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
 You can also use the [PHP date() syntax](https://www.php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
 it from ICU syntax. For example,
 
@@ -150,7 +150,7 @@ as set in the PHP configuration.
 
 > Note: As time zones are subject to rules made by the governments around the world and may change frequently, it is
 > likely that you do not have the latest information in the time zone database installed on your system.
-> You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
+> You may refer to the [ICU manual](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data)
 > for details on updating the time zone database. Please also read
 > [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).  
 

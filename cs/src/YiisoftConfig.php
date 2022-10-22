@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\cs;
@@ -23,9 +23,9 @@ final class YiisoftConfig extends YiiConfig
         parent::__construct('yiisoft-cs-config');
 
         $header = <<<'HEADER'
-@link http://www.yiiframework.com/
+@link https://www.yiiframework.com/
 @copyright Copyright (c) 2008 Yii Software LLC
-@license http://www.yiiframework.com/license/
+@license https://www.yiiframework.com/license/
 HEADER;
 
         $this->mergeRules([

@@ -84,7 +84,7 @@ Essayer <span id="trying-it-out"></span>
 Après avoir créé l'action et la vue, vous pouvez accéder à la nouvelle page en accédant à l'URL suivant :
 
 ```
-http://hostname/index.php?r=site/dire&message=Hello+World
+https://hostname/index.php?r=site/dire&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

@@ -435,7 +435,7 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
   提供了对 [Sphinx](https://sphinxsearch.com) 的使用支持。它包含基本的
   查询、活动记录、代码生成等特性。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)：
-  提供了基于 [swiftmailer](http://swiftmailer.org/) 的邮件发送功能。
+  提供了基于 [swiftmailer](https://swiftmailer.symfony.com/) 的邮件发送功能。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig)：
   提供了一个基于 [Twig](https://twig.symfony.com/) 的模板引擎。
 

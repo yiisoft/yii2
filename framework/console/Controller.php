@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console;
@@ -32,8 +32,6 @@ use yii\helpers\Inflector;
  * @property-read string $helpSummary The one-line short summary describing this controller.
  * @property-read array $passedOptionValues The properties corresponding to the passed options.
  * @property-read array $passedOptions The names of the options passed during execution.
- * @property Request $request
- * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -680,7 +678,7 @@ class Controller extends \yii\base\Controller
 
     /**
      * @param Action $action
-     * @return \ReflectionMethod
+     * @return \ReflectionFunctionAbstract
      */
     protected function getActionMethodReflection($action)
     {
@@ -697,13 +695,13 @@ class Controller extends \yii\base\Controller
 
     /**
      * Parses the comment block into tags.
-     * @param \Reflector $reflection the comment block
+     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection the comment block
      * @return array the parsed tags
      */
     protected function parseDocCommentTags($reflection)
     {
         $comment = $reflection->getDocComment();
-        $comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
+        $comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**([ \t])?/m', '', trim($comment, '/'))), "\r", '');
         $parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
         $tags = [];
         foreach ($parts as $part) {
@@ -725,7 +723,7 @@ class Controller extends \yii\base\Controller
     /**
      * Returns the first line of docblock.
      *
-     * @param \Reflector $reflection
+     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
      */
     protected function parseDocCommentSummary($reflection)
@@ -741,12 +739,12 @@ class Controller extends \yii\base\Controller
     /**
      * Returns full description from the docblock.
      *
-     * @param \Reflector $reflection
+     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
      */
     protected function parseDocCommentDetail($reflection)
     {
-        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($reflection->getDocComment(), '/'))), "\r", '');
+        $comment = strtr(trim(preg_replace('/^\s*\**([ \t])?/m', '', trim($reflection->getDocComment(), '/'))), "\r", '');
         if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
             $comment = trim(substr($comment, 0, $matches[0][1]));
         }

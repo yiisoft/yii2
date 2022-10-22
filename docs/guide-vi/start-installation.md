@@ -23,7 +23,7 @@ Cài đặt qua trinh quản lý gói Composer <span id="installing-via-composer
 Nếu bạn chưa cài Composer, bạn có thể cài đặt theo đường link sau
 [getcomposer.org](https://getcomposer.org/download/). Đối với hệ điều hành Linux và Mac OS X, bạn có thể chạy các lệnh sau đây:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -s https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 Còn trên HĐH Windows, bạn có thể tải về và chạy [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -125,8 +125,8 @@ hoặc [Nginx HTTP server](https://nginx.org/) và PHP phiên bản 5.4 hoặc c
 do [HHVM](https://hhvm.com/)của Facebook và PHP tiêu chuẩn trên các khía cạnh trong một vài nơi một với trường hợp hơi khác nhau, 
 khi sử dụng HHVM đòi hỏi ít thay đổi.
 
-Trong môi trường máy chủ sản xuất, bạn có thể cấu hình máy chủ để ứng dụng có thể truy cập thông qua URL http://www.example.com/index.php 
-thay vì http://www.example.com/basic/web/index.php. Cấu hình này đòi hỏi các thư mục gốc tài liệu của máy chủ Web vào thư mục basic/web. Bạn cũng có thể  ẩn index.php trên URL, 
+Trong môi trường máy chủ sản xuất, bạn có thể cấu hình máy chủ để ứng dụng có thể truy cập thông qua URL https://www.example.com/index.php 
+thay vì https://www.example.com/basic/web/index.php. Cấu hình này đòi hỏi các thư mục gốc tài liệu của máy chủ Web vào thư mục basic/web. Bạn cũng có thể  ẩn index.php trên URL, 
 chi tiết trên URL phân tích và tạo ra một chương trình chiếu, bạn sẽ tìm hiểu làm thế nào để cấu hình Apache hoặc Nginx máy chủ để đạt được những mục tiêu này.
 
 > Lưu ý: Thiết lập `basic/web` như thư mục gốc, bạn có thể ngăn chặn người dùng truy cập vào các dữ liệu cá nhân và các thông tin nhạy cảm được lưu trữ

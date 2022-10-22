@@ -97,7 +97,7 @@ Verificando las Instalación <span id="verifying-installation"></span>
 ---------------------------
 
 Una vez finalizada la instalación, o bien configura tu servidor web (mira la sección siguiente) o utiliza
-el [servidor web incluido en PHP](https://www.php.net/manual/en/features.commandline.webserver.php) ejecutando el siguiente
+el [servidor web incluido en PHP](https://www.php.net/manual/es/features.commandline.webserver.php) ejecutando el siguiente
 comando de consola estando parado en el directorio `web` de la aplicación:
  
 ```bash
@@ -148,7 +148,7 @@ de Facebook. De todos modos, hay algunos casos donde HHVM se comporta diferente 
 PHP oficial, por lo que tendrás que tener cuidados extra al utilizarlo.
 
 En un servidor de producción, podrías querer configurar el servidor Web para que la aplicación sea accedida
-a través de la URL `http://www.example.com/index.php` en vez de `http://www.example.com/basic/web/index.php`. Tal configuración
+a través de la URL `https://www.example.com/index.php` en vez de `https://www.example.com/basic/web/index.php`. Tal configuración
 require apuntar el document root de tu servidor Web a la carpeta `basic/web`. También podrías
 querer ocultar `index.php` de la URL, como se describe en la sección [Parseo y Generación de URLs](runtime-url-handling.md).
 En esta sub-sección, aprenderás a configurar tu servidor Apache o Nginx para alcanzar estos objetivos.
@@ -187,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuración Recomendada de Nginx <span id="recommended-nginx-configuration"></span>
 
-Para utilizar [Nginx](https://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://www.php.net/install.fpm).
+Para utilizar [Nginx](https://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://www.php.net/manual/es/install.fpm.php).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
 `basic/web` y `mysite.test` con el hostname real a servir.
 

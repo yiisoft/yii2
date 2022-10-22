@@ -349,7 +349,7 @@ Gives you
 generates
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -399,7 +399,7 @@ generates
 
 generates
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 除了 [aliases](concept-aliases.md) 之外，第一个参数可以接受 路由，查询，URLs。同 [Url::to()](helper-url.md) 一样。

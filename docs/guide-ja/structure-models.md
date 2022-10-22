@@ -1,7 +1,7 @@
 モデル
 ======
 
-モデルは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
+モデルは [MVC](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
 これは、ビジネスのデータ、規則、ロジックを表現するオブジェクトです。
 
 モデル・クラスは、[[yii\base\Model]] またはその子クラスを拡張することによって作成することが出来ます。
