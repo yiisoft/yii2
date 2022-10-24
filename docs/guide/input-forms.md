@@ -241,7 +241,7 @@ introduced in HTML5.
 
 That means the only official support for files and submit button values with
 ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
-[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#browser_compatibility)
 for the `FormData` class.
 
 Further Reading <span id="further-reading"></span>

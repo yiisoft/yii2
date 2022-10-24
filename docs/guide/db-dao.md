@@ -682,5 +682,5 @@ $table = Yii::$app->db->getTableSchema('post');
 ```
 
 The method returns a [[yii\db\TableSchema]] object which contains the information about the table's columns,
-primary keys, foreign keys, etc. All these information are mainly utilized by [query builder](db-query-builder.md) 
+primary keys, foreign keys, etc. All this information is mainly utilized by [query builder](db-query-builder.md) 
 and [active record](db-active-record.md) to help you write database-agnostic code. 

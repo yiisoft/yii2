@@ -926,7 +926,7 @@ class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
 So we can create a condition object:
 
 ```php
-$conditon = new AllGreaterCondition(['col1', 'col2'], 42);
+$condition = new AllGreaterCondition(['col1', 'col2'], 42);
 ```
 
 But `QueryBuilder` still does not know, to make an SQL condition out of this object.
