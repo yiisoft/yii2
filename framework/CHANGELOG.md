@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #19316: Fix MysqlMutex with same connection but difference database (kamarton)
 - Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
 - Bug #19621: Fix login cookie destroyed after authKey change (MarkoNV)
+- Bug #19546: Reverted #19309 (bizley)
 
 
 2.0.46 August 18, 2022
