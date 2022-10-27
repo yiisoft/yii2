@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -49,7 +49,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
  * @property-read array $attributeNames Attribute names.
- * @property-read array $validationAttributes List of attribute names.
+ * @property-read array|null $validationAttributes List of attribute names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

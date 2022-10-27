@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  *
- * @method ActiveRecordInterface one($db = null) See [[ActiveQueryInterface::one()]] for more info.
+ * @method ActiveRecordInterface|array|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
  * @property ActiveRecord $modelClass
  */
@@ -456,8 +456,9 @@ trait ActiveRelationTrait
     private function mapVia($map, $viaMap) {
         $resultMap = [];
         foreach ($map as $key => $linkKeys) {
+            $resultMap[$key] = [];
             foreach (array_keys($linkKeys) as $linkKey) {
-                $resultMap[$key] = $viaMap[$linkKey];
+                $resultMap[$key] += $viaMap[$linkKey];
             }
         }
         return $resultMap;
@@ -528,7 +529,7 @@ trait ActiveRelationTrait
             // single key
             $attribute = reset($this->link);
             foreach ($models as $model) {
-                $value = isset($model[$attribute]) ? $model[$attribute] : null;
+                $value = isset($model[$attribute]) || (is_object($model) && property_exists($model, $attribute)) ? $model[$attribute] : null;
                 if ($value !== null) {
                     if (is_array($value)) {
                         $values = array_merge($values, $value);
@@ -586,7 +587,7 @@ trait ActiveRelationTrait
     {
         $key = [];
         foreach ($attributes as $attribute) {
-            if (isset($model[$attribute])) {
+            if (isset($model[$attribute]) || (is_object($model) && property_exists($model, $attribute))) {
                 $key[] = $this->normalizeModelKey($model[$attribute]);
             }
         }

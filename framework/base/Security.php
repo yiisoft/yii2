@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -340,7 +340,7 @@ class Security extends Component
 
     /**
      * Derives a key from the given password using the standard PBKDF2 algorithm.
-     * Implements HKDF2 specified in [RFC 2898](http://tools.ietf.org/html/rfc2898#section-5.2)
+     * Implements HKDF2 specified in [RFC 2898](https://datatracker.ietf.org/doc/html/rfc2898#section-5.2)
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
@@ -627,7 +627,7 @@ class Security extends Component
 
     /**
      * Performs string comparison using timing attack resistant approach.
-     * @see http://codereview.stackexchange.com/questions/13512
+     * @see https://codereview.stackexchange.com/q/13512
      * @param string $expected string to compare.
      * @param string $actual user-supplied string.
      * @return bool whether strings are equal.

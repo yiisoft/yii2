@@ -1,7 +1,7 @@
 Active Record
 =============
 
-O [Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) fornece uma interface orientada a objetos para acessar e manipular dados armazenados em bancos de dados. Uma classe Active Record está associado a uma tabela da base de dados, uma instância do Active Record corresponde a uma linha desta tabela, e um *atributo* desta instância representa o valor de uma coluna desta linha. Em vez de escrever instruções SQL a mão, você pode acessar os atributos do Active Record e chamar os métodos do Active Record para acessar e manipular  os dados armazenados nas tabelas do banco de dados.
+O [Active Record](https://pt.wikipedia.org/wiki/Active_record) fornece uma interface orientada a objetos para acessar e manipular dados armazenados em bancos de dados. Uma classe Active Record está associado a uma tabela da base de dados, uma instância do Active Record corresponde a uma linha desta tabela, e um *atributo* desta instância representa o valor de uma coluna desta linha. Em vez de escrever instruções SQL a mão, você pode acessar os atributos do Active Record e chamar os métodos do Active Record para acessar e manipular  os dados armazenados nas tabelas do banco de dados.
 
 Por exemplo, assumindo que `Customer` é uma classe Active Record que está associada com a tabela `customer` e `name` é uma coluna desta tabela. Você pode escrever o seguinte código para inserir uma nova linha na tabela `customer`:
 
@@ -674,7 +674,7 @@ $orders = $customer->bigOrders;
 
 ### Relações Através de Tabela de Junção <span id="junction-table"></span>
 
-Em uma modelagem de banco de dados, quando a multiplicidade entre duas tabelas relacionadas é `many-to-many`, geralmente é criada uma [tabela de junção](https://en.wikipedia.org/wiki/Junction_table). Por exemplo, a tabela `order` e a tabela `item` podem se relacionar através da tabela de junção chamada `order_item`. Um `order`, então, corresponderá a múltiplos `order items`, enquanto um `product item` também corresponderá a múltiplos `order items`.
+Em uma modelagem de banco de dados, quando a multiplicidade entre duas tabelas relacionadas é `many-to-many`, geralmente é criada uma [tabela de junção](https://pt.wikipedia.org/wiki/Entidade_associativa). Por exemplo, a tabela `order` e a tabela `item` podem se relacionar através da tabela de junção chamada `order_item`. Um `order`, então, corresponderá a múltiplos `order items`, enquanto um `product item` também corresponderá a múltiplos `order items`.
 
 Ao declarar tais relações, você chamaria [[yii\db\ActiveQuery::via()|via()]] ou [[yii\db\ActiveQuery::viaTable()|viaTable()]] para especificar a tabela de junção. A diferença entre [[yii\db\ActiveQuery::via()|via()]] e [[yii\db\ActiveQuery::viaTable()|viaTable()]] é que o primeiro especifica a tabela de junção em função a uma relação existente enquanto o último faz referência diretamente a tabela de junção. Por exemplo,
 

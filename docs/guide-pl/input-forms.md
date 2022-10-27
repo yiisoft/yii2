@@ -228,7 +228,7 @@ wprowadzonej w HTML5.
 
 Oznacza to, że oficjalne wsparcie dla plików i wartości przycisku submit używanych w połączeniu 
 z ajaxem lub widżetem [[yii\widgets\Pjax|Pjax]] zależy od 
-[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|wsparcia przeglądarki]]
+[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#browser_compatibility|wsparcia przeglądarki]]
 dla klasy `FormData`.
 
 Dalsza lektura <span id="further-reading"></span>

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
@@ -80,10 +80,10 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Check config namespace but without input namespace
-     * @param mixed $expectedFile 
-     * @param mixed $migrationName 
-     * @param mixed $table 
-     * @param array $params 
+     * @param mixed $expectedFile
+     * @param mixed $migrationName
+     * @param mixed $table
+     * @param array $params
      */
     protected function assertCommandCreatedFileWithoutNamespaceInput($expectedFile, $migrationName, $table, $params = [])
     {
@@ -119,11 +119,11 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Check config namespace but without input namespace
-     * @param mixed $expectedFile 
-     * @param mixed $migrationName 
-     * @param mixed $junctionTable 
-     * @param mixed $firstTable 
-     * @param mixed $secondTable 
+     * @param mixed $expectedFile
+     * @param mixed $migrationName
+     * @param mixed $junctionTable
+     * @param mixed $firstTable
+     * @param mixed $secondTable
      */
     protected function assertCommandCreatedJunctionFileWithoutNamespaceInput($expectedFile, $migrationName, $junctionTable, $firstTable, $secondTable)
     {

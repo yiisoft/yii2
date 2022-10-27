@@ -879,10 +879,10 @@ Using the operator format, it would look like the following:
 ```php
 [
     'and',
-    '>', 'posts', $minLimit,
-    '>', 'comments', $minLimit,
-    '>', 'reactions', $minLimit,
-    '>', 'subscriptions', $minLimit
+    ['>', 'posts', $minLimit],
+    ['>', 'comments', $minLimit],
+    ['>', 'reactions', $minLimit],
+    ['>', 'subscriptions', $minLimit]
 ]
 ```
 
@@ -926,7 +926,7 @@ class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
 So we can create a condition object:
 
 ```php
-$conditon = new AllGreaterCondition(['col1', 'col2'], 42);
+$condition = new AllGreaterCondition(['col1', 'col2'], 42);
 ```
 
 But `QueryBuilder` still does not know, to make an SQL condition out of this object.

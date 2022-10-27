@@ -50,7 +50,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 </p>
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 <blockquote class="note"><p dir="rtl">
@@ -127,7 +127,7 @@ http://hostname/index.php?r=gii
 </p>
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 <p dir="rtl">

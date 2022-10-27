@@ -173,7 +173,7 @@ ejemplo:
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -185,7 +185,7 @@ seguido por una llamada al método [[yii\web\Response::send()]] para asegurar qu
 respuesta.
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: De forma predeterminada, el método [[yii\web\Response::redirect()]] asigna el estado de respuesta al 

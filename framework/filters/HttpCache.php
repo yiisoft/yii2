@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -56,7 +56,7 @@ class HttpCache extends ActionFilter
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a UNIX timestamp.
      *
-     * @see http://tools.ietf.org/html/rfc7232#section-2.2
+     * @see https://datatracker.ietf.org/doc/html/rfc7232#section-2.2
      */
     public $lastModified;
     /**
@@ -78,7 +78,7 @@ class HttpCache extends ActionFilter
      * Weak ETags should be used if the content should be considered semantically equivalent, but not byte-equal.
      *
      * @since 2.0.8
-     * @see http://tools.ietf.org/html/rfc7232#section-2.3
+     * @see https://datatracker.ietf.org/doc/html/rfc7232#section-2.3
      */
     public $weakEtag = false;
     /**
@@ -87,7 +87,7 @@ class HttpCache extends ActionFilter
     public $params;
     /**
      * @var string|null the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
-     * @see http://tools.ietf.org/html/rfc2616#section-14.9
+     * @see https://datatracker.ietf.org/doc/html/rfc2616#section-14.9
      */
     public $cacheControlHeader = 'public, max-age=3600';
     /**
@@ -167,7 +167,7 @@ class HttpCache extends ActionFilter
     {
         if (Yii::$app->request->headers->has('If-None-Match')) {
             // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
-            // http://tools.ietf.org/html/rfc7232#section-3.3
+            // https://datatracker.ietf.org/doc/html/rfc7232#section-3.3
             return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
         } elseif (Yii::$app->request->headers->has('If-Modified-Since')) {
             return $lastModified !== null && @strtotime(Yii::$app->request->headers->get('If-Modified-Since')) >= $lastModified;

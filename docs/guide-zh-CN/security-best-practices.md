@@ -161,14 +161,14 @@ CSRF 是跨站请求伪造的缩写。这个攻击思想源自许多应用程序
 而事实并非如此。
 
 例如，网站 `an.example.com` 有一个 `/logout` 网址，当使用简单的 GET 请求访问时, 记录用户退出。
-只要用户的请求一切正常，但是有一天坏人们故意在用户经常访问的论坛上放上 `<img src="http://an.example.com/logout">`。
+只要用户的请求一切正常，但是有一天坏人们故意在用户经常访问的论坛上放上 `<img src="https://an.example.com/logout">`。
 浏览器在请求图像或请求页面之间没有任何区别，
 所以当用户打开一个带有这样一个被操作过的 `<img>` 标签的页面时，
 浏览器将 GET 请求发送到该 URL，用户将从 `an.example.com` 注销。
 
 这是 CSRF 攻击如何运作的基本思路。可以说用户退出并不是一件严重的事情，
 然而这仅仅是一个例子，使用这种方法可以做更多的事情，例如触发付款或者是改变数据。
-想象一下如果某个网站有一个这样的 `http://an.example.com/purse/transfer?to=anotherUser&amount=2000` 网址。 
+想象一下如果某个网站有一个这样的 `https://an.example.com/purse/transfer?to=anotherUser&amount=2000` 网址。 
 使用 GET 请求访问它会导致从授权用户账户转账 $2000 给 `anotherUser`。
 我们知道，浏览器将始终发送 GET 请求来加载图像，
 所以我们可以修改代码以仅接受该 URL 上的 POST 请求。
@@ -321,7 +321,7 @@ Yii 提供依赖 cookie 和/或 PHP 会话的功能。如果您的连接受到�
 
 有关于服务器配置的更多信息，请参阅您的 web 服务器的文档：
 
-- Apache 2：<http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Apache 2：<https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx：<https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
 如果您无权访问服务器配置，您可以在应用程序级别设置 [[yii\filters\HostControl]] 过滤器，

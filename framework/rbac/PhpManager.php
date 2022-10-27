@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rbac;
@@ -23,7 +23,7 @@ use yii\helpers\VarDumper;
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
  *
- * Note that PhpManager is not compatible with facebooks [HHVM](http://hhvm.com/) because
+ * Note that PhpManager is not compatible with facebooks [HHVM](https://hhvm.com/) because
  * it relies on writing php files and including them afterwards which is not supported by HHVM.
  *
  * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).

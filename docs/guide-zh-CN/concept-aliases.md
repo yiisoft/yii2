@@ -18,7 +18,7 @@ Yii 预定义了大量可用的别名。例如，别名 `@yii` 指的是 Yii 框
 Yii::setAlias('@foo', '/path/to/foo');
 
 // URL 的别名
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // 包含 \foo\Bar 类的具体文件的别名
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // 输出：/path/to/foo
-echo Yii::getAlias('@bar');               // 输出：http://www.example.com
+echo Yii::getAlias('@bar');               // 输出：https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // 输出：/path/to/foo/bar/file.php
 ```
 

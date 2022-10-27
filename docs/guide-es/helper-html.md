@@ -301,7 +301,7 @@ Si se quiere enlazar un estilo externo desde un archivo CSS:
 genera
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -353,7 +353,7 @@ Para generar una etiqueta de tipo imagen se puede usar el siguiente ejemplo:
 
 genera
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 Aparte de los [alias](concept-aliases.md) el primer argumento puede aceptar rutas, parámetros y URLs. Del mismo modo
