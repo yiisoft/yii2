@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db\mssql;
 
 use yii\db\Exception;
+use yii\db\Expression;
 use yiiunit\data\ar\TestTrigger;
 use yiiunit\data\ar\TestTriggerAlert;
 
@@ -114,7 +115,7 @@ END';
 
         $record = new TestTrigger();
         $record->stringcol = 'test';
-        $record->RV = null;
+        $record->RV = new Expression('DEFAULT');
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
         $this->assertEquals('test', $record->stringcol);
