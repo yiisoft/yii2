@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\Exception;
 use yiiunit\data\ar\TestTrigger;
 use yiiunit\data\ar\TestTriggerAlert;
 
@@ -24,7 +25,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testSaveWithTrigger()
     {
@@ -58,7 +59,7 @@ END';
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testSaveWithComputedColumn()
     {
@@ -82,5 +83,39 @@ END';
         $record->stringcol = 'test';
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testSaveWithRowVersionColumn()
+    {
+        $db = $this->getConnection();
+
+        $sql = 'ALTER TABLE [dbo].[test_trigger] ADD [RV] rowversion';
+        $db->createCommand($sql)->execute();
+
+        $record = new TestTrigger();
+        $record->stringcol = 'test';
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
+        $this->assertEquals('test', $record->stringcol);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testSaveWithRowVersionNullColumn()
+    {
+        $db = $this->getConnection();
+
+        $sql = 'ALTER TABLE [dbo].[test_trigger] ADD [RV] rowversion NULL';
+        $db->createCommand($sql)->execute();
+
+        $record = new TestTrigger();
+        $record->stringcol = 'test';
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
+        $this->assertEquals('test', $record->stringcol);
     }
 }
