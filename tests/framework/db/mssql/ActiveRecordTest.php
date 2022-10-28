@@ -114,6 +114,7 @@ END';
 
         $record = new TestTrigger();
         $record->stringcol = 'test';
+        $record->RV = null;
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
         $this->assertEquals('test', $record->stringcol);
