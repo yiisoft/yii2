@@ -129,7 +129,7 @@ class SiteController extends Controller
 
 ## Controle de Acesso Baseado em Role (RBAC) <span id="rbac"></span>
 
-Controle de Acesso Baseado em Role (RBAC) fornece um simples porém poderoso controle de acesso centralizado. Por favor, consulte [Wikipedia](https://en.wikipedia.org/wiki/Role-based_access_control) para obter detalhes sobre comparação de RBAC com outros sistemas de controle de acesso mais tradicionais.
+Controle de Acesso Baseado em Role (RBAC) fornece um simples porém poderoso controle de acesso centralizado. Por favor, consulte [Wikipedia](https://pt.wikipedia.org/wiki/Controle_de_acesso_baseado_em_fun%C3%A7%C3%B5es) para obter detalhes sobre comparação de RBAC com outros sistemas de controle de acesso mais tradicionais.
 
 Yii implementa um RBAC Hierárquico genérico, conforme [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf). Ele fornece as funcionalidades RBAC através do [componente de aplicação](structure-application-components.md) [[yii\rbac\ManagerInterface|authManager]].
 
