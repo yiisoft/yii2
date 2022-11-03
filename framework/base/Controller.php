@@ -19,7 +19,7 @@ use yii\di\NotInstantiableException;
  * @property-read Module[] $modules All ancestor modules that this controller is located within.
  * @property-read string $route The route (module ID, controller ID and action ID) of the current request.
  * @property-read string $uniqueId The controller ID that is prefixed with the module ID (if any).
- * @property View|\yii\web\View $view The view object that can be used to render views or view files.
+ * @property View $view The view object that can be used to render views or view files.
  * @property string $viewPath The directory containing the view files for this controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

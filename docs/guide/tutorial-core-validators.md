@@ -53,7 +53,7 @@ This validator checks if the input value is a boolean.
 This validator is usually used together with [[yii\captcha\CaptchaAction]] and [[yii\captcha\Captcha]]
 to make sure an input is the same as the verification code displayed by [[yii\captcha\Captcha|CAPTCHA]] widget.
 
-- `caseSensitive`: whether the comparison of the verification code is case sensitive. Defaults to `false`.
+- `caseSensitive`: whether the comparison of the verification code is case-sensitive. Defaults to `false`.
 - `captchaAction`: the [route](structure-controllers.md#routes) corresponding to the
   [[yii\captcha\CaptchaAction|CAPTCHA action]] that renders the CAPTCHA image. Defaults to `'site/captcha'`.
 - `skipOnEmpty`: whether the validation can be skipped if the input is empty. Defaults to `false`,
@@ -114,7 +114,7 @@ you can use a combination of compare and date validator like the following:
 ```
 
 As validators are executed in the order they are specified this will first validate that the values entered in
-`fromDate` and `toDate` are valid date values and if so, they will be converted into a machine readable format.
+`fromDate` and `toDate` are valid date values and if so, they will be converted into a machine-readable format.
 Afterwards these two values are compared with the compare validator.
 Client validation is not enabled as this will only work on the server-side because the date validator currently does not
 provide client validation, so [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
@@ -162,7 +162,7 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   [[yii\validators\DateValidator::$max|maximum]] timestamp.
 
 In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
-to ensure empty input is stored as `null`. Otherwise you may end up with dates like `0000-00-00` in your database
+to ensure empty input is stored as `null`. Otherwise, you may end up with dates like `0000-00-00` in your database
 or `1970-01-01` in the input field of a date picker.
 
 ```php
@@ -418,7 +418,7 @@ back to the attribute being validated.
 - `filter`: a PHP callback that defines a filter. This can be a global function name, an anonymous function, etc.
   The function signature must be `function ($value) { return $newValue; }`. This property must be set.
 - `skipOnArray`: whether to skip the filter if the input value is an array. Defaults to `false`.
-  Note that if the filter cannot handle array input, you should set this property to be `true`. Otherwise some
+  Note that if the filter cannot handle array input, you should set this property to be `true`. Otherwise, some
   PHP error might occur.
 
 > Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.

@@ -86,6 +86,9 @@ Upgrade from Yii 2.0.43
       ```
 * `yii\caching\Cache::multiSet()` now uses the default cache duration (`yii\caching\Cache::$defaultDuration`) when no 
   duration is provided. A duration of 0 should be explicitly passed if items should not expire.
+* Default value of `yii\console\controllers\MessageController::$translator` is updated to `['Yii::t', '\Yii::t']`, since 
+  old value of `'Yii::t'` didn't match `\Yii::t` calls on PHP 8. If configuration file for "extract" command overrides 
+  default value, update config file accordingly. See [issue #18941](https://github.com/yiisoft/yii2/issues/18941)
 
 Upgrade from Yii 2.0.42
 -----------------------

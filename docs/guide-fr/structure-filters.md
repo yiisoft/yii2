@@ -279,7 +279,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-*Cross-origin resource sharing* [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) est un mécanisme qui permet à des ressource (e.g. fonts, JavaScript, etc.) d'être requises d'un autre domaine en dehors du domaine dont la ressource est originaire. En particulier, les appels AJAX de Javascript peuvent utiliser le mécanisme *XMLHttpRequest*. Autrement, de telles requêtes "cross-domain" (inter domaines) seraient interdites par les navigateurs, à cause de la politique de sécurité dite d'origine identique (*same origin*). *CORS* définit une manière par laquelle le navigateur et le serveur interagissent pour déterminer si, oui ou non, la requête *cross-origin* (inter-site) est autorisée. 
+*Cross-origin resource sharing* [CORS](https://developer.mozilla.org/fr/docs/Web/HTTP/CORS) est un mécanisme qui permet à des ressource (e.g. fonts, JavaScript, etc.) d'être requises d'un autre domaine en dehors du domaine dont la ressource est originaire. En particulier, les appels AJAX de Javascript peuvent utiliser le mécanisme *XMLHttpRequest*. Autrement, de telles requêtes "cross-domain" (inter domaines) seraient interdites par les navigateurs, à cause de la politique de sécurité dite d'origine identique (*same origin*). *CORS* définit une manière par laquelle le navigateur et le serveur interagissent pour déterminer si, oui ou non, la requête *cross-origin* (inter-site) est autorisée. 
 
 Le [[yii\filters\Cors|filtre Cors]] doit être défini avant les filtres d'authentification et/ou d'autorisation pour garantir que les entêtes CORS sont toujours envoyés.
 

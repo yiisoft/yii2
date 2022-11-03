@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) es un mecanismo que permite a diferentes 
+[CORS](https://developer.mozilla.org/es/docs/Web/HTTP/CORS) es un mecanismo que permite a diferentes 
 recursos (por ejemplo: fuentes, JavaScript, etc) de una pagina Web ser solicitados por otro dominio diferente al 
 dominio que esta haciendo la petición. En particular las llamadas AJAX de JavaScript pueden utilizar el mecanismo 
 XMLHttpRequest. De otro modo esta petición de dominio cruzado seria prohibida por los navegadores Web, por la misma 
