@@ -182,9 +182,10 @@ class BaseArrayHelper
      * The possibility to pass an array of keys is available since version 2.0.4.
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
+     * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return mixed the value of the element if found, default value otherwise
      */
-    public static function getValue($array, $key, $default = null)
+    public static function getValue($array, $key, $default = null, $caseSensitive = true)
     {
         if ($key instanceof \Closure) {
             return $key($array, $default);
@@ -198,8 +199,23 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_object($array) && property_exists($array, $key)) {
-            return $array->$key;
+        if (is_object($array)) {
+            if(property_exists($array, $key)) {
+                return $array->$key;
+            }
+            // Refer to the official PHP example:
+            // https://www.php.net/manual/en/function.get-class-vars.php
+            $classVars = get_class_vars(get_class($array));
+            $classKey = null;
+            foreach (array_keys($classVars) as $k) {
+                if (strcasecmp($key, $k) === 0) {
+                    $classKey = $k;
+                    break;
+                }
+            }
+            if(!is_null($classKey) && property_exists($array, $classKey)) {
+                return $array->$classKey;
+            }
         }
 
         if (static::keyExists($key, $array)) {
@@ -211,7 +227,15 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
-        if (static::keyExists($key, $array)) {
+        if (static::keyExists($key, $array, $caseSensitive)) {
+            if(!$caseSensitive) {
+                foreach (array_keys($array) as $k) {
+                    if (strcasecmp($key, $k) === 0) {
+                        $key = $k;
+                        break;
+                    }
+                }
+            }
             return $array[$key];
         }
         if (is_object($array)) {
