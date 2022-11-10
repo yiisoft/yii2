@@ -215,7 +215,8 @@ class Security extends Component
 
         $iv = $this->generateRandomKey($blockSize);
 
-        $encrypted = openssl_encrypt($data ?? '', $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
+        if($data==null) $data='';
+        $encrypted = openssl_encrypt($data, $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
         if ($encrypted === false) {
             throw new \yii\base\Exception('OpenSSL failure on encryption: ' . openssl_error_string());
         }
