@@ -256,7 +256,7 @@ class Container extends Component
      *   parameters, `$config` the object configuration, and `$container` the container object. The return value
      *   of the callable will be returned by [[get()]] as the object instance requested.
      * - a configuration array: the array contains name-value pairs that will be used to initialize the property
-     *   values of the newly created object when [[get()]] is called. The `class` element stands for the
+     *   values of the newly created object when [[get()]] is called. The `class` element stands for
      *   the class of the object to be created. If `class` is not specified, `$class` will be used as the class name.
      * - a string: a class name, an interface name or an alias name.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
