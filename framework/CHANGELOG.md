@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
 - Bug #19546: Reverted #19309 (bizley)
 - Bug #19670: Fix Error null check PHP 8.1 `yii\rbac\DbManager` (samuelexyz)
+- Bug #19520: Fix for TIMESTAMP & ROWVERSION columns in MSSQL insert query (darkdef)
 
 
 2.0.46 August 18, 2022
