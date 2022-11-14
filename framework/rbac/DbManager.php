@@ -677,7 +677,7 @@ class DbManager extends BaseManager
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            if($data){
+            if ($data) {
                 $rules[$row['name']] = unserialize($data);
             }
         }
