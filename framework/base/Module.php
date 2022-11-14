@@ -257,7 +257,7 @@ class Module extends ServiceLocator
      */
     public function getControllerPath()
     {
-        if ($this->_controllerPath === null) {
+        if ($this->_controllerPath === null && $this->controllerNamespace !== null) {
             $this->_controllerPath = Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
         }
 

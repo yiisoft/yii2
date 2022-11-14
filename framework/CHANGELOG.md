@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.47 under development
 ------------------------
 
+- Bug #19675: Fix base Module and console help controller error when running php yii.php (jarrus90) 
 - Bug #12636: Fix CompareValidator successful state when compareAttribute has an error (manchenkoff)
 - Bug #14388: Fixed fixture loading order in output message (manchenkoff)
 - Bug #15500: Fix saving empty records to MySQL (manchenkoff)
