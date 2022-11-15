@@ -179,7 +179,7 @@ For this reason, Yii applies additional mechanisms to protect against CSRF attac
 In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
-   See [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) for more details.
+   See [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) for more details.
 2. Keep Yii CSRF protection enabled.
 
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:

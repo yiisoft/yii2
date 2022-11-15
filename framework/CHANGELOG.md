@@ -18,6 +18,9 @@ Yii Framework 2 Change Log
 - Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
 - Bug #19621: Fix login cookie destroyed after authKey change (MarkoNV)
 - Bug #19546: Reverted #19309 (bizley)
+- Bug #19668: Fix Error null check PHP 8.1 `yii\validators\FilterValidator` (samuelexyz)
+- Bug #19670: Fix Error null check PHP 8.1 `yii\rbac\DbManager` (samuelexyz)
+- Bug #19520: Fix for TIMESTAMP & ROWVERSION columns in MSSQL insert query (darkdef)
 
 
 2.0.46 August 18, 2022
@@ -64,6 +67,7 @@ Yii Framework 2 Change Log
 - Enh #19401: Delay `exit(1)` in `yii\base\ErrorHandler::handleFatalError` (arrilot)
 - Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
 - Enh #19420: Update list of JS callbacks in `yii\widgets\MaskedInput` (WinterSilence)
+- Chg #19354: Reuse `Validator::getAttributeNames()` in  `AttributeTypecastBehavior::detectAttributeTypes()` (WinterSilence)
 - Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
 
 

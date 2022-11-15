@@ -58,6 +58,33 @@ Upgrade from Yii 2.0.46
   `yii\web\User::switchIdentity()` or `yii\web\User::login()` to recreate the active session with the new `authKey`,
   should now call `yii\web\User::userAuthKeyUpdated()`. `yii\web\User::userAuthKeyUpdated()` recreates the active session 
   and IdentityCookie (if exists) with the new `authKey`.
+* The default "scope" of the `yii\mutex\MysqlMutex` has changed, the name of the mutex now includes the name of the
+  database by default. Before this change the "scope" of the `MysqlMutex` was "server wide".
+  No matter which database was used, the mutex lock was acquired for the entire server, since version 2.0.47 
+  the "scope" of the mutex will be limited to the database being used. 
+  This might impact your application if …
+    * The database name of the database connection specified in the `MysqlMutex::$db` property is set dynamically
+      (or changes in any other way during your application execution):  
+      Depending on your application you might want to set the `MysqlMutex::$keyPrefix` property (see below).
+    * The database connection specified in the `MysqlMutex::$db` does not include a database name:  
+      You must specify the `MysqlMutex::$keyPrefix` property (see below).
+  
+  If you need to specify/lock the "scope" of the `MysqlMutex` you can specify the `$keyPrefix` property.  
+  For example in your application config:   
+    ```php
+    'mutex' => [
+        'class' => 'yii\mutex\MysqlMutex',
+        'db' => 'db',
+        'keyPrefix' => 'myPrefix' // Your custom prefix which determines the "scope" of the mutex.
+    ],
+    ```
+  > Warning: Even if you're not impacted by the aforementioned conditions and even if you specify the `$keyPrefix`,
+    if you rely on a locked mutex during and/or across your application deployment
+    (e.g. switching over in a live environment from an old version to a new version of your application)
+    you will have to make sure any running process that acquired a lock finishes before switching over to the new 
+    version of your application. A lock acquired before the deployment will *not* be mutually exclusive with a 
+    lock acquired after the deployment (even if they have the same name). 
+
 
 Upgrade from Yii 2.0.45
 -----------------------
