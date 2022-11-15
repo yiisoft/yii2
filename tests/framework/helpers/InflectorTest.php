@@ -319,7 +319,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['¿Espanol?'],
+            '¿Español?' => ['¿Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];
@@ -362,7 +362,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['Espanol?'],
+            '¿Español?' => ['Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];
