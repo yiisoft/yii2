@@ -18,9 +18,9 @@ Yii Framework 2 Change Log
 - Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
 - Bug #19621: Fix login cookie destroyed after authKey change (MarkoNV)
 - Bug #19546: Reverted #19309 (bizley)
-- Bug #19668: Fix Error null check PHP 8.1 `yii\validators\FilterValidator` (samuelexyz)
 - Bug #19670: Fix Error null check PHP 8.1 `yii\rbac\DbManager` (samuelexyz)
 - Bug #19520: Fix for TIMESTAMP & ROWVERSION columns in MSSQL insert query (darkdef)
+- Bug #19581: Fix regression in `CompositeAuth` introduced in #19418 (SamMousa, WinterSilence, samdark)
 
 
 2.0.46 August 18, 2022
