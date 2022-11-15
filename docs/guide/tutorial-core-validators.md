@@ -289,7 +289,7 @@ This validator checks if the input value is a valid email address.
     // equivalent of
     ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2']],
 
-    // a1 and a2 need to exist together, and they both will receive error message
+    // a1 and a2 need to exist together, and the first attribute without errors will receive error message
     // i.e. a1 = 3, a2 = 4, valid if there is value 3 in column "a1" and value 4 in column "a2"
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
     // equivalent of
@@ -327,7 +327,9 @@ an [Active Record](db-active-record.md) attribute. You can use `targetAttribute`
 class. If you do not specify them, they will take the values of the attribute and the model class being validated.
 
 You can use this validator to validate against a single column or multiple columns (i.e., the combination of
-multiple attribute values should exist).
+multiple attribute values should exist). In case of validation fail on the multiple columns checked at the same time 
+(like `['a1', 'a2']` in the examples) and `skipOnError` set to `true`, only the first attribute without any previous 
+errors will receive a new error message.
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.
@@ -704,9 +706,10 @@ the input value. Note that if the input value is an array, it will be ignored by
 ]
 ```
 
-This validator checks if the input value is unique in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+This validator checks if the input value is unique in a table column. It only works with [Active Record](db-active-record.md) 
+model attributes. It supports validation against either a single column or multiple columns. In case of validation fail 
+on the multiple columns checked at the same time (like `['a1', 'a2']` in the examples) and `skipOnError` set to `true`, 
+only the first attribute without any previous errors will receive a new error message.
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.

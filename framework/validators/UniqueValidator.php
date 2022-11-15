@@ -189,8 +189,8 @@ class UniqueValidator extends Validator
         /** @var ActiveRecordInterface|\yii\base\BaseObject $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
-            // if current $model isn't in the database yet then it's OK just to call exists()
+        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model::className() !== $targetClass::className()) {
+            // if current $model isn't in the database yet, then it's OK just to call exists()
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
         } else {
@@ -328,7 +328,7 @@ class UniqueValidator extends Validator
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
-                $columnName = preg_replace('/^' . preg_quote($alias) . '\.(.*)$/', '$1', $columnName);
+                $columnName = preg_replace('/^' . preg_quote($alias, '/') . '\.(.*)$/', '$1', $columnName);
                 if (strncmp($columnName, '[[', 2) === 0) {
                     $prefixedColumn = "{$alias}.{$columnName}";
                 } else {
