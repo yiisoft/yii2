@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -48,7 +48,7 @@ return [
     'No' => 'Nie',
     'Only files with these extensions are allowed: {extensions}.' => 'Dozwolone są tylko pliki z następującymi rozszerzeniami: {extensions}.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Dozwolone są tylko pliki z następującymi typami MIME: {mimeTypes}.',
-    'Operator "{operator}" must be used with a search attribute.' => 'Operator "{operator}" musi być użyty razem z szukanym atrybutem.',
+    'Operator "{operator}" must be used with a search attribute.' => 'Operator "{operator}" musi być użyty razem z atrybutem wyszukiwania.',
     'Operator "{operator}" requires multiple operands.' => 'Operator "{operator}" wymaga więcej niż jednego argumentu.',
     'Page not found.' => 'Nie odnaleziono strony.',
     'Please fix the following errors:' => 'Proszę poprawić następujące błędy:',
@@ -79,7 +79,7 @@ return [
     'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Brak upoważnienia do wykonania tej czynności.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Możliwe wgranie najwyżej {limit, number} {limit, plural, one{pliku} few{plików} many{plików} other{pliku}}.',
-    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Należy wgrać przynajmniej {limit, number} {limit, plural, one{plik} few{pliki} many{plików} other{plików}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Należy wgrać przynajmniej {limit, number} {limit, plural, one{plik} few{pliki} many{plików} other{pliku}}.',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" jest już w użyciu.',
     '{attribute} cannot be blank.' => '{attribute} nie może pozostać bez wartości.',
     '{attribute} contains wrong subnet mask.' => '{attribute} posiada złą maskę podsieci.',
@@ -108,13 +108,13 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} musi zawierać co najmniej {min, number} {min, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} musi zawierać nie więcej niż {max, number} {max, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} musi zawierać dokładnie {length, number} {length, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
-    '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 dzień} other{# dni} other{# dnia}}',
+    '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 dzień} few{# dni} many{# dni} other{# dnia}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 godzina} few{# godziny} many{# godzin} other{# godziny}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minuta} few{# minuty} many{# minut} other{# minuty}}',
     '{delta, plural, =1{1 month} other{# months}}' => '{delta, plural, =1{1 miesiąc} few{# miesiące} many{# miesięcy} other{# miesiąca}}',
     '{delta, plural, =1{1 second} other{# seconds}}' => '{delta, plural, =1{1 sekunda} few{# sekundy} many{# sekund} other{# sekundy}}',
     '{delta, plural, =1{1 year} other{# years}}' => '{delta, plural, =1{1 rok} few{# lata} many{# lat} other{# roku}}',
-    '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{jeden dzień} other{# dni} other{# dnia}} temu',
+    '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{jeden dzień} few{# dni} many{# dni} other{# dnia}} temu',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{minutę} few{# minuty} many{# minut} other{# minuty}} temu',
     '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{miesiąc} few{# miesiące} many{# miesięcy} other{# miesiąca}} temu',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{sekundę} few{# sekundy} many{# sekund} other{# sekundy}} temu',
@@ -132,10 +132,10 @@ return [
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{bajt} few{bajty} many{bajtów} other{bajta}}',
-    '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{gibibajt} few{gigabajty} many{gibiajtów} other{gibiajta}}',
-    '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gigabajt} few{gigabajty} many{gigabajtów} other{gigabaja}}',
-    '{nFormatted} {n, plural, =1{kibibyte} other{kibibytes}}' => '{nFormatted} {n, plural, =1{kibibajt} few{kibibajty} many{kibibajtów} other{kibibajtów}}',
-    '{nFormatted} {n, plural, =1{kilobyte} other{kilobytes}}' => '{nFormatted} {n, plural, =1{kilobajt} few{kilobajty} many{kilobajtów} other{kilobajtów}}',
+    '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{gibibajt} few{gibibajty} many{gibibajtów} other{gibibajta}}',
+    '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gigabajt} few{gigabajty} many{gigabajtów} other{gigabajta}}',
+    '{nFormatted} {n, plural, =1{kibibyte} other{kibibytes}}' => '{nFormatted} {n, plural, =1{kibibajt} few{kibibajty} many{kibibajtów} other{kibibajta}}',
+    '{nFormatted} {n, plural, =1{kilobyte} other{kilobytes}}' => '{nFormatted} {n, plural, =1{kilobajt} few{kilobajty} many{kilobajtów} other{kilobajta}}',
     '{nFormatted} {n, plural, =1{mebibyte} other{mebibytes}}' => '{nFormatted} {n, plural, =1{mebibajt} few{mebibajty} many{mebibajtów} other{mebibajta}}',
     '{nFormatted} {n, plural, =1{megabyte} other{megabytes}}' => '{nFormatted} {n, plural, =1{megabajt} few{megabajty} many{megabajtów} other{megabajta}}',
     '{nFormatted} {n, plural, =1{pebibyte} other{pebibytes}}' => '{nFormatted} {n, plural, =1{pebibajt} few{pebibajty} many{pebibajtów} other{pebibajta}}',

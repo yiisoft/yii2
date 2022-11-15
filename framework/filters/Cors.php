@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -14,7 +14,7 @@ use yii\web\Request;
 use yii\web\Response;
 
 /**
- * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+ * Cors filter implements [Cross Origin Resource Sharing](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
  *
  * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
  * but allow the developer to grant access to third party code (ajax calls from external domain).

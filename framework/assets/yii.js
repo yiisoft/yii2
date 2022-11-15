@@ -1,9 +1,9 @@
 /**
  * Yii JavaScript module.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -511,7 +511,7 @@ window.yii = (function ($) {
         return false;
     }
 
-    // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+    // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
     function escapeRegExp(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }

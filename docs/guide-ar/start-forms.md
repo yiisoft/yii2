@@ -191,7 +191,7 @@ use yii\widgets\ActiveForm;
 </p>
 
 ```
-http://hostname/index.php?r=site%2Fentry
+https://hostname/index.php?r=site%2Fentry
 ```
 
 <p dir="rtl">

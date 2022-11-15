@@ -102,7 +102,7 @@ use yii\helpers\Html;
 アクションとビューを作成したら、下記の URL で新しいページにアクセスすることが出来ます。
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

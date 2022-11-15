@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -26,6 +26,8 @@ return [
     ' and ' => ' και ',
     '"{attribute}" does not support operator "{operator}".' => 'Το "{attribute}" δεν υποστηρίζει τον τελεστή "{operator}".',
     '(not set)' => '(μη ορισμένο)',
+    'Action not found.' => 'Δε βρέθηκε η ενέργεια.',
+    'Aliases available: {aliases}' => 'Διαθέσιμα ψευδώνυμα: {aliases}',
     'An internal server error occurred.' => 'Υπήρξε ένα εσωτερικό σφάλμα του διακομιστή.',
     'Are you sure you want to delete this item?' => 'Είστε σίγουροι για τη διαγραφή του αντικειμένου;',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Η συνθήκη για το "{attribute}" πρέπει να είναι είτε τιμή είτε προδιαγραφή έγκυρου τελεστή.',
@@ -43,10 +45,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Επιτρέπονται αρχεία μόνο με καταλήξεις: {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'Ο τελεστής "{operator}" πρέπει να χρησιμοποιηθεί με μια ιδιότητα για αναζήτηση.',
     'Operator "{operator}" requires multiple operands.' => 'Ο τελεστής "{operator}" απαιτεί πολλούς τελεστέους.',
+    'Options available: {options}' => 'Διαθέσιμες επιλογές: {options}',
     'Page not found.' => 'Η σελίδα δε βρέθηκε.',
     'Please fix the following errors:' => 'Παρακαλώ διορθώστε τα παρακάτω σφάλματα:',
     'Please upload a file.' => 'Παρακαλώ ανεβάστε ένα αρχείο.',
-    'Powered by {yii}' => 'Με τη δύναμη του {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Εμφανίζονται <b>{begin, number}-{end, number}</b> από <b>{totalCount, number}</b>.',
     'The combination {values} of {attributes} has already been taken.' => 'Ο συνδυασμός των τιμών {values} του/των {attributes} έχει ήδη δοθεί.',
     'The file "{file}" is not an image.' => 'Το αρχείο «{file}» δεν είναι εικόνα.',
@@ -68,7 +70,6 @@ return [
     'Update' => 'Ενημέρωση',
     'View' => 'Προβολή',
     'Yes' => 'Ναι',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Δεν επιτρέπεται να εκτελέσετε αυτή την ενέργεια.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Μπορείτε να ανεβάσετε το πολύ {limit, number} {limit, plural, one{αρχείο} few{αρχεία} many{αρχεία} other{αρχεία}}.',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Θα πρέπει να ανεβάσετε τουλάχιστον {limit, number} {limit, plural, one{αρχείο} other{αρχεία}}.',
@@ -142,7 +143,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}',
-    'Action not found.' => 'Δε βρέθηκε η ενέργεια.',
-    'Aliases available: {aliases}' => 'Διαθέσιμα ψευδώνυμα: {aliases}',
-    'Options available: {options}' => 'Διαθέσιμες επιλογές: {options}',
 ];

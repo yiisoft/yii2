@@ -2,12 +2,12 @@ Corriendo Aplicaciones
 ======================
 
 Después de haber instalado Yii, tienes una aplicación totalmente funcional a la que se puede acceder a través de
-la URL `http://hostname/basic/web/index.php` o `http://hostname/index.php`, dependiendo de tu configuración.
+la URL `https://hostname/basic/web/index.php` o `https://hostname/index.php`, dependiendo de tu configuración.
 Esta sección será una introducción a la funcionalidad incluida de la aplicación, cómo se organiza el código,
 y cómo la aplicación maneja los requests en general.
 
 > Info: Por simplicidad, en el transcurso de este tutorial "Para Empezar", se asume que has definido `basic/web`
-  como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `http://hostname/index.php`
+  como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `https://hostname/index.php`
   o similar.
   Dependiendo de tus necesidades, por favor ajusta dichas URLs.
   
@@ -20,7 +20,7 @@ Funcionalidad <span id="functionality"></span>
 
 La aplicación básica contiene 4 páginas:
 
-* página principal, mostrada cuando se accede a la URL `http://hostname/index.php`,
+* página principal, mostrada cuando se accede a la URL `https://hostname/index.php`,
 * página "Acerca de (About)",
 * la página "Contacto (Contact)", que muestra un formulario de contacto que permite a los usuarios finales contactarse vía email,
 * y la página "Login", que muestra un formulario para loguearse que puede usarse para autenticar usuarios. 
@@ -42,7 +42,7 @@ Estructura de la aplicación <span id="application-structure"></span>
 
 Los archivos y directorios más importantes en tu aplicación son (asumiendo que la raíz de la aplicación es `basic`):
 
-```js
+```
 basic/                  base path de la aplicación
     composer.json       archivo utilizado por Composer, describe información de sus paquetes y librerías
     config/             contiene la configuración de las aplicaciones (y otras)

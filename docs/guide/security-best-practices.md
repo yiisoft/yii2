@@ -71,7 +71,7 @@ SELECT * FROM user WHERE username = ''; DROP TABLE user; --'
 This is valid query that will search for users with empty username and then will drop `user` table most probably
 resulting in broken website and data loss (you've set up regular backups, right?).
 
-In Yii most of database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
+In Yii most database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
 statements internally. In case of prepared statements it's not possible to manipulate query as was demonstrated above.
 
 Still, sometimes you need [raw queries](db-dao.md) or [query builder](db-query-builder.md). In this case you should use
@@ -162,14 +162,14 @@ from a user browser are made by the user themselves. This assumption could be fa
 
 For example, the website `an.example.com` has a `/logout` URL that, when accessed using a simple GET request, logs the user out. As long
 as it's requested by the user themselves everything is OK, but one day bad guys are somehow posting
-`<img src="http://an.example.com/logout">` on a forum the user visits frequently. The browser doesn't make any difference between
+`<img src="https://an.example.com/logout">` on a forum the user visits frequently. The browser doesn't make any difference between
 requesting an image or requesting a page so when the user opens a page with such a manipulated `<img>` tag,
 the browser will send the GET request to that URL and the user will be logged out from `an.example.com`.
 
 That's the basic idea of how a CSRF attack works. One can say that logging out a user is not a serious thing,
 however this was just an example, there are much more things one could do using this approach, for example triggering payments
 or changing data. Imagine that some website has an URL
-`http://an.example.com/purse/transfer?to=anotherUser&amount=2000`. Accessing it using GET request, causes transfer of $2000
+`https://an.example.com/purse/transfer?to=anotherUser&amount=2000`. Accessing it using GET request, causes transfer of $2000
 from authorized user account to user `anotherUser`. We know, that the browser will always send GET request to load an image,
 so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because an attacker
 can put some JavaScript code instead of `<img>` tag, which allows to send POST requests to that URL as well.
@@ -179,7 +179,7 @@ For this reason, Yii applies additional mechanisms to protect against CSRF attac
 In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
-   See [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) for more details.
+   See [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) for more details.
 2. Keep Yii CSRF protection enabled.
 
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:

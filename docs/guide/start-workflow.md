@@ -2,13 +2,13 @@ Running Applications
 ====================
 
 After installing Yii, you have a working Yii application that can be accessed via
-the URL `http://hostname/basic/web/index.php` or `http://hostname/index.php`, depending
+the URL `https://hostname/basic/web/index.php` or `https://hostname/index.php`, depending
 upon your configuration. This section will introduce the application's built-in functionality,
 how the code is organized, and how the application handles requests in general.
 
 > Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
   as the document root of your Web server, and configured the URL for accessing
-  your application to be `http://hostname/index.php` or something similar.
+  your application to be `https://hostname/index.php` or something similar.
   For your needs, please adjust the URLs in our descriptions accordingly.
   
 Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
@@ -20,7 +20,7 @@ Functionality <span id="functionality"></span>
 
 The basic application installed contains four pages:
 
-* the homepage, displayed when you access the URL `http://hostname/index.php`,
+* the homepage, displayed when you access the URL `https://hostname/index.php`,
 * the "About" page,
 * the "Contact" page, which displays a contact form that allows end users to contact you via email,
 * and the "Login" page, which displays a login form that can be used to authenticate end users. Try logging in

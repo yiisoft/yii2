@@ -2,13 +2,13 @@ Menjalankan Aplikasi
 ====================
 
 Setelah menginstal Yii, Anda memiliki aplikasi Yii yang dapat diakses melalui
-URL `http://hostname/basic/web/index.php` atau `http://hostname/index.php`, tergantung
+URL `https://hostname/basic/web/index.php` atau `https://hostname/index.php`, tergantung
 pada konfigurasi Anda. Bagian ini akan memperkenalkan fungsi built-in aplikasi,
 bagaimana kode ini disusun, dan bagaimana aplikasi menangani permintaan secara umum.
 
 > Info: Untuk mempermudah, selama tutorial "Mulai", itu diasumsikan bahwa Anda telah menetapkan `basic/web`
   sebagai root dokumen server Web Anda, dan URL dikonfigurasi untuk mengakses
-  aplikasi Anda untuk menjadi `http://hostname/index.php` atau sesuatu yang serupa.
+  aplikasi Anda untuk menjadi `https://hostname/index.php` atau sesuatu yang serupa.
   Untuk kebutuhan Anda, silakan menyesuaikan URL sesuai deskripsi kami.
   
 Perhatikan bahwa tidak seperti framework itu sendiri, setelah template proyek diinstal, itu semua milikmu. Anda bebas untuk menambah atau menghapus
@@ -20,7 +20,7 @@ Fungsi <span id="functionality"></span>
 
 Aplikasi dasar diinstal berisi empat halaman:
 
-* Homepage, ditampilkan saat Anda mengakses URL `http://hostname/index.php`,
+* Homepage, ditampilkan saat Anda mengakses URL `https://hostname/index.php`,
 * Halaman "About",
 * Halaman "Contact", yang menampilkan formulir kontak yang memungkinkan pengguna akhir untuk menghubungi Anda melalui email,
 * Dan halaman "Login", yang menampilkan form login yang dapat digunakan untuk otentikasi pengguna akhir. Cobalah masuk
@@ -43,7 +43,7 @@ Struktur aplikasi <span id="application-structure"></span>
 
 Direktori yang paling penting dan file dalam aplikasi Anda (dengan asumsi direktori root aplikasi adalah `basic`):
 
-```js
+```
 basic/                  path aplikasi dasar
     composer.json       digunakan oleh Composer, package information
     config/             berisi konfigurasi aplikasi dan yang lain

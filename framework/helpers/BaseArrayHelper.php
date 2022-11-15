@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -206,7 +206,7 @@ class BaseArrayHelper
             return $array[$key];
         }
 
-        if (($pos = strrpos($key, '.')) !== false) {
+        if ($key && ($pos = strrpos($key, '.')) !== false) {
             $array = static::getValue($array, substr($key, 0, $pos), $default);
             $key = substr($key, $pos + 1);
         }
@@ -855,7 +855,7 @@ class BaseArrayHelper
         if (is_array($haystack)) {
             return in_array($needle, $haystack, $strict);
         }
-   
+
         foreach ($haystack as $value) {
             if ($strict ? $needle === $value : $needle == $value) {
                 return true;

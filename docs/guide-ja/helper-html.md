@@ -349,7 +349,7 @@ CSS ファイルの外部スタイルをリンクしたい場合は、次のよ�
 これは次の HTML を生成します。
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -399,7 +399,7 @@ CSS と同じように、最初の引数はインクルードされるファイ�
 
 これは次の HTML を生成します。
 
-<img src="http://example.com/images/logo.png" alt="私のロゴ" />
+<img src="https://example.com/images/logo.png" alt="私のロゴ" />
 ```
 
 最初の引数は、[エイリアス](concept-aliases.md) 以外にも、ルートとパラメータ、または URL を受け入れることが出来ます。[Url::to()](helper-url.md) と同様です。

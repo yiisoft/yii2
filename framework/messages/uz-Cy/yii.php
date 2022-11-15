@@ -1,8 +1,8 @@
 <?php
     /**
-     * @link http://www.yiiframework.com/
+     * @link https://www.yiiframework.com/
      * @copyright Copyright (c) 2008 Yii Software LLC
-     * @license http://www.yiiframework.com/license/
+     * @license https://www.yiiframework.com/license/
      */
 
     /**
@@ -108,7 +108,7 @@
         '{attribute} must be less than "{compareValue}".' => '«{attribute}» қиймати «{compareValue}» дан кичкина бўлиши керак.',
         '{attribute} must be less than or equal to "{compareValue}".' => '«{attribute}» қиймати «{compareValue}» дан кичик ёки тенг бўлиши керак.',
         '{attribute} must be no greater than {max}.' => '«{attribute}» қиймати {max} дан ошмаслиги керак.',
-        '{attribute} must be no less than {min}.' => '«{attribute}» қиймати {min} дан кичкина бўлиши керак.',
+        '{attribute} must be no less than {min}.' => '«{attribute}» қиймати {min} дан катта бўлиши керак.',
         '{attribute} must be repeated exactly.' => '«{attribute}» қиймати бир хил тарзда такрорланиши керак.',
         '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» қиймати «{compareValue}» га тенг бўлмаслиги керак.',
         '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» қиймати «{compareValueOrAttribute}» қийматига тенг бўлмаслиги лозим.',
@@ -122,4 +122,4 @@
         '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{йил} one{# йил} few{# йил} many{# йил} other{# йил}} аввал',
         '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{соат} one{# соат} few{# соат} many{# соат} other{# соат}} аввал',
     ];
-    
+
