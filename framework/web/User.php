@@ -248,28 +248,27 @@ class User extends Component
      * @param IdentityInterface $identity the identity object associated with the currently logged user.
      * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
      */
-    public function userAuthKeyUpdated($identity) {
-        if(!($identity instanceof IdentityInterface)) {
+    public function userAuthKeyUpdated($identity)
+    {
+        if (!($identity instanceof IdentityInterface)) {
             throw new InvalidValueException('The identity object must implement IdentityInterface.');
         }
-        if($this->isGuest) {
+        if ($this->isGuest) {
             return;
         }
-        if($this->identity->getId() !== $identity->getId()) {
+        if ($this->identity->getId() !== $identity->getId()) {
             return;
         }
         if ($this->enableAutoLogin) {
             $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
             if ($value !== null) {
                 $data = json_decode($value, true);
-                if (is_array($data) && count($data) == 3) {
+                if (is_array($data) && count($data) === 3) {
                     list($id, $authKey, $duration) = $data;
-                    if($identity->getId() == $id && $this->autoRenewCookie) {
+                    if ($identity->getId() == $id && $this->autoRenewCookie) {
                         return $this->switchIdentity($identity, $duration);
                     }
-                    else {
-                        $this->removeIdentityCookie();
-                    }
+                    $this->removeIdentityCookie();
                 }
             }
         }
