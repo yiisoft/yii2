@@ -512,7 +512,8 @@ class HtmlTest extends TestCase
 <select name="test">
 
 </select>
-EOD,
+EOD
+            ,
             Html::dropDownList('test')
         );
 
@@ -522,7 +523,8 @@ EOD,
 <option value="value1">text1</option>
 <option value="value2">text2</option>
 </select>
-EOD,
+EOD
+            ,
             Html::dropDownList('test', null, $this->getDataItems())
         );
 
@@ -532,7 +534,8 @@ EOD,
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
 </select>
-EOD,
+EOD
+            ,
             Html::dropDownList('test', 'value2', $this->getDataItems())
         );
 
@@ -542,7 +545,8 @@ EOD,
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
 </select>
-EOD,
+EOD
+            ,
             Html::dropDownList('test', null, $this->getDataItems(), [
                 'options' => [
                     'value2' => ['selected' => true],
@@ -555,7 +559,8 @@ EOD,
 <select name="test[]" multiple="true" size="4">
 
 </select>
-EOD,
+EOD
+            ,
             Html::dropDownList('test', null, [], ['multiple' => 'true'])
         );
 
