@@ -1930,7 +1930,7 @@ class BaseHtml
                     if ($selection !== null) {
                         if (ArrayHelper::isTraversable($selection)) {
                             $selected = ArrayHelper::isIn((string)$key, $selection, $strict);
-                        } elseif ($key === '') {
+                        } elseif ($key === '' || $selection === '') {
                             $selected = $selection === $key;
                         } elseif ($strict) {
                             $selected = !strcmp((string)$key, (string)$selection);
