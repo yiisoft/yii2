@@ -21,7 +21,7 @@ Yii Framework 2 Change Log
 - Bug #19520: Fix for TIMESTAMP & ROWVERSION columns in MSSQL insert query (darkdef)
 - Bug #19581: Fix regression in `CompositeAuth` introduced in #19418 (SamMousa, WinterSilence, samdark)
 - Chg #17811: Do not reset `retryHandler` when `yii\db\Command::reset()` called (erickskrauch)
-- Bug #19681: Fix `yii\helpers\BaseHtml::renderSelectOptions()` to properly render boolean selection (bizley)
+- Bug #19534: Fix `yii\helpers\BaseHtml::renderSelectOptions()` to properly render boolean selection (bizley)
 
 
 2.0.46 August 18, 2022
