@@ -507,45 +507,57 @@ class HtmlTest extends TestCase
 
     public function testDropDownList()
     {
-        $expected = <<<'EOD'
+        $this->assertEqualsWithoutLE(
+            <<<'EOD'
 <select name="test">
 
 </select>
-EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test'));
-        $expected = <<<'EOD'
+EOD,
+            Html::dropDownList('test')
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2">text2</option>
 </select>
-EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems()));
-        $expected = <<<'EOD'
+EOD,
+            Html::dropDownList('test', null, $this->getDataItems())
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
 </select>
-EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
+EOD,
+            Html::dropDownList('test', 'value2', $this->getDataItems())
+        );
 
-        $expected = <<<'EOD'
+        $this->assertEqualsWithoutLE(
+            <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
 </select>
-EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems(), [
-            'options' => [
-                'value2' => ['selected' => true],
-            ],
-        ]));
+EOD,
+            Html::dropDownList('test', null, $this->getDataItems(), [
+                'options' => [
+                    'value2' => ['selected' => true],
+                ],
+            ])
+        );
 
-        $expected = <<<'EOD'
+        $this->assertEqualsWithoutLE(
+            <<<'EOD'
 <select name="test[]" multiple="true" size="4">
 
 </select>
-EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, [], ['multiple' => 'true']));
+EOD,
+            Html::dropDownList('test', null, [], ['multiple' => 'true'])
+        );
 
         $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
@@ -554,8 +566,14 @@ EOD;
 <option value="value3">text3</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', [0], $this->getDataItems3(), ['multiple' => 'true']));
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', new \ArrayObject([0]), $this->getDataItems3(), ['multiple' => 'true']));
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', [0], $this->getDataItems3(), ['multiple' => 'true'])
+        );
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', new \ArrayObject([0]), $this->getDataItems3(), ['multiple' => 'true'])
+        );
 
         $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
@@ -564,8 +582,83 @@ EOD;
 <option value="value3" selected>text3</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', ['1', 'value3'], $this->getDataItems3(), ['multiple' => 'true']));
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', new \ArrayObject(['1', 'value3']), $this->getDataItems3(), ['multiple' => 'true']));
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', ['1', 'value3'], $this->getDataItems3(), ['multiple' => 'true'])
+        );
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', new \ArrayObject(['1', 'value3']), $this->getDataItems3(), ['multiple' => 'true']
+            )
+        );
+    }
+
+    public function providerForNonStrictBooleanDropDownList()
+    {
+        return [
+            [null, false, false, false],
+            ['', true, false, false],
+            [0, false, false, true],
+            [1, false, true, false],
+            ['0', false, false, true],
+            ['1', false, true, false],
+            [false, false, false, true],
+            [true, false, true, false],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForNonStrictBooleanDropDownList
+     */
+    public function testNonStrictBooleanDropDownList($selection, $selectedEmpty, $selectedYes, $selectedNo)
+    {
+        $selectedEmpty = $selectedEmpty ? ' selected' : '';
+        $selectedYes = $selectedYes ? ' selected' : '';
+        $selectedNo = $selectedNo ? ' selected' : '';
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+<select name="test">
+<option value=""$selectedEmpty></option>
+<option value="1"$selectedYes>Yes</option>
+<option value="0"$selectedNo>No</option>
+</select>
+HTML,
+            Html::dropDownList('test', $selection, ['' => '', '1' => 'Yes', '0' => 'No'])
+        );
+    }
+
+    public function providerForStrictBooleanDropDownList()
+    {
+        return [
+            [null, false, false, false],
+            ['', true, false, false],
+            [0, false, false, true],
+            [1, false, true, false],
+            ['0', false, false, true],
+            ['1', false, true, false],
+            [false, false, false, true],
+            [true, false, true, false],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForStrictBooleanDropDownList
+     */
+    public function testStrictBooleanDropDownList($selection, $selectedEmpty, $selectedYes, $selectedNo)
+    {
+        $selectedEmpty = $selectedEmpty ? ' selected' : '';
+        $selectedYes = $selectedYes ? ' selected' : '';
+        $selectedNo = $selectedNo ? ' selected' : '';
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+<select name="test">
+<option value=""$selectedEmpty></option>
+<option value="1"$selectedYes>Yes</option>
+<option value="0"$selectedNo>No</option>
+</select>
+HTML,
+            Html::dropDownList('test', $selection, ['' => '', '1' => 'Yes', '0' => 'No'], ['strict' => true])
+        );
     }
 
     public function testListBox()
@@ -1117,11 +1210,6 @@ EOD;
         //$attributes = ['prompt' => 'Please select'];
         //$this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([false], $data, $attributes));
 
-        $expected = <<<'EOD'
-<option value="">Please select</option>
-<option value="1">Yes</option>
-<option value="0">No</option>
-EOD;
         $attributes = ['prompt' => 'Please select', 'strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
         $attributes = ['prompt' => 'Please select', 'strict' => true];
