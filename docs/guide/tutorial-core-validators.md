@@ -687,7 +687,7 @@ the input value. Note that if the input value is an array, it will be ignored by
     // equivalent of
     ['a1', 'unique', 'targetAttribute' => ['a1' => 'a2']],
 
-    // a1 and a2 need to be unique together, and they both will receive error message
+    // a1 and a2 need to be unique together, and the first attribute without errors will receive error message
     // i.e. a1 = 3, a2 = 4, valid if there is no value 3 in column "a1" and at the same time no value 4 in column "a2"
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
     // equivalent of
