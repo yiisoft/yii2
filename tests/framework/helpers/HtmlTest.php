@@ -507,46 +507,30 @@ class HtmlTest extends TestCase
 
     public function testDropDownList()
     {
-        $this->assertEqualsWithoutLE(
-            <<<'EOD'
+        $expected = <<<'EOD'
 <select name="test">
 
 </select>
-EOD
-            ,
-            Html::dropDownList('test')
-        );
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test'));
 
-        $this->assertEqualsWithoutLE(
-            <<<'EOD'
+        $expected = <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2">text2</option>
 </select>
-EOD
-            ,
-            Html::dropDownList('test', null, $this->getDataItems())
-        );
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems()));
 
-        $this->assertEqualsWithoutLE(
-            <<<'EOD'
+        $expected = <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
 </select>
-EOD
-            ,
-            Html::dropDownList('test', 'value2', $this->getDataItems())
-        );
-
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
         $this->assertEqualsWithoutLE(
-            <<<'EOD'
-<select name="test">
-<option value="value1">text1</option>
-<option value="value2" selected>text2</option>
-</select>
-EOD
-            ,
+            $expected,
             Html::dropDownList('test', null, $this->getDataItems(), [
                 'options' => [
                     'value2' => ['selected' => true],
@@ -554,15 +538,12 @@ EOD
             ])
         );
 
-        $this->assertEqualsWithoutLE(
-            <<<'EOD'
+        $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
 
 </select>
-EOD
-            ,
-            Html::dropDownList('test', null, [], ['multiple' => 'true'])
-        );
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, [], ['multiple' => 'true']));
 
         $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
