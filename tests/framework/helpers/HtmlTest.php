@@ -601,14 +601,15 @@ EOD;
         $selectedEmpty = $selectedEmpty ? ' selected' : '';
         $selectedYes = $selectedYes ? ' selected' : '';
         $selectedNo = $selectedNo ? ' selected' : '';
-        $this->assertEqualsWithoutLE(
-            <<<HTML
+        $expected = <<<HTML
 <select name="test">
 <option value=""$selectedEmpty></option>
 <option value="1"$selectedYes>Yes</option>
 <option value="0"$selectedNo>No</option>
 </select>
-HTML,
+HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
             Html::dropDownList('test', $selection, ['' => '', '1' => 'Yes', '0' => 'No'])
         );
     }
@@ -635,14 +636,15 @@ HTML,
         $selectedEmpty = $selectedEmpty ? ' selected' : '';
         $selectedYes = $selectedYes ? ' selected' : '';
         $selectedNo = $selectedNo ? ' selected' : '';
-        $this->assertEqualsWithoutLE(
-            <<<HTML
+        $expected = <<<HTML
 <select name="test">
 <option value=""$selectedEmpty></option>
 <option value="1"$selectedYes>Yes</option>
 <option value="0"$selectedNo>No</option>
 </select>
-HTML,
+HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
             Html::dropDownList('test', $selection, ['' => '', '1' => 'Yes', '0' => 'No'], ['strict' => true])
         );
     }
@@ -1227,7 +1229,6 @@ EOD;
             ],
         ];
         $this->assertEquals(' data-foo', Html::renderTagAttributes($attributes));
-
 
         $attributes = [
             'data' => [
