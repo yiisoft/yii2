@@ -51,10 +51,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
-
 Upgrade from Yii 2.0.46
 -----------------------
 
+* Applications that change the underlying `authKey` of an authenticated identity, instead of calling
+  `yii\web\User::switchIdentity()` or `yii\web\User::login()` to recreate the active session with the new `authKey`,
+  should now call `yii\web\User::userAuthKeyUpdated()`. `yii\web\User::userAuthKeyUpdated()` recreates the active session 
+  and IdentityCookie (if exists) with the new `authKey`.
 * The default "scope" of the `yii\mutex\MysqlMutex` has changed, the name of the mutex now includes the name of the
   database by default. Before this change the "scope" of the `MysqlMutex` was "server wide".
   No matter which database was used, the mutex lock was acquired for the entire server, since version 2.0.47 
@@ -81,6 +84,7 @@ Upgrade from Yii 2.0.46
     you will have to make sure any running process that acquired a lock finishes before switching over to the new 
     version of your application. A lock acquired before the deployment will *not* be mutually exclusive with a 
     lock acquired after the deployment (even if they have the same name). 
+
 
 Upgrade from Yii 2.0.45
 -----------------------

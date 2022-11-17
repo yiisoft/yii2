@@ -235,6 +235,47 @@ class User extends Component
     }
 
     /**
+     * Sets new [[authKey]] for existing user.
+     * 
+     * If user is not currently logged in or new identity doesn't match currently logged in user,
+     * this method does not login new user nor updates [[authKey]]. You should usually use 
+     * [[switchIdentity()]] or [[login()]] to change the identity of the current user / login.
+     * 
+     * If [[enableAutoLogin]] is `true` and login cookie is present:
+     * - if [[autoRenewCookie]] is `true`, cookie is renewed with new [[authKey]] and original [[duration]]
+     * - if [[autoRenewCookie]] is `false`, cookie is destroyed because it's no longer valid
+     *
+     * @param IdentityInterface $identity the identity object associated with the currently logged user.
+     * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
+     */
+    public function userAuthKeyUpdated($identity)
+    {
+        if (!($identity instanceof IdentityInterface)) {
+            throw new InvalidValueException('The identity object must implement IdentityInterface.');
+        }
+        if ($this->isGuest) {
+            return;
+        }
+        if ($this->identity->getId() !== $identity->getId()) {
+            return;
+        }
+        if ($this->enableAutoLogin) {
+            $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
+            if ($value !== null) {
+                $data = json_decode($value, true);
+                if (is_array($data) && count($data) === 3) {
+                    list($id, $authKey, $duration) = $data;
+                    if ($identity->getId() == $id && $this->autoRenewCookie) {
+                        return $this->switchIdentity($identity, $duration);
+                    }
+                    $this->removeIdentityCookie();
+                }
+            }
+        }
+        $this->switchIdentity($identity, 0); 
+    }
+
+    /**
      * Logs in a user.
      *
      * After logging in a user:

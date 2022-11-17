@@ -8,16 +8,27 @@ use yii\web\IdentityInterface;
 class UserIdentity extends Component implements IdentityInterface
 {
     private static $ids = [
-        'user1',
-        'user2',
-        'user3',
+        'user1' => 'ABCD1234',
+        'user2' => 'ABCD1234',
+        'user3' => 'ABCD1234',
     ];
 
     private $_id;
 
+    private $_authKey;
+
+    public static function reset()
+    {
+        static::$ids = [
+            'user1' => 'ABCD1234',
+            'user2' => 'ABCD1234',
+            'user3' => 'ABCD1234',
+        ];
+    }
+
     public static function findIdentity($id)
     {
-        if (in_array($id, static::$ids)) {
+        if (isset(static::$ids[$id])) {
             $identitiy = new static();
             $identitiy->_id = $id;
             return $identitiy;
@@ -36,11 +47,16 @@ class UserIdentity extends Component implements IdentityInterface
 
     public function getAuthKey()
     {
-        return 'ABCD1234';
+        return static::$ids[$this->_id];
+    }
+
+    public function setAuthKey($authKey)
+    {
+        static::$ids[$this->_id] = $authKey;
     }
 
     public function validateAuthKey($authKey)
     {
-        return $authKey === 'ABCD1234';
+        return $authKey === static::$ids[$this->_id];
     }
 }
