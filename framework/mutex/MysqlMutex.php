@@ -42,6 +42,7 @@ class MysqlMutex extends DbMutex
      */
     public $keyPrefix = null;
 
+
     /**
      * Initializes MySQL specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not MySQL connection.
