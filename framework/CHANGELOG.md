@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #19581: Fix regression in `CompositeAuth` introduced in #19418 (SamMousa, WinterSilence, samdark)
 - Chg #17811: Do not reset `retryHandler` when `yii\db\Command::reset()` called (erickskrauch)
 - Bug #19534: Fix `yii\helpers\BaseHtml::renderSelectOptions()` to properly render boolean selection (bizley)
+- Chg #19354: Reuse `Validator::getAttributeNames()` in  `AttributeTypecastBehavior::detectAttributeTypes()` (WinterSilence)
 
 
 2.0.46 August 18, 2022
@@ -68,7 +69,6 @@ Yii Framework 2 Change Log
 - Enh #19401: Delay `exit(1)` in `yii\base\ErrorHandler::handleFatalError` (arrilot)
 - Enh #19416: Update and improve configurations for `yii\console\controllers\MessageController` (WinterSilence)
 - Enh #19420: Update list of JS callbacks in `yii\widgets\MaskedInput` (WinterSilence)
-- Chg #19354: Reuse `Validator::getAttributeNames()` in  `AttributeTypecastBehavior::detectAttributeTypes()` (WinterSilence)
 - Enh #19437: Add support to specify request port by trusted proxies in `\yii\web\Request::getServerPort()` (rhertogh)
 
 
