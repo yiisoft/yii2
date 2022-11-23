@@ -10,7 +10,6 @@ Yii Framework 2 Change Log
 2.0.47 November 18, 2022
 ------------------------
 
-- Bug #19530: Fix specifying the field id for `yii\widgets\ActiveField` (kv4nt)
 - Bug #12636: Fix CompareValidator successful state when compareAttribute has an error (manchenkoff)
 - Bug #14388: Fixed fixture loading order in output message (manchenkoff)
 - Bug #15500: Fix saving empty records to MySQL (manchenkoff)
