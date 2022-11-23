@@ -8,6 +8,7 @@
 namespace yii\mutex;
 
 use yii\base\InvalidConfigException;
+use yii\db\Expression;
 
 /**
  * MysqlMutex implements mutex "lock" mechanism via MySQL locks.
@@ -36,6 +37,13 @@ use yii\base\InvalidConfigException;
 class MysqlMutex extends DbMutex
 {
     /**
+     * @var Expression|string|null prefix value. If null (by default) then connection's current database name is used.
+     * @since 2.0.47
+     */
+    public $keyPrefix = null;
+
+
+    /**
      * Initializes MySQL specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not MySQL connection.
      */
@@ -44,6 +52,9 @@ class MysqlMutex extends DbMutex
         parent::init();
         if ($this->db->driverName !== 'mysql') {
             throw new InvalidConfigException('In order to use MysqlMutex connection must be configured to use MySQL database.');
+        }
+        if ($this->keyPrefix === null) {
+            $this->keyPrefix = new Expression('DATABASE()');
         }
     }
 
@@ -59,8 +70,8 @@ class MysqlMutex extends DbMutex
         return $this->db->useMaster(function ($db) use ($name, $timeout) {
             /** @var \yii\db\Connection $db */
             return (bool) $db->createCommand(
-                'SELECT GET_LOCK(:name, :timeout)',
-                [':name' => $this->hashLockName($name), ':timeout' => $timeout]
+                'SELECT GET_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64), :timeout)',
+                [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix]
             )->queryScalar();
         });
     }
@@ -76,8 +87,8 @@ class MysqlMutex extends DbMutex
         return $this->db->useMaster(function ($db) use ($name) {
             /** @var \yii\db\Connection $db */
             return (bool) $db->createCommand(
-                'SELECT RELEASE_LOCK(:name)',
-                [':name' => $this->hashLockName($name)]
+                'SELECT RELEASE_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64))',
+                [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix]
             )->queryScalar();
         });
     }

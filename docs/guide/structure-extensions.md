@@ -434,8 +434,8 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx):
   provides the support for using [Sphinx](https://sphinxsearch.com/). It includes features such as basic query,
   Active Record, code generation, etc.
-- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
-  provides email sending features based on [swiftmailer](https://swiftmailer.symfony.com/).
+- [yiisoft/yii2-symfonymailer](https://www.yiiframework.com/extension/yiisoft/yii2-symfonymailer):
+  provides email sending features based on [Symfony Mailer](https://symfony.com/doc/current/mailer.html).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
   provides a template engine based on [Twig](https://twig.symfony.com/).
 

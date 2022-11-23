@@ -54,7 +54,7 @@ Yii 2.0 需要 PHP 5.4.0 或以上版本支持。你可以通过运行任何
 Yii 发行包中附带的系统要求检查器查看每个具体特性所需的 PHP 配置。
 
 使用 Yii 需要对面向对象编程（OOP）有基本了解，因为 Yii 是一个纯面向对象的框架。Yii 2.0 还使用了 PHP 的最新特性，
-例如[命名空间](https://www.php.net/manual/en/language.namespaces.php)
-和[Trait（特质）](https://www.php.net/manual/en/language.oop5.traits.php)。
+例如[命名空间](https://www.php.net/manual/zh/language.namespaces.php)
+和[Trait（特质）](https://www.php.net/manual/zh/language.oop5.traits.php)。
 理解这些概念将有助于你更快地掌握 Yii 2.0。
 

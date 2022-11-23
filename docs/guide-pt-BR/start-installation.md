@@ -242,7 +242,7 @@ DocumentRoot "caminho/para/basico/web"
 
 ### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
-Para usar o [Nginx](https://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/install.fpm). Use a seguinte configuração do Nginx,
+Para usar o [Nginx](https://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/manual/pt_BR/install.fpm.php). Use a seguinte configuração do Nginx,
 substituindo `caminho/para/basico/web` com o caminho real para `basico/web` e `mysite.test` com o nome de host real a servir.
 
 ```nginx

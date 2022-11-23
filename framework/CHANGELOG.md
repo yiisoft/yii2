@@ -1,16 +1,36 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.47 under development
+2.0.48 under development
 ------------------------
 
 - Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
 - Bug #15500: Fix saving empty records to MySQL (manchenkoff)
+- no changes in this release.
+
+
+2.0.47 November 18, 2022
+------------------------
+
+- Bug #12636: Fix CompareValidator successful state when compareAttribute has an error (manchenkoff)
 - Bug #14388: Fixed fixture loading order in output message (manchenkoff)
-- Bug #16658: Fix file readability check on publishing assets by `yii\web\AssetManager` (manchenkoff)
+- Bug #15500: Fix saving empty records to MySQL (manchenkoff)
 - Bug #15557: Fix empty fields exclusion in safe attributes of `yii\base\Model` (manchenkoff)
+- Bug #16658: Fix file readability check on publishing assets by `yii\web\AssetManager` (manchenkoff)
+- Bug #19316: Fix MysqlMutex with same connection but difference database (kamarton)
+- Bug #19507: Fix eager loading of nested one-to-many relations (spo0okie)
 - Bug #19508: Fix wrong selection for boolean attributes in GridView (alnidok)
 - Bug #19517: Fix regression in `CompositeAuth::authenticate()` introduced in #19418 (WinterSilence)
+- Bug #19520: Fix for TIMESTAMP & ROWVERSION columns in MSSQL insert query (darkdef)
+- Bug #19530: Fix specifying the field id for `yii\widgets\ActiveField` (kv4nt)
+- Bug #19534: Fix `yii\helpers\BaseHtml::renderSelectOptions()` to properly render boolean selection (bizley)
+- Bug #19537: Fix default expression detection for MariaDB `date` and `time` columns (bizley)
+- Bug #19546: Reverted #19309 (bizley)
+- Bug #19581: Fix regression in `CompositeAuth` introduced in #19418 (SamMousa, WinterSilence, samdark)
+- Bug #19589: Fix Error reporting in to the `BaseArrayHelper::getValue()` (lav45)
+- Bug #19670: Fix Error null check PHP 8.1 `yii\rbac\DbManager` (samuelexyz)
+- Chg #17811: Do not reset `retryHandler` when `yii\db\Command::reset()` called (erickskrauch)
+- Chg #19354: Reuse `Validator::getAttributeNames()` in  `AttributeTypecastBehavior::detectAttributeTypes()` (WinterSilence)
 
 
 2.0.46 August 18, 2022
