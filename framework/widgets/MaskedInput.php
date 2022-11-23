@@ -123,6 +123,7 @@ class MaskedInput extends InputWidget
         'canClearPosition'
     ];
 
+
     /**
      * Initializes the widget.
      *

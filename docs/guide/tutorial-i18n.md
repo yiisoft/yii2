@@ -156,7 +156,7 @@ However, without this configuration the category would be mapped to `@app/messag
 
 #####  Other storage types
 
-Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
+Besides, storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
 
 - [[yii\i18n\GettextMessageSource]] uses GNU Gettext MO or PO files to maintain translated messages.
@@ -197,7 +197,7 @@ You can use either *named placeholders* or *positional placeholders*, but not bo
  
 The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
 `{name}`, and you provide an associative array whose keys are the placeholder names
-(without the curly brackets) and whose values are the corresponding values placeholder to be replaced with.
+(without the curly brackets) and whose values are the corresponding values' placeholder to be replaced with.
 
 Positional placeholders use zero-based integer sequence as names which are replaced by the provided values
 according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
@@ -337,7 +337,7 @@ The parameter value should be treated as a number and formatted as a spellout. F
 echo \Yii::t('app', '{n,number} is spelled as {n,spellout}', ['n' => 42]);
 ```
 
-By default the number is spelled out as cardinal. It could be changed:
+By default, the number is spelled out as cardinal. It could be changed:
 
 ```php
 // may produce "I am forty-seventh agent"
@@ -683,7 +683,7 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 
 Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
-First of all you need to create a configuration file. Decide where you want to store it and then issue the command 
+First you need to create a configuration file. Decide where you want to store it and then issue the command 
 
 ```bash
 ./yii message/config-template path/to/config.php

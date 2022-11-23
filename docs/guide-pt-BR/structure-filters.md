@@ -323,7 +323,7 @@ detalhes sobre o uso do PageCache.
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 O filtro RateLimiter implementa um limitador de acesso baseado no 
-[algoritmo do balde furado (leaky bucket)](https://en.wikipedia.org/wiki/Leaky_bucket).
+[algoritmo do balde furado (leaky bucket)](https://pt.wikipedia.org/wiki/Leaky_Bucket).
 É usado principalmente na implementação de APIs RESTful. Por favor, consulte a 
 seção [Limitador de Acesso](rest-rate-limiting.md) para mais detalhes sobre o 
 uso deste filtro.
@@ -359,7 +359,7 @@ public function behaviors()
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 O compartilhamento de recursos cross-origin 
-[CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) é um 
+[CORS](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/CORS) é um 
 mecanismo que permite vários recursos (por exemplo, fontes, JavaScript, etc) 
 na página Web sejam solicitados por outros domínios. Em particular, as chamadas 
 AJAX do JavaScript podem usar o mecanismo XMLHttpRequest. Estas chamadas 

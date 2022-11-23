@@ -68,7 +68,7 @@ return [
 
 配置数据库连接时， 你应该总是通过 [[yii\db\Connection::dsn|dsn]] 属性来指明它的数据源名称 (DSN) 。
 不同的数据库有着不同的 DSN 格式。
-请参考 [PHP manual](https://www.php.net/manual/en/pdo.construct.php) 来获得更多细节。下面是一些例子：
+请参考 [PHP manual](https://www.php.net/manual/zh/pdo.construct.php) 来获得更多细节。下面是一些例子：
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -184,7 +184,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-绑定参数是通过 [预处理语句](https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php) 实现的。
+绑定参数是通过 [预处理语句](https://www.php.net/manual/zh/mysqli.quickstart.prepared-statements.php) 实现的。
 除了防止 SQL 注入攻击，它也可以通过一次预处理 SQL 语句，
 使用不同参数多次执行，来提升性能。例如：
 
@@ -421,7 +421,7 @@ Yii 为四个最常用的隔离级别提供了常量：
 因此，你不能在开启事务时直接指定隔离级别。
 你必须在事务开始后再调用 [[yii\db\Transaction::setIsolationLevel()]]。
 
-[隔离级别]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[隔离级别]: https://zh.wikipedia.org/wiki/%E4%BA%8B%E5%8B%99%E9%9A%94%E9%9B%A2#.E9.9A.94.E7.A6.BB.E7.BA.A7.E5.88.AB
 
 
 ### 嵌套事务（Nesting Transactions） <span id="nesting-transactions"></span>

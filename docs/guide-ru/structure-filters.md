@@ -317,7 +317,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-Совместное использование разными источниками [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Access_control_CORS)
+Совместное использование разными источниками [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/CORS)
 - это механизм, который позволяет использовать различные ресурсы (шрифты, скрипты, и т.д.) с отличных от основного сайта
 доменов. В частности, AJAX вызовы JavaScript могут использовать механизм XMLHttpRequest. В противном случае, такие
 "междоменные" запросы были бы запрещены из-за политики безопасности same origin. CORS задаёт способ взаимодействия
