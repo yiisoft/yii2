@@ -5,8 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
-- Bug #15500: Fix saving empty records to MySQL (manchenkoff)
-- no changes in this release.
 
 
 2.0.47 November 18, 2022
