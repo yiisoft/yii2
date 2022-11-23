@@ -140,7 +140,7 @@ public function extraFields()
 
 ## 链接 <span id="links"></span>
 
-[HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), 
+[HATEOAS](https://zh.wikipedia.org/wiki/HATEOAS), 
 是 Hypermedia as the Engine of Application State的缩写,
 提升 RESTful API 应返回允许终端用户访问的资源操作的信息，
 HATEOAS 的目的是在API中返回包含相关链接信息的资源数据。 
