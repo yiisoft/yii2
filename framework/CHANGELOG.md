@@ -4,13 +4,12 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
-- no changes in this release.
+- Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
 
 
 2.0.47 November 18, 2022
 ------------------------
 
-- Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
 - Bug #19530: Fix specifying the field id for `yii\widgets\ActiveField` (kv4nt)
 - Bug #12636: Fix CompareValidator successful state when compareAttribute has an error (manchenkoff)
 - Bug #14388: Fixed fixture loading order in output message (manchenkoff)
