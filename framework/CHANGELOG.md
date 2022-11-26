@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
-- no changes in this release.
+- Bug #19693: Fix db/Command not caching `NULL` result with scalar fetchMode (Arkeins)
 
 
 2.0.47 November 18, 2022
