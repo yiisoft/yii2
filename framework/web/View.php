@@ -132,11 +132,13 @@ class View extends \yii\base\View
     public $jsFiles = [];
 
     private $_assetManager;
+
     /**
      * Whether [[endPage()]] has been called and all files have been registered
      * @var bool
+     * @since 2.0.44
      */
-    private $_isPageEnded = false;
+    protected $_isPageEnded = false;
 
 
     /**
@@ -498,7 +500,7 @@ class View extends \yii\base\View
         $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', $assetManagerAppendTimestamp);
 
         if ($this->_isPageEnded) {
-            Yii::warning('You\'re trying to register a file after View::endPage() has been called');
+            Yii::warning('You\'re trying to register a file after View::endPage() has been called.');
         }
 
         if (empty($depends)) {
