@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
+- Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
 
 
 2.0.47 November 18, 2022
