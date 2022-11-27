@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19693: Fix db/Command not caching `NULL` result with scalar fetchMode (Arkeins)
-
+- Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
 
 2.0.47 November 18, 2022
 ------------------------
