@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
-- no changes in this release.
+- Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
 
 
 2.0.47 November 18, 2022
