@@ -138,7 +138,7 @@ class View extends \yii\base\View
      * @var bool
      * @since 2.0.44
      */
-    protected $_isPageEnded = false;
+    protected $isPageEnded = false;
 
 
     /**
