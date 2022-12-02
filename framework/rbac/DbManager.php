@@ -89,6 +89,7 @@ class DbManager extends BaseManager
     public $cacheKey = 'rbac';
     /**
      * @var string the key used to store user RBAC roles in cache
+     * @since 2.0.48
      */
     public $rolesCacheSuffix = 'roles';
 
