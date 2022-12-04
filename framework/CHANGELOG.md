@@ -5,7 +5,10 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19693: Fix db/Command not caching `NULL` result with scalar fetchMode (Arkeins)
+- Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
 - Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
+- Enh #19689: Remove empty elements from the `class` array in `yii\helpers\BaseHtml::renderTagAttributes()` to prevent unwanted spaces (MoritzLost)
+- Chg #19696: Change visibility of `yii\web\View::isPageEnded` to `protected` (lubosdz, samdark)
 
 2.0.47 November 18, 2022
 ------------------------

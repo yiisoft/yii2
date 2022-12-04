@@ -2017,7 +2017,7 @@ class BaseHtml
                         $value = explode(' ', implode(' ', $value));
                         $value = array_unique($value);
                     }
-                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                    $html .= " $name=\"" . static::encode(implode(' ', array_filter($value))) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
                         continue;

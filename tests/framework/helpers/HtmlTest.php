@@ -1210,6 +1210,7 @@ EOD;
         $this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(['name' => 'test', 'empty' => null, 'value' => '1<>']));
         $this->assertEquals(' checked disabled', Html::renderTagAttributes(['checked' => true, 'disabled' => true, 'hidden' => false]));
         $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first', 'second']]));
+        $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first', null, 'second', '']]));
         Html::$normalizeClassAttribute = true;
         $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first second', 'first']]));
         $this->assertEquals('', Html::renderTagAttributes(['class' => []]));
