@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
-- Bug #19012: Fixed adding new css class to previously added CSS class key (lawgiver00)
+- Bug #19012: Fixed adding new CSS class to previously added CSS class key (lawgiver00)
 - Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
 - Enh #19689: Remove empty elements from the `class` array in `yii\helpers\BaseHtml::renderTagAttributes()` to prevent unwanted spaces (MoritzLost)
 - Chg #19696: Change visibility of `yii\web\View::isPageEnded` to `protected` (lubosdz, samdark)

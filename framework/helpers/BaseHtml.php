@@ -2078,8 +2078,8 @@ class BaseHtml
         foreach ($additionalClasses as $key => $class) {
             if (is_int($key) && !in_array($class, $existingClasses)) {
                 $existingClasses[] = $class;
-            } else if(isset($existingClasses[$key])) {
-                $existingClasses[$key] = implode(' ', array_merge(explode(' ',$existingClasses[$key]),[$class]));
+            } elseif (isset($existingClasses[$key])) {
+                $existingClasses[$key] = implode(' ', array_merge(explode(' ', $existingClasses[$key]), [$class]));
             } elseif (!isset($existingClasses[$key])) {
                 $existingClasses[$key] = $class;
             }
