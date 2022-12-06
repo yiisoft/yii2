@@ -71,6 +71,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         'time' => self::TYPE_TIME,
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
+        'binary' => self::TYPE_BINARY,
         'varbinary' => self::TYPE_BINARY,
         'json' => self::TYPE_JSON,
     ];
