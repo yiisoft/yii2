@@ -390,11 +390,13 @@ If the browser supports the `sameSite` setting it will only include the cookie a
 You may read the [SameSite wiki article](https://owasp.org/www-community/SameSite) for more details.
 For better security, an exception will be thrown if `sameSite` is used with an unsupported version of PHP.
 To use this feature across different PHP versions check the version first. E.g.
+
 ```php
 [
     'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
 ]
 ```
+
 > Note: Since not all browsers support the `sameSite` setting yet, it is still strongly recommended to also include
   [additional CSRF protection](security-best-practices.md#avoiding-csrf).
 
