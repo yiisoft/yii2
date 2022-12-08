@@ -128,6 +128,26 @@ class AttributeTypecastBehaviorTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/17194
+     *
+     * @return void
+     */
+    public function testDirtyAttributesAreEmptyAfterFind()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+        $model->name = 123;
+        $model->amount = '58';
+        $model->price = '100.8';
+        $model->isActive = 1;
+        $model->callback = 'foo';
+        $model->save(false);
+
+        $model = ActiveRecordAttributeTypecast::find()->one();
+
+        $this->assertEmpty($model->getDirtyAttributes());
+    }
+
+    /**
      * @depends testTypecast
      */
     public function testAfterValidateEvent()
