@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.48 under development
 ------------------------
+- Bug #19635: PHP 8.2 compatibility fix for `yii\validators\DateValidator` (PowerGamer1)
 - Bug #17194: Fix unnecessary SQL updates in the database on attributes typecast via `yii\behaviors\AttributeTypecastBehavior` (aivchen)
 - Bug #19693: Fix db/Command not caching `NULL` result with scalar fetchMode (Arkeins)
 - Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
