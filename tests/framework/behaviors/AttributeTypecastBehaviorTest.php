@@ -129,8 +129,6 @@ class AttributeTypecastBehaviorTest extends TestCase
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/17194
-     *
-     * @return void
      */
     public function testDirtyAttributesAreEmptyAfterFind()
     {

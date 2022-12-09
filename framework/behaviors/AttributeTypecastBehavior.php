@@ -366,9 +366,6 @@ class AttributeTypecastBehavior extends Behavior
         $this->resetOldAttributes();
     }
 
-    /**
-     * @return void
-     */
     private function resetOldAttributes()
     {
         if ($this->attributeTypes === null) {
