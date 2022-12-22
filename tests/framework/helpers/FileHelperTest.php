@@ -653,6 +653,15 @@ class FileHelperTest extends TestCase
             );
         }));
         $this->assertEquals($expect, $foundFiles);
+
+        // negative pattern
+        $foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one', '!/one/two']]);
+        sort($foundFiles);
+        $expect = array_values(array_filter($flat, function ($p) {
+            return strpos($p, DIRECTORY_SEPARATOR . 'one') === false || strpos($p, DIRECTORY_SEPARATOR . 'two') !== false;
+        }));
+
+        $this->assertEquals($expect, $foundFiles);
     }
 
     /**
