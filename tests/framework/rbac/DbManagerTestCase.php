@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\rbac;
 
-use app\models\User;
 use Yii;
 use yii\caching\ArrayCache;
 use yii\console\Application;
@@ -145,7 +144,11 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     protected function createManager()
     {
-        return new DbManager(['db' => $this->getConnection(), 'defaultRoles' => ['myDefaultRole']]);
+        return new DbManager([
+            'db' => $this->getConnection(),
+            'defaultRoles' => ['myDefaultRole'],
+            'cache' => new ArrayCache(),
+        ]);
     }
 
     private function prepareRoles($userId)
@@ -192,6 +195,27 @@ abstract class DbManagerTestCase extends ManagerTestCase
         } else {
             $this->assertEmpty($permissions);
         }
+    }
+
+    public function testGetCachedRolesByUserId()
+    {
+        $this->auth->removeAll();
+
+        $admin = $this->auth->createRole('Admin');
+        $this->auth->add($admin);
+        $this->auth->assign($admin, 1);
+
+        $manager = $this->auth->createRole('Manager');
+        $this->auth->add($manager);
+        $this->auth->assign($manager, 2);
+
+        $adminUserRoles = $this->auth->getRolesByUser(1);
+        $this->assertArrayHasKey('Admin', $adminUserRoles);
+        $this->assertEquals($admin->name, $adminUserRoles['Admin']->name);
+
+        $managerUserRoles = $this->auth->getRolesByUser(2);
+        $this->assertArrayHasKey('Manager', $managerUserRoles);
+        $this->assertEquals($manager->name, $managerUserRoles['Manager']->name);
     }
 
     /**
