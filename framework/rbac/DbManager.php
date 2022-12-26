@@ -1012,6 +1012,8 @@ class DbManager extends BaseManager
                 foreach ($cachedUserIds as $userId) {
                     $this->cache->delete($this->getUserRolesCacheKey($userId));
                 }
+
+                $this->cache->delete($this->getUserRolesCachedSetKey());
             }
         }
         $this->checkAccessAssignments = [];
