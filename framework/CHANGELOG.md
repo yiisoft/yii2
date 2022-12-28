@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15376: Added $userId for RBAC roles cache (manchenkoff)
+- Bug #18867: Fixed multiple issues with `yii\grid\CheckboxColumn`: "check all" checkbox not being checked on page load when all data row checkboxes are initially checked; clicking checkboxes triggered "change" event for other checkboxes that do not change their state; "check all" checkbox not being checked when disabled checkboxes are present and clicking last non-checked data row checkbox (PowerGamer1)
 - Bug #19635: PHP 8.2 compatibility fix for `yii\validators\DateValidator` (PowerGamer1)
 - Bug #17194: Fix unnecessary SQL updates in the database on attributes typecast via `yii\behaviors\AttributeTypecastBehavior` (aivchen)
 - Bug #19693: Fix db/Command not caching `NULL` result with scalar fetchMode (Arkeins)
