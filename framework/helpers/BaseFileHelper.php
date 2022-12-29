@@ -465,6 +465,7 @@ class BaseFileHelper
      *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash (`\`) in front of the first `!`
      *   for patterns that begin with a literal `!`, for example, `\!important!.txt`.
      *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
+     *   You can find more details about the gitignore pattern format [here](https://git-scm.com/docs/gitignore/en#_pattern_format).
      * - `only`: array, list of patterns that the file paths should match if they are to be returned. Directory paths
      *   are not checked against them. Same pattern matching rules as in the `except` option are used.
      *   If a file path matches a pattern in both `only` and `except`, it will NOT be returned.
