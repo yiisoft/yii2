@@ -9,11 +9,12 @@ Yii Framework 2 Change Log
 - Bug #19635: PHP 8.2 compatibility fix for `yii\validators\DateValidator` (PowerGamer1)
 - Bug #17194: Fix unnecessary SQL updates in the database on attributes typecast via `yii\behaviors\AttributeTypecastBehavior` (aivchen)
 - Bug #19693: Fix db/Command not caching `NULL` result with scalar fetchMode (Arkeins)
-- Enh #15376: Added cache usage for `yii2\rbac\DbManager::getRolesByUser()` (manchenkoff)
+- Enh #15376: Added cache usage for `yii\rbac\DbManager::getRolesByUser()` (manchenkoff)
 - Enh #9740: Usage of DI instead of new keyword in Schemas (manchenkoff)
 - Enh #19689: Remove empty elements from the `class` array in `yii\helpers\BaseHtml::renderTagAttributes()` to prevent unwanted spaces (MoritzLost)
 - Chg #19696: Change visibility of `yii\web\View::isPageEnded` to `protected` (lubosdz, samdark)
 - Bug #19712: Cast shell_exec() output to string for jsCompressor (impayru)
+- Bug #19731: Fix `yii\data\Sort` to generate proper link when multisort is on and attribute has a default sort order set (bizley)
 
 2.0.47 November 18, 2022
 ------------------------
