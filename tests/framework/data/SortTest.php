@@ -250,6 +250,50 @@ class SortTest extends TestCase
         $this->assertEquals($link, $sort->link('age'));
     }
 
+    public function providerForLinkWithParamsAndPassedButEmptySort()
+    {
+        return [
+            [null],
+            [['age' => SORT_DESC]],
+            [['age' => SORT_ASC]],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForLinkWithParamsAndPassedButEmptySort
+     */
+    public function testLinkWithParamsAndPassedButEmptySort($defaultOrder)
+    {
+        $this->mockApplication();
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'cache' => null,
+        ]);
+
+        $sort = new Sort([
+            'attributes' => [
+                'age',
+                'name' => [
+                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                ],
+            ],
+            'params' => [
+                'sort' => '',
+            ],
+            'enableMultiSort' => true,
+            'defaultOrder' => $defaultOrder,
+            'urlManager' => $manager,
+            'route' => 'site/index',
+        ]);
+
+        $this->assertEquals(
+            '<a href="/index.php?r=site%2Findex&amp;sort=age" data-sort="age">Age</a>',
+            $sort->link('age')
+        );
+    }
+
     public function providerForLinkWithoutParams()
     {
         return [

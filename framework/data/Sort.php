@@ -277,6 +277,8 @@ class Sort extends BaseObject
                         }
                     }
                 }
+
+                return $this->_attributeOrders;
             }
             if (empty($this->_attributeOrders) && is_array($this->defaultOrder)) {
                 $this->_attributeOrders = $this->defaultOrder;
