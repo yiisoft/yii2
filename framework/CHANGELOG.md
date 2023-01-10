@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Enh #19689: Remove empty elements from the `class` array in `yii\helpers\BaseHtml::renderTagAttributes()` to prevent unwanted spaces (MoritzLost)
 - Chg #19696: Change visibility of `yii\web\View::isPageEnded` to `protected` (lubosdz, samdark)
 - Bug #19712: Cast shell_exec() output to string for jsCompressor (impayru)
+- Bug: PHP 8.1 compatibility fix for `$query->orderBy(null)`
 
 2.0.47 November 18, 2022
 ------------------------
