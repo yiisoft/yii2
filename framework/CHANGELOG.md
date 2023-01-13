@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Chg #19696: Change visibility of `yii\web\View::isPageEnded` to `protected` (lubosdz, samdark)
 - Bug #19712: Cast shell_exec() output to string for jsCompressor (impayru)
 - Bug #19731: Fix `yii\data\Sort` to generate proper link when multisort is on and attribute has a default sort order set (bizley)
+- Bug #19735: Fix `yii\validators\NumberValidator` to use programmable message for the value validation (bizley)
 
 2.0.47 November 18, 2022
 ------------------------
