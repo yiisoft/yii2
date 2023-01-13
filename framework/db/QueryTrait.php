@@ -305,7 +305,7 @@ trait QueryTrait
 
     /**
      * Sets the ORDER BY part of the query.
-     * @param string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
+     * @param string|array|ExpressionInterface|null $columns the columns (and the directions) to be ordered by.
      * Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
      *
@@ -358,12 +358,14 @@ trait QueryTrait
     /**
      * Normalizes format of ORDER BY data.
      *
-     * @param array|string|ExpressionInterface $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
+     * @param array|string|ExpressionInterface|null $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array
      */
     protected function normalizeOrderBy($columns)
     {
-        if ($columns instanceof ExpressionInterface) {
+        if (empty($columns)) {
+            return [];
+        } elseif ($columns instanceof ExpressionInterface) {
             return [$columns];
         } elseif (is_array($columns)) {
             return $columns;
