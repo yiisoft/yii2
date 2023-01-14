@@ -62,6 +62,7 @@ Yii Framework 2 Change Log
 - Bug #19368: Fix PHP 8.1 error when `$fileMimeType` is `null` in `yii\validators\FileValidator::validateMimeType()` (bizley)
 - Bug #19380: Fix PHP 8.1 passing non string to trim() in `yii\db\Query` (wa1kb0y)
 - Bug #19386: Fix recursive calling `yii\helpers\BaseArrayHelper::htmlDecode()` (WinterSilence)
+- Enh #19413: Replace Bower packages to NPM, add PHP extensions to `require` in `composer.json` and update related files (WinterSilence)
 - Bug #19400: Fix passing null in `yii\web\Response::redirect()` (bizley)
 - Bug #19402: Add shutdown event and fix working directory in `yii\base\ErrorHandler` (WinterSilence)
 - Bug #19403: Fix types in `yii\web\SessionIterator` (WinterSilence)

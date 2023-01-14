@@ -52,7 +52,7 @@ return array(
     ),
     array(
         'name' => 'OpenSSL extension',
-        'mandatory' => false,
+        'mandatory' => true,
         'condition' => extension_loaded('openssl'),
         'by' => '<a href="https://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
         'memo' => 'Required by encrypt and decrypt methods.'
