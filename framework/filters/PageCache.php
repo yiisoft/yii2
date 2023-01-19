@@ -122,7 +122,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * }
      * ```
      *
-     * The callable should return an array otherwise it will be type casted to an array.
+     * The callable should return an array.
      */
     public $variations;
     /**
