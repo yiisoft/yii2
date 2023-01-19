@@ -110,7 +110,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * ]
      * ```
      *
-     * Since version 2.0.48 its possible to provide a callable function in order to generate variations. This is especially helpfull
+     * Since version 2.0.48 you can provide an anonymous function to generate variations. This is especially helpful
      * when you need to access the User component, which is resolved before the PageCache behavior:
      *
      * ```php
