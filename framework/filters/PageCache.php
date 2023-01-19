@@ -110,8 +110,8 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * ]
      * ```
      *
-     * Since version 2.0.48 its possible to provide a callable function in order to to generate variations. This is especially helpfull
-     * when you need to access the User component which is resolved before the PageCache behavior:
+     * Since version 2.0.48 its possible to provide a callable function in order to generate variations. This is especially helpfull
+     * when you need to access the User component, which is resolved before the PageCache behavior:
      *
      * ```php
      * 'variations' => function() {
@@ -122,7 +122,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * }
      * ```
      *
-     * The callable should return an array.
+     * The callable should return an array otherwise it will be type casted to an array.
      */
     public $variations;
     /**
