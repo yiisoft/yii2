@@ -334,7 +334,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
             $key[] = Yii::$app->requestedRoute;
         }
 
-        if ($this->variations instanceof Closure || (is_array($this->variations) && is_callable($this->variations))) {
+        if ($this->variations instanceof Closure) {
             $variations = call_user_func($this->variations, $this);
         } else {
             $variations = $this->variations;
