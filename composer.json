@@ -110,7 +110,6 @@
         }
     },
     "config": {
-        "platform": {"php": "5.6"},
         "allow-plugins": {
             "cweagans/composer-patches": true,
             "yiisoft/yii2-composer": true
