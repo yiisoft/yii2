@@ -26,7 +26,7 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 Перейдите в каталог куда вы склонировали Yii, как правило "yii2". Затем введите следующую команду:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Настройка тестовой среды
@@ -235,7 +235,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

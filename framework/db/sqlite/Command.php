@@ -101,7 +101,7 @@ class Command extends \yii\db\Command
      */
     private function extractUsedParams(SqlToken $statement, $params)
     {
-        preg_match_all('/(?P<placeholder>[:][a-zA-Z0-9_]+)/', $statement->getSql(), $matches, PREG_SET_ORDER);
+        preg_match_all('/(?P<placeholder>:\w+)/', $statement->getSql(), $matches, PREG_SET_ORDER);
         $result = [];
         foreach ($matches as $match) {
             $phName = ltrim($match['placeholder'], ':');

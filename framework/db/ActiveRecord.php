@@ -214,7 +214,7 @@ class ActiveRecord extends BaseActiveRecord
         $aliases = array_diff(array_keys($tables), $tables);
 
         return array_map(function ($alias) {
-            return preg_replace('/{{([\w]+)}}/', '$1', $alias);
+            return preg_replace('/{{(\w+)}}/', '$1', $alias);
         }, array_values($aliases));
     }
 

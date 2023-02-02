@@ -31,6 +31,7 @@ class TrimValidator extends Validator
      */
     public $skipOnEmpty = false;
 
+
     /**
      * @inheritDoc
      */

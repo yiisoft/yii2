@@ -634,7 +634,7 @@ class CarUrlRule extends BaseObject implements UrlRuleInterface
 相同URL的不同格式，例如是否带结束斜线。因为技术上来说 `https://example.com/path`
 和 `https://example.com/path/` 是完全不同的 URL，两个地址返回相同的内容会导致SEO排名降低。
 默认情况下 URL 规范器会合并连续的斜线，根据配置决定是否添加或删除结尾斜线，
-并且会使用[永久重定向](https://en.wikipedia.org/wiki/HTTP_301)将地址重新跳转到规范化后的URL。
+并且会使用[永久重定向](https://zh.wikipedia.org/wiki/HTTP_301)将地址重新跳转到规范化后的URL。
 URL规范器可以针对URL管理器全局配置，也可以针对规则单独配置 - 默认每个规则都使用URL管理器中的规范器。
 你可以针对特定的URL规则设置 [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] 为 `false` 来关闭规范化。
 

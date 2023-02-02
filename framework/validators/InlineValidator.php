@@ -10,7 +10,6 @@ namespace yii\validators;
 /**
  * InlineValidator represents a validator which is defined as a method in the object being validated.
  *
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

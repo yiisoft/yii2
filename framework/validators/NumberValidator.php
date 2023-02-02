@@ -116,19 +116,19 @@ class NumberValidator extends Validator
     protected function validateValue($value)
     {
         if (is_array($value) && !$this->allowArray) {
-            return [Yii::t('yii', '{attribute} is invalid.'), []];
+            return [$this->message, []];
         }
         $values = !is_array($value) ? [$value] : $value;
-        foreach ($values as $value) {
-            if ($this->isNotNumber($value)) {
-                return [Yii::t('yii', '{attribute} is invalid.'), []];
+        foreach ($values as $sample) {
+            if ($this->isNotNumber($sample)) {
+                return [$this->message, []];
             }
             $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-            if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
+            if (!preg_match($pattern, StringHelper::normalizeNumber($sample))) {
                 return [$this->message, []];
-            } elseif ($this->min !== null && $value < $this->min) {
+            } elseif ($this->min !== null && $sample < $this->min) {
                 return [$this->tooSmall, ['min' => $this->min]];
-            } elseif ($this->max !== null && $value > $this->max) {
+            } elseif ($this->max !== null && $sample > $this->max) {
                 return [$this->tooBig, ['max' => $this->max]];
             }
         }

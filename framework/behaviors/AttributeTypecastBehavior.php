@@ -293,9 +293,7 @@ class AttributeTypecastBehavior extends Behavior
             }
 
             if ($type !== null) {
-                foreach ((array) $validator->attributes as $attribute) {
-                    $attributeTypes[ltrim($attribute, '!')] = $type;
-                }
+                $attributeTypes += array_fill_keys($validator->getAttributeNames(), $type);
             }
         }
 
@@ -364,5 +362,20 @@ class AttributeTypecastBehavior extends Behavior
     public function afterFind($event)
     {
         $this->typecastAttributes();
+
+        $this->resetOldAttributes();
+    }
+
+    private function resetOldAttributes()
+    {
+        if ($this->attributeTypes === null) {
+            return;
+        }
+
+        $attributes = array_keys($this->attributeTypes);
+
+        foreach ($attributes as $attribute) {
+            $this->owner->setOldAttribute($attribute, $this->owner->{$attribute});
+        }
     }
 }

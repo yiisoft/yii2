@@ -51,11 +51,44 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+
+Upgrade from Yii 2.0.46
+-----------------------
+
+* The default "scope" of the `yii\mutex\MysqlMutex` has changed, the name of the mutex now includes the name of the
+  database by default. Before this change the "scope" of the `MysqlMutex` was "server wide".
+  No matter which database was used, the mutex lock was acquired for the entire server, since version 2.0.47 
+  the "scope" of the mutex will be limited to the database being used. 
+  This might impact your application if …
+    * The database name of the database connection specified in the `MysqlMutex::$db` property is set dynamically
+      (or changes in any other way during your application execution):  
+      Depending on your application you might want to set the `MysqlMutex::$keyPrefix` property (see below).
+    * The database connection specified in the `MysqlMutex::$db` does not include a database name:  
+      You must specify the `MysqlMutex::$keyPrefix` property (see below).
+  
+  If you need to specify/lock the "scope" of the `MysqlMutex` you can specify the `$keyPrefix` property.  
+  For example in your application config:   
+    ```php
+    'mutex' => [
+        'class' => 'yii\mutex\MysqlMutex',
+        'db' => 'db',
+        'keyPrefix' => 'myPrefix' // Your custom prefix which determines the "scope" of the mutex.
+    ],
+    ```
+  > Warning: Even if you're not impacted by the aforementioned conditions and even if you specify the `$keyPrefix`,
+    if you rely on a locked mutex during and/or across your application deployment
+    (e.g. switching over in a live environment from an old version to a new version of your application)
+    you will have to make sure any running process that acquired a lock finishes before switching over to the new 
+    version of your application. A lock acquired before the deployment will *not* be mutually exclusive with a 
+    lock acquired after the deployment (even if they have the same name). 
+
 Upgrade from Yii 2.0.45
 -----------------------
 
-* Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted so it works as in pre-2.0.45. If you need
+* Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted, so it works as in pre-2.0.45. If you need
   2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
+* `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
+  the files is done only by copy.
 
 Upgrade from Yii 2.0.44
 -----------------------
@@ -84,6 +117,9 @@ Upgrade from Yii 2.0.43
       ```
 * `yii\caching\Cache::multiSet()` now uses the default cache duration (`yii\caching\Cache::$defaultDuration`) when no 
   duration is provided. A duration of 0 should be explicitly passed if items should not expire.
+* Default value of `yii\console\controllers\MessageController::$translator` is updated to `['Yii::t', '\Yii::t']`, since 
+  old value of `'Yii::t'` didn't match `\Yii::t` calls on PHP 8. If configuration file for "extract" command overrides 
+  default value, update config file accordingly. See [issue #18941](https://github.com/yiisoft/yii2/issues/18941)
 
 Upgrade from Yii 2.0.42
 -----------------------

@@ -71,7 +71,7 @@ SELECT * FROM user WHERE username = ''; DROP TABLE user; --'
 This is valid query that will search for users with empty username and then will drop `user` table most probably
 resulting in broken website and data loss (you've set up regular backups, right?).
 
-In Yii most of database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
+In Yii most database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
 statements internally. In case of prepared statements it's not possible to manipulate query as was demonstrated above.
 
 Still, sometimes you need [raw queries](db-dao.md) or [query builder](db-query-builder.md). In this case you should use
@@ -179,7 +179,7 @@ For this reason, Yii applies additional mechanisms to protect against CSRF attac
 In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
-   See [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) for more details.
+   See [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) for more details.
 2. Keep Yii CSRF protection enabled.
 
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:

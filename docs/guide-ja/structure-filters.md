@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-クロス・オリジン・リソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブ・ページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
+クロス・オリジン・リソース共有 [CORS](https://developer.mozilla.org/ja/docs/Web/HTTP/CORS) とは、ウェブ・ページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
 特に言えば、JavaScript の AJAX 呼出しが使用することが出来る XMLHttpRequest メカニズムです。
 このような「クロス・ドメイン｣のリクエストは、このメカニズムに拠らなければ、
 同一生成元のセキュリティ・ポリシーによって、ウェブ・ブラウザから禁止されるはずのものです。
