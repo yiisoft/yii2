@@ -477,7 +477,7 @@ class DbManager extends BaseManager
         }
 
         if ($this->cache !== null) {
-            $data = $this->cache->get($this->getUserRolesCacheKey());
+            $data = $this->cache->get($this->getUserRolesCacheKey($userId));
 
             if ($data !== false) {
                 return $data;
@@ -496,7 +496,7 @@ class DbManager extends BaseManager
         }
 
         if ($this->cache !== null) {
-            $this->cache->set($this->getUserRolesCacheKey(), $roles);
+            $this->cacheUserRolesData($userId, $roles);
         }
 
         return $roles;
@@ -1002,10 +1002,19 @@ class DbManager extends BaseManager
     {
         if ($this->cache !== null) {
             $this->cache->delete($this->cacheKey);
-            $this->cache->delete($this->getUserRolesCacheKey());
             $this->items = null;
             $this->rules = null;
             $this->parents = null;
+
+            $cachedUserIds = $this->cache->get($this->getUserRolesCachedSetKey());
+
+            if ($cachedUserIds !== false) {
+                foreach ($cachedUserIds as $userId) {
+                    $this->cache->delete($this->getUserRolesCacheKey($userId));
+                }
+
+                $this->cache->delete($this->getUserRolesCachedSetKey());
+            }
         }
         $this->checkAccessAssignments = [];
     }
@@ -1080,8 +1089,27 @@ class DbManager extends BaseManager
         return !isset($userId) || $userId === '';
     }
 
-    private function getUserRolesCacheKey()
+    private function getUserRolesCacheKey($userId)
+    {
+        return $this->cacheKey . $this->rolesCacheSuffix . $userId;
+    }
+
+    private function getUserRolesCachedSetKey()
     {
         return $this->cacheKey . $this->rolesCacheSuffix;
+    }
+
+    private function cacheUserRolesData($userId, $roles)
+    {
+        $cachedUserIds = $this->cache->get($this->getUserRolesCachedSetKey());
+
+        if ($cachedUserIds === false) {
+            $cachedUserIds = [];
+        }
+
+        $cachedUserIds[] = $userId;
+
+        $this->cache->set($this->getUserRolesCacheKey($userId), $roles);
+        $this->cache->set($this->getUserRolesCachedSetKey(), $cachedUserIds);
     }
 }

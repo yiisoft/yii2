@@ -472,4 +472,24 @@ class PageCacheTest extends TestCase
         $keys = $this->invokeMethod(new PageCache(), 'calculateCacheKey');
         $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
     }
+
+    public function testClosureVariations()
+    {
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function() {
+                return [
+                    'foobar'
+                ];
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobar'], $keys);
+
+        // test type cast of string
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function() {
+                return 'foobarstring';
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobarstring'], $keys);
+    }
 }
