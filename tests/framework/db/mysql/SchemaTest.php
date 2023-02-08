@@ -104,6 +104,9 @@ SQL;
          * returns in response to the query `SHOW FULL COLUMNS FROM ...`
          */
         $schema = new Schema();
+        $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
+        $this->setInaccessibleProperty($schema, '_serverVersion', 'MariaDB');
+        // isMariaDb
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
@@ -118,7 +121,7 @@ SQL;
 
         $this->assertInstanceOf(ColumnSchema::className(), $column);
         $this->assertInstanceOf(Expression::className(), $column->defaultValue);
-        $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
+        $this->assertSame('current_timestamp()', (string)$column->defaultValue);
     }
 
     /**

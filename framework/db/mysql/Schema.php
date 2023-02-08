@@ -30,6 +30,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
+    const DEFAULT_EXPRESSION_IDENTIFIER = 'DEFAULT_GENERATED';
+
     /**
      * {@inheritdoc}
      */
@@ -294,14 +296,23 @@ SQL;
              *
              * See details here: https://mariadb.com/kb/en/library/now/#description
              */
-            if (in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
-                && isset($info['default'])
-                && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
-                $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
-            } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
+            // if (in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
+            //     && isset($info['default'])
+            //     && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
+            //     $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
+            // } elseif (isset($type) && $type === 'bit') {
+            //     $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
+            // } else {
+            //     $column->defaultValue = $column->phpTypecast($info['default']);
+            // }
+
+            if ($this->defaultIsExpression($info['default'], $info['extra'])) {
+                $column->defaultValue = new Expression($info['default']);
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
+                if (isset($type) && $type === 'bit') {
+                    $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
+                }
             }
         }
 
@@ -588,5 +599,54 @@ SQL;
         }
 
         return $result[$returnType];
+    }
+
+    /**
+     * Detect if a column has a default value in form of expression
+     * @param $extra string 'Extra' detail obtained from "SHOW FULL COLUMNS ...". Example: 'DEFAULT_GENERATED'
+     * @return bool true if the column has default value in form of expression instead of constant
+     * @see https://github.com/yiisoft/yii2/issues/19747
+     * @see https://dev.mysql.com/doc/refman/8.0/en/data-type-defaults.html
+     * @since 2.0.48
+     */
+    public function defaultIsExpression($default, $extra)
+    {
+        if ($this->isMysql()) {
+            return $extra === static::DEFAULT_EXPRESSION_IDENTIFIER;
+        } else { // MariaDB
+            if (empty($default)) {
+                return false;
+            }
+            if (is_numeric($default)) {
+                return false;
+            } elseif(is_string($default) &&
+                     $default[0] === "'" &&
+                     $default[strlen($default) - 1] === "'"
+            ) {
+                return false;
+            } elseif (is_string($default)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    /**
+     *
+     * @since 2.0.48
+     */
+    public function isMysql()
+    {
+        return ($this->db->schema instanceof static && !$this->isMariaDb());
+    }
+
+    /**
+     *
+     * @since 2.0.48
+     */
+    public function isMariaDb()
+    {
+        return strpos($this->db->schema->getServerVersion(), 'MariaDB') !== false;
     }
 }
