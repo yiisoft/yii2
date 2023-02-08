@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
+- Bug #19747: Load Default expression into ColumnSchema class for MySQL, MariaDb and PgSQL (sohelahmed7)
 - Enh #19741: Added option to use a closure for `$variations` definition in `yii\filters\PageCache` (nadar)
 - Bug #15376: Added $userId for RBAC roles cache (manchenkoff)
 - Bug #18867: Fixed multiple issues with `yii\grid\CheckboxColumn`: "check all" checkbox not being checked on page load when all data row checkboxes are initially checked; clicking checkboxes triggered "change" event for other checkboxes that do not change their state; "check all" checkbox not being checked when disabled checkboxes are present and clicking last non-checked data row checkbox (PowerGamer1)
