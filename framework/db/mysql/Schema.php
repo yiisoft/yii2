@@ -615,7 +615,7 @@ SQL;
     public function defaultIsExpression($columnName, $default, $extra)
     {
         if ($this->isMysql()) {
-            return $extra === static::DEFAULT_EXPRESSION_IDENTIFIER;
+            return strpos($extra, static::DEFAULT_EXPRESSION_IDENTIFIER) !== false;
         } else { // MariaDB
 
             $infoSchemaDefault = $this->f($columnName);

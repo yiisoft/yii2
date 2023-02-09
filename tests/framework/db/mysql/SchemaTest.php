@@ -242,4 +242,41 @@ SQL;
 
         return $columns;
     }
+
+    /**
+     *
+     */
+    public function testMariaDBDefault()
+    {
+        // if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
+        //     $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
+        // }
+        $sql = <<<SQL
+CREATE TABLE  IF NOT EXISTS `datetime_test`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+
+        // $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
+        // $this->setInaccessibleProperty($schema, '_serverVersion', 'MariaDB');
+        $this->setInaccessibleProperty($this->getConnection()->schema, '_serverVersion', 'MariaDB');
+
+        $this->getConnection()->createCommand($sql)->execute();
+
+        $schema = $this->getConnection()->getTableSchema('datetime_test');
+        // $this->setInaccessibleProperty($schema, '_serverVersion', 'MariaDB');
+
+        $dt = $schema->columns['dt'];
+
+        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertEquals('CURRENT_TIMESTAMP', (string)$dt->defaultValue);
+        // $this->assertTrue($schema->columns);
+        $ts = $schema->columns['ts'];
+
+        $this->assertInstanceOf(Expression::className(), $ts->defaultValue);
+        $this->assertEquals('CURRENT_TIMESTAMP', (string)$ts->defaultValue);
+    }
 }
