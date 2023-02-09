@@ -110,6 +110,7 @@ return [
   'yii\db\AfterSaveEvent' => YII2_PATH . '/db/AfterSaveEvent.php',
   'yii\db\ArrayExpression' => YII2_PATH . '/db/ArrayExpression.php',
   'yii\db\BaseActiveRecord' => YII2_PATH . '/db/BaseActiveRecord.php',
+  'yii\db\BaseQuery' => YII2_PATH . '/db/BaseQuery.php',
   'yii\db\BatchQueryResult' => YII2_PATH . '/db/BatchQueryResult.php',
   'yii\db\CheckConstraint' => YII2_PATH . '/db/CheckConstraint.php',
   'yii\db\ColumnSchema' => YII2_PATH . '/db/ColumnSchema.php',
