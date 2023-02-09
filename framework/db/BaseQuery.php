@@ -473,7 +473,7 @@ class BaseQuery extends Component implements QueryInterface, ExpressionInterface
             return $command->queryScalar();
         }
 
-        $command = (new static())
+        $command = (new self())
             ->select([$selectExpression])
             ->from(['c' => $this])
             ->createCommand($db);
