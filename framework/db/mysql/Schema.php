@@ -41,6 +41,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private $_oldMysql;
 
+    private $_quotedTableName;
+
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
@@ -306,7 +308,7 @@ SQL;
             //     $column->defaultValue = $column->phpTypecast($info['default']);
             // }
 
-            if ($this->defaultIsExpression($info['default'], $info['extra'])) {
+            if ($this->defaultIsExpression($column->name, $info['default'], $info['extra'])) {
                 $column->defaultValue = new Expression($info['default']);
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
@@ -327,7 +329,8 @@ SQL;
      */
     protected function findColumns($table)
     {
-        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
+        $this->_quotedTableName = $this->quoteTableName($table->fullName);
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->_quotedTableName;
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
@@ -609,22 +612,24 @@ SQL;
      * @see https://dev.mysql.com/doc/refman/8.0/en/data-type-defaults.html
      * @since 2.0.48
      */
-    public function defaultIsExpression($default, $extra)
+    public function defaultIsExpression($columnName, $default, $extra)
     {
         if ($this->isMysql()) {
             return $extra === static::DEFAULT_EXPRESSION_IDENTIFIER;
         } else { // MariaDB
-            if (empty($default)) {
+
+            $infoSchemaDefault = $this->f($columnName);
+            if (empty($infoSchemaDefault)) {
                 return false;
             }
-            if (is_numeric($default)) {
+            if (is_numeric($infoSchemaDefault)) {
                 return false;
-            } elseif(is_string($default) &&
-                     $default[0] === "'" &&
-                     $default[strlen($default) - 1] === "'"
+            } elseif(is_string($infoSchemaDefault) &&
+                     $infoSchemaDefault[0] === "'" &&
+                     $infoSchemaDefault[strlen($infoSchemaDefault) - 1] === "'"
             ) {
                 return false;
-            } elseif (is_string($default)) {
+            } elseif (is_string($infoSchemaDefault)) {
                 return true;
             } else {
                 return false;
@@ -648,5 +653,23 @@ SQL;
     public function isMariaDb()
     {
         return strpos($this->db->schema->getServerVersion(), 'MariaDB') !== false;
+    }
+
+    // TODO rename
+    public static function d($tableName, $columnName)
+    {
+        $columnName = $this->quoteColumnName($columnName);
+        return <<<SQL
+            SELECT `COLUMN_DEFAULT`
+              FROM `information_schema`.`COLUMNS`
+              WHERE `table_name` = $tableName
+              AND `column_name` = $columnName
+SQL;
+    }
+
+    // TODO rename
+    public function f($columnName)
+    {
+        return $this->db->createCommand(static::d($this->_quotedTableName, $columnName))->queryScalar();
     }
 }

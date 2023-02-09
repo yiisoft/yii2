@@ -105,7 +105,7 @@ SQL;
          */
         $schema = new Schema();
         $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
-        $this->setInaccessibleProperty($schema, '_serverVersion', 'MariaDB');
+        // $this->setInaccessibleProperty($schema, '_serverVersion', 'MariaDB');
         // isMariaDb
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
@@ -113,7 +113,7 @@ SQL;
             'collation' => NULL,
             'null' => 'NO',
             'key' => '',
-            'default' => 'current_timestamp()',
+            'default' => new Expression('current_timestamp()'),
             'extra' => '',
             'privileges' => 'select,insert,update,references',
             'comment' => '',
@@ -133,6 +133,7 @@ SQL;
     public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB()
     {
         $schema = new Schema();
+        $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
