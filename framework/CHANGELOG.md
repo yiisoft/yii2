@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
+- Bug #19705: Add binary and other data type to `$typeMap` list for MySQL (sohelahmed7)
 - Enh #19741: Added option to use a closure for `$variations` definition in `yii\filters\PageCache` (nadar)
 - Bug #15376: Added $userId for RBAC roles cache (manchenkoff)
 - Bug #18867: Fixed multiple issues with `yii\grid\CheckboxColumn`: "check all" checkbox not being checked on page load when all data row checkboxes are initially checked; clicking checkboxes triggered "change" event for other checkboxes that do not change their state; "check all" checkbox not being checked when disabled checkboxes are present and clicking last non-checked data row checkbox (PowerGamer1)
