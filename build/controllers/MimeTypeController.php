@@ -101,10 +101,6 @@ class MimeTypeController extends Controller
         ksort($mimeMap);
         $array = VarDumper::export($mimeMap);
 
-        if (PHP_VERSION_ID >= 80100) {
-            $array = array_replace($array, array('xz' => 'application/octet-stream'));
-        }
-
         $content = <<<EOD
 <?php
 /**
@@ -116,8 +112,13 @@ class MimeTypeController extends Controller
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
  */
-return $array;
+\$mimeTypes = $array;
 
+if (PHP_VERSION_ID >= 80100) {
+    \$mimeTypes = array_replace(\$mimeTypes, array('xz' => 'application/octet-stream'));
+}
+
+return \$mimeTypes;
 EOD;
         file_put_contents($outFile, $content);
         $this->stdout("done.\n", Console::FG_GREEN);
