@@ -41,6 +41,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private $_oldMysql;
 
+    // TODO rename. it is not quoted
     private $_quotedTableName;
 
 
@@ -329,8 +330,8 @@ SQL;
      */
     protected function findColumns($table)
     {
-        $this->_quotedTableName = $this->quoteTableName($table->fullName);
-        $sql = 'SHOW FULL COLUMNS FROM ' . $this->_quotedTableName;
+        $this->_quotedTableName = $table->fullName;
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
@@ -638,8 +639,8 @@ SQL;
     }
 
     /**
-     *
      * @since 2.0.48
+     * Adopted from https://github.com/cebe/yii2-openapi
      */
     public function isMysql()
     {
@@ -647,8 +648,8 @@ SQL;
     }
 
     /**
-     *
      * @since 2.0.48
+     * Adopted from https://github.com/cebe/yii2-openapi
      */
     public function isMariaDb()
     {
@@ -658,12 +659,11 @@ SQL;
     // TODO rename
     public static function d($tableName, $columnName)
     {
-        $columnName = $this->quoteColumnName($columnName);
         return <<<SQL
             SELECT `COLUMN_DEFAULT`
               FROM `information_schema`.`COLUMNS`
-              WHERE `table_name` = $tableName
-              AND `column_name` = $columnName
+              WHERE `table_name` = "$tableName"
+              AND `column_name` = "$columnName"
 SQL;
     }
 
