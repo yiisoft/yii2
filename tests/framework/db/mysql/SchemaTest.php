@@ -338,8 +338,8 @@ SQL;
 
     public function testMysqlDefaultConstantAndExpression()
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
-            $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
+        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '8', '>=')) {
+            $this->markTestSkipped('Default expression for columns are supported since MySQL 8.');
         }
 
         $this->assertTrue($this->getConnection()->getSchema()->isMysql());
