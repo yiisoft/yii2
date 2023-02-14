@@ -316,7 +316,7 @@ SQL;
             //     $column->defaultValue = $column->phpTypecast($info['default']);
             // }
 
-            if ($this->defaultIsExpression($column->name, $info['default'], $info['extra'])) {
+            if ($this->defaultIsExpression($info)) {
                 $column->defaultValue = new Expression($info['default']);
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
@@ -620,28 +620,34 @@ SQL;
      * @see https://dev.mysql.com/doc/refman/8.0/en/data-type-defaults.html
      * @since 2.0.48
      */
-    public function defaultIsExpression($columnName, $default, $extra)
+    public function defaultIsExpression($info)
     {
         if ($this->isMysql()) {
-            return strpos($extra, static::DEFAULT_EXPRESSION_IDENTIFIER) !== false;
+            return strpos($info['extra'], static::DEFAULT_EXPRESSION_IDENTIFIER) !== false;
         } else { // MariaDB
+            $moreInfo = $this->moreColumnInfo($info['field']);
+            $default = $moreInfo['COLUMN_DEFAULT'];
+            $isNullable = $moreInfo['IS_NULLABLE'];
 
-            $infoSchemaDefault = $this->f($columnName);
-            if (empty($infoSchemaDefault)) {
+            if (empty($default)) {
                 return false;
             }
-            if (is_numeric($infoSchemaDefault)) {
+
+            if ($isNullable === 'YES' && $default === 'NULL') {
                 return false;
-            } elseif(is_string($infoSchemaDefault) &&
-                     $infoSchemaDefault[0] === "'" &&
-                     $infoSchemaDefault[strlen($infoSchemaDefault) - 1] === "'"
+            }
+
+            if (is_numeric($default)) {
+                return false;
+            } elseif(is_string($default) &&
+                     $default[0] === "'" &&
+                     $default[strlen($default) - 1] === "'"
             ) {
                 return false;
-            } elseif (is_string($infoSchemaDefault)) {
+            } elseif (is_string($default)) {
                 return true;
-            } else {
-                return false;
             }
+            return false;
         }
     }
 
@@ -664,10 +670,10 @@ SQL;
     }
 
     // TODO rename
-    public static function d($tableName, $columnName)
+    public static function moreColumnInfoSql($tableName, $columnName)
     {
         return <<<SQL
-            SELECT `COLUMN_DEFAULT`
+            SELECT `COLUMN_DEFAULT`, `IS_NULLABLE`
               FROM `information_schema`.`COLUMNS`
               WHERE `table_name` = "$tableName"
               AND `column_name` = "$columnName"
@@ -675,8 +681,8 @@ SQL;
     }
 
     // TODO rename
-    public function f($columnName)
+    public function moreColumnInfo($columnName)
     {
-        return $this->db->createCommand(static::d($this->_quotedTableName, $columnName))->queryScalar();
+        return $this->db->createCommand(static::moreColumnInfoSql($this->_quotedTableName, $columnName))->queryOne();
     }
 }
