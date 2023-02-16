@@ -628,9 +628,15 @@ SQL;
         if ($this->isMysql()) {
             // https://dev.mysql.com/doc/refman/5.7/en/information-schema-columns-table.html and
             // https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
-            return
+            return (
                 (strpos($info['extra'], static::DEFAULT_EXPRESSION_IDENTIFIER) !== false) ||
-                (strpos($info['extra'], static::CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER) !== false);
+                (strpos($info['extra'], static::CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER) !== false) ||
+                (strpos($info['default'], static::CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER) !== false &&
+                    // (in_array($info['type'], ['datetime', 'timestamp']))
+                    ((strpos($info['type'], 'datetime') !== false) || (strpos($info['type'], 'timestamp') !== false))
+                )
+
+            );
         } else { // MariaDB
             $moreInfo = $this->moreColumnInfo($info['field']);
             $default = $moreInfo['COLUMN_DEFAULT'];
