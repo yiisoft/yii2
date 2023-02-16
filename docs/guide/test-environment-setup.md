@@ -13,11 +13,154 @@ Yii provides ready to use test sets for all three test types in both
 [`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced) project templates.
 
 Codeception comes preinstalled with both basic and advanced project templates.
-In case you are not using one of these templates, Codeception could be installed
-by issuing the following console commands:
+In case you are not using one of these templates, you can follow the steps in the next section to install it.
+
+## Setting up Codeception in a Yii application
+
+### Installing Codeception
+
+Codeception can be installed using Composer by issuing the following console command:
 
 ```
-composer require --dev codeception/codeception
-composer require --dev codeception/specify
-composer require --dev codeception/verify
+composer require --dev 'codeception/codeception:^5.0' codeception/module-yii2 codeception/module-asserts codeception/module-filesystem codeception/verify codeception/module-phpbrowser
 ```
+
+        "phpunit/phpunit": "~9.5.0",
+        "codeception/codeception": "^5.0.0 || ^4.0",
+        "codeception/lib-innerbrowser": "^3.0 || ^1.1",
+        "codeception/module-asserts": "^3.0 || ^1.1",
+        "codeception/module-yii2": "^1.1",
+        "codeception/module-filesystem": "^2.0 || ^1.1",
+        "codeception/verify": "^2.2",
+        "symfony/browser-kit": "^6.0 || >=2.7 <=4.2.4"
+
+
+This command will install Codeception as well as some useful Codeception modules as development dependencies.
+Here is a short description about the packages installed:
+
+- `codeception/codeception:^5.0`: This is the package for the main Codeception framework. The `^5.0` in the version constraint means that the package can be any version within the `5.x` series, but not version 6 or higher.
+
+  > Note: Codeception 5 requires PHP 8 or higher. If your application is still using PHP 7 you need to change the version constraint of Codeception to `4.0`.
+  > In this guide we will assume Codeception 5 is installed. There are some significant changes in the directory structure between Codeception 5 and 4, 
+  > which you need to consider. Check the [Codeception 5 release notes](https://codeception.com/07-28-2022/codeception-5.html) for more detail.
+
+
+- `codeception/module-yii2`: This is a Codeception module that provides integration with the Yii framework. This module provides helpers and configuration for testing Yii2 applications using Codeception.
+- `codeception/module-asserts`: This is a Codeception module that provides additional assertion methods for tests, such as `assertGreaterThan`, `assertContains`, and `assertJsonPathEquals`. These methods can be used to make more specific assertions about the behavior of the code being tested.
+- `codeception/module-filesystem`: This is a Codeception module that provides methods for interacting with the filesystem during tests, such as creating, deleting, and modifying files and directories. This can be useful for testing code that involves reading from or writing to the filesystem.
+- `codeception/verify`: This is a Codeception module that provides additional verification methods for tests, such as seeInDatabase, seeNumberOfElements, and seeFileFound. These methods can be used to check that certain conditions are met during the execution of the code being tested.
+ ( TODO true?)
+ - `codeception/module-phpbrowser` package is a Codeception module that provides a built-in web browser for testing web applications. This module allows you to simulate user interactions with a web application, such as clicking on links, filling out forms, and submitting data. The web browser is based on the PHP cURL library, which allows the module to interact with web servers and retrieve web pages.
+
+
+
+
+> Info: The `--dev` flag indicates that the packages being installed are development dependencies, which means they are not needed for running the project in production. When installing the project in production you should always use `composer install` with the `--no-dev` flag.
+
+### Creating test config and directory structure
+
+After installing Codeception you need to create the directory structure and configureation files.
+Codeception comes with a `bootstrap` command that does most of this work:
+
+```
+vendor/bin/codecept bootstrap
+```
+
+This will create a new Codeception configuration file named `codeception.yml` in your application's root directory.
+
+It will set up three different test suites by default: `unit`, `functional`, and `acceptance`.
+You can learn more about the differences between these types of tests in the [Introduction section of the Codeception documentation](https://codeception.com/docs/Introduction).
+
+It will also generate the `tests/` directory with the following structure:
+
+- `tests/Support` this directory is used for storing helper classes and traits that can be used in your acceptance, functional, and unit tests.
+  You can use these to write custom actions or verification methods you can re-use in your tests.
+  
+  There is a class for every test suite:
+  
+  - `UnitTester.php`
+  - `FunctionalTester.php`
+  - `AcceptanceTester.php`
+
+  There is also a `_generated` directory which contains code that is generated by Codeception and is included in the Test Helper classes.
+  Files in this directory should not be included in Version control so the bootstrap command placed a `.gitignore` file inside.
+  
+  TODO Data and Helper directory
+  
+- For every test suide there is a `.suite.yml` which is the configuration file for the test suite: `Unit.suite.yml`, `Functional.suite.yml`, and `Acceptance.suite.yml`.
+- The actual tests for each test suite are placed in the directories named `Unit`, `Functional`, and `Acceptance`.
+- The `_output` directory contains Test output such as Html and Screenshots of Failing tests and other test report data.
+  Files in this directory should not be included in Version control so the bootstrap command placed a `.gitignore` file inside.
+  
+
+### Setting up test suites for Yii
+
+For testing you need a separate [application configuration](concept-configurations.md#application-configurations) for the test environment.
+This can be based on application configuration used in your development and production environment but should contain the following changes:
+
+- Use a separate Database.
+  Tests will make a lot of changes to the database and should always start in a clean environment to make sure test results are always reproduceable.
+  So you should configure the `db` application component to use a separate database. If you have other database connections you need to adjust these as well. 
+- If you have a mailer component, configure it to not send any emails:
+
+  ```php
+  // ...
+  'components' => [
+      // ...
+      'mailer' => [
+            'class' => \yii\symfonymailer\Mailer::class,
+            // ... keep other settings here
+
+            // send all mails to a file by default.
+            'useFileTransport' => true,
+        ],
+  ],
+  ```
+  
+- In general, make sure your test environment does not contain any configuration that allows to connect to production database or services.
+
+In the following we assume that your application's test configuration is located in `@app/config/test.php`.
+Adjust the configuration as necessary to match your configuration file location.
+
+Modify the codeception.yml file to include the necessary settings for your Yii application:
+
+```
+modules:
+    config:
+        Yii:
+            configFile: '@app/config/test.php'
+```
+
+Try: vendor/bin/codecept run
+
+
+#### Unit tests
+
+TODO
+
+#### Functional tests
+
+TODO
+
+#### Acceptance tests
+
+TODO
+
+# Selenium WebDriver
+# This configuration requires Selenium WebDriver running on localhost:4444
+# Change the host/port according to your needs
+# See http://codeception.com/docs/05-UnitTests#Selenium
+#
+# modules:
+#     enabled:
+#         - WebDriver
+#     config:
+#         WebDriver:
+#             url: 'http://localhost/'
+#             browser: 'chrome'
+#             host: '127.0.0.1'
+#             port: 4444
+
+
+
+vendor/bin/codecept run
