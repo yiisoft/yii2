@@ -30,7 +30,9 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
-    const DEFAULT_EXPRESSION_IDENTIFIER = 'DEFAULT_GENERATED';
+    const DEFAULT_EXPRESSION_IDENTIFIER = 'DEFAULT_GENERATED'; // for MySQL >= 8
+
+    const CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER = 'CURRENT_TIMESTAMP';
 
     /**
      * {@inheritdoc}
@@ -315,13 +317,14 @@ SQL;
             // } else {
             //     $column->defaultValue = $column->phpTypecast($info['default']);
             // }
-
-            if ($this->defaultIsExpression($info)) {
-                $column->defaultValue = new Expression($info['default']);
-            } else {
-                $column->defaultValue = $column->phpTypecast($info['default']);
-                if (isset($type) && $type === 'bit') {
-                    $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
+            if (isset($info['default'])) {
+                if ($this->defaultIsExpression($info)) {
+                    $column->defaultValue = new Expression($info['default']);
+                } else {
+                    $column->defaultValue = $column->phpTypecast($info['default']);
+                    if (isset($type) && $type === 'bit') {
+                        $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
+                    }
                 }
             }
         }
@@ -623,7 +626,11 @@ SQL;
     public function defaultIsExpression($info)
     {
         if ($this->isMysql()) {
-            return strpos($info['extra'], static::DEFAULT_EXPRESSION_IDENTIFIER) !== false;
+            // https://dev.mysql.com/doc/refman/5.7/en/information-schema-columns-table.html and
+            // https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
+            return
+                (strpos($info['extra'], static::DEFAULT_EXPRESSION_IDENTIFIER) !== false) ||
+                (strpos($info['extra'], static::CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER) !== false);
         } else { // MariaDB
             $moreInfo = $this->moreColumnInfo($info['field']);
             $default = $moreInfo['COLUMN_DEFAULT'];
