@@ -105,8 +105,7 @@ SQL;
          */
         $schema = new Schema();
         $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
-        // $this->setInaccessibleProperty($schema, '_serverVersion', 'MariaDB');
-        // isMariaDb
+
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
@@ -244,7 +243,7 @@ SQL;
     }
 
     /**
-     *
+     * This test will never run in Github action CI because Mariadb server in not configured to install in it. In order to run it locally, configure connection to Mariadb in config.local.php (see https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md)
      */
     public function testMariaDBDefaultConstantAndExpression()
     {

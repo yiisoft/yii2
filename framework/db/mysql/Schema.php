@@ -43,8 +43,11 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private $_oldMysql;
 
-    // TODO rename. it is not quoted
-    private $_quotedTableName;
+    /**
+     * @var string
+     * Contains table's full name
+     */
+    private $_tableName;
 
 
     /**
@@ -302,21 +305,6 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            /**
-             * When displayed in the INFORMATION_SCHEMA.COLUMNS table, a default CURRENT TIMESTAMP is displayed
-             * as CURRENT_TIMESTAMP up until MariaDB 10.2.2, and as current_timestamp() from MariaDB 10.2.3.
-             *
-             * See details here: https://mariadb.com/kb/en/library/now/#description
-             */
-            // if (in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
-            //     && isset($info['default'])
-            //     && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
-            //     $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
-            // } elseif (isset($type) && $type === 'bit') {
-            //     $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
-            // } else {
-            //     $column->defaultValue = $column->phpTypecast($info['default']);
-            // }
             if (isset($info['default'])) {
                 if ($this->defaultIsExpression($info)) {
                     $column->defaultValue = new Expression($info['default']);
@@ -340,7 +328,7 @@ SQL;
      */
     protected function findColumns($table)
     {
-        $this->_quotedTableName = $table->fullName;
+        $this->_tableName = $table->fullName;
         $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
@@ -629,15 +617,16 @@ SQL;
             // https://dev.mysql.com/doc/refman/5.7/en/information-schema-columns-table.html and
             // https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
             return (
+                // for MySQL >= 8
                 (strpos($info['extra'], static::DEFAULT_EXPRESSION_IDENTIFIER) !== false) ||
                 (strpos($info['extra'], static::CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER) !== false) ||
+                // for MySQL < 8
                 (strpos($info['default'], static::CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER) !== false &&
-                    // (in_array($info['type'], ['datetime', 'timestamp']))
                     ((strpos($info['type'], 'datetime') !== false) || (strpos($info['type'], 'timestamp') !== false))
                 )
-
             );
         } else { // MariaDB
+            // There is no strong way in MariaDB to detect default value is constant or expression. This is implemented on the basis pattern observed from data in Information_schema.Extra
             $moreInfo = $this->moreColumnInfo($info['field']);
             $default = $moreInfo['COLUMN_DEFAULT'];
             $isNullable = $moreInfo['IS_NULLABLE'];
@@ -657,7 +646,7 @@ SQL;
                      $default[strlen($default) - 1] === "'"
             ) {
                 return false;
-            } elseif (is_string($default)) {
+            } elseif (is_string($default)) { // if the default value is string and not quoted and not 'null', it is expression
                 return true;
             }
             return false;
@@ -665,6 +654,7 @@ SQL;
     }
 
     /**
+     * @return bool
      * @since 2.0.48
      * Adopted from https://github.com/cebe/yii2-openapi
      */
@@ -674,6 +664,7 @@ SQL;
     }
 
     /**
+     * @return bool
      * @since 2.0.48
      * Adopted from https://github.com/cebe/yii2-openapi
      */
@@ -682,7 +673,12 @@ SQL;
         return strpos($this->db->schema->getServerVersion(), 'MariaDB') !== false;
     }
 
-    // TODO rename
+    /**
+     * SQL to get more info of a table column
+     * @param string $tableName
+     * @param string $columnName
+     * @return string the SQL
+     */
     public static function moreColumnInfoSql($tableName, $columnName)
     {
         return <<<SQL
@@ -693,9 +689,18 @@ SQL;
 SQL;
     }
 
-    // TODO rename
+    /**
+     * @param string $columnName
+     * @return array. Example:
+     * ```
+     * [
+     *      'COLUMN_DEFAULT' => CURRENT_TIMESTAMP
+     *      'IS_NULLABLE' => Yes
+     * ]
+     * ```
+     */
     public function moreColumnInfo($columnName)
     {
-        return $this->db->createCommand(static::moreColumnInfoSql($this->_quotedTableName, $columnName))->queryOne();
+        return $this->db->createCommand(static::moreColumnInfoSql($this->_tableName, $columnName))->queryOne();
     }
 }
