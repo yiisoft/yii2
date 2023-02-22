@@ -55,7 +55,7 @@ for both A and B.
 Upgrade from Yii 2.0.47
 -----------------------
 
-* For MariaDB >= 10.2.3, object of `\yii\db\mysql\ColumnSchema` class will have different `defaultValue`. Previously `current_timestamp[(n)]` was converted to `CURRENT_TIMESTAMP[(n)]`. Now nothing is changed; `current_timestamp[(n)]` remains as it is.
+* For MariaDB >= 10.2.3, object of `\yii\db\mysql\ColumnSchema` class will have different `defaultValue`. Previously `current_timestamp[(n)]` was converted to `CURRENT_TIMESTAMP[(n)]`. Now nothing is changed; `current_timestamp[(n)]` remains as it is. This is reflected in return value (object of `\yii\db\mysql\ColumnSchema`) of `\yii\db\mysql\Schema::loadColumnSchema()` method.
 
 Upgrade from Yii 2.0.46
 -----------------------
