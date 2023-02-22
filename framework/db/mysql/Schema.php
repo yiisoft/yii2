@@ -315,9 +315,12 @@ SQL;
 
         if (!$column->isPrimaryKey) {
             $column->defaultValue = $column->phpTypecast($info['default']);
-            $isExpression = $this->defaultIsExpression($info);
-            if (isset($info['default']) && $isExpression) {
-                $column->defaultValue = new Expression($info['default']);
+            $isExpression = false;
+            if (isset($info['default'])) {
+                $isExpression = $this->defaultIsExpression($info);
+                if ($isExpression) {
+                    $column->defaultValue = new Expression($info['default']);
+                }
             }
             if (isset($type) && ($type === 'bit') && !$isExpression) {
                 $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
