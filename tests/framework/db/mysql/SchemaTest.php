@@ -247,7 +247,7 @@ SQL;
      */
     public function testMariaDBDefaultConstantAndExpression()
     {
-        $this->driverName = 'maria';
+        $this->driverName = 'mariadb';
         parent::setUp();
         $this->assertFalse($this->getConnection()->getSchema()->isMysql());
         $this->assertTrue($this->getConnection()->getSchema()->isMariaDb());

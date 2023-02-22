@@ -37,7 +37,7 @@ abstract class DatabaseTestCase extends TestCase
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';
         }
-        if ($this->driverName === 'maria') {
+        if ($this->driverName === 'mariadb') {
             $pdo_database = 'pdo_mysql';
         }
 

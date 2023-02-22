@@ -30,8 +30,17 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
-    const DEFAULT_EXPRESSION_IDENTIFIER = 'DEFAULT_GENERATED'; // for MySQL >= 8
+    /**
+     * For MySQL >= 8, columns having default value in form of expression will contain string 'DEFAULT_GENERATED' when result of table information_schema.extra is fetched. This is used to detect default value of column is constant or expression.
+     * @since 2.0.48
+     */
+    const DEFAULT_EXPRESSION_IDENTIFIER = 'DEFAULT_GENERATED';
 
+    /**
+     * This will be used for MySQL < 8
+     * If a date/time related column have default value in form of expression containing information about current timestamp, its information_schema.extra value will contain `CURRENT_TIMESTAMP`. This is used to detect default value of column is constant or expression.
+     * @since 2.0.48
+     */
     const CURRENT_TIMESTAMP_DEFAULT_EXPRESSION_IDENTIFIER = 'CURRENT_TIMESTAMP';
 
     /**
@@ -305,15 +314,13 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            if (isset($info['default'])) {
-                if ($this->defaultIsExpression($info)) {
-                    $column->defaultValue = new Expression($info['default']);
-                } else {
-                    $column->defaultValue = $column->phpTypecast($info['default']);
-                    if (isset($type) && $type === 'bit') {
-                        $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
-                    }
-                }
+            $column->defaultValue = $column->phpTypecast($info['default']);
+            $isExpression = $this->defaultIsExpression($info);
+            if (isset($info['default']) && $isExpression) {
+                $column->defaultValue = new Expression($info['default']);
+            }
+            if (isset($type) && ($type === 'bit') && !$isExpression) {
+                $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
             }
         }
 
@@ -660,7 +667,7 @@ SQL;
      */
     public function isMysql()
     {
-        return ($this->db->schema instanceof static && !$this->isMariaDb());
+        return !$this->isMariaDb();
     }
 
     /**
@@ -670,7 +677,7 @@ SQL;
      */
     public function isMariaDb()
     {
-        return strpos($this->db->schema->getServerVersion(), 'MariaDB') !== false;
+        return strpos($this->getServerVersion(), 'MariaDB') !== false;
     }
 
     /**
@@ -679,7 +686,7 @@ SQL;
      * @param string $columnName
      * @return string the SQL
      */
-    public static function moreColumnInfoSql($tableName, $columnName)
+    private static function moreColumnInfoSql($tableName, $columnName)
     {
         return <<<SQL
             SELECT `COLUMN_DEFAULT`, `IS_NULLABLE`
@@ -699,7 +706,7 @@ SQL;
      * ]
      * ```
      */
-    public function moreColumnInfo($columnName)
+    private function moreColumnInfo($columnName)
     {
         return $this->db->createCommand(static::moreColumnInfoSql($this->_tableName, $columnName))->queryOne();
     }

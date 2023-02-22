@@ -32,7 +32,7 @@ $config = [
             'password' => 'root',
             'fixture' => __DIR__ . '/mysql.sql',
         ],
-        'maria' => [
+        'mariadb' => [
             'dsn' => 'mysql:host=127.0.0.1:3389;dbname=yiitest',
             'username' => 'root',
             'password' => 'root',
