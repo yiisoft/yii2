@@ -9,7 +9,6 @@ namespace yii\mutex;
 
 use yii\base\InvalidConfigException;
 use yii\db\Expression;
-use yii\db\Query;
 
 /**
  * MysqlMutex implements mutex "lock" mechanism via MySQL locks.
@@ -70,13 +69,10 @@ class MysqlMutex extends DbMutex
     {
         return $this->db->useMaster(function ($db) use ($name, $timeout) {
             /** @var \yii\db\Connection $db */
-            return (bool) (new Query())
-                ->select(new Expression('GET_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64), :timeout)', [
-                    ':name' => $this->hashLockName($name),
-                    ':timeout' => $timeout,
-                    ':prefix' => $this->keyPrefix,
-                ]))
-                ->scalar($db);
+            return (bool) $db->createCommand(
+                'SELECT GET_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64), :timeout)',
+                [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix]
+            )->queryScalar();
         });
     }
 
@@ -90,12 +86,10 @@ class MysqlMutex extends DbMutex
     {
         return $this->db->useMaster(function ($db) use ($name) {
             /** @var \yii\db\Connection $db */
-            return (bool) (new Query())
-                ->select(new Expression('RELEASE_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64))', [
-                    ':name' => $this->hashLockName($name),
-                    ':prefix' => $this->keyPrefix,
-                ]))
-                ->scalar($db);
+            return (bool) $db->createCommand(
+                'SELECT RELEASE_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64))',
+                [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix]
+            )->queryScalar();
         });
     }
 
