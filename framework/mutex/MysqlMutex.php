@@ -71,7 +71,7 @@ class MysqlMutex extends DbMutex
             /** @var \yii\db\Connection $db */
             $nameData = $this->prepareName();
             return (bool)$db->createCommand(
-                'SELECT GET_LOCK(' . $nameData[0] . ', :timeout)',
+                'SELECT GET_LOCK(' . $nameData[0] . ', :timeout), :prefix',
                 array_merge(
                     [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix],
                     $nameData[1]
@@ -92,7 +92,7 @@ class MysqlMutex extends DbMutex
             /** @var \yii\db\Connection $db */
             $nameData = $this->prepareName();
             return (bool)$db->createCommand(
-                'SELECT RELEASE_LOCK(' . $nameData[0] . ')',
+                'SELECT RELEASE_LOCK(' . $nameData[0] . '), :prefix',
                 array_merge(
                     [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix],
                     $nameData[1]
