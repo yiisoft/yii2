@@ -111,7 +111,7 @@ class MysqlMutex extends DbMutex
         $params = [];
         $expression = "SUBSTRING(CONCAT(:prefix, :name), 1, 64)";
         if ($this->keyPrefix instanceof Expression) {
-            $expression = strtr($this->keyPrefix->expression, [':prefix' => $expression]);
+            $expression = strtr($expression, [':prefix' => $this->keyPrefix->expression]);
             $params = $this->keyPrefix->params;
         }
         return [$expression, $params];
