@@ -1,5 +1,6 @@
 Yii Framework 2 Change Log
 ==========================
+- Enh #19766: Added in JSON helper support generator (vladis84)
 
 2.0.48 under development
 ------------------------
