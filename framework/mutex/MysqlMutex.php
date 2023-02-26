@@ -106,7 +106,7 @@ class MysqlMutex extends DbMutex
      * @return array expression and params
      * @since 2.0.48
      */
-    private function prepareName()
+    protected function prepareName()
     {
         $params = [];
         $expression = "SUBSTRING(CONCAT(:prefix, :name), 1, 64)";
