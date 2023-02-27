@@ -84,4 +84,27 @@ class MysqlMutexTest extends DatabaseTestCase
         $this->assertTrue($mutexOne->release($mutexName));
         $this->assertTrue($mutexTwo->release($mutexName));
     }
+
+    /**
+     * @dataProvider mutexDataProvider()
+     *
+     * @param string $mutexName
+     */
+    public function testThatMutexLocksWithKeyPrefixesExpressionCalculatedValue($mutexName)
+    {
+        $mutexOne = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
+        $mutexTwo = $this->createMutex(['keyPrefix' => new Expression('1*2')]);
+
+        $this->assertTrue($mutexOne->acquire($mutexName));
+        $this->assertFalse($mutexTwo->acquire($mutexName));
+        $this->assertTrue($mutexOne->release($mutexName));
+    }
+
+    public function testCreateMutex()
+    {
+        $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
+        $this->assertInstanceOf(MysqlMutex::classname(), $mutex);
+        $this->assertInstanceOf(Expression::classname(), $mutex->keyPrefix);
+        $this->assertSame("1+1", $mutex->keyPrefix->expression);
+    }
 }

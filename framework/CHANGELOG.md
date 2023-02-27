@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #19734: PHP 8.1 compatibility fix for `$query->orderBy(null)` (uaoleg)
 - Bug #19731: Fix `yii\data\Sort` to generate proper link when multisort is on and attribute has a default sort order set (bizley)
 - Bug #19735: Fix `yii\validators\NumberValidator` to use programmable message for the value validation (bizley)
+- Bug #19770: Fix `yii\mutex\MysqlMutex` `keyPrefix` expression param binding (kamarton)
 
 2.0.47 November 18, 2022
 ------------------------
