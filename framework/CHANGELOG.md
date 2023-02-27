@@ -1,10 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
-- Enh #19766: Added in JSON helper support generator (vladis84)
 
 2.0.48 under development
 ------------------------
 
+- Enh #19766: Added in JSON helper support generator (vladis84)
 - Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
 - Bug #19705: Add binary and other data type to `$typeMap` list for MySQL (sohelahmed7)
 - Enh #19741: Added option to use a closure for `$variations` definition in `yii\filters\PageCache` (nadar)
