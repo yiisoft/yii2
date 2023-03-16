@@ -107,7 +107,7 @@ This can be based on application configuration used in your development and prod
   This is to avoid data loss or unexpected behavior in production systems.
   
 
-In the following we assume that your application's test configuration is located in `@app/config/test.php`.
+In the following we assume that your application's test configuration is located in `config/test.php`.
 Adjust the configuration as necessary to match your configuration file location.
 
 Modify the codeception.yml file to include the necessary settings for your Yii application:
@@ -116,12 +116,12 @@ Modify the codeception.yml file to include the necessary settings for your Yii a
 modules:
     config:
         Yii:
-            configFile: '@app/config/test.php'
+            configFile: 'config/test.php'
 ```
 
 #### Unit tests
 
-To enable the Yii module in the unit test suite, add it to the `tests/Unit.suite.yml` configuration file:
+To enable the Yii2 module in the unit test suite, add it to the `tests/Unit.suite.yml` configuration file:
 
 ```yaml
 modules:
@@ -150,11 +150,52 @@ Time: 00:00.058, Memory: 4.00 MB
 OK (1 test, 0 assertions)
 ```
 
-For more details on unit test continue in the [Unit Tests subsection](test-unit.md).
+For more information on unit tests continue in the [Unit Tests subsection](test-unit.md).
 
 #### Functional tests
 
-TODO
+To enable the Yii2 module in the functional test suite, add it to the `tests/Functional.suite.yml` configuration file:
+
+```yaml
+bootstrap: bootstrap.php
+modules:
+    enabled:
+      - Yii2
+```
+
+Functional tests need a Yii environment set up properly, so the `Yii` class needs to be included. This can be achieved by creating a `bootstrap.php`
+file inside the `tests/Functional` directory, that is included before the tests:
+
+```php
+<?php
+
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'test');
+require __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
+```
+
+For a quick start you may generate a functional test and run it with the following commands:
+
+```
+vendor/bin/codecept g:cest Functional First
+vendor/bin/codecept run Functional
+```
+
+The output should be similar to the following:
+
+```
+Codeception PHP Testing Framework v5.0.9
+
+Tests.Functional Tests (1) -------------------------------------------------------------------------------------
+✔ FirstCest: Try to test(0.01s)
+----------------------------------------------------------------------------------------------------------
+Time: 00:00.058, Memory: 4.00 MB
+
+OK (1 test, 0 assertions)
+```
+
+For more information on functional tests continue in the [Functionl Tests subsection](test-functional.md).
+
 
 #### Acceptance tests
 
