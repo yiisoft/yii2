@@ -1231,7 +1231,9 @@ class Request extends \yii\base\Request
     {
         if ($this->_ip === null) {
             $this->_ip = $this->getUserIpFromIpHeaders();
-            $this->_ip = $this->_ip === null ? $this->getRemoteIP() : $this->_ip;
+            if ($this->_ip === null) {
+                $this->_ip = $this->getRemoteIP();
+            }
         }
 
         return $this->_ip;
