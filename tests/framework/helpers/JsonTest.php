@@ -96,14 +96,18 @@ class JsonTest extends TestCase
         $data->data = (object) null;
         $this->assertSame('{}', Json::encode($data));
 
-        // Generator
-        $data = function () {
-            foreach (['a' => 1, 'b' => 2] as $name  => $value) {
-                yield $name => $value;
-            }
-        };
-
-        $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
+        // Generator (Only supported since PHP 5.5)
+        if (PHP_VERSION_ID >= 50500) {
+            $data = eval(<<<'PHP'
+                return function () {
+                    foreach (['a' => 1, 'b' => 2] as $name => $value) {
+                        yield $name => $value;
+                    }
+                };
+PHP
+            );
+            $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
+        }
     }
 
     public function testHtmlEncode()
