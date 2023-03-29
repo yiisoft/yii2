@@ -98,11 +98,14 @@ class JsonTest extends TestCase
 
         // Generator (Only supported since PHP 5.5)
         if (PHP_VERSION_ID >= 50500) {
-            $data = function () {
-                foreach (['a' => 1, 'b' => 2] as $name => $value) {
-                    yield $name => $value;
-                }
-            };
+            $data = eval(<<<'PHP'
+                return function () {
+                    foreach (['a' => 1, 'b' => 2] as $name => $value) {
+                        yield $name => $value;
+                    }
+                };
+PHP
+            );
             $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
         }
     }
