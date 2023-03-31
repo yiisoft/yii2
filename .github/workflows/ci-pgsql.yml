@@ -3,6 +3,9 @@ on:
   - push
 
 name: ci-pgsql
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
