@@ -880,6 +880,8 @@ class Response extends \yii\base\Response
      */
     public function redirect($url, $statusCode = 302, $checkAjax = true)
     {
+        $url = str_replace("\r", "\\", $url);
+        
         if (is_array($url) && isset($url[0])) {
             // ensure the route is absolute
             $url[0] = '/' . ltrim($url[0], '/');
