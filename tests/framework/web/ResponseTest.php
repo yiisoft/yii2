@@ -11,6 +11,7 @@ use Error;
 use Exception;
 use RuntimeException;
 use Yii;
+use yii\base\InvalidRouteException;
 use yii\helpers\StringHelper;
 use yii\web\Cookie;
 use yii\web\HttpException;
@@ -169,6 +170,16 @@ class ResponseTest extends \yiiunit\TestCase
             '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29',
             $this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location')
         );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/19795
+     */
+    public function testRedirectNewLine()
+    {
+        $this->expectException('yii\base\InvalidRouteException');
+
+        $this->response->redirect(\urldecode('http://test-domain.com/gql.json;%0aa.html'));
     }
 
     /**
