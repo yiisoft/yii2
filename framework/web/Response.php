@@ -888,7 +888,7 @@ class Response extends \yii\base\Response
         $request = Yii::$app->getRequest();
         $normalizedUrl = Url::to($url);
         if ($normalizedUrl !== null) {
-            if (\preg_match('/\n/', $normalizedUrl)) {
+            if (preg_match('/\n/', $normalizedUrl)) {
                 throw new InvalidRouteException('Route with new line character detected "' . $normalizedUrl . '".');
             }
             if (strncmp($normalizedUrl, '/', 1) === 0 && strncmp($normalizedUrl, '//', 2) !== 0) {
