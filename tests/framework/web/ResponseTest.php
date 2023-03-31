@@ -179,7 +179,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         $this->expectException('yii\base\InvalidRouteException');
 
-        $this->response->redirect(\urldecode('http://test-domain.com/gql.json;%0aa.html'));
+        $this->response->redirect(urldecode('http://test-domain.com/gql.json;%0aa.html'));
     }
 
     /**
