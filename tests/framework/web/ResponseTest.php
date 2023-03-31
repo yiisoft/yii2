@@ -11,7 +11,6 @@ use Error;
 use Exception;
 use RuntimeException;
 use Yii;
-use yii\base\InvalidRouteException;
 use yii\helpers\StringHelper;
 use yii\web\Cookie;
 use yii\web\HttpException;
