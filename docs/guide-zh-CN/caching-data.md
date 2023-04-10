@@ -103,7 +103,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 Yii 支持一系列缓存存储器，概况如下：
 
-* [[yii\caching\ApcCache]]：使用 PHP [APC](https://www.php.net/manual/en/book.apcu.php) 扩展。
+* [[yii\caching\ApcCache]]：使用 PHP [APC](https://www.php.net/manual/zh/book.apcu.php) 扩展。
   这个选项可以认为是集中式应用程序环境中
  （例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
 * [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，
@@ -120,14 +120,14 @@ Yii 支持一系列缓存存储器，概况如下：
   `Yii::$app->cache` 可能是 `null`。
 * [[yii\caching\FileCache]]：使用标准文件存储缓存数据。
   这个特别适用于缓存大块数据，例如一个整页的内容。
-* [[yii\caching\MemCache]]：使用 PHP [memcache](https://www.php.net/manual/en/book.memcache.php) 
-  和 [memcached](https://www.php.net/manual/en/book.memcached.php) 扩展。
+* [[yii\caching\MemCache]]：使用 PHP [memcache](https://www.php.net/manual/zh/book.memcache.php) 
+  和 [memcached](https://www.php.net/manual/zh/book.memcached.php) 扩展。
   这个选项被看作分布式应用环境中（例如：多台服务器，有负载均衡等）
   最快的缓存方案。
 * [[yii\redis\Cache]]：实现了一个基于 [Redis](https://redis.io/) 键值对存储器的缓存组件
  （需要 redis 2.6.12 及以上版本的支持 ）。
 * [[yii\caching\WinCache]]：使用 PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
- （[另可参考](https://www.php.net/manual/en/book.wincache.php)）扩展.
+ （[另可参考](https://www.php.net/manual/zh/book.wincache.php)）扩展.
 * [[yii\caching\XCache]]：使用 PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache)扩展。
 * [[yii\caching\ZendDataCache]]：使用 
   [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend- server.htm#data_cache_component.htm) 

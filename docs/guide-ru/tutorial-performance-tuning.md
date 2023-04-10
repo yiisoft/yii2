@@ -213,4 +213,4 @@ composer dumpautoload -o
 
 - [Отладочный тулбар Yii и отладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Профайлер XDebug](https://xdebug.org/docs/profiler)
-- [XHProf](https://www.php.net/manual/en/book.xhprof.php)
+- [XHProf](https://www.php.net/manual/ru/book.xhprof.php)

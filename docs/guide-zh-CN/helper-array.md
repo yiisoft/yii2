@@ -117,7 +117,7 @@ $type = ArrayHelper::remove($array, 'type');
 
 ## 检查键名的存在（Checking Existence of Keys） <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` 工作原理和 [array_key_exists](https://www.php.net/manual/en/function.array-key-exists.php) 差不多，除了
+`ArrayHelper::keyExists` 工作原理和 [array_key_exists](https://www.php.net/manual/zh/function.array-key-exists.php) 差不多，除了
 它还可支持大小写不敏感的键名比较，比如：
 
 ```php
@@ -356,7 +356,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 您可以使用 [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] 将两个或多个数组合并成一个递归的数组。
 如果每个数组都有一个具有相同字符串键值的元素，则后者将覆盖前者
-（不同于 [array_merge_recursive()](https://www.php.net/manual/en/function.array-merge-recursive.php)）。
+（不同于 [array_merge_recursive()](https://www.php.net/manual/zh/function.array-merge-recursive.phpp)）。
 如果两个数组都有一个数组类型的元素并且具有相同的键，则将执行递归合并。
 对于整数键的元素，来自后一个数组的元素将被附加到前一个数组。
 您可以使用 [[yii\helpers\UnsetArrayValue]] 对象来取消前一个数组的值或

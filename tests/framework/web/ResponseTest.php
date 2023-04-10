@@ -172,6 +172,16 @@ class ResponseTest extends \yiiunit\TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/19795
+     */
+    public function testRedirectNewLine()
+    {
+        $this->expectException('yii\base\InvalidRouteException');
+
+        $this->response->redirect(urldecode('http://test-domain.com/gql.json;%0aa.html'));
+    }
+
+    /**
      * @dataProvider dataProviderAjaxRedirectInternetExplorer11
      */
     public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes) {

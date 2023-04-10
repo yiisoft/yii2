@@ -7,6 +7,7 @@
 
 namespace yii\db\mysql;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
@@ -44,6 +45,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public $typeMap = [
         'tinyint' => self::TYPE_TINYINT,
+        'bool' => self::TYPE_TINYINT,
+        'boolean' => self::TYPE_TINYINT,
         'bit' => self::TYPE_INTEGER,
         'smallint' => self::TYPE_SMALLINT,
         'mediumint' => self::TYPE_INTEGER,
@@ -52,9 +55,12 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         'bigint' => self::TYPE_BIGINT,
         'float' => self::TYPE_FLOAT,
         'double' => self::TYPE_DOUBLE,
+        'double precision' => self::TYPE_DOUBLE,
         'real' => self::TYPE_FLOAT,
         'decimal' => self::TYPE_DECIMAL,
         'numeric' => self::TYPE_DECIMAL,
+        'dec' => self::TYPE_DECIMAL,
+        'fixed' => self::TYPE_DECIMAL,
         'tinytext' => self::TYPE_TEXT,
         'mediumtext' => self::TYPE_TEXT,
         'longtext' => self::TYPE_TEXT,
@@ -70,6 +76,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         'time' => self::TYPE_TIME,
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
+        'set' => self::TYPE_STRING,
+        'binary' => self::TYPE_BINARY,
         'varbinary' => self::TYPE_BINARY,
         'json' => self::TYPE_JSON,
     ];
@@ -214,7 +222,7 @@ SQL;
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::className(), [$this->db]);
     }
 
     /**
@@ -464,7 +472,7 @@ SQL;
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length, $this->db);
+        return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length, $this->db]);
     }
 
     /**
