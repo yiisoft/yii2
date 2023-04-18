@@ -8,7 +8,6 @@
 namespace yiiunit\framework\widgets;
 
 use yii\data\ActiveDataProvider;
-use yii\widgets\Breadcrumbs;
 use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
 use yiiunit\data\ar\ActiveRecord;
@@ -28,7 +27,6 @@ class LinkSorterTest extends DatabaseTestCase
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
         $this->mockWebApplication();
-        $this->breadcrumbs = new Breadcrumbs();
     }
 
     public function testLabelsSimple()
