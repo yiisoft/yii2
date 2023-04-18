@@ -1762,8 +1762,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private function isAttributeDirty($attribute, $value)
     {
-        $old_attribute = $this->_oldAttributes === null || !array_key_exists($attribute, $this->_oldAttributes) ? [] : $this->_oldAttributes[$attribute];
-        if (is_array($value) && is_array($this->_oldAttributes[$attribute])) {
+        $old_attribute = $this->oldAttributes[$attribute];
+        if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
             $value = ArrayHelper::recursiveSort($value);
             $old_attribute = ArrayHelper::recursiveSort($old_attribute);
         }
