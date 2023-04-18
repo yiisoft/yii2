@@ -198,7 +198,9 @@
                 $grid.find(checkAllInput + (all ? ":not(:checked)" : ":checked")).prop('checked', all).change();
             };
             initEventHandler($grid, 'checkRow', 'click.yiiGridView', "#" + id + " " + inputs, handler);
-            handler(); // Ensure "check all" checkbox is checked on page load if all data row checkboxes are initially checked.
+            if($grid.find(inputs).length) {
+                handler(); // Ensure "check all" checkbox is checked on page load if all data row checkboxes are initially checked.
+            }
         },
 
         getSelectedRows: function () {

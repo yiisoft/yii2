@@ -4,6 +4,9 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
+- Enh #19766: Add support for PHP generators to JSON helper (vladis84)
+- Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
+- Bug #19705: Add binary and other data type to `$typeMap` list for MySQL (sohelahmed7)
 - Enh #19741: Added option to use a closure for `$variations` definition in `yii\filters\PageCache` (nadar)
 - Bug #15376: Added $userId for RBAC roles cache (manchenkoff)
 - Bug #18867: Fixed multiple issues with `yii\grid\CheckboxColumn`: "check all" checkbox not being checked on page load when all data row checkboxes are initially checked; clicking checkboxes triggered "change" event for other checkboxes that do not change their state; "check all" checkbox not being checked when disabled checkboxes are present and clicking last non-checked data row checkbox (PowerGamer1)
@@ -18,6 +21,9 @@ Yii Framework 2 Change Log
 - Bug #19734: PHP 8.1 compatibility fix for `$query->orderBy(null)` (uaoleg)
 - Bug #19731: Fix `yii\data\Sort` to generate proper link when multisort is on and attribute has a default sort order set (bizley)
 - Bug #19735: Fix `yii\validators\NumberValidator` to use programmable message for the value validation (bizley)
+- Bug #19770: Fix `yii\mutex\MysqlMutex` `keyPrefix` expression param binding (kamarton)
+- Enh #19794: Add caching in `yii\web\Request` for `getUserIP()` and `getSecureForwardedHeaderTrustedParts()` (rhertogh)
+- Bug #19795: Fix `yii\web\Response::redirect()` to prevent setting headers with URL containing new line character (bizley)
 
 2.0.47 November 18, 2022
 ------------------------

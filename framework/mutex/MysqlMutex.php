@@ -69,9 +69,13 @@ class MysqlMutex extends DbMutex
     {
         return $this->db->useMaster(function ($db) use ($name, $timeout) {
             /** @var \yii\db\Connection $db */
-            return (bool) $db->createCommand(
-                'SELECT GET_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64), :timeout)',
-                [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix]
+            $nameData = $this->prepareName();
+            return (bool)$db->createCommand(
+                'SELECT GET_LOCK(' . $nameData[0] . ', :timeout), :prefix',
+                array_merge(
+                    [':name' => $this->hashLockName($name), ':timeout' => $timeout, ':prefix' => $this->keyPrefix],
+                    $nameData[1]
+                )
             )->queryScalar();
         });
     }
@@ -86,11 +90,31 @@ class MysqlMutex extends DbMutex
     {
         return $this->db->useMaster(function ($db) use ($name) {
             /** @var \yii\db\Connection $db */
-            return (bool) $db->createCommand(
-                'SELECT RELEASE_LOCK(SUBSTRING(CONCAT(:prefix, :name), 1, 64))',
-                [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix]
+            $nameData = $this->prepareName();
+            return (bool)$db->createCommand(
+                'SELECT RELEASE_LOCK(' . $nameData[0] . '), :prefix',
+                array_merge(
+                    [':name' => $this->hashLockName($name), ':prefix' => $this->keyPrefix],
+                    $nameData[1]
+                )
             )->queryScalar();
         });
+    }
+
+    /**
+     * Prepare lock name
+     * @return array expression and params
+     * @since 2.0.48
+     */
+    protected function prepareName()
+    {
+        $params = [];
+        $expression = "SUBSTRING(CONCAT(:prefix, :name), 1, 64)";
+        if ($this->keyPrefix instanceof Expression) {
+            $expression = strtr($expression, [':prefix' => $this->keyPrefix->expression]);
+            $params = $this->keyPrefix->params;
+        }
+        return [$expression, $params];
     }
 
     /**
@@ -101,7 +125,8 @@ class MysqlMutex extends DbMutex
      * @since 2.0.16
      * @see https://github.com/yiisoft/yii2/pull/16836
      */
-    protected function hashLockName($name) {
+    protected function hashLockName($name)
+    {
         return sha1($name);
     }
 }
