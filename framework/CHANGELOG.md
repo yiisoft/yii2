@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #19770: Fix `yii\mutex\MysqlMutex` `keyPrefix` expression param binding (kamarton)
 - Enh #19794: Add caching in `yii\web\Request` for `getUserIP()` and `getSecureForwardedHeaderTrustedParts()` (rhertogh)
 - Bug #19795: Fix `yii\web\Response::redirect()` to prevent setting headers with URL containing new line character (bizley)
+- Enh #19804: Change `$this->oldAttributes` to `$this->_oldAttributes` to avoid calling a method unnecessarily (thiagotalma)
 
 2.0.47 November 18, 2022
 ------------------------
