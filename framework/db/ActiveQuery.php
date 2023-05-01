@@ -186,12 +186,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
 
                 if (empty($this->groupBy) && !$this->distinct) {
-                    $this->groupBy(array_map(
-                        function($column) use ($tableAlias) {
-                            return "$tableAlias.[[$column]]";
-                        },
-                        array_keys($this->link)
-                    ));
+                    $this->distinct();
                 }
 
                 if (!$this->viaAppliedByJoin) {

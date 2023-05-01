@@ -248,11 +248,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
             'multiple' => true
         ]))
             ->alias('i')
-            ->select([
-                'i.id',
-                'i.name',
-                'i.category_id'
-            ])
             ->orderBy('id');
 
         $viaTable = 'order_item oi'; // Note the alias "oi" here
@@ -335,11 +330,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ]))
             ->alias('i')
             ->select([
+                'i.*',
+                'SUM(subtotal) AS sum_subtotal']
+            )
+            ->groupBy([
                 'i.id',
                 'i.name',
                 'i.category_id',
-                'SUM(subtotal) AS sum_subtotal']
-            )
+            ])
             ->orderBy(['sum_subtotal' => SORT_DESC]);
 
         $viaTable1 = 'order_item oi'; // Note the alias "oi" here
@@ -419,11 +417,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
                 }
             )
             ->select([
+                'item.*',
+                'SUM(subtotal) AS sum_subtotal']
+            )
+            ->groupBy([
                 'item.id',
                 'item.name',
                 'item.category_id',
-                'SUM(subtotal) AS sum_subtotal']
-            )
+            ])
             ->orderBy(['sum_subtotal' => SORT_DESC]);
 
         $this->assertTrue($query->useJoinForVia());
