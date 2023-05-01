@@ -639,7 +639,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isAttributeDirty($name, $value))) {
+                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isValueDifferent($value, $this->_oldAttributes[$name]))) {
                     $attributes[$name] = $value;
                 }
             }
@@ -1756,18 +1756,18 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @param string $attribute
-     * @param mixed $value
+     * @param mixed $newValue
+     * @param mixed $oldValue
      * @return bool
+     * @since 2.0.48
      */
-    private function isAttributeDirty($attribute, $value)
+    private function isValueDifferent($newValue, $oldValue)
     {
-        $old_attribute = $this->oldAttributes[$attribute];
-        if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
-            $value = ArrayHelper::recursiveSort($value);
-            $old_attribute = ArrayHelper::recursiveSort($old_attribute);
+        if (is_array($newValue) && is_array($oldValue)) {
+            $newValue = ArrayHelper::recursiveSort($newValue);
+            $oldValue = ArrayHelper::recursiveSort($oldValue);
         }
 
-        return $value !== $old_attribute;
+        return $newValue !== $oldValue;
     }
 }
