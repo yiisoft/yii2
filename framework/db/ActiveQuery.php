@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -98,9 +99,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
-    public $viaJoined = false;
+    protected $useJoinForVia = false;
 
-    protected $viaJoinedApplied = false;
+    protected $viaAppliedByJoin = false;
 
     /**
      * Constructor.
@@ -167,7 +168,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $where = $this->where;
 
             if (
-                $this->viaJoined
+                $this->useJoinForVia()
                 && ($this->via instanceof self
                     || is_array($this->via)
                 )
@@ -193,7 +194,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     ));
                 }
 
-                if (!$this->viaJoinedApplied) {
+                if (!$this->viaAppliedByJoin) {
                     // Setup first 'via' relation in the chain based on initial link.
                     $previousRelation = $this;
                     $previousLink = $this->link;
@@ -231,7 +232,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     }
 
                     // Prevent duplicate application of the join(s) e.g. for ActiveDataProvider
-                    $this->viaJoinedApplied = true;
+                    $this->viaAppliedByJoin = true;
                 }
             } elseif ($this->via instanceof self) {
                 // via junction table
@@ -831,10 +832,31 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         return $this;
     }
 
+    public function viaByJoin($viaByJoin = true)
+    {
+        if (!$viaByJoin) {
+            if ($this->viaAppliedByJoin) {
+                throw new InvalidCallException('`viaByJoin` can not be disabled after it has been applied.');
+            }
+            if ($this->via instanceof self && !empty($this->via->via)) {
+                throw new InvalidCallException('`viaByJoin` can not be disabled when using multiple "via tables".');
+            }
+        }
+
+        $this->useJoinForVia = $viaByJoin;
+        return $this;
+    }
+
+    public function useJoinForVia()
+    {
+        return $this->useJoinForVia;
+    }
+
     public function viaJoined($relationName, callable $callable = null)
     {
-        $this->viaJoined = true;
-        return $this->via($relationName, $callable);
+        return $this
+            ->viaByJoin()
+            ->via($relationName, $callable);
     }
 
     /**
@@ -879,13 +901,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     public function viaJoinedTable($tableName, $link, callable $callable = null)
     {
-        $this->viaJoined = true;
-        return $this->viaTable($tableName, $link, $callable);
+        return $this
+            ->viaByJoin()
+            ->viaTable($tableName, $link, $callable);
     }
 
     public function viaJoinedTables($links, callable $callable = null)
     {
-        $this->viaJoined = true;
+        $this->viaByJoin();
         $query = $this;
         foreach ($links as $tableName => $link) {
             $query->viaTable($tableName, $link, $callable);

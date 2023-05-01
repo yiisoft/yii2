@@ -465,7 +465,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             && empty($this->groupBy)
             && empty($this->having)
             && empty($this->union)
-            && (!($this instanceof ActiveQuery) || !$this->viaJoined)
+            && (!($this instanceof ActiveQuery) || !$this->useJoinForVia())
         ) {
             $select = $this->select;
             $order = $this->orderBy;
