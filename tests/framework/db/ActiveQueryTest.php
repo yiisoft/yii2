@@ -242,13 +242,17 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $orderId = 2;
         $itemIdsForOrder = [3, 4, 5];
 
-        $query = new ActiveQuery(Item::className(), [
+        $query = (new ActiveQuery(Item::className(), [
             'primaryModel' => new Order(['id' => $orderId]),
             'link' => ['id' => 'item_id'],
             'multiple' => true
-        ]);
-        $query
+        ]))
             ->alias('i')
+            ->select([
+                'i.id',
+                'i.name',
+                'i.category_id'
+            ])
             ->orderBy('id');
 
         $viaTable = 'order_item oi'; // Note the alias "oi" here
@@ -324,14 +328,18 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $customerId = 2;
         $itemIdsForCustomer = [2, 5, 4, 3]; // Customer 2 has Orders 2 and 3
 
-        $query = new ActiveQuery(Item::className(), [
+        $query = (new ActiveQuery(Item::className(), [
             'primaryModel' => new Customer(['id' => $customerId]),
             'link' => ['id' => 'item_id'],
             'multiple' => true
-        ]);
-        $query
+        ]))
             ->alias('i')
-            ->select(['i.*', 'SUM(subtotal) AS sum_subtotal'])
+            ->select([
+                'i.id',
+                'i.name',
+                'i.category_id',
+                'SUM(subtotal) AS sum_subtotal']
+            )
             ->orderBy(['sum_subtotal' => SORT_DESC]);
 
         $viaTable1 = 'order_item oi'; // Note the alias "oi" here
@@ -409,10 +417,13 @@ abstract class ActiveQueryTest extends DatabaseTestCase
                     /** @var Query $orderItemsQuery */
                     $orderItemsQuery->andWhere($subtotalCondition);
                 }
-            );
-
-        $query
-            ->select(['item.*', 'SUM(subtotal) AS sum_subtotal'])
+            )
+            ->select([
+                'item.id',
+                'item.name',
+                'item.category_id',
+                'SUM(subtotal) AS sum_subtotal']
+            )
             ->orderBy(['sum_subtotal' => SORT_DESC]);
 
         $this->assertTrue($query->useJoinForVia());
