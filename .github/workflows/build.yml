@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.0.13, 8.0.14, 8.0.15, 8.0.16, 8.0.17, 8.0.18, 8.0.19, 8.0.20, 8.0.21, 8.0.22, 8.0.23, 8.0.24, 8.0.25, 8.0.26, 8.0.27]
+        php: [8.0]
 
     steps:
       - name: Generate french locale
@@ -51,6 +51,9 @@ jobs:
           tools: pecl
           extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached, mysql, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, sqlite
           ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
+        env:
+          phpts: ts
+          update: true
       - name: Install Memcached
         uses: niden/actions-memcached@v7
       - name: Get composer cache directory
