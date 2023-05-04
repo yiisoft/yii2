@@ -49,7 +49,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 #          tools: pecl
-#          extensions: curl, dom, imagick, mbstring, mcrypt
+          extensions: :opcache
 #          ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
 #      - name: Install Memcached
 #        uses: niden/actions-memcached@v7
