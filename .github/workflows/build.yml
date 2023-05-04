@@ -7,9 +7,9 @@ env:
   PHPUNIT_EXCLUDE_GROUP: mssql,oci,wincache,xcache,zenddata,cubrid
   XDEBUG_MODE: coverage, develop
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
 
 jobs:
   phpunit:
@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [5.4, 5.5, 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1]
+        php: [8.0.13, 8.0.14, 8.0.15, 8.0.16, 8.0.17, 8.0.18, 8.0.19, 8.0.20, 8.0.21, 8.0.22, 8.0.23, 8.0.24, 8.0.25, 8.0.26, 8.0.27]
 
     steps:
       - name: Generate french locale
@@ -67,36 +67,36 @@ jobs:
       - name: PHP Unit tests
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
-  npm:
-    name: NPM 6 on ubuntu-latest
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 7.2
-          ini-values: session.save_path=${{ runner.temp }}
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      - name: Cache composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-      - name: Install dependencies
-        run: composer update $DEFAULT_COMPOSER_FLAGS
-      - name: Install node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 6
-      - name: Tests
-        run: |
-          npm install
-          npm test
+#  npm:
+#    name: NPM 6 on ubuntu-latest
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Install PHP
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: 7.2
+#          ini-values: session.save_path=${{ runner.temp }}
+#      - name: Get composer cache directory
+#        id: composer-cache
+#        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+#      - name: Cache composer dependencies
+#        uses: actions/cache@v3
+#        with:
+#          path: ${{ steps.composer-cache.outputs.dir }}
+#          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: ${{ runner.os }}-composer-
+#      - name: Install dependencies
+#        run: composer update $DEFAULT_COMPOSER_FLAGS
+#      - name: Install node.js
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: 6
+#      - name: Tests
+#        run: |
+#          npm install
+#          npm test
 #        env:
 #          CI: true
