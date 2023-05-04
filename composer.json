@@ -82,7 +82,7 @@
         "paragonie/random_compat": ">=1"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "^8.0",
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "~2.2.3 | ^3.0",
         "johnkary/phpunit-speedtrap": "^1.0"
