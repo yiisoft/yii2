@@ -40,8 +40,8 @@ jobs:
         php: [8.0]
 
     steps:
-      - name: Generate french locale
-        run: sudo locale-gen fr_FR.UTF-8
+#      - name: Generate french locale
+#        run: sudo locale-gen fr_FR.UTF-8
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install PHP
@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: composer update $DEFAULT_COMPOSER_FLAGS
       - name: PHP Unit tests
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
+        run: vendor/bin/phpunit --version #--verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
 #  npm:
 #    name: NPM 6 on ubuntu-latest
