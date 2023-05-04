@@ -17,6 +17,9 @@ use yii\helpers\Html;
  */
 class ActionColumnTest extends \yiiunit\TestCase
 {
+    /**
+     * @group ttt
+     */
     public function testInit()
     {
         $column = new ActionColumn();

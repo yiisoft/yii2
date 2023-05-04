@@ -26,13 +26,13 @@ class BaseYiiTest extends TestCase
 {
     public $aliases;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->aliases = Yii::$aliases;
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
         Yii::$aliases = $this->aliases;

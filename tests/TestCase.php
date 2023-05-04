@@ -20,7 +20,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Clean up after test case.
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
         $logger = Yii::getLogger();
@@ -46,7 +46,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Clean up after test.
      * By default the application created with [[mockApplication]] will be destroyed.
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
         $this->destroyApplication();
