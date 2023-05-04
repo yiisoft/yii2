@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #19795: Fix `yii\web\Response::redirect()` to prevent setting headers with URL containing new line character (bizley)
 - Enh #19804: Remove the unnecessary call to `$this->oldAttributes` in `BaseActiveRecord::getDirtyAttributes()` (thiagotalma)
 - Bug #19813: Fix `yii\base\DynamicModel` validation with validators that reference missing attributes (michaelarnauts)
+- Enh #19816: Explicitly pass `$fallbackToMaster` as `true` to `getSlavePdo()` to ensure it is not affected by child class with changed defaults (developedsoftware)
 
 2.0.47 November 18, 2022
 ------------------------
