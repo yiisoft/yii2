@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: composer update $DEFAULT_COMPOSER_FLAGS
       - name: PHP Unit tests
-        run: vendor/bin/phpunit --exclude-group $PHPUNIT_EXCLUDE_GROUP
+        run: vendor/bin/phpunit --group filters
 
 #  npm:
 #    name: NPM 6 on ubuntu-latest
