@@ -48,9 +48,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: pecl
-          extensions: curl, dom, imagick, mbstring, mcrypt
-          ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
+#          tools: pecl
+#          extensions: curl, dom, imagick, mbstring, mcrypt
+#          ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
 #      - name: Install Memcached
 #        uses: niden/actions-memcached@v7
 #      - name: Get composer cache directory
