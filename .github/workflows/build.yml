@@ -53,19 +53,19 @@ jobs:
           ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
 #      - name: Install Memcached
 #        uses: niden/actions-memcached@v7
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      - name: Cache composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+#      - name: Get composer cache directory
+#        id: composer-cache
+#        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+#      - name: Cache composer dependencies
+#        uses: actions/cache@v3
+#        with:
+#          path: ${{ steps.composer-cache.outputs.dir }}
+#          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
         run: composer update $DEFAULT_COMPOSER_FLAGS
       - name: PHP Unit tests
-        run: vendor/bin/phpunit --version #--verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
+        run: vendor/bin/phpunit --exclude-group $PHPUNIT_EXCLUDE_GROUP
 
 #  npm:
 #    name: NPM 6 on ubuntu-latest
