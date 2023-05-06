@@ -135,7 +135,13 @@ abstract class Cache extends Component implements CacheInterface
         if ($value === false || $this->serializer === false) {
             return $value;
         } elseif ($this->serializer === null) {
-            $value = unserialize((string)$value);
+            try {
+                $value = unserialize((string)$value);
+            } catch (\Exception $e) {
+                return false;
+            } catch (\Throwable $e) {
+                return false;
+            }
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
