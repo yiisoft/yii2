@@ -77,8 +77,10 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
         foreach ($values as $value) {
             if ($value instanceof ExpressionInterface) {
                 $phName = $this->queryBuilder->buildExpression($value, $params);
+            } elseif (empty($value)) {
+                $phName = $this->queryBuilder->bindParam('%%', $params);
             } else {
-                $phName = $this->queryBuilder->bindParam(empty($escape) || $value === null ? $value : ('%' . strtr($value, $escape) . '%'), $params);
+                $phName = $this->queryBuilder->bindParam(empty($escape) ? $value : ('%' . strtr($value, $escape) . '%'), $params);
             }
             $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
         }
