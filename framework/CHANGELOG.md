@@ -27,7 +27,7 @@ Yii Framework 2 Change Log
 - Enh #19804: Remove the unnecessary call to `$this->oldAttributes` in `BaseActiveRecord::getDirtyAttributes()` (thiagotalma)
 - Bug #19813: Fix `yii\base\DynamicModel` validation with validators that reference missing attributes (michaelarnauts)
 - Enh #19816: Explicitly pass `$fallbackToMaster` as `true` to `getSlavePdo()` to ensure it is not affected by child class with changed defaults (developedsoftware)
-- Bug #19828 strtr(): Passing null to parameter #1 ($string) of type string is deprecated
+- Bug #19828 Fix "strtr(): Passing null to parameter #1 ($string) of type string is deprecated" (uaoleg)
 
 2.0.47 November 18, 2022
 ------------------------
