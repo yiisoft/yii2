@@ -125,7 +125,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         /**
          * @link https://github.com/yiisoft/yii2/issues/14367
          */
-        $mysqlVersion = $this->getDb()->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $mysqlVersion = $this->getDb()->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
         $supportsFractionalSeconds = version_compare($mysqlVersion,'5.6.4', '>=');
         if ($supportsFractionalSeconds) {
             $expectedValues = [
