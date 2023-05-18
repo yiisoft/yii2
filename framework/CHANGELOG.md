@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Enh #19816: Explicitly pass `$fallbackToMaster` as `true` to `getSlavePdo()` to ensure it is not affected by child class with changed defaults (developedsoftware)
 - Bug #19720: Fix "zh-HK" locale causing [error][yii\i18n\PhpMessageSource::loadFallbackMessages] The message file for category 'yii' does not exist (uaoleg)
 - Bug #19736: Fix `StringHelper::truncate(null, 10)` causes error Deprecated: mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated (uaoleg)
+- Bug #19837: Fixed processing of numeric file extensions in `yii\build\controllers\MimeTypeController::generateMimeTypesFile()` (rhertogh)
 
 
 2.0.47 November 18, 2022
