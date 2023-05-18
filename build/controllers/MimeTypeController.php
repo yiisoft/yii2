@@ -49,7 +49,12 @@ class MimeTypeController extends Controller
      * @var array MIME types to add to the ones parsed from Apache files
      */
     private $additionalMimeTypes = [
+        'apng' => 'image/apng',
+        'avif' => 'image/avif',
+        'jfif' => 'image/jpeg',
         'mjs' => 'text/javascript',
+        'pjp' => 'image/jpeg',
+        'pjpeg' => 'image/jpeg',
     ];
 
     /**
@@ -102,8 +107,8 @@ class MimeTypeController extends Controller
                 }
             }
         }
-        $mimeMap = array_merge($mimeMap, $this->additionalMimeTypes);
-        ksort($mimeMap);
+        $mimeMap = array_replace($mimeMap, $this->additionalMimeTypes);
+        ksort($mimeMap, SORT_STRING);
         $array = VarDumper::export($mimeMap);
 
         $content = <<<EOD
