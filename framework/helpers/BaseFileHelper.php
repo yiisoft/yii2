@@ -232,6 +232,7 @@ class BaseFileHelper
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return string|null the extensions corresponding to the specified MIME type
+     * @since 2.0.48
      */
     public static function getExtensionByMimeType($mimeType, $preferShort = false, $magicFile = null)
     {
