@@ -182,7 +182,6 @@ EOD;
             }
         }
 
-
         foreach ($this->additionalMimeTypes as $ext => $mime) {
             if (!array_key_exists($mime, $extensionMap)) {
                 $extensionMap[$mime] = [];
