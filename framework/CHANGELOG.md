@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
+- Bug #19743: Non-associative array values in AR weren't considered dirty when reordered (samdark)
 - Bug #19807: Fix REST serializer not using `serializeModel()` when working with array of models (zucha)
 - Enh #19766: Add support for PHP generators to JSON helper (vladis84)
 - Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
