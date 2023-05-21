@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
+- Bug #19743: Non-associative array values in AR weren't considered dirty when reordered (samdark)
+- Bug #19807: Fix REST serializer not using `serializeModel()` when working with array of models (zucha)
 - Enh #19766: Add support for PHP generators to JSON helper (vladis84)
 - Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
 - Bug #19705: Add binary and other data type to `$typeMap` list for MySQL (sohelahmed7)
@@ -30,6 +32,8 @@ Yii Framework 2 Change Log
 - Bug #19828: Fix "strtr(): Passing null to parameter #1 ($string) of type string is deprecated" (uaoleg)
 - Bug #19720: Fix "zh-HK" locale causing [error][yii\i18n\PhpMessageSource::loadFallbackMessages] The message file for category 'yii' does not exist (uaoleg)
 - Bug #19736: Fix `StringHelper::truncate(null, 10)` causes error Deprecated: mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated (uaoleg)
+- Enh #19838: Added `yii\helpers\BaseFileHelper::getExtensionByMimeType()` to get the most common extension for a given MIME type (rhertogh)
+- Bug #19837: Fixed processing of numeric file extensions in `yii\build\controllers\MimeTypeController::generateMimeTypesFile()` (rhertogh)
 
 2.0.47 November 18, 2022
 ------------------------
