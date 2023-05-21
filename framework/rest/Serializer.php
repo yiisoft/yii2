@@ -301,7 +301,7 @@ class Serializer extends Component
                 $models[$i] = ArrayHelper::toArray($model);
             }
         }
-        
+
         return $models;
     }
 }
