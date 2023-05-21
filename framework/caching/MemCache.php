@@ -63,7 +63,6 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-#[\AllowDynamicProperties]
 class MemCache extends Cache
 {
     /**
