@@ -32,6 +32,12 @@ $config = [
             'password' => 'root',
             'fixture' => __DIR__ . '/mysql.sql',
         ],
+        'mariadb' => [
+            'dsn' => 'mysql:host=127.0.0.1:3389;dbname=yiitest',
+            'username' => 'root',
+            'password' => 'root',
+            'fixture' => __DIR__ . '/mysql.sql',
+        ],
         'sqlite' => [
             'dsn' => 'sqlite::memory:',
             'fixture' => __DIR__ . '/sqlite.sql',

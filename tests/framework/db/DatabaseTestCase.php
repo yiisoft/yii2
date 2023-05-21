@@ -37,6 +37,9 @@ abstract class DatabaseTestCase extends TestCase
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';
         }
+        if ($this->driverName === 'mariadb') {
+            $pdo_database = 'pdo_mysql';
+        }
 
         if (!\extension_loaded('pdo') || !\extension_loaded($pdo_database)) {
             $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');

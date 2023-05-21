@@ -104,13 +104,15 @@ SQL;
          * returns in response to the query `SHOW FULL COLUMNS FROM ...`
          */
         $schema = new Schema();
+        $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
+
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
             'collation' => NULL,
             'null' => 'NO',
             'key' => '',
-            'default' => 'current_timestamp()',
+            'default' => new Expression('current_timestamp()'),
             'extra' => '',
             'privileges' => 'select,insert,update,references',
             'comment' => '',
@@ -118,7 +120,7 @@ SQL;
 
         $this->assertInstanceOf(ColumnSchema::className(), $column);
         $this->assertInstanceOf(Expression::className(), $column->defaultValue);
-        $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
+        $this->assertSame('current_timestamp()', (string)$column->defaultValue);
     }
 
     /**
@@ -130,6 +132,7 @@ SQL;
     public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB()
     {
         $schema = new Schema();
+        $this->setInaccessibleProperty($schema, 'db', $this->getConnection());
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
@@ -237,5 +240,228 @@ SQL;
         }
 
         return $columns;
+    }
+
+    /**
+     * This test will never run in Github action CI because Mariadb server in not configured to install in it. In order to run it locally, configure connection to Mariadb in config.local.php (see https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md)
+     */
+    public function testMariaDBDefaultConstantAndExpression()
+    {
+        $this->driverName = 'mariadb';
+        parent::setUp();
+        $this->assertFalse($this->getConnection()->getSchema()->isMysql());
+        $this->assertTrue($this->getConnection()->getSchema()->isMariaDb());
+
+        // Use MariaDB >= 10.8
+
+        $sql = static::defaultForColumnTableSql();
+
+        $this->getConnection()->createCommand($sql)->execute();
+        $schema = $this->getConnection()->getTableSchema('default_test', true);
+
+        $name = $schema->columns['name'];
+        $this->assertNull($name->defaultValue);
+
+        $fatherName = $schema->columns['father_name'];
+        $this->assertSame($fatherName->defaultValue, 'NULL');
+
+        $nn2 = $schema->columns['nn2'];
+        $this->assertSame($nn2->defaultValue, "NULL");
+
+        $nn3 = $schema->columns['nn3'];
+        $this->assertNull($nn3->defaultValue);
+
+        $nn4 = $schema->columns['nn4'];
+        $this->assertSame($nn4->defaultValue, 'the default value');
+
+        $lastName = $schema->columns['last_name'];
+        $this->assertNull($lastName->defaultValue);
+
+        $dt = $schema->columns['dt'];
+        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertEquals('current_timestamp()', (string)$dt->defaultValue);
+
+        $dt2 = $schema->columns['dt2'];
+        $this->assertEquals('2011-11-11 00:00:00', $dt2->defaultValue);
+
+        $ts = $schema->columns['ts'];
+        $this->assertInstanceOf(Expression::className(), $ts->defaultValue);
+        $this->assertEquals('current_timestamp()', (string)$ts->defaultValue);
+
+        $ts2 = $schema->columns['ts2'];
+        $this->assertEquals('2011-11-11 00:00:00', $ts2->defaultValue);
+
+        $dateCol = $schema->columns['date_col'];
+        $this->assertInstanceOf(Expression::className(), $dateCol->defaultValue);
+        $this->assertEquals('(curdate() + interval 2 year)', (string)$dateCol->defaultValue);
+
+        $i = $schema->columns['i'];
+        $this->assertEquals(-1, $i->defaultValue);
+
+        $c = $schema->columns['c'];
+        $this->assertEquals('', $c->defaultValue);
+
+        $price = $schema->columns['price'];
+        $this->assertEquals(0.00, $price->defaultValue);
+
+        $i2 = $schema->columns['i2'];
+        $this->assertEquals(0, $i2->defaultValue);
+
+        $i3 = $schema->columns['i3'];
+        $this->assertEquals(3, $i3->defaultValue);
+
+        $pi_val = $schema->columns['pi_val'];
+        $this->assertEquals(3.14, $pi_val->defaultValue);
+
+        $f = $schema->columns['f'];
+        $this->assertInstanceOf(Expression::className(), $f->defaultValue);
+        $this->assertEquals('(rand() * rand())', (string)$f->defaultValue);
+
+        $d = $schema->columns['d'];
+        $this->assertInstanceOf(Expression::className(), $d->defaultValue);
+        $this->assertEquals('(curdate() + interval 1 year)', (string)$d->defaultValue);
+
+        $p = $schema->columns['p'];
+        $this->assertInstanceOf(Expression::className(), $p->defaultValue);
+        $this->assertEquals('point(0,0)', (string)$p->defaultValue);
+
+        $j = $schema->columns['j'];
+        $this->assertInstanceOf(Expression::className(), $j->defaultValue);
+        $this->assertEquals('json_array()', (string)$j->defaultValue);
+
+        $b = $schema->columns['b'];
+        $this->assertEquals("'abc'", $b->defaultValue);
+
+        $this->getConnection()->createCommand('DROP TABLE IF EXISTS default_test')->execute();
+    }
+
+    public function testMysqlDefaultConstantAndExpression()
+    {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '8', '>=')) {
+            $this->markTestSkipped('Default expression for columns are supported since MySQL 8.');
+        }
+
+        $this->assertTrue($this->getConnection()->getSchema()->isMysql());
+        $this->assertFalse($this->getConnection()->getSchema()->isMariaDb());
+
+        $sql = static::defaultForColumnTableSql();
+
+        $this->getConnection()->createCommand($sql)->execute();
+        $schema = $this->getConnection()->getTableSchema('default_test', true);
+
+        $name = $schema->columns['name'];
+        $this->assertNull($name->defaultValue);
+
+        $fatherName = $schema->columns['father_name'];
+        $this->assertSame($fatherName->defaultValue, 'NULL');
+
+        $nn2 = $schema->columns['nn2'];
+        $this->assertInstanceOf(Expression::className(), $nn2->defaultValue);
+        $this->assertSame((string)$nn2->defaultValue, "_utf8mb4\'NULL\'");
+
+        $nn3 = $schema->columns['nn3'];
+        $this->assertInstanceOf(Expression::className(), $nn3->defaultValue);
+        $this->assertSame((string)$nn3->defaultValue, "NULL");
+
+        $nn4 = $schema->columns['nn4'];
+        $this->assertSame($nn4->defaultValue, 'the default value');
+
+        $lastName = $schema->columns['last_name'];
+        $this->assertNull($lastName->defaultValue);
+
+        $dt = $schema->columns['dt'];
+        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertEquals('CURRENT_TIMESTAMP', (string)$dt->defaultValue);
+
+        $dt2 = $schema->columns['dt2'];
+        $this->assertEquals('2011-11-11 00:00:00', $dt2->defaultValue);
+
+        $ts = $schema->columns['ts'];
+        $this->assertInstanceOf(Expression::className(), $ts->defaultValue);
+        $this->assertEquals('CURRENT_TIMESTAMP', (string)$ts->defaultValue);
+
+        $ts2 = $schema->columns['ts2'];
+        $this->assertEquals('2011-11-11 00:00:00', $ts2->defaultValue);
+
+        $dateCol = $schema->columns['date_col'];
+        $this->assertInstanceOf(Expression::className(), $dateCol->defaultValue);
+        $this->assertEquals('(curdate() + interval 2 year)', (string)$dateCol->defaultValue);
+
+        $i = $schema->columns['i'];
+        $this->assertEquals(-1, $i->defaultValue);
+
+        $c = $schema->columns['c'];
+        $this->assertEquals('', $c->defaultValue);
+
+        $price = $schema->columns['price'];
+        $this->assertEquals(0.00, $price->defaultValue);
+
+        $i2 = $schema->columns['i2'];
+        $this->assertEquals(0, $i2->defaultValue);
+
+        $i3 = $schema->columns['i3'];
+        $this->assertEquals(3, $i3->defaultValue);
+
+        $pi_val = $schema->columns['pi_val'];
+        $this->assertEquals(3.14, $pi_val->defaultValue);
+
+        $f = $schema->columns['f'];
+        $this->assertInstanceOf(Expression::className(), $f->defaultValue);
+        $this->assertEquals('(rand() * rand())', (string)$f->defaultValue);
+
+        $d = $schema->columns['d'];
+        $this->assertInstanceOf(Expression::className(), $d->defaultValue);
+        $this->assertEquals('(curdate() + interval 1 year)', (string)$d->defaultValue);
+
+        $p = $schema->columns['p'];
+        $this->assertInstanceOf(Expression::className(), $p->defaultValue);
+        $this->assertEquals('point(0,0)', (string)$p->defaultValue);
+
+        $j = $schema->columns['j'];
+        $this->assertInstanceOf(Expression::className(), $j->defaultValue);
+        $this->assertEquals('json_array()', (string)$j->defaultValue);
+
+        $b = $schema->columns['b'];
+        $this->assertInstanceOf(Expression::className(), $b->defaultValue);
+        $this->assertEquals("_utf8mb4\'abc\'", $b->defaultValue);
+
+        $this->getConnection()->createCommand('DROP TABLE IF EXISTS default_test')->execute();
+    }
+
+    private static function defaultForColumnTableSql()
+    {
+        $sql = <<<SQL
+            CREATE TABLE  IF NOT EXISTS `default_test`  (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `name` varchar(255) NOT NULL,
+              `father_name` varchar(255) DEFAULT 'NULL',
+              `nn2` varchar(255) DEFAULT ('NULL'),
+              `nn3` varchar(255) DEFAULT (null),
+              `nn4` varchar(255) DEFAULT 'the default value',
+              `last_name` varchar(255) NULL,
+              `dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `dt2` datetime NOT NULL DEFAULT '2011-11-11 00:00:00',
+              `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `ts2` timestamp NOT NULL DEFAULT '2011-11-11 00:00:00',
+              `date_col` date DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR),
+               i     INT DEFAULT -1,
+               c     VARCHAR(10) DEFAULT '',
+               price DOUBLE(16,2) DEFAULT 0.00,
+               -- literal defaults
+               i2 INT         DEFAULT 0,
+               i3 INT         DEFAULT 3,
+               pi_val FLOAT         DEFAULT 3.14,
+               -- expression defaults
+               f FLOAT       DEFAULT (RAND() * RAND()),
+               d DATE        DEFAULT (CURRENT_DATE + INTERVAL 1 YEAR),
+               p POINT       DEFAULT (Point(0,0)),
+               j JSON        DEFAULT (JSON_ARRAY()),
+               b BLOB DEFAULT ('abc'),
+
+               PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+
+        return $sql;
     }
 }

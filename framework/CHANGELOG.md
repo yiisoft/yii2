@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.48 under development
 ------------------------
 
+- Bug #19747: Load Default expression into ColumnSchema class for MySQL and MariaDB (sohelahmed7)
 - Bug #19807: Fix REST serializer not using `serializeModel()` when working with array of models (zucha)
 - Enh #19766: Add support for PHP generators to JSON helper (vladis84)
 - Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
