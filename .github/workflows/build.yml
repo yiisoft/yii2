@@ -7,6 +7,10 @@ env:
   PHPUNIT_EXCLUDE_GROUP: mssql,oci,wincache,xcache,zenddata,cubrid
   XDEBUG_MODE: coverage, develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }} on ${{ matrix.os }}
