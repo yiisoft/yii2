@@ -92,7 +92,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function findTableNames($schema = '')
     {
-        $pdo = $this->db->getSlavePdo();
+        $pdo = $this->db->getSlavePdo(true);
         $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
@@ -110,7 +110,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function loadTableSchema($name)
     {
-        $pdo = $this->db->getSlavePdo();
+        $pdo = $this->db->getSlavePdo(true);
 
         $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
@@ -159,7 +159,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function loadTablePrimaryKey($tableName)
     {
-        $primaryKey = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
+        $primaryKey = $this->db->getSlavePdo(true)->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
         if (empty($primaryKey)) {
             return null;
         }
@@ -183,7 +183,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             3 => 'SET NULL',
         ];
 
-        $foreignKeys = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
+        $foreignKeys = $this->db->getSlavePdo(true)->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
         $foreignKeys = ArrayHelper::index($foreignKeys, null, 'FK_NAME');
         ArrayHelper::multisort($foreignKeys, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
         $result = [];
@@ -386,7 +386,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        $constraints = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
+        $constraints = $this->db->getSlavePdo(true)->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
         $constraints = ArrayHelper::index($constraints, null, ['TYPE', 'NAME']);
         ArrayHelper::multisort($constraints, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);
         $result = [

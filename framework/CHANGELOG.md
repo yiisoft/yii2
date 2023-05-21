@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19747: Load Default expression into ColumnSchema class for MySQL and MariaDB (sohelahmed7)
+- Enh #19766: Add support for PHP generators to JSON helper (vladis84)
 - Bug #19683: Updated `framework\mimeType.php` to the actual value. Fix typo in `build/controllers/MimeTypeController.php` (DeryabinSergey)
 - Bug #19705: Add binary and other data type to `$typeMap` list for MySQL (sohelahmed7)
 - Enh #19741: Added option to use a closure for `$variations` definition in `yii\filters\PageCache` (nadar)
@@ -21,6 +22,17 @@ Yii Framework 2 Change Log
 - Bug #19734: PHP 8.1 compatibility fix for `$query->orderBy(null)` (uaoleg)
 - Bug #19731: Fix `yii\data\Sort` to generate proper link when multisort is on and attribute has a default sort order set (bizley)
 - Bug #19735: Fix `yii\validators\NumberValidator` to use programmable message for the value validation (bizley)
+- Bug #19770: Fix `yii\mutex\MysqlMutex` `keyPrefix` expression param binding (kamarton)
+- Enh #19794: Add caching in `yii\web\Request` for `getUserIP()` and `getSecureForwardedHeaderTrustedParts()` (rhertogh)
+- Bug #19795: Fix `yii\web\Response::redirect()` to prevent setting headers with URL containing new line character (bizley)
+- Enh #19804: Remove the unnecessary call to `$this->oldAttributes` in `BaseActiveRecord::getDirtyAttributes()` (thiagotalma)
+- Bug #19813: Fix `yii\base\DynamicModel` validation with validators that reference missing attributes (michaelarnauts)
+- Enh #19816: Explicitly pass `$fallbackToMaster` as `true` to `getSlavePdo()` to ensure it is not affected by child class with changed defaults (developedsoftware)
+- Bug #19720: Fix "zh-HK" locale causing [error][yii\i18n\PhpMessageSource::loadFallbackMessages] The message file for category 'yii' does not exist (uaoleg)
+- Bug #19736: Fix `StringHelper::truncate(null, 10)` causes error Deprecated: mb_strlen(): Passing null to parameter #1 ($string) of type string is deprecated (uaoleg)
+- Enh #19838: Added `yii\helpers\BaseFileHelper::getExtensionByMimeType()` to get the most common extension for a given MIME type (rhertogh)
+- Bug #19837: Fixed processing of numeric file extensions in `yii\build\controllers\MimeTypeController::generateMimeTypesFile()` (rhertogh)
+
 
 2.0.47 November 18, 2022
 ------------------------

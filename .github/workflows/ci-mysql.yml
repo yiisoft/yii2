@@ -3,6 +3,9 @@ on:
   - push
 
 name: ci-mysql
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:

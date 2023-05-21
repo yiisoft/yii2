@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidRouteException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -886,12 +887,13 @@ class Response extends \yii\base\Response
         }
         $request = Yii::$app->getRequest();
         $normalizedUrl = Url::to($url);
-        if (
-            $normalizedUrl !== null
-            && strncmp($normalizedUrl, '/', 1) === 0
-            && strncmp($normalizedUrl, '//', 2) !== 0
-        ) {
-            $normalizedUrl = $request->getHostInfo() . $normalizedUrl;
+        if ($normalizedUrl !== null) {
+            if (preg_match('/\n/', $normalizedUrl)) {
+                throw new InvalidRouteException('Route with new line character detected "' . $normalizedUrl . '".');
+            }
+            if (strncmp($normalizedUrl, '/', 1) === 0 && strncmp($normalizedUrl, '//', 2) !== 0) {
+                $normalizedUrl = $request->getHostInfo() . $normalizedUrl;
+            }
         }
 
         if ($checkAjax && $request->getIsAjax()) {

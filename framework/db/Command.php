@@ -258,7 +258,7 @@ class Command extends Component
             $forRead = false;
         }
         if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
-            $pdo = $this->db->getSlavePdo();
+            $pdo = $this->db->getSlavePdo(true);
         } else {
             $pdo = $this->db->getMasterPdo();
         }
