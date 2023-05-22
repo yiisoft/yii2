@@ -39,7 +39,6 @@ class BaseFileHelper
      * @since 2.0.14
      */
     public static $mimeAliasesFile = '@yii/helpers/mimeAliases.php';
-
     /**
      * @var string the path (or alias) of a PHP file containing extensions per MIME type.
      * @since 2.0.48
