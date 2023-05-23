@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
-- no changes in this release. 
+- Enh #19841: Allow jQuery 3.7 to be installed (wouter90) 
 
 
 2.0.48 May 22, 2023
