@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
-- no changes in this release. 
+- Bug #19847: Fix regression introduced in #15376 that caused `DbManager::getRolesByUser()` to return stale data (michaelarnauts)
 
 
 2.0.48 May 22, 2023
