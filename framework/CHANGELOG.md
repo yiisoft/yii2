@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.49 under development
+------------------------
+
+- no changes in this release.
+
+
 2.0.48.1 May 24, 2023
 ---------------------
 
