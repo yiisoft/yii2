@@ -882,6 +882,9 @@ class DbManager extends BaseManager
             ])->execute();
 
         unset($this->checkAccessAssignments[(string) $userId]);
+
+        $this->invalidateCache();
+
         return $assignment;
     }
 
@@ -895,9 +898,13 @@ class DbManager extends BaseManager
         }
 
         unset($this->checkAccessAssignments[(string) $userId]);
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
     }
 
     /**
@@ -910,9 +917,13 @@ class DbManager extends BaseManager
         }
 
         unset($this->checkAccessAssignments[(string) $userId]);
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
     }
 
     /**
