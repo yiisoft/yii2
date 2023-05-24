@@ -1763,7 +1763,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private function isValueDifferent($newValue, $oldValue)
     {
-        if (is_array($newValue) && is_array($oldValue)) {
+        if (is_array($newValue) && is_array($oldValue) && !ArrayHelper::isAssociative($oldValue)) {
             $newValue = ArrayHelper::recursiveSort($newValue);
             $oldValue = ArrayHelper::recursiveSort($oldValue);
         }

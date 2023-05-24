@@ -27,6 +27,11 @@ class MemCacheTest extends CacheTestCase
             $this->markTestSkipped('memcache not installed. Skipping.');
         }
 
+        if (PHP_VERSION_ID >= 80200) {
+            $php_version = phpversion();
+            $this->markTestSkipped("memcache is currently not supported for PHP $php_version. Skipping.");
+        }
+
         // check whether memcached is running and skip tests if not.
         if (!@stream_socket_client('127.0.0.1:11211', $errorNumber, $errorDescription, 0.5)) {
             $this->markTestSkipped('No memcached server running at ' . '127.0.0.1:11211' . ' : ' . $errorNumber . ' - ' . $errorDescription);

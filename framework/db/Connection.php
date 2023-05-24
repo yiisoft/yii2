@@ -1013,7 +1013,7 @@ class Connection extends Component
             if (($pos = strpos((string)$this->dsn, ':')) !== false) {
                 $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
             } else {
-                $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
+                $this->_driverName = strtolower($this->getSlavePdo(true)->getAttribute(PDO::ATTR_DRIVER_NAME));
             }
         }
 
