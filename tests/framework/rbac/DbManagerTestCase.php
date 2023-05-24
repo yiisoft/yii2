@@ -220,17 +220,27 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         $admin = $this->auth->createRole('Admin');
         $this->auth->add($admin);
-        $this->auth->assign($admin, 1);
 
         $manager = $this->auth->createRole('Manager');
         $this->auth->add($manager);
+
+        $adminUserRoles = $this->auth->getRolesByUser(1);
+        $this->assertArrayHasKey('myDefaultRole', $adminUserRoles);
+        $this->assertArrayNotHasKey('Admin', $adminUserRoles);
+        $this->auth->assign($admin, 1);
+
+        $managerUserRoles = $this->auth->getRolesByUser(2);
+        $this->assertArrayHasKey('myDefaultRole', $managerUserRoles);
+        $this->assertArrayNotHasKey('Manager', $adminUserRoles);
         $this->auth->assign($manager, 2);
 
         $adminUserRoles = $this->auth->getRolesByUser(1);
+        $this->assertArrayHasKey('myDefaultRole', $adminUserRoles);
         $this->assertArrayHasKey('Admin', $adminUserRoles);
         $this->assertEquals($admin->name, $adminUserRoles['Admin']->name);
 
         $managerUserRoles = $this->auth->getRolesByUser(2);
+        $this->assertArrayHasKey('myDefaultRole', $managerUserRoles);
         $this->assertArrayHasKey('Manager', $managerUserRoles);
         $this->assertEquals($manager->name, $managerUserRoles['Manager']->name);
     }
