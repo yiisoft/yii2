@@ -17,10 +17,6 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
- * @property Request $request The request object.
- * @property Response $response The response object.
- * @property View $view The view object that can be used to render views or view files.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
