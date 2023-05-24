@@ -231,7 +231,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         $managerUserRoles = $this->auth->getRolesByUser(2);
         $this->assertArrayHasKey('myDefaultRole', $managerUserRoles);
-        $this->assertArrayNotHasKey('Manager', $adminUserRoles);
+        $this->assertArrayNotHasKey('Manager', $managerUserRoles);
         $this->auth->assign($manager, 2);
 
         $adminUserRoles = $this->auth->getRolesByUser(1);
