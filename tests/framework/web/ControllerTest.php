@@ -339,7 +339,7 @@ class ControllerTest extends TestCase
             return;
         }
 
-        // Use the PHP71 controller for this test
+        // Use the PHP80 controller for this test
         $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
