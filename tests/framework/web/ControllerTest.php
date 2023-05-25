@@ -7,11 +7,9 @@
 
 namespace yiiunit\framework\web;
 
-use framework\web\FakePhp80Controller;
 use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
-use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;

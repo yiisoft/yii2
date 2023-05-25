@@ -5,7 +5,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace framework\web;
+namespace yiiunit\framework\web;
 
 use yii\web\Controller;
 
