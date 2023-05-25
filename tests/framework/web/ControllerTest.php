@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use framework\web\FakePhp80Controller;
 use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
@@ -331,5 +332,35 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
         $this->assertEquals($this->controller->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+    }
+
+    public function testUnionBindingActionParams()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['arg' => 'test', 'second' => 1];
+
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertSame('test', $args[0]);
+        $this->assertSame(1, $args[1]);
     }
 }

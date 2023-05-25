@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
-- no changes in this release.
+- Bug #18859: Fix `yii\web\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
 
 
 2.0.48.1 May 24, 2023
