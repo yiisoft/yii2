@@ -28,8 +28,7 @@ class MemCachedTest extends CacheTestCase
         }
 
         if (
-            (PHP_VERSION_ID >= 80100 && version_compare(phpversion('memcached'), '3.1.5', '<='))
-            || (PHP_VERSION_ID >= 80200 && version_compare(phpversion('memcached'), '3.2.0', '<='))
+            PHP_VERSION_ID >= 80100 && version_compare(phpversion('memcached'), '3.1.5', '<=')
         ) {
             $php_version = phpversion();
             $memcached_version = phpversion('memcached');
