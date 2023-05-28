@@ -218,10 +218,10 @@ class ReleaseController extends Controller
         $gitDir = reset($what) === 'framework' ? 'framework/' : '';
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. {$gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
-        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. {$gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.com/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");

@@ -42,7 +42,7 @@ class LikeCondition extends SimpleCondition
      *
      * @param array|null|false an array of mappings from the special characters to their escaped counterparts.
      * You may use `false` to indicate the values are already escaped and no escape should be applied,
-     * or either `null` or empty array if escaping is condition builder responsibility. 
+     * or either `null` or empty array if escaping is condition builder responsibility.
      * Note that when using an escape mapping (or the third operand is not provided),
      * the values will be automatically enclosed within a pair of percentage characters.
      */

@@ -294,10 +294,9 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                $models[$i] = $this->serializeModel($model);
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }
