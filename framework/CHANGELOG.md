@@ -7,6 +7,12 @@ Yii Framework 2 Change Log
 - Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
 
 
+2.0.48.1 May 24, 2023
+---------------------
+
+- Bug #19847: Fix regression introduced in #15376 that caused `DbManager::getRolesByUser()` to return stale data (michaelarnauts)
+
+
 2.0.48 May 22, 2023
 -------------------
 
