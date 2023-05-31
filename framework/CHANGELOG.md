@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18859: Fix `yii\web\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
+- Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
 
 
 2.0.48.1 May 24, 2023
