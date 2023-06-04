@@ -1,11 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.49 under development
-------------------------
+2.0.48.2 June 4, 2023
+---------------------
 
-- Bug #18859: Fix `yii\web\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
-- Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
+- Bug #19857: Fix AttributeTypecastBehavior::resetOldAttributes() causes "class has no attribute named" InvalidArgumentException (uaoleg)
 
 
 2.0.48.1 May 24, 2023
