@@ -52,6 +52,17 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
+Upgrade from Yii 2.0.48
+-----------------------
+
+* Since Yii 2.0.49 the `yii\console\Controller::select()` function supports a default value and respects
+  the `yii\console\Controller::$interactive` setting. Before the user was always prompted to select an option
+  regardless of the `$interactive` setting. Now the `$default` value is automatically returned when `$interactive` is 
+  `false`.
+* The function signature for `yii\console\Controller::select()` and `yii\helpers\BaseConsole::select()` have changed.
+  They now have an additional `$default = null` parameter. In case those methods are overwritten you will need to
+  update your child classes accordingly.
+
 Upgrade from Yii 2.0.46
 -----------------------
 
