@@ -576,11 +576,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function setOldAttribute($name, $value)
     {
-        if (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name)) {
+        if ($this->canSetOldAttribute($name)) {
             $this->_oldAttributes[$name] = $value;
         } else {
             throw new InvalidArgumentException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
+    }
+
+    /**
+     * Returns if the old named attribute can be set.
+     * @param string $name the attribute name
+     * @return bool whether the old attribute can be set
+     * @see setOldAttribute()
+     */
+    public function canSetOldAttribute($name): bool
+    {
+        return (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name));
     }
 
     /**
