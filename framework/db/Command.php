@@ -642,13 +642,12 @@ class Command extends Component
      * 
      * Example usage:
      * ```php
-     * class m200000_000000_create_table_fruits extends \yii\db\Migration
-     * {
-     *     public function safeUp()
-     *     {
-     *          $this->createTable('{{%fruits}}', [
-     *              // ...              
-     *              'column_name double precision null default null',
+     * Yii::$app->db->createCommand()->createTable('post', [
+     *     'id' => 'pk',
+     *     'title' => 'string',
+     *     'text' => 'text',
+     *     'column_name double precision null default null',
+     * ]);                   
      * ```
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
