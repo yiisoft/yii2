@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db;
@@ -469,7 +469,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
 
     /**
-     * Test whether slave connection is recovered when call getSlavePdo() after close().
+     * Test whether slave connection is recovered when call getSlavePdo(true) after close().
      *
      * @see https://github.com/yiisoft/yii2/issues/14165
      */

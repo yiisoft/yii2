@@ -1,14 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
 
 use yii\data\ActiveDataProvider;
-use yii\widgets\Breadcrumbs;
 use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
 use yiiunit\data\ar\ActiveRecord;
@@ -28,7 +27,6 @@ class LinkSorterTest extends DatabaseTestCase
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
         $this->mockWebApplication();
-        $this->breadcrumbs = new Breadcrumbs();
     }
 
     public function testLabelsSimple()

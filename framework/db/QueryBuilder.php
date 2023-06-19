@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -506,7 +506,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * ```php
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
-     *     'url' => 'http://example.com/', // url is unique
+     *     'url' => 'https://example.com/', // url is unique
      *     'visits' => 0,
      * ], [
      *     'visits' => new \yii\db\Expression('visits + 1'),
@@ -692,7 +692,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
      * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
+     * stands for the column type which must contain an abstract DB type.
      * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
      *
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
@@ -705,6 +705,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *  'id' => 'pk',
      *  'name' => 'string',
      *  'age' => 'integer',
+     *  'column_name double precision null default null', # definition only example
      * ]);
      * ```
      *

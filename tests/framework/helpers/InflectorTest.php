@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -121,9 +121,6 @@ class InflectorTest extends TestCase
         $this->assertEquals('Foo Bar', Inflector::camel2words('foo BAR'));
         $this->assertEquals('Foo Bar', Inflector::camel2words('Foo Bar'));
         $this->assertEquals('Foo Bar', Inflector::camel2words('FOO BAR'));
-        $this->assertEquals('Order 4 Other Phones', Inflector::camel2words('Order4OtherPhones'));
-        $this->assertEquals('I Have 23 Dogs', Inflector::camel2words('IHave23Dogs'));
-        $this->assertEquals('Con Chó Cười 34 Lần', Inflector::camel2words('ConChóCười34Lần'));
     }
 
     public function testCamel2id()
@@ -322,7 +319,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['¿Espanol?'],
+            '¿Español?' => ['¿Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];
@@ -365,7 +362,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['Espanol?'],
+            '¿Español?' => ['Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];

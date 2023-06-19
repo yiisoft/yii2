@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -684,7 +684,7 @@ PATTERN;
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+            $columns = preg_split('/\s*,\s*/', trim((string)$columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $select = [];
         foreach ($columns as $columnAlias => $columnDefinition) {

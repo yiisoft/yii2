@@ -9,7 +9,7 @@ compatibility (BC) of the APIs should be maintained whenever possible. If a chan
 for more information on designing API version numbers.
 
 One common way to implement API versioning is to embed the version number in the API URLs.
-For example, `http://example.com/v1/users` stands for the `/users` endpoint of API version 1. 
+For example, `https://example.com/v1/users` stands for the `/users` endpoint of API version 1. 
 
 Another method of API versioning,
 which has gained momentum recently, is to put the version number in the HTTP request headers. This is typically done through the `Accept` header:
@@ -90,8 +90,8 @@ return [
 ];
 ```
 
-As a result of the above code, `http://example.com/v1/users` will return the list of users in version 1, while
-`http://example.com/v2/users` will return version 2 users.
+As a result of the above code, `https://example.com/v1/users` will return the list of users in version 1, while
+`https://example.com/v2/users` will return version 2 users.
 
 Thanks to modules, the code for different major versions can be well isolated. But modules make it still possible
 to reuse code across the modules via common base classes and other shared resources.

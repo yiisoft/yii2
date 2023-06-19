@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -145,7 +145,7 @@ class Sort extends BaseObject
      */
     public $sortParam = 'sort';
     /**
-     * @var array the order that should be used when the current request does not specify any order.
+     * @var array|null the order that should be used when the current request does not specify any order.
      * The array keys are attribute names and the array values are the corresponding sort directions. For example,
      *
      * ```php
@@ -277,6 +277,8 @@ class Sort extends BaseObject
                         }
                     }
                 }
+
+                return $this->_attributeOrders;
             }
             if (empty($this->_attributeOrders) && is_array($this->defaultOrder)) {
                 $this->_attributeOrders = $this->defaultOrder;

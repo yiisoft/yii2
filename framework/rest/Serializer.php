@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rest;
@@ -294,10 +294,9 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                $models[$i] = $this->serializeModel($model);
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }

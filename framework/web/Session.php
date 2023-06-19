@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -57,7 +57,6 @@ use yii\base\InvalidConfigException;
  * @property bool $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
  * @property-read bool $isActive Whether the session has started.
- * @property-read SessionIterator $iterator An iterator for traversing the session variables.
  * @property string $name The current session name.
  * @property string $savePath The current session save path, defaults to '/tmp'.
  * @property int $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up. The
@@ -823,7 +822,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * Note that if you use [[addFlash()]], `$message` will be an array, and you will have to adjust the above code.
      *
-     * [bootstrap alert]: http://getbootstrap.com/components/#alerts
+     * [bootstrap alert]: https://getbootstrap.com/docs/3.4/components/#alerts
      *
      * @param bool $delete whether to delete the flash messages right after this method is called.
      * If false, the flash messages will be automatically deleted in the next request.

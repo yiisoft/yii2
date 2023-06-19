@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -153,8 +153,16 @@ class ExistValidator extends Validator
     private function checkTargetAttributeExistence($model, $attribute)
     {
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        if ($this->skipOnError) {
+            foreach ((array)$targetAttribute as $k => $v) {
+                if ($model->hasErrors(is_int($k) ? $v : $k)) {
+                    return;
+                }
+            }
+        }
+
         $params = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions = [$this->targetAttributeJunction == 'or' ? 'or' : 'and'];
+        $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
         if (!$this->allowArray) {
             foreach ($params as $key => $value) {
@@ -256,17 +264,14 @@ class ExistValidator extends Validator
     private function valueExists($targetClass, $query, $value)
     {
         $db = $targetClass::getDb();
-        $exists = false;
 
         if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
-            $exists = $db->useMaster(function () use ($query, $value) {
+            return $db->useMaster(function () use ($query, $value) {
                 return $this->queryValueExists($query, $value);
             });
-        } else {
-            $exists = $this->queryValueExists($query, $value);
         }
 
-        return $exists;
+        return $this->queryValueExists($query, $value);
     }
 
 
@@ -282,6 +287,7 @@ class ExistValidator extends Validator
         if (is_array($value)) {
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count(array_unique($value));
         }
+
         return $query->exists();
     }
 
@@ -320,7 +326,7 @@ class ExistValidator extends Validator
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
                 $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    '/^' . preg_quote($alias, '/') . '\.(.*)$/',
                     '$1',
                     $columnName) . ']]';
             } else {

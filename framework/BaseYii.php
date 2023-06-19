@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii;
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.46-dev';
+        return '2.0.49-dev';
     }
 
     /**
@@ -207,7 +207,7 @@ class BaseYii
      * be removed. Trailing '/' and '\' characters will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
-     * - a URL (e.g. `http://www.yiiframework.com`)
+     * - a URL (e.g. `https://www.yiiframework.com`)
      * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
      *   actual path first by calling [[getAlias()]].
      *
@@ -262,7 +262,7 @@ class BaseYii
      *    to include the file associated with the corresponding path alias
      *    (e.g. `@yii/base/Component.php`);
      *
-     * This autoloader allows loading classes that follow the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/)
+     * This autoloader allows loading classes that follow the [PSR-4 standard](https://www.php-fig.org/psr/psr-4/)
      * and have its top-level namespace or sub-namespaces defined as path aliases.
      *
      * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
@@ -502,7 +502,7 @@ class BaseYii
     public static function powered()
     {
         return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
+            'yii' => '<a href="https://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
                     'Yii Framework') . '</a>',
         ]);
     }

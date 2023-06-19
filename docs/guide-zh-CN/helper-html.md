@@ -2,7 +2,7 @@ Html 帮助类（Html helper）
 =======================
 
 任何一个 web 应用程序会生成很多 HTMl 超文本标记。如果超文本标记是静态的，
-那么[将 PHP 和 HTML 混合在一个文件里](https://www.php.net/manual/en/language.basic-syntax.phpmode.php)
+那么[将 PHP 和 HTML 混合在一个文件里](https://www.php.net/manual/zh/language.basic-syntax.phpmode.php)
 这种做法是非常高效的。但是，如果这些超文本标记是动态生成的，那么如果没有额外的辅助工具，这个过程将会变得复杂。
 Yii 通过 HTML  帮助类来提供生成超文本标记的方法。这个帮助类包含有一系列的用于处理通用的 HTML 标签和其属性以及内容的静态方法。
 
@@ -147,8 +147,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### 标签内容的转码和解码（Encoding and Decoding Content） <span id="encoding-and-decoding-content"></span>
 
 为了让内容能够正确安全的显示，一些 HTML 特殊字符应该被转码。在 PHP 中，
-这个操作由 [htmlspecialchars](https://www.php.net/manual/en/function.htmlspecialchars.php) 和
-[htmlspecialchars_decode](https://www.php.net/manual/en/function.htmlspecialchars-decode.php) 完成。
+这个操作由 [htmlspecialchars](https://www.php.net/manual/zh/function.htmlspecialchars.php) 和
+[htmlspecialchars_decode](https://www.php.net/manual/zh/function.htmlspecialchars-decode.php) 完成。
 直接使用这些方法的问题是，你总是需要指定转码所需的额外标志。由于标志一般总是不变的，而内容转码的过程为了避免一些安全问题，
 需要和应用的默认过程匹配，
 Yii 提供了两个简单可用的对 PHP 原生方法的封装：
@@ -349,7 +349,7 @@ Gives you
 generates
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -399,7 +399,7 @@ generates
 
 generates
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 除了 [aliases](concept-aliases.md) 之外，第一个参数可以接受 路由，查询，URLs。同 [Url::to()](helper-url.md) 一样。

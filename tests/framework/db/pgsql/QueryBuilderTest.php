@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\pgsql;
@@ -70,7 +70,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         return array_merge(parent::conditionProvider(), [
             // adding conditions for ILIKE i.e. case insensitive LIKE
-            // http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE
+            // https://www.postgresql.org/docs/8.3/functions-matching.html#FUNCTIONS-LIKE
 
             // empty values
             [['ilike', 'name', []], '0=1', []],
@@ -185,7 +185,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" DROP NOT NULL, ADD CONSTRAINT foo1_bar_check CHECK (char_length(bar) > 5)';
         $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->check('char_length(bar) > 5'));
         $this->assertEquals($expected, $sql);
-        
+
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT \'\', ALTER COLUMN "bar" DROP NOT NULL';
         $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue(''));
         $this->assertEquals($expected, $sql);

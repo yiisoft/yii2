@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\i18n;
@@ -250,7 +250,7 @@ class FormatterDateTest extends TestCase
      */
     public function testDateRangeLow()
     {
-        // http://en.wikipedia.org/wiki/Year_2038_problem
+        // https://en.wikipedia.org/wiki/Year_2038_problem
         $this->assertSame('13-12-1901', $this->formatter->asDate('1901-12-13', 'dd-MM-yyyy'));
         $this->assertSame('12-12-1901', $this->formatter->asDate('1901-12-12', 'dd-MM-yyyy'));
 
@@ -270,7 +270,7 @@ class FormatterDateTest extends TestCase
      */
     public function testDateRangeHigh()
     {
-        // http://en.wikipedia.org/wiki/Year_2038_problem
+        // https://en.wikipedia.org/wiki/Year_2038_problem
         $this->assertSame('19-01-2038', $this->formatter->asDate('2038-01-19', 'dd-MM-yyyy'));
         $this->assertSame('20-01-2038', $this->formatter->asDate('2038-01-20', 'dd-MM-yyyy'));
 
@@ -346,7 +346,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('12 years ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('2014-03-13', [$interval_12_years]), $dateNow));
 
         // Tricky 31-days month stuff
-        // See: http://www.gnu.org/software/tar/manual/html_section/Relative-items-in-date-strings.html
+        // See: https://www.gnu.org/software/tar/manual/html_section/Relative-items-in-date-strings.html
         $dateNow = new DateTime('2014-03-31');
         $dateThen = new DateTime('2014-03-03');
         $this->assertSame('28 days ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('2014-03-31', [$interval_1_month]), $dateNow));
@@ -401,7 +401,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('in 12 years', $this->formatter->asRelativeTime($this->buildDateSubIntervals('2014-03-13', [$interval_12_years]), $dateNow));
 
         // Tricky 31-days month stuff
-        // See: http://www.gnu.org/software/tar/manual/html_section/Relative-items-in-date-strings.html
+        // See: https://www.gnu.org/software/tar/manual/html_section/Relative-items-in-date-strings.html
         $dateNow = new DateTime('2014-03-03');
         $dateThen = new DateTime('2014-03-31');
         $this->assertSame('in a month', $this->formatter->asRelativeTime($this->buildDateSubIntervals('2014-03-03', [$interval_1_month]), $dateNow));
@@ -789,7 +789,7 @@ class FormatterDateTest extends TestCase
      *
      * it is a PHP bug: https://bugs.php.net/bug.php?id=45543
      * Fixed in this commit: https://github.com/php/php-src/commit/22dba2f5f3211efe6c3b9bb24734c811ca64c68c#diff-7b738accc3d60f74c259da18588ddc5dL2996
-     * Fixed in PHP >5.4.26 and >5.5.10. http://3v4l.org/mlZX7
+     * Fixed in PHP >5.4.26 and >5.5.10. https://3v4l.org/mlZX7
      *
      * @dataProvider provideTimezones
      * @param string $dtz

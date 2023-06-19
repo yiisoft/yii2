@@ -4,7 +4,7 @@ Preparación del entorno de pruebas
 Yii 2 ha mantenido oficialmente integración con el _framework_ de testeo [`Codeception`](https://github.com/Codeception/Codeception),
 que le permite crear los siguientes tipos de tests:
 
-- [Unitari](test-unit.md) - verifica que una unidad simple de código funciona como se espera;
+- [Unitarias](test-unit.md) - verifica que una unidad simple de código funciona como se espera;
 - [Funcional](test-functional.md) - verifica escenarios desde la perspectiva de un usuario a través de la emulación de un navegador;
 - [De aceptación](test-acceptance.md) - verifica escenarios desde la perspectiva de un usuario en un navegador.
 

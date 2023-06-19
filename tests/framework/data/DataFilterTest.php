@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\data;
@@ -329,6 +329,18 @@ class DataFilterTest extends TestCase
                     'number' => [
                         '>' => 10,
                         '<' => 20,
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => [
+                        'like' => 'foo',
+                    ],
+                ],
+                [
+                    'name' => [
+                        'LIKE' => 'foo',
                     ],
                 ],
             ],

@@ -69,12 +69,12 @@ if ($request->isPut)  { /* текущий запрос является PUT за
 
 Компонент `request` предоставляет множество способов изучения текущего запрашиваемого URL. 
 
-Если предположить, что URL запроса будет `http://example.com/admin/index.php/product?id=100`, то вы можете получить различные части этого адреса так как это показано ниже:
+Если предположить, что URL запроса будет `https://example.com/admin/index.php/product?id=100`, то вы можете получить различные части этого адреса так как это показано ниже:
 
 * [[yii\web\Request::url|url]]: вернёт адрес `/admin/index.php/product?id=100`, который содержит URL без информации об имени хоста. 
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: вернёт адрес `http://example.com/admin/index.php/product?id=100`,
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: вернёт адрес `https://example.com/admin/index.php/product?id=100`,
   который содержит полный URL, включая имя хоста.
-* [[yii\web\Request::hostInfo|hostInfo]]: вернёт адрес `http://example.com`, который содержит только имя хоста.
+* [[yii\web\Request::hostInfo|hostInfo]]: вернёт адрес `https://example.com`, который содержит только имя хоста.
 * [[yii\web\Request::pathInfo|pathInfo]]: вернёт адрес `/product`, который содержит часть между адресом начального скрипта и параметрами запроса, идущих после знака вопроса.
 * [[yii\web\Request::queryString|queryString]]: вернёт адрес `id=100`, который содержит часть URL после знака вопроса. 
 * [[yii\web\Request::baseUrl|baseUrl]]: вернёт адрес `/admin`, который является частью URL после информации о хосте и перед именем входного скрипта.

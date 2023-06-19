@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -301,7 +301,7 @@ class BaseConsole
      *
      * @param int $colorCode xterm color code
      * @return string
-     * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+     * @see https://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
     public static function xtermFgColor($colorCode)
     {
@@ -316,7 +316,7 @@ class BaseConsole
      *
      * @param int $colorCode xterm color code
      * @return string
-     * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
+     * @see https://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
     public static function xtermBgColor($colorCode)
     {
@@ -432,14 +432,14 @@ class BaseConsole
     public static function ansiToHtml($string, $styleMap = [])
     {
         $styleMap = [
-            // http://www.w3.org/TR/CSS2/syndata.html#value-def-color
+            // https://www.w3.org/TR/CSS2/syndata.html#value-def-color
             self::FG_BLACK => ['color' => 'black'],
             self::FG_BLUE => ['color' => 'blue'],
             self::FG_CYAN => ['color' => 'aqua'],
             self::FG_GREEN => ['color' => 'lime'],
             self::FG_GREY => ['color' => 'silver'],
-            // http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
-            // http://dev.w3.org/csswg/css-color/#valuedef-rebeccapurple
+            // https://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
+            // https://drafts.csswg.org/css-color/#valuedef-rebeccapurple
             self::FG_PURPLE => ['color' => 'rebeccapurple'],
             self::FG_RED => ['color' => 'red'],
             self::FG_YELLOW => ['color' => 'yellow'],
@@ -688,8 +688,17 @@ class BaseConsole
     public static function getScreenSize($refresh = false)
     {
         static $size;
-        if ($size !== null && !$refresh) {
+        static $execDisabled;
+
+        if ($size !== null && ($execDisabled || !$refresh)) {
             return $size;
+        }
+
+        if ($execDisabled === null) {
+            $execDisabled = !function_exists('ini_get') || preg_match('/(\bexec\b)/i', ini_get('disable_functions'));
+            if ($execDisabled) {
+                return $size = false;
+            }
         }
 
         if (static::isRunningOnWindows()) {
@@ -939,13 +948,17 @@ class BaseConsole
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from. Key is what is inputed and used, value is
      * what's displayed to end user by help command.
+     * @param string|null $default value to use when the user doesn't provide an option.
+     * If the default is `null`, the user is required to select an option.
      *
      * @return string An option character the user chose
+     * @since 2.0.49 Added the $default argument
      */
-    public static function select($prompt, $options = [])
+    public static function select($prompt, $options = [], $default = null)
     {
         top:
-        static::stdout("$prompt [" . implode(',', array_keys($options)) . ',?]: ');
+        static::stdout("$prompt (" . implode(',', array_keys($options)) . ',?)'
+            . ($default !== null ? '[' . $default . ']' : '') . ': ');
         $input = static::stdin();
         if ($input === '?') {
             foreach ($options as $key => $value) {
@@ -953,6 +966,8 @@ class BaseConsole
             }
             static::output(' ? - Show help');
             goto top;
+        } elseif ($default !== null && $input === '') {
+            return $default;
         } elseif (!array_key_exists($input, $options)) {
             goto top;
         }

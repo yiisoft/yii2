@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /* @var $this YiiRequirementChecker */
@@ -16,32 +16,32 @@ return array(
         'name' => 'PHP version',
         'mandatory' => true,
         'condition' => version_compare(PHP_VERSION, '5.4.0', '>='),
-        'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+        'by' => '<a href="https://www.yiiframework.com">Yii Framework</a>',
         'memo' => 'PHP 5.4.0 or higher is required.',
     ),
     array(
         'name' => 'Reflection extension',
         'mandatory' => true,
         'condition' => class_exists('Reflection', false),
-        'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+        'by' => '<a href="https://www.yiiframework.com">Yii Framework</a>',
     ),
     array(
         'name' => 'PCRE extension',
         'mandatory' => true,
         'condition' => extension_loaded('pcre'),
-        'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+        'by' => '<a href="https://www.yiiframework.com">Yii Framework</a>',
     ),
     array(
         'name' => 'SPL extension',
         'mandatory' => true,
         'condition' => extension_loaded('SPL'),
-        'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+        'by' => '<a href="https://www.yiiframework.com">Yii Framework</a>',
     ),
     array(
         'name' => 'Ctype extension',
         'mandatory' => true,
         'condition' => extension_loaded('ctype'),
-        'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>'
+        'by' => '<a href="https://www.yiiframework.com">Yii Framework</a>'
     ),
     array(
         'name' => 'MBString extension',
@@ -54,7 +54,7 @@ return array(
         'name' => 'OpenSSL extension',
         'mandatory' => false,
         'condition' => extension_loaded('openssl'),
-        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
+        'by' => '<a href="https://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
         'memo' => 'Required by encrypt and decrypt methods.'
     ),
     array(
@@ -74,7 +74,7 @@ return array(
         'by' => '<a href="https://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'ICU 49.0 or higher is required when you want to use <code>#</code> placeholder in plural rules
         (for example, plural in
-        <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
+        <a href=\"https://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
         Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU version is ' .
         (defined('INTL_ICU_VERSION') ? INTL_ICU_VERSION : '(ICU is missing)') . '.'
     ),
@@ -85,7 +85,7 @@ return array(
         'by' => '<a href="https://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'ICU Data 49.1 or higher is required when you want to use <code>#</code> placeholder in plural rules
         (for example, plural in
-        <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
+        <a href=\"https://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
         Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU Data version is ' .
         (defined('INTL_ICU_DATA_VERSION') ? INTL_ICU_DATA_VERSION : '(ICU Data is missing)') . '.'
     ),
@@ -107,8 +107,8 @@ return array(
         'name' => 'IPv6 support',
         'mandatory' => false,
         'condition' => strlen(@inet_pton('2001:db8::1')) === 16,
-        'by' => 'IPv6 expansion in <a href="http://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html">IpValidator</a>',
-        'memo' => 'When <a href="http://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html#$expandIPv6-detail">IpValidator::expandIPv6</a>
+        'by' => 'IPv6 expansion in <a href="https://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html">IpValidator</a>',
+        'memo' => 'When <a href="https://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html#$expandIPv6-detail">IpValidator::expandIPv6</a>
         property is set to <code>true</code>, PHP must support IPv6 protocol stack. Currently PHP constant <code>AF_INET6</code> is not defined
         and IPv6 is probably unsupported.'
     )

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\base;
@@ -35,6 +35,20 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($model->hasErrors('email'));
         $this->assertTrue($model->hasErrors('name'));
         $this->assertTrue($model->hasErrors('age'));
+    }
+
+    public function testValidateDataWithPostData()
+    {
+        $post = [
+            'name' => 'long name',
+        ];
+        $model = DynamicModel::validateData($post, [
+            [['email', 'name'], 'required'],
+            ['age', 'default', 'value' => 18],
+        ]);
+        $this->assertTrue($model->hasErrors());
+        $this->assertTrue($model->hasErrors('email'));
+        $this->assertEquals(18, $model->age);
     }
 
     public function testAddRule()

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -73,7 +73,7 @@ class DateValidator extends Validator
     public $type = self::TYPE_DATE;
     /**
      * @var string|null the date format that the value being validated should follow.
-     * This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * This can be a date time pattern as described in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP Datetime class.
      * Please refer to <https://www.php.net/manual/en/datetime.createfromformat.php> on supported formats.
@@ -441,8 +441,8 @@ class DateValidator extends Validator
         // if no time was provided in the format string set timezone to default one to match yii\i18n\Formatter::formatDateTimeValue()
         $timezone = $hasTimeInfo ? $this->timeZone : $this->defaultTimeZone;
         $date = DateTime::createFromFormat($format, $value, new DateTimeZone($timezone));
-        $errors = DateTime::getLastErrors();
-        if ($date === false || $errors['error_count'] || $errors['warning_count'] || ($this->strictDateFormat && $date->format($format) !== $value)) {
+        $errors = DateTime::getLastErrors(); // Before PHP 8.2 may return array instead of false (see https://github.com/php/php-src/issues/9431).
+        if ($date === false || ($errors !== false && ($errors['error_count'] || $errors['warning_count'])) || ($this->strictDateFormat && $date->format($format) !== $value)) {
             return false;
         }
 

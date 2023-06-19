@@ -80,7 +80,7 @@ values into the rows when the fixture is being loaded.
 > Tip: You may customize the location of the data file by setting the [[yii\test\ActiveFixture::dataFile]] property.
 > You may also override [[yii\test\ActiveFixture::getData()]] to provide the data.
 
-As we described earlier, a fixture may depend on other fixtures. For example, a `UserProfileFixture` may need to depends on `UserFixture`
+As we described earlier, a fixture may depend on other fixtures. For example, a `UserProfileFixture` may need to depend on `UserFixture`
 because the user profile table contains a foreign key pointing to the user table.
 The dependency is specified via the [[yii\test\Fixture::depends]] property, like the following,
 
@@ -96,7 +96,7 @@ class UserProfileFixture extends ActiveFixture
 }
 ```
 
-The dependency also ensures, that the fixtures are loaded and unloaded in a well defined order. In the above example `UserFixture` will
+The dependency also ensures, that the fixtures are loaded and unloaded in a well-defined order. In the above example `UserFixture` will
 always be loaded before `UserProfileFixture` to ensure all foreign key references exist and will be unloaded after `UserProfileFixture`
 has been unloaded for the same reason.
 
@@ -243,7 +243,7 @@ Fixture classes name should not be plural.
 
 ### Loading fixtures
 
-Fixture classes should be suffixed by `Fixture`. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
+Fixture classes should be suffixed by `Fixture`. By default, fixtures will be searched under `tests\unit\fixtures` namespace, you can
 change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
@@ -309,7 +309,7 @@ Same command options like: `namespace`, `globalFixtures` also can be applied to 
 ### Configure Command Globally
 
 While command line options allow us to configure the fixture command
-on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
+on-the-fly, sometimes we may want to configure the command once for all. For example, you can configure
 different fixture path as follows:
 
 ```

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\behaviors;
@@ -125,6 +125,24 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->updateAll(['callback' => 'find']);
         $model->refresh();
         $this->assertSame('callback: find', $model->callback);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17194
+     */
+    public function testDirtyAttributesAreEmptyAfterFind()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+        $model->name = 123;
+        $model->amount = '58';
+        $model->price = '100.8';
+        $model->isActive = 1;
+        $model->callback = 'foo';
+        $model->save(false);
+
+        $model = ActiveRecordAttributeTypecast::find()->one();
+
+        $this->assertEmpty($model->getDirtyAttributes());
     }
 
     /**

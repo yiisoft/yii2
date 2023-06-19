@@ -2,12 +2,12 @@
 
 <p dir="rtl">
 بعد تثبيت ال Yii، سيكون لديك تطبيق Yii جاهز للعمل عليه ويمكن الوصول إليه عبر
-الرابط التالي:  <code>http://hostname/basic/web/index.php</code>  أو <code>http://hostname/index.php</code> إعتمادا على الإعدادات
+الرابط التالي:  <code>https://hostname/basic/web/index.php</code>  أو <code>https://hostname/index.php</code> إعتمادا على الإعدادات
 الخاصة بك (إعدادت ال web server). في هذا الجزء سنستعرض الوظائف ال built-in الموجودة في التطبيق الإفتراضي لإطار العمل Yii، وكيف يقوم بتنظيم الشيفرة البرمجية، وكيف يعالج (handling) هذا التطبيق الطلبات (requests) بشكل عام.
 </p>
 
 <blockquote class="info"><p dir="rtl">
-    معلومة: من أجل تبسيط الطرح، ومن خلال هذا البرنامج التعليمي " Getting Started - البداية من هنا"، من المفترض أنك قمت بتعيين <code>basic/web</code> ك <code>document root</code> لل Web server، وقد قمت أيضا بإعداد ال Url الذي يسمح لك بالوصول الى التطبيق المثبت من خلاله ليكون على الشكل التالي: <code>http://hostname/index.php</code> أو ما شابه ذلك.
+    معلومة: من أجل تبسيط الطرح، ومن خلال هذا البرنامج التعليمي " Getting Started - البداية من هنا"، من المفترض أنك قمت بتعيين <code>basic/web</code> ك <code>document root</code> لل Web server، وقد قمت أيضا بإعداد ال Url الذي يسمح لك بالوصول الى التطبيق المثبت من خلاله ليكون على الشكل التالي: <code>https://hostname/index.php</code> أو ما شابه ذلك.
 اذا لم تقم بذلك، ولتلبية إحتياجاتك في هذا البرنامج التعليمي، يرجى ضبط ال Url كما هو موضح في هذه الصفحة.
 يمكنك معرفة الضبط الخاص بال Web server من هنا:  <a href="start-installation.md">تثبيت ال Yii </a>
 </p></blockquote>
@@ -24,7 +24,7 @@
 </p>
 
 <ul dir="rtl">
-    <li>الصفحة الرئيسية(Homepage): يتم عرض هذه الصفحة من خلال الرابط التالي <code>http://hostname/index.php</code> </li>
+    <li>الصفحة الرئيسية(Homepage): يتم عرض هذه الصفحة من خلال الرابط التالي <code>https://hostname/index.php</code> </li>
     <li>صفحة من نحن(About)</li>
     <li>صفحة اتصل بنا (Contact): في هذه الصفحة يتم عرض form يسمح للأعشاء بالإتصال بك من خلال البريد الإلكتروني.</li>
     <li>صفحة تسجيل الدخول (Login): في هذه الصفحة يتم عرض form يسمح للأعضاء بالحصول على الإذن لإستخدام الخصائص التي لا يجوز لغيرهم من الوصول اليها، قم بتجربة تسجيل الدخول من خلال استخدام <code>admin/admin</code> ولاحظ أن كلمة "Login" ستختفي من القائمة الرئيسية وستظهر محلها الكلمة "Logout"</li>
@@ -45,13 +45,13 @@
 
 
 
-## <div dir="rtl">هيكلية التطبيق - Application Structure</a> <span id="application-structure"></span>
+## <div dir="rtl">هيكلية التطبيق - Application Structure</div> <span id="application-structure"></span>
 
 <p dir="rtl">
     أكثر المسارات والملفات أهمية الموجودة داخل التطبيق (بافتراض أن ال application's root directory هو <code>basic</code>) هي:  
 </p>
 
-```js
+```
 basic/                  application base path
     composer.json       used by Composer, describes package information
     config/             contains application and other configurations
@@ -70,7 +70,7 @@ basic/                  application base path
 ```
 
 <p dir="rtl">
-بشكل عام، يمكن تقسيم الملفات داخل التطبيق إلى نوعين: الاول تجده تحت المسار التالي: <code>basic/web</code والثاني تجده بالمسارات الأخرى.<br />
+بشكل عام، يمكن تقسيم الملفات داخل التطبيق إلى نوعين: الاول تجده تحت المسار التالي: <code>basic/web</code> والثاني تجده بالمسارات الأخرى.<br />
 وبنائا على ذلك، فإنه من الممكن الوصول إلى النوع الأول مباشرة عبر ال HTTP (أي من خلال المتصفح) ، بينما لا يمكن أن يكون ذلك للنوع الثاني.
 </p>
 
@@ -88,11 +88,10 @@ basic/                  application base path
 
 <p dir="rtl">
     يحتوي كل تطبيق على نص برمجي يستخدم للدخول الى التطبيق (كبوابة بعدها يظهر التطبيق للناظر)، ويسمى هذا الجزء بال entry script، وهو يمثل الصفحة <code>web/index.php</code>، ويعد هذا المدخل النص البرمجي الوحيد الذي يمكن الوصول إليه من خلال ال PHP في التطبيق، ويعمل هذا ال entry script على أخذ ال request ومن ثم إنشاء instance خاص بالتطبيق ليستطيع التعامل معه (التعامل مع التطبيق ومكوناته).
-    يقوم <a href="../guide/structure-applications.md">التطبيق</a> على معالجة ال request بمساعدة من ال <a href="../guide/concept-components.md">components</a>، ومن ثم بقوم التطبيق بإرسال ال request الى عناصر ال MVC، كما يتم استخدام ال <a href="../guide/structure-widgets.md">Widgets</a> في ال <a href="../guide/structure-views.md">views</a> للمساعدة في إنشاء العناصر المعقدة والمتغيرة (Complex & Dynamic user interface) لواجهة المستخدم.
+    يقوم <a href="../guide/structure-applications.md">application</a> على معالجة ال request بمساعدة من ال <a href="../guide/concept-components.md">components</a>، ومن ثم بقوم التطبيق بإرسال ال request الى عناصر ال MVC، كما يتم استخدام ال <a href="../guide/structure-widgets.md">Widgets</a> في ال <a href="../guide/structure-views.md">views</a> للمساعدة في إنشاء العناصر المعقدة والمتغيرة (Complex &amp; Dynamic user interface) لواجهة المستخدم.
 </p>
 
-
-## <div dir="rtl">دورة الحياة الخاصة بال request</a> <span id="request-lifecycle"></span>
+## <div dir="rtl">دورة الحياة الخاصة بال request</div> <span id="request-lifecycle"></span>
 
 <p dir="rtl">
 يوضح المخطط التالي كيفية معالجة التطبيق ل request معين.

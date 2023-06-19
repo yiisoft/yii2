@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -185,6 +185,12 @@ class BaseJson
 
             if ($data instanceof Arrayable) {
                 $data = $data->toArray();
+            } elseif ($data instanceof \Generator) {
+                $_data = [];
+                foreach ($data as $name => $value) {
+                    $_data[$name] = static::processData($value, $expressions, $expPrefix);
+                }
+                $data = $_data;
             } elseif ($data instanceof \SimpleXMLElement) {
                 $data = (array) $data;
 

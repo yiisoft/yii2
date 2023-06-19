@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -432,7 +432,7 @@ class FileValidator extends Validator
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.file(attribute, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**
@@ -530,6 +530,9 @@ class FileValidator extends Validator
     protected function validateMimeType($file)
     {
         $fileMimeType = $this->getMimeTypeByFile($file->tempName);
+        if ($fileMimeType === null) {
+            return false;
+        }
 
         foreach ($this->mimeTypes as $mimeType) {
             if (strcasecmp($mimeType, $fileMimeType) === 0) {
@@ -548,11 +551,12 @@ class FileValidator extends Validator
      * Get MIME type by file path
      *
      * @param string $filePath
-     * @return string
+     * @return string|null
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.26
      */
-    protected function getMimeTypeByFile($filePath) {
+    protected function getMimeTypeByFile($filePath)
+    {
         return FileHelper::getMimeType($filePath);
     }
 }

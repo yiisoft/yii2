@@ -5,10 +5,11 @@
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
  */
 $mimeTypes = [
+    123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',
     '3ds' => 'image/x-3ds',
     '3g2' => 'video/3gpp2',
@@ -37,6 +38,7 @@ $mimeTypes = [
     'ait' => 'application/vnd.dvb.ait',
     'ami' => 'application/vnd.amiga.ami',
     'apk' => 'application/vnd.android.package-archive',
+    'apng' => 'image/apng',
     'appcache' => 'text/cache-manifest',
     'application' => 'application/x-ms-application',
     'apr' => 'application/vnd.lotus-approach',
@@ -53,6 +55,7 @@ $mimeTypes = [
     'atx' => 'application/vnd.antix.game-component',
     'au' => 'audio/basic',
     'avi' => 'video/x-msvideo',
+    'avif' => 'image/avif',
     'aw' => 'application/applixware',
     'azf' => 'application/vnd.airzip.filesecure.azf',
     'azs' => 'application/vnd.airzip.filesecure.azs',
@@ -366,7 +369,7 @@ $mimeTypes = [
     'jpgm' => 'video/jpm',
     'jpgv' => 'video/jpeg',
     'jpm' => 'video/jpm',
-    'js' => 'application/javascript',
+    'js' => 'text/javascript',
     'json' => 'application/json',
     'jsonml' => 'application/jsonml+json',
     'kar' => 'audio/midi',
@@ -401,7 +404,6 @@ $mimeTypes = [
     'log' => 'text/plain',
     'lostxml' => 'application/lost+xml',
     'lrf' => 'application/octet-stream',
-    0 => 'application/vnd.lotus-1-2-3',
     'lrm' => 'application/vnd.ms-lrm',
     'ltf' => 'application/vnd.frogans.ltf',
     'lvp' => 'audio/vnd.lucent.voice',
@@ -599,6 +601,8 @@ $mimeTypes = [
     'pgn' => 'application/x-chess-pgn',
     'pgp' => 'application/pgp-encrypted',
     'pic' => 'image/x-pict',
+    'pjp' => 'image/jpeg',
+    'pjpeg' => 'image/jpeg',
     'pkg' => 'application/octet-stream',
     'pki' => 'application/pkixcmp',
     'pkipath' => 'application/pkix-pkipath',

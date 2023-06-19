@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -216,27 +216,6 @@ class ConsoleTest extends TestCase
         $expectedHtml =  "Error message. Here are some chars: < >\nError message. Here are even more chars: \"\"";
         $this->assertEqualsWithoutLE($expectedHtml, Console::errorSummary($model, $options));
     }
-}
-
-/**
- * @property string name
- * @property array types
- * @property string description
- */
-class TestConsoleModel extends DynamicModel
-{
-    public function rules()
-    {
-        return [
-            ['name', 'required'],
-            ['name', 'string', 'max' => 100]
-        ];
-    }
-
-    public function init()
-    {
-        $this->defineAttribute('name');
-    }
 
     /**
      * @covers \yii\helpers\BaseConsole::input()
@@ -390,16 +369,16 @@ class TestConsoleModel extends DynamicModel
         $this->truncateStreams();
 
         foreach ([
-            'y' => true,
-            'Y' => true,
-            'yes' => true,
-            'YeS' => true,
-            'n' => false,
-            'N' => false,
-            'no' => false,
-            'NO' => false,
-            'WHAT?!' . PHP_EOL . 'yes' => true,
-        ] as $currInput => $currAssertion) {
+                     'y' => true,
+                     'Y' => true,
+                     'yes' => true,
+                     'YeS' => true,
+                     'n' => false,
+                     'N' => false,
+                     'no' => false,
+                     'NO' => false,
+                     'WHAT?!' . PHP_EOL . 'yes' => true,
+                 ] as $currInput => $currAssertion) {
             $this->sendInput($currInput);
             $result = ConsoleStub::confirm('Are you sure?');
             $this->assertEquals($currAssertion, $result, $currInput);
@@ -420,31 +399,63 @@ class TestConsoleModel extends DynamicModel
 
         $this->sendInput('c');
         $result = ConsoleStub::select('Usual behavior', $options);
-        $this->assertEquals('Usual behavior [c,d,m,?]: ', $this->readOutput());
+        $this->assertEquals('Usual behavior (c,d,m,?): ', $this->readOutput());
         $this->assertEquals('c', $result);
         $this->truncateStreams();
 
         $this->sendInput('x', 'd');
         $result = ConsoleStub::select('Wrong character', $options);
-        $this->assertEquals('Wrong character [c,d,m,?]: Wrong character [c,d,m,?]: ', $this->readOutput());
+        $this->assertEquals('Wrong character (c,d,m,?): Wrong character (c,d,m,?): ', $this->readOutput());
         $this->assertEquals('d', $result);
         $this->truncateStreams();
 
         $this->sendInput('?', 'm');
         $result = ConsoleStub::select('Using help', $options);
         $this->assertEquals(
-            'Using help [c,d,m,?]: '
-                . ' c - cat'
-                . PHP_EOL
-                . ' d - dog'
-                . PHP_EOL
-                . ' m - mouse'
-                . PHP_EOL
-                . ' ? - Show help'
-                . PHP_EOL
-                . 'Using help [c,d,m,?]: ',
+            'Using help (c,d,m,?): '
+            . ' c - cat'
+            . PHP_EOL
+            . ' d - dog'
+            . PHP_EOL
+            . ' m - mouse'
+            . PHP_EOL
+            . ' ? - Show help'
+            . PHP_EOL
+            . 'Using help (c,d,m,?): ',
             $this->readOutput()
         );
         $this->truncateStreams();
+
+        $this->sendInput('');
+        $result = ConsoleStub::select('Use Default', $options, 'm');
+        $this->assertEquals('m', $result);
+        $this->truncateStreams();
+
+        $this->sendInput('', 'd');
+        $result = ConsoleStub::select('Empty without Default', $options);
+        $this->assertEquals('Empty without Default (c,d,m,?): Empty without Default (c,d,m,?): ', $this->readOutput());
+        $this->assertEquals('d', $result);
+        $this->truncateStreams();
+    }
+}
+
+/**
+ * @property string name
+ * @property array types
+ * @property string description
+ */
+class TestConsoleModel extends DynamicModel
+{
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init()
+    {
+        $this->defineAttribute('name');
     }
 }

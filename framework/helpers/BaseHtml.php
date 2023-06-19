@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -31,7 +31,7 @@ class BaseHtml
     public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
-     * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
+     * @see https://html.spec.whatwg.org/multipage/syntax.html#void-element
      */
     public static $voidElements = [
         'area' => 1,
@@ -792,7 +792,8 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|bool|array|null $selection the selected value(s). String/boolean for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -849,7 +850,8 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|bool|array|null $selection the selected value(s). String for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1854,7 +1856,8 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|bool|null $selection the selected value(s). String/boolean for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1872,7 +1875,17 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', ArrayHelper::toArray($selection));
+            $normalizedSelection = [];
+            foreach (ArrayHelper::toArray($selection) as $selectionItem) {
+                if (is_bool($selectionItem)) {
+                    $normalizedSelection[] = $selectionItem ? '1' : '0';
+                } else {
+                    $normalizedSelection[] = (string)$selectionItem;
+                }
+            }
+            $selection = $normalizedSelection;
+        } elseif (is_bool($selection)) {
+            $selection = $selection ? '1' : '0';
         }
 
         $lines = [];
@@ -1913,9 +1926,20 @@ class BaseHtml
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
-                    $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
+                    $selected = false;
+                    if ($selection !== null) {
+                        if (ArrayHelper::isTraversable($selection)) {
+                            $selected = ArrayHelper::isIn((string)$key, $selection, $strict);
+                        } elseif ($key === '' || $selection === '') {
+                            $selected = $selection === $key;
+                        } elseif ($strict) {
+                            $selected = !strcmp((string)$key, (string)$selection);
+                        } else {
+                            $selected = $selection == $key;
+                        }
+                    }
+
+                    $attrs['selected'] = $selected;
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
@@ -1932,7 +1956,7 @@ class BaseHtml
      * Renders the HTML tag attributes.
      *
      * Attributes whose values are of boolean type will be treated as
-     * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+     * [boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
      *
      * Attributes whose values are null will not be rendered.
      *
@@ -1993,7 +2017,7 @@ class BaseHtml
                         $value = explode(' ', implode(' ', $value));
                         $value = array_unique($value);
                     }
-                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                    $html .= " $name=\"" . static::encode(implode(' ', array_filter($value))) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
                         continue;

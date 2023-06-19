@@ -121,7 +121,7 @@ Yii 2.0 è anche compatibile con le librerie [HHVM](https://hhvm.com/) di Facebo
 comporta diversamente dal PHP nativo, quindi devi avere maggiore cura se intendi usare HHVM.
 
 Su un server di produzione vorrai probabilmente che la tua applicazione sia accessibile tramite l'url 
-`http://www.example.com/index.php` invece di `http://www.example.com/basic/web/index.php`. Questo risultato richiede che punti la
+`https://www.example.com/index.php` invece di `https://www.example.com/basic/web/index.php`. Questo risultato richiede che punti la
 *document root* del tuo webserver nella directory `basic/web`. Vorrai magari anche nascondere `index.php` dall'URL, come descritto
 nella sezione [analizzare e generare URL](runtime-url-handling.md).
 In questa parte vedrai configurare il tuo server Apache o Nginx per ottenere questo risultato.

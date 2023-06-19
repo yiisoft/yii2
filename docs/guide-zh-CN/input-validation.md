@@ -744,7 +744,7 @@ JS;
 
 ### Deferred 验证 <span id="deferred-validation"></span>
 
-如果你需要执行异步客户端验证，你可以创建 [Deferred objects](http://api.jquery.com/category/deferred-object/)。 
+如果你需要执行异步客户端验证，你可以创建 [Deferred objects](https://api.jquery.com/category/deferred-object/)。 
 比如要执行一段自定义的 AJAX 验证，可以使用下面的代码：
 
 ```php

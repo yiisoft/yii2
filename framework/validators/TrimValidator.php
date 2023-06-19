@@ -1,11 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
+
+use yii\helpers\Json;
 
 /**
  * This class converts the attribute value(s) to string(s) and strip characters.
@@ -28,6 +30,7 @@ class TrimValidator extends Validator
      * @inheritDoc
      */
     public $skipOnEmpty = false;
+
 
     /**
      * @inheritDoc
@@ -65,7 +68,7 @@ class TrimValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options) . ', value);';
+        return 'value = yii.validation.trim($form, attribute, ' . Json::htmlEncode($options) . ', value);';
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -219,7 +219,7 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertNotEmpty($_FILES['someFile']);
         $this->assertFalse(isset($_FILES['existingFile']));
     }
-    
+
     public function testParseUnicodeInFileName()
     {
         $unicodeName = 'х.jpg'; // this is Russian "х"

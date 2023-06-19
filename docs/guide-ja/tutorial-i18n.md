@@ -19,8 +19,8 @@ Yii は、全ての領域にわたる国際化機能を提供し、メッセー�
 
 Yii アプリケーションで使用される全てのロケール ID は、一貫性のために、
 `ll-CC` の形式に正規化されなければなりません。
-ここで `ll` は [ISO-639](http://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、
-`CC` は [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html) に従った二文字の国コードです。
+ここで `ll` は [ISO-639](https://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、
+`CC` は [ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) に従った二文字の国コードです。
 ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)
 に述べられています。
 
@@ -467,7 +467,7 @@ echo \Yii::t('app', 'There {n,plural,=0{are no cats} =1{is one cat} other{are # 
 
 これら `other`、`few`、`many` などの特別な引数の名前は言語によって異なります。
 特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
-あるいは、その代りに、[unicode.org の規則のリファレンス](http://cldr.unicode.org/index/cldr-spec/plural-rules) を参照することも出来ます。
+あるいは、その代りに、[unicode.org の規則のリファレンス](https://cldr.unicode.org/index/cldr-spec/plural-rules) を参照することも出来ます。
 
 > Note: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
 > アプリケーションの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru-RU` にしてロシア語から他の言語に翻訳するという設定にしない限り、オリジナルのメッセージとしては使用されることはありません。
@@ -793,11 +793,6 @@ class TranslationEventHandler
 
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>
-
-詳細は [データ・フォーマッタ](output-formatting.md) のセクションを参照してください。
-
-
-## 日付と数値をフォーマットする <span id="date-number"></span>
 
 詳細は [データのフォーマット](output-formatting.md) のセクションを参照して下さい。
 

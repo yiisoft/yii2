@@ -1,20 +1,91 @@
+checks:
+  php: true
+
+filter:
+  paths:
+    - framework/
+
+  excluded_paths:
+    - vendor/
+
+  dependency_paths:
+    - vendor/
+
 build:
+  image: default-bionic
+
+  environment:
+    php:
+      version: 7.4.28
+      ini:
+        xdebug.mode: coverage,develop
+        memory_limit: -1
+
   nodes:
     analysis:
       tests:
         override:
           - php-scrutinizer-run
 
-filter:
-  excluded_paths:
-    - "tests/"
-    - "build/"
-    - "docs/"
-    - "framework/messages/"
-  dependency_paths:
-    - "vendor/"
+    phpunit:
+      dependencies:
+        override:
+          - composer self-update
+          - composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-tools:
-    external_code_coverage:
-        runs: 3
-        timeout: 2100 # Timeout in seconds.
+      services:
+        db-mysql:
+          image: mysql:5.7
+
+          # Define any additional environment variables that are needed by the service.
+          env:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: yiitest
+
+          # We automatically forward these ports from your localhost to the service's port.
+          # Alternatively, you can also access the service on the "$SERVICE_SOME_NAME_IP"
+          # environment variable.
+          ports:
+            # Forward 127.0.0.1:12345 -> SERVICE_IP:12345
+            - 3306
+
+          # If your service writes data to disk like most databases do, you can significantly
+          # speed up tests by mounting a ramdisk at those paths.
+          ramdisks:
+            - /var/lib/data
+
+        db-pgsql:
+          image: postgres:14
+
+          # Define any additional environment variables that are needed by the service.
+          env:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: yiitest
+
+          # We automatically forward these ports from your localhost to the service's port.
+          # Alternatively, you can also access the service on the "$SERVICE_SOME_NAME_IP"
+          # environment variable.
+          ports:
+            # Forward 127.0.0.1:12345 -> SERVICE_IP:12345
+            - 5432
+
+          # If your service writes data to disk like most databases do, you can significantly
+          # speed up tests by mounting a ramdisk at those paths.
+          ramdisks:
+            - /var/lib/data
+
+        memcached:
+          image: memcached
+
+      tests:
+        before:
+          - sudo locale-gen fr_FR.UTF-8
+
+        override:
+          - command: ./vendor/bin/phpunit --verbose --exclude-group cubrid,oci,mssql,wincache,xcache,zenddata --colors=always --coverage-clover ./coverage.xml
+            on_node: 1
+            coverage:
+              file: coverage.xml
+              format: php-clover
