@@ -137,8 +137,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     protected function assertSameAnyWS($expected, $actual, $message = ''){
-        $expected = preg_replace("/[\pZ\pC]/u", "__", $expected);
-        $actual = preg_replace("/[\pZ\pC]/u", "__", $actual);
+        $expected = preg_replace("/[\pZ\pC]/u", " ", $expected);
+        $actual = preg_replace("/[\pZ\pC]/u", " ", $actual);
 
         $this->assertSame($expected, $actual, $message);
     }
