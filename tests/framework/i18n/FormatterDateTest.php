@@ -143,23 +143,23 @@ class FormatterDateTest extends TestCase
     public function testAsTime()
     {
         $value = time();
-        $this->assertSame(date('g:i:s A', $value), $this->formatter->asTime($value));
+        $this->assertSameAnyWS(date('g:i:s A', $value), $this->formatter->asTime($value));
         $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value, 'php:h:i:s A'));
 
         $value = new DateTime();
-        $this->assertSame(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
+        $this->assertSameAnyWS(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
         $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
             $value = new \DateTimeImmutable();
-            $this->assertSame(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
+            $this->assertSameAnyWS(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
             $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
         }
 
         // empty input
-        $this->assertSame('12:00:00 AM', $this->formatter->asTime(''));
-        $this->assertSame('12:00:00 AM', $this->formatter->asTime(0));
-        $this->assertSame('12:00:00 AM', $this->formatter->asTime(false));
+        $this->assertSameAnyWS('12:00:00 AM', $this->formatter->asTime(''));
+        $this->assertSameAnyWS('12:00:00 AM', $this->formatter->asTime(0));
+        $this->assertSameAnyWS('12:00:00 AM', $this->formatter->asTime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
     }

@@ -124,6 +124,26 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Asserting two strings equality ignoring unicode whitespaces.
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    protected function assertEqualsAnyWS($expected, $actual, $message = ''){
+        $expected = preg_replace("/[\pZ\pC]/u", " ", $expected);
+        $actual = preg_replace("/[\pZ\pC]/u", " ", $actual);
+
+        $this->assertEquals($expected, $actual, $message);
+    }
+
+    protected function assertSameAnyWS($expected, $actual, $message = ''){
+        $expected = preg_replace("/[\pZ\pC]/u", "__", $expected);
+        $actual = preg_replace("/[\pZ\pC]/u", "__", $actual);
+
+        $this->assertSame($expected, $actual, $message);
+    }
+
+    /**
      * Asserts that a haystack contains a needle ignoring line endings.
      *
      * @param mixed $needle

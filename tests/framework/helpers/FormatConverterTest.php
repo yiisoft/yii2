@@ -39,8 +39,8 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToPhpShortForm()
     {
-        $this->assertEquals('n/j/y', FormatConverter::convertDateIcuToPhp('short', 'date', 'en-US'));
-        $this->assertEquals('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
+        $this->assertEqualsAnyWS('n/j/y', FormatConverter::convertDateIcuToPhp('short', 'date', 'en-US'));
+        $this->assertEqualsAnyWS('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
     }
 
     public function testIntlIcuToPhpShortFormDefaultLang()
@@ -53,13 +53,13 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToPhpShortFormTime()
     {
-        $this->assertEquals('g:i A', FormatConverter::convertDateIcuToPhp('short', 'time', 'en-US'));
-        $this->assertEquals('H:i', FormatConverter::convertDateIcuToPhp('short', 'time', 'de-DE'));
+        $this->assertEqualsAnyWS('g:i A', FormatConverter::convertDateIcuToPhp('short', 'time', 'en-US'));
+        $this->assertEqualsAnyWS('H:i', FormatConverter::convertDateIcuToPhp('short', 'time', 'de-DE'));
     }
 
     public function testIntlIcuToPhpShortFormDateTime()
     {
-        $this->assertEquals('n/j/y, g:i A', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'en-US'));
+        $this->assertEqualsAnyWS('n/j/y, g:i A', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'en-US'));
         $this->assertEquals(
             PHP_VERSION_ID < 50600 ? 'd.m.y H:i' : 'd.m.y, H:i',
             FormatConverter::convertDateIcuToPhp('short', 'datetime', 'de-DE')
@@ -208,13 +208,13 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToJuiShortFormTime()
     {
-        $this->assertEquals(': ', FormatConverter::convertDateIcuToJui('short', 'time', 'en-US'));
-        $this->assertEquals(':', FormatConverter::convertDateIcuToJui('short', 'time', 'de-DE'));
+        $this->assertEqualsAnyWS(': ', FormatConverter::convertDateIcuToJui('short', 'time', 'en-US'));
+        $this->assertEqualsAnyWS(':', FormatConverter::convertDateIcuToJui('short', 'time', 'de-DE'));
     }
 
     public function testIntlIcuToJuiShortFormDateTime()
     {
-        $this->assertEquals('m/d/y, : ', FormatConverter::convertDateIcuToJui('short', 'datetime', 'en-US'));
+        $this->assertEqualsAnyWS('m/d/y, : ', FormatConverter::convertDateIcuToJui('short', 'datetime', 'en-US'));
         $this->assertEquals(
             PHP_VERSION_ID < 50600 ? 'dd.mm.y :' : 'dd.mm.y, :',
             FormatConverter::convertDateIcuToJui('short', 'datetime', 'de-DE')
