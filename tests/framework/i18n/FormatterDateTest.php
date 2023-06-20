@@ -178,23 +178,35 @@ class FormatterDateTest extends TestCase
     public function testAsDatetime()
     {
         $value = time();
-        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value), $this->formatter->asDatetime($value));
+        $this->assertRegExp(
+            $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value)),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
+        );
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         $value = new DateTime();
-        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
+        $this->assertRegExp(
+            $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
+        );
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         // empty time
         $value = new DateTime();
         $date = $value->format('Y-m-d');
         $value = new DateTime($date);
-        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($date));
+        $this->assertRegExp(
+            $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime($date))
+        );
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($date, 'php:Y/m/d h:i:s A'));
 
         if (PHP_VERSION_ID >= 50500) {
             $value = new \DateTimeImmutable();
-            $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
+            $this->assertRegExp(
+                $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
+                $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
+            );
             $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
         }
 
@@ -205,9 +217,18 @@ class FormatterDateTest extends TestCase
         }
 
         // empty input
-        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(''));
-        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(0));
-        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
+        $this->assertRegExp(
+            $this->sanitizeWhitespaces('~Jan 1, 1970,? 12:00:00 AM~'),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime(''))
+        );
+        $this->assertRegExp(
+            $this->sanitizeWhitespaces('~Jan 1, 1970,? 12:00:00 AM~'),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime(0))
+        );
+        $this->assertRegExp(
+            $this->sanitizeWhitespaces('~Jan 1, 1970,? 12:00:00 AM~'),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime(false))
+        );
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
     }

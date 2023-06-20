@@ -130,15 +130,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param string $message
      */
     protected function assertEqualsAnyWS($expected, $actual, $message = ''){
-        $expected = preg_replace("/[\pZ\pC]/u", " ", $expected);
-        $actual = preg_replace("/[\pZ\pC]/u", " ", $actual);
+        $expected = $this->sanitizeWhitespaces($expected);
+        $actual = $this->sanitizeWhitespaces($actual);
 
         $this->assertEquals($expected, $actual, $message);
     }
 
     protected function assertSameAnyWS($expected, $actual, $message = ''){
-        $expected = preg_replace("/[\pZ\pC]/u", " ", $expected);
-        $actual = preg_replace("/[\pZ\pC]/u", " ", $actual);
+        $expected = $this->sanitizeWhitespaces($expected);
+        $actual = $this->sanitizeWhitespaces($actual);
 
         $this->assertSame($expected, $actual, $message);
     }
@@ -156,6 +156,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $haystack = str_replace("\r\n", "\n", $haystack);
 
         $this->assertContains($needle, $haystack, $message);
+    }
+
+    protected function sanitizeWhitespaces($string){
+        return preg_replace("/[\pZ\pC]/u", " ", $string);
     }
 
     /**
