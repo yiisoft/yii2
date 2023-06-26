@@ -4,7 +4,10 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
+- Bug #18859: Fix `yii\web\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
 - Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
+- Enh #19853: Added support for default value for `\yii\helpers\Console::select()` (rhertogh)
+- Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
 
 
 2.0.48.1 May 24, 2023

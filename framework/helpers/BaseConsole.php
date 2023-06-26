@@ -948,13 +948,17 @@ class BaseConsole
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from. Key is what is inputed and used, value is
      * what's displayed to end user by help command.
+     * @param string|null $default value to use when the user doesn't provide an option.
+     * If the default is `null`, the user is required to select an option.
      *
      * @return string An option character the user chose
+     * @since 2.0.49 Added the $default argument
      */
-    public static function select($prompt, $options = [])
+    public static function select($prompt, $options = [], $default = null)
     {
         top:
-        static::stdout("$prompt [" . implode(',', array_keys($options)) . ',?]: ');
+        static::stdout("$prompt (" . implode(',', array_keys($options)) . ',?)'
+            . ($default !== null ? '[' . $default . ']' : '') . ': ');
         $input = static::stdin();
         if ($input === '?') {
             foreach ($options as $key => $value) {
@@ -962,6 +966,8 @@ class BaseConsole
             }
             static::output(' ? - Show help');
             goto top;
+        } elseif ($default !== null && $input === '') {
+            return $default;
         } elseif (!array_key_exists($input, $options)) {
             goto top;
         }
