@@ -91,7 +91,7 @@ class Action extends Component
         }
         if ($this->beforeRun()) {
             $result = call_user_func_array([$this, 'run'], $args);
-            $this->afterRun();
+            $result = $this->afterRun($result);
 
             return $result;
         }
@@ -115,7 +115,8 @@ class Action extends Component
      * This method is called right after `run()` is executed.
      * You may override this method to do post-processing work for the action run.
      */
-    protected function afterRun()
+    protected function afterRun($result)
     {
+        return $result;
     }
 }
