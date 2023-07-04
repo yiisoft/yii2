@@ -14,8 +14,8 @@ use yiiunit\framework\db\DatabaseTestCase;
 /**
  * Class MysqlMutexTest.
  *
- * @group mutex
  * @group db
+ * @group mutex
  * @group mysql
  */
 class MysqlMutexTest extends DatabaseTestCase

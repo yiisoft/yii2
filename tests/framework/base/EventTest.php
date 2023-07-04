@@ -18,13 +18,13 @@ class EventTest extends TestCase
 {
     public $counter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->counter = 0;
         Event::offAll();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Event::offAll();

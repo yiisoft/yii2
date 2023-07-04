@@ -13,8 +13,8 @@ use yiiunit\framework\db\DatabaseTestCase;
 /**
  * Class PgsqlMutexTest.
  *
- * @group mutex
  * @group db
+ * @group mutex
  * @group pgsql
  */
 class PgsqlMutexTest extends DatabaseTestCase

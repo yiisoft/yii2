@@ -25,6 +25,6 @@ use Yii;
  * @see https://wiki.php.net/rfc/object-typehint
  * @see https://github.com/yiisoft/yii2/issues/7936#issuecomment-315384669
  */
-class Object extends BaseObject
+class ObjectDeprecated extends BaseObject
 {
 }

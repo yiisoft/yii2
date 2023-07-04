@@ -91,7 +91,7 @@ class RequestTest extends TestCase
         $request->enableCsrfCookie = false;
 
         $token = $request->getCsrfToken();
-        $this->assertRegExp('~[-_=a-z0-9]~i', $token);
+        $this->assertMatchesRegularExpression('~[-_=a-z0-9]~i', $token);
     }
 
     public function testCsrfTokenValidation()
@@ -430,24 +430,22 @@ class RequestTest extends TestCase
         $this->assertSame('servername.com', $request->getHostName());
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testGetScriptFileWithEmptyServer()
     {
         $request = new Request();
         $_SERVER = [];
 
+        $this->expectException(\yii\base\InvalidConfigException::class);
+
         $request->getScriptFile();
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testGetScriptUrlWithEmptyServer()
     {
         $request = new Request();
         $_SERVER = [];
+
+        $this->expectException(\yii\base\InvalidConfigException::class);
 
         $request->getScriptUrl();
     }

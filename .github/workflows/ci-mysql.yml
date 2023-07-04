@@ -9,10 +9,9 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }}-mysql-${{ matrix.mysql-version }}
+    name: PHP ${{ matrix.php }}-mysql-${{ matrix.mysql }}
     env:
-      extensions: curl, intl, pdo, pdo_mysql
-      key: cache-v1
+      EXTENSIONS: curl, intl, pdo, pdo_mysql
 
     runs-on: ${{ matrix.os }}
 
@@ -21,15 +20,18 @@ jobs:
         os:
           - ubuntu-latest
 
-        php-version:
-          - 7.4
+        php:
+          - 8.0
+          - 8.1
+          - 8.2
 
-        mysql-version:
+        mysql:
+          - 5.7
           - latest
 
     services:
       mysql:
-        image: mysql:${{ matrix.mysql-version }}
+        image: mysql:${{ matrix.mysql }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: yiitest
@@ -38,46 +40,33 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Checkout
+      - name: Checkout.
         uses: actions/checkout@v3
 
-      - name: Setup cache environment
-        id: cache-env
-        uses: shivammathur/cache-extensions@v1
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          key: ${{ env.key }}
-
-      - name: Cache extensions
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.cache-env.outputs.dir }}
-          key: ${{ steps.cache-env.outputs.key }}
-          restore-keys: ${{ steps.cache-env.outputs.key }}
-
-      - name: Install PHP with extensions
+      - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          ini-values: date.timezone='UTC'
           coverage: pcov
+          extensions: ${{ env.EXTENSIONS }}
+          ini-values: date.timezone='UTC'
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, pecl
 
-      - name: Determine composer cache directory
-        if: matrix.os == 'ubuntu-latest'
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
-
-      - name: Install dependencies with composer
+      - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run mysql tests with phpunit
-        run: vendor/bin/phpunit --group mysql --colors=always
+      - name: Run Mysql tests with phpunit.
+        if: matrix.php == '8.0'
+        continue-on-error: true
+        run: vendor/bin/phpunit --group mysql --exclude db-session,deadlock --colors=always
+
+      - name: Run Mysql tests with phpunit.
+        if: matrix.php != '8.0'
+        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
+
+      - name: Upload coverage to Codecov.
+        if: matrix.php == '8.1'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+

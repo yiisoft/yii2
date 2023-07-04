@@ -22,7 +22,7 @@ class LinkSorterTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlite';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();

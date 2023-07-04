@@ -12,7 +12,10 @@ namespace yiiunit\framework\web\session\mysql;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  *
+ * @runTestsInSeparateProcesses
+ *
  * @group db
+ * @group db-session
  * @group mysql
  */
 class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest

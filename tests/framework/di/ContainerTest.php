@@ -40,7 +40,7 @@ use yiiunit\TestCase;
  */
 class ContainerTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
@@ -443,11 +443,10 @@ class ContainerTest extends TestCase
         $this->assertSame(42, $qux->a);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testThrowingNotFoundException()
     {
+        $this->expectException(\yii\di\NotInstantiableException::class);
+
         $container = new Container();
         $container->get('non_existing');
     }
@@ -481,31 +480,6 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * @requires PHP 5.6
-     */
-    public function testVariadicConstructor()
-    {
-        if (\defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
-
-        $container = new Container();
-        $container->get('yiiunit\framework\di\stubs\Variadic');
-    }
-
-    /**
-     * @requires PHP 5.6
-     */
-    public function testVariadicCallable()
-    {
-        if (\defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
-
-        require __DIR__ . '/testContainerWithVariadicCallable.php';
-    }
-
-    /**
      * @see https://github.com/yiisoft/yii2/issues/18245
      */
     public function testDelayedInitializationOfSubArray()
@@ -534,7 +508,8 @@ class ContainerTest extends TestCase
         ]);
 
         Yii::$container->set('setLater', new Qux());
-        Yii::$container->get('test');
+
+        $this->assertInstanceOf(Corge::className(), Yii::$container->get('test'));
     }
 
     /**

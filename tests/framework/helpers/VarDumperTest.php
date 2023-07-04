@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class VarDumperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -29,8 +29,8 @@ class VarDumperTest extends TestCase
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
         $dumpResult = VarDumper::dumpAsString($incompleteObj);
-        $this->assertContains("__PHP_Incomplete_Class#1\n(", $dumpResult);
-        $this->assertContains('nonExistingClass', $dumpResult);
+        $this->assertStringContainsString("__PHP_Incomplete_Class#1\n(", $dumpResult);
+        $this->assertStringContainsString('nonExistingClass', $dumpResult);
     }
 
     public function testExportIncompleteObject()
@@ -38,7 +38,7 @@ class VarDumperTest extends TestCase
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
         $exportResult = VarDumper::export($incompleteObj);
-        $this->assertContains('nonExistingClass', $exportResult);
+        $this->assertStringContainsString('nonExistingClass', $exportResult);
     }
 
     public function testDumpObject()
@@ -50,9 +50,9 @@ class VarDumperTest extends TestCase
         $obj->name = 'test-name';
         $obj->price = 19;
         $dumpResult = VarDumper::dumpAsString($obj);
-        $this->assertContains("stdClass#1\n(", $dumpResult);
-        $this->assertContains("[name] => 'test-name'", $dumpResult);
-        $this->assertContains('[price] => 19', $dumpResult);
+        $this->assertStringContainsString("stdClass#1\n(", $dumpResult);
+        $this->assertStringContainsString("[name] => 'test-name'", $dumpResult);
+        $this->assertStringContainsString('[price] => 19', $dumpResult);
     }
 
     /**
@@ -197,7 +197,7 @@ RESULT;
         $object->unitPrice = 15;
 
         $dumpResult = VarDumper::dumpAsString($object);
-        $this->assertContains('totalPrice', $dumpResult);
-        $this->assertNotContains('unitPrice', $dumpResult);
+        $this->assertStringContainsString('totalPrice', $dumpResult);
+        $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
 }

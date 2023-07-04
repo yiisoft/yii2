@@ -26,7 +26,7 @@ class ControllerTest extends TestCase
     /** @var FakeController */
     private $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -270,7 +270,7 @@ class ControllerTest extends TestCase
 
         $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
         $helpController->actionIndex('fake/aksi1');
-        $this->assertContains('--test-array, -ta', $helpController->outputString);
+        $this->assertStringContainsString('--test-array, -ta', $helpController->outputString);
     }
 
     /**

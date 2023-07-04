@@ -53,11 +53,9 @@ class IpHelperTest extends TestCase
 
     public function testIpv6ExpandingWithInvalidValue()
     {
-        try {
-            IpHelper::expandIPv6('fa01::1/64');
-        } catch (\Exception $exception) {
-            $this->assertStringEndsWith('Unrecognized address fa01::1/64', $exception->getMessage());
-        }
+        $this->expectException(\Exception::class);
+
+        IpHelper::expandIPv6('fa01::1/64');
     }
 
     /**
