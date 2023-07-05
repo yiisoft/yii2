@@ -34,8 +34,7 @@ class ApcCacheTest extends CacheTestCase
         }
 
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new ApcCache();
-            $this->_cacheInstance->useApcu = true;
+            $this->_cacheInstance = new ApcCache(['useApcu' => true]);
         }
 
         return $this->_cacheInstance;
