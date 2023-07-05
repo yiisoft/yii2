@@ -122,11 +122,6 @@ Exception: yii\web\NotFoundHttpException', $out);
 
     public function testHtmlEncodeWithUnicodeSequence()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $handler = Yii::$app->getErrorHandler();
 
         $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";

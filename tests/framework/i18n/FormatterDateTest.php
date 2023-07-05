@@ -74,14 +74,12 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('n/j/y', $value->getTimestamp()), $this->formatter->asDate($value, 'short'));
         $this->assertSame(date('F j, Y', $value->getTimestamp()), $this->formatter->asDate($value, 'long'));
 
-        if (PHP_VERSION_ID >= 50500) {
-            $value = new \DateTimeImmutable();
-            $this->assertSame(date('M j, Y', $value->getTimestamp()), $this->formatter->asDate($value));
-            $this->assertSame(date('Y/m/d', $value->getTimestamp()), $this->formatter->asDate($value, 'php:Y/m/d'));
-            $this->assertSame(date('m/d/Y', $value->getTimestamp()), $this->formatter->asDate($value, 'MM/dd/yyyy'));
-            $this->assertSame(date('n/j/y', $value->getTimestamp()), $this->formatter->asDate($value, 'short'));
-            $this->assertSame(date('F j, Y', $value->getTimestamp()), $this->formatter->asDate($value, 'long'));
-        }
+        $value = new \DateTimeImmutable();
+        $this->assertSame(date('M j, Y', $value->getTimestamp()), $this->formatter->asDate($value));
+        $this->assertSame(date('Y/m/d', $value->getTimestamp()), $this->formatter->asDate($value, 'php:Y/m/d'));
+        $this->assertSame(date('m/d/Y', $value->getTimestamp()), $this->formatter->asDate($value, 'MM/dd/yyyy'));
+        $this->assertSame(date('n/j/y', $value->getTimestamp()), $this->formatter->asDate($value, 'short'));
+        $this->assertSame(date('F j, Y', $value->getTimestamp()), $this->formatter->asDate($value, 'long'));
 
         // empty input
         $this->assertSame('Jan 1, 1970', $this->formatter->asDate(''));
@@ -201,20 +199,16 @@ class FormatterDateTest extends TestCase
         );
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($date, 'php:Y/m/d h:i:s A'));
 
-        if (PHP_VERSION_ID >= 50500) {
-            $value = new \DateTimeImmutable();
-            $this->assertMatchesRegularExpression(
-                $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
-                $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
-            );
-            $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
-        }
+        $value = new \DateTimeImmutable();
+        $this->assertMatchesRegularExpression(
+            $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
+            $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
+        );
+        $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
-        if (PHP_VERSION_ID >= 50600) {
-            // DATE_ATOM
-            $value = time();
-            $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
-        }
+        // DATE_ATOM
+        $value = time();
+        $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
 
         // empty input
         $this->assertMatchesRegularExpression(

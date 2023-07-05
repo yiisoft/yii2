@@ -294,9 +294,6 @@ namespace yiiunit\framework\log {
             $targetFirst = new TargetMock([
                 'collectOverride' => function () {
                     $this->targetThrowFirstCount++;
-                    if (PHP_MAJOR_VERSION < 7) {
-                        throw new \RuntimeException('test');
-                    }
                     require_once __DIR__ . DIRECTORY_SEPARATOR . 'mocks' . DIRECTORY_SEPARATOR . 'typed_error.php';
                     typed_error_test_mock([]);
                 }

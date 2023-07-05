@@ -97,17 +97,15 @@ class JsonTest extends TestCase
         $this->assertSame('{}', Json::encode($data));
 
         // Generator (Only supported since PHP 5.5)
-        if (PHP_VERSION_ID >= 50500) {
-            $data = eval(<<<'PHP'
-                return function () {
-                    foreach (['a' => 1, 'b' => 2] as $name => $value) {
-                        yield $name => $value;
-                    }
-                };
+        $data = eval(<<<'PHP'
+            return function () {
+                foreach (['a' => 1, 'b' => 2] as $name => $value) {
+                    yield $name => $value;
+                }
+            };
 PHP
-            );
-            $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
-        }
+        );
+        $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
     }
 
     public function testHtmlEncode()
@@ -235,11 +233,7 @@ PHP
             Json::encode($data);
             fclose($fp);
         } catch (\yii\base\InvalidArgumentException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
-            } else {
-                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
-            }
+            $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
         }
     }
 
