@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
@@ -23,6 +24,8 @@ use yii\widgets\MaskedInput;
  */
 class ActiveFieldTest extends \yiiunit\TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * @var ActiveFieldExtend
      */

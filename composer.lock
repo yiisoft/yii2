@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7c6fc0d01b64fd08f2c72fd77a0c4bad",
+    "content-hash": "1c9e9e5bc6be7b83ef45eed0425bd5b9",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -588,6 +588,50 @@
                 }
             ],
             "time": "2022-02-25T21:32:43+00:00"
+        },
+        {
+            "name": "dms/phpunit-arraysubset-asserts",
+            "version": "v0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rdohms/phpunit-arraysubset-asserts.git",
+                "reference": "aa6b9e858414e91cca361cac3b2035ee57d212e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rdohms/phpunit-arraysubset-asserts/zipball/aa6b9e858414e91cca361cac3b2035ee57d212e0",
+                "reference": "aa6b9e858414e91cca361cac3b2035ee57d212e0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0 || ^8.0",
+                "phpunit/phpunit": "^4.8.36 || ^5.7.21 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0"
+            },
+            "require-dev": {
+                "dms/coding-standard": "^9"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "assertarraysubset-autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rafael Dohms",
+                    "email": "rdohms@gmail.com"
+                }
+            ],
+            "description": "This package provides ArraySubset and related asserts once deprecated in PHPUnit 8",
+            "support": {
+                "issues": "https://github.com/rdohms/phpunit-arraysubset-asserts/issues",
+                "source": "https://github.com/rdohms/phpunit-arraysubset-asserts/tree/v0.5.0"
+            },
+            "time": "2023-06-02T17:33:53+00:00"
         },
         {
             "name": "doctrine/annotations",

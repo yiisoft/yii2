@@ -82,6 +82,7 @@
         "paragonie/random_compat": ">=1"
     },
     "require-dev": {
+        "dms/phpunit-arraysubset-asserts": "^0.5",
         "phpunit/phpunit": "^9.6",
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "^3.0"
