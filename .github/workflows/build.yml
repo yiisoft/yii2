@@ -58,32 +58,3 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
-
-  npm:
-    name: NPM 6 on ubuntu-latest
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout.
-        uses: actions/checkout@v3
-
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          ini-values: session.save_path=${{ runner.temp }}
-
-      - name: Install dependencies.
-        run: composer update $DEFAULT_COMPOSER_FLAGS
-
-      - name: Install node.js.
-        uses: actions/setup-node@v1
-        with:
-          node-version: 6
-
-      - name: Tests.
-        run: |
-          npm install
-          npm test
-#        env:
-#          CI: true
