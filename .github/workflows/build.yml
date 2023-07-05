@@ -54,7 +54,7 @@ jobs:
 
 
       - name: Upload coverage to Codecov.
-        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.1'
+        if: matrix.php == '8.1'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
