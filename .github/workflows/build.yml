@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  PHPUNIT_EXCLUDE_GROUP: wincache,xcache,zenddata
+  PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -70,7 +70,7 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.1
           ini-values: session.save_path=${{ runner.temp }}
 
       - name: Install dependencies.
