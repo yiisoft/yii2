@@ -46,11 +46,11 @@ jobs:
 
       - name: Run tests with phpunit and generate coverage.
         if: matrix.php == '8.1'
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always --verbose
 
       - name: Run tests with phpunit.
         if: matrix.php != '8.1'
-        run: vendor/bin/phpunit --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
+        run: vendor/bin/phpunit --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always --verbose
 
 
       - name: Upload coverage to Codecov.
