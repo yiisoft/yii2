@@ -33,8 +33,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           coverage: pcov
-          extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached, pdo, pdo_sqlite, sqlite
-          ini-values: date.timezone='UTC', session.save_path="${{ runner.temp }}"
+          extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached, pdo, pdo_sqlite, sqlite
+          ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
           tools: pecl
 
