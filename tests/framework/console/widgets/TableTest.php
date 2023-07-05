@@ -22,7 +22,7 @@ class TableTest extends TestCase
         $this->mockApplication();
     }
 
-    public function getTableData()
+    public static function getTableData()
     {
         return [
             [
@@ -486,7 +486,7 @@ EXPECTED;
         $this->assertTrue(true);
     }
 
-    public function dataMinimumWidth()
+    public static function dataMinimumWidth()
     {
         return [
             ['X'],

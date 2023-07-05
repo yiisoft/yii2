@@ -69,7 +69,7 @@ class UrlManagerCreateUrlTest extends TestCase
     }
 
 
-    public function variationsProvider()
+    public static function variationsProvider()
     {
         $baseUrlConfig = [
             'baseUrl' => '/test',
@@ -523,7 +523,7 @@ class UrlManagerCreateUrlTest extends TestCase
     }
 
 
-    public function absolutePatternsVariations()
+    public static function absolutePatternsVariations()
     {
         $baseUrlConfig = [
             'baseUrl' => '/test',
@@ -684,7 +684,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
     }
 
-    public function multipleHostsRulesDataProvider()
+    public static function multipleHostsRulesDataProvider()
     {
         return [
             ['http://example.com'],

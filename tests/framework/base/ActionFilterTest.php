@@ -87,7 +87,7 @@ class ActionFilterTest extends TestCase
     }
 
 
-    public function actionFilterProvider()
+    public static function actionFilterProvider()
     {
         return [
             [['class' => 'yii\filters\AccessControl', 'user' => 'yiiunit\framework\base\MockUser']],

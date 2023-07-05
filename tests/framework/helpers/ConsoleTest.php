@@ -153,7 +153,7 @@ class ConsoleTest extends TestCase
         }
     }*/
 
-    public function ansiFormats()
+    public static function ansiFormats()
     {
         return [
             ['test', 'test'],

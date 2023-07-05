@@ -52,17 +52,17 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function primaryKeysProvider()
+    public static function primaryKeysProvider()
     {
-        $this->markTestSkipped('Adding/dropping primary keys is not supported in SQLite.');
+        self::markTestSkipped('Adding/dropping primary keys is not supported in SQLite.');
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider()
     {
-        $this->markTestSkipped('Adding/dropping foreign keys is not supported in SQLite.');
+        self::markTestSkipped('Adding/dropping foreign keys is not supported in SQLite.');
     }
 
-    public function indexesProvider()
+    public static function indexesProvider()
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
@@ -81,19 +81,19 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function uniquesProvider()
+    public static function uniquesProvider()
     {
-        $this->markTestSkipped('Adding/dropping unique constraints is not supported in SQLite.');
+        self::markTestSkipped('Adding/dropping unique constraints is not supported in SQLite.');
     }
 
-    public function checksProvider()
+    public static function checksProvider()
     {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in SQLite.');
+        self::markTestSkipped('Adding/dropping check constraints is not supported in SQLite.');
     }
 
-    public function defaultValuesProvider()
+    public static function defaultValuesProvider()
     {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in SQLite.');
+        self::markTestSkipped('Adding/dropping default constraints is not supported in SQLite.');
     }
 
     public function testCommentColumn()
@@ -200,7 +200,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         $concreteData = [
             'regular values' => [

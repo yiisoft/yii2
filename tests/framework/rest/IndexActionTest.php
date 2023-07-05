@@ -125,7 +125,7 @@ class IndexActionTest extends TestCase
      * Data provider for [[testPrepareDataProviderWithPaginationAndSorting()]].
      * @return array test data
      */
-    public function dataProviderTestPrepareDataProviderWithPaginationAndSorting()
+    public static function dataProviderTestPrepareDataProviderWithPaginationAndSorting()
     {
         return [
             [ // Default config

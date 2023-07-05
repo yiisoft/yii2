@@ -32,7 +32,7 @@ class HostControlTest extends TestCase
     /**
      * @return array test data.
      */
-    public function hostInfoValidationDataProvider()
+    public static function hostInfoValidationDataProvider()
     {
         return [
             [

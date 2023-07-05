@@ -176,7 +176,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $this->assertEquals('success', $controller->run('a'));
     }
 
-    public function compositeAuthDataProvider()
+    public static function compositeAuthDataProvider()
     {
         return [
             //base usage

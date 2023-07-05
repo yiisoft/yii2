@@ -348,7 +348,7 @@ class FormatterTest extends TestCase
         $this->assertSame('1451602800', $this->formatter->asTimestamp($dateTime));
     }
 
-    public function lengthDataProvider()
+    public static function lengthDataProvider()
     {
         return [
             [
@@ -447,7 +447,7 @@ class FormatterTest extends TestCase
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
-    public function weightDataProvider()
+    public static function weightDataProvider()
     {
         return [
             [

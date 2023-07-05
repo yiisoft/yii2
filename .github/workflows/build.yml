@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
+  PHPUNIT_EXCLUDE_GROUP: wincache,xcache,zenddata
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.0, 8.1, 8.2]
+        php: [8.1, 8.2]
 
     steps:
       - name: Generate french locale.
@@ -45,10 +45,16 @@ jobs:
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
       - name: Run tests with phpunit and generate coverage.
+        if: matrix.php == '8.1'
         run: vendor/bin/phpunit --coverage-clover=coverage.xml --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
+      - name: Run tests with phpunit.
+        if: matrix.php != '8.1'
+        run: vendor/bin/phpunit --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
+
+
       - name: Upload coverage to Codecov.
-        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.0'
+        if: matrix.os == 'ubuntu-latest' && matrix.php == '8.1'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml

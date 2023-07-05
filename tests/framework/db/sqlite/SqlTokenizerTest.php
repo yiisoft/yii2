@@ -17,7 +17,7 @@ use yiiunit\TestCase;
  */
 class SqlTokenizerTest extends TestCase
 {
-    public function sqlProvider()
+    public static function sqlProvider()
     {
         return [
             'complex' => [

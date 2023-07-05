@@ -163,7 +163,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $columns;
     }
 
-    public function primaryKeysProvider()
+    public static function primaryKeysProvider()
     {
         $result = parent::primaryKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_1}} DROP PRIMARY KEY';
@@ -172,14 +172,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider()
     {
         $result = parent::foreignKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_3}} DROP FOREIGN KEY [[CN_constraints_3]]';
         return $result;
     }
 
-    public function indexesProvider()
+    public static function indexesProvider()
     {
         $result = parent::indexesProvider();
         $result['create'][0] = 'ALTER TABLE {{T_constraints_2}} ADD INDEX [[CN_constraints_2_single]] ([[C_index_1]])';
@@ -189,21 +189,21 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function uniquesProvider()
+    public static function uniquesProvider()
     {
         $result = parent::uniquesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
         return $result;
     }
 
-    public function checksProvider()
+    public static function checksProvider()
     {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');
+        self::markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');
     }
 
-    public function defaultValuesProvider()
+    public static function defaultValuesProvider()
     {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
+        self::markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
     }
 
     public function testResetSequence()
@@ -219,7 +219,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         $concreteData = [
             'regular values' => [
@@ -403,7 +403,7 @@ MySqlStatement;
         // primary key columns should have NULL as value
         $sql = $command->insert('null_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `null_values` (`id`) VALUES (NULL)", $sql);
-        
+
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);

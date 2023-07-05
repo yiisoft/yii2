@@ -26,7 +26,7 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
     /**
      * @return array
      */
-    public function typesProvider()
+    public static function typesProvider()
     {
         return [
             ['integer NULL DEFAULT NULL', Schema::TYPE_INTEGER, null, [

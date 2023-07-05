@@ -148,7 +148,7 @@ class YiiRequirementCheckerTest extends TestCase
      * Data provider for [[testGetByteSize()]].
      * @return array
      */
-    public function dataProviderGetByteSize()
+    public static function dataProviderGetByteSize()
     {
         return [
             ['456', 456],
@@ -178,7 +178,7 @@ class YiiRequirementCheckerTest extends TestCase
      * Data provider for [[testCompareByteSize()]]
      * @return array
      */
-    public function dataProviderCompareByteSize()
+    public static function dataProviderCompareByteSize()
     {
         return [
             ['2M', '2K', '>', true],

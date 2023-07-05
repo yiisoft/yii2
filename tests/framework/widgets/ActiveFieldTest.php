@@ -259,7 +259,7 @@ EOT;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function hintDataProvider()
+    public static function hintDataProvider()
     {
         return [
             ['Hint Content', '<div class="hint-block">Hint Content</div>'],

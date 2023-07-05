@@ -167,7 +167,7 @@ class StringHelperTest extends TestCase
     /**
      * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`.
      */
-    public function providerStartsWith()
+    public static function providerStartsWith()
     {
         return [
             // positive check
@@ -223,7 +223,7 @@ class StringHelperTest extends TestCase
     /**
      * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`.
      */
-    public function providerEndsWith()
+    public static function providerEndsWith()
     {
         return [
             // positive check
@@ -305,7 +305,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals($output, $decoded);
     }
 
-    public function base64UrlEncodedStringsProvider()
+    public static function base64UrlEncodedStringsProvider()
     {
         return [
             ['This is an encoded string', 'VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw=='],
@@ -319,7 +319,7 @@ class StringHelperTest extends TestCase
      * Data provider for [[testMatchWildcard()]]
      * @return array test data.
      */
-    public function dataProviderMatchWildcard()
+    public static function dataProviderMatchWildcard()
     {
         return [
             // *
@@ -402,7 +402,7 @@ class StringHelperTest extends TestCase
         $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
     }
 
-    public function dataProviderMb_ucfirst()
+    public static function dataProviderMb_ucfirst()
     {
         return [
             ['foo', 'Foo'],
@@ -424,7 +424,7 @@ class StringHelperTest extends TestCase
         $this->assertSame($expectedResult, StringHelper::mb_ucfirst($string));
     }
 
-    public function dataProviderMb_ucwords()
+    public static function dataProviderMb_ucwords()
     {
         return [
             ['foo', 'Foo'],
@@ -463,7 +463,7 @@ class StringHelperTest extends TestCase
         $this->assertSame($expectedResult, StringHelper::dirname($string));
     }
 
-    public function dataProviderDirname()
+    public static function dataProviderDirname()
     {
         return [
             ['\\foo\\bar\\test', '\foo\bar'],

@@ -65,7 +65,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($expectedActionMethod, $actionMethod);
     }
 
-    public function createInlineActionProvider()
+    public static function createInlineActionProvider()
     {
         return [
             ['\yiiunit\framework\base\TestController', 'non-existent-id', null],
@@ -88,7 +88,7 @@ class ControllerTest extends TestCase
         $this->assertSame($expected, preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $input));
     }
 
-    public function actionIdMethodProvider()
+    public static function actionIdMethodProvider()
     {
         return [
             ['apple-id', 1],

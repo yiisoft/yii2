@@ -19,7 +19,7 @@ class ArrayParserTest extends TestCase
         $this->arrayParser = new ArrayParser();
     }
 
-    public function convertProvider()
+    public static function convertProvider()
     {
         return [
             ['{}', []],

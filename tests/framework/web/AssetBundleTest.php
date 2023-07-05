@@ -257,7 +257,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function positionProvider()
+    public static function positionProvider()
     {
         return [
             [View::POS_HEAD, true],
@@ -408,7 +408,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function registerFileDataProvider()
+    public static function registerFileDataProvider()
     {
         return [
             // JS files registration

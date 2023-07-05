@@ -496,7 +496,7 @@ class LoggerTest extends TestCase
         $this->assertEquals([$fistCategory], $logger->getProfiling(['cat*'], ['category*']));
     }
 
-    public function providerForNonProfilingMessages()
+    public static function providerForNonProfilingMessages()
     {
         return [
             [Logger::LEVEL_ERROR],

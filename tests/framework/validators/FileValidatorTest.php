@@ -533,7 +533,7 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($validator->validate($file));
     }
 
-    public function validMimeTypes()
+    public static function validMimeTypes()
     {
         $validMimeTypes = array_filter([
             ['test.svg', 'image/*', 'svg'],
@@ -555,7 +555,7 @@ class FileValidatorTest extends TestCase
         return $validMimeTypes;
     }
 
-    public function invalidMimeTypes()
+    public static function invalidMimeTypes()
     {
         return [
             ['test.txt', 'image/*', 'png, jpg'],
@@ -663,7 +663,7 @@ class FileValidatorTest extends TestCase
         $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
     }
 
-    public function mimeTypeCaseInsensitive() {
+    public static function mimeTypeCaseInsensitive() {
         return [
             ['Image/*', 'image/jp2', true],
             ['image/*', 'Image/jp2', true],

@@ -544,7 +544,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDuration(null));
     }
 
-    public function dateInputs()
+    public static function dateInputs()
     {
         return [
             ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
@@ -581,7 +581,7 @@ class FormatterDateTest extends TestCase
     }
 
 
-    public function provideTimezones()
+    public static function provideTimezones()
     {
         return [
             ['UTC'],
@@ -596,12 +596,12 @@ class FormatterDateTest extends TestCase
     /**
      * Provide default timezones times input date value.
      */
-    public function provideTimesAndTz()
+    public static function provideTimesAndTz()
     {
         $utc = new \DateTimeZone('UTC');
         $berlin = new \DateTimeZone('Europe/Berlin');
         $result = [];
-        foreach ($this->provideTimezones() as $tz) {
+        foreach (self::provideTimezones() as $tz) {
             $result[] = [$tz[0], 1407674460,                          1388580060];
             $result[] = [$tz[0], '2014-08-10 12:41:00',               '2014-01-01 12:41:00'];
             $result[] = [$tz[0], '2014-08-10 12:41:00 UTC',           '2014-01-01 12:41:00 UTC'];

@@ -40,7 +40,7 @@ class ResponseTest extends \yiiunit\TestCase
         $this->response = new \yii\web\Response();
     }
 
-    public function rightRanges()
+    public static function rightRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
         // https://tools.ietf.org/html/rfc2616
@@ -79,7 +79,7 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals((string)$length, $headers->get('Content-Length'));
     }
 
-    public function wrongRanges()
+    public static function wrongRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
         // https://tools.ietf.org/html/rfc2616
@@ -208,7 +208,7 @@ class ResponseTest extends \yiiunit\TestCase
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
      * @return array
      */
-    public function dataProviderAjaxRedirectInternetExplorer11() {
+    public static function dataProviderAjaxRedirectInternetExplorer11() {
         return [
             ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]], // Firefox
             ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]], // IE 11
@@ -254,7 +254,7 @@ class ResponseTest extends \yiiunit\TestCase
         static::assertEquals(200, $this->response->statusCode);
     }
 
-    public function dataProviderSetStatusCodeByException()
+    public static function dataProviderSetStatusCodeByException()
     {
         $data = [
             [
@@ -297,7 +297,7 @@ class ResponseTest extends \yiiunit\TestCase
         return $data;
     }
 
-    public function formatDataProvider()
+    public static function formatDataProvider()
     {
         return [
             [Response::FORMAT_JSON, '{"value":1}'],

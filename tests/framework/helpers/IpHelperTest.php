@@ -23,7 +23,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $version, $message);
     }
 
-    public function getIpVersionProvider()
+    public static function getIpVersionProvider()
     {
         return [
             ['192.168.0.1', IpHelper::IPV4],
@@ -43,7 +43,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $expanded, $message);
     }
 
-    public function expandIpv6Provider()
+    public static function expandIpv6Provider()
     {
         return [
             ['fa01::1', 'fa01:0000:0000:0000:0000:0000:0000:0001'],
@@ -71,7 +71,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $result, $message);
     }
 
-    public function ip2binProvider()
+    public static function ip2binProvider()
     {
         return [
             ['192.168.1.1', '11000000101010000000000100000001'],
@@ -95,7 +95,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function inRangeProvider()
+    public static function inRangeProvider()
     {
         return [
             ['192.168.1.1/24', '192.168.0.0/23', true],

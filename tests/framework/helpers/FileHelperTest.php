@@ -1260,7 +1260,7 @@ class FileHelperTest extends TestCase
         FileHelper::changeOwnership($useFile ? $file : null, $ownership, $mode);
     }
 
-    public function changeOwnershipInvalidArgumentsProvider()
+    public static function changeOwnershipInvalidArgumentsProvider()
     {
         return [
             [false, '123:123', null],
@@ -1282,7 +1282,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extensions, FileHelper::getExtensionsByMimeType($mimeType));
     }
 
-    public function getExtensionsByMimeTypeProvider()
+    public static function getExtensionsByMimeTypeProvider()
     {
         return [
             [
@@ -1317,7 +1317,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extension, FileHelper::getExtensionByMimeType($mimeType, $preferShort));
     }
 
-    public function getExtensionByMimeTypeProvider()
+    public static function getExtensionByMimeTypeProvider()
     {
         return [
             ['application/json', true, 'json'],

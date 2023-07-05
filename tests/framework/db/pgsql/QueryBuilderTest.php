@@ -203,16 +203,16 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function indexesProvider()
+    public static function indexesProvider()
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
         return $result;
     }
 
-    public function defaultValuesProvider()
+    public static function defaultValuesProvider()
     {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in PostgreSQL.');
+        self::markTestSkipped('Adding/dropping default constraints is not supported in PostgreSQL.');
     }
 
     public function testCommentColumn()
@@ -286,7 +286,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         $concreteData = [
             'regular values' => [

@@ -107,7 +107,7 @@ abstract class CacheTestCase extends TestCase
     /**
      * @return array testing multiSet with and without expiry
      */
-    public function multiSetExpiry()
+    public static function multiSetExpiry()
     {
         return [[0], [2]];
     }

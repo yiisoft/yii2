@@ -19,7 +19,7 @@ class TargetTest extends TestCase
 {
     public static $messages;
 
-    public function filters()
+    public static function filters()
     {
         return [
             [[], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],

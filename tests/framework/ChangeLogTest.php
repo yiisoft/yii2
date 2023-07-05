@@ -15,7 +15,7 @@ use yiiunit\TestCase;
  */
 class ChangeLogTest extends TestCase
 {
-    public function changeProvider()
+    public static function changeProvider()
     {
 
         $lines = preg_split("~\R~", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'), -1, PREG_SPLIT_NO_EMPTY);

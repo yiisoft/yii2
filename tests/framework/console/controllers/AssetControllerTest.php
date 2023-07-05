@@ -467,7 +467,7 @@ EOL;
      * Data provider for [[testAdjustCssUrl()]].
      * @return array test data.
      */
-    public function adjustCssUrlDataProvider()
+    public static function adjustCssUrlDataProvider()
     {
         return [
             [
@@ -586,7 +586,7 @@ EOL;
      * Data provider for [[testFindRealPath()]].
      * @return array test data
      */
-    public function findRealPathDataProvider()
+    public static function findRealPathDataProvider()
     {
         return [
             [

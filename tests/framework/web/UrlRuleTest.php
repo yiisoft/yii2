@@ -1329,7 +1329,7 @@ class UrlRuleTest extends TestCase
      *   - third element is the expected URL
      *   - fourth element is the expected result of getCreateUrlStatus() method
      */
-    public function getCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider()
     {
         return [
             'route' => [

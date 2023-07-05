@@ -42,7 +42,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider()
     {
         $tableName = 'T_constraints_3';
         $name = 'CN_constraints_3';
@@ -69,7 +69,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ];
     }
 
-    public function indexesProvider()
+    public static function indexesProvider()
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
@@ -194,7 +194,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $items;
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         $concreteData = [
             'regular values' => [

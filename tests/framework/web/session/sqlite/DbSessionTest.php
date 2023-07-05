@@ -14,8 +14,6 @@ use Yii;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  *
- * @runTestsInSeparateProcesses
- *
  * @group db
  * @group db-session
  */

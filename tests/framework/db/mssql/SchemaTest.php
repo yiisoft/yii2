@@ -98,7 +98,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals($expectedName, $quotedName);
     }
 
-    public function quoteTableNameDataProvider()
+    public static function quoteTableNameDataProvider()
     {
         return [
             ['test', '[test]'],
@@ -125,7 +125,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals($expectedName, $tableSchema->name);
     }
 
-    public function getTableSchemaDataProvider()
+    public static function getTableSchemaDataProvider()
     {
         return [
             ['[dbo].[profile]', 'profile'],

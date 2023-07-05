@@ -809,7 +809,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals($eagerItemsCount, $lazyItemsCount);
     }
 
-    public function aliasMethodProvider()
+    public static function aliasMethodProvider()
     {
         return [
             ['explicit'], // c
@@ -1128,7 +1128,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
     }
 
-    public function tableNameProvider()
+    public static function tableNameProvider()
     {
         return [
             ['order', 'order_item'],
@@ -1898,7 +1898,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals($expectedAliases, $aliases);
     }
 
-    public function filterTableNamesFromAliasesProvider()
+    public static function filterTableNamesFromAliasesProvider()
     {
         return [
             'table name as string'         => ['customer', []],
@@ -1910,7 +1910,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         ];
     }
 
-    public function legalValuesForFindByCondition()
+    public static function legalValuesForFindByCondition()
     {
         return [
             [Customer::className(), ['id' => 1]],
@@ -1941,7 +1941,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue(true);
     }
 
-    public function illegalValuesForFindByCondition()
+    public static function illegalValuesForFindByCondition()
     {
         return [
             [Customer::className(), [['`id`=`id` and 1' => 1]]],
@@ -2148,7 +2148,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
     }
 
-    public function providerForUnlinkDelete()
+    public static function providerForUnlinkDelete()
     {
         return [
             'with delete' => [true, 0],

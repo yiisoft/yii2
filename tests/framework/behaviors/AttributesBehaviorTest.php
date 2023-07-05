@@ -63,7 +63,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function preserveNonEmptyValuesDataProvider()
+    public static function preserveNonEmptyValuesDataProvider()
     {
         return [
             [
@@ -118,7 +118,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function orderProvider()
+    public static function orderProvider()
     {
         return [
             [

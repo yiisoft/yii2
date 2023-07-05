@@ -235,7 +235,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public function provideTimezones()
+    public static function provideTimezones()
     {
         return [
             ['UTC'],
@@ -244,11 +244,11 @@ class DateValidatorTest extends TestCase
         ];
     }
 
-    public function timestampFormatProvider()
+    public static function timestampFormatProvider()
     {
         $return = [];
-        foreach ($this->provideTimezones() as $appTz) {
-            foreach ($this->provideTimezones() as $tz) {
+        foreach (self::provideTimezones() as $appTz) {
+            foreach (self::provideTimezones() as $tz) {
                 $return[] = ['yyyy-MM-dd', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
                 // regardless of timezone, a simple date input should always result in 00:00:00 time
                 $return[] = ['yyyy-MM-dd HH:mm:ss', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
@@ -1073,7 +1073,7 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public function provideTestStrictDateFormatIntlFail()
+    public static function provideTestStrictDateFormatIntlFail()
     {
         return [
             ['yyyy-MM-dd', '13-Mar-19', true],
@@ -1110,7 +1110,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public function provideTestStrictDateFormatIntlPass()
+    public static function provideTestStrictDateFormatIntlPass()
     {
         return [
             ['yyyy-MM-dd', '0013-03-19', true],
@@ -1142,7 +1142,7 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public function provideTestStrictDateFormatPhpFail()
+    public static function provideTestStrictDateFormatPhpFail()
     {
         return [
             ['php:Y-m-d', '13-Mar-19', true],
@@ -1178,7 +1178,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public function provideTestStrictDateFormatPhpPass()
+    public static function provideTestStrictDateFormatPhpPass()
     {
         return [
             ['php:Y-m-d', '0013-03-19', true],

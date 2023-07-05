@@ -26,7 +26,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     protected $expectedSchemas;
 
-    public function pdoAttributesProvider()
+    public static function pdoAttributesProvider()
     {
         return [
             [[PDO::ATTR_EMULATE_PREPARES => true]],
@@ -155,7 +155,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertNotSame($noCacheTable, $refreshedTable);
     }
 
-    public function tableSchemaCachePrefixesProvider()
+    public static function tableSchemaCachePrefixesProvider()
     {
         $configs = [
             [

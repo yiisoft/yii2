@@ -87,7 +87,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-    public function paramsNonWhereProvider()
+    public static function paramsNonWhereProvider()
     {
         return[
             ['SELECT SUBSTRING(name, :len, 6) AS name FROM {{customer}} WHERE [[email]] = :email GROUP BY name'],
@@ -119,7 +119,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider()
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO [type] ([int_col], [float_col], [char_col]) VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';

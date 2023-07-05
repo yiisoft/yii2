@@ -178,7 +178,7 @@ TEXT;
         }
     }
 
-    public function dataProviderEncryptByKeyCompat()
+    public static function dataProviderEncryptByKeyCompat()
     {
         // these ciphertexts generated using Yii 2.0.2 which is based on mcrypt.
         $mcrypt = [
@@ -489,7 +489,7 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByKey($encrypted, $key));
     }
 
-    public function dataProviderEncryptByPasswordCompat()
+    public static function dataProviderEncryptByPasswordCompat()
     {
         // these ciphertexts generated using Yii 2.0.2 which is based on mcrypt.
         $mcrypt = [
@@ -800,7 +800,7 @@ TEXT;
     }
 
 
-    public function randomKeyInvalidInputs()
+    public static function randomKeyInvalidInputs()
     {
         return [
             [0],
@@ -870,7 +870,7 @@ TEXT;
         $this->assertEquals(1, preg_match('/[A-Za-z0-9_-]+/', $key));
     }
 
-    public function dataProviderPbkdf2()
+    public static function dataProviderPbkdf2()
     {
         return array_filter([
             [
@@ -965,7 +965,7 @@ TEXT;
         $this->assertEquals($okm, bin2hex($DK));
     }
 
-    public function dataProviderDeriveKey()
+    public static function dataProviderDeriveKey()
     {
         // See Appendix A in https://tools.ietf.org/html/rfc5869
         return [
@@ -1057,7 +1057,7 @@ TEXT;
         $this->assertEquals($okm, bin2hex($dk));
     }
 
-    public function dataProviderCompareStrings()
+    public static function dataProviderCompareStrings()
     {
         return [
             ['', ''],
@@ -1116,7 +1116,7 @@ TEXT;
     /**
      * @return array
      */
-    public function maskProvider()
+    public static function maskProvider()
     {
         return [
             ['1'],
