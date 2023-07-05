@@ -84,7 +84,7 @@ build:
           - sudo locale-gen fr_FR.UTF-8
 
         override:
-          - command: ./vendor/bin/phpunit --verbose --exclude-group cubrid,oci,mssql,wincache,xcache,zenddata --colors=always --coverage-clover ./coverage.xml
+          - command: ./vendor/bin/phpunit --verbose --exclude-group db,wincache,xcache,zenddata --colors=always --coverage-clover ./coverage.xml
             on_node: 1
             coverage:
               file: coverage.xml

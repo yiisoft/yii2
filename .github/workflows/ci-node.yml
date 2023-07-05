@@ -1,4 +1,4 @@
-name: node-build
+name: build-node
 
 on: [push, pull_request]
 
