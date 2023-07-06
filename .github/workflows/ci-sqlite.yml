@@ -2,34 +2,31 @@ on:
   - pull_request
   - push
 
-name: ci-oracle
+name: ci-sqlite
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php }}-sqlite
 
     env:
-      extensions: oci8, pdo, pdo_oci
+      EXTENSIONS: pdo, pdo_sqlite, sqlite3
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
-      matrix:
-        os:
-          - ubuntu-latest
+        matrix:
+            os:
+              - ubuntu-latest
 
-        php:
-          - 7.4
-
-    services:
-      oci:
-          image: wnameless/oracle-xe-11g-r2:latest
-          ports:
-              - 1521:1521
-          options: --name=oci
+            php:
+              - 7.4
+              - 8.0
+              - 8.1
+              - 8.2
 
     steps:
       - name: Checkout.
@@ -50,10 +47,21 @@ jobs:
       - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run Oracle tests with phpunit and generate coverage.
-        run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always
+      - name: Run Sqlite tests with phpunit.
+        if: matrix.php == '7.4' || matrix.php == '8.2'
+        run: vendor/bin/phpunit --group sqlite --colors=always
+
+      - name: Run Sqlite tests with phpunit.
+        if: matrix.php == '8.0'
+        continue-on-error: true
+        run: vendor/bin/phpunit --group sqlite --colors=always
+
+      - name: Run Sqlite tests with phpunit and generate coverage.
+        if: matrix.php == '8.1'
+        run: vendor/bin/phpunit --group sqlite --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
+        if: matrix.php == '8.1'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml

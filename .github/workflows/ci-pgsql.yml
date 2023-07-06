@@ -3,16 +3,16 @@ on:
   - push
 
 name: ci-pgsql
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }}-pgsql-${{ matrix.pgsql-version }}
+    name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
     env:
       extensions: curl, intl, pdo, pdo_pgsql
-      key: cache-v1
 
     runs-on: ${{ matrix.os }}
 
@@ -21,19 +21,22 @@ jobs:
         os:
           - ubuntu-latest
 
-        php-version:
+        php:
           - 7.4
+          - 8.0
+          - 8.1
 
-        pgsql-version:
+        pgsql:
           - 10
           - 11
           - 12
           - 13
           - 14
+          - 15
 
     services:
       postgres:
-        image: postgres:${{ matrix.pgsql-version }}
+        image: postgres:${{ matrix.pgsql }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -43,46 +46,39 @@ jobs:
         options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Checkout
+      - name: Checkout.
         uses: actions/checkout@v3
-
-      - name: Setup cache environment
-        id: cache-env
-        uses: shivammathur/cache-extensions@v1
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          key: ${{ env.key }}
-
-      - name: Cache extensions
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.cache-env.outputs.dir }}
-          key: ${{ steps.cache-env.outputs.key }}
-          restore-keys: ${{ steps.cache-env.outputs.key }}
 
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          ini-values: date.timezone='UTC'
           coverage: pcov
+          extensions: ${{ env.EXTENSIONS }}
+          ini-values: date.timezone='UTC'
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, pecl
 
-      - name: Determine composer cache directory
-        if: matrix.os == 'ubuntu-latest'
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+      - name: Update composer.
+        run: composer self-update
 
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
-
-      - name: Install dependencies with composer
+      - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run pgsql tests with phpunit
+      - name: Run Pgsql tests with phpunit.
+        if: matrix.php == '7.4' || matrix.php == '8.2'
         run: vendor/bin/phpunit --group pgsql --colors=always
+
+      - name: Run Pgsql tests with phpunit.
+        if: matrix.php == '8.0'
+        continue-on-error: true
+        run: vendor/bin/phpunit --group pgsql --colors=always
+
+      - name: Run Pgsql tests with phpunit and generate coverage.
+        if: matrix.php == '8.1'
+        run: vendor/bin/phpunit --group pgsql --coverage-clover=coverage.xml --colors=always
+
+      - name: Upload coverage to Codecov.
+        if: matrix.php == '8.1'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
