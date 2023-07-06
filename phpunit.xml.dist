@@ -28,7 +28,6 @@
 			<file>framework/i18n/GettextFile.php</file>
 			<file>framework/web/ResponseFormatterInterface.php</file>
 			<directory suffix=".php">framework/bootstrap</directory>
-			<directory suffix=".php">framework/db/mssql</directory>
 			<directory suffix="Exception.php">framework/base</directory>
             <directory suffix=".php">framework/requirements</directory>
 		</exclude>
