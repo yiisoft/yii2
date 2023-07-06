@@ -14,6 +14,7 @@ jobs:
 
     env:
       EXTENSIONS: PDO, pdo_sqlsrv
+      XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
 
@@ -50,7 +51,7 @@ jobs:
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
-          coverage: pcov
+          coverage: xdebug
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
@@ -62,21 +63,21 @@ jobs:
       - name: Install dependencies with composer
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run Mssql tests with phpunit.
-        if: matrix.php == '7.4' || matrix.php == '8.2'
-        run: vendor/bin/phpunit --group mssql --colors=always
+      - name: Run Mssql tests with phpunit and generate coverage.
+        if: matrix.php == '7.4'
+        run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
 
       - name: Run Mssql tests with phpunit.
         if: matrix.php == '8.0'
         continue-on-error: true
         run: vendor/bin/phpunit --group mssql --colors=always
 
-      - name: Run Mssql tests with phpunit and generate coverage.
-        if: matrix.php == '8.1'
-        run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
+      - name: Run Mssql tests with phpunit.
+        if: matrix.php >= '8.1'
+        run: vendor/bin/phpunit --group mssql --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php == '7.4'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml

@@ -50,7 +50,7 @@ jobs:
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             os: ubuntu-latest
           - php: 7.4
-            coverage: none
+            coverage: xdebug
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             os: ubuntu-latest
           - php: 8.0
@@ -58,7 +58,7 @@ jobs:
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             os: ubuntu-latest
           - php: 8.1
-            coverage: pcov
+            coverage: none
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             os: ubuntu-latest
           - php: 8.2
@@ -89,7 +89,7 @@ jobs:
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
       - name: Run tests with phpunit.
-        if: matrix.php < '8.0' || matrix.php == '8.2'
+        if: matrix.php < '7.4' || matrix.php >= '8.1'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
       - name: Run tests with phpunit.
@@ -98,11 +98,11 @@ jobs:
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
       - name: Run tests with phpunit and generate coverage.
-        if: matrix.php == '8.1'
+        if: matrix.php == '7.4'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php == '7.4'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
