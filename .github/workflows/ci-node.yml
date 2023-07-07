@@ -20,12 +20,6 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v3
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          ini-values: session.save_path=${{ runner.temp }}
-
       - name: Install dependencies.
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
