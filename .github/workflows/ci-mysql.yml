@@ -67,7 +67,7 @@ jobs:
         continue-on-error: true
         run: vendor/bin/phpunit --group mysql --colors=always
 
-      - name: Run Myssql tests with phpunit.
+      - name: Run MySQL tests with PHPUnit.
         if: matrix.php >= '8.1'
         run: vendor/bin/phpunit --group mysql --colors=always
 
