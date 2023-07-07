@@ -88,15 +88,15 @@ jobs:
       - name: Install dependencies.
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
-      - name: Run tests with phpunit.
+      - name: Run tests with PHPUnit.
         if: matrix.php < '7.4' || matrix.php >= '8.1'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
-      - name: Run tests with phpunit.
+      - name: Run tests with PHPUnit.
         if: matrix.php == '8.0'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
-      - name: Run tests with phpunit and generate coverage.
+      - name: Run tests with PHPUnit and generate coverage.
         if: matrix.php == '7.4'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
 
