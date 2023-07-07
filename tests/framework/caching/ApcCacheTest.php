@@ -33,7 +33,7 @@ class ApcCacheTest extends CacheTestCase
             $this->markTestSkipped('APC is installed but not enabled. Skipping.');
         }
 
-        if ($this->_cacheInstance === null && PHP_VERSION_ID >= 80100) {
+        if ($this->_cacheInstance === null && PHP_VERSION_ID >= 70400) {
             $this->_cacheInstance = new ApcCache(['useApcu' => true]);
         } elseif ($this->_cacheInstance === null) {
             $this->_cacheInstance = new ApcCache();
