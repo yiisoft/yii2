@@ -9,7 +9,7 @@ env:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+  cancel-in-progress: true
 
 jobs:
   phpunit:
@@ -55,7 +55,7 @@ jobs:
             os: ubuntu-latest
           - php: 8.0
             coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             os: ubuntu-latest
           - php: 8.1
             coverage: none
