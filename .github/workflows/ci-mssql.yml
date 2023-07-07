@@ -68,12 +68,7 @@ jobs:
         run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
 
       - name: Run MSSQL tests with PHPUnit.
-        if: matrix.php == '8.0'
-        continue-on-error: true
-        run: vendor/bin/phpunit --group mssql --colors=always
-
-      - name: Run MSSQL tests with PHPUnit.
-        if: matrix.php >= '8.1'
+        if: matrix.php > '7.4'
         run: vendor/bin/phpunit --group mssql --colors=always
 
       - name: Upload coverage to Codecov.
