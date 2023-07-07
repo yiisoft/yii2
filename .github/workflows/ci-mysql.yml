@@ -62,7 +62,7 @@ jobs:
         if: matrix.php == '7.4'
         run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
 
-      - name: Run Mysql tests with phpunit.
+      - name: Run MySQL tests with PHPUnit.
         if: matrix.php == '8.0'
         continue-on-error: true
         run: vendor/bin/phpunit --group mysql --colors=always
