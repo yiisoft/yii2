@@ -377,6 +377,11 @@ class Command extends Component
                 $this->pendingParams[$name] = [$value->getValue(), $value->getType()];
                 $this->params[$name] = $value->getValue();
             } else {
+                if (version_compare(PHP_VERSION, '8.1.0') >= 0
+                    && $value instanceof \UnitEnum
+                ) {
+                    $value = isset($value->value) ? $value->value : $value->name;
+                }
                 $type = $schema->getPdoType($value);
                 $this->pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;

@@ -1525,4 +1525,21 @@ SQL;
         $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
         $this->assertTrue(true);
     }
+    
+    public function testBindValuesSupportsEnums()
+	{
+		if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+		    $db = $this->getConnection();
+		    $command = $db->createCommand();
+
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::ACTIVE]);
+		    $this->assertSame('ACTIVE', $command->params[':p1']);
+
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::ACTIVE]);
+		    $this->assertSame('active', $command->params[':p1']);
+
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
+		    $this->assertSame(1, $command->params[':p1']);
+		}
+	}
 }
