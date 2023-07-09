@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
 - Enh #19884: Added support Enums in Query Builder (sk1t0n)
 
+
 2.0.48.1 May 24, 2023
 ---------------------
 

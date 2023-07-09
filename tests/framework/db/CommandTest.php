@@ -1525,7 +1525,7 @@ SQL;
         $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
         $this->assertTrue(true);
     }
-    
+
     public function testBindValuesSupportsEnums()
 	{
 		if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
@@ -1540,6 +1540,8 @@ SQL;
 
 		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
 		    $this->assertSame(1, $command->params[':p1']);
-		}
+		} else {
+            $this->markTestSkipped('Enums are not supported in PHP < 8.1');
+        }
 	}
 }
