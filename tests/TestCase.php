@@ -124,6 +124,39 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Asserting two strings equality ignoring unicode whitespaces.
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    protected function assertEqualsAnyWhitespace($expected, $actual, $message = ''){
+        $expected = $this->sanitizeWhitespaces($expected);
+        $actual = $this->sanitizeWhitespaces($actual);
+
+        $this->assertEquals($expected, $actual, $message);
+    }
+
+    /**
+     * Asserts that two variables have the same type and value and sanitizes value if it is a string.
+     * Used on objects, it asserts that two variables reference
+     * the same object.
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     */
+    protected function assertSameAnyWhitespace($expected, $actual, $message = ''){
+        if (is_string($expected)) {
+            $expected = $this->sanitizeWhitespaces($expected);
+        }
+        if (is_string($actual)) {
+            $actual = $this->sanitizeWhitespaces($actual);
+        }
+
+        $this->assertSame($expected, $actual, $message);
+    }
+
+    /**
      * Asserts that a haystack contains a needle ignoring line endings.
      *
      * @param mixed $needle
@@ -136,6 +169,17 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $haystack = str_replace("\r\n", "\n", $haystack);
 
         $this->assertContains($needle, $haystack, $message);
+    }
+
+    /**
+     * Replaces unicode whitespaces with standard whitespace
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19868 (ICU 72 changes)
+     * @param $string
+     * @return string
+     */
+    protected function sanitizeWhitespaces($string){
+        return preg_replace("/[\pZ\pC]/u", " ", $string);
     }
 
     /**

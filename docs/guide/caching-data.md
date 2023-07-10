@@ -82,6 +82,8 @@ and accessible. The following code shows how to configure the `cache` applicatio
 
 You can then access the above cache component using the expression `Yii::$app->cache`.
 
+If no cache component is specified, then Yii will use [yii\caching\FileCache](https://www.yiiframework.com/doc/api/2.0/yii-caching-filecache) as default.
+
 Because all cache components support the same set of APIs, you can swap the underlying cache component
 with a different one by reconfiguring it in the application configuration without modifying the code that uses the cache.
 For example, you can modify the above configuration to use [[yii\caching\ApcCache|APC cache]]:
