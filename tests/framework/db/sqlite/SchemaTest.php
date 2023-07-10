@@ -56,7 +56,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: primary key'][2]->name = null;
@@ -85,18 +85,20 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     /**
      * @dataProvider quoteTableNameDataProvider
-     * @param $name
-     * @param $expectedName
+     *
+     * @param string $name Table name.
+     * @param string $expectedName Expected quoted table name.
+     *
      * @throws \yii\base\NotSupportedException
      */
-    public function testQuoteTableName($name, $expectedName)
+    public function testQuoteTableName(string $name, string $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $quotedName = $schema->quoteTableName($name);
         $this->assertEquals($expectedName, $quotedName);
     }
 
-    public static function quoteTableNameDataProvider()
+    public static function quoteTableNameDataProvider(): array
     {
         return [
             ['test', '`test`'],

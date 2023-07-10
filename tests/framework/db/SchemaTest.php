@@ -26,7 +26,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     protected $expectedSchemas;
 
-    public static function pdoAttributesProvider()
+    public static function pdoAttributesProvider(): array
     {
         return [
             [[PDO::ATTR_EMULATE_PREPARES => true]],
@@ -48,9 +48,10 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider pdoAttributesProvider
-     * @param array $pdoAttributes
+     *
+     * @param array $pdoAttributes PDO attributes to be applied to the connection.
      */
-    public function testGetTableNames($pdoAttributes)
+    public function testGetTableNames(array $pdoAttributes): void
     {
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
@@ -81,9 +82,10 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider pdoAttributesProvider
-     * @param array $pdoAttributes
+     *
+     * @param array $pdoAttributes PDO attributes to be applied to the connection.
      */
-    public function testGetTableSchemas($pdoAttributes)
+    public function testGetTableSchemas(array $pdoAttributes): void
     {
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
@@ -155,7 +157,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertNotSame($noCacheTable, $refreshedTable);
     }
 
-    public static function tableSchemaCachePrefixesProvider()
+    public static function tableSchemaCachePrefixesProvider(): array
     {
         $configs = [
             [
@@ -198,10 +200,20 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider tableSchemaCachePrefixesProvider
-     * @depends      testSchemaCache
+     *
+     * @depends testSchemaCache
+     *
+     * @param string $tablePrefix Table prefix.
+     * @param string $tableName Table name.
+     * @param string $testTablePrefix Test table prefix.
+     * @param string $testTableName Test table name.
      */
-    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
-    {
+    public function testTableSchemaCacheWithTablePrefixes(
+        string $tablePrefix,
+        string $tableName,
+        string $testTablePrefix,
+        string $testTableName
+    ): void {
         /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
         $schema->db->enableSchemaCache = true;
@@ -611,7 +623,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         return [
             '1: primary key' => ['T_constraints_1', 'primaryKey', new Constraint([
@@ -718,26 +730,27 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
-    public function lowercaseConstraintsProvider()
+    public static function lowercaseConstraintsProvider(): array
     {
-        return $this->constraintsProvider();
+        return static::constraintsProvider();
     }
 
-    public function uppercaseConstraintsProvider()
+    public static function uppercaseConstraintsProvider(): array
     {
-        return $this->constraintsProvider();
+        return static::constraintsProvider();
     }
 
     /**
      * @dataProvider constraintsProvider
-     * @param string $tableName
-     * @param string $type
-     * @param mixed $expected
+     *
+     * @param string $tableName The table name.
+     * @param string $type The constraint type.
+     * @param mixed $expected The expected constraint.
      */
-    public function testTableSchemaConstraints($tableName, $type, $expected)
+    public function testTableSchemaConstraints(string $tableName, string $type, $expected): void
     {
         if ($expected === false) {
-            $this->expectException('yii\base\NotSupportedException');
+            $this->expectException(\yii\base\NotSupportedException::class);
         }
 
         $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
@@ -746,11 +759,12 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider uppercaseConstraintsProvider
-     * @param string $tableName
-     * @param string $type
-     * @param mixed $expected
+     *
+     * @param string $tableName The table name.
+     * @param string $type The constraint type.
+     * @param mixed $expected The expected constraint.
      */
-    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
     {
         if ($expected === false) {
             $this->expectException('yii\base\NotSupportedException');
@@ -764,11 +778,12 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider lowercaseConstraintsProvider
-     * @param string $tableName
-     * @param string $type
-     * @param mixed $expected
+     *
+     * @param string $tableName The table name.
+     * @param string $type The constraint type.
+     * @param mixed $expected The expected constraint.
      */
-    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
     {
         if ($expected === false) {
             $this->expectException('yii\base\NotSupportedException');

@@ -19,7 +19,7 @@ class ArrayParserTest extends TestCase
         $this->arrayParser = new ArrayParser();
     }
 
-    public static function convertProvider()
+    public static function convertProvider(): array
     {
         return [
             ['{}', []],
@@ -38,8 +38,11 @@ class ArrayParserTest extends TestCase
 
     /**
      * @dataProvider convertProvider
+     *
+     * @param string $string The string to convert.
+     * @param array $expected The expected result.
      */
-    public function testConvert($string, $expected)
+    public function testConvert(string $string, array $expected): void
     {
         $this->assertSame($expected, $this->arrayParser->parse($string));
     }

@@ -32,16 +32,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return array_merge(parent::columnTypes(), []);
     }
 
-    public static function checksProvider()
-    {
-        self::markTestSkipped('Adding/dropping check constraints is not supported in CUBRID.');
-    }
-
-    public static function defaultValuesProvider()
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in CUBRID.');
-    }
-
     public function testResetSequence()
     {
         $qb = $this->getQueryBuilder();
@@ -66,7 +56,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         parent::testCommentColumn();
     }
 
-    public static function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -112,5 +102,31 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         unset($newData['no columns to update']);
 
         return $newData;
+    }
+
+    /**
+     * @dataProvider checksProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropCheck(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by CUBRID.');
+
+        parent::testAddDropCheck($sql, $builder);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by CUBRID.');
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }

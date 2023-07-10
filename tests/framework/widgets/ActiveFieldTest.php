@@ -262,7 +262,7 @@ EOT;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public static function hintDataProvider()
+    public static function hintDataProvider(): array
     {
         return [
             ['Hint Content', '<div class="hint-block">Hint Content</div>'],
@@ -273,10 +273,11 @@ EOT;
 
     /**
      * @dataProvider hintDataProvider
-     * @param mixed $hint
-     * @param string $expectedHtml
+     *
+     * @param mixed $hint The hint content.
+     * @param string $expectedHtml The expected HTML.
      */
-    public function testHint($hint, $expectedHtml)
+    public function testHint(mixed $hint, string $expectedHtml): void
     {
         $this->activeField->hint($hint);
 

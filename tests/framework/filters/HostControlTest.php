@@ -32,7 +32,7 @@ class HostControlTest extends TestCase
     /**
      * @return array test data.
      */
-    public static function hostInfoValidationDataProvider()
+    public static function hostInfoValidationDataProvider(): array
     {
         return [
             [
@@ -85,11 +85,11 @@ class HostControlTest extends TestCase
     /**
      * @dataProvider hostInfoValidationDataProvider
      *
-     * @param mixed $allowedHosts
-     * @param string $host
-     * @param bool $allowed
+     * @param mixed $allowedHosts Allowed hosts.
+     * @param string $host Host name.
+     * @param bool $allowed Whether the host is allowed.
      */
-    public function testFilter($allowedHosts, $host, $allowed)
+    public function testFilter(mixed $allowedHosts, string $host, bool $allowed): void
     {
         $_SERVER['HTTP_HOST'] = $host;
 

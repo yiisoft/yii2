@@ -85,7 +85,7 @@ class DataFilterTest extends TestCase
      * Data provider for [[testValidate()]].
      * @return array test data.
      */
-    public static function dataProviderValidate()
+    public static function dataProviderValidate(): array
     {
         return [
             [
@@ -258,11 +258,11 @@ class DataFilterTest extends TestCase
      *
      * @dataProvider dataProviderValidate
      *
-     * @param array $filter
-     * @param bool $expectedResult
-     * @param array $expectedErrors
+     * @param array|null|string $filter The filter to validate.
+     * @param bool $expectedResult Whether the filter should be considered valid.
+     * @param array $expectedErrors The expected validation errors.
      */
-    public function testValidate($filter, $expectedResult, $expectedErrors)
+    public function testValidate(array|null|string $filter, bool $expectedResult, array $expectedErrors): void
     {
         $builder = new DataFilter();
         $searchModel = (new DynamicModel([
@@ -293,7 +293,7 @@ class DataFilterTest extends TestCase
      * Data provider for [[testNormalize()]].
      * @return array test data.
      */
-    public static function dataProviderNormalize()
+    public static function dataProviderNormalize(): array
     {
         return [
             [
@@ -416,10 +416,10 @@ class DataFilterTest extends TestCase
      *
      * @dataProvider dataProviderNormalize
      *
-     * @param array $filter
-     * @param array $expectedResult
+     * @param array|null|string $filter The filter to normalize.
+     * @param array $expectedResult The expected normalized filter.
      */
-    public function testNormalize($filter, $expectedResult)
+    public function testNormalize(array|null|string $filter, array $expectedResult): void
     {
         $builder = new DataFilter();
         $searchModel = (new DynamicModel([

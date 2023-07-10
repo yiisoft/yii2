@@ -103,8 +103,8 @@ class MysqlMutexTest extends DatabaseTestCase
     public function testCreateMutex()
     {
         $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
-        $this->assertInstanceOf(MysqlMutex::classname(), $mutex);
-        $this->assertInstanceOf(Expression::classname(), $mutex->keyPrefix);
+        $this->assertInstanceOf(MysqlMutex::class, $mutex);
+        $this->assertInstanceOf(Expression::class, $mutex->keyPrefix);
         $this->assertSame("1+1", $mutex->keyPrefix->expression);
     }
 }

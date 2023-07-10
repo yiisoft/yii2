@@ -22,6 +22,7 @@ use yiiunit\data\base\TraversableObject;
 class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'pgsql';
+    protected static string $driverNameStatic = 'pgsql';
 
     public function columnTypes()
     {
@@ -66,7 +67,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return array_merge(parent::columnTypes(), $columns);
     }
 
-    public function conditionProvider()
+    public static function conditionProvider(): array
     {
         return array_merge(parent::conditionProvider(), [
             // adding conditions for ILIKE i.e. case insensitive LIKE
@@ -203,16 +204,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public static function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
         return $result;
-    }
-
-    public static function defaultValuesProvider()
-    {
-        self::markTestSkipped('Adding/dropping default constraints is not supported in PostgreSQL.');
     }
 
     public function testCommentColumn()
@@ -221,11 +217,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
 
         $expected = 'COMMENT ON COLUMN [[comment]].[[text]] IS NULL';
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
     }
 
     public function testCommentTable()
@@ -234,14 +230,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
 
         $expected = 'COMMENT ON TABLE [[comment]] IS NULL';
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
     }
 
-    public function batchInsertProvider()
+    public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
 
@@ -286,7 +282,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public static function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -386,7 +382,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $newData;
     }
 
-    public function updateProvider()
+    public static function updateProvider(): array
     {
         $items = parent::updateProvider();
 
@@ -398,7 +394,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
+            self::replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -431,5 +427,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = 'DROP INDEX {{%schema.index}}';
         $sql = $qb->dropIndex('index', '{{%schema.table}}');
         $this->assertEquals($expected, $sql);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('pgsql does not support');
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }

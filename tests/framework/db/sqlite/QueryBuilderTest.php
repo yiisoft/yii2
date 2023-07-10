@@ -19,6 +19,7 @@ use yiiunit\data\base\TraversableObject;
 class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     protected $driverName = 'sqlite';
+    protected static string $driverNameStatic = 'sqlite';
 
     protected $likeEscapeCharSql = " ESCAPE '\\'";
 
@@ -33,7 +34,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function conditionProvider()
+    public static function conditionProvider(): array
     {
         return array_merge(parent::conditionProvider(), [
             'composite in using array objects' => [
@@ -52,17 +53,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public static function primaryKeysProvider()
-    {
-        self::markTestSkipped('Adding/dropping primary keys is not supported in SQLite.');
-    }
-
-    public static function foreignKeysProvider()
-    {
-        self::markTestSkipped('Adding/dropping foreign keys is not supported in SQLite.');
-    }
-
-    public static function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
@@ -81,21 +72,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public static function uniquesProvider()
-    {
-        self::markTestSkipped('Adding/dropping unique constraints is not supported in SQLite.');
-    }
-
-    public static function checksProvider()
-    {
-        self::markTestSkipped('Adding/dropping check constraints is not supported in SQLite.');
-    }
-
-    public static function defaultValuesProvider()
-    {
-        self::markTestSkipped('Adding/dropping default constraints is not supported in SQLite.');
-    }
-
     public function testCommentColumn()
     {
         $this->markTestSkipped('Comments are not supported in SQLite');
@@ -106,7 +82,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
-    public function batchInsertProvider()
+    public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
         $data['escape-danger-chars']['expected'] = "INSERT INTO `customer` (`address`) VALUES ('SQL-danger chars are escaped: ''); --')";
@@ -134,7 +110,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
      */
     public function testBuildUnion()
     {
-        $expectedQuerySql = $this->replaceQuotes(
+        $expectedQuerySql = self::replaceQuotes(
             'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
         );
         $query = new Query();
@@ -158,7 +134,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testBuildWithQuery()
     {
-        $expectedQuerySql = $this->replaceQuotes(
+        $expectedQuerySql = self::replaceQuotes(
             'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS (SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2 UNION  SELECT [[id]] FROM [[t3]] WHERE expr = 3) SELECT * FROM [[a2]]'
         );
         $with1Query = (new Query())
@@ -200,7 +176,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public static function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -245,5 +221,70 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             $newData[$testName] = array_replace($newData[$testName], $data);
         }
         return $newData;
+    }
+
+    /**
+     * @dataProvider primaryKeysProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropPrimaryKey(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by SQLite.');
+
+        parent::testAddDropPrimaryKey($sql, $builder);
+    }
+
+    /**
+     * @dataProvider foreignKeysProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropForeignKey(string $sql, \Closure $builder)
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by SQLite.');
+
+        parent::testAddDropForeignKey($sql, $builder);
+    }
+
+    /**
+     * @dataProvider uniquesProvider
+     *
+     * @param string $sql The Sql.
+     */
+    public function testAddDropUnique(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by SQLite.');
+
+        parent::testAddDropPrimaryKey($sql, $builder);
+    }
+
+    /**
+     * @dataProvider checksProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropCheck(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by SQLite.');
+
+        parent::testAddDropCheck($sql, $builder);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by SQLite.');
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }

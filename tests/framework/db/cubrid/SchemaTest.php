@@ -86,7 +86,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         foreach ($result as $name => $constraints) {
@@ -105,16 +105,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $result['4: check'][2] = false;
         return $result;
-    }
-
-    public function lowercaseConstraintsProvider()
-    {
-        $this->markTestSkipped('This test hangs on CUBRID.');
-    }
-
-    public function uppercaseConstraintsProvider()
-    {
-        $this->markTestSkipped('This test hangs on CUBRID.');
     }
 
     /**
@@ -142,5 +132,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         }
 
         return $object;
+    }
+
+    /**
+     * @dataProvider uppercaseConstraintsProvider
+     *
+     * @param string $tableName The table name.
+     * @param string $type The constraint type.
+     * @param mixed $expected The expected constraint.
+     */
+    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    {
+        $this->markTestSkipped('CUBRID does not support uppercase identifiers.');
     }
 }

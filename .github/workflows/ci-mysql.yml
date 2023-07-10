@@ -57,11 +57,11 @@ jobs:
 
       - name: Run MySQL tests with PHPUnit and generate coverage.
         if: matrix.php == '8.1'
-        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
+        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always --verbose
 
       - name: Run MySQL tests with PHPUnit.
         if: matrix.php != '8.1'
-        run: vendor/bin/phpunit --group mysql --colors=always
+        run: vendor/bin/phpunit --group mysql --colors=always --verbose
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'

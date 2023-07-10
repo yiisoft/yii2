@@ -17,7 +17,7 @@ use yiiunit\TestCase;
  */
 class SqlTokenizerTest extends TestCase
 {
-    public static function sqlProvider()
+    public static function sqlProvider(): array
     {
         return [
             'complex' => [
@@ -1119,9 +1119,11 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
 
     /**
      * @dataProvider sqlProvider
-     * @param string $sql
+     *
+     * @param string $sql SQL to tokenize.
+     * @param SqlToken $expectedToken Expected token.
      */
-    public function testTokenizer($sql, SqlToken $expectedToken)
+    public function testTokenizer(string $sql, SqlToken $expectedToken): void
     {
         $actualToken = (new SqlTokenizer($sql))->tokenize();
         $this->assertEquals($expectedToken, $actualToken);
@@ -1132,7 +1134,7 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
      * @param SqlToken $token
      * @return array
      */
-    private function exportToken(SqlToken $token)
+    private function exportToken(SqlToken $token): array
     {
         $result = get_object_vars($token);
         unset($result['parent']);

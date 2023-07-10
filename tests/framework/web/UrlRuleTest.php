@@ -1293,10 +1293,11 @@ class UrlRuleTest extends TestCase
 
     /**
      * @dataProvider getCreateUrlStatusProvider
-     * @param array $config
-     * @param array $tests
+     *
+     * @param array $config UrlRule config.
+     * @param array $tests Array of tests.
      */
-    public function testGetCreateUrlStatus($config, $tests)
+    public function testGetCreateUrlStatus(array $config, array $tests): void
     {
         foreach ($tests as $test) {
             list($route, $params, $expected, $status) = $test;
@@ -1329,7 +1330,7 @@ class UrlRuleTest extends TestCase
      *   - third element is the expected URL
      *   - fourth element is the expected result of getCreateUrlStatus() method
      */
-    public static function getCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider(): array
     {
         return [
             'route' => [

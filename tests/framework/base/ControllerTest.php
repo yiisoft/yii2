@@ -48,12 +48,16 @@ class ControllerTest extends TestCase
 
     /**
      * @dataProvider createInlineActionProvider
-     * @param string $controllerClass
-     * @param string $actionId
-     * @param string|null $expectedActionMethod
+     *
+     * @param string $controllerClass The controller class name.
+     * @param string $actionId The action ID.
+     * @param string|null $expectedActionMethod The expected action method name.
      */
-    public function testCreateInlineAction($controllerClass, $actionId, $expectedActionMethod)
-    {
+    public function testCreateInlineAction(
+        string $controllerClass,
+        string $actionId,
+        string $expectedActionMethod = null
+    ): void {
         $this->mockApplication();
         /** @var Controller $controller */
         $controller = new $controllerClass('test-controller', Yii::$app);
@@ -65,7 +69,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($expectedActionMethod, $actionMethod);
     }
 
-    public static function createInlineActionProvider()
+    public static function createInlineActionProvider(): array
     {
         return [
             ['\yiiunit\framework\base\TestController', 'non-existent-id', null],
@@ -78,17 +82,17 @@ class ControllerTest extends TestCase
     }
 
     /**
-     * @param $input
-     * @param $expected
-     *
      * @dataProvider actionIdMethodProvider
+     *
+     * @param string $input The action ID.
+     * @param int $expected The expected result.
      */
-    public function testActionIdMethod($input, $expected)
+    public function testActionIdMethod(string $input, int $expected): void
     {
         $this->assertSame($expected, preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $input));
     }
 
-    public static function actionIdMethodProvider()
+    public static function actionIdMethodProvider(): array
     {
         return [
             ['apple-id', 1],
