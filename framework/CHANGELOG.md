@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
+- Bug #19857: Fix AttributeTypecastBehavior::resetOldAttributes() causes "class has no attribute named" InvalidArgumentException (uaoleg)
 - Bug #18859: Fix `yii\web\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
 - Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
 - Enh #19853: Added support for default value for `\yii\helpers\Console::select()` (rhertogh)
