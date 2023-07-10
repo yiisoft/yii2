@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
 - Enh #19853: Added support for default value for `\yii\helpers\Console::select()` (rhertogh)
 - Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
+- Enh #19884: Added support Enums in Query Builder (sk1t0n)
 
 
 2.0.48.1 May 24, 2023
