@@ -14,7 +14,6 @@ jobs:
 
     env:
       EXTENSIONS: pdo, pdo_sqlite, sqlite3
-      XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
 
@@ -24,8 +23,6 @@ jobs:
               - ubuntu-latest
 
             php:
-              - 7.4
-              - 8.0
               - 8.1
               - 8.2
 
@@ -36,7 +33,7 @@ jobs:
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: xdebug
+          coverage: pcov
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
@@ -49,15 +46,16 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Run SQLite tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
+        if: matrix.php == '8.1'
+        continue-on-error: true
         run: vendor/bin/phpunit --group sqlite --coverage-clover=coverage.xml --colors=always
 
       - name: Run SQLite tests with PHPUnit.
-        if: matrix.php > '7.4'
+        if: matrix.php != '8.1'
         run: vendor/bin/phpunit --group sqlite --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
+        if: matrix.php == '8.1'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml

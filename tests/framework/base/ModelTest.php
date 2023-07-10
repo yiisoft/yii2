@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class ModelTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -502,11 +502,6 @@ class ModelTest extends TestCase
 
     public function testFormNameWithAnonymousClass()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $model = require __DIR__ . '/stub/AnonymousModelClass.php';
 
         $this->expectException('yii\base\InvalidConfigException');

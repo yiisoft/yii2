@@ -65,7 +65,7 @@ class UrlManagerParseUrlTest extends TestCase
         return new Request($config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($_POST['_method']);
         parent::tearDown();
@@ -104,7 +104,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertFalse($manager->parseRequest($this->getRequest('module/site/index/')));
     }
 
-    public function suffixProvider()
+    public static function suffixProvider()
     {
         return [
             ['.html'],

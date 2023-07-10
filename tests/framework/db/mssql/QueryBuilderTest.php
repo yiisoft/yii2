@@ -373,7 +373,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         $concreteData = [
             'regular values' => [
@@ -805,7 +805,7 @@ ALTER TABLE [foo1] DROP COLUMN [bar]";
         $this->assertEquals(NULL, $schema->getColumn('bar'));
     }
 
-    public function buildFromDataProvider()
+    public static function buildFromDataProvider()
     {
         $data = parent::buildFromDataProvider();
         $data[] = ['[test]', '[[test]]'];

@@ -13,11 +13,12 @@ namespace yiiunit\framework\web\session\pgsql;
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  *
  * @group db
+ * @group db-session
  * @group pgsql
  */
 class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob columns in the way they are used here.');

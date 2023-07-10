@@ -18,7 +18,7 @@ use yii\base\DynamicModel;
  */
 class ConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -153,7 +153,7 @@ class ConsoleTest extends TestCase
         }
     }*/
 
-    public function ansiFormats()
+    public static function ansiFormats()
     {
         return [
             ['test', 'test'],

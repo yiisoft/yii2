@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ActionFilterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -87,7 +87,7 @@ class ActionFilterTest extends TestCase
     }
 
 
-    public function actionFilterProvider()
+    public static function actionFilterProvider()
     {
         return [
             [['class' => 'yii\filters\AccessControl', 'user' => 'yiiunit\framework\base\MockUser']],

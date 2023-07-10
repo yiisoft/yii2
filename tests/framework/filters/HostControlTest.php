@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class HostControlTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -32,7 +32,7 @@ class HostControlTest extends TestCase
     /**
      * @return array test data.
      */
-    public function hostInfoValidationDataProvider()
+    public static function hostInfoValidationDataProvider()
     {
         return [
             [

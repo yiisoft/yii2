@@ -121,7 +121,7 @@ class BasicAuthTest extends AuthTest
         $session->destroy();
     }
 
-    public function authMethodProvider()
+    public static function authMethodProvider()
     {
         return [
             ['yii\filters\auth\HttpBasicAuth'],

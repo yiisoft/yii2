@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class IndexActionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -125,7 +125,7 @@ class IndexActionTest extends TestCase
      * Data provider for [[testPrepareDataProviderWithPaginationAndSorting()]].
      * @return array test data
      */
-    public function dataProviderTestPrepareDataProviderWithPaginationAndSorting()
+    public static function dataProviderTestPrepareDataProviderWithPaginationAndSorting()
     {
         return [
             [ // Default config

@@ -44,7 +44,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 {
     use ActiveRecordTestTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -199,7 +199,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(0, $order->books);
 
         $order = Order::find()->where(['id' => 1])->asArray()->one();
-        $this->assertInternalType('array', $order);
+        $this->assertIsArray($order);
     }
 
     public function testFindEagerViaTable()
@@ -225,10 +225,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // https://github.com/yiisoft/yii2/issues/1402
         $orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]['orderItems'][0]);
+        $this->assertIsArray($orders[0]['orderItems'][0]);
 
         $order = $orders[0];
-        $this->assertInternalType('array', $order);
+        $this->assertIsArray($order);
         $this->assertEquals(1, $order['id']);
         $this->assertCount(2, $order['books']);
         $this->assertEquals(1, $order['books'][0]['id']);
@@ -809,7 +809,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals($eagerItemsCount, $lazyItemsCount);
     }
 
-    public function aliasMethodProvider()
+    public static function aliasMethodProvider()
     {
         return [
             ['explicit'], // c
@@ -1123,12 +1123,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
 
         $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
-        $this->assertInternalType('array', $customerWithJoinIndexOrdered);
+        $this->assertIsArray($customerWithJoinIndexOrdered);
         $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
     }
 
-    public function tableNameProvider()
+    public static function tableNameProvider()
     {
         return [
             ['order', 'order_item'],
@@ -1898,7 +1898,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals($expectedAliases, $aliases);
     }
 
-    public function filterTableNamesFromAliasesProvider()
+    public static function filterTableNamesFromAliasesProvider()
     {
         return [
             'table name as string'         => ['customer', []],
@@ -1910,7 +1910,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         ];
     }
 
-    public function legalValuesForFindByCondition()
+    public static function legalValuesForFindByCondition()
     {
         return [
             [Customer::className(), ['id' => 1]],
@@ -1937,9 +1937,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         /** @var Query $query */
         $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
         Customer::getDb()->queryBuilder->build($query);
+
+        $this->assertTrue(true);
     }
 
-    public function illegalValuesForFindByCondition()
+    public static function illegalValuesForFindByCondition()
     {
         return [
             [Customer::className(), [['`id`=`id` and 1' => 1]]],
@@ -1974,7 +1976,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testValueEscapingInFindByCondition($modelClassName, $filterWithInjection)
     {
         $this->expectException('yii\base\InvalidArgumentException');
-        $this->expectExceptionMessageRegExp('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
+        $this->expectExceptionMessageMatches('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
+
         /** @var Query $query */
         $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', $filterWithInjection);
         Customer::getDb()->queryBuilder->build($query);
@@ -2145,7 +2148,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
     }
 
-    public function providerForUnlinkDelete()
+    public static function providerForUnlinkDelete()
     {
         return [
             'with delete' => [true, 0],

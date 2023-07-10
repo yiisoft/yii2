@@ -29,7 +29,7 @@ class FallbackMessageFormatterTest extends TestCase
     const SUBJECT = 'сабж';
     const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
-    public function patterns()
+    public static function patterns()
     {
         return [
             [

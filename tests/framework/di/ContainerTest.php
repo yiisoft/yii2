@@ -40,7 +40,7 @@ use yiiunit\TestCase;
  */
 class ContainerTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
@@ -443,11 +443,10 @@ class ContainerTest extends TestCase
         $this->assertSame(42, $qux->a);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testThrowingNotFoundException()
     {
+        $this->expectException(\yii\di\NotInstantiableException::class);
+
         $container = new Container();
         $container->get('non_existing');
     }
@@ -481,31 +480,6 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * @requires PHP 5.6
-     */
-    public function testVariadicConstructor()
-    {
-        if (\defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
-
-        $container = new Container();
-        $container->get('yiiunit\framework\di\stubs\Variadic');
-    }
-
-    /**
-     * @requires PHP 5.6
-     */
-    public function testVariadicCallable()
-    {
-        if (\defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
-
-        require __DIR__ . '/testContainerWithVariadicCallable.php';
-    }
-
-    /**
      * @see https://github.com/yiisoft/yii2/issues/18245
      */
     public function testDelayedInitializationOfSubArray()
@@ -534,7 +508,8 @@ class ContainerTest extends TestCase
         ]);
 
         Yii::$container->set('setLater', new Qux());
-        Yii::$container->get('test');
+
+        $this->assertInstanceOf(Corge::className(), Yii::$container->get('test'));
     }
 
     /**
@@ -587,7 +562,7 @@ class ContainerTest extends TestCase
         ]);
     }
 
-    public function dataNotInstantiableException()
+    public static function dataNotInstantiableException()
     {
         return [
             [Bar::className()],
@@ -610,11 +585,6 @@ class ContainerTest extends TestCase
 
     public function testNullTypeConstructorParameters()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         $zeta = (new Container())->get(Zeta::className());
         $this->assertInstanceOf(Beta::className(), $zeta->beta);
         $this->assertInstanceOf(Beta::className(), $zeta->betaNull);
@@ -628,22 +598,12 @@ class ContainerTest extends TestCase
 
     public function testUnionTypeWithNullConstructorParameters()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
-        }
-
         $unionType = (new Container())->get(UnionTypeNull::className());
         $this->assertInstanceOf(UnionTypeNull::className(), $unionType);
     }
 
     public function testUnionTypeWithoutNullConstructorParameters()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
-        }
-
         $unionType = (new Container())->get(UnionTypeNotNull::className(), ['value' => 'a']);
         $this->assertInstanceOf(UnionTypeNotNull::className(), $unionType);
 
@@ -662,11 +622,6 @@ class ContainerTest extends TestCase
 
     public function testUnionTypeWithClassConstructorParameters()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
-        }
-
         $unionType = (new Container())->get(UnionTypeWithClass::className(), ['value' => new Beta()]);
         $this->assertInstanceOf(UnionTypeWithClass::className(), $unionType);
         $this->assertInstanceOf(Beta::className(), $unionType->value);
@@ -677,11 +632,6 @@ class ContainerTest extends TestCase
 
     public function testResolveCallableDependenciesUnionTypes()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
-        }
-
         $this->mockApplication([
             'components' => [
                 Beta::className(),
@@ -709,11 +659,6 @@ class ContainerTest extends TestCase
 
     public function testResolveCallableDependenciesIntersectionTypes()
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.1');
-            return;
-        }
-
         Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
             'class' => Qux::className(),
         ]);

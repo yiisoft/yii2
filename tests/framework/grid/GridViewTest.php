@@ -18,7 +18,7 @@ use yii\web\View;
  */
 class GridViewTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -36,7 +36,7 @@ class GridViewTest extends \yiiunit\TestCase
     /**
      * @return array
      */
-    public function emptyDataProvider()
+    public static function emptyDataProvider()
     {
         return [
             [null, 'No results found.'],

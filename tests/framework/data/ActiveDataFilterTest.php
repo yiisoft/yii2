@@ -13,7 +13,7 @@ use yiiunit\TestCase;
 
 class ActiveDataFilterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -22,7 +22,7 @@ class ActiveDataFilterTest extends TestCase
 
     // Tests :
 
-    public function dataProviderBuild()
+    public static function dataProviderBuild()
     {
         return [
             [

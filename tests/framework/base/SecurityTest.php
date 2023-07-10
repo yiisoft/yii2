@@ -22,7 +22,7 @@ class SecurityTest extends TestCase
      */
     protected $security;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->security = new ExposedSecurity();
@@ -178,7 +178,7 @@ TEXT;
         }
     }
 
-    public function dataProviderEncryptByKeyCompat()
+    public static function dataProviderEncryptByKeyCompat()
     {
         // these ciphertexts generated using Yii 2.0.2 which is based on mcrypt.
         $mcrypt = [
@@ -489,7 +489,7 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByKey($encrypted, $key));
     }
 
-    public function dataProviderEncryptByPasswordCompat()
+    public static function dataProviderEncryptByPasswordCompat()
     {
         // these ciphertexts generated using Yii 2.0.2 which is based on mcrypt.
         $mcrypt = [
@@ -800,7 +800,7 @@ TEXT;
     }
 
 
-    public function randomKeyInvalidInputs()
+    public static function randomKeyInvalidInputs()
     {
         return [
             [0],
@@ -813,11 +813,13 @@ TEXT;
 
     /**
      * @dataProvider randomKeyInvalidInputs
-     * @expectedException \yii\base\InvalidParamException
+     *
      * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
+        $this->expectException(\yii\base\InvalidParamException::class);
+
         $key1 = $this->security->generateRandomKey($input);
     }
 
@@ -826,10 +828,10 @@ TEXT;
         // test various string lengths
         for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key1);
+            $this->assertIsString($key1);
             $this->assertEquals($length, strlen($key1));
             $key2 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key2);
+            $this->assertIsString($key2);
             $this->assertEquals($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
                 $this->assertNotEquals($key1, $key2);
@@ -839,10 +841,10 @@ TEXT;
         // test for /dev/urandom, reading larger data to see if loop works properly
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
+        $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
         $key2 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key2);
+        $this->assertIsString('string', $key2);
         $this->assertEquals($length, strlen($key2));
         $this->assertNotEquals($key1, $key2);
     }
@@ -868,7 +870,7 @@ TEXT;
         $this->assertEquals(1, preg_match('/[A-Za-z0-9_-]+/', $key));
     }
 
-    public function dataProviderPbkdf2()
+    public static function dataProviderPbkdf2()
     {
         return array_filter([
             [
@@ -963,7 +965,7 @@ TEXT;
         $this->assertEquals($okm, bin2hex($DK));
     }
 
-    public function dataProviderDeriveKey()
+    public static function dataProviderDeriveKey()
     {
         // See Appendix A in https://tools.ietf.org/html/rfc5869
         return [
@@ -1055,7 +1057,7 @@ TEXT;
         $this->assertEquals($okm, bin2hex($dk));
     }
 
-    public function dataProviderCompareStrings()
+    public static function dataProviderCompareStrings()
     {
         return [
             ['', ''],
@@ -1103,18 +1105,18 @@ TEXT;
         $this->assertEquals('', $this->security->unmaskToken('1'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMaskingInvalidStrings()
     {
+        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectExceptionMessage('First parameter ($length) must be greater than 0');
+
         $this->security->maskToken('');
     }
 
     /**
      * @return array
      */
-    public function maskProvider()
+    public static function maskProvider()
     {
         return [
             ['1'],

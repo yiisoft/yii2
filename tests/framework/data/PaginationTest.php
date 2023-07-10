@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class PaginationTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -32,7 +32,7 @@ class PaginationTest extends TestCase
      * Data provider for [[testCreateUrl()]].
      * @return array test data
      */
-    public function dataProviderCreateUrl()
+    public static function dataProviderCreateUrl()
     {
         return [
             [
@@ -115,7 +115,7 @@ class PaginationTest extends TestCase
         $this->assertEquals(999, $pagination->getPage());
     }
 
-    public function dataProviderPageCount()
+    public static function dataProviderPageCount()
     {
         return [
             [0, 0, 0],
@@ -152,7 +152,7 @@ class PaginationTest extends TestCase
         $this->assertEquals(0, (new Pagination())->getPage());
     }
 
-    public function dataProviderSetPage()
+    public static function dataProviderSetPage()
     {
         return [
             [null, false, 0, null],
@@ -187,7 +187,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($page, $pagination->getPage());
     }
 
-    public function dataProviderGetPageSize()
+    public static function dataProviderGetPageSize()
     {
         return [
             [[1, 50], 20],
@@ -214,7 +214,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($pageSize, $pagination->getPageSize());
     }
 
-    public function dataProviderSetPageSize()
+    public static function dataProviderSetPageSize()
     {
         return [
             [null, false, false, 20],
@@ -249,7 +249,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($pageSize, $pagination->getPageSize());
     }
 
-    public function dataProviderGetOffset()
+    public static function dataProviderGetOffset()
     {
         return [
             [0, 0, 0],
@@ -276,7 +276,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($offset, $pagination->getOffset());
     }
 
-    public function dataProviderGetLimit()
+    public static function dataProviderGetLimit()
     {
         return [
             [0, -1],
@@ -299,7 +299,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($limit, $pagination->getLimit());
     }
 
-    public function dataProviderGetLinks()
+    public static function dataProviderGetLinks()
     {
         return [
             [0, 0, 0, '/index.php?r=list&page=1&per-page=0', null, null, null, null],

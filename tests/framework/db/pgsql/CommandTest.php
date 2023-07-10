@@ -77,7 +77,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
     }
 
-    public function dataProviderGetRawSql()
+    public static function dataProviderGetRawSql()
     {
         return array_merge(parent::dataProviderGetRawSql(), [
             [
@@ -114,7 +114,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->execute());
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider()
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';

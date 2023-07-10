@@ -23,7 +23,7 @@ use yiiunit\framework\rbac\AuthorRule;
  */
 class AccessRuleTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -217,7 +217,7 @@ class AccessRuleTest extends \yiiunit\TestCase
      *           test user id
      *           expected match result (true, false, null)
      */
-    public function matchRoleProvider()
+    public static function matchRoleProvider()
     {
         return [
             ['create', true,  'user1',   [], true],

@@ -20,7 +20,7 @@ class PgSQLCacheTest extends DbCacheTest
     protected static $driverName = 'pgsql';
     private $_connection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_pgsql')) {
             $this->markTestSkipped('pdo and pdo_pgsql extensions are required.');

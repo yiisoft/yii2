@@ -1326,7 +1326,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals('FROM ' . $this->replaceQuotes($expected), $sql);
     }
 
-    public function buildFromDataProvider()
+    public static function buildFromDataProvider()
     {
         return [
             ['test t1', '[[test]] [[t1]]'],
@@ -1365,7 +1365,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expectedParams, $params);
     }
 
-    public function primaryKeysProvider()
+    public static function primaryKeysProvider()
     {
         $tableName = 'T_constraints_1';
         $name = 'CN_pk';
@@ -1400,7 +1400,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider()
     {
         $tableName = 'T_constraints_3';
         $name = 'CN_constraints_3';
@@ -1436,7 +1436,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
 
-    public function indexesProvider()
+    public static function indexesProvider()
     {
         $tableName = 'T_constraints_2';
         $name1 = 'CN_constraints_2_single';
@@ -1484,7 +1484,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
 
-    public function uniquesProvider()
+    public static function uniquesProvider()
     {
         $tableName1 = 'T_constraints_1';
         $name1 = 'CN_unique';
@@ -1521,7 +1521,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
 
-    public function checksProvider()
+    public static function checksProvider()
     {
         $tableName = 'T_constraints_1';
         $name = 'CN_check';
@@ -1550,7 +1550,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
 
-    public function defaultValuesProvider()
+    public static function defaultValuesProvider()
     {
         $tableName = 'T_constraints_1';
         $name = 'CN_default';
@@ -2056,7 +2056,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         return [
             'regular values' => [

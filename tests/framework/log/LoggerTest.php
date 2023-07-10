@@ -26,7 +26,7 @@ class LoggerTest extends TestCase
      */
     protected $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->logger = new Logger();
         $this->dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
@@ -496,7 +496,7 @@ class LoggerTest extends TestCase
         $this->assertEquals([$fistCategory], $logger->getProfiling(['cat*'], ['category*']));
     }
 
-    public function providerForNonProfilingMessages()
+    public static function providerForNonProfilingMessages()
     {
         return [
             [Logger::LEVEL_ERROR],

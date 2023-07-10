@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class ListViewTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -80,7 +80,7 @@ HTML
     /**
      * @return DataProviderInterface
      */
-    private function getDataProvider($additionalConfig = [])
+    private static function getDataProvider($additionalConfig = [])
     {
         return new ArrayDataProvider(array_merge([
             'allModels' => [
@@ -121,7 +121,7 @@ HTML
         , $out);
     }
 
-    public function itemViewOptions()
+    public static function itemViewOptions()
     {
         return [
             [
@@ -167,7 +167,7 @@ HTML
         $this->assertEqualsWithoutLE($expected, $out);
     }
 
-    public function itemOptions()
+    public static function itemOptions()
     {
         return [
             [
@@ -272,11 +272,11 @@ HTML
         (new ListView())->run();
     }
 
-    public function providerForNoSorter()
+    public static function providerForNoSorter()
     {
         return [
             'no sort attributes' => [[]],
-            'sorter false' => [['dataProvider' => $this->getDataProvider(['sort' => false])]],
+            'sorter false' => [['dataProvider' => self::getDataProvider(['sort' => false])]],
         ];
     }
 
@@ -339,7 +339,7 @@ HTML
 </div>', $out);
     }
 
-    public function providerForSummary()
+    public static function providerForSummary()
     {
         return [
             'empty' => ['', '<div id="w0" class="list-view">

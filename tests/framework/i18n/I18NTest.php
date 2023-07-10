@@ -25,7 +25,7 @@ class I18NTest extends TestCase
      */
     public $i18n;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -227,7 +227,7 @@ class I18NTest extends TestCase
         Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
     }
 
-    public function sourceLanguageDataProvider()
+    public static function sourceLanguageDataProvider()
     {
         return [
             ['en-GB'],

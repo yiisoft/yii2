@@ -13,7 +13,7 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public function provider()
+    public static function provider()
     {
         return [
             [

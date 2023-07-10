@@ -37,7 +37,7 @@ class JsonResponseFormatterTest extends FormatterTest
         ];
     }
 
-    public function formatArrayDataProvider()
+    public static function formatArrayDataProvider()
     {
         return [
             // input, json, pretty json
@@ -107,7 +107,7 @@ class JsonResponseFormatterTest extends FormatterTest
         ];
     }
 
-    public function contentTypeGenerationDataProvider()
+    public static function contentTypeGenerationDataProvider()
     {
         return [
             [

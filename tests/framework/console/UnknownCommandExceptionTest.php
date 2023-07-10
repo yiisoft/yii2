@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class UnknownCommandExceptionTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -31,7 +31,7 @@ class UnknownCommandExceptionTest extends TestCase
         ]);
     }
 
-    public function suggestedCommandsProvider()
+    public static function suggestedCommandsProvider()
     {
         return [
             ['migate', ['migrate']],

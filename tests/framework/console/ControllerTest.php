@@ -26,7 +26,7 @@ class ControllerTest extends TestCase
     /** @var FakeController */
     private $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -101,11 +101,6 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -122,10 +117,6 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -144,10 +135,6 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -165,10 +152,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -193,10 +176,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParamsFromModule()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         $module = new \yii\base\Module('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
@@ -270,7 +249,7 @@ class ControllerTest extends TestCase
 
         $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
         $helpController->actionIndex('fake/aksi1');
-        $this->assertContains('--test-array, -ta', $helpController->outputString);
+        $this->assertStringContainsString('--test-array, -ta', $helpController->outputString);
     }
 
     /**
@@ -295,12 +274,7 @@ class ControllerTest extends TestCase
         $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
 
         $this->assertArrayHasKey('values', $help);
-        if (PHP_MAJOR_VERSION > 5) {
-            // declared type
-            $this->assertEquals('array', $help['values']['type']);
-        } else {
-            $this->markTestSkipped('Can not test declared type of parameter $values on PHP < 7.0');
-        }
+        $this->assertEquals('array', $help['values']['type']);
         $this->assertArrayHasKey('value', $help);
         // PHPDoc type
         $this->assertEquals('string', $help['value']['type']);

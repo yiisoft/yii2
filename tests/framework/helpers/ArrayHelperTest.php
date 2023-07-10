@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class ArrayHelperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -748,7 +748,7 @@ class ArrayHelperTest extends TestCase
         ArrayHelper::keyExists('a', $array, false);
     }
 
-    public function valueProvider()
+    public static function valueProvider()
     {
         return [
             ['name', 'test'],
@@ -824,13 +824,12 @@ class ArrayHelperTest extends TestCase
 
     public function testGetValueNonexistingProperties1()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->expectException('PHPUnit_Framework_Error_Notice');
-        } else {
-            $this->expectException('PHPUnit_Framework_Error_Warning');
+        try {
+            $object = new Post1();
+            ArrayHelper::getValue($object, 'nonExisting');
+        } catch (\Throwable $th) {
+            $this->assertEquals('Undefined property: yiiunit\framework\helpers\Post1::$nonExisting', $th->getMessage());
         }
-        $object = new Post1();
-        ArrayHelper::getValue($object, 'nonExisting');
     }
 
     public function testGetValueNonexistingPropertiesForArrayObject()
@@ -882,7 +881,7 @@ class ArrayHelperTest extends TestCase
      * Data provider for [[testSetValue()]].
      * @return array test data
      */
-    public function dataProviderSetValue()
+    public static function dataProviderSetValue()
     {
         return [
             [
@@ -1458,7 +1457,7 @@ class ArrayHelperTest extends TestCase
      * Data provider for [[testRecursiveSort()]].
      * @return array test data
      */
-    public function dataProviderRecursiveSort()
+    public static function dataProviderRecursiveSort()
     {
         return [
             //Normal index array

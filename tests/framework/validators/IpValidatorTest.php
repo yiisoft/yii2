@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class IpValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // destroy application, Validator must work without Yii::$app
@@ -30,7 +30,7 @@ class IpValidatorTest extends TestCase
         new IpValidator(['ipv4' => false, 'ipv6' => false]);
     }
 
-    public function provideRangesForSubstitution()
+    public static function provideRangesForSubstitution()
     {
         return [
             ['10.0.0.1', ['10.0.0.1']],
@@ -65,7 +65,7 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('babe::cafe'));
     }
 
-    public function provideBadIps()
+    public static function provideBadIps()
     {
         return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false], ['bad:forSure']];
     }

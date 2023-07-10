@@ -25,20 +25,20 @@ use yiiunit\TestCase;
  */
 class PageCacheTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         CacheTestCase::$time = null;
         CacheTestCase::$microtime = null;
     }
 
-    public function cacheTestCaseProvider()
+    public static function cacheTestCaseProvider()
     {
         return [
             // Basic

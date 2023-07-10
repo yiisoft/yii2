@@ -12,14 +12,14 @@ class ArrayParserTest extends TestCase
      */
     protected $arrayParser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->arrayParser = new ArrayParser();
     }
 
-    public function convertProvider()
+    public static function convertProvider()
     {
         return [
             ['{}', []],

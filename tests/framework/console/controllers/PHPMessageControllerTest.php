@@ -18,14 +18,14 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
 {
     protected $messagePath;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->messagePath = Yii::getAlias('@yiiunit/runtime/test_messages');
         FileHelper::createDirectory($this->messagePath, 0777);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         FileHelper::removeDirectory($this->messagePath);
@@ -123,7 +123,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $this->assertEqualsWithoutLE($expected, $head);
     }
 
-    public function messageFileCategoriesDataProvider(){
+    public static function messageFileCategoriesDataProvider(){
         return [
             'removeUnused:false - unused category should not be removed - normal category' => ['test_delete_category', true, false, true],
             'removeUnused:false - unused category should not be removed - nested category' => ['nested/category', true, false, true],
@@ -165,7 +165,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         if ($isExpectedToExist) {
             $this->assertFileExists($filePath);
         } else {
-            $this->assertFileNotExists($filePath);
+            $this->assertFileDoesNotExist($filePath);
         }
     }
 }

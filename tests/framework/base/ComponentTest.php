@@ -33,14 +33,14 @@ class ComponentTest extends TestCase
      */
     protected $component;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
         $this->component = new NewComponent();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->component = null;
@@ -451,11 +451,6 @@ class ComponentTest extends TestCase
      */
     public function testEventClosureDetachesItself()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $obj = require __DIR__ . '/stub/AnonymousComponentClass.php';
 
         $obj->trigger('barEventOnce');

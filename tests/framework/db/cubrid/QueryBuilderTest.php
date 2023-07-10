@@ -32,12 +32,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return array_merge(parent::columnTypes(), []);
     }
 
-    public function checksProvider()
+    public static function checksProvider()
     {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in CUBRID.');
+        self::markTestSkipped('Adding/dropping check constraints is not supported in CUBRID.');
     }
 
-    public function defaultValuesProvider()
+    public static function defaultValuesProvider()
     {
         $this->markTestSkipped('Adding/dropping default constraints is not supported in CUBRID.');
     }
@@ -66,7 +66,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         parent::testCommentColumn();
     }
 
-    public function upsertProvider()
+    public static function upsertProvider()
     {
         $concreteData = [
             'regular values' => [

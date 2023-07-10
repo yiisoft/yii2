@@ -22,7 +22,7 @@ class FormatterNumberTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +35,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter = new Formatter(['locale' => 'en-US']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -45,7 +45,7 @@ class FormatterNumberTest extends TestCase
     /**
      * Provides some configuration that should not affect Integer formatter.
      */
-    public function differentConfigProvider()
+    public static function differentConfigProvider()
     {
         // make this test not break when intl is not installed
         if (!extension_loaded('intl')) {
@@ -824,7 +824,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1023 B', $this->formatter->asShortSize(1023));
     }
 
-    public function providerForDirectWrongTypeAttributes()
+    public static function providerForDirectWrongTypeAttributes()
     {
         return [
             'not-int key for int options' => [
@@ -870,7 +870,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter->asInteger(1, $intOptions, $textOptions);
     }
 
-    public function providerForConfiguredWrongTypeAttributes()
+    public static function providerForConfiguredWrongTypeAttributes()
     {
         return [
             'not-int key for int options' => [

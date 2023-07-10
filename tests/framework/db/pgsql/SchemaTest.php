@@ -260,7 +260,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertCount(3, $schema->getSchemaNames());
     }
 
-    public function bigintValueProvider()
+    public static function bigintValueProvider()
     {
         return [
             [8817806877],

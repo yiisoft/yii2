@@ -96,7 +96,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals($expectedName, $quotedName);
     }
 
-    public function quoteTableNameDataProvider()
+    public static function quoteTableNameDataProvider()
     {
         return [
             ['test', '`test`'],
