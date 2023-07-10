@@ -4,12 +4,10 @@ on: [push, pull_request]
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 
 jobs:
   test:

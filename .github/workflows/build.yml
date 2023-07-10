@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
+  EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached, pdo, pdo_sqlite, sqlite
   PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
 
 concurrency:
@@ -33,7 +34,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           coverage: pcov
-          extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached, pdo, pdo_sqlite, sqlite
+          extensions: ${{ env.EXTENSIONS }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
           tools: pecl
