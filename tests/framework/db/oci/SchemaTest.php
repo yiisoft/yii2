@@ -108,7 +108,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertFalse($table->columns['id']->autoIncrement);
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: check'][2][0]->expression = '"C_check" <> \'\'';

@@ -748,7 +748,7 @@ class ArrayHelperTest extends TestCase
         ArrayHelper::keyExists('a', $array, false);
     }
 
-    public static function valueProvider()
+    public static function valueProvider(): array
     {
         return [
             ['name', 'test'],
@@ -780,11 +780,11 @@ class ArrayHelperTest extends TestCase
     /**
      * @dataProvider valueProvider
      *
-     * @param $key
-     * @param $expected
-     * @param null $default
+     * @param mixed $key The key to be looked for in the array.
+     * @param mixed $expected The expected value to be returned.
+     * @param mixed $default The default value to be returned if the key does not exist.
      */
-    public function testGetValue($key, $expected, $default = null)
+    public function testGetValue(mixed $key, mixed $expected, mixed $default = null): void
     {
         $array = [
             'name' => 'test',
@@ -881,7 +881,7 @@ class ArrayHelperTest extends TestCase
      * Data provider for [[testSetValue()]].
      * @return array test data
      */
-    public static function dataProviderSetValue()
+    public static function dataProviderSetValue(): array
     {
         return [
             [
@@ -1106,12 +1106,12 @@ class ArrayHelperTest extends TestCase
     /**
      * @dataProvider dataProviderSetValue
      *
-     * @param array $array_input
-     * @param string|array|null $key
-     * @param mixed $value
-     * @param mixed $expected
+     * @param array $array_input The input array.
+     * @param string|array|null $key The key.
+     * @param mixed $value The value.
+     * @param mixed $expected The expected result.
      */
-    public function testSetValue($array_input, $key, $value, $expected)
+    public function testSetValue(array $array_input, string|array|null $key, mixed $value, mixed $expected): void
     {
         ArrayHelper::setValue($array_input, $key, $value);
         $this->assertEquals($expected, $array_input);
@@ -1445,9 +1445,10 @@ class ArrayHelperTest extends TestCase
     /**
      * @dataProvider dataProviderRecursiveSort
      *
-     * @return void
+     * @param array $expected_result The expected result.
+     * @param array $input_array The input array.
      */
-    public function testRecursiveSort($expected_result, $input_array)
+    public function testRecursiveSort(array $expected_result, array $input_array): void
     {
         $actual = ArrayHelper::recursiveSort($input_array);
         $this->assertEquals($expected_result, $actual);
@@ -1457,7 +1458,7 @@ class ArrayHelperTest extends TestCase
      * Data provider for [[testRecursiveSort()]].
      * @return array test data
      */
-    public static function dataProviderRecursiveSort()
+    public static function dataProviderRecursiveSort(): array
     {
         return [
             //Normal index array
@@ -1548,8 +1549,7 @@ class ArrayAccessibleObject implements ArrayAccess
         $this->container = $container;
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1558,20 +1558,17 @@ class ArrayAccessibleObject implements ArrayAccess
         }
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->container);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->offsetExists($offset) ? $this->container[$offset] : null;
     }
@@ -1594,32 +1591,27 @@ class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements 
         return array_key_exists($keyIndex, $keys) ? $keys[$keyIndex] : false;
     }
 
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): mixed
     {
         return $this->offsetGet($this->getContainerKey($this->position));
     }
 
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
         return $this->getContainerKey($this->position);
     }
 
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
 
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         $key = $this->getContainerKey($this->position);
         return !(!$key || !$this->offsetExists($key));

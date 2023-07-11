@@ -38,7 +38,7 @@ class PageCacheTest extends TestCase
         CacheTestCase::$microtime = null;
     }
 
-    public static function cacheTestCaseProvider()
+    public static function cacheTestCaseProvider(): array
     {
         return [
             // Basic
@@ -148,9 +148,10 @@ class PageCacheTest extends TestCase
 
     /**
      * @dataProvider cacheTestCaseProvider
-     * @param array $testCase
+     *
+     * @param array $testCase The cache test case.
      */
-    public function testCache($testCase)
+    public function testCache(array $testCase): void
     {
         $testCase = ArrayHelper::merge([
             'properties' => [],

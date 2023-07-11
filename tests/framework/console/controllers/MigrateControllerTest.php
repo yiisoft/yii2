@@ -157,7 +157,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public static function generateMigrationDataProvider()
+    public static function generateMigrationDataProvider(): array
     {
         $params = [
             'create_fields' => [
@@ -334,13 +334,14 @@ class MigrateControllerTest extends TestCase
     }
 
     /**
-     * @param string $expectedFile
-     * @param string $migrationName
-     * @param string $table
-     * @param array $params
      * @dataProvider generateMigrationDataProvider
+     *
+     * @param string $expectedFile The expected file name.
+     * @param string $migrationName The migration name.
+     * @param string $table The table name.
+     * @param array $params The params.
      */
-    public function testGenerateMigration($expectedFile, $migrationName, $table, $params)
+    public function testGenerateMigration(string $expectedFile, string $migrationName, string $table, array $params): void
     {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
 
@@ -357,7 +358,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public static function generateJunctionMigrationDataProvider()
+    public static function generateJunctionMigrationDataProvider(): array
     {
         return [
             ['create_junction_post_and_tag_tables', 'post_tag', 'post', 'tag'],
@@ -379,14 +380,19 @@ class MigrateControllerTest extends TestCase
     }
 
     /**
-     * @param string $migrationName
-     * @param string $junctionTable
-     * @param string $firstTable
-     * @param string $secondTable
      * @dataProvider generateJunctionMigrationDataProvider
+     *
+     * @param string $migrationName The migration name.
+     * @param string $junctionTable The junction table name.
+     * @param string $firstTable The first table name.
+     * @param string $secondTable The second table name.
      */
-    public function testGenerateJunctionMigration($migrationName, $junctionTable, $firstTable, $secondTable)
-    {
+    public function testGenerateJunctionMigration(
+        string $migrationName,
+        string $junctionTable,
+        string $firstTable,
+        string $secondTable
+    ): void {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
 
         $this->assertCommandCreatedJunctionFile(

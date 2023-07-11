@@ -238,7 +238,7 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-    public static function paramsNonWhereProvider()
+    public static function paramsNonWhereProvider(): array
     {
         return [
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
@@ -249,10 +249,12 @@ SQL;
 
     /**
      * Test whether param binding works in other places than WHERE.
+     *
      * @dataProvider paramsNonWhereProvider
-     * @param string $sql
+     *
+     * @param string $sql SQL query.
      */
-    public function testBindParamsNonWhere($sql)
+    public function testBindParamsNonWhere(string $sql): void
     {
         $db = $this->getConnection();
 
@@ -386,7 +388,7 @@ SQL;
         setlocale(LC_NUMERIC, $locale);
     }
 
-    public static function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         return [
             'issue11242' => [
@@ -428,18 +430,25 @@ SQL;
     }
 
     /**
-     * Make sure that `{{something}}` in values will not be encoded
+     * Make sure that `{{something}}` in values will not be encoded.
+     *
      * https://github.com/yiisoft/yii2/issues/11242.
      *
      * @dataProvider batchInsertSqlProvider
-     * @param mixed $table
-     * @param mixed $columns
-     * @param mixed $values
-     * @param mixed $expected
-     * @param array $expectedParams
+     *
+     * @param string $table Table name.
+     * @param array $columns Column names.
+     * @param array|ArrayObject $values Values to be batch inserted.
+     * @param string $expected Expected SQL query.
+     * @param array $expectedParams Expected query params.
      */
-    public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
-    {
+    public function testBatchInsertSQL(
+        string $table,
+        array $columns,
+        array|ArrayObject $values,
+        string $expected,
+        array $expectedParams = []
+    ): void {
         $command = $this->getConnection()->createCommand();
         $command->batchInsert($table, $columns, $values);
         $command->prepare(false);
@@ -619,7 +628,7 @@ SQL;
      * Data provider for testInsertSelectFailed.
      * @return array
      */
-    public static function invalidSelectColumns()
+    public static function invalidSelectColumns(): array
     {
         return [
             [[]],
@@ -633,9 +642,9 @@ SQL;
      *
      * @dataProvider invalidSelectColumns
      *
-     * @param mixed $invalidSelectColumns
+     * @param array|string $invalidSelectColumns Invalid select columns.
      */
-    public function testInsertSelectFailed($invalidSelectColumns)
+    public function testInsertSelectFailed(array|string $invalidSelectColumns): void
     {
         $query = new \yii\db\Query();
         $query->select($invalidSelectColumns)->from('{{customer}}');
@@ -807,7 +816,7 @@ SQL;
         $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
     }
 
-    public static function upsertProvider()
+    public static function upsertProvider(): array
     {
         return [
             'regular values' => [
@@ -1031,10 +1040,11 @@ SQL;
 
     /**
      * @dataProvider upsertProvider
-     * @param array $firstData
-     * @param array $secondData
+     *
+     * @param array $firstData First data to upsert.
+     * @param array $secondData Second data to upsert.
      */
-    public function testUpsert(array $firstData, array $secondData)
+    public function testUpsert(array $firstData, array $secondData): void
     {
         $db = $this->getConnection();
         $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
@@ -1337,7 +1347,7 @@ SQL;
      * Data provider for [[testGetRawSql()]].
      * @return array test data
      */
-    public static function dataProviderGetRawSql()
+    public static function dataProviderGetRawSql(): array
     {
         return [
             [
@@ -1393,11 +1403,11 @@ SQL;
      *
      * @dataProvider dataProviderGetRawSql
      *
-     * @param string $sql
-     * @param array $params
-     * @param string $expectedRawSql
+     * @param string $sql The SQL statement to be executed.
+     * @param array $params The parameters to be bound to the SQL statement during execution.
+     * @param string $expectedRawSql The expected raw SQL statement.
      */
-    public function testGetRawSql($sql, array $params, $expectedRawSql)
+    public function testGetRawSql(string $sql, array $params, string $expectedRawSql): void
     {
         $db = $this->getConnection(false);
         $command = $db->createCommand($sql, $params);

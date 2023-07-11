@@ -22,7 +22,7 @@ class TableTest extends TestCase
         $this->mockApplication();
     }
 
-    public static function getTableData()
+    public static function getTableData(): array
     {
         return [
             [
@@ -44,8 +44,11 @@ class TableTest extends TestCase
 
     /**
      * @dataProvider getTableData
+     *
+     * @param array $headers Headers to be used in the table.
+     * @param array $rows Rows to be used in the table.
      */
-    public function testTable($headers, $rows)
+    public function testTable(array $headers, array $rows): void
     {
         $table = new Table();
 
@@ -467,10 +470,11 @@ EXPECTED;
     }
 
     /**
-     * @param $smallString
      * @dataProvider dataMinimumWidth
+     *
+     * @param array|string $smallString The string that should fit in the minimum width of the table.
      */
-    public function testMinimumWidth($smallString)
+    public function testMinimumWidth(array|string $smallString): void
     {
         $bigString = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
@@ -486,7 +490,7 @@ EXPECTED;
         $this->assertTrue(true);
     }
 
-    public static function dataMinimumWidth()
+    public static function dataMinimumWidth(): array
     {
         return [
             ['X'],

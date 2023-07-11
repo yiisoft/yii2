@@ -90,8 +90,8 @@ class TestController extends Controller
          */
         return [
             'authenticator' => [
-                'class' => CompositeAuth::className(),
-                'authMethods' => $this->authMethods ?: [TestAuth::className()],
+                'class' => CompositeAuth::class,
+                'authMethods' => $this->authMethods ?: [TestAuth::class],
                 'optional' => $this->optional
             ],
         ];
@@ -113,11 +113,11 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
             'controllerMap' => [
-                'test' => TestController::className(),
+                'test' => TestController::class,
             ],
         ];
 
@@ -176,14 +176,14 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $this->assertEquals('success', $controller->run('a'));
     }
 
-    public static function compositeAuthDataProvider()
+    public static function compositeAuthDataProvider(): array
     {
         return [
             //base usage
             [
                 [
-                    HttpBearerAuth::className(),
-                    TestAuth::className(),
+                    HttpBearerAuth::class,
+                    TestAuth::class,
                 ],
                 'b',
                 true
@@ -197,9 +197,9 @@ class CompositeAuthTest extends \yiiunit\TestCase
             //only "a", run "b"
             [
                 [
-                    HttpBearerAuth::className(),
+                    HttpBearerAuth::class,
                     [
-                        'class' => TestAuth::className(),
+                        'class' => TestAuth::class,
                         'only' => ['a']
                     ],
                 ],
@@ -209,9 +209,9 @@ class CompositeAuthTest extends \yiiunit\TestCase
             //only "a", run "a"
             [
                 [
-                    HttpBearerAuth::className(),
+                    HttpBearerAuth::class,
                     [
-                        'class' => TestAuth::className(),
+                        'class' => TestAuth::class,
                         'only' => ['a']
                     ],
                 ],
@@ -221,9 +221,9 @@ class CompositeAuthTest extends \yiiunit\TestCase
             //except "b", run "a"
             [
                 [
-                    HttpBearerAuth::className(),
+                    HttpBearerAuth::class,
                     [
-                        'class' => TestAuth::className(),
+                        'class' => TestAuth::class,
                         'except' => ['b']
                     ],
                 ],
@@ -233,9 +233,9 @@ class CompositeAuthTest extends \yiiunit\TestCase
             //except "b", run "b"
             [
                 [
-                    HttpBearerAuth::className(),
+                    HttpBearerAuth::class,
                     [
-                        'class' => TestAuth::className(),
+                        'class' => TestAuth::class,
                         'except' => ['b']
                     ],
                 ],
@@ -246,13 +246,13 @@ class CompositeAuthTest extends \yiiunit\TestCase
     }
 
     /**
-     * @param array $authMethods
-     * @param string $actionId
-     * @param bool $expectedAuth
-     *
      * @dataProvider compositeAuthDataProvider
+     *
+     * @param array $authMethods The auth methods to use.
+     * @param string $actionId The action ID to run.
+     * @param bool $expectedAuth Whether the action should be authenticated.
      */
-    public function testCompositeAuth($authMethods, $actionId, $expectedAuth)
+    public function testCompositeAuth(array $authMethods, string $actionId, bool $expectedAuth): void
     {
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
         $controller = new TestController('test', Yii::$app, ['authMethods' => $authMethods]);

@@ -32,7 +32,7 @@ class PaginationTest extends TestCase
      * Data provider for [[testCreateUrl()]].
      * @return array test data
      */
-    public static function dataProviderCreateUrl()
+    public static function dataProviderCreateUrl(): array
     {
         return [
             [
@@ -72,14 +72,19 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderCreateUrl
      *
-     * @param int $page
-     * @param int $pageSize
-     * @param string $expectedUrl
-     * @param array $params
-     * @param bool $absolute
+     * @param int $page Page number.
+     * @param int|null $pageSize Page size.
+     * @param string $expectedUrl Expected URL.
+     * @param array|null $params Route params.
+     * @param bool $absolute Whether to create absolute URL.
      */
-    public function testCreateUrl($page, $pageSize, $expectedUrl, $params, $absolute = false)
-    {
+    public function testCreateUrl(
+        int $page,
+        int|null $pageSize,
+        string $expectedUrl,
+        array|null $params,
+        bool $absolute = false
+    ): void {
         $pagination = new Pagination();
         $pagination->route = 'item/list';
         $pagination->params = $params;
@@ -115,7 +120,7 @@ class PaginationTest extends TestCase
         $this->assertEquals(999, $pagination->getPage());
     }
 
-    public static function dataProviderPageCount()
+    public static function dataProviderPageCount(): array
     {
         return [
             [0, 0, 0],
@@ -134,11 +139,11 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderPageCount
      *
-     * @param int $pageSize
-     * @param int $totalCount
-     * @param int $pageCount
+     * @param int $pageSize Page size.
+     * @param int $totalCount Total count.
+     * @param int $pageCount Page count.
      */
-    public function testPageCount($pageSize, $totalCount, $pageCount)
+    public function testPageCount(int $pageSize, int $totalCount, int $pageCount): void
     {
         $pagination = new Pagination();
         $pagination->setPageSize($pageSize);
@@ -152,7 +157,7 @@ class PaginationTest extends TestCase
         $this->assertEquals(0, (new Pagination())->getPage());
     }
 
-    public static function dataProviderSetPage()
+    public static function dataProviderSetPage(): array
     {
         return [
             [null, false, 0, null],
@@ -173,12 +178,12 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderSetPage
      *
-     * @param int|null $value
-     * @param bool $validate
-     * @param int $totalCount
-     * @param int $page
+     * @param int|null $value Page number.
+     * @param bool $validate Whether to validate page number.
+     * @param int $totalCount Total count.
+     * @param int|null $page Expected page number.
      */
-    public function testSetPage($value, $validate, $totalCount, $page)
+    public function testSetPage(int|null $value, bool $validate, int $totalCount, int|null $page): void
     {
         $pagination = new Pagination();
         $pagination->totalCount = $totalCount;
@@ -187,7 +192,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($page, $pagination->getPage());
     }
 
-    public static function dataProviderGetPageSize()
+    public static function dataProviderGetPageSize(): array
     {
         return [
             [[1, 50], 20],
@@ -203,10 +208,10 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderGetPageSize
      *
-     * @param array|bool $pageSizeLimit
-     * @param int $pageSize
+     * @param array|bool $pageSizeLimit Page size limit.
+     * @param int $pageSize Expected page size.
      */
-    public function testGetPageSize($pageSizeLimit, $pageSize)
+    public function testGetPageSize(array|bool $pageSizeLimit, int $pageSize): void
     {
         $pagination = new Pagination();
         $pagination->pageSizeLimit = $pageSizeLimit;
@@ -214,7 +219,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($pageSize, $pagination->getPageSize());
     }
 
-    public static function dataProviderSetPageSize()
+    public static function dataProviderSetPageSize(): array
     {
         return [
             [null, false, false, 20],
@@ -235,12 +240,12 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderSetPageSize
      *
-     * @param int|null $value
-     * @param bool $validate
-     * @param array|false $pageSizeLimit
-     * @param int $pageSize
+     * @param int|null $value Page size.
+     * @param bool $validate Whether to validate page size.
+     * @param array|false $pageSizeLimit Page size limit.
+     * @param int $pageSize Expected page size.
      */
-    public function testSetPageSize($value, $validate, $pageSizeLimit, $pageSize)
+    public function testSetPageSize(int|null $value, bool $validate, array|false $pageSizeLimit, int $pageSize): void
     {
         $pagination = new Pagination();
         $pagination->pageSizeLimit = $pageSizeLimit;
@@ -249,7 +254,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($pageSize, $pagination->getPageSize());
     }
 
-    public static function dataProviderGetOffset()
+    public static function dataProviderGetOffset(): array
     {
         return [
             [0, 0, 0],
@@ -263,11 +268,11 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderGetOffset
      *
-     * @param int $pageSize
-     * @param int $page
-     * @param int $offset
+     * @param int $pageSize Page size.
+     * @param int $page Page number.
+     * @param int $offset Expected offset.
      */
-    public function testGetOffset($pageSize, $page, $offset)
+    public function testGetOffset(int $pageSize, int $page, int $offset): void
     {
         $pagination = new Pagination();
         $pagination->setPageSize($pageSize);
@@ -276,7 +281,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($offset, $pagination->getOffset());
     }
 
-    public static function dataProviderGetLimit()
+    public static function dataProviderGetLimit(): array
     {
         return [
             [0, -1],
@@ -291,7 +296,7 @@ class PaginationTest extends TestCase
      * @param int $pageSize
      * @param int $limit
      */
-    public function testGetLimit($pageSize, $limit)
+    public function testGetLimit(int $pageSize, int $limit): void
     {
         $pagination = new Pagination();
         $pagination->setPageSize($pageSize);
@@ -299,7 +304,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($limit, $pagination->getLimit());
     }
 
-    public static function dataProviderGetLinks()
+    public static function dataProviderGetLinks(): array
     {
         return [
             [0, 0, 0, '/index.php?r=list&page=1&per-page=0', null, null, null, null],
@@ -380,17 +385,25 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderGetLinks
      *
-     * @param int $page
-     * @param int $pageSize
-     * @param int $totalCount
-     * @param string $self
-     * @param string|null $first
-     * @param string|null $last
-     * @param string|null $prev
-     * @param string|null $next
+     * @param int $page Page number.
+     * @param int $pageSize Page size.
+     * @param int $totalCount Total count.
+     * @param string $self Expected self link.
+     * @param string|null $first Expected first link.
+     * @param string|null $last Expected last link.
+     * @param string|null $prev Expected previous link.
+     * @param string|null $next Expected next link.
      */
-    public function testGetLinks($page, $pageSize, $totalCount, $self, $first, $last, $prev, $next)
-    {
+    public function testGetLinks(
+        int $page,
+        int $pageSize,
+        int $totalCount,
+        string $self,
+        string|null $first,
+        string|null $last,
+        string|null $prev,
+        string|null $next
+    ): void {
         $pagination = new Pagination();
         $pagination->totalCount = $totalCount;
         $pagination->route = 'list';

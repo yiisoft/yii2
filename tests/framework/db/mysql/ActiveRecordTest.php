@@ -16,6 +16,7 @@ use yiiunit\data\ar\Storage;
 class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     public $driverName = 'mysql';
+    protected static string $driverNameStatic = 'mysql';
 
     public function testJsonColumn()
     {

@@ -62,11 +62,11 @@ jobs:
 
       - name: Run Pgsql tests with PHPUnit and generate coverage.
         if: matrix.php == '8.1'
-        run: vendor/bin/phpunit --group pgsql --coverage-clover=coverage.xml --colors=always
+        run: vendor/bin/phpunit --group pgsql --coverage-clover=coverage.xml --colors=always --verbose
 
       - name: Run Pgsql tests with PHPUnit.
         if: matrix.php != '8.1'
-        run: vendor/bin/phpunit --group pgsql --colors=always
+        run: vendor/bin/phpunit --group pgsql --colors=always --verbose
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'

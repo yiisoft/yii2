@@ -1242,11 +1242,12 @@ class FileHelperTest extends TestCase
 
     /**
      * @dataProvider changeOwnershipInvalidArgumentsProvider
-     * @param bool $useFile
-     * @param mixed $ownership
-     * @param mixed $mode
+     *
+     * @param bool $useFile Use file.
+     * @param mixed $ownership User and group ownership.
+     * @param mixed $mode File mode.
      */
-    public function testChangeOwnershipInvalidArguments($useFile, $ownership, $mode)
+    public function testChangeOwnershipInvalidArguments(bool $useFile, mixed $ownership, mixed $mode): void
     {
         $dirName = 'change_ownership_invalid_arguments';
         $fileName = 'file_1.txt';
@@ -1262,7 +1263,7 @@ class FileHelperTest extends TestCase
         FileHelper::changeOwnership($useFile ? $file : null, $ownership, $mode);
     }
 
-    public static function changeOwnershipInvalidArgumentsProvider()
+    public static function changeOwnershipInvalidArgumentsProvider(): array
     {
         return [
             [false, '123:123', null],

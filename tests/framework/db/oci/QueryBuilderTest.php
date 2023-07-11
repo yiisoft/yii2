@@ -9,6 +9,7 @@ namespace yiiunit\framework\db\oci;
 
 use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\base\TraversableObject;
 
@@ -19,6 +20,7 @@ use yiiunit\data\base\TraversableObject;
 class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'oci';
+    protected static string $driverNameStatic = 'oci';
 
     protected $likeEscapeCharSql = " ESCAPE '!'";
     protected $likeParameterReplacements = [
@@ -42,7 +44,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public static function foreignKeysProvider()
+    public static function foreignKeysProvider(): array
     {
         $tableName = 'T_constraints_3';
         $name = 'CN_constraints_3';
@@ -69,20 +71,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ];
     }
 
-    public static function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
         return $result;
-    }
-
-    /**
-     * @dataProvider defaultValuesProvider
-     * @param string $sql
-     */
-    public function testAddDropDefaultValue($sql, \Closure $builder)
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in Oracle.');
     }
 
     public function testCommentColumn()
@@ -91,11 +84,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS ''";
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
     }
 
     public function testCommentTable()
@@ -104,11 +97,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
 
         $expected = "COMMENT ON TABLE [[comment]] IS ''";
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertEquals(self::replaceQuotes($expected), $sql);
     }
 
     public function testExecuteResetSequence()
@@ -194,7 +187,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $items;
     }
 
-    public static function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -254,7 +247,7 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         return $newData;
     }
 
-    public function batchInsertProvider()
+    public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
 
@@ -288,18 +281,26 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
     }
 
     /**
-     * @depends      testInitFixtures
+     * @depends testInitFixtures
+     *
      * @dataProvider upsertProvider
-     * @param string $table
-     * @param array $insertColumns
-     * @param array|null $updateColumns
-     * @param string|string[] $expectedSQL
-     * @param array $expectedParams
+     *
+     * @param string $table The table name.
+     * @param array|Query $insertColumns The column data (name => value) to be inserted into the table.
+     * @param array|bool|null $updateColumns The column data (name => value) to be updated if it already exists.
+     * @param string|string[] $expectedSQL The expected SQL statement(s).
+     * @param array $expectedParams The expected binding parameters.
+     *
      * @throws \yii\base\NotSupportedException
      * @throws \Exception
      */
-    public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
-    {
+    public function testUpsert(
+        string $table,
+        array|Query $insertColumns,
+        array|bool|null $updateColumns,
+        string|array $expectedSQL,
+        array $expectedParams
+    ): void {
         $actualParams = [];
         $actualSQL = $this->getQueryBuilder(true, $this->driverName === 'sqlite')->upsert($table, $insertColumns, $updateColumns, $actualParams);
         if (is_string($expectedSQL)) {
@@ -314,4 +315,16 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         }
     }
 
+    /**
+     * @dataProvider defaultValuesProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('oci does not support');
+
+        parent::testAddDropDefaultValue($sql, $builder);
+    }
 }

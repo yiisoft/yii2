@@ -47,7 +47,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
 
-    public static function providerForOrderByColumn()
+    public static function providerForOrderByColumn(): array
     {
         return [
             'no marks' => ['name'],
@@ -63,9 +63,12 @@ class SqlDataProviderTest extends DatabaseTestCase
 
     /**
      * @dataProvider providerForOrderByColumn
+     *
+     * @param string $column The column name.
+     *
      * @see https://github.com/yiisoft/yii2/issues/18552
      */
-    public function testRemovingOrderBy($column)
+    public function testRemovingOrderBy(string $column): void
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer` order by ' . $column . ' desc',

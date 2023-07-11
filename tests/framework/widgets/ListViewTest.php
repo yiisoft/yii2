@@ -155,10 +155,11 @@ HTML
 
     /**
      * @dataProvider itemViewOptions
-     * @param mixed $itemView
-     * @param string $expected
+     *
+     * @param mixed $itemView The item view to be used.
+     * @param string $expected The expected result.
      */
-    public function testItemViewOptions($itemView, $expected)
+    public function testItemViewOptions(mixed $itemView, string $expected): void
     {
         ob_start();
         $this->getListView(['itemView' => $itemView])->run();
@@ -167,7 +168,7 @@ HTML
         $this->assertEqualsWithoutLE($expected, $out);
     }
 
-    public static function itemOptions()
+    public static function itemOptions(): array
     {
         return [
             [
@@ -201,10 +202,11 @@ HTML
 
     /**
      * @dataProvider itemOptions
-     * @param mixed $itemOptions
-     * @param string $expected
+     *
+     * @param mixed $itemOptions The item options.
+     * @param string $expected The expected result.
      */
-    public function testItemOptions($itemOptions, $expected)
+    public function testItemOptions(mixed $itemOptions, string $expected): void
     {
         ob_start();
         $this->getListView(['itemOptions' => $itemOptions])->run();
@@ -272,7 +274,7 @@ HTML
         (new ListView())->run();
     }
 
-    public static function providerForNoSorter()
+    public static function providerForNoSorter(): array
     {
         return [
             'no sort attributes' => [[]],
@@ -282,8 +284,10 @@ HTML
 
     /**
      * @dataProvider providerForNoSorter
+     *
+     * @param array $additionalConfig Additional configuration for the list view.
      */
-    public function testRenderNoSorter($additionalConfig)
+    public function testRenderNoSorter(array $additionalConfig): void
     {
         $config = array_merge(['layout' => '{sorter}'], $additionalConfig);
 
@@ -339,7 +343,7 @@ HTML
 </div>', $out);
     }
 
-    public static function providerForSummary()
+    public static function providerForSummary(): array
     {
         return [
             'empty' => ['', '<div id="w0" class="list-view">
@@ -357,8 +361,11 @@ HTML
 
     /**
      * @dataProvider providerForSummary
+     *
+     * @param string $summary Summary template.
+     * @param string $result Expected result.
      */
-    public function testRenderSummaryWhenSummaryIsCustom($summary, $result)
+    public function testRenderSummaryWhenSummaryIsCustom(string $summary, string $result): void
     {
         ob_start();
         $this->getListView(['summary' => $summary])->run();

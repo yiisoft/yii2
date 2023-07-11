@@ -467,7 +467,7 @@ EOL;
      * Data provider for [[testAdjustCssUrl()]].
      * @return array test data.
      */
-    public static function adjustCssUrlDataProvider()
+    public static function adjustCssUrlDataProvider(): array
     {
         return [
             [
@@ -570,13 +570,17 @@ EOL;
     /**
      * @dataProvider adjustCssUrlDataProvider
      *
-     * @param $cssContent
-     * @param $inputFilePath
-     * @param $outputFilePath
-     * @param $expectedCssContent
+     * @param string $cssContent The CSS content to adjust.
+     * @param string $inputFilePath The input file path.
+     * @param string $outputFilePath The output file path.
+     * @param string $expectedCssContent The expected CSS content.
      */
-    public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent)
-    {
+    public function testAdjustCssUrl(
+        string $cssContent,
+        string $inputFilePath,
+        string $outputFilePath,
+        string $expectedCssContent
+    ): void {
         $adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', [$cssContent, $inputFilePath, $outputFilePath]);
 
         $this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
@@ -586,7 +590,7 @@ EOL;
      * Data provider for [[testFindRealPath()]].
      * @return array test data
      */
-    public static function findRealPathDataProvider()
+    public static function findRealPathDataProvider(): array
     {
         return [
             [
@@ -619,10 +623,10 @@ EOL;
     /**
      * @dataProvider findRealPathDataProvider
      *
-     * @param string $sourcePath
-     * @param string $expectedRealPath
+     * @param string $sourcePath The source path.
+     * @param string $expectedRealPath The expected real path.
      */
-    public function testFindRealPath($sourcePath, $expectedRealPath)
+    public function testFindRealPath(string $sourcePath, string $expectedRealPath): void
     {
         $expectedRealPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $expectedRealPath);
         $realPath = $this->invokeAssetControllerMethod('findRealPath', [$sourcePath]);

@@ -22,6 +22,7 @@ use yiiunit\data\ar\Type;
 class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     protected $driverName = 'oci';
+    protected static string $driverNameStatic = 'oci';
 
     public function testCastValues()
     {
@@ -182,10 +183,12 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     /**
      * Tests the alias syntax for joinWith: 'alias' => 'relation'.
+     *
      * @dataProvider aliasMethodProvider
+     *
      * @param string $aliasMethod whether alias is specified explicitly or using the query syntax {{@tablename}}
      */
-    public function testJoinWithAlias($aliasMethod)
+    public function testJoinWithAlias(string $aliasMethod): void
     {
         // left join and eager loading
         /** @var ActiveQuery $query */

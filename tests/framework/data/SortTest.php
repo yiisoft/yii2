@@ -208,7 +208,7 @@ class SortTest extends TestCase
         $this->assertEquals('/index.php?r=site%2Findex&sort=age', $sort->createUrl('name'));
     }
 
-    public static function providerForLinkWithParams()
+    public static function providerForLinkWithParams(): array
     {
         return [
             [true, null, '<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>'],
@@ -220,8 +220,12 @@ class SortTest extends TestCase
 
     /**
      * @dataProvider providerForLinkWithParams
+     *
+     * @param bool $enableMultiSort Whether to enable multi-sorting.
+     * @param array|null $defaultOrder The default order that should be used when the current request does not specify any order.
+     * @param string $link The expected link.
      */
-    public function testLinkWithParams($enableMultiSort, $defaultOrder, $link)
+    public function testLinkWithParams(bool $enableMultiSort, array|null $defaultOrder, string $link): void
     {
         $this->mockApplication();
         $manager = new UrlManager([
@@ -250,7 +254,7 @@ class SortTest extends TestCase
         $this->assertEquals($link, $sort->link('age'));
     }
 
-    public static function providerForLinkWithParamsAndPassedButEmptySort()
+    public static function providerForLinkWithParamsAndPassedButEmptySort(): array
     {
         return [
             [null],
@@ -261,8 +265,10 @@ class SortTest extends TestCase
 
     /**
      * @dataProvider providerForLinkWithParamsAndPassedButEmptySort
+     *
+     * @param array|null $defaultOrder The default order that should be used.
      */
-    public function testLinkWithParamsAndPassedButEmptySort($defaultOrder)
+    public function testLinkWithParamsAndPassedButEmptySort(array|null $defaultOrder)
     {
         $this->mockApplication();
         $manager = new UrlManager([
@@ -294,7 +300,7 @@ class SortTest extends TestCase
         );
     }
 
-    public static function providerForLinkWithoutParams()
+    public static function providerForLinkWithoutParams(): array
     {
         return [
             [false, null, '<a href="/index.php?r=site%2Findex&amp;sort=age" data-sort="age">Age</a>'],
@@ -308,8 +314,12 @@ class SortTest extends TestCase
 
     /**
      * @dataProvider providerForLinkWithoutParams
+     *
+     * @param bool $enableMultiSort Whether to enable multi-sorting.
+     * @param array|null $defaultOrder The default order that should be used.
+     * @param string $link The expected link.
      */
-    public function testLinkWithoutParams($enableMultiSort, $defaultOrder, $link)
+    public function testLinkWithoutParams(bool $enableMultiSort, array|null $defaultOrder, string $link): void
     {
         $this->mockApplication();
         $manager = new UrlManager([

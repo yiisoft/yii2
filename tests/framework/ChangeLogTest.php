@@ -15,7 +15,7 @@ use yiiunit\TestCase;
  */
 class ChangeLogTest extends TestCase
 {
-    public static function changeProvider()
+    public static function changeProvider(): array
     {
 
         $lines = preg_split("~\R~", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'), -1, PREG_SPLIT_NO_EMPTY);
@@ -37,8 +37,10 @@ class ChangeLogTest extends TestCase
 
     /**
      * @dataProvider changeProvider
+     *
+     * @param string $line Change line from CHANGELOG.md.
      */
-    public function testContributorLine($line)
+    public function testContributorLine(string $line): void
     {
         if ($line === '- no changes in this release.') {
             $this->markTestSkipped('Placeholder line');

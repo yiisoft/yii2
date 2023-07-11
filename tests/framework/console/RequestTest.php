@@ -13,7 +13,7 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public static function provider()
+    public static function provider(): array
     {
         return [
             [
@@ -180,11 +180,12 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider provider
-     * @param array $params
-     * @param array $expected
-     * @param array|null $expectedException
+     *
+     * @param array $params The request params.
+     * @param array $expected The expected result.
+     * @param array|null $expectedException The expected exception.
      */
-    public function testResolve($params, $expected, $expectedException = null)
+    public function testResolve(array $params, array $expected, array $expectedException = null)
     {
         if (isset($expectedException)) {
             $this->expectException($expectedException[0]);
