@@ -56,11 +56,11 @@ class CacheSessionTest extends \yiiunit\TestCase
 
     public function testInitUseStrictMode()
     {
-        $this->initStrictModeTest(CacheSession::className());
+        $this->initStrictModeTest(CacheSession::class);
     }
 
     public function testUseStrictMode()
     {
-        $this->useStrictModeTest(CacheSession::className());
+        $this->useStrictModeTest(CacheSession::class);
     }
 }

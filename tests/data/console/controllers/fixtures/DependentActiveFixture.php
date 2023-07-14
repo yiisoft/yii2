@@ -20,7 +20,7 @@ class DependentActiveFixture extends ActiveFixture
 
     public function load()
     {
-        FixtureStorage::$activeFixtureSequence[] = self::className();
+        FixtureStorage::$activeFixtureSequence[] = self::class;
         parent::load();
     }
 }

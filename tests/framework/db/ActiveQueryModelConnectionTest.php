@@ -45,7 +45,7 @@ class ActiveQueryModelConnectionTest extends TestCase
         $this->globalConnection->expects($this->never())->method('getQueryBuilder');
         $this->prepareConnectionMock($this->modelConnection);
 
-        $query = new ActiveQuery(ActiveRecord::className());
+        $query = new ActiveQuery(ActiveRecord::class);
         $query->one();
     }
 
@@ -54,7 +54,7 @@ class ActiveQueryModelConnectionTest extends TestCase
         $this->modelConnection->expects($this->never())->method('getQueryBuilder');
         $this->prepareConnectionMock($this->globalConnection);
 
-        $query = new ActiveQuery(DefaultActiveRecord::className());
+        $query = new ActiveQuery(DefaultActiveRecord::class);
         $query->one();
     }
 
@@ -63,7 +63,7 @@ class ActiveQueryModelConnectionTest extends TestCase
         $this->globalConnection->expects($this->never())->method('getQueryBuilder');
         $this->prepareConnectionMock($this->modelConnection);
 
-        $query = new ActiveQuery(ActiveRecord::className());
+        $query = new ActiveQuery(ActiveRecord::class);
         $query->all();
     }
 
@@ -72,7 +72,7 @@ class ActiveQueryModelConnectionTest extends TestCase
         $this->modelConnection->expects($this->never())->method('getQueryBuilder');
         $this->prepareConnectionMock($this->globalConnection);
 
-        $query = new ActiveQuery(DefaultActiveRecord::className());
+        $query = new ActiveQuery(DefaultActiveRecord::class);
         $query->all();
     }
 }

@@ -40,7 +40,7 @@ SQL;
 
         $dt = $schema->columns['dt'];
 
-        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertInstanceOf(Expression::class, $dt->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP', (string)$dt->defaultValue);
     }
 
@@ -61,11 +61,11 @@ SQL;
         $schema = $this->getConnection()->getTableSchema('current_timestamp_test');
 
         $dt = $schema->columns['dt'];
-        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertInstanceOf(Expression::class, $dt->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP(2)', (string)$dt->defaultValue);
 
         $ts = $schema->columns['ts'];
-        $this->assertInstanceOf(Expression::className(), $ts->defaultValue);
+        $this->assertInstanceOf(Expression::class, $ts->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP(3)', (string)$ts->defaultValue);
     }
 
@@ -116,8 +116,8 @@ SQL;
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(ColumnSchema::className(), $column);
-        $this->assertInstanceOf(Expression::className(), $column->defaultValue);
+        $this->assertInstanceOf(ColumnSchema::class, $column);
+        $this->assertInstanceOf(Expression::class, $column->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
     }
 
@@ -142,7 +142,7 @@ SQL;
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(ColumnSchema::className(), $column);
+        $this->assertInstanceOf(ColumnSchema::class, $column);
         $this->assertEquals(NULL, $column->defaultValue);
     }
 

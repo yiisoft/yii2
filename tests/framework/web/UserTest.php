@@ -50,11 +50,11 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'authTimeout' => 10,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    'class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -104,16 +104,16 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'authTimeout' => 10,
                     'enableAutoLogin' => true,
                     'autoRenewCookie' => false,
                 ],
                 'response' => [
-                    'class' => MockResponse::className(),
+                    'class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::className(),
+                    'class' => MockRequest::class,
                 ],
             ],
         ];
@@ -156,14 +156,14 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'enableAutoLogin' => true,
                 ],
                 'response' => [
-                    'class' => MockResponse::className(),
+                    'class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::className(),
+                    'class' => MockRequest::class,
                 ],
             ],
         ];
@@ -220,10 +220,10 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    'class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -346,10 +346,10 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    'class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -369,37 +369,37 @@ class UserTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
-                    'accessChecker' => AccessChecker::className()
+                    'identityClass' => UserIdentity::class,
+                    'accessChecker' => AccessChecker::class
                 ]
             ],
         ]);
-        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
 
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'accessChecker' => [
-                        'class' => AccessChecker::className(),
+                        'class' => AccessChecker::class,
                     ],
                 ],
             ],
         ]);
-        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
 
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'accessChecker' => 'accessChecker',
                 ],
                 'accessChecker' => [
-                    'class' => AccessChecker::className(),
+                    'class' => AccessChecker::class,
                 ]
             ],
         ]);
-        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
     }
 
     public function testGetIdentityException()
@@ -411,7 +411,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => ExceptionIdentity::className(),
+                    'identityClass' => ExceptionIdentity::class,
                 ],
                 'session' => $session,
             ],
@@ -436,10 +436,10 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    'class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -459,7 +459,7 @@ class UserTest extends TestCase
         $this->assertFalse(Yii::$app->user->can('doSomething'));
 
         Yii::$app->user->setIdentity(UserIdentity::findIdentity('user1'));
-        $this->assertInstanceOf(UserIdentity::className(), Yii::$app->user->identity);
+        $this->assertInstanceOf(UserIdentity::class, Yii::$app->user->identity);
         $this->assertTrue(Yii::$app->user->can('doSomething'));
 
         Yii::$app->user->setIdentity(null);
@@ -475,7 +475,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ];
@@ -492,7 +492,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ];
@@ -511,7 +511,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ];
@@ -531,7 +531,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ];
@@ -551,7 +551,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ];

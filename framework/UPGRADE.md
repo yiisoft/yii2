@@ -292,7 +292,7 @@ Upgrade from Yii 2.0.34
   public function rules()
   {
       return [
-          ['attribute', 'each', 'rule' => ['exist', 'targetClass' => static::className(), 'targetAttribute' => 'id']],
+          ['attribute', 'each', 'rule' => ['exist', 'targetClass' => static::class, 'targetAttribute' => 'id']],
       ];
   }
   ```
@@ -523,7 +523,7 @@ Upgrade from Yii 2.0.13
 
 * You can start preparing your application for Yii 2.1 by doing the following:
 
-  - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
+  - Replace `::class` calls with `::class` (if you’re running PHP 5.5+).
   - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
   - Replace calls to `Yii::trace()` with `Yii::debug()`.
   - Remove calls to `yii\BaseYii::powered()`.

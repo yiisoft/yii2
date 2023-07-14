@@ -38,6 +38,6 @@ abstract class DbFixture extends Fixture
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, BaseObject::className());
+        $this->db = Instance::ensure($this->db, BaseObject::class);
     }
 }

@@ -258,7 +258,7 @@ class FixtureController extends Controller
         $fixtureClassNames = [];
 
         foreach ($fixtures as $fixture) {
-            $fixtureClassNames[] = $fixture::className();
+            $fixtureClassNames[] = $fixture::class;
         }
 
         $this->outputList($fixtureClassNames);

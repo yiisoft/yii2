@@ -298,7 +298,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
     {
         return [
             'attributeTypecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'name' => AttributeTypecastBehavior::TYPE_STRING,
                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,

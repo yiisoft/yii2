@@ -181,7 +181,7 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
     {
         return [
             'attributes' => [
-                'class' => AttributesBehavior::className(),
+                'class' => AttributesBehavior::class,
                 'attributes' => [
                     'alias' => [
                         self::EVENT_BEFORE_VALIDATE => function ($event) {

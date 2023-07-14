@@ -24,13 +24,13 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className(),
+                    Dispatcher::class => DispatcherMock::class,
                 ],
             ],
             'bootstrap' => ['log'],
         ]);
 
-        $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);
+        $this->assertInstanceOf(DispatcherMock::class, Yii::$app->log);
     }
 
     public function testBootstrap()
@@ -41,15 +41,15 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::className(),
+                    'class' => Component::class,
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::className(),
+                    'class' => BootstrapComponentMock::class,
                 ],
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::className(),
+                    'class' => Module::class,
                 ],
             ],
             'bootstrap' => [
