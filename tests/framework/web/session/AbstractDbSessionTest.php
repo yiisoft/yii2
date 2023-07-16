@@ -60,7 +60,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::className(),
+            'class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 
@@ -271,11 +271,11 @@ abstract class AbstractDbSessionTest extends TestCase
 
     public function testInitUseStrictMode()
     {
-        $this->initStrictModeTest(DbSession::className());
+        $this->initStrictModeTest(DbSession::class);
     }
 
     public function testUseStrictMode()
     {
-        $this->useStrictModeTest(DbSession::className());
+        $this->useStrictModeTest(DbSession::class);
     }
 }

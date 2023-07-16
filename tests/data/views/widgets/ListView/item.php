@@ -10,4 +10,4 @@
 /* @var $index int */
 /* @var $widget \yii\widgets\ListView */
 
-echo "Item #{$index}: {$model['login']} - Widget: " . $widget->className();
+echo "Item #{$index}: {$model['login']} - Widget: " . $widget::class;

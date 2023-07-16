@@ -135,7 +135,7 @@ class BaseObjectTest extends TestCase
 
     public function testObjectProperty()
     {
-        $this->assertInstanceOf(NewObject::className(), $this->object->object);
+        $this->assertInstanceOf(NewObject::class, $this->object->object);
         $this->assertEquals('object text', $this->object->object->text);
         $this->object->object->text = 'new text';
         $this->assertEquals('new text', $this->object->object->text);
@@ -150,7 +150,7 @@ class BaseObjectTest extends TestCase
     public function testGetClassName()
     {
         $object = $this->object;
-        $this->assertSame(get_class($object), $object::className());
+        $this->assertSame(get_class($object), $object::class);
     }
 
     public function testReadingWriteOnlyProperty()
