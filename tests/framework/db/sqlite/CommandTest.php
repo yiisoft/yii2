@@ -149,4 +149,22 @@ SQL;
         $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{reset_sequence}}')->queryScalar());
         $this->assertEquals(5, $db->createCommand('SELECT MAX([[id]]) FROM {{reset_sequence}}')->queryScalar());
     }
+
+    public function testResetSequenceExceptionTableNoExist()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: no_exist_table');
+
+        $db = $this->getConnection();
+        $db->createCommand()->resetSequence('no_exist_table', 5)->execute();
+    }
+
+    public function testResetSequenceExceptionSquenceNoExist()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage("There is not sequence associated with table 'type'.");
+
+        $db = $this->getConnection();
+        $db->createCommand()->resetSequence('type', 5)->execute();
+    }
 }
