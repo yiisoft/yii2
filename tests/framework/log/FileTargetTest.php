@@ -131,6 +131,16 @@ class FileTargetTest extends TestCase
         $logger->export();
 
         $this->assertFileNotExists($logFile);
+
+        $logger->messages = array_fill(0, 10, '');
+        $logger->export();
+
+        $this->assertFileNotExists($logFile);
+
+        $logger->messages = array_fill(0, 10, null);
+        $logger->export();
+
+        $this->assertFileNotExists($logFile);
     }
 
     private function clearLogFile($logFile)
