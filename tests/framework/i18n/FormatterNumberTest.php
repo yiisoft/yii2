@@ -142,13 +142,13 @@ class FormatterNumberTest extends TestCase
 
     public function testAsIntegerException()
     {
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->formatter->asInteger('a');
     }
 
     public function testAsIntegerException2()
     {
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->formatter->asInteger('-123abc');
     }
 

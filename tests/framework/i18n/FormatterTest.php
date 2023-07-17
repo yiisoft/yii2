@@ -56,7 +56,7 @@ class FormatterTest extends TestCase
     public function testInvalidFormat()
     {
         $value = time();
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown format type: data');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }
@@ -64,7 +64,7 @@ class FormatterTest extends TestCase
     public function testInvalidFormatArray()
     {
         $value = time();
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown format type: data');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, ['data']));
     }
@@ -72,7 +72,7 @@ class FormatterTest extends TestCase
     public function testFormatArrayInvalidStructure()
     {
         $value = time();
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('The $format array must contain at least one element.');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, []));
     }
@@ -358,7 +358,7 @@ class FormatterTest extends TestCase
             [
                 'Wrong value is casted properly',
                 ['NaN'], '0 millimeters', '0 mm',
-                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
+                [\yii\base\InvalidArgumentException::class, "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',
@@ -457,7 +457,7 @@ class FormatterTest extends TestCase
             [
                 'Wrong value is casted properly',
                 ['NaN'], '0 grams', '0 g',
-                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
+                [\yii\base\InvalidArgumentException::class, "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',

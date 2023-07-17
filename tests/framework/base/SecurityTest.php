@@ -1121,7 +1121,7 @@ TEXT;
 
     public function testMaskingInvalidStrings()
     {
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('First parameter ($length) must be greater than 0');
 
         $this->security->maskToken('');

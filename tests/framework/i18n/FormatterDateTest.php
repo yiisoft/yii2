@@ -49,7 +49,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'date'));
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'DATE'));
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
-        $this->expectException('\yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }
 
@@ -542,7 +542,7 @@ class FormatterDateTest extends TestCase
     {
         return [
             ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
-            [false, 'asdfg', 'yii\base\InvalidParamException'],
+            [false, 'asdfg', \yii\base\InvalidArgumentException::class],
 //            [(string)strtotime('now'), 'now'], // fails randomly
         ];
     }
