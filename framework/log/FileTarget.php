@@ -113,7 +113,9 @@ class FileTarget extends Target
 
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
 
-        if (empty(trim($text))) {
+        $trimmedText = trim($text);
+
+        if (empty($trimmedText)) {
             return; // No messages to export, so we exit the function early
         }
 
