@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -226,7 +227,7 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * Adds an `AFTER` constraint to the column.
-     * Note: MySQL, Oracle and Cubrid support only.
+     * Note: MySQL and Oracle support only.
      * @param string $after the column after which $this column will be added.
      * @return $this
      * @since 2.0.8
@@ -239,7 +240,7 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * Adds an `FIRST` constraint to the column.
-     * Note: MySQL, Oracle and Cubrid support only.
+     * Note: MySQL and Oracle support only.
      * @return $this
      * @since 2.0.8
      */

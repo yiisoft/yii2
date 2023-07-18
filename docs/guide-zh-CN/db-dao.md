@@ -15,11 +15,10 @@ Yii DAO 支持下列现成的数据库：
 - [MariaDB](https://mariadb.com/)
 - [SQLite](https://sqlite.org/)
 - [PostgreSQL](https://www.postgresql.org/)：版本 8.4 或更高
-- [CUBRID](https://www.cubrid.org/)：版本 9.3 或更高。
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx)：版本 2008 或更高。
 
-> Info: 在Yii 2.1及更高版本中，DAO 支持 CUBRID，Oracle 和 MSSQL
+> Info: 在Yii 2.1及更高版本中，DAO 支持 Oracle 和 MSSQL
   不再作为框架的内置核心组件提供。它们必须作为独离的 [扩展](structure-extensions.md) 安装。
   [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) 和
   [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) 都属于
@@ -73,7 +72,6 @@ return [
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
-* CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
 * MS SQL Server (via sqlsrv driver): `sqlsrv:Server=localhost;Database=mydatabase`
 * MS SQL Server (via dblib driver): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`

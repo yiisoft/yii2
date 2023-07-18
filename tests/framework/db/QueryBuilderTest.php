@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -11,7 +12,6 @@ use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
 use yii\db\conditions\LikeCondition;
 use yii\db\conditions\InCondition;
-use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
@@ -65,8 +65,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 return new MssqlQueryBuilder($connection);
             case 'pgsql':
                 return new PgsqlQueryBuilder($connection);
-            case 'cubrid':
-                return new CubridQueryBuilder($connection);
             case 'oci':
                 return new OracleQueryBuilder($connection);
         }
@@ -89,7 +87,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint',
                     'oci' => 'NUMBER(20)',
                     'sqlsrv' => 'bigint',
-                    'cubrid' => 'bigint',
                 ],
             ],
             [
@@ -101,7 +98,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint NOT NULL',
                     'oci' => 'NUMBER(20) NOT NULL',
                     'sqlsrv' => 'bigint NOT NULL',
-                    'cubrid' => 'bigint NOT NULL',
                 ],
             ],
             [
@@ -113,7 +109,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint CHECK (value > 5)',
                     'oci' => 'NUMBER(20) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
-                    'cubrid' => 'bigint CHECK (value > 5)',
                 ],
             ],
             [
@@ -125,7 +120,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint',
                     'oci' => 'NUMBER(8)',
                     'sqlsrv' => 'bigint',
-                    'cubrid' => 'bigint',
                 ],
             ],
             [
@@ -137,7 +131,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint CHECK (value > 5)',
                     'oci' => 'NUMBER(8) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
-                    'cubrid' => 'bigint CHECK (value > 5)',
                 ],
             ],
             [
@@ -158,7 +151,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'blob',
                     'oci' => 'BLOB',
                     'sqlsrv' => 'varbinary(max)',
-                    'cubrid' => 'blob',
                 ],
             ],
             [
@@ -168,7 +160,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => 'tinyint(1) NOT NULL DEFAULT 1',
                     'sqlite' => 'boolean NOT NULL DEFAULT 1',
                     'sqlsrv' => 'bit NOT NULL DEFAULT 1',
-                    'cubrid' => 'smallint NOT NULL DEFAULT 1',
                 ],
             ],
             [
@@ -180,7 +171,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'boolean',
                     'oci' => 'NUMBER(1)',
                     'sqlsrv' => 'bit',
-                    'cubrid' => 'smallint',
                 ],
             ],
             [
@@ -189,7 +179,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'char(1) CHECK (value LIKE "test%")',
                     'sqlite' => 'char(1) CHECK (value LIKE "test%")',
-                    'cubrid' => 'char(1) CHECK (value LIKE "test%")',
                 ],
             ],
             [
@@ -200,7 +189,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'pgsql' => 'char(1) NOT NULL',
                     'sqlite' => 'char(1) NOT NULL',
                     'oci' => 'CHAR(1) NOT NULL',
-                    'cubrid' => 'char(1) NOT NULL',
                 ],
             ],
             [
@@ -209,7 +197,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'char(6) CHECK (value LIKE "test%")',
                     'sqlite' => 'char(6) CHECK (value LIKE "test%")',
-                    'cubrid' => 'char(6) CHECK (value LIKE "test%")',
                 ],
             ],
             [
@@ -220,7 +207,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'pgsql' => 'char(6)',
                     'sqlite' => 'char(6)',
                     'oci' => 'CHAR(6)',
-                    'cubrid' => 'char(6)',
                 ],
             ],
             [
@@ -231,7 +217,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'pgsql' => 'char(1)',
                     'sqlite' => 'char(1)',
                     'oci' => 'CHAR(1)',
-                    'cubrid' => 'char(1)',
                 ],
             ],
             //[
@@ -242,7 +227,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
-            //        'cubrid' => ,
             //    ],
             //],
             [
@@ -254,7 +238,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'date NOT NULL',
                     'oci' => 'DATE NOT NULL',
                     'sqlsrv' => 'date NOT NULL',
-                    'cubrid' => 'date NOT NULL',
                 ],
             ],
             [
@@ -266,7 +249,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'date',
                     'oci' => 'DATE',
                     'sqlsrv' => 'date',
-                    'cubrid' => 'date',
                 ],
             ],
             //[
@@ -277,7 +259,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
-            //        'cubrid' => ,
             //    ],
             //],
             [
@@ -288,7 +269,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'datetime NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
                     'sqlsrv' => 'datetime NOT NULL',
-                    'cubrid' => 'datetime NOT NULL',
                 ],
             ],
             [
@@ -299,7 +279,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'datetime',
                     'oci' => 'TIMESTAMP',
                     'sqlsrv' => 'datetime',
-                    'cubrid' => 'datetime',
                 ],
             ],
             [
@@ -311,7 +290,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(10,0) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'decimal(18,0) CHECK (value > 5.6)',
-                    'cubrid' => 'decimal(10,0) CHECK (value > 5.6)',
                 ],
             ],
             [
@@ -323,7 +301,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(10,0) NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
                     'sqlsrv' => 'decimal(18,0) NOT NULL',
-                    'cubrid' => 'decimal(10,0) NOT NULL',
                 ],
             ],
             [
@@ -335,7 +312,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(12,4) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'decimal(12,4) CHECK (value > 5.6)',
-                    'cubrid' => 'decimal(12,4) CHECK (value > 5.6)',
                 ],
             ],
             [
@@ -347,7 +323,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(12,4)',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'decimal(12,4)',
-                    'cubrid' => 'decimal(12,4)',
                 ],
             ],
             [
@@ -359,7 +334,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(10,0)',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'decimal(18,0)',
-                    'cubrid' => 'decimal(10,0)',
                 ],
             ],
             [
@@ -371,7 +345,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'double CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
-                    'cubrid' => 'double(15) CHECK (value > 5.6)',
                 ],
             ],
             [
@@ -383,7 +356,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'double NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
                     'sqlsrv' => 'float NOT NULL',
-                    'cubrid' => 'double(15) NOT NULL',
                 ],
             ],
             [
@@ -395,7 +367,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'double CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
-                    'cubrid' => 'double(16) CHECK (value > 5.6)',
                 ],
             ],
             [
@@ -406,7 +377,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'double',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'float',
-                    'cubrid' => 'double(16)',
                 ],
             ],
             [
@@ -418,7 +388,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'double',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'float',
-                    'cubrid' => 'double(15)',
                 ],
             ],
             [
@@ -430,7 +399,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'float CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
-                    'cubrid' => 'float(7) CHECK (value > 5.6)',
                 ],
             ],
             [
@@ -442,7 +410,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'float NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
                     'sqlsrv' => 'float NOT NULL',
-                    'cubrid' => 'float(7) NOT NULL',
                 ],
             ],
             [
@@ -454,7 +421,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'float CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
                     'sqlsrv' => 'float CHECK (value > 5.6)',
-                    'cubrid' => 'float(16) CHECK (value > 5.6)',
                 ],
             ],
             [
@@ -465,7 +431,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'float',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'float',
-                    'cubrid' => 'float(16)',
                 ],
             ],
             [
@@ -477,7 +442,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'float',
                     'oci' => 'NUMBER',
                     'sqlsrv' => 'float',
-                    'cubrid' => 'float(7)',
                 ],
             ],
             [
@@ -489,7 +453,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer CHECK (value > 5)',
                     'oci' => 'NUMBER(10) CHECK (value > 5)',
                     'sqlsrv' => 'int CHECK (value > 5)',
-                    'cubrid' => 'int CHECK (value > 5)',
                 ],
             ],
             [
@@ -501,7 +464,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer NOT NULL',
                     'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'int NOT NULL',
-                    'cubrid' => 'int NOT NULL',
                 ],
             ],
             [
@@ -513,7 +475,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer CHECK (value > 5)',
                     'oci' => 'NUMBER(8) CHECK (value > 5)',
                     'sqlsrv' => 'int CHECK (value > 5)',
-                    'cubrid' => 'int CHECK (value > 5)',
                 ],
             ],
             [
@@ -525,7 +486,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer',
                     'oci' => 'NUMBER(8)',
                     'sqlsrv' => 'int',
-                    'cubrid' => 'int',
                 ],
             ],
             [
@@ -537,7 +497,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer',
                     'oci' => 'NUMBER(10)',
                     'sqlsrv' => 'int',
-                    'cubrid' => 'int',
                 ],
             ],
             [
@@ -549,7 +508,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(19,4) CHECK (value > 0.0)',
                     'oci' => 'NUMBER(19,4) CHECK (value > 0.0)',
                     'sqlsrv' => 'decimal(19,4) CHECK (value > 0.0)',
-                    'cubrid' => 'decimal(19,4) CHECK (value > 0.0)',
                 ],
             ],
             [
@@ -561,7 +519,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(19,4) NOT NULL',
                     'oci' => 'NUMBER(19,4) NOT NULL',
                     'sqlsrv' => 'decimal(19,4) NOT NULL',
-                    'cubrid' => 'decimal(19,4) NOT NULL',
                 ],
             ],
             [
@@ -573,7 +530,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(16,2) CHECK (value > 0.0)',
                     'oci' => 'NUMBER(16,2) CHECK (value > 0.0)',
                     'sqlsrv' => 'decimal(16,2) CHECK (value > 0.0)',
-                    'cubrid' => 'decimal(16,2) CHECK (value > 0.0)',
                 ],
             ],
             [
@@ -585,7 +541,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(16,2)',
                     'oci' => 'NUMBER(16,2)',
                     'sqlsrv' => 'decimal(16,2)',
-                    'cubrid' => 'decimal(16,2)',
                 ],
             ],
             [
@@ -597,7 +552,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'decimal(19,4)',
                     'oci' => 'NUMBER(19,4)',
                     'sqlsrv' => 'decimal(19,4)',
-                    'cubrid' => 'decimal(19,4)',
                 ],
             ],
             [
@@ -609,7 +563,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL CHECK (value > 5)',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY CHECK (value > 5)',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY CHECK (value > 5)',
-                    'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)',
                 ],
             ],
             [
@@ -637,7 +590,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
-                    'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY',
                 ],
             ],
             [
@@ -649,7 +601,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'tinyint',
                     'oci' => 'NUMBER(2)',
                     'sqlsrv' => 'tinyint',
-                    'cubrid' => 'smallint',
                 ],
             ],
             [
@@ -658,7 +609,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'tinyint(3) UNSIGNED',
                     'sqlite' => 'tinyint UNSIGNED',
-                    'cubrid' => 'smallint UNSIGNED',
                 ]
             ],
             [
@@ -670,7 +620,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'tinyint',
                     'oci' => 'NUMBER(3)',
                     'sqlsrv' => 'tinyint',
-                    'cubrid' => 'smallint',
                 ],
             ],
             [
@@ -682,7 +631,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'smallint',
                     'oci' => 'NUMBER(8)',
                     'sqlsrv' => 'smallint',
-                    'cubrid' => 'smallint',
                 ],
             ],
             [
@@ -694,7 +642,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'smallint',
                     'oci' => 'NUMBER(5)',
                     'sqlsrv' => 'smallint',
-                    'cubrid' => 'smallint',
                 ],
             ],
             [
@@ -704,7 +651,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => "varchar(255) CHECK (value LIKE 'test%')",
                     'sqlite' => "varchar(255) CHECK (value LIKE 'test%')",
                     'sqlsrv' => "nvarchar(255) CHECK (value LIKE 'test%')",
-                    'cubrid' => "varchar(255) CHECK (value LIKE 'test%')",
                 ],
             ],
             [
@@ -724,7 +670,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'varchar(255) NOT NULL',
                     'oci' => 'VARCHAR2(255) NOT NULL',
                     'sqlsrv' => 'nvarchar(255) NOT NULL',
-                    'cubrid' => 'varchar(255) NOT NULL',
                 ],
             ],
             [
@@ -734,7 +679,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => "varchar(32) CHECK (value LIKE 'test%')",
                     'sqlite' => "varchar(32) CHECK (value LIKE 'test%')",
                     'sqlsrv' => "nvarchar(32) CHECK (value LIKE 'test%')",
-                    'cubrid' => "varchar(32) CHECK (value LIKE 'test%')",
                 ],
             ],
             [
@@ -754,7 +698,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'varchar(32)',
                     'oci' => 'VARCHAR2(32)',
                     'sqlsrv' => 'nvarchar(32)',
-                    'cubrid' => 'varchar(32)',
                 ],
             ],
             [
@@ -766,7 +709,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'varchar(255)',
                     'oci' => 'VARCHAR2(255)',
                     'sqlsrv' => 'nvarchar(255)',
-                    'cubrid' => 'varchar(255)',
                 ],
             ],
             [
@@ -776,7 +718,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => "text CHECK (value LIKE 'test%')",
                     'sqlite' => "text CHECK (value LIKE 'test%')",
                     'sqlsrv' => "nvarchar(max) CHECK (value LIKE 'test%')",
-                    'cubrid' => "varchar CHECK (value LIKE 'test%')",
                 ],
             ],
             [
@@ -796,7 +737,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'text NOT NULL',
                     'oci' => 'CLOB NOT NULL',
                     'sqlsrv' => 'nvarchar(max) NOT NULL',
-                    'cubrid' => 'varchar NOT NULL',
                 ],
             ],
             [
@@ -806,7 +746,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => "text CHECK (value LIKE 'test%')",
                     'sqlite' => "text CHECK (value LIKE 'test%')",
                     'sqlsrv' => "nvarchar(max) CHECK (value LIKE 'test%')",
-                    'cubrid' => "varchar CHECK (value LIKE 'test%')",
                 ],
                 Schema::TYPE_TEXT . " CHECK (value LIKE 'test%')",
             ],
@@ -828,7 +767,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'text NOT NULL',
                     'oci' => 'CLOB NOT NULL',
                     'sqlsrv' => 'nvarchar(max) NOT NULL',
-                    'cubrid' => 'varchar NOT NULL',
                 ],
                 Schema::TYPE_TEXT . ' NOT NULL',
             ],
@@ -841,7 +779,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'text',
                     'oci' => 'CLOB',
                     'sqlsrv' => 'nvarchar(max)',
-                    'cubrid' => 'varchar',
                 ],
                 Schema::TYPE_TEXT,
             ],
@@ -854,7 +791,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'text',
                     'oci' => 'CLOB',
                     'sqlsrv' => 'nvarchar(max)',
-                    'cubrid' => 'varchar',
                 ],
             ],
             //[
@@ -865,7 +801,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
-            //        'cubrid' => ,
             //    ],
             //],
             [
@@ -876,7 +811,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'time NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
                     'sqlsrv' => 'time NOT NULL',
-                    'cubrid' => 'time NOT NULL',
                 ],
             ],
             [
@@ -887,7 +821,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'time',
                     'oci' => 'TIMESTAMP',
                     'sqlsrv' => 'time',
-                    'cubrid' => 'time',
                 ],
             ],
             //[
@@ -898,7 +831,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             //        'pgsql' => ,
             //        'sqlite' => ,
             //        'sqlsrv' => ,
-            //        'cubrid' => ,
             //    ],
             //],
             [
@@ -909,7 +841,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'timestamp NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
                     'sqlsrv' => 'datetime NOT NULL',
-                    'cubrid' => 'timestamp NOT NULL',
                 ],
             ],
             [
@@ -925,7 +856,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'timestamp',
                     'oci' => 'TIMESTAMP',
                     'sqlsrv' => 'datetime',
-                    'cubrid' => 'timestamp',
                 ],
             ],
             [
@@ -935,7 +865,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'pgsql' => 'timestamp(0) NULL DEFAULT NULL',
                     'sqlite' => 'timestamp NULL DEFAULT NULL',
                     'sqlsrv' => 'datetime NULL DEFAULT NULL',
-                    'cubrid' => 'timestamp NULL DEFAULT NULL',
                 ],
             ],
             [
@@ -962,7 +891,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) COMMENT 'test comment'",
                     'sqlsrv' => 'int',
-                    'cubrid' => "int COMMENT 'test comment'",
                 ],
                 [
                     'sqlsrv' => 'integer',
@@ -974,7 +902,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
-                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                 ],
                 [
                     'sqlsrv' => 'pk',
@@ -986,7 +913,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
-                    'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                 ],
                 [
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
@@ -999,7 +925,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'int(11) FIRST',
                     'sqlsrv' => 'int',
-                    'cubrid' => 'int FIRST',
                 ],
                 [
                     'oci' => 'NUMBER(10)',
@@ -1013,7 +938,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) FIRST',
                     'sqlsrv' => 'nvarchar(255)',
-                    'cubrid' => 'varchar(255) FIRST',
                 ],
                 [
                     'oci' => 'VARCHAR2(255)',
@@ -1026,7 +950,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'int(11) NOT NULL FIRST',
                     'sqlsrv' => 'int NOT NULL',
-                    'cubrid' => 'int NOT NULL FIRST',
                 ],
                 [
                     'oci' => 'NUMBER(10) NOT NULL',
@@ -1039,7 +962,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) NOT NULL FIRST',
                     'sqlsrv' => 'nvarchar(255) NOT NULL',
-                    'cubrid' => 'varchar(255) NOT NULL FIRST',
                 ],
                 [
                     'oci' => 'VARCHAR2(255) NOT NULL',
@@ -1783,7 +1705,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes(
             'SELECT [[t]].[[id]] AS [[ID]], [[gsm]].[[username]] AS [[GSM]], [[part]].[[Part]], [[t]].[[Part_Cost]] AS [[Part Cost]], st_x(location::geometry) AS [[lon]],'
-            . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM [[tablename]]');
+                . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM [[tablename]]'
+        );
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
