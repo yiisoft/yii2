@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.2 under development
 ------------------------
 
-- Removed support for CUBRID (mtangoo)
+- Chg #19902: Remove support for CUBRID (mtangoo)
 
 
 2.0.49 under development
