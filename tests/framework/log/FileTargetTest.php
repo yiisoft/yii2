@@ -123,7 +123,7 @@ class FileTargetTest extends TestCase
         $logger->export();
 
         $test = file($logFile);
-        $this->assertEquals("xxx\n", $test[0]);
+        $this->assertEquals("xxx", $test[0]);
 
         $this->clearLogFile($logFile);
 
