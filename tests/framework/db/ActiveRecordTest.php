@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -37,7 +38,6 @@ use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
 use yiiunit\data\ar\CroppedType;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\TestCase;
 
 abstract class ActiveRecordTest extends DatabaseTestCase
@@ -1372,12 +1372,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
         $this->assertEquals(true, $model->bool_col2);
-        if ($this instanceof CubridActiveRecordTest) {
-            // cubrid has non-standard timestamp representation
-            $this->assertEquals('12:00:00 AM 01/01/2002', $model->time);
-        } else {
-            $this->assertEquals('2002-01-01 00:00:00', $model->time);
-        }
+        $this->assertEquals('2002-01-01 00:00:00', $model->time);
 
         $model = new Type();
         $model->char_col2 = 'not something';
@@ -1455,10 +1450,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertSame('1337', trim($model->char_col));
         $this->assertSame('test', $model->char_col2);
         $this->assertSame('test123', $model->char_col3);
-//        $this->assertSame(1337.42, $model->float_col);
-//        $this->assertSame(42.1337, $model->float_col2);
-//        $this->assertSame(true, $model->bool_col);
-//        $this->assertSame(false, $model->bool_col2);
+        //        $this->assertSame(1337.42, $model->float_col);
+        //        $this->assertSame(42.1337, $model->float_col2);
+        //        $this->assertSame(true, $model->bool_col);
+        //        $this->assertSame(false, $model->bool_col2);
     }
 
     public function testIssues()
@@ -1827,7 +1822,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $orderClass = $this->getOrderClass();
 
-        $orderClass::find()->with('customer')->indexBy(function(Order $order) {
+        $orderClass::find()->with('customer')->indexBy(function (Order $order) {
             $this->assertTrue($order->isRelationPopulated('customer'));
             $this->assertNotEmpty($order->customer->id);
 
@@ -2119,7 +2114,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $cat = new Cat();
         $this->assertFalse(isset($cat->throwable));
-
     }
 
     /**
@@ -2211,5 +2205,4 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertNotNull($order->virtualCustomer);
     }
-
 }

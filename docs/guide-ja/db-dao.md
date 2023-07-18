@@ -15,7 +15,6 @@ Yii 2.0 では、DAO は下記の DBMS のサポートを内蔵しています�
 - [MariaDB](https://mariadb.com/)
 - [SQLite](https://sqlite.org/)
 - [PostgreSQL](https://www.postgresql.org/): バージョン 8.4 以上。
-- [CUBRID](https://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
@@ -67,7 +66,6 @@ DSN の形式はデータベースによってさまざまに異なります。
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
-* CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
 * MS SQL Server (sqlsrv ドライバ経由): `sqlsrv:Server=localhost;Database=mydatabase`
 * MS SQL Server (dblib ドライバ経由): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (mssql ドライバ経由): `mssql:host=localhost;dbname=mydatabase`

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Yii core class map.
  *
@@ -168,10 +169,6 @@ return [
   'yii\db\conditions\OrCondition' => YII2_PATH . '/db/conditions/OrCondition.php',
   'yii\db\conditions\SimpleCondition' => YII2_PATH . '/db/conditions/SimpleCondition.php',
   'yii\db\conditions\SimpleConditionBuilder' => YII2_PATH . '/db/conditions/SimpleConditionBuilder.php',
-  'yii\db\cubrid\ColumnSchemaBuilder' => YII2_PATH . '/db/cubrid/ColumnSchemaBuilder.php',
-  'yii\db\cubrid\QueryBuilder' => YII2_PATH . '/db/cubrid/QueryBuilder.php',
-  'yii\db\cubrid\Schema' => YII2_PATH . '/db/cubrid/Schema.php',
-  'yii\db\cubrid\conditions\LikeConditionBuilder' => YII2_PATH . '/db/cubrid/conditions/LikeConditionBuilder.php',
   'yii\db\mssql\ColumnSchema' => YII2_PATH . '/db/mssql/ColumnSchema.php',
   'yii\db\mssql\ColumnSchemaBuilder' => YII2_PATH . '/db/mssql/ColumnSchemaBuilder.php',
   'yii\db\mssql\DBLibPDO' => YII2_PATH . '/db/mssql/DBLibPDO.php',

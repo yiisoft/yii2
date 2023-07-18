@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -238,7 +239,7 @@ class Connection extends Component
     public $queryCache = 'cache';
     /**
      * @var string|null the charset used for database connection. The property is only used
-     * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
+     * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
      * as configured by the database.
      *
      * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending `;charset=UTF-8`
@@ -282,7 +283,6 @@ class Connection extends Component
         'oci' => 'yii\db\oci\Schema', // Oracle driver
         'mssql' => 'yii\db\mssql\Schema', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\mssql\Schema', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
     ];
     /**
      * @var string|null Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
@@ -319,7 +319,6 @@ class Connection extends Component
         'oci' => 'yii\db\oci\Command', // Oracle driver
         'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\Command', // CUBRID
     ];
     /**
      * @var bool whether to enable [savepoint](https://en.wikipedia.org/wiki/Savepoint).
@@ -745,7 +744,7 @@ class Connection extends Component
         if (!$this->isSybase && in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
             $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
+        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
         $this->trigger(self::EVENT_AFTER_OPEN);
