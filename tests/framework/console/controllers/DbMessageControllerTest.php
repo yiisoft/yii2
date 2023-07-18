@@ -82,10 +82,10 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
-     * @throws \yii\db\Exception
-     * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
+     * @throws \yii\base\InvalidArgumentException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public static function getConnection()
     {

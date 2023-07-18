@@ -163,7 +163,7 @@ class RequestTest extends TestCase
             ],
             [
                 // PHP does not allow variable name, starting with digit.
-                // InvalidParamException must be thrown during request resolving:
+                // InvalidArgumentException must be thrown during request resolving:
                 'params' => [
                     'controller/route',
                     '--0=test',

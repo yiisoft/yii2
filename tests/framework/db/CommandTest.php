@@ -655,7 +655,7 @@ SQL;
         $db = $this->getConnection();
         $command = $db->createCommand();
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
 
         $command->insert('{{customer}}', $query)->execute();
