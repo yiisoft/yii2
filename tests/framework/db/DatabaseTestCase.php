@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -118,7 +119,6 @@ abstract class DatabaseTestCase extends TestCase
             case 'mysql':
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
-            case 'cubrid':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
             case 'pgsql':

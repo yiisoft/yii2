@@ -34,8 +34,6 @@ Yii 为以下关系数据库提供 Active Record 支持：
 * SQLite 2 and 3：通过 [[yii\db\ActiveRecord]] 支持
 * Microsoft SQL Server 2008 及以上：通过 [[yii\db\ActiveRecord]] 支持
 * Oracle：通过 [[yii\db\ActiveRecord]] 支持
-* CUBRID 9.3 及以上：通过 [[yii\db\ActiveRecord]] 支持 (提示， 由于 CUBRID PDO 扩展的 [bug](http://jira.cubrid.org/browse/APIS-658)，
-  给变量加引用将不起作用，所以你得使用 CUBRID 9.3 客户端及服务端。
 * Sphinx：通过 [[yii\sphinx\ActiveRecord]] 支持，依赖 `yii2-sphinx` 扩展
 * ElasticSearch：通过 [[yii\elasticsearch\ActiveRecord]] 支持, 依赖 `yii2-elasticsearch` 扩展
 

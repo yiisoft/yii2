@@ -22,8 +22,6 @@ Thumbs.db
 
 # composer vendor dir
 /vendor
-# cubrid install dir
-/cubrid
 
 # composer itself is not needed
 composer.phar
