@@ -136,16 +136,11 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $qb = $db->getQueryBuilder();
         $testData = json_encode(['test' => 'string', 'test2' => 'integer'], JSON_THROW_ON_ERROR);
+
         $params = [];
-        $result = $db->createCommand(
-            $qb->upsert(
-                'T_upsert_varbinary',
-                ['id' => 1, 'blob_col' => $testData],
-                ['blob_col' => $testData],
-                $params,
-            ),
-            $params,
-        )->execute();
+
+        $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData], ['blob_col' => $testData], $params);
+        $result = $db->createCommand($sql, $params)->execute();
 
         $this->assertSame(1, $result);
 
