@@ -134,22 +134,25 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $db = $this->getConnection();
 
-        $testData = json_encode(['test' => 'string', 'test2' => 'integer']);
-        $params = [];
-
         $qb = $db->getQueryBuilder();
-        $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData] , ['blob_col' => $testData], $params);
+        $testData = json_encode(['test' => 'string', 'test2' => 'integer'], JSON_THROW_ON_ERROR);
+        $params = [];
+        $result = $db->createCommand(
+            $qb->upsert(
+                'T_upsert_varbinary',
+                ['id' => 1, 'blob_col' => $testData],
+                ['blob_col' => $testData],
+                $params,
+            ),
+            $params,
+        )->execute();
 
-        $result = $db->createCommand($sql, $params)->execute();
+        $this->assertSame(1, $result);
 
-        $this->assertEquals(1, $result);
-
-        $query = (new Query())
-            ->select(['convert(nvarchar(max),blob_col) as blob_col'])
-            ->from('T_upsert_varbinary')
-            ->where(['id' => 1]);
-
+        $query = (new Query())->select(['blob_col'])->from('T_upsert_varbinary')->where(['id' => 1]);
         $resultData = $query->createCommand($db)->queryOne();
-        $this->assertEquals($testData, $resultData['blob_col']);
+
+        $this->assertIsArray($resultData);
+        $this->assertSame($testData, $resultData['blob_col']);
     }
 }
