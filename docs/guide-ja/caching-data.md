@@ -128,8 +128,6 @@ Yii はさまざまなキャッシュ・ストレージをサポートしてい�
   (Redis の バージョン 2.6.12 以降が必要とされます) 。
 * [[yii\caching\WinCache]]: PHP の [WinCache](https://iis.net/downloads/microsoft/wincache-extension) エクステンションを使用します。
   ([参照リンク](https://www.php.net/manual/ja/book.wincache.php))
-  を使用します。
-
 
 > Tip: 同じアプリケーション内で異なるキャッシュを使用することもできます。
   一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データ) を格納する場合はメモリ・ベースのキャッシュ・ストレージを使用し、

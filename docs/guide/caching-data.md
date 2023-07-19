@@ -130,7 +130,6 @@ Yii supports a wide range of cache storage. The following is a summary:
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
   ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
-  as the underlying caching medium.
 
 
 > Tip: You may use different cache storage in the same application. A common strategy is to use memory-based

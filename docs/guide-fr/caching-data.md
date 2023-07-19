@@ -100,7 +100,6 @@ Yii prend en charge un large panel de supports de stockage pour cache. Ce qui su
   (une version de redis égale ou supérieure à 2.6.12 est nécessaire).
 * [[yii\caching\WinCache]]: utilise le [WinCache](https://iis.net/downloads/microsoft/wincache-extension) PHP
   ([voir aussi l'extension](https://www.php.net/manual/fr/book.wincache.php)).
-  en tant que médium de cache sous-jacent.
 
 
 > Tip: vous pouvez utiliser différents supports de stockage pour cache dans la même application. Une stratégie courante est d'utiliser un support de stockage pour cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage pour cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
