@@ -128,9 +128,6 @@ Yii 支持一系列缓存存储器，概况如下：
  （需要 redis 2.6.12 及以上版本的支持 ）。
 * [[yii\caching\WinCache]]：使用 PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
  （[另可参考](https://www.php.net/manual/zh/book.wincache.php)）扩展.
-* [[yii\caching\XCache]]：使用 PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache)扩展。
-* [[yii\caching\ZendDataCache]]：使用 
-  [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend- server.htm#data_cache_component.htm) 
   作为底层缓存媒介。
 
 
