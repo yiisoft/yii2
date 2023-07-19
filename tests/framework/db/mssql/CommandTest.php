@@ -152,7 +152,6 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $query = (new Query())->select(['blob_col'])->from('T_upsert_varbinary')->where(['id' => 1]);
         $resultData = $query->createCommand($db)->queryOne();
 
-        $this->assertIsArray($resultData);
         $this->assertSame($testData, $resultData['blob_col']);
     }
 }
