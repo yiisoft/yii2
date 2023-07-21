@@ -15,7 +15,7 @@ namespace yii\base;
  * like the following:
  *
  * ```php
- * public function __constructor($param1, $param2, ..., $config = [])
+ * public function __construct($param1, $param2, ..., $config = [])
  * ```
  *
  * That is, the last parameter of the constructor must accept a configuration array.

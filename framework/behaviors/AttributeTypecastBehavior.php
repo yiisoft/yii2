@@ -366,7 +366,10 @@ class AttributeTypecastBehavior extends Behavior
         $this->resetOldAttributes();
     }
 
-    private function resetOldAttributes()
+    /**
+     * Resets the old values of the named attributes.
+     */
+    protected function resetOldAttributes()
     {
         if ($this->attributeTypes === null) {
             return;
@@ -375,7 +378,9 @@ class AttributeTypecastBehavior extends Behavior
         $attributes = array_keys($this->attributeTypes);
 
         foreach ($attributes as $attribute) {
-            $this->owner->setOldAttribute($attribute, $this->owner->{$attribute});
+            if ($this->owner->canSetOldAttribute($attribute)) {
+                $this->owner->setOldAttribute($attribute, $this->owner->{$attribute});
+            }
         }
     }
 }
