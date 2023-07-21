@@ -117,6 +117,52 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
+    public function getNumericTableData()
+    {
+        return [
+            [
+                [1, 2, 3],
+                [
+                    [1, 1.2, -1.3],
+                    [-2, 2.2, 2.3],
+                ]
+            ],
+            [
+                ['key1' => 1, 'key2' => 2, 'key3' => 3],
+                [
+                    ['key1' => 1, 'key2' => 1.2, 'key3' => -1.3],
+                    ['key1' => -2, 'key2' => 2.2, 'key3' => 2.3],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getNumericTableData
+     */
+    public function testNumericTable($headers, $rows)
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔════╤═════╤══════╗
+║ 1  │ 2   │ 3    ║
+╟────┼─────┼──────╢
+║ 1  │ 1.2 │ -1.3 ║
+╟────┼─────┼──────╢
+║ -2 │ 2.2 │ 2.3  ║
+╚════╧═════╧══════╝
+
+EXPECTED;
+
+        $tableContent = $table
+            ->setHeaders($headers)
+            ->setRows($rows)
+            ->setScreenWidth(200)
+            ->run();
+        $this->assertEqualsWithoutLE($expected, $tableContent);
+    }
+
     public function testTableWithFullwidthChars()
     {
         $table = new Table();
