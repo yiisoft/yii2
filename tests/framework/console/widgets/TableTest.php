@@ -68,6 +68,55 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
+    public function getMultiLineTableData()
+    {
+        return [
+            [
+                ['test1', 'test2', 'test3' . PHP_EOL . 'multiline'],
+                [
+                    ['test' . PHP_EOL . 'content1', 'testcontent2', 'test' . PHP_EOL . 'content3'],
+                    ['testcontent21', 'test' . PHP_EOL . 'content22', 'testcontent23'],
+                ]
+            ],
+            [
+                ['key1' => 'test1', 'key2' => 'test2', 'key3' => 'test3' . PHP_EOL . 'multiline'],
+                [
+                    ['key1' => 'test' . PHP_EOL . 'content1', 'key2' => 'testcontent2', 'key3' => 'test' . PHP_EOL . 'content3'],
+                    ['key1' => 'testcontent21', 'key2' => 'test' . PHP_EOL . 'content22', 'key3' => 'testcontent23'],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getMultiLineTableData
+     */
+    public function testMultiLineTable($headers, $rows)
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═══════════════╤══════════════╤═══════════════╗
+║ test1         │ test2        │ test3         ║
+║               │              │ multiline     ║
+╟───────────────┼──────────────┼───────────────╢
+║ test          │ testcontent2 │ test          ║
+║ content1      │              │ content3      ║
+╟───────────────┼──────────────┼───────────────╢
+║ testcontent21 │ test         │ testcontent23 ║
+║               │ content22    │               ║
+╚═══════════════╧══════════════╧═══════════════╝
+
+EXPECTED;
+
+        $tableContent = $table
+            ->setHeaders($headers)
+            ->setRows($rows)
+            ->setScreenWidth(200)
+            ->run();
+        $this->assertEqualsWithoutLE($expected, $tableContent);
+    }
+
     public function testTableWithFullwidthChars()
     {
         $table = new Table();

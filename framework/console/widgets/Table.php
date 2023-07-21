@@ -252,11 +252,21 @@ class Table extends Widget
                 if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
                 }
+
+                $arrayFromMultilineString = false;
+                if (is_string($cell)) {
+                    $cellLines = explode(PHP_EOL, $cell);
+                    if (count($cellLines) > 1) {
+                        $cell = $cellLines;
+                        $arrayFromMultilineString = true;
+                    }
+                }
+
                 if (is_array($cell)) {
                     if (empty($renderedChunkTexts[$index])) {
                         $renderedChunkTexts[$index] = '';
                         $start = 0;
-                        $prefix = $this->listPrefix;
+                        $prefix = $arrayFromMultilineString ? '' : $this->listPrefix;
                         if (!isset($arrayPointer[$index])) {
                             $arrayPointer[$index] = 0;
                         }
@@ -339,6 +349,9 @@ class Table extends Widget
                 if (is_array($val)) {
                     return max(array_map('yii\helpers\Console::ansiStrwidth', $val)) + Console::ansiStrwidth($this->listPrefix);
                 }
+                if (is_string($val)) {
+                    return max(array_map('yii\helpers\Console::ansiStrwidth', explode(PHP_EOL, $val)));
+                }
                 return Console::ansiStrwidth($val);
             }, $column)) + 2;
             $this->columnWidths[] = $columnWidth;
@@ -387,6 +400,9 @@ class Table extends Widget
         }, $this->columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 return array_map('yii\helpers\Console::ansiStrwidth', $val);
+            }
+            if (is_string($val)) {
+                return array_map('yii\helpers\Console::ansiStrwidth', explode(PHP_EOL, $val));
             }
             return Console::ansiStrwidth($val);
         }, $row));
