@@ -273,7 +273,11 @@ class Table extends Widget
                     } else {
                         $start = mb_strwidth($renderedChunkTexts[$index], Yii::$app->charset);
                     }
-                    $chunk = Console::ansiColorizedSubstr($cell[$arrayPointer[$index]], $start, $cellSize - 4);
+                    $chunk = Console::ansiColorizedSubstr(
+                        $cell[$arrayPointer[$index]],
+                        $start,
+                        $cellSize - 2 - Console::ansiStrwidth($prefix)
+                    );
                     $renderedChunkTexts[$index] .= Console::stripAnsiFormat($chunk);
                     $fullChunkText = Console::stripAnsiFormat($cell[$arrayPointer[$index]]);
                     if (isset($cell[$arrayPointer[$index] + 1]) && $renderedChunkTexts[$index] === $fullChunkText) {

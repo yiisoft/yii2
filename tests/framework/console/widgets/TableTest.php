@@ -75,14 +75,32 @@ EXPECTED;
                 ['test1', 'test2', 'test3' . PHP_EOL . 'multiline'],
                 [
                     ['test' . PHP_EOL . 'content1', 'testcontent2', 'test' . PHP_EOL . 'content3'],
-                    ['testcontent21', 'test' . PHP_EOL . 'content22', 'testcontent23'],
+                    [
+                        'testcontent21',
+                        'testcontent22' . PHP_EOL
+                        . 'loooooooooooooooooooooooooooooooooooong' . PHP_EOL
+                        . 'content',
+                        'testcontent23' . PHP_EOL
+                        . 'loooooooooooooooooooooooooooooooooooong content'
+                    ],
                 ]
             ],
             [
                 ['key1' => 'test1', 'key2' => 'test2', 'key3' => 'test3' . PHP_EOL . 'multiline'],
                 [
-                    ['key1' => 'test' . PHP_EOL . 'content1', 'key2' => 'testcontent2', 'key3' => 'test' . PHP_EOL . 'content3'],
-                    ['key1' => 'testcontent21', 'key2' => 'test' . PHP_EOL . 'content22', 'key3' => 'testcontent23'],
+                    [
+                        'key1' => 'test' . PHP_EOL . 'content1',
+                        'key2' => 'testcontent2',
+                        'key3' => 'test' . PHP_EOL . 'content3'
+                    ],
+                    [
+                        'key1' => 'testcontent21',
+                        'key2' => 'testcontent22' . PHP_EOL
+                            . 'loooooooooooooooooooooooooooooooooooong' . PHP_EOL
+                            . 'content',
+                        'key3' => 'testcontent23' . PHP_EOL
+                            . 'loooooooooooooooooooooooooooooooooooong content'
+                    ],
                 ]
             ]
         ];
@@ -96,23 +114,25 @@ EXPECTED;
         $table = new Table();
 
         $expected = <<<'EXPECTED'
-╔═══════════════╤══════════════╤═══════════════╗
-║ test1         │ test2        │ test3         ║
-║               │              │ multiline     ║
-╟───────────────┼──────────────┼───────────────╢
-║ test          │ testcontent2 │ test          ║
-║ content1      │              │ content3      ║
-╟───────────────┼──────────────┼───────────────╢
-║ testcontent21 │ test         │ testcontent23 ║
-║               │ content22    │               ║
-╚═══════════════╧══════════════╧═══════════════╝
+╔═════════════╤═════════════════════════════════════╤═════════════════════════════════════════════╗
+║ test1       │ test2                               │ test3                                       ║
+║             │                                     │ multiline                                   ║
+╟─────────────┼─────────────────────────────────────┼─────────────────────────────────────────────╢
+║ test        │ testcontent2                        │ test                                        ║
+║ content1    │                                     │ content3                                    ║
+╟─────────────┼─────────────────────────────────────┼─────────────────────────────────────────────╢
+║ testcontent │ testcontent22                       │ testcontent23                               ║
+║ 21          │ loooooooooooooooooooooooooooooooooo │ loooooooooooooooooooooooooooooooooooong con ║
+║             │ oong                                │ tent                                        ║
+║             │ content                             │                                             ║
+╚═════════════╧═════════════════════════════════════╧═════════════════════════════════════════════╝
 
 EXPECTED;
 
         $tableContent = $table
             ->setHeaders($headers)
             ->setRows($rows)
-            ->setScreenWidth(200)
+            ->setScreenWidth(100)
             ->run();
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
@@ -233,6 +253,35 @@ EXPECTED;
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
             ])->setScreenWidth(200)->setListPrefix('* ')->run()
+        );
+    }
+
+    public function testLongerListPrefix()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═════════════════════════════════╤═════════════════════════════════╤═════════════════════════════╗
+║ test1                           │ test2                           │ test3                       ║
+╟─────────────────────────────────┼─────────────────────────────────┼─────────────────────────────╢
+║ testcontent1                    │ testcontent2                    │ testcontent3                ║
+╟─────────────────────────────────┼─────────────────────────────────┼─────────────────────────────╢
+║ testcontent21 with looooooooooo │ testcontent22 with looooooooooo │ -- col1 with looooooooooooo ║
+║ ooooooooooooong content         │ ooooooooooooong content         │ ooooooooooong content       ║
+║                                 │                                 │ -- col2 with long content   ║
+╚═════════════════════════════════╧═════════════════════════════════╧═════════════════════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+            ->setRows([
+                ['testcontent1', 'testcontent2', 'testcontent3'],
+                [
+                    'testcontent21 with loooooooooooooooooooooooong content',
+                    'testcontent22 with loooooooooooooooooooooooong content',
+                    ['col1 with loooooooooooooooooooooooong content', 'col2 with long content']
+                ],
+            ])->setScreenWidth(100)->setListPrefix('-- ')->run()
         );
     }
 
