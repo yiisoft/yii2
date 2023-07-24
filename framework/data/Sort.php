@@ -395,7 +395,7 @@ class Sort extends BaseObject
         } else {
             if (isset($this->attributes[$attribute]['label'])) {
                 $label = $this->attributes[$attribute]['label'];
-            } else if($this->modelClass !== null) {
+            } elseif ($this->modelClass !== null) {
                 $modelClass = $this->modelClass;
                 /** @var \yii\base\Model $model */
                 $model = $modelClass::instance();
