@@ -68,6 +68,121 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
+    public function getMultiLineTableData()
+    {
+        return [
+            [
+                ['test1', 'test2', 'test3' . PHP_EOL . 'multiline'],
+                [
+                    ['test' . PHP_EOL . 'content1', 'testcontent2', 'test' . PHP_EOL . 'content3'],
+                    [
+                        'testcontent21',
+                        'testcontent22' . PHP_EOL
+                        . 'loooooooooooooooooooooooooooooooooooong' . PHP_EOL
+                        . 'content',
+                        'testcontent23' . PHP_EOL
+                        . 'loooooooooooooooooooooooooooooooooooong content'
+                    ],
+                ]
+            ],
+            [
+                ['key1' => 'test1', 'key2' => 'test2', 'key3' => 'test3' . PHP_EOL . 'multiline'],
+                [
+                    [
+                        'key1' => 'test' . PHP_EOL . 'content1',
+                        'key2' => 'testcontent2',
+                        'key3' => 'test' . PHP_EOL . 'content3'
+                    ],
+                    [
+                        'key1' => 'testcontent21',
+                        'key2' => 'testcontent22' . PHP_EOL
+                            . 'loooooooooooooooooooooooooooooooooooong' . PHP_EOL
+                            . 'content',
+                        'key3' => 'testcontent23' . PHP_EOL
+                            . 'loooooooooooooooooooooooooooooooooooong content'
+                    ],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getMultiLineTableData
+     */
+    public function testMultiLineTable($headers, $rows)
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═════════════╤═════════════════════════════════════╤═════════════════════════════════════════════╗
+║ test1       │ test2                               │ test3                                       ║
+║             │                                     │ multiline                                   ║
+╟─────────────┼─────────────────────────────────────┼─────────────────────────────────────────────╢
+║ test        │ testcontent2                        │ test                                        ║
+║ content1    │                                     │ content3                                    ║
+╟─────────────┼─────────────────────────────────────┼─────────────────────────────────────────────╢
+║ testcontent │ testcontent22                       │ testcontent23                               ║
+║ 21          │ loooooooooooooooooooooooooooooooooo │ loooooooooooooooooooooooooooooooooooong con ║
+║             │ oong                                │ tent                                        ║
+║             │ content                             │                                             ║
+╚═════════════╧═════════════════════════════════════╧═════════════════════════════════════════════╝
+
+EXPECTED;
+
+        $tableContent = $table
+            ->setHeaders($headers)
+            ->setRows($rows)
+            ->setScreenWidth(100)
+            ->run();
+        $this->assertEqualsWithoutLE($expected, $tableContent);
+    }
+
+    public function getNumericTableData()
+    {
+        return [
+            [
+                [1, 2, 3],
+                [
+                    [1, 1.2, -1.3],
+                    [-2, 2.2, 2.3],
+                ]
+            ],
+            [
+                ['key1' => 1, 'key2' => 2, 'key3' => 3],
+                [
+                    ['key1' => 1, 'key2' => 1.2, 'key3' => -1.3],
+                    ['key1' => -2, 'key2' => 2.2, 'key3' => 2.3],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getNumericTableData
+     */
+    public function testNumericTable($headers, $rows)
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔════╤═════╤══════╗
+║ 1  │ 2   │ 3    ║
+╟────┼─────┼──────╢
+║ 1  │ 1.2 │ -1.3 ║
+╟────┼─────┼──────╢
+║ -2 │ 2.2 │ 2.3  ║
+╚════╧═════╧══════╝
+
+EXPECTED;
+
+        $tableContent = $table
+            ->setHeaders($headers)
+            ->setRows($rows)
+            ->setScreenWidth(200)
+            ->run();
+        $this->assertEqualsWithoutLE($expected, $tableContent);
+    }
+
     public function testTableWithFullwidthChars()
     {
         $table = new Table();
@@ -138,6 +253,35 @@ EXPECTED;
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
             ])->setScreenWidth(200)->setListPrefix('* ')->run()
+        );
+    }
+
+    public function testLongerListPrefix()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═════════════════════════════════╤═════════════════════════════════╤═════════════════════════════╗
+║ test1                           │ test2                           │ test3                       ║
+╟─────────────────────────────────┼─────────────────────────────────┼─────────────────────────────╢
+║ testcontent1                    │ testcontent2                    │ testcontent3                ║
+╟─────────────────────────────────┼─────────────────────────────────┼─────────────────────────────╢
+║ testcontent21 with looooooooooo │ testcontent22 with looooooooooo │ -- col1 with looooooooooooo ║
+║ ooooooooooooong content         │ ooooooooooooong content         │ ooooooooooong content       ║
+║                                 │                                 │ -- col2 with long content   ║
+╚═════════════════════════════════╧═════════════════════════════════╧═════════════════════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+            ->setRows([
+                ['testcontent1', 'testcontent2', 'testcontent3'],
+                [
+                    'testcontent21 with loooooooooooooooooooooooong content',
+                    'testcontent22 with loooooooooooooooooooooooong content',
+                    ['col1 with loooooooooooooooooooooooong content', 'col2 with long content']
+                ],
+            ])->setScreenWidth(100)->setListPrefix('-- ')->run()
         );
     }
 
