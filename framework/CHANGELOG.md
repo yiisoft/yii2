@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
-- Bug #13920: Fixed erroneous validation for specific cases
+- Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
 - Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
 - Bug #9899: Fix caching a MSSQL query with BLOB data type (terabytesoftw)
 - Bug #16208: Fix `yii\log\FileTarget` to not export empty messages (terabytesoftw)
