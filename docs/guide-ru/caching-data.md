@@ -102,8 +102,6 @@ Yii поддерживает множество хранилищ кэша:
 * [[yii\caching\MemCache]]: использует расширения PHP [memcache](https://www.php.net/manual/ru/book.memcache.php) и [memcached](https://www.php.net/manual/ru/book.memcached.php). Этот вариант может рассматриваться как самый быстрый при работе в распределенных приложениях (например, с несколькими серверами, балансировкой нагрузки и так далее);
 * [[yii\redis\Cache]]: реализует компонент кэша на основе [Redis](https://redis.io/), хранилища ключ-значение (требуется Redis версии 2.6.12 или выше);
 * [[yii\caching\WinCache]]: использует расширение PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension) ([смотрите также](https://www.php.net/manual/ru/book.wincache.php));
-* [[yii\caching\XCache]] _(deprecated)_: использует расширение PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache);
-* [[yii\caching\ZendDataCache]] _(deprecated)_: использует [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm).
 
 > Tip: Вы можете использовать разные способы хранения кэша в одном приложении. Общая стратегия заключается в использовании памяти под хранение небольших часто используемых данных (например, статистические данные). Для больших и реже используемых данных (например, содержимое страницы) лучше использовать файлы или базу данных.
   

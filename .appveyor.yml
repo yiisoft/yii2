@@ -38,4 +38,4 @@ before_test:
 
 test_script:
     - cd C:\projects\yii2
-    - vendor\bin\phpunit --exclude-group db,wincache,xcache,zenddata
+    - vendor\bin\phpunit --exclude-group db,wincache
