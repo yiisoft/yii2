@@ -327,7 +327,7 @@ class BaseArrayHelper
      */
     public static function remove(&$array, $key, $default = null)
     {
-        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+        if (is_array($array) && array_key_exists($key, $array)) {
             $value = $array[$key];
             unset($array[$key]);
 
@@ -616,9 +616,7 @@ class BaseArrayHelper
     public static function keyExists($key, $array, $caseSensitive = true)
     {
         if ($caseSensitive) {
-            // Function `isset` checks key faster but skips `null`, `array_key_exists` handles this case
-            // https://www.php.net/manual/en/function.array-key-exists.php#107786
-            if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+            if (is_array($array) && array_key_exists($key, $array)) {
                 return true;
             }
             // Cannot use `array_has_key` on Objects for PHP 7.4+, therefore we need to check using [[ArrayAccess::offsetExists()]]
