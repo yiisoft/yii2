@@ -125,10 +125,14 @@ class ArrayHelperTest extends TestCase
 
     public function testRemove()
     {
-        $array = ['name' => 'b', 'age' => 3];
-        $name = ArrayHelper::remove($array, 'name');
+        $array = ['name' => 'b', 'age' => 3, 1.1 => null];
 
+        $name = ArrayHelper::remove($array, 'name');
         $this->assertEquals($name, 'b');
+        $this->assertEquals($array, ['age' => 3, 1.1 => null]);
+
+        $floatVal = ArrayHelper::remove($array, 1.1);
+        $this->assertNull($floatVal);
         $this->assertEquals($array, ['age' => 3]);
 
         $default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
@@ -506,14 +510,17 @@ class ArrayHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/pull/11549
      */
-    public function test()
+    public function testGetValueWithFloatKeys()
     {
         $array = [];
         $array[1.0] = 'some value';
+        $array[2.0] = null;
 
         $result = ArrayHelper::getValue($array, 1.0);
-
         $this->assertEquals('some value', $result);
+
+        $result = ArrayHelper::getValue($array, 2.0);
+        $this->assertNull($result);
     }
 
     public function testIndex()
@@ -711,6 +718,9 @@ class ArrayHelperTest extends TestCase
         $array = [
             'a' => 1,
             'B' => 2,
+            1 => 3,
+            2.2 => 4, // Note: Foats are cast to ints, which means that the fractional part will be truncated.
+            3.3 => null,
         ];
         $this->assertTrue(ArrayHelper::keyExists('a', $array));
         $this->assertFalse(ArrayHelper::keyExists('b', $array));
@@ -721,6 +731,13 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::keyExists('b', $array, false));
         $this->assertTrue(ArrayHelper::keyExists('B', $array, false));
         $this->assertFalse(ArrayHelper::keyExists('c', $array, false));
+
+        $this->assertTrue(ArrayHelper::keyExists(1, $array));
+        $this->assertTrue(ArrayHelper::keyExists(2, $array));
+        $this->assertTrue(ArrayHelper::keyExists('2', $array));
+        $this->assertTrue(ArrayHelper::keyExists(2.2, $array));
+        $this->assertTrue(ArrayHelper::keyExists(3, $array));
+        $this->assertTrue(ArrayHelper::keyExists(3.3, $array));
     }
 
     public function testKeyExistsArrayAccess()
