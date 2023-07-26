@@ -41,6 +41,7 @@ class ArrayCache extends Cache
      */
     protected function getValue($key)
     {
+        $key = $this->buildKey($key);
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return $this->_cache[$key][0];
         }
@@ -53,6 +54,7 @@ class ArrayCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
+        $key = $this->buildKey($key);
         $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
         return true;
     }
@@ -62,6 +64,7 @@ class ArrayCache extends Cache
      */
     protected function addValue($key, $value, $duration)
     {
+        $key = $this->buildKey($key);
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return false;
         }
@@ -74,6 +77,7 @@ class ArrayCache extends Cache
      */
     protected function deleteValue($key)
     {
+        $key = $this->buildKey($key);
         unset($this->_cache[$key]);
         return true;
     }
