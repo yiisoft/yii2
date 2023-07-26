@@ -125,6 +125,25 @@ class ArrayHelperTest extends TestCase
 
     public function testRemove()
     {
+        $array = ['name' => 'b', 'age' => 3];
+        $name = ArrayHelper::remove($array, 'name');
+
+        $this->assertEquals($name, 'b');
+        $this->assertEquals($array, ['age' => 3]);
+
+        $default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
+        $this->assertEquals('defaultValue', $default);
+    }
+
+    /**
+     * @return void
+     */
+    public function testRemoveWithFloat()
+    {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
+
         $array = ['name' => 'b', 'age' => 3, 1.1 => null];
 
         $name = ArrayHelper::remove($array, 'name');
@@ -512,14 +531,18 @@ class ArrayHelperTest extends TestCase
      */
     public function testGetValueWithFloatKeys()
     {
-        $array = [];
-        $array[1.0] = 'some value';
-        $array[2.0] = null;
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
 
-        $result = ArrayHelper::getValue($array, 1.0);
+        $array = [];
+        $array[1.1] = 'some value';
+        $array[2.1] = null;
+
+        $result = ArrayHelper::getValue($array, 1.2);
         $this->assertEquals('some value', $result);
 
-        $result = ArrayHelper::getValue($array, 2.0);
+        $result = ArrayHelper::getValue($array, 2.2);
         $this->assertNull($result);
     }
 
@@ -718,10 +741,8 @@ class ArrayHelperTest extends TestCase
         $array = [
             'a' => 1,
             'B' => 2,
-            1 => 3,
-            2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.
-            3.3 => null,
         ];
+
         $this->assertTrue(ArrayHelper::keyExists('a', $array));
         $this->assertFalse(ArrayHelper::keyExists('b', $array));
         $this->assertTrue(ArrayHelper::keyExists('B', $array));
@@ -731,8 +752,22 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::keyExists('b', $array, false));
         $this->assertTrue(ArrayHelper::keyExists('B', $array, false));
         $this->assertFalse(ArrayHelper::keyExists('c', $array, false));
+    }
+
+    public function testKeyExistsWithFloat()
+    {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
+
+        $array = [
+            1 => 3,
+            2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.
+            3.3 => null,
+        ];
 
         $this->assertTrue(ArrayHelper::keyExists(1, $array));
+        $this->assertTrue(ArrayHelper::keyExists(1.1, $array));
         $this->assertTrue(ArrayHelper::keyExists(2, $array));
         $this->assertTrue(ArrayHelper::keyExists('2', $array));
         $this->assertTrue(ArrayHelper::keyExists(2.2, $array));
