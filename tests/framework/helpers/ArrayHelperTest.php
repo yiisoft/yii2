@@ -719,7 +719,7 @@ class ArrayHelperTest extends TestCase
             'a' => 1,
             'B' => 2,
             1 => 3,
-            2.2 => 4, // Note: Foats are cast to ints, which means that the fractional part will be truncated.
+            2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.
             3.3 => null,
         ];
         $this->assertTrue(ArrayHelper::keyExists('a', $array));
