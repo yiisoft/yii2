@@ -62,6 +62,29 @@ Upgrade from Yii 2.0.48
 * The function signature for `yii\console\Controller::select()` and `yii\helpers\BaseConsole::select()` have changed.
   They now have an additional `$default = null` parameter. In case those methods are overwritten you will need to
   update your child classes accordingly.
+* The engine no longer attempts to provide an automatic synchronization between ActiveRecord relations and corresponding foreign keys. 
+  Such synchronization never worked in many cases, came with ActiveRecord performance and memory costs and in some cases is impossible to achieve (see https://github.com/yiisoft/yii2/issues/19788 for details).
+  The new guarantee provided by Yii2 is: once set ActiveRecord relations are never automatically or silently changed/unset by the engine.
+  All places in existing code that use already loaded relation after it is expected to change need to manually unset such relation. For example, in the code below:
+    ```php
+    $project = Project::findOne(123);
+    $oldManager = $project->manager;
+    $project->load(Yii::$app->getRequest()->post()); // $project->manager_id may change here. 
+    $project->update();
+    $newManager = $project->manager;
+    // Notify $oldManager and $newManager about the reassignment by email.
+    ```
+  the access to `$project->manager` after update should be preceded by unsetting that relation:  
+    ```PHP
+    // ... (same as above).
+    $project->update();
+    unset($project->manager);
+    $newManager = $project->manager;
+    // Notify $oldManager and $newManager about the reassignment by email.
+    ```
+  Another notable example is using `ActiveRecord::refresh()`. If the refreshed model had relations loaded before the call to `refresh()` 
+  and these relations are expected to change, unset them explicitly with `unset()` before using again.
+
 
 Upgrade from Yii 2.0.46
 -----------------------

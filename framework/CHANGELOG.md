@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
+- Chg #19788: Removed all (often non-functional) attempts of Yii2 to automatically synchronize ActiveRecord relations with corresponding foreign key values. The new guarantee provided by Yii2 is: once set ActiveRecord relations are never automatically or silently changed/unset by the engine (PowerGamer1)
 - Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
 - Bug #9899: Fix caching a MSSQL query with BLOB data type (terabytesoftw)
 - Bug #16208: Fix `yii\log\FileTarget` to not export empty messages (terabytesoftw)
