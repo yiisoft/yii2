@@ -626,7 +626,7 @@ class BaseArrayHelper
         }
 
         if ($caseSensitive) {
-            if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+            if (is_array($array) && array_key_exists($key, $array)) {
                 return true;
             }
             // Cannot use `array_has_key` on Objects for PHP 7.4+, therefore we need to check using [[ArrayAccess::offsetExists()]]
