@@ -144,6 +144,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * // Use where() to ignore the default condition
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
+     * ```
      *
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface]] instance.
      */
