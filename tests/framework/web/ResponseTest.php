@@ -470,7 +470,7 @@ class ResponseTest extends \yiiunit\TestCase
             if ($name === null) {
                 throw new \Exception('Could not determine cookie name for header "' . $header . '".');
             }
-            $cookies = array_merge_recursive($cookies, [$name => $params]);
+            $cookies[$name] = $params;
         }
 
         return $cookies;
