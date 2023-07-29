@@ -57,7 +57,7 @@ class Cookie extends \yii\base\BaseObject
      */
     public $domain = '';
     /**
-     * @var int the timestamp at which the cookie expires. This is the server timestamp.
+     * @var int|string|null the timestamp or date at which the cookie expires. This is the server timestamp.
      * Defaults to 0, meaning "until the browser is closed".
      */
     public $expire = 0;
