@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #19853: Added support for default value for `\yii\helpers\Console::select()` (rhertogh)
 - Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
 - Enh #19884: Added support Enums in Query Builder (sk1t0n)
+- Bug #19655: Fix Gridview or Listview 'maxButtonCount' attribute is not working when it's assign with 2 (koktut)
 - Bug #19906: Fixed multiline strings in the `\yii\console\widgets\Table` widget (rhertogh)
 
 
