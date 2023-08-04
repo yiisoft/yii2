@@ -327,7 +327,7 @@ class BaseArrayHelper
      */
     public static function remove(&$array, $key, $default = null)
     {
-        // This check can be removed when the minimum PHP version is >= 8.1 (Yii2.2)
+        // ToDo: This check can be removed when the minimum PHP version is >= 8.1 (Yii2.2)
         if (is_float($key)) {
             $key = (int)$key;
         }
@@ -620,7 +620,7 @@ class BaseArrayHelper
      */
     public static function keyExists($key, $array, $caseSensitive = true)
     {
-        // This check can be removed when the minimum PHP version is >= 8.1 (Yii2.2)
+        // ToDo: This check can be removed when the minimum PHP version is >= 8.1 (Yii2.2)
         if (is_float($key)) {
             $key = (int)$key;
         }
