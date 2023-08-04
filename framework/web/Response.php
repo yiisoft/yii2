@@ -404,6 +404,8 @@ class Response extends \yii\base\Response
             $expire = $cookie->expire;
             if (is_string($expire)) {
                 $expire = strtotime($expire);
+            } elseif (interface_exists('\\DateTimeInterface') && $expire instanceof \DateTimeInterface) {
+                $expire = $expire->getTimestamp();
             }
             if ($expire === null || $expire === false) {
                 $expire = 0;

@@ -118,7 +118,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
                 || (
                     (is_string($this->_cookies[$name]->expire) && strtotime($this->_cookies[$name]->expire) >= time())
                     || (
-                        interface_exists('\DateTimeInterface')
+                        interface_exists('\\DateTimeInterface')
                         && $this->_cookies[$name]->expire instanceof \DateTimeInterface
                         && $this->_cookies[$name]->expire->getTimestamp() >= time()
                     )

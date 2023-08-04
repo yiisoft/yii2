@@ -429,17 +429,19 @@ class ResponseTest extends \yiiunit\TestCase
                 ['expire' => $expireString],
                 ['expires' => $expireString],
             ],
-            'expire-as-date_time' => [
-                ['expire' => new \DateTime('@' . $expireInt)],
-                ['expires' => $expireString],
-            ],
         ];
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $testCases['expire-as-date_time_immutable'] = [
-                ['expire' => new \DateTimeImmutable('@' . $expireInt)],
-                ['expires' => $expireString],
-            ];
+            $testCases = array_merge($testCases, [
+                'expire-as-date_time' => [
+                    ['expire' => new \DateTime('@' . $expireInt)],
+                    ['expires' => $expireString],
+                ],
+                'expire-as-date_time_immutable' => [
+                    ['expire' => new \DateTimeImmutable('@' . $expireInt)],
+                    ['expires' => $expireString],
+                ],
+            ]);
         }
 
         return $testCases;
