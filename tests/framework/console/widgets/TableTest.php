@@ -216,7 +216,8 @@ EXPECTED;
 ╔═══════════════╤═══════════════╤══════════════╗
 ║ test1         │ test2         │ test3        ║
 ╟───────────────┼───────────────┼──────────────╢
-║ testcontent1  │ testcontent2  │ testcontent3 ║
+║ • col1        │ testcontent2  │ testcontent3 ║
+║ • col2        │               │              ║
 ╟───────────────┼───────────────┼──────────────╢
 ║ testcontent21 │ testcontent22 │ • col1       ║
 ║               │               │ • col2       ║
@@ -226,7 +227,7 @@ EXPECTED;
 
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
-                ['testcontent1', 'testcontent2', 'testcontent3'],
+                [['key1' => 'col1', 'key2' => 'col2'], 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
             ])->setScreenWidth(200)->run()
         );

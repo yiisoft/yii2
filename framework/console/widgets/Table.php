@@ -136,7 +136,11 @@ class Table extends Widget
     {
         $this->rows = array_map(function($row) {
             return array_map(function($value) {
-                return empty($value) && !is_numeric($value) ? ' ' : $value;
+                return empty($value) && !is_numeric($value)
+                    ? ' '
+                    :  (is_array($value)
+                        ? array_values($value)
+                        : $value);
             }, array_values($row));
         }, $rows);
         return $this;
