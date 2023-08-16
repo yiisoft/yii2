@@ -1165,7 +1165,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         OrderItem::$tableName = null;
     }
 
-    public function testOutdatedRelationsAreResetForNewRecords()
+    public function testOutdatedRelationsAreNotResetForNewRecords()
     {
         $orderItem = new OrderItem();
         $orderItem->order_id = 1;
@@ -1176,17 +1176,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Test `__set()`.
         $orderItem->order_id = 2;
         $orderItem->item_id = 1;
-        $this->assertEquals(2, $orderItem->order->id);
-        $this->assertEquals(1, $orderItem->item->id);
+        $this->assertEquals(1, $orderItem->order->id);
+        $this->assertEquals(3, $orderItem->item->id);
 
         // Test `setAttribute()`.
         $orderItem->setAttribute('order_id', 2);
         $orderItem->setAttribute('item_id', 2);
-        $this->assertEquals(2, $orderItem->order->id);
-        $this->assertEquals(2, $orderItem->item->id);
+        $this->assertEquals(1, $orderItem->order->id);
+        $this->assertEquals(3, $orderItem->item->id);
     }
 
-    public function testOutdatedRelationsAreResetForExistingRecords()
+    public function testOutdatedRelationsAreNotResetForExistingRecords()
     {
         $orderItem = OrderItem::findOne(1);
         $this->assertEquals(1, $orderItem->order->id);
@@ -1195,17 +1195,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Test `__set()`.
         $orderItem->order_id = 2;
         $orderItem->item_id = 1;
-        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->order->id);
         $this->assertEquals(1, $orderItem->item->id);
 
         // Test `setAttribute()`.
         $orderItem->setAttribute('order_id', 3);
         $orderItem->setAttribute('item_id', 1);
-        $this->assertEquals(3, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->order->id);
         $this->assertEquals(1, $orderItem->item->id);
     }
 
-    public function testOutdatedCompositeKeyRelationsAreReset()
+    public function testOutdatedCompositeKeyRelationsAreNotReset()
     {
         $dossier = Dossier::findOne([
             'department_id' => 1,
@@ -1214,26 +1214,26 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('John Doe', $dossier->employee->fullName);
 
         $dossier->department_id = 2;
-        $this->assertEquals('Ann Smith', $dossier->employee->fullName);
+        $this->assertEquals('John Doe', $dossier->employee->fullName);
 
         $dossier->employee_id = 2;
-        $this->assertEquals('Will Smith', $dossier->employee->fullName);
+        $this->assertEquals('John Doe', $dossier->employee->fullName);
 
         unset($dossier->employee_id);
-        $this->assertNull($dossier->employee);
+        $this->assertEquals('John Doe', $dossier->employee->fullName);
 
         $dossier = new Dossier();
         $this->assertNull($dossier->employee);
 
         $dossier->employee_id = 1;
         $dossier->department_id = 2;
-        $this->assertEquals('Ann Smith', $dossier->employee->fullName);
+        $this->assertNull($dossier->employee);
 
         $dossier->employee_id = 2;
-        $this->assertEquals('Will Smith', $dossier->employee->fullName);
+        $this->assertNull($dossier->employee);
     }
 
-    public function testOutdatedViaTableRelationsAreReset()
+    public function testOutdatedViaTableRelationsAreNotReset()
     {
         $order = Order::findOne(1);
         $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
@@ -1243,17 +1243,18 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $order->id = 2;
         sort($orderItemIds);
         $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
-        $this->assertSame([3, 4, 5], $orderItemIds);
+        $this->assertSame([1, 2], $orderItemIds);
 
         unset($order->id);
-        $this->assertSame([], $order->items);
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertSame([1, 2], $orderItemIds);
 
         $order = new Order();
         $this->assertSame([], $order->items);
 
         $order->id = 3;
         $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
-        $this->assertSame([2], $orderItemIds);
+        $this->assertSame([], $orderItemIds);
     }
 
     public function testAlias()
