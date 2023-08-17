@@ -141,6 +141,7 @@ class Controller extends \yii\base\Controller
                 } elseif (
                     PHP_VERSION_ID >= 70000
                     && ($type = $param->getType()) !== null
+                    && method_exists($type, 'isBuiltin')
                     && $type->isBuiltin()
                     && ($params[$name] !== null || !$type->allowsNull())
                 ) {

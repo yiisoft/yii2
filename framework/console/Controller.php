@@ -400,12 +400,19 @@ class Controller extends \yii\base\Controller
      *
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from
+     * @param string|null $default value to use when the user doesn't provide an option.
+     * If the default is `null`, the user is required to select an option.
      *
      * @return string An option character the user chose
+     * @since 2.0.49 Added the $default argument
      */
-    public function select($prompt, $options = [])
+    public function select($prompt, $options = [], $default = null)
     {
-        return Console::select($prompt, $options);
+        if ($this->interactive) {
+            return Console::select($prompt, $options, $default);
+        }
+
+        return $default;
     }
 
     /**

@@ -106,12 +106,18 @@ class FileTarget extends Target
      */
     public function export()
     {
+        $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
+        $trimmedText = trim($text);
+
+        if (empty($trimmedText)) {
+            return; // No messages to export, so we exit the function early
+        }
+
         if (strpos($this->logFile, '://') === false || strncmp($this->logFile, 'file://', 7) === 0) {
             $logPath = dirname($this->logFile);
             FileHelper::createDirectory($logPath, $this->dirMode, true);
         }
 
-        $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
         }
@@ -124,12 +130,12 @@ class FileTarget extends Target
         if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
             $this->rotateFiles();
         }
-        $writeResult = @fwrite($fp, $text);
+        $writeResult = @fwrite($fp, $trimmedText);
         if ($writeResult === false) {
             $error = error_get_last();
             throw new LogRuntimeException("Unable to export log through file ({$this->logFile})!: {$error['message']}");
         }
-        $textSize = strlen($text);
+        $textSize = strlen($trimmedText);
         if ($writeResult < $textSize) {
             throw new LogRuntimeException("Unable to export whole log through file ({$this->logFile})! Wrote $writeResult out of $textSize bytes.");
         }

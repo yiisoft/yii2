@@ -191,6 +191,12 @@ class Sort extends BaseObject
      * @since 2.0.33
      */
     public $sortFlags = SORT_REGULAR;
+    /**
+     * @var string|null the name of the [[\yii\base\Model]]-based class used by the [[link()]] method to retrieve
+     * attributes' labels. See [[link]] method for details.
+     * @since 2.0.49
+     */
+    public $modelClass;
 
 
     /**
@@ -363,7 +369,8 @@ class Sort extends BaseObject
      * @param array $options additional HTML attributes for the hyperlink tag.
      * There is one special attribute `label` which will be used as the label of the hyperlink.
      * If this is not set, the label defined in [[attributes]] will be used.
-     * If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
+     * If no label is defined, it will be retrieved from the instance of [[modelClass]] (if [[modelClass]] is not null)
+     * or generated from attribute name using [[\yii\helpers\Inflector::camel2words()]].
      * Note that it will not be HTML-encoded.
      * @return string the generated hyperlink
      * @throws InvalidConfigException if the attribute is unknown
@@ -388,6 +395,11 @@ class Sort extends BaseObject
         } else {
             if (isset($this->attributes[$attribute]['label'])) {
                 $label = $this->attributes[$attribute]['label'];
+            } elseif ($this->modelClass !== null) {
+                $modelClass = $this->modelClass;
+                /** @var \yii\base\Model $model */
+                $model = $modelClass::instance();
+                $label = $model->getAttributeLabel($attribute);
             } else {
                 $label = Inflector::camel2words($attribute);
             }

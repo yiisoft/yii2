@@ -183,15 +183,11 @@ class ActiveDataProvider extends BaseDataProvider
                     $sort->attributes[$attribute] = [
                         'asc' => [$attribute => SORT_ASC],
                         'desc' => [$attribute => SORT_DESC],
-                        'label' => $model->getAttributeLabel($attribute),
                     ];
                 }
-            } else {
-                foreach ($sort->attributes as $attribute => $config) {
-                    if (!isset($config['label'])) {
-                        $sort->attributes[$attribute]['label'] = $model->getAttributeLabel($attribute);
-                    }
-                }
+            }
+            if ($sort->modelClass === null) {
+                $sort->modelClass = $modelClass;
             }
         }
     }
