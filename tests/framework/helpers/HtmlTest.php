@@ -1202,6 +1202,21 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
         $attributes = ['prompt' => 'Please select', 'strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([false], $data, $attributes));
+
+        $data = [
+            'value1' => 'label1',
+            'value2' => 'label2',
+        ];
+
+        $selectionObj = new \stdClass();
+        $selectionObj->value = 'value1';
+
+        $expected = <<<'EOD'
+<option value="value1" selected>label1</option>
+<option value="value2">label2</option>
+EOD;
+
+    $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions($selectionObj, $data));
     }
 
     public function testRenderTagAttributes()
