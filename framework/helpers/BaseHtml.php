@@ -1930,13 +1930,12 @@ class BaseHtml
                     if ($selection !== null) {
                         if (ArrayHelper::isTraversable($selection)) {
                             $selected = ArrayHelper::isIn((string)$key, $selection, $strict);
+                        } elseif (is_object($selection) && property_exists($selection, 'value')) {
+                            $selected = $selection->value == $key;
                         } elseif ($key === '' || $selection === '') {
                             $selected = $selection === $key;
-                        } elseif ($strict) {
-                            $selected = !strcmp((string)$key, (string)$selection);
                         } else {
-                            $selected = is_object($selection) && property_exists($selection, 'value') ?
-                                $selection->value == $key : $selection == $key;
+                            $selected = $strict ? !strcmp((string)$key, (string)$selection) : $selection == $key;
                         }
                     }
 
