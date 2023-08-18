@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
+- Bug #19872: Fixed the definition of dirty attributes in AR properties for a non-associative array in case of changing the order of elements (eegusakov)
 - Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
 - Bug #9899: Fix caching a MSSQL query with BLOB data type (terabytesoftw)
 - Bug #16208: Fix `yii\log\FileTarget` to not export empty messages (terabytesoftw)
@@ -13,8 +14,10 @@ Yii Framework 2 Change Log
 - Enh #19853: Added support for default value for `\yii\helpers\Console::select()` (rhertogh)
 - Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
 - Enh #19884: Added support Enums in Query Builder (sk1t0n)
+- Bug #19908: Fix associative array cell content rendering in Table widget (rhertogh)
 - Bug #19906: Fixed multiline strings in the `\yii\console\widgets\Table` widget (rhertogh)
 - Bug #19914: Fixed `ArrayHelper::keyExists()` and  `::remove()` functions when the key is a float and the value is `null` (rhertogh)
+- Enh #19920: Broadened the accepted type of `Cookie::$expire` from `int` to `int|string|\DateTimeInterface|null` (rhertogh)
 
 
 2.0.48.1 May 24, 2023
