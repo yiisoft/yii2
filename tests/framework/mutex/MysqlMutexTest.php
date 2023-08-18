@@ -14,8 +14,8 @@ use yiiunit\framework\db\DatabaseTestCase;
 /**
  * Class MysqlMutexTest.
  *
- * @group mutex
  * @group db
+ * @group mutex
  * @group mysql
  */
 class MysqlMutexTest extends DatabaseTestCase
@@ -32,7 +32,7 @@ class MysqlMutexTest extends DatabaseTestCase
     protected function createMutex($additionalParams = [])
     {
         return \Yii::createObject(array_merge([
-            'class' => MysqlMutex::className(),
+            'class' => MysqlMutex::class,
             'db' => $this->getConnection(),
         ], $additionalParams));
     }
@@ -103,8 +103,8 @@ class MysqlMutexTest extends DatabaseTestCase
     public function testCreateMutex()
     {
         $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
-        $this->assertInstanceOf(MysqlMutex::classname(), $mutex);
-        $this->assertInstanceOf(Expression::classname(), $mutex->keyPrefix);
+        $this->assertInstanceOf(MysqlMutex::class, $mutex);
+        $this->assertInstanceOf(Expression::class, $mutex->keyPrefix);
         $this->assertSame("1+1", $mutex->keyPrefix->expression);
     }
 }

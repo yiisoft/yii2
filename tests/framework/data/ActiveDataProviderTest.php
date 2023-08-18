@@ -26,7 +26,7 @@ use yiiunit\framework\db\UnqueryableQueryMock;
  */
 abstract class ActiveDataProviderTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -39,9 +39,9 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(3, $orders);
-        $this->assertInstanceOf(Order::className(), $orders[0]);
-        $this->assertInstanceOf(Order::className(), $orders[1]);
-        $this->assertInstanceOf(Order::className(), $orders[2]);
+        $this->assertInstanceOf(Order::class, $orders[0]);
+        $this->assertInstanceOf(Order::class, $orders[1]);
+        $this->assertInstanceOf(Order::class, $orders[2]);
         $this->assertEquals([1, 2, 3], $provider->getKeys());
 
         $provider = new ActiveDataProvider([
@@ -63,8 +63,8 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(2, $orders);
-        $this->assertInstanceOf(Order::className(), $orders[0]);
-        $this->assertInstanceOf(Order::className(), $orders[1]);
+        $this->assertInstanceOf(Order::class, $orders[0]);
+        $this->assertInstanceOf(Order::class, $orders[1]);
         $this->assertEquals([2, 3], $provider->getKeys());
 
         $provider = new ActiveDataProvider([
@@ -86,9 +86,9 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $items = $provider->getModels();
         $this->assertCount(3, $items);
-        $this->assertInstanceOf(Item::className(), $items[0]);
-        $this->assertInstanceOf(item::className(), $items[1]);
-        $this->assertInstanceOf(Item::className(), $items[2]);
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertInstanceOf(item::class, $items[1]);
+        $this->assertInstanceOf(Item::class, $items[2]);
         $this->assertEquals([3, 4, 5], $provider->getKeys());
 
         $provider = new ActiveDataProvider([
@@ -110,8 +110,8 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $items = $provider->getModels();
         $this->assertCount(2, $items);
-        $this->assertInstanceOf(Item::className(), $items[0]);
-        $this->assertInstanceOf(Item::className(), $items[1]);
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertInstanceOf(Item::class, $items[1]);
 
         $provider = new ActiveDataProvider([
             'query' => $order->getBooks(),
@@ -132,7 +132,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]);
+        $this->assertIsArray($orders[0]);
         $this->assertEquals([0, 1, 2], $provider->getKeys());
 
         $query = new Query();

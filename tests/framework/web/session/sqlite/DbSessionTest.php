@@ -15,11 +15,11 @@ use Yii;
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  *
  * @group db
- * @group sqlite
+ * @group db-session
  */
 class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

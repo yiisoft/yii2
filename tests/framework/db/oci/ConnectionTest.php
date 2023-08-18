@@ -83,8 +83,15 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $transaction = $connection->beginTransaction(Transaction::READ_COMMITTED);
         $transaction->commit();
 
+        /* should not be any exception so far */
+        $this->assertTrue(true);
+
+
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
+
+        /* should not be any exception so far */
+        $this->assertTrue(true);
     }
 
     /**

@@ -25,6 +25,7 @@ use yiiunit\TestCase;
 class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     protected $driverName = 'pgsql';
+    protected static string $driverNameStatic = 'pgsql';
 
     public function testBooleanAttribute()
     {
@@ -178,9 +179,11 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 
     /**
-     * @dataProvider arrayValuesProvider $attributes
+     * @dataProvider arrayValuesProvider
+     *
+     * @param array $attributes The attributes to test.
      */
-    public function testArrayValues($attributes)
+    public function testArrayValues(array $attributes): void
     {
         $type = new ArrayAndJsonTypes();
         foreach ($attributes as $attribute => $expected) {
@@ -211,7 +214,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame(1, $type->update(), 'The record got updated');
     }
 
-    public function arrayValuesProvider()
+    public function arrayValuesProvider(): array
     {
         return [
             'simple arrays values' => [[
@@ -326,7 +329,7 @@ class UserAR extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 }

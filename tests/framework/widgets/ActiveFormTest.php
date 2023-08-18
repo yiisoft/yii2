@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
  */
 class ActiveFormTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -116,7 +116,7 @@ HTML
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');
 
-        $view = $this->getMockBuilder(View::className())->getMock();
+        $view = $this->getMockBuilder(View::class)->getMock();
         $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
         $view->method('registerAssetBundle')->willReturn(true);
 
@@ -133,6 +133,8 @@ HTML
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
+
+        $this->assertEquals(2, Widget::$counter);
     }
 
     /**

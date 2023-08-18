@@ -26,10 +26,10 @@ class MigrateControllerTest extends TestCase
 {
     use MigrateControllerTestTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->migrateControllerClass = EchoMigrateController::className();
-        $this->migrationBaseClass = Migration::className();
+        $this->migrateControllerClass = EchoMigrateController::class;
+        $this->migrationBaseClass = Migration::class;
 
         $this->mockApplication([
             'components' => [
@@ -44,7 +44,7 @@ class MigrateControllerTest extends TestCase
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->tearDownMigrationPath();
         parent::tearDown();
@@ -157,7 +157,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateMigrationDataProvider()
+    public static function generateMigrationDataProvider(): array
     {
         $params = [
             'create_fields' => [
@@ -334,13 +334,14 @@ class MigrateControllerTest extends TestCase
     }
 
     /**
-     * @param string $expectedFile
-     * @param string $migrationName
-     * @param string $table
-     * @param array $params
      * @dataProvider generateMigrationDataProvider
+     *
+     * @param string $expectedFile The expected file name.
+     * @param string $migrationName The migration name.
+     * @param string $table The table name.
+     * @param array $params The params.
      */
-    public function testGenerateMigration($expectedFile, $migrationName, $table, $params)
+    public function testGenerateMigration(string $expectedFile, string $migrationName, string $table, array $params): void
     {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
 
@@ -357,7 +358,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateJunctionMigrationDataProvider()
+    public static function generateJunctionMigrationDataProvider(): array
     {
         return [
             ['create_junction_post_and_tag_tables', 'post_tag', 'post', 'tag'],
@@ -379,14 +380,19 @@ class MigrateControllerTest extends TestCase
     }
 
     /**
-     * @param string $migrationName
-     * @param string $junctionTable
-     * @param string $firstTable
-     * @param string $secondTable
      * @dataProvider generateJunctionMigrationDataProvider
+     *
+     * @param string $migrationName The migration name.
+     * @param string $junctionTable The junction table name.
+     * @param string $firstTable The first table name.
+     * @param string $secondTable The second table name.
      */
-    public function testGenerateJunctionMigration($migrationName, $junctionTable, $firstTable, $secondTable)
-    {
+    public function testGenerateJunctionMigration(
+        string $migrationName,
+        string $junctionTable,
+        string $firstTable,
+        string $secondTable
+    ): void {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
 
         $this->assertCommandCreatedJunctionFile(
@@ -419,8 +425,8 @@ class MigrateControllerTest extends TestCase
         $result = $this->runMigrateControllerAction('up');
         $this->assertSame(ExitCode::UNSPECIFIED_ERROR, $this->getExitCode());
 
-        $this->assertContains('The migration name', $result);
-        $this->assertContains('is too long. Its not possible to apply this migration.', $result);
+        $this->assertStringContainsString('The migration name', $result);
+        $this->assertStringContainsString('is too long. Its not possible to apply this migration.', $result);
     }
 
     public function testNamedMigrationWithCustomLimit()
@@ -435,8 +441,8 @@ class MigrateControllerTest extends TestCase
         $result = $this->runMigrateControllerAction('up');
         $this->assertSame(ExitCode::OK, $this->getExitCode());
 
-        $this->assertContains('1 migration was applied.', $result);
-        $this->assertContains('Migrated up successfully.', $result);
+        $this->assertStringContainsString('1 migration was applied.', $result);
+        $this->assertStringContainsString('Migrated up successfully.', $result);
     }
 
     public function testCreateLongNamedMigration()
@@ -478,14 +484,14 @@ class MigrateControllerTest extends TestCase
         $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         // Drop worked
-        $this->assertContains('Table hall_of_fame dropped.', $result);
-        $this->assertContains('View view_hall_of_fame dropped.', $result);
+        $this->assertStringContainsString('Table hall_of_fame dropped.', $result);
+        $this->assertStringContainsString('View view_hall_of_fame dropped.', $result);
 
         // Migration was restarted
-        $this->assertContains('No new migrations found. Your system is up-to-date.', $result);
+        $this->assertStringContainsString('No new migrations found. Your system is up-to-date.', $result);
     }
 
-    public function refreshMigrationDataProvider()
+    public static function refreshMigrationDataProvider()
     {
         return [
             ['default'],

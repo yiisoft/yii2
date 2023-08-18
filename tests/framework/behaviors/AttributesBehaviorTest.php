@@ -26,14 +26,14 @@ class AttributesBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -52,7 +52,7 @@ class AttributesBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_attribute', $columns)->execute();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -63,7 +63,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function preserveNonEmptyValuesDataProvider()
+    public static function preserveNonEmptyValuesDataProvider(): array
     {
         return [
             [
@@ -95,17 +95,18 @@ class AttributesBehaviorTest extends TestCase
 
     /**
      * @dataProvider preserveNonEmptyValuesDataProvider
-     * @param string $aliasExpected
-     * @param bool $preserveNonEmptyValues
-     * @param string $name
-     * @param string|null $alias
+     *
+     * @param string $aliasExpected The expected value of the alias attribute.
+     * @param bool $preserveNonEmptyValues Whether to preserve non-empty values.
+     * @param string $name The value of the name attribute.
+     * @param string|null $alias The value of the alias attribute.
      */
     public function testPreserveNonEmptyValues(
-        $aliasExpected,
-        $preserveNonEmptyValues,
-        $name,
-        $alias
-    ) {
+        string $aliasExpected,
+        bool $preserveNonEmptyValues,
+        string $name,
+        string $alias = null
+    ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -118,7 +119,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function orderProvider()
+    public static function orderProvider(): array
     {
         return [
             [
@@ -140,17 +141,18 @@ class AttributesBehaviorTest extends TestCase
 
     /**
      * @dataProvider orderProvider
-     * @param string $aliasExpected
-     * @param array $order
-     * @param string $name
-     * @param string $alias
+     *
+     * @param string $aliasExpected The expected value of the alias attribute.
+     * @param array $order The order of the attributes.
+     * @param string $name The value of the name attribute.
+     * @param string $alias The value of the alias attribute.
      */
     public function testOrder(
-        $aliasExpected,
-        $order,
-        $name,
-        $alias
-    ) {
+        string $aliasExpected,
+        array $order,
+        string $name,
+        string $alias
+    ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->order = $order;
         $model->name = $name;
@@ -179,7 +181,7 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
     {
         return [
             'attributes' => [
-                'class' => AttributesBehavior::className(),
+                'class' => AttributesBehavior::class,
                 'attributes' => [
                     'alias' => [
                         self::EVENT_BEFORE_VALIDATE => function ($event) {

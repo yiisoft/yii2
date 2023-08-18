@@ -27,7 +27,7 @@ abstract class AbstractDbSessionTest extends TestCase
      */
     abstract protected function getDriverNames();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->createTableSession();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->dropTableSession();
         parent::tearDown();
@@ -60,7 +60,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::className(),
+            'class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 
@@ -271,11 +271,11 @@ abstract class AbstractDbSessionTest extends TestCase
 
     public function testInitUseStrictMode()
     {
-        $this->initStrictModeTest(DbSession::className());
+        $this->initStrictModeTest(DbSession::class);
     }
 
     public function testUseStrictMode()
     {
-        $this->useStrictModeTest(DbSession::className());
+        $this->useStrictModeTest(DbSession::class);
     }
 }

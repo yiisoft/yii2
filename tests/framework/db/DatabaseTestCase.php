@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,13 +19,14 @@ abstract class DatabaseTestCase extends TestCase
      * @var string the driver name of this test class. Must be set by a subclass.
      */
     protected $driverName;
+    protected static string $driverNameStatic = '';
     /**
      * @var Connection
      */
     private $_db;
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ($this->driverName === null) {
             throw new \Exception('driverName is not set for a DatabaseTestCase.');
@@ -44,7 +46,7 @@ abstract class DatabaseTestCase extends TestCase
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->_db) {
             $this->_db->close();
@@ -109,16 +111,17 @@ abstract class DatabaseTestCase extends TestCase
 
     /**
      * Adjust dbms specific escaping.
-     * @param $sql
-     * @return mixed
+     *
+     * @param string $sql SQL to adjust.
+     *
+     * @return string Adjusted SQL.
      */
-    protected function replaceQuotes($sql)
+    protected static function replaceQuotes(string $sql): string
     {
-        switch ($this->driverName) {
+        switch (static::$driverNameStatic) {
             case 'mysql':
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
-            case 'cubrid':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
             case 'pgsql':

@@ -26,13 +26,13 @@ class BaseYiiTest extends TestCase
 {
     public $aliases;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->aliases = Yii::$aliases;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$aliases = $this->aliases;
@@ -72,7 +72,7 @@ class BaseYiiTest extends TestCase
 
     public function testPowered()
     {
-        $this->assertInternalType('string', Yii::powered());
+        $this->assertIsString(Yii::powered());
     }
 
     public function testCreateObjectArray()
@@ -80,11 +80,11 @@ class BaseYiiTest extends TestCase
         Yii::$container = new Container();
 
         $qux = Yii::createObject([
-            '__class' => Qux::className(),
+            '__class' => Qux::class,
             'a' => 42,
         ]);
 
-        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertInstanceOf(Qux::class, $qux);
         $this->assertSame(42, $qux->a);
     }
 
@@ -131,12 +131,12 @@ class BaseYiiTest extends TestCase
     public function testDi3CompatibilityCreateDependentObject()
     {
         $object = Yii::createObject([
-            '__class' => FooBaz::className(),
-            'fooDependent' => ['__class' => FooDependentSubclass::className()],
+            '__class' => FooBaz::class,
+            'fooDependent' => ['__class' => FooDependentSubclass::class],
         ]);
 
-        $this->assertInstanceOf(FooBaz::className(), $object);
-        $this->assertInstanceOf(FooDependentSubclass::className(), $object->fooDependent);
+        $this->assertInstanceOf(FooBaz::class, $object);
+        $this->assertInstanceOf(FooDependentSubclass::class, $object->fooDependent);
     }
 
     /**
@@ -152,7 +152,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
-        $this->assertInstanceOf(Logger::className(), $defaultLogger);
+        $this->assertInstanceOf(Logger::class, $defaultLogger);
     }
 
     /**

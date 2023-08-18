@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class FormatConverterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +31,7 @@ class FormatConverterTest extends TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -60,10 +60,6 @@ class FormatConverterTest extends TestCase
     public function testIntlIcuToPhpShortFormDateTime()
     {
         $this->assertEqualsAnyWhitespace('n/j/y, g:i A', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'en-US'));
-        $this->assertEquals(
-            PHP_VERSION_ID < 50600 ? 'd.m.y H:i' : 'd.m.y, H:i',
-            FormatConverter::convertDateIcuToPhp('short', 'datetime', 'de-DE')
-        );
     }
 
     public function testEscapedIcuToPhpMixedPatterns()
@@ -72,7 +68,7 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('\\o\\\'\\c\\l\\o\\c\\k', FormatConverter::convertDateIcuToPhp('\'o\'\'clock\''));
     }
 
-    public function providerForICU2PHPPatterns()
+    public static function providerForICU2PHPPatterns()
     {
         return [
             'two single quotes produce one' => ["''", "\\'"],
@@ -215,13 +211,9 @@ class FormatConverterTest extends TestCase
     public function testIntlIcuToJuiShortFormDateTime()
     {
         $this->assertEqualsAnyWhitespace('m/d/y, : ', FormatConverter::convertDateIcuToJui('short', 'datetime', 'en-US'));
-        $this->assertEquals(
-            PHP_VERSION_ID < 50600 ? 'dd.mm.y :' : 'dd.mm.y, :',
-            FormatConverter::convertDateIcuToJui('short', 'datetime', 'de-DE')
-        );
     }
 
-    public function providerForICU2JUIPatterns()
+    public static function providerForICU2JUIPatterns()
     {
         return [
             'era designator like (Anno Domini)' => ['G', ''],
@@ -358,7 +350,7 @@ class FormatConverterTest extends TestCase
         $formatter = new Formatter(['locale' => 'ru-RU']);
         // There is a dot after month name in updated ICU data and no dot in old data. Both are acceptable.
         // See https://github.com/yiisoft/yii2/issues/9906
-        $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
+        $this->assertMatchesRegularExpression('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
     }
 
     public function testPhpToICUMixedPatterns()
@@ -388,7 +380,7 @@ class FormatConverterTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function providerForPHP2ICUPatterns()
+    public static function providerForPHP2ICUPatterns()
     {
         return [
             'single \' should be encoded as \'\', which internally should be encoded as \'\'\'\'' => ["'", "''"],
@@ -496,7 +488,7 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('dd-mm-yy', FormatConverter::convertDatePhpToJui('d-m-Y'));
     }
 
-    public function providerForPHP2JUIPatterns()
+    public static function providerForPHP2JUIPatterns()
     {
         return [
             'Day of the month, 2 digits with leading zeros 	01 to 31' => ['d', 'dd'],

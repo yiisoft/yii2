@@ -28,10 +28,11 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
     /**
      * @dataProvider upsertProvider
-     * @param array $firstData
-     * @param array $secondData
+     *
+     * @param array $firstData First data to upsert.
+     * @param array $secondData Second data to upsert.
      */
-    public function testUpsert(array $firstData, array $secondData)
+    public function testUpsert(array $firstData, array $secondData): void
     {
         if (version_compare($this->getConnection(false)->getServerVersion(), '3.8.3', '<')) {
             $this->markTestSkipped('SQLite < 3.8.3 does not support "WITH" keyword.');
@@ -104,7 +105,7 @@ SQL;
         ])->queryAll());
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $parent = parent::batchInsertSqlProvider();
         unset($parent['wrongBehavior']); // Produces SQL syntax error: General error: 1 near ".": syntax error

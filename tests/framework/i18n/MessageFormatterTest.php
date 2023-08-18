@@ -29,7 +29,7 @@ class MessageFormatterTest extends TestCase
     const SUBJECT = 'сабж';
     const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
-    public function patterns()
+    public static function patterns()
     {
         return [
             [
@@ -275,7 +275,7 @@ _MSG_
         ];
     }
 
-    public function parsePatterns()
+    public static function parsePatterns()
     {
         return [
             [

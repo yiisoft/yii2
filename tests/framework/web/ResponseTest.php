@@ -27,20 +27,20 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public $response;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
             'components' => [
                 'request' => [
-                    'class' => TestRequestComponent::className(),
+                    'class' => TestRequestComponent::class,
                 ],
             ],
         ]);
         $this->response = new \yii\web\Response();
     }
 
-    public function rightRanges()
+    public static function rightRanges(): array
     {
         // TODO test more cases for range requests and check for rfc compatibility
         // https://tools.ietf.org/html/rfc2616
@@ -53,13 +53,18 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider rightRanges
-     * @param string $rangeHeader
-     * @param string $expectedHeader
-     * @param int $length
-     * @param string $expectedContent
+     *
+     * @param string $rangeHeader The range header.
+     * @param string $expectedHeader The expected header.
+     * @param int $length The length of the content.
+     * @param string $expectedContent The expected content.
      */
-    public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
-    {
+    public function testSendFileRanges(
+        string $rangeHeader,
+        string $expectedHeader,
+        int $length,
+        string $expectedContent
+    ): void {
         $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
         $fullContent = file_get_contents($dataFile);
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
@@ -79,7 +84,7 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals((string)$length, $headers->get('Content-Length'));
     }
 
-    public function wrongRanges()
+    public static function wrongRanges(): array
     {
         // TODO test more cases for range requests and check for rfc compatibility
         // https://tools.ietf.org/html/rfc2616
@@ -93,9 +98,10 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider wrongRanges
-     * @param string $rangeHeader
+     *
+     * @param string $rangeHeader the range header.
      */
-    public function testSendFileWrongRanges($rangeHeader)
+    public function testSendFileWrongRanges(string $rangeHeader): void
     {
         $this->expectException('yii\web\RangeNotSatisfiableHttpException');
 
@@ -183,8 +189,12 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider dataProviderAjaxRedirectInternetExplorer11
+     *
+     * @param string $userAgent User agent string
+     * @param array $statusCodes Status codes
      */
-    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes) {
+    public function testAjaxRedirectInternetExplorer11(string $userAgent, array $statusCodes): void
+    {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $request= Yii::$app->request;
         /* @var $request TestRequestComponent */
@@ -208,7 +218,8 @@ class ResponseTest extends \yiiunit\TestCase
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
      * @return array
      */
-    public function dataProviderAjaxRedirectInternetExplorer11() {
+    public static function dataProviderAjaxRedirectInternetExplorer11(): array
+    {
         return [
             ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]], // Firefox
             ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]], // IE 11
@@ -233,10 +244,11 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider dataProviderSetStatusCodeByException
-     * @param Exception $exception
-     * @param int $statusCode
+     *
+     * @param Exception $exception The exception to set.
+     * @param int $statusCode The expected status code.
      */
-    public function testSetStatusCodeByException($exception, $statusCode)
+    public function testSetStatusCodeByException(Exception|Error $exception, int $statusCode): void
     {
         $this->response->setStatusCodeByException($exception);
         $this->assertEquals($statusCode, $this->response->getStatusCode());
@@ -254,7 +266,7 @@ class ResponseTest extends \yiiunit\TestCase
         static::assertEquals(200, $this->response->statusCode);
     }
 
-    public function dataProviderSetStatusCodeByException()
+    public static function dataProviderSetStatusCodeByException(): array
     {
         $data = [
             [
@@ -297,7 +309,7 @@ class ResponseTest extends \yiiunit\TestCase
         return $data;
     }
 
-    public function formatDataProvider()
+    public static function formatDataProvider(): array
     {
         return [
             [Response::FORMAT_JSON, '{"value":1}'],
@@ -309,8 +321,11 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider formatDataProvider
+     *
+     * @param string $format Response format.
+     * @param string $content Response content.
      */
-    public function testSkipFormatter($format, $content)
+    public function testSkipFormatter(string $format, string $content): void
     {
         $response = new Response();
         $response->format = $format;

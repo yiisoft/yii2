@@ -4,8 +4,8 @@ on: [push, pull_request]
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
-  XDEBUG_MODE: coverage, develop
+  EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached, pdo, pdo_sqlite, sqlite
+  PHPUNIT_EXCLUDE_GROUP: db,wincache
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,51 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - php: 5.4
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.5
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.6
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.0
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.1
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.2
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.3
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.4
-            coverage: xdebug
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 8.0
-            coverage: none
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 8.1
-            coverage: none
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 8.2
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-            os: ubuntu-latest
+        os: [ubuntu-latest]
+        php: [8.1, 8.2]
 
     steps:
       - name: Generate french locale.
@@ -76,8 +33,8 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: ${{ matrix.coverage }}
-          extensions: ${{ matrix.extensions }}
+          coverage: pcov
+          extensions: ${{ env.EXTENSIONS }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
           tools: pecl
@@ -88,20 +45,16 @@ jobs:
       - name: Install dependencies.
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
-      - name: Run tests with PHPUnit.
-        if: matrix.php < '7.4' || matrix.php >= '8.1'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-
-      - name: Run tests with PHPUnit.
-        if: matrix.php == '8.0'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-
       - name: Run tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
+        if: matrix.php == '8.1'
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always --verbose
+
+      - name: Run tests with PHPUnit.
+        if: matrix.php != '8.1'
+        run: vendor/bin/phpunit --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always --verbose
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
+        if: matrix.php == '8.1'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml

@@ -26,14 +26,14 @@ class AttributeBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -52,7 +52,7 @@ class AttributeBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_attribute', $columns)->execute();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -63,7 +63,7 @@ class AttributeBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function preserveNonEmptyValuesDataProvider()
+    public static function preserveNonEmptyValuesDataProvider(): array
     {
         return [
             [
@@ -95,17 +95,18 @@ class AttributeBehaviorTest extends TestCase
 
     /**
      * @dataProvider preserveNonEmptyValuesDataProvider
-     * @param string $aliasExpected
-     * @param bool $preserveNonEmptyValues
-     * @param string $name
-     * @param string|null $alias
+     *
+     * @param string $aliasExpected The expected value of the alias attribute.
+     * @param bool $preserveNonEmptyValues Whether to preserve non-empty values.
+     * @param string $name The value of the name attribute.
+     * @param string|null $alias The value of the alias attribute.
      */
     public function testPreserveNonEmptyValues(
-        $aliasExpected,
-        $preserveNonEmptyValues,
-        $name,
-        $alias
-    ) {
+        string $aliasExpected,
+        bool $preserveNonEmptyValues,
+        string $name,
+        string $alias = null
+    ): void {
         $model = new ActiveRecordWithAttributeBehavior();
         $model->attributeBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -134,7 +135,7 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     {
         return [
             'attribute' => [
-                'class' => AttributeBehavior::className(),
+                'class' => AttributeBehavior::class,
                 'attributes' => [
                     self::EVENT_BEFORE_VALIDATE => 'alias',
                 ],

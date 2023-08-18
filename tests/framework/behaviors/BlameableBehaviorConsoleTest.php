@@ -21,14 +21,14 @@ use yiiunit\TestCase;
  */
 class BlameableBehaviorConsoleTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -47,7 +47,7 @@ class BlameableBehaviorConsoleTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_blame', $columns)->execute();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -59,7 +59,7 @@ class BlameableBehaviorConsoleTest extends TestCase
     {
         $model = new ActiveRecordBlameableConsole([
             'as blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'defaultValue' => 2
             ],
         ]);
@@ -88,7 +88,7 @@ class ActiveRecordBlameableConsoleWithDefaultValueClosure extends ActiveRecordBl
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'defaultValue' => function () {
                     return 10 + 1;
                 }
@@ -112,7 +112,7 @@ class ActiveRecordBlameableConsole extends ActiveRecord
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
             ],
         ];
     }

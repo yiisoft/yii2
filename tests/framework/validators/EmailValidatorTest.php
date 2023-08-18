@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class EmailValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -144,7 +144,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_email'));
     }
 
-    public function malformedAddressesProvider()
+    public static function malformedAddressesProvider()
     {
         return [
             // this is the demo email used in the proof of concept of the exploit

@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class EachValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -76,12 +76,12 @@ class EachValidatorTest extends TestCase
 
         $validator->allowMessageFromRule = true;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringContainsString('integer', $model->getFirstError('attr_one'));
 
         $model->clearErrors();
         $validator->allowMessageFromRule = false;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertNotContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringNotContainsString('integer', $model->getFirstError('attr_one'));
     }
 
     /**
@@ -212,11 +212,6 @@ class EachValidatorTest extends TestCase
      */
     public function testTypedProperties()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.4');
-            return;
-        }
-
         $model = new ValidatorTestTypedPropModel();
 
         $validator = new EachValidator(['rule' => ['boolean']]);

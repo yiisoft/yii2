@@ -16,7 +16,6 @@ Yii DAO из коробки поддерживает следующие базы
 - [MariaDB](https://mariadb.com/)
 - [SQLite](https://sqlite.org/)
 - [PostgreSQL](https://www.postgresql.org/): версии 8.4 или выше.
-- [CUBRID](https://www.cubrid.org/): версии 9.3 или выше.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.
 
@@ -68,7 +67,6 @@ return [
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
-* CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
 * MS SQL Server (via sqlsrv driver): `sqlsrv:Server=localhost;Database=mydatabase`
 * MS SQL Server (via dblib driver): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`

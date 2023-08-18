@@ -85,17 +85,9 @@ Run a group of unit tests
     
     docker-compose run php vendor/bin/phpunit -v --group caching,db   
     docker-compose run php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
-    docker-compose run php vendor/bin/phpunit -v --exclude mssql,oci,wincache,xcache,zenddata,cubrid
+    docker-compose run php vendor/bin/phpunit -v --exclude mssql,oci,wincache
 
 > Note: Documentation about [installing additional extensions](https://github.com/yiisoft/yii2-docker/blob/master/docs/install-extensions.md) can be found at `yiisoft/yii2-docker`.
-
-### Cubrid
-
-> Note: Images for testing Cubrid are based on PHP 5, due to incompatibilities with PHP 7 
-
-    cd tests/cubrid
-    docker-compose up -d
-    docker-compose run php vendor/bin/phpunit -v --group cubrid
 
 ### MSSQL
 

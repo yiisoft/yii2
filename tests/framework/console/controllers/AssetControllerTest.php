@@ -32,7 +32,7 @@ class AssetControllerTest extends TestCase
      */
     protected $testAssetsBasePath = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication();
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
@@ -41,7 +41,7 @@ class AssetControllerTest extends TestCase
         $this->createDir($this->testAssetsBasePath);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -258,7 +258,7 @@ EOL;
         $this->runAssetControllerAction('template', [$configFileName]);
         $this->assertFileExists($configFileName, 'Unable to create config file template!');
         $config = require $configFileName;
-        $this->assertInternalType('array', $config, 'Invalid config created!');
+        $this->assertIsArray($config, 'Invalid config created!');
     }
 
     public function testActionCompress()
@@ -304,7 +304,7 @@ EOL;
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
         $compressedBundleConfig = require $bundleFile;
-        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
+        $this->assertIsArray($compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertCount(2, $compressedBundleConfig, 'Output bundle config contains wrong bundle count!');
 
         $this->assertArrayHasKey($assetBundleClassName, $compressedBundleConfig, 'Source bundle is lost!');
@@ -320,11 +320,19 @@ EOL;
 
         $compressedCssFileContent = file_get_contents($compressedCssFileName);
         foreach ($cssFiles as $name => $content) {
-            $this->assertContains($content, $compressedCssFileContent, "Source of '{$name}' is missing in combined file!");
+            $this->assertStringContainsString(
+                $content,
+                $compressedCssFileContent,
+                "Source of '{$name}' is missing in combined file!",
+            );
         }
         $compressedJsFileContent = file_get_contents($compressedJsFileName);
         foreach ($jsFiles as $name => $content) {
-            $this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
+            $this->assertStringContainsString(
+                $content,
+                $compressedJsFileContent,
+                "Source of '{$name}' is missing in combined file!",
+            );
         }
     }
 
@@ -384,7 +392,7 @@ EOL;
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
         $compressedBundleConfig = require $bundleFile;
-        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
+        $this->assertIsArray($compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
 
         $compressedExternalAssetConfig = $compressedBundleConfig[$externalAssetBundleClassName];
@@ -392,7 +400,11 @@ EOL;
         $this->assertEquals($externalAssetConfig['css'], $compressedExternalAssetConfig['css'], 'External bundle css is lost!');
 
         $compressedRegularAssetConfig = $compressedBundleConfig[$regularAssetBundleClassName];
-        $this->assertContains($externalAssetBundleClassName, $compressedRegularAssetConfig['depends'], 'Dependency on external bundle is lost!');
+        $this->assertContains(
+            $externalAssetBundleClassName,
+            $compressedRegularAssetConfig['depends'],
+            'Dependency on external bundle is lost!',
+        );
     }
 
     /**
@@ -455,7 +467,7 @@ EOL;
      * Data provider for [[testAdjustCssUrl()]].
      * @return array test data.
      */
-    public function adjustCssUrlDataProvider()
+    public static function adjustCssUrlDataProvider(): array
     {
         return [
             [
@@ -558,13 +570,17 @@ EOL;
     /**
      * @dataProvider adjustCssUrlDataProvider
      *
-     * @param $cssContent
-     * @param $inputFilePath
-     * @param $outputFilePath
-     * @param $expectedCssContent
+     * @param string $cssContent The CSS content to adjust.
+     * @param string $inputFilePath The input file path.
+     * @param string $outputFilePath The output file path.
+     * @param string $expectedCssContent The expected CSS content.
      */
-    public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent)
-    {
+    public function testAdjustCssUrl(
+        string $cssContent,
+        string $inputFilePath,
+        string $outputFilePath,
+        string $expectedCssContent
+    ): void {
         $adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', [$cssContent, $inputFilePath, $outputFilePath]);
 
         $this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
@@ -574,7 +590,7 @@ EOL;
      * Data provider for [[testFindRealPath()]].
      * @return array test data
      */
-    public function findRealPathDataProvider()
+    public static function findRealPathDataProvider(): array
     {
         return [
             [
@@ -607,10 +623,10 @@ EOL;
     /**
      * @dataProvider findRealPathDataProvider
      *
-     * @param string $sourcePath
-     * @param string $expectedRealPath
+     * @param string $sourcePath The source path.
+     * @param string $expectedRealPath The expected real path.
      */
-    public function testFindRealPath($sourcePath, $expectedRealPath)
+    public function testFindRealPath(string $sourcePath, string $expectedRealPath): void
     {
         $expectedRealPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $expectedRealPath);
         $realPath = $this->invokeAssetControllerMethod('findRealPath', [$sourcePath]);

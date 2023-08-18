@@ -11,11 +11,10 @@ Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les b
 - [MariaDB](https://mariadb.com/)
 - [SQLite](https://sqlite.org/)
 - [PostgreSQL](https://www.postgresql.org/): version 8.4 ou plus récente.
-- [CUBRID](https://www.cubrid.org/): version 9.3 ou plus récente.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 ou plus récente.
 
-> Info: depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour CUBRID, Oracle et MSSQL n'est plus fournie en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
+> Info: depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour Oracle et MSSQL n'est plus fournie en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
 Parmi les [extensions officielles](https://www.yiiframework.com/extensions/official), on trouve [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) et
 [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql).
 
@@ -64,7 +63,6 @@ Lorsque vous configurez une connexion à une base de données, vous devez toujou
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
-* CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
 * MS SQL Server (via sqlsrv driver): `sqlsrv:Server=localhost;Database=mydatabase`
 * MS SQL Server (via dblib driver): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`

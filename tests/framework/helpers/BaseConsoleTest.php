@@ -12,7 +12,7 @@ use yii\helpers\BaseConsole;
  */
 class BaseConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -70,7 +70,7 @@ class BaseConsoleTest extends TestCase
         $this->assertEquals($ansiExpected, $ansiActual);
     }
 
-    public function ansiColorizedSubstr_withColors_data()
+    public static function ansiColorizedSubstr_withColors_data()
     {
         return [
             ['%rFoo%gBar%n', 0, 3, '%rFoo%n'],

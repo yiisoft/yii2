@@ -18,7 +18,7 @@ class FooBaz extends \yii\base\BaseObject
     public function init()
     {
         // default config usually used by Yii
-        $dependentConfig = array_merge(['class' => FooDependent::className()], $this->fooDependent);
+        $dependentConfig = array_merge(['class' => FooDependent::class], $this->fooDependent);
         $this->fooDependent = \Yii::createObject($dependentConfig);
     }
 }

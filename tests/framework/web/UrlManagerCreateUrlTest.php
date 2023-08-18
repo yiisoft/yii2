@@ -68,8 +68,7 @@ class UrlManagerCreateUrlTest extends TestCase
         return new UrlManager($config);
     }
 
-
-    public function variationsProvider()
+    public static function variationsProvider(): array
     {
         $baseUrlConfig = [
             'baseUrl' => '/test',
@@ -97,12 +96,13 @@ class UrlManagerCreateUrlTest extends TestCase
      * without rules.
      *
      * @dataProvider variationsProvider
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testWithoutRules($method, $showScriptName, $prefix, $config)
+    public function testWithoutRules(string $method, bool $showScriptName, string $prefix, array $config): void
     {
         $manager = $this->getUrlManager($config, $showScriptName);
 
@@ -133,13 +133,18 @@ class UrlManagerCreateUrlTest extends TestCase
      * - with UrlManager::$suffix.
      *
      * @dataProvider variationsProvider
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testWithoutRulesWithSuffix($method, $showScriptName, $prefix, $config)
-    {
+    public function testWithoutRulesWithSuffix(
+        string $method,
+        bool $showScriptName,
+        string $prefix,
+        array $config
+    ): void {
         $config['suffix'] = '.html';
         $manager = $this->getUrlManager($config, $showScriptName);
 
@@ -191,12 +196,13 @@ class UrlManagerCreateUrlTest extends TestCase
      * with simple rules.
      *
      * @dataProvider variationsProvider
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testSimpleRules($method, $showScriptName, $prefix, $config)
+    public function testSimpleRules(string  $method, bool $showScriptName, string $prefix, array $config): void
     {
         $config['rules'] = [
             'post/<id:\d+>' => 'post/view',
@@ -250,12 +256,13 @@ class UrlManagerCreateUrlTest extends TestCase
      * - with UrlManager::$suffix.
      *
      * @dataProvider variationsProvider
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testSimpleRulesWithSuffix($method, $showScriptName, $prefix, $config)
+    public function testSimpleRulesWithSuffix(string $method, bool $showScriptName, string $prefix, array $config): void
     {
         $config['rules'] = [
             'post/<id:\d+>' => 'post/view',
@@ -303,13 +310,18 @@ class UrlManagerCreateUrlTest extends TestCase
      * with rules that have varadic controller/actions.
      *
      * @dataProvider variationsProvider
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testControllerActionParams($method, $showScriptName, $prefix, $config)
-    {
+    public function testControllerActionParams(
+        string $method,
+        bool $showScriptName,
+        string $prefix,
+        array $config
+    ): void {
         $config['rules'] = [
             '<controller>/<id:\d+>' => '<controller>/view',
             '<controller>s' => '<controller>/index',
@@ -354,13 +366,18 @@ class UrlManagerCreateUrlTest extends TestCase
      * with rules that have default values for parameters.
      *
      * @dataProvider variationsProvider
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testRulesWithDefaultParams($method, $showScriptName, $prefix, $config)
-    {
+    public function testRulesWithDefaultParams(
+        string $method,
+        bool $showScriptName,
+        string $prefix,
+        array $config
+    ): void {
         $config['rules'] = [
             [
                 'pattern' => '',
@@ -431,13 +448,15 @@ class UrlManagerCreateUrlTest extends TestCase
      * with empty or null parameters.
      *
      * @dataProvider variationsProvider
+     *
      * @see https://github.com/yiisoft/yii2/issues/10935
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testWithNullParams($method, $showScriptName, $prefix, $config)
+    public function testWithNullParams(string $method, bool $showScriptName, string $prefix, array $config): void
     {
         $config['rules'] = [
             '<param1>/<param2>' => 'site/index',
@@ -471,13 +490,15 @@ class UrlManagerCreateUrlTest extends TestCase
      * with empty pattern.
      *
      * @dataProvider variationsProvider
+     *
      * @see https://github.com/yiisoft/yii2/issues/6717
-     * @param string $method
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param string $method The method.
+     * @param bool $showScriptName Whether to show script name.
+     * @param string $prefix The prefix.
+     * @param array $config The config.
      */
-    public function testWithEmptyPattern($method, $showScriptName, $prefix, $config)
+    public function testWithEmptyPattern(string $method, bool $showScriptName, string $prefix, array $config): void
     {
         $assertations = function ($manager) use ($method, $prefix) {
             // match first rule
@@ -523,7 +544,7 @@ class UrlManagerCreateUrlTest extends TestCase
     }
 
 
-    public function absolutePatternsVariations()
+    public static function absolutePatternsVariations(): array
     {
         $baseUrlConfig = [
             'baseUrl' => '/test',
@@ -543,12 +564,14 @@ class UrlManagerCreateUrlTest extends TestCase
 
     /**
      * Test rules that have host info in the patterns.
+     *
      * @dataProvider absolutePatternsVariations
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param string $prefix The expected URL prefix.
+     * @param array $config The URL manager config.
      */
-    public function testAbsolutePatterns($showScriptName, $prefix, $config)
+    public function testAbsolutePatterns(bool $showScriptName, string $prefix, array $config): void
     {
         $config['rules'] = [
             [
@@ -603,13 +626,16 @@ class UrlManagerCreateUrlTest extends TestCase
 
     /**
      * Test rules that have host info in the patterns, that are protocol relative.
+     *
      * @dataProvider absolutePatternsVariations
+     *
      * @see https://github.com/yiisoft/yii2/issues/12691
-     * @param bool $showScriptName
-     * @param string $prefix
-     * @param array $config
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param string $prefix The expected URL prefix.
+     * @param array $config The URL manager config.
      */
-    public function testProtocolRelativeAbsolutePattern($showScriptName, $prefix, $config)
+    public function testProtocolRelativeAbsolutePattern(bool $showScriptName, string $prefix, array $config): void
     {
         $config['rules'] = [
             [
@@ -684,7 +710,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
     }
 
-    public function multipleHostsRulesDataProvider()
+    public static function multipleHostsRulesDataProvider(): array
     {
         return [
             ['http://example.com'],
@@ -698,10 +724,12 @@ class UrlManagerCreateUrlTest extends TestCase
      * Test matching of Url rules dependent on the current host info.
      *
      * @dataProvider multipleHostsRulesDataProvider
+     *
      * @see https://github.com/yiisoft/yii2/issues/7948
-     * @param string $host
+     *
+     * @param string $host The host info.
      */
-    public function testMultipleHostsRules($host)
+    public function testMultipleHostsRules(string $host): void
     {
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
@@ -733,12 +761,12 @@ class UrlManagerCreateUrlTest extends TestCase
         /* @var $rules CachedUrlRule[] */
         $rules = [
             Yii::createObject([
-                'class' => CachedUrlRule::className(),
+                'class' => CachedUrlRule::class,
                 'route' => 'user/show',
                 'pattern' => 'user/<name:[\w-]+>',
             ]),
             Yii::createObject([
-                'class' => CachedUrlRule::className(),
+                'class' => CachedUrlRule::class,
                 'route' => '<controller>/<action>',
                 'pattern' => '<controller:\w+>/<action:\w+>',
             ]),
@@ -780,12 +808,12 @@ class UrlManagerCreateUrlTest extends TestCase
         /* @var $rules CachedUrlRule[] */
         $rules = [
             Yii::createObject([
-                'class' => CachedUrlRule::className(),
+                'class' => CachedUrlRule::class,
                 'route' => 'user/show',
                 'pattern' => 'user/<name:[\w-]+>',
             ]),
             Yii::createObject([
-                'class' => CachedUrlRule::className(),
+                'class' => CachedUrlRule::class,
                 'route' => '<controller>/<action>',
                 'pattern' => '<controller:\w+>/<action:\w+>',
             ]),
@@ -813,7 +841,7 @@ class UrlManagerCreateUrlTest extends TestCase
     {
         $this->mockWebApplication([
             'components' => [
-                'cache' => ArrayCache::className(),
+                'cache' => ArrayCache::class,
             ],
         ]);
         $urlManager = $this->getUrlManager([
@@ -826,7 +854,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $cachedUrlManager = $this->getUrlManager([
             'cache' => 'cache',
             'ruleConfig' => [
-                'class' => CachedUrlRule::className(),
+                'class' => CachedUrlRule::class,
             ],
             'rules' => [
                 '/' => 'site/index',
@@ -834,15 +862,15 @@ class UrlManagerCreateUrlTest extends TestCase
         ]);
 
         $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);
-        $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
-        $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
+        $this->assertInstanceOf(UrlRule::class, $urlManager->rules[0]);
+        $this->assertInstanceOf(CachedUrlRule::class, $cachedUrlManager->rules[0]);
     }
 
     public function testNotEnsuringCacheForEmptyRuleset()
     {
         $this->mockWebApplication([
             'components' => [
-                'cache' => ArrayCache::className(),
+                'cache' => ArrayCache::class,
             ],
         ]);
         // no rules - don't ensure cache
@@ -856,6 +884,6 @@ class UrlManagerCreateUrlTest extends TestCase
             'cache' => 'cache',
             'rules' => ['/' => 'site/index'],
         ]);
-        $this->assertInstanceOf(ArrayCache::className(), $urlManager->cache);
+        $this->assertInstanceOf(ArrayCache::class, $urlManager->cache);
     }
 }

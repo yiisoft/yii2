@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class UploadedFileTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -70,8 +70,8 @@ class UploadedFileTest extends TestCase
         $productImage = UploadedFile::getInstance(new ModelStub(), 'prod_image');
         $vendorImage = VendorImage::getInstance(new ModelStub(), 'vendor_image');
 
-        $this->assertInstanceOf(UploadedFile::className(), $productImage);
-        $this->assertInstanceOf(VendorImage::className(), $vendorImage);
+        $this->assertInstanceOf(UploadedFile::class, $productImage);
+        $this->assertInstanceOf(VendorImage::class, $vendorImage);
     }
 
     public function testGetInstances()
@@ -80,11 +80,11 @@ class UploadedFileTest extends TestCase
         $vendorImages = VendorImage::getInstances(new ModelStub(), 'vendor_images');
 
         foreach ($productImages as $productImage) {
-            $this->assertInstanceOf(UploadedFile::className(), $productImage);
+            $this->assertInstanceOf(UploadedFile::class, $productImage);
         }
 
         foreach ($vendorImages as $vendorImage) {
-            $this->assertInstanceOf(VendorImage::className(), $vendorImage);
+            $this->assertInstanceOf(VendorImage::class, $vendorImage);
         }
     }
 

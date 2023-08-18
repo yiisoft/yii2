@@ -54,13 +54,13 @@ abstract class CacheTestCase extends TestCase
      */
     abstract protected function getCacheInstance();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         static::$time = null;
         static::$microtime = null;
@@ -107,16 +107,17 @@ abstract class CacheTestCase extends TestCase
     /**
      * @return array testing multiSet with and without expiry
      */
-    public function multiSetExpiry()
+    public static function multiSetExpiry(): array
     {
         return [[0], [2]];
     }
 
     /**
      * @dataProvider multiSetExpiry
-     * @param int $expiry
+     *
+     * @param int $expiry Expiry in seconds.
      */
-    public function testMultiset($expiry)
+    public function testMultiset(int $expiry): void
     {
         $cache = $this->getCacheInstance();
         $cache->flush();

@@ -45,7 +45,7 @@ use yiiunit\TestCase;
  */
 class UrlManagerParseUrlTest extends TestCase
 {
-    protected function getUrlManager($config = [])
+    protected function getUrlManager(array $config = []): UrlManager
     {
         // in this test class, all tests have enablePrettyUrl enabled.
         $config['enablePrettyUrl'] = true;
@@ -57,7 +57,7 @@ class UrlManagerParseUrlTest extends TestCase
         ], $config));
     }
 
-    protected function getRequest($pathInfo, $hostInfo = 'http://www.example.com', $method = 'GET', $config = [])
+    protected function getRequest($pathInfo, $hostInfo = 'http://www.example.com', $method = 'GET', $config = []): Request
     {
         $config['pathInfo'] = $pathInfo;
         $config['hostInfo'] = $hostInfo;
@@ -65,13 +65,13 @@ class UrlManagerParseUrlTest extends TestCase
         return new Request($config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($_POST['_method']);
         parent::tearDown();
     }
 
-    public function testWithoutRules()
+    public function testWithoutRules(): void
     {
         $manager = $this->getUrlManager();
 
@@ -89,7 +89,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertEquals(['module/site/index/', []], $result);
     }
 
-    public function testWithoutRulesStrict()
+    public function testWithoutRulesStrict(): void
     {
         $manager = $this->getUrlManager();
         $manager->enableStrictParsing = true;
@@ -104,7 +104,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertFalse($manager->parseRequest($this->getRequest('module/site/index/')));
     }
 
-    public function suffixProvider()
+    public static function suffixProvider(): array
     {
         return [
             ['.html'],
@@ -114,9 +114,10 @@ class UrlManagerParseUrlTest extends TestCase
 
     /**
      * @dataProvider suffixProvider
-     * @param string $suffix
+     *
+     * @param string $suffix The URL suffix.
      */
-    public function testWithoutRulesWithSuffix($suffix)
+    public function testWithoutRulesWithSuffix(string $suffix): void
     {
         $manager = $this->getUrlManager(['suffix' => $suffix]);
 
@@ -201,9 +202,10 @@ class UrlManagerParseUrlTest extends TestCase
 
     /**
      * @dataProvider suffixProvider
-     * @param string $suffix
+     *
+     * @param string $suffix The URL suffix.
      */
-    public function testSimpleRulesWithSuffix($suffix)
+    public function testSimpleRulesWithSuffix(string $suffix): void
     {
         $config = [
             'rules' => [
@@ -246,9 +248,10 @@ class UrlManagerParseUrlTest extends TestCase
 
     /**
      * @dataProvider suffixProvider
-     * @param string $suffix
+     *
+     * @param string $suffix The URL suffix.
      */
-    public function testSimpleRulesWithSuffixStrict($suffix)
+    public function testSimpleRulesWithSuffixStrict(string $suffix): void
     {
         $config = [
             'rules' => [
@@ -341,7 +344,7 @@ class UrlManagerParseUrlTest extends TestCase
                     'baseUrl' => '/app',
                 ],
             ],
-        ], \yii\web\Application::className());
+        ], \yii\web\Application::class);
         $this->assertEquals('/app/post/123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 

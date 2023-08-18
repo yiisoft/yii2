@@ -18,7 +18,7 @@ use yii\web\View;
  */
 class AssetBundleTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -124,7 +124,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertFalse(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
-            $this->assertFileNotExists($publishedFile);
+            $this->assertFileDoesNotExist($publishedFile);
         }
     }
 
@@ -144,7 +144,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertFalse(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
-            $this->assertFileNotExists($publishedFile);
+            $this->assertFileDoesNotExist($publishedFile);
         }
     }
 
@@ -163,7 +163,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle->publish($am);
 
         $notNeededFilesDir = dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->css[0]);
-        $this->assertFileNotExists($notNeededFilesDir);
+        $this->assertFileDoesNotExist($notNeededFilesDir);
 
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
@@ -189,7 +189,9 @@ class AssetBundleTest extends \yiiunit\TestCase
         $view = $this->getView(['basePath' => '@testReadOnlyAssetPath']);
         $bundle = new TestSourceAsset();
 
-        $this->setExpectedException('yii\base\InvalidConfigException', 'The directory is not writable by the Web process');
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('The directory is not writable by the Web process');
+
         $bundle->publish($view->getAssetManager());
 
         FileHelper::removeDirectory($path);
@@ -228,7 +230,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         TestSimpleAsset::register($view);
         $this->assertCount(1, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
 
         $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
@@ -246,9 +248,9 @@ EOF;
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetBundle', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
@@ -257,7 +259,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function positionProvider()
+    public static function positionProvider()
     {
         return [
             [View::POS_HEAD, true],
@@ -294,9 +296,9 @@ EOF;
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
 
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions);
         $this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions['position']);
@@ -382,7 +384,7 @@ EOF;
         TestSimpleAsset::register($view);
         $this->assertCount(1, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
         // register TestJqueryAsset which also has the jquery.js
         TestJqueryAsset::register($view);
 
@@ -408,7 +410,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function registerFileDataProvider()
+    public static function registerFileDataProvider()
     {
         return [
             // JS files registration
@@ -543,7 +545,7 @@ EOF;
         $am = $view->assetManager;
         // publishing without timestamp
         $result = $am->publish($path . '/data.txt');
-        $this->assertRegExp('/.*data.txt$/i', $result[1]);
+        $this->assertMatchesRegularExpression('/.*data.txt$/i', $result[1]);
         unset($view, $am, $result);
 
         $view = $this->getView();
@@ -551,7 +553,7 @@ EOF;
         // turn on timestamp appending
         $am->appendTimestamp = true;
         $result = $am->publish($path . '/data.txt');
-        $this->assertRegExp('/.*data.txt\?v=\d+$/i', $result[1]);
+        $this->assertMatchesRegularExpression('/.*data.txt\?v=\d+$/i', $result[1]);
     }
 
     /**
@@ -563,7 +565,7 @@ EOF;
 
         $view = $this->getView(['appendTimestamp' => true]);
         TestNonRelativeAsset::register($view);
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~123<script src="http:\/\/example\.com\/js\/jquery\.js\?v=\d+"><\/script>4~',
             $view->renderFile('@yiiunit/data/views/rawlayout.php')
         );

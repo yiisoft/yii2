@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Yii core class map.
  *
@@ -36,14 +37,12 @@ return [
   'yii\base\InvalidArgumentException' => YII2_PATH . '/base/InvalidArgumentException.php',
   'yii\base\InvalidCallException' => YII2_PATH . '/base/InvalidCallException.php',
   'yii\base\InvalidConfigException' => YII2_PATH . '/base/InvalidConfigException.php',
-  'yii\base\InvalidParamException' => YII2_PATH . '/base/InvalidParamException.php',
   'yii\base\InvalidRouteException' => YII2_PATH . '/base/InvalidRouteException.php',
   'yii\base\InvalidValueException' => YII2_PATH . '/base/InvalidValueException.php',
   'yii\base\Model' => YII2_PATH . '/base/Model.php',
   'yii\base\ModelEvent' => YII2_PATH . '/base/ModelEvent.php',
   'yii\base\Module' => YII2_PATH . '/base/Module.php',
   'yii\base\NotSupportedException' => YII2_PATH . '/base/NotSupportedException.php',
-  'yii\base\Object' => YII2_PATH . '/base/Object.php',
   'yii\base\Request' => YII2_PATH . '/base/Request.php',
   'yii\base\Response' => YII2_PATH . '/base/Response.php',
   'yii\base\Security' => YII2_PATH . '/base/Security.php',
@@ -86,8 +85,6 @@ return [
   'yii\caching\MemCacheServer' => YII2_PATH . '/caching/MemCacheServer.php',
   'yii\caching\TagDependency' => YII2_PATH . '/caching/TagDependency.php',
   'yii\caching\WinCache' => YII2_PATH . '/caching/WinCache.php',
-  'yii\caching\XCache' => YII2_PATH . '/caching/XCache.php',
-  'yii\caching\ZendDataCache' => YII2_PATH . '/caching/ZendDataCache.php',
   'yii\captcha\Captcha' => YII2_PATH . '/captcha/Captcha.php',
   'yii\captcha\CaptchaAction' => YII2_PATH . '/captcha/CaptchaAction.php',
   'yii\captcha\CaptchaAsset' => YII2_PATH . '/captcha/CaptchaAsset.php',
@@ -169,10 +166,6 @@ return [
   'yii\db\conditions\OrCondition' => YII2_PATH . '/db/conditions/OrCondition.php',
   'yii\db\conditions\SimpleCondition' => YII2_PATH . '/db/conditions/SimpleCondition.php',
   'yii\db\conditions\SimpleConditionBuilder' => YII2_PATH . '/db/conditions/SimpleConditionBuilder.php',
-  'yii\db\cubrid\ColumnSchemaBuilder' => YII2_PATH . '/db/cubrid/ColumnSchemaBuilder.php',
-  'yii\db\cubrid\QueryBuilder' => YII2_PATH . '/db/cubrid/QueryBuilder.php',
-  'yii\db\cubrid\Schema' => YII2_PATH . '/db/cubrid/Schema.php',
-  'yii\db\cubrid\conditions\LikeConditionBuilder' => YII2_PATH . '/db/cubrid/conditions/LikeConditionBuilder.php',
   'yii\db\mssql\ColumnSchema' => YII2_PATH . '/db/mssql/ColumnSchema.php',
   'yii\db\mssql\ColumnSchemaBuilder' => YII2_PATH . '/db/mssql/ColumnSchemaBuilder.php',
   'yii\db\mssql\DBLibPDO' => YII2_PATH . '/db/mssql/DBLibPDO.php',

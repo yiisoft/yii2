@@ -25,7 +25,7 @@ use yiiunit\framework\filters\stubs\UserIdentity;
  */
 class AuthTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,18 +35,18 @@ class AuthTest extends \yiiunit\TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
             'controllerMap' => [
-                'test-auth' => TestAuthController::className(),
+                'test-auth' => TestAuthController::class,
             ],
         ];
 
         $this->mockWebApplication($appConfig);
     }
 
-    public function tokenProvider()
+    public static function tokenProvider(): array
     {
         return [
             ['token1', 'user1'],
@@ -99,41 +99,44 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testQueryParamAuth($token, $login)
+    public function testQueryParamAuth(string|null $token, string|null $login): void
     {
         $_GET['access-token'] = $token;
-        $filter = ['class' => QueryParamAuth::className()];
+        $filter = ['class' => QueryParamAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpHeaderAuth($token, $login)
+    public function testHttpHeaderAuth(string|null $token, string|null $login): void
     {
         Yii::$app->request->headers->set('X-Api-Key', $token);
-        $filter = ['class' => HttpHeaderAuth::className()];
+        $filter = ['class' => HttpHeaderAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpBearerAuth($token, $login)
+    public function testHttpBearerAuth(string|null $token, string|null $login): void
     {
         Yii::$app->request->headers->set('Authorization', "Bearer $token");
-        $filter = ['class' => HttpBearerAuth::className()];
+        $filter = ['class' => HttpBearerAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
-    public function authMethodProvider()
+    public static function authMethodProvider()
     {
         return [
             ['yii\filters\auth\CompositeAuth'],
@@ -145,9 +148,10 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider authMethodProvider
-     * @param string $authClass
+     *
+     * @param string $authClass The class name of the auth method to be tested.
      */
-    public function testActive($authClass)
+    public function testActive(string $authClass): void
     {
         /** @var $filter AuthMethod */
         $filter = new $authClass();
@@ -195,7 +199,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testHeaders()
     {
         Yii::$app->request->headers->set('Authorization', "Bearer wrong_token");
-        $filter = ['class' => HttpBearerAuth::className()];
+        $filter = ['class' => HttpBearerAuth::class];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {

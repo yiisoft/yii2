@@ -21,7 +21,7 @@ class FileHelperTest extends TestCase
      */
     private $testFilePath = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
         $this->createDir($this->testFilePath);
@@ -56,7 +56,7 @@ class FileHelperTest extends TestCase
         return $mode === '0700';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -140,7 +140,7 @@ class FileHelperTest extends TestCase
      */
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
-        $expectedMode = sprintf('%o', $expectedMode);
+        $expectedMode = sprintf('%04o', $expectedMode);
         $this->assertEquals($expectedMode, $this->getMode($fileName), $message);
     }
 
@@ -258,7 +258,7 @@ class FileHelperTest extends TestCase
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
 
             if (is_array($content)) {
-                $this->assertFileNotExists($fileName);
+                $this->assertFileDoesNotExist($fileName);
             } else {
                 $this->assertFileExists($fileName);
                 $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
@@ -313,7 +313,7 @@ class FileHelperTest extends TestCase
             $dirName => [],
         ]);
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
 
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
         FileHelper::copyDirectory($dirName, $dirName);
@@ -329,7 +329,7 @@ class FileHelperTest extends TestCase
             'backup' => ['data' => []],
         ]);
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
 
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',
@@ -368,6 +368,8 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
+
+        $this->assertTrue(true);
     }
 
     public function testRemoveDirectory()
@@ -389,7 +391,7 @@ class FileHelperTest extends TestCase
 
         FileHelper::removeDirectory($dirName);
 
-        $this->assertFileNotExists($dirName, 'Unable to remove directory!');
+        $this->assertFileDoesNotExist($dirName, 'Unable to remove directory!');
 
         // should be silent about non-existing directories
         FileHelper::removeDirectory($basePath . DIRECTORY_SEPARATOR . 'nonExisting');
@@ -432,10 +434,10 @@ class FileHelperTest extends TestCase
         $this->assertTrue(is_dir($basePath . 'directory'));
         $this->assertFileExists($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory still have it's file
         $this->assertFalse(is_dir($basePath . 'symlinks'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
         $this->assertFalse(is_dir($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
     }
 
     public function testRemoveDirectorySymlinks2()
@@ -473,12 +475,12 @@ class FileHelperTest extends TestCase
 
         $this->assertFileExists($basePath . 'file');
         $this->assertTrue(is_dir($basePath . 'directory'));
-        $this->assertFileNotExists($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory doesn't have it's file now
+        $this->assertFileDoesNotExist($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory doesn't have it's file now
         $this->assertFalse(is_dir($basePath . 'symlinks'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
         $this->assertFalse(is_dir($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
     }
 
     public function testFindFiles()
@@ -910,8 +912,8 @@ class FileHelperTest extends TestCase
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file1.txt');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
-        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
-        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+        $this->assertFileDoesNotExist($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
+        $this->assertFileDoesNotExist($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
     }
 
     public function testFindDirectories()
@@ -1240,11 +1242,12 @@ class FileHelperTest extends TestCase
 
     /**
      * @dataProvider changeOwnershipInvalidArgumentsProvider
-     * @param bool $useFile
-     * @param mixed $ownership
-     * @param mixed $mode
+     *
+     * @param bool $useFile Use file.
+     * @param mixed $ownership User and group ownership.
+     * @param mixed $mode File mode.
      */
-    public function testChangeOwnershipInvalidArguments($useFile, $ownership, $mode)
+    public function testChangeOwnershipInvalidArguments(bool $useFile, mixed $ownership, mixed $mode): void
     {
         $dirName = 'change_ownership_invalid_arguments';
         $fileName = 'file_1.txt';
@@ -1260,7 +1263,7 @@ class FileHelperTest extends TestCase
         FileHelper::changeOwnership($useFile ? $file : null, $ownership, $mode);
     }
 
-    public function changeOwnershipInvalidArgumentsProvider()
+    public static function changeOwnershipInvalidArgumentsProvider(): array
     {
         return [
             [false, '123:123', null],
@@ -1282,7 +1285,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extensions, FileHelper::getExtensionsByMimeType($mimeType));
     }
 
-    public function getExtensionsByMimeTypeProvider()
+    public static function getExtensionsByMimeTypeProvider()
     {
         return [
             [
@@ -1317,7 +1320,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extension, FileHelper::getExtensionByMimeType($mimeType, $preferShort));
     }
 
-    public function getExtensionByMimeTypeProvider()
+    public static function getExtensionByMimeTypeProvider()
     {
         return [
             ['application/json', true, 'json'],

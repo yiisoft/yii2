@@ -26,14 +26,14 @@ class SluggableBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -60,7 +60,7 @@ class SluggableBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_slug_related', $columns)->execute();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -245,7 +245,7 @@ class ActiveRecordSluggable extends ActiveRecord
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
             ],
         ];
@@ -266,7 +266,7 @@ class ActiveRecordSluggable extends ActiveRecord
 
     public function getRelated()
     {
-        return $this->hasOne(ActiveRecordRelated::className(), ['id' => 'belongs_to_id']);
+        return $this->hasOne(ActiveRecordRelated::class, ['id' => 'belongs_to_id']);
     }
 }
 
@@ -284,7 +284,7 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'ensureUnique' => true,
             ],
@@ -298,7 +298,7 @@ class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'slugAttribute' => 'slug',
                 'ensureUnique' => true,

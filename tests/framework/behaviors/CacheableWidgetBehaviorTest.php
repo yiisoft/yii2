@@ -32,7 +32,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initializeApplicationMock();
         $this->initializeWidgetMocks();
@@ -107,8 +107,8 @@ class CacheableWidgetBehaviorTest extends TestCase
      */
     private function initializeWidgetMocks()
     {
-        $this->simpleWidget = $this->getWidgetMock(SimpleCacheableWidget::className());
-        $this->dynamicWidget = $this->getWidgetMock(DynamicCacheableWidget::className());
+        $this->simpleWidget = $this->getWidgetMock(SimpleCacheableWidget::class);
+        $this->dynamicWidget = $this->getWidgetMock(DynamicCacheableWidget::class);
     }
 
     /**

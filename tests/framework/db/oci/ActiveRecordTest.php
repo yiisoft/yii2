@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,11 +23,11 @@ use yiiunit\data\ar\Type;
 class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     protected $driverName = 'oci';
+    protected static string $driverNameStatic = 'oci';
 
     public function testCastValues()
     {
         // pass, because boolean casting is not available
-        return;
         $model = new Type();
         $model->int_col = 123;
         $model->int_col2 = 456;
@@ -48,7 +49,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame('1337', trim($model->char_col));
         $this->assertSame('test', $model->char_col2);
         $this->assertSame('test123', $model->char_col3);
-        $this->assertSame(1337.42, $model->float_col);
+        $this->assertSame(3.742, $model->float_col);
         $this->assertSame(42.1337, $model->float_col2);
         $this->assertEquals('1', $model->bool_col);
         $this->assertEquals('0', $model->bool_col2);
@@ -151,7 +152,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 
     /**
-     * Some PDO implementations(e.g. cubrid) do not support boolean values.
+     * Some PDO implementations do not support boolean values.
      * Make sure this does not affect AR layer.
      */
     public function testBooleanAttribute()
@@ -183,10 +184,12 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     /**
      * Tests the alias syntax for joinWith: 'alias' => 'relation'.
+     *
      * @dataProvider aliasMethodProvider
+     *
      * @param string $aliasMethod whether alias is specified explicitly or using the query syntax {{@tablename}}
      */
-    public function testJoinWithAlias($aliasMethod)
+    public function testJoinWithAlias(string $aliasMethod): void
     {
         // left join and eager loading
         /** @var ActiveQuery $query */

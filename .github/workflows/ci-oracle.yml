@@ -10,11 +10,10 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php }}-oracle-11g-r2
 
     env:
-      extensions: oci8, pdo, pdo_oci
-      XDEBUG_MODE: coverage, develop
+      EXTENSIONS: oci8, pdo, pdo_oci
 
     runs-on: ${{ matrix.os }}
 
@@ -24,14 +23,17 @@ jobs:
           - ubuntu-latest
 
         php:
-          - 7.4
+          - 8.1
+
+        oracle:
+          - 11
 
     services:
       oci:
-          image: wnameless/oracle-xe-11g-r2:latest
-          ports:
-              - 1521:1521
-          options: --name=oci
+        image: wnameless/oracle-xe-11g-r2:latest
+        ports:
+          - 1521:1521
+        options: --name=oci
 
     steps:
       - name: Checkout.
@@ -40,20 +42,17 @@ jobs:
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: xdebug
+          coverage: pcov
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
           tools: composer:v2, pecl
 
-      - name: Update composer.
-        run: composer self-update
-
       - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Run Oracle tests with PHPUnit and generate coverage.
-        run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always
+        run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always --verbose
 
       - name: Upload coverage to Codecov.
         uses: codecov/codecov-action@v3

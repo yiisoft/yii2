@@ -37,7 +37,7 @@ abstract class DbTargetTest extends TestCase
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
-                    'migrate' => EchoMigrateController::className(),
+                    'migrate' => EchoMigrateController::class,
                 ],
                 'components' => [
                     'db' => static::getConnection(),
@@ -64,7 +64,7 @@ abstract class DbTargetTest extends TestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $databases = static::getParam('databases');
@@ -78,7 +78,7 @@ abstract class DbTargetTest extends TestCase
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
@@ -89,8 +89,8 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
      * @throws \yii\db\Exception
+     * @throws \yii\base\InvalidArgumentException
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
      */

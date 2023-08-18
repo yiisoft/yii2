@@ -21,7 +21,7 @@ class WidgetTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Widget::$counter = 0;
@@ -55,8 +55,8 @@ class WidgetTest extends TestCase
     {
         Yii::$container = new Container();
         Yii::$container->setDefinitions([
-            TestWidgetB::className() => [
-                'class' => TestWidget::className()
+            TestWidgetB::class => [
+                'class' => TestWidget::class
             ]
         ]);
 

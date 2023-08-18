@@ -32,9 +32,6 @@ Yii поддерживает работу с Active Record для следующ
 * SQLite 2 и 3: посредством [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 и выше: посредством [[yii\db\ActiveRecord]]
 * Oracle: посредством [[yii\db\ActiveRecord]]
-* CUBRID 9.3 и выше: посредством [[yii\db\ActiveRecord]] (Имейте в виду, что вследствие
-  [бага](http://jira.cubrid.org/browse/APIS-658) в PDO-расширении для CUBRID, заключение значений в кавычки не работает,
-  поэтому необходимо использовать CUBRID версии 9.3 как на клиентской стороне, так и на сервере)
 * Sphinx: посредством [[yii\sphinx\ActiveRecord]], потребуется расширение `yii2-sphinx`
 * ElasticSearch: посредством [[yii\elasticsearch\ActiveRecord]], потребуется расширение `yii2-elasticsearch`
 

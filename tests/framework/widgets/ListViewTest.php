@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class ListViewTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -80,7 +80,7 @@ HTML
     /**
      * @return DataProviderInterface
      */
-    private function getDataProvider($additionalConfig = [])
+    private static function getDataProvider($additionalConfig = [])
     {
         return new ArrayDataProvider(array_merge([
             'allModels' => [
@@ -121,7 +121,7 @@ HTML
         , $out);
     }
 
-    public function itemViewOptions()
+    public static function itemViewOptions()
     {
         return [
             [
@@ -134,7 +134,7 @@ HTML
             ],
             [
                 function ($model, $key, $index, $widget) {
-                    return "Item #{$index}: {$model['login']} - Widget: " . $widget->className();
+                    return "Item #{$index}: {$model['login']} - Widget: " . $widget::class;
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
@@ -155,10 +155,11 @@ HTML
 
     /**
      * @dataProvider itemViewOptions
-     * @param mixed $itemView
-     * @param string $expected
+     *
+     * @param mixed $itemView The item view to be used.
+     * @param string $expected The expected result.
      */
-    public function testItemViewOptions($itemView, $expected)
+    public function testItemViewOptions(mixed $itemView, string $expected): void
     {
         ob_start();
         $this->getListView(['itemView' => $itemView])->run();
@@ -167,7 +168,7 @@ HTML
         $this->assertEqualsWithoutLE($expected, $out);
     }
 
-    public function itemOptions()
+    public static function itemOptions(): array
     {
         return [
             [
@@ -201,10 +202,11 @@ HTML
 
     /**
      * @dataProvider itemOptions
-     * @param mixed $itemOptions
-     * @param string $expected
+     *
+     * @param mixed $itemOptions The item options.
+     * @param string $expected The expected result.
      */
-    public function testItemOptions($itemOptions, $expected)
+    public function testItemOptions(mixed $itemOptions, string $expected): void
     {
         ob_start();
         $this->getListView(['itemOptions' => $itemOptions])->run();
@@ -272,18 +274,20 @@ HTML
         (new ListView())->run();
     }
 
-    public function providerForNoSorter()
+    public static function providerForNoSorter(): array
     {
         return [
             'no sort attributes' => [[]],
-            'sorter false' => [['dataProvider' => $this->getDataProvider(['sort' => false])]],
+            'sorter false' => [['dataProvider' => self::getDataProvider(['sort' => false])]],
         ];
     }
 
     /**
      * @dataProvider providerForNoSorter
+     *
+     * @param array $additionalConfig Additional configuration for the list view.
      */
-    public function testRenderNoSorter($additionalConfig)
+    public function testRenderNoSorter(array $additionalConfig): void
     {
         $config = array_merge(['layout' => '{sorter}'], $additionalConfig);
 
@@ -339,7 +343,7 @@ HTML
 </div>', $out);
     }
 
-    public function providerForSummary()
+    public static function providerForSummary(): array
     {
         return [
             'empty' => ['', '<div id="w0" class="list-view">
@@ -357,8 +361,11 @@ HTML
 
     /**
      * @dataProvider providerForSummary
+     *
+     * @param string $summary Summary template.
+     * @param string $result Expected result.
      */
-    public function testRenderSummaryWhenSummaryIsCustom($summary, $result)
+    public function testRenderSummaryWhenSummaryIsCustom(string $summary, string $result): void
     {
         ob_start();
         $this->getListView(['summary' => $summary])->run();

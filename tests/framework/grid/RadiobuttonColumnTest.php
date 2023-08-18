@@ -22,15 +22,12 @@ use yiiunit\TestCase;
  */
 class RadiobuttonColumnTest extends TestCase
 {
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     * @expectedExceptionMessage The "name" property must be set.
-     */
     public function testException()
     {
-        new RadioButtonColumn([
-            'name' => null,
-        ]);
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('The "name" property must be set.');
+
+        new RadioButtonColumn(['name' => null]);
     }
 
     public function testOptionsByArray()
@@ -67,14 +64,14 @@ class RadiobuttonColumnTest extends TestCase
                 return null;
             }
         ]);
-        $this->assertContains('<td></td>', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = new RadioButtonColumn([
             'content' => function ($model, $key, $index, $column) {
                 return Html::radio('radioButtonInput', false);
             }
         ]);
-        $this->assertContains(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 
     public function testMultipleInGrid()
@@ -94,7 +91,7 @@ class RadiobuttonColumnTest extends TestCase
             'options' => ['id' => 'radio-gridview'],
             'columns' => [
                 [
-                    'class' => RadioButtonColumn::className(),
+                    'class' => RadioButtonColumn::class,
                     'radioOptions' => function ($model) {
                         return [
                             'value' => $model['value'],

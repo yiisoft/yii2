@@ -23,7 +23,7 @@ use yiiunit\framework\rbac\AuthorRule;
  */
 class AccessRuleTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -55,7 +55,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     protected function mockUser($userid = null)
     {
         $user = new User([
-            'identityClass' => UserIdentity::className(),
+            'identityClass' => UserIdentity::class,
             'enableAutoLogin' => false,
         ]);
         if ($userid !== null) {
@@ -217,7 +217,7 @@ class AccessRuleTest extends \yiiunit\TestCase
      *           test user id
      *           expected match result (true, false, null)
      */
-    public function matchRoleProvider()
+    public static function matchRoleProvider(): array
     {
         return [
             ['create', true,  'user1',   [], true],
@@ -255,14 +255,20 @@ class AccessRuleTest extends \yiiunit\TestCase
      * Test that a user matches certain roles.
      *
      * @dataProvider matchRoleProvider
-     * @param string $actionid the action id
-     * @param bool $allow whether the rule should allow access
-     * @param string $userid the userid to check
-     * @param array|Closure $roleParams params for $roleParams
-     * @param bool $expected the expected result or null
+     *
+     * @param string $actionid The action id.
+     * @param bool $allow Whether the rule should allow access.
+     * @param string $userid The userid to check.
+     * @param array|Closure $roleParams Params for $roleParams.
+     * @param bool $expected The expected result or null.
      */
-    public function testMatchRole($actionid, $allow, $userid, $roleParams, $expected)
-    {
+    public function testMatchRole(
+        string $actionid,
+        bool $allow,
+        string $userid,
+        array|Closure $roleParams,
+        bool|null $expected
+    ): void {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
         $request = $this->mockRequest();
@@ -330,7 +336,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     {
         $action = $this->mockAction();
         $user = $this->getMockBuilder('\yii\web\User')->getMock();
-        $user->identityCLass = UserIdentity::className();
+        $user->identityCLass = UserIdentity::class;
 
         $rule = new AccessRule([
             'allow' => true,

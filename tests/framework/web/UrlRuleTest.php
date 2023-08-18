@@ -22,7 +22,7 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -71,7 +71,7 @@ class UrlRuleTest extends TestCase
     {
         $manager = new UrlManager([
             'cache' => null,
-            'normalizer' => UrlNormalizer::className(),
+            'normalizer' => UrlNormalizer::class,
         ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
@@ -100,7 +100,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
@@ -129,7 +129,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
@@ -158,7 +158,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
@@ -186,7 +186,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => null,
             ],
         ]);
@@ -215,7 +215,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => $normalizerAction,
             ],
         ]);
@@ -1292,11 +1292,12 @@ class UrlRuleTest extends TestCase
     }
 
     /**
-     * @dataProvider testGetCreateUrlStatusProvider
-     * @param array $config
-     * @param array $tests
+     * @dataProvider getCreateUrlStatusProvider
+     *
+     * @param array $config UrlRule config.
+     * @param array $tests Array of tests.
      */
-    public function testGetCreateUrlStatus($config, $tests)
+    public function testGetCreateUrlStatus(array $config, array $tests): void
     {
         foreach ($tests as $test) {
             list($route, $params, $expected, $status) = $test;
@@ -1329,7 +1330,7 @@ class UrlRuleTest extends TestCase
      *   - third element is the expected URL
      *   - fourth element is the expected result of getCreateUrlStatus() method
      */
-    public function testGetCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider(): array
     {
         return [
             'route' => [

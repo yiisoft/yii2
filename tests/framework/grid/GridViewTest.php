@@ -20,7 +20,7 @@ use yiiunit\data\ar\NoAutoLabels;
  */
 class GridViewTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -38,7 +38,7 @@ class GridViewTest extends \yiiunit\TestCase
     /**
      * @return array
      */
-    public function emptyDataProvider()
+    public static function emptyDataProvider(): array
     {
         return [
             [null, 'No results found.'],
@@ -50,11 +50,13 @@ class GridViewTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider emptyDataProvider
-     * @param mixed $emptyText
-     * @param string $expectedText
+     *
+     * @param bool|string|null $emptyText The empty text.
+     * @param string $expectedText The expected text.
+     *
      * @throws \Exception
      */
-    public function testEmpty($emptyText, $expectedText)
+    public function testEmpty(bool|string|null $emptyText, mixed $expectedText): void
     {
         $html = GridView::widget([
             'id' => 'grid',
@@ -96,7 +98,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertCount(count($row), $columns);
 
         foreach ($columns as $index => $column) {
-            $this->assertInstanceOf(DataColumn::className(), $column);
+            $this->assertInstanceOf(DataColumn::class, $column);
             $this->assertArrayHasKey($column->attribute, $row);
         }
 
@@ -117,7 +119,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertCount(count($row) - 2, $columns);
 
         foreach ($columns as $index => $column) {
-            $this->assertInstanceOf(DataColumn::className(), $column);
+            $this->assertInstanceOf(DataColumn::class, $column);
             $this->assertArrayHasKey($column->attribute, $row);
             $this->assertNotEquals('relation', $column->attribute);
             $this->assertNotEquals('otherRelation', $column->attribute);

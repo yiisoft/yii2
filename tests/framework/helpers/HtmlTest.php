@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class HtmlTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -170,7 +170,7 @@ class HtmlTest extends TestCase
      * Data provider for [[testBeginFormSimulateViaPost()]].
      * @return array test data
      */
-    public function dataProviderBeginFormSimulateViaPost()
+    public static function dataProviderBeginFormSimulateViaPost()
     {
         return [
           ['<form action="/foo" method="GET">', 'GET'],
@@ -220,7 +220,7 @@ class HtmlTest extends TestCase
     /**
      * @return array
      */
-    public function imgDataProvider()
+    public static function imgDataProvider()
     {
         return [
             [
@@ -391,7 +391,7 @@ class HtmlTest extends TestCase
     /**
      * @return array
      */
-    public function textareaDataProvider()
+    public static function textareaDataProvider()
     {
         return [
             [
@@ -579,7 +579,7 @@ EOD;
         );
     }
 
-    public function providerForNonStrictBooleanDropDownList()
+    public static function providerForNonStrictBooleanDropDownList()
     {
         return [
             [null, false, false, false],
@@ -614,7 +614,7 @@ HTML;
         );
     }
 
-    public function providerForStrictBooleanDropDownList()
+    public static function providerForStrictBooleanDropDownList()
     {
         return [
             [null, false, false, false],
@@ -1441,7 +1441,7 @@ EOD;
      * Data provider for [[testActiveTextInput()]].
      * @return array test data
      */
-    public function dataProviderActiveTextInput()
+    public static function dataProviderActiveTextInput()
     {
         return [
             [
@@ -1484,7 +1484,7 @@ EOD;
      * Data provider for [[testActiveTextInputMaxLength]].
      * @return array test data
      */
-    public function dataProviderActiveTextInputMaxLength()
+    public static function dataProviderActiveTextInputMaxLength()
     {
         return [
             [
@@ -1534,7 +1534,7 @@ EOD;
      * Data provider for [[testActivePasswordInput()]].
      * @return array test data
      */
-    public function dataProviderActivePasswordInput()
+    public static function dataProviderActivePasswordInput()
     {
         return [
             [
@@ -1577,7 +1577,7 @@ EOD;
      * Data provider for [[testActiveInput_TypeText]].
      * @return array test data
      */
-    public function dataProviderActiveInput_TypeText()
+    public static function dataProviderActiveInput_TypeText()
     {
         return [
             [
@@ -1616,7 +1616,7 @@ EOD;
         $this->assertEquals($expectedHtml, Html::activeInput('text', $model, 'name', $options));
     }
 
-    public function errorSummaryDataProvider()
+    public static function errorSummaryDataProvider()
     {
         return [
             [
@@ -1742,7 +1742,7 @@ EOD;
      * Data provider for [[testActiveTextArea()]].
      * @return array test data
      */
-    public function dataProviderActiveTextArea()
+    public static function dataProviderActiveTextArea()
     {
         return [
             [
@@ -1855,7 +1855,7 @@ EOD;
      * Data provider for [[testActiveCheckbox()]].
      * @return array test data
      */
-    public function dataProviderActiveCheckbox()
+    public static function dataProviderActiveCheckbox()
     {
         return [
             [
@@ -1925,7 +1925,7 @@ EOD;
      * Data provider for [[testAttributeNameValidation()]].
      * @return array test data
      */
-    public function invalidAttributeNamesProvider()
+    public static function invalidAttributeNamesProvider()
     {
         return [
             ['. ..'],
@@ -1989,13 +1989,13 @@ EOD;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Attribute name must contain word characters only.
-     */
     public function testGetAttributeValueInvalidArgumentException()
     {
         $model = new HtmlTestModel();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         Html::getAttributeValue($model, '-');
     }
 
@@ -2024,24 +2024,26 @@ EOD;
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Attribute name must contain word characters only.
-     */
     public function testGetInputNameInvalidArgumentExceptionAttribute()
     {
         $model = new HtmlTestModel();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         Html::getInputName($model, '-');
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
      */
     public function testGetInputNameInvalidArgumentExceptionFormName()
     {
         $model = $this->getMockBuilder('yii\\base\\Model')->getMock();
         $model->method('formName')->willReturn('');
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+
         Html::getInputName($model, '[foo]bar');
     }
 
@@ -2055,7 +2057,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdDataProvider
+     * @dataProvider getInputIdDataProvider
      */
     public function testGetInputId($attributeName, $inputIdExpected)
     {
@@ -2068,7 +2070,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdByNameDataProvider
+     * @dataProvider getInputIdByNameDataProvider
      */
     public function testGetInputIdByName($attributeName, $inputIdExpected)
     {
@@ -2147,7 +2149,7 @@ HTML;
 
         $html = Html::activeTextInput($model, 'name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="Name"', $html);
+        $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
     public function testActiveTextInput_customPlaceholder()
@@ -2156,7 +2158,7 @@ HTML;
 
         $html = Html::activeTextInput($model, 'name', ['placeholder' => 'Custom placeholder']);
 
-        $this->assertContains('placeholder="Custom placeholder"', $html);
+        $this->assertStringContainsString('placeholder="Custom placeholder"', $html);
     }
 
     public function testActiveTextInput_placeholderFillFromModelTabular()
@@ -2165,7 +2167,7 @@ HTML;
 
         $html = Html::activeTextInput($model, '[0]name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="Name"', $html);
+        $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
     public function testOverrideSetActivePlaceholder()
@@ -2174,10 +2176,10 @@ HTML;
 
         $html = MyHtml::activeTextInput($model, 'name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="My placeholder: Name"', $html);
+        $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public function testGetInputIdDataProvider()
+    public static function getInputIdDataProvider()
     {
         return [
             [
@@ -2216,7 +2218,7 @@ HTML;
         ];
     }
 
-    public function testGetInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider()
     {
         return [
             [

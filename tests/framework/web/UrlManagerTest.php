@@ -32,7 +32,7 @@ use yiiunit\TestCase;
  */
 class UrlManagerTest extends TestCase
 {
-    protected function getUrlManager($config = [], $showScriptName = true, $enableStrictParsing = false)
+    protected function getUrlManager(array $config = [], bool $showScriptName = true, bool $enableStrictParsing = false)
     {
         // in this test class, all tests have enablePrettyUrl disabled.
         $config['enablePrettyUrl'] = false;
@@ -61,7 +61,7 @@ class UrlManagerTest extends TestCase
      * $showScriptName and $enableStrictParsing should have no effect in default format.
      * Passing these options ensures that.
      */
-    public function ignoredOptionsProvider()
+    public static function ignoredOptionsProvider(): array
     {
         return [
             [false, false],
@@ -73,10 +73,11 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider ignoredOptionsProvider
-     * @param bool $showScriptName
-     * @param bool $enableStrictParsing
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param bool $enableStrictParsing Whether to enable strict parsing.
      */
-    public function testCreateUrlSimple($showScriptName, $enableStrictParsing)
+    public function testCreateUrlSimple(bool $showScriptName, bool $enableStrictParsing): void
     {
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
@@ -98,10 +99,11 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider ignoredOptionsProvider
-     * @param bool $showScriptName
-     * @param bool $enableStrictParsing
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param bool $enableStrictParsing Whether to enable strict parsing.
      */
-    public function testCreateUrlWithParams($showScriptName, $enableStrictParsing)
+    public function testCreateUrlWithParams(bool $showScriptName, bool $enableStrictParsing): void
     {
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
@@ -121,10 +123,11 @@ class UrlManagerTest extends TestCase
      * @dataProvider ignoredOptionsProvider
      *
      * @see https://github.com/yiisoft/yii2/pull/9596
-     * @param bool $showScriptName
-     * @param bool $enableStrictParsing
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param bool $enableStrictParsing Whether to enable strict parsing.
      */
-    public function testCreateUrlWithAnchor($showScriptName, $enableStrictParsing)
+    public function testCreateUrlWithAnchor(bool $showScriptName, bool $enableStrictParsing): void
     {
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
@@ -146,10 +149,11 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider ignoredOptionsProvider
-     * @param bool $showScriptName
-     * @param bool $enableStrictParsing
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param bool $enableStrictParsing Whether to enable strict parsing.
      */
-    public function testCreateAbsoluteUrl($showScriptName, $enableStrictParsing)
+    public function testCreateAbsoluteUrl(bool $showScriptName, bool $enableStrictParsing): void
     {
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createAbsoluteUrl('post/view');
@@ -193,11 +197,13 @@ class UrlManagerTest extends TestCase
 
     /**
      * Test normalisation of different routes.
+     *
      * @dataProvider ignoredOptionsProvider
-     * @param bool $showScriptName
-     * @param bool $enableStrictParsing
+     *
+     * @param bool $showScriptName Whether to show script name in URL.
+     * @param bool $enableStrictParsing Whether to enable strict parsing.
      */
-    public function testCreateUrlRouteVariants($showScriptName, $enableStrictParsing)
+    public function testCreateUrlRouteVariants(bool $showScriptName, bool $enableStrictParsing): void
     {
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
@@ -215,7 +221,7 @@ class UrlManagerTest extends TestCase
     /**
      * @return array provides different names for UrlManager::$routeParam
      */
-    public function routeParamProvider()
+    public static function routeParamProvider(): array
     {
         return [
             ['r'], // default value
@@ -226,9 +232,10 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider routeParamProvider
-     * @param string $routeParam
+     *
+     * @param string $routeParam The name of the route parameter.
      */
-    public function testParseRequest($routeParam)
+    public function testParseRequest(string $routeParam): void
     {
         $manager = $this->getUrlManager(['routeParam' => $routeParam]);
         $request = new Request();

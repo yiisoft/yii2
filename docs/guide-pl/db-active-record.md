@@ -31,9 +31,6 @@ Yii zapewnia wsparcie Active Record dla następujących typów relacyjnych baz d
 * SQLite 2 i 3: poprzez [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 lub nowszy: poprzez [[yii\db\ActiveRecord]]
 * Oracle: poprzez [[yii\db\ActiveRecord]]
-* CUBRID 9.3 lub nowszy: poprzez [[yii\db\ActiveRecord]] (zwróć uwagę, że z powodu [błędu](https://jira.cubrid.org/browse/APIS-658) 
-  w rozszerzeniu PDO cubrid, umieszczanie wartości w cudzysłowie nie będzie działać, zatem wymagane jest zainstalowanie CUBRID 9.3 zarówno 
-  jako klienta jak i serwer)
 * Sphinx: poprzez [[yii\sphinx\ActiveRecord]], wymaga rozszerzenia `yii2-sphinx`
 * ElasticSearch: poprzez [[yii\elasticsearch\ActiveRecord]], wymaga rozszerzenia `yii2-elasticsearch`
 

@@ -17,7 +17,7 @@ use yiiunit\TestCase;
  */
 class SerializerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -280,7 +280,7 @@ class SerializerTest extends TestCase
         ], $serializer->serialize($model));
     }
 
-    public function dataProviderSerializeDataProvider()
+    public static function dataProviderSerializeDataProvider()
     {
         return [
             [

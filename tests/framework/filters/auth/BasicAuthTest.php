@@ -22,61 +22,65 @@ class BasicAuthTest extends AuthTest
 {
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpBasicAuth($token, $login)
+    public function testHttpBasicAuth(string|null $token, string|null $login): void
     {
         $original = $_SERVER;
 
         $_SERVER['PHP_AUTH_USER'] = $token;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
-        $filter = ['class' => HttpBasicAuth::className()];
+        $filter = ['class' => HttpBasicAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
         $_SERVER = $original;
     }
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpBasicAuthWithHttpAuthorizationHeader($token, $login)
+    public function testHttpBasicAuthWithHttpAuthorizationHeader(string|null $token, string|null $login): void
     {
         $original = $_SERVER;
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($token . ':' . 'mypw');
-        $filter = ['class' => HttpBasicAuth::className()];
+        $filter = ['class' => HttpBasicAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
         $_SERVER = $original;
     }
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpBasicAuthWithRedirectHttpAuthorizationHeader($token, $login)
+    public function testHttpBasicAuthWithRedirectHttpAuthorizationHeader(string|null $token, string|null $login): void
     {
         $original = $_SERVER;
 
         $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($token . ':' . 'mypw');
-        $filter = ['class' => HttpBasicAuth::className()];
+        $filter = ['class' => HttpBasicAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
         $_SERVER = $original;
     }
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpBasicAuthCustom($token, $login)
+    public function testHttpBasicAuthCustom(string|null $token, string|null $login): void
     {
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
         $filter = [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
             'auth' => function ($username, $password) {
                 if (preg_match('/\d$/', (string)$username)) {
                     return UserIdentity::findIdentity($username);
@@ -94,10 +98,11 @@ class BasicAuthTest extends AuthTest
      *  - HttpBasicAuth does not switch identity, even when the user identity to be set is the same as current user's one
      *
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testHttpBasicAuthIssue15658($token, $login)
+    public function testHttpBasicAuthIssue15658(string|null $token, string|null $login): void
     {
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'y0u7h1nk175r34l?';
@@ -109,7 +114,7 @@ class BasicAuthTest extends AuthTest
         $sessionId = $session->getId();
 
         $filter = [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
             'auth' => function ($username, $password) {
                 $this->fail('Authentication closure should not be called when user is already authenticated');
             },
@@ -121,7 +126,7 @@ class BasicAuthTest extends AuthTest
         $session->destroy();
     }
 
-    public function authMethodProvider()
+    public static function authMethodProvider(): array
     {
         return [
             ['yii\filters\auth\HttpBasicAuth'],
@@ -130,10 +135,11 @@ class BasicAuthTest extends AuthTest
 
     /**
      * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
+     *
+     * @param string|null $token The token to be used for authentication.
+     * @param string|null $login The login of the user that should be authenticated.
      */
-    public function testAfterLoginEventIsTriggered18031($token, $login)
+    public function testAfterLoginEventIsTriggered18031(string|null $token, string|null $login): void
     {
         $triggered = false;
         Event::on('\yii\web\User', User::EVENT_AFTER_LOGIN, function ($event) use (&$triggered) {

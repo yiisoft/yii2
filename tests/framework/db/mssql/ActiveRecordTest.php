@@ -19,6 +19,7 @@ use yiiunit\data\ar\TestTriggerAlert;
 class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     public $driverName = 'sqlsrv';
+    protected static string $driverNameStatic = 'sqlsrv';
 
     public function testExplicitPkOnAutoIncrement()
     {

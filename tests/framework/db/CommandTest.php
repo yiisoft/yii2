@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -92,7 +93,7 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertInstanceOf(DataReader::className(), $reader);
+        $this->assertInstanceOf(DataReader::class, $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
@@ -193,7 +194,7 @@ SQL;
             $command->bindParam(':blob_col', $blobCol);
             $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         } else {
-            $floatCol = 1.23;
+            $floatCol = 1.230;
             $numericCol = '1.23';
             $blobCol = "\x10\x11\x12";
             $boolCol = false;
@@ -205,18 +206,18 @@ SQL;
         $this->assertEquals(1, $command->execute());
 
         $command = $db->createCommand('SELECT [[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]] FROM {{type}}');
-//        $command->prepare();
-//        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
+        //        $command->prepare();
+        //        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
         $row = $command->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
-        $this->assertEquals($floatCol, $row['float_col']);
+        $this->assertEquals($floatCol, (float) $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
         } elseif (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
-            $this->assertInternalType('resource', $row['blob_col']);
+            $this->assertIsResource($row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
@@ -238,7 +239,7 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-    public function paramsNonWhereProvider()
+    public static function paramsNonWhereProvider(): array
     {
         return [
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
@@ -249,10 +250,12 @@ SQL;
 
     /**
      * Test whether param binding works in other places than WHERE.
+     *
      * @dataProvider paramsNonWhereProvider
-     * @param string $sql
+     *
+     * @param string $sql SQL query.
      */
-    public function testBindParamsNonWhere($sql)
+    public function testBindParamsNonWhere(string $sql): void
     {
         $db = $this->getConnection();
 
@@ -281,7 +284,7 @@ SQL;
         $command = $db->createCommand($sql);
         $command->fetchMode = \PDO::FETCH_OBJ;
         $result = $command->queryOne();
-        $this->assertInternalType('object', $result);
+        $this->assertIsObject($result);
 
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';
@@ -315,11 +318,20 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (PHP_VERSION_ID < 50500) {
-            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
-        } else {
-            include __DIR__ . '/testBatchInsertWithYield.php';
-        }
+        $rows = call_user_func(function () {
+            if (false) {
+                yield [];
+            }
+        });
+
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            $rows
+        );
+
+        $this->assertEquals(0, $command->execute());
     }
 
     /**
@@ -377,7 +389,7 @@ SQL;
         setlocale(LC_NUMERIC, $locale);
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         return [
             'issue11242' => [
@@ -419,18 +431,25 @@ SQL;
     }
 
     /**
-     * Make sure that `{{something}}` in values will not be encoded
+     * Make sure that `{{something}}` in values will not be encoded.
+     *
      * https://github.com/yiisoft/yii2/issues/11242.
      *
      * @dataProvider batchInsertSqlProvider
-     * @param mixed $table
-     * @param mixed $columns
-     * @param mixed $values
-     * @param mixed $expected
-     * @param array $expectedParams
+     *
+     * @param string $table Table name.
+     * @param array $columns Column names.
+     * @param array|ArrayObject $values Values to be batch inserted.
+     * @param string $expected Expected SQL query.
+     * @param array $expectedParams Expected query params.
      */
-    public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
-    {
+    public function testBatchInsertSQL(
+        string $table,
+        array $columns,
+        array|ArrayObject $values,
+        string $expected,
+        array $expectedParams = []
+    ): void {
         $command = $this->getConnection()->createCommand();
         $command->batchInsert($table, $columns, $values);
         $command->prepare(false);
@@ -517,7 +536,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 '{{customer}}.[[email]] as name',
                 '[[name]] as email',
                 '[[address]]',
@@ -571,7 +591,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 'email' => '{{customer}}.[[email]]',
                 'address' => 'name',
                 'name' => 'address',
@@ -610,7 +631,7 @@ SQL;
      * Data provider for testInsertSelectFailed.
      * @return array
      */
-    public function invalidSelectColumns()
+    public static function invalidSelectColumns(): array
     {
         return [
             [[]],
@@ -623,21 +644,21 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
-     * @param mixed $invalidSelectColumns
+     *
+     * @param array|string $invalidSelectColumns Invalid select columns.
      */
-    public function testInsertSelectFailed($invalidSelectColumns)
+    public function testInsertSelectFailed(array|string $invalidSelectColumns): void
     {
         $query = new \yii\db\Query();
         $query->select($invalidSelectColumns)->from('{{customer}}');
 
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->insert(
-            '{{customer}}',
-            $query
-        )->execute();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
+
+        $command->insert('{{customer}}', $query)->execute();
     }
 
     public function testInsertExpression()
@@ -649,7 +670,6 @@ SQL;
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
                 break;
-            case 'cubrid':
             case 'mysql':
                 $expression = 'YEAR(NOW())';
                 break;
@@ -798,7 +818,7 @@ SQL;
         $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         return [
             'regular values' => [
@@ -1022,10 +1042,11 @@ SQL;
 
     /**
      * @dataProvider upsertProvider
-     * @param array $firstData
-     * @param array $secondData
+     *
+     * @param array $firstData First data to upsert.
+     * @param array $secondData Second data to upsert.
      */
-    public function testUpsert(array $firstData, array $secondData)
+    public function testUpsert(array $firstData, array $secondData): void
     {
         $db = $this->getConnection();
         $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
@@ -1222,7 +1243,7 @@ SQL;
 
         $this->assertEmpty($schema->getTableChecks($tableName, true));
         $db->createCommand()->addCheck($name, $tableName, '[[int1]] > 1')->execute();
-        $this->assertRegExp('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
+        $this->assertMatchesRegularExpression('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
 
         $db->createCommand()->dropCheck($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableChecks($tableName, true));
@@ -1328,7 +1349,7 @@ SQL;
      * Data provider for [[testGetRawSql()]].
      * @return array test data
      */
-    public function dataProviderGetRawSql()
+    public static function dataProviderGetRawSql(): array
     {
         return [
             [
@@ -1384,11 +1405,11 @@ SQL;
      *
      * @dataProvider dataProviderGetRawSql
      *
-     * @param string $sql
-     * @param array $params
-     * @param string $expectedRawSql
+     * @param string $sql The SQL statement to be executed.
+     * @param array $params The parameters to be bound to the SQL statement during execution.
+     * @param string $expectedRawSql The expected raw SQL statement.
      */
-    public function testGetRawSql($sql, array $params, $expectedRawSql)
+    public function testGetRawSql(string $sql, array $params, string $expectedRawSql): void
     {
         $db = $this->getConnection(false);
         $command = $db->createCommand($sql, $params);
@@ -1527,21 +1548,21 @@ SQL;
     }
 
     public function testBindValuesSupportsEnums()
-	{
-		if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
-		    $db = $this->getConnection();
-		    $command = $db->createCommand();
+  	{
+        if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+            $db = $this->getConnection();
+            $command = $db->createCommand();
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::ACTIVE]);
-		    $this->assertSame('ACTIVE', $command->params[':p1']);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::ACTIVE]);
+            $this->assertSame('ACTIVE', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::ACTIVE]);
-		    $this->assertSame('active', $command->params[':p1']);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::ACTIVE]);
+            $this->assertSame('active', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
-		    $this->assertSame(1, $command->params[':p1']);
-		} else {
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
+            $this->assertSame(1, $command->params[':p1']);
+        } else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');
         }
-	}
+	  }
 }

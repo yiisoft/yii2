@@ -13,7 +13,7 @@ use yiiunit\TestCase;
 
 class ActiveDataFilterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -22,7 +22,7 @@ class ActiveDataFilterTest extends TestCase
 
     // Tests :
 
-    public function dataProviderBuild()
+    public static function dataProviderBuild(): array
     {
         return [
             [
@@ -163,10 +163,10 @@ class ActiveDataFilterTest extends TestCase
     /**
      * @dataProvider dataProviderBuild
      *
-     * @param array $filter
-     * @param array $expectedResult
+     * @param array $filter The filter specification.
+     * @param array $expectedResult The expected result.
      */
-    public function testBuild($filter, $expectedResult)
+    public function testBuild(array $filter, array $expectedResult): void
     {
         $builder = new ActiveDataFilter();
         $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))

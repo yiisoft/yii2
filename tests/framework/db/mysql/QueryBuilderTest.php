@@ -20,6 +20,7 @@ use yii\db\Schema;
 class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     protected $driverName = 'mysql';
+    protected static string $driverNameStatic = 'mysql';
 
     /**
      * This is not used as a dataprovider for testGetColumnType to speed up the test
@@ -163,7 +164,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $columns;
     }
 
-    public function primaryKeysProvider()
+    public static function primaryKeysProvider(): array
     {
         $result = parent::primaryKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_1}} DROP PRIMARY KEY';
@@ -172,14 +173,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider(): array
     {
         $result = parent::foreignKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_3}} DROP FOREIGN KEY [[CN_constraints_3]]';
         return $result;
     }
 
-    public function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['create'][0] = 'ALTER TABLE {{T_constraints_2}} ADD INDEX [[CN_constraints_2_single]] ([[C_index_1]])';
@@ -189,21 +190,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function uniquesProvider()
+    public static function uniquesProvider(): array
     {
         $result = parent::uniquesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
         return $result;
-    }
-
-    public function checksProvider()
-    {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');
-    }
-
-    public function defaultValuesProvider()
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
     }
 
     public function testResetSequence()
@@ -219,7 +210,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -266,7 +257,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $newData;
     }
 
-    public function conditionProvider()
+    public static function conditionProvider(): array
     {
         return array_merge(parent::conditionProvider(), [
             // json conditions
@@ -321,7 +312,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function updateProvider()
+    public static function updateProvider(): array
     {
         $items = parent::updateProvider();
 
@@ -333,7 +324,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=CAST(:qp0 AS JSON) WHERE [[id]]=:qp1'),
+            self::replaceQuotes('UPDATE [[profile]] SET [[description]]=CAST(:qp0 AS JSON) WHERE [[id]]=:qp1'),
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -403,9 +394,35 @@ MySqlStatement;
         // primary key columns should have NULL as value
         $sql = $command->insert('null_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `null_values` (`id`) VALUES (NULL)", $sql);
-        
+
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);
+    }
+
+    /**
+     * @dataProvider checksProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropCheck(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('is not supported by MySQL.');
+
+        parent::testAddDropCheck($sql, $builder);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('mysql does not support');
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }

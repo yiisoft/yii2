@@ -89,7 +89,7 @@ class RetryAcquireTraitTest extends TestCase
     {
         return Yii::createObject(
             [
-                'class' => DumbMutex::className(),
+                'class' => DumbMutex::class,
             ]
         );
     }

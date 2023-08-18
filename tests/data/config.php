@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,12 +21,6 @@
  */
 $config = [
     'databases' => [
-        'cubrid' => [
-            'dsn' => 'cubrid:dbname=demodb;host=localhost;port=33000',
-            'username' => 'dba',
-            'password' => '',
-            'fixture' => __DIR__ . '/cubrid.sql',
-        ],
         'mysql' => [
             'dsn' => 'mysql:host=127.0.0.1;dbname=yiitest',
             'username' => 'root',

@@ -22,7 +22,7 @@ class SecurityTest extends TestCase
      */
     protected $security;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->security = new ExposedSecurity();
@@ -178,7 +178,7 @@ TEXT;
         }
     }
 
-    public function dataProviderEncryptByKeyCompat()
+    public static function dataProviderEncryptByKeyCompat(): array
     {
         // these ciphertexts generated using Yii 2.0.2 which is based on mcrypt.
         $mcrypt = [
@@ -476,11 +476,11 @@ TEXT;
     /**
      * @dataProvider dataProviderEncryptByKeyCompat
      *
-     * @param string $key encryption key hex string
-     * @param string $data plaintext hex string
-     * @param string $encrypted ciphertext hex string
+     * @param string $key Encryption key hex string.
+     * @param string $data Plaintext hex string.
+     * @param string $encrypted Ciphertext hex string.
      */
-    public function testEncryptByKeyCompat($key, $data, $encrypted)
+    public function testEncryptByKeyCompat(string $key, string $data, string $encrypted): void
     {
         $key = hex2bin(preg_replace('{\s+}', '', $key));
         $data = hex2bin(preg_replace('{\s+}', '', $data));
@@ -489,7 +489,7 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByKey($encrypted, $key));
     }
 
-    public function dataProviderEncryptByPasswordCompat()
+    public static function dataProviderEncryptByPasswordCompat(): array
     {
         // these ciphertexts generated using Yii 2.0.2 which is based on mcrypt.
         $mcrypt = [
@@ -787,11 +787,11 @@ TEXT;
     /**
      * @dataProvider dataProviderEncryptByPasswordCompat
      *
-     * @param string $password encryption password
-     * @param string $data plaintext hex string
-     * @param string $encrypted ciphertext hex string
+     * @param string $password Encryption password.
+     * @param string $data Plaintext hex string
+     * @param string $encrypted Ciphertext hex string.
      */
-    public function testEncryptByPasswordCompat($password, $data, $encrypted)
+    public function testEncryptByPasswordCompat(string $password, string $data, string $encrypted): void
     {
         $data = hex2bin(preg_replace('{\s+}', '', $data));
         $encrypted = hex2bin(preg_replace('{\s+}', '', $encrypted));
@@ -800,7 +800,7 @@ TEXT;
     }
 
 
-    public function randomKeyInvalidInputs()
+    public static function randomKeyInvalidInputs(): array
     {
         return [
             [0],
@@ -813,12 +813,14 @@ TEXT;
 
     /**
      * @dataProvider randomKeyInvalidInputs
-     * @expectedException \yii\base\InvalidParamException
-     * @param mixed $input
+     *
+     * @param int|string|array $input
      */
-    public function testRandomKeyInvalidInput($input)
+    public function testRandomKeyInvalidInput(int|string|array $input): void
     {
-        $key1 = $this->security->generateRandomKey($input);
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+
+        $this->security->generateRandomKey($input);
     }
 
     public function testGenerateRandomKey()
@@ -826,10 +828,10 @@ TEXT;
         // test various string lengths
         for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key1);
+            $this->assertIsString($key1);
             $this->assertEquals($length, strlen($key1));
             $key2 = $this->security->generateRandomKey($length);
-            $this->assertInternalType('string', $key2);
+            $this->assertIsString($key2);
             $this->assertEquals($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
                 $this->assertNotEquals($key1, $key2);
@@ -839,10 +841,10 @@ TEXT;
         // test for /dev/urandom, reading larger data to see if loop works properly
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
+        $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
         $key2 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key2);
+        $this->assertIsString('string', $key2);
         $this->assertEquals($length, strlen($key2));
         $this->assertNotEquals($key1, $key2);
     }
@@ -868,7 +870,7 @@ TEXT;
         $this->assertEquals(1, preg_match('/[A-Za-z0-9_-]+/', $key));
     }
 
-    public function dataProviderPbkdf2()
+    public static function dataProviderPbkdf2(): array
     {
         return array_filter([
             [
@@ -949,21 +951,27 @@ TEXT;
     /**
      * @dataProvider dataProviderPbkdf2
      *
-     * @param string $hash
-     * @param string $password
-     * @param string $salt
-     * @param int $iterations
-     * @param int $length
-     * @param string $okm
+     * @param string $hash The hash algorithm to use.
+     * @param string $password The password.
+     * @param string $salt The salt.
+     * @param int $iterations The number of iterations.
+     * @param int $length The length of the derived key.
+     * @param string $okm The expected output keying material.
      */
-    public function testPbkdf2($hash, $password, $salt, $iterations, $length, $okm)
-    {
+    public function testPbkdf2(
+        string $hash,
+        string $password,
+        string $salt,
+        int $iterations,
+        int $length,
+        string $okm
+    ): void {
         $this->security->derivationIterations = $iterations;
         $DK = $this->security->pbkdf2($hash, $password, $salt, $iterations, $length);
         $this->assertEquals($okm, bin2hex($DK));
     }
 
-    public function dataProviderDeriveKey()
+    public static function dataProviderDeriveKey(): array
     {
         // See Appendix A in https://tools.ietf.org/html/rfc5869
         return [
@@ -1036,16 +1044,23 @@ TEXT;
     /**
      * @dataProvider dataProviderDeriveKey
      *
-     * @param string $hash
-     * @param string $ikm
-     * @param string $salt
-     * @param string $info
-     * @param int $l
-     * @param string $prk
-     * @param string $okm
+     * @param string $hash The hash algorithm to use.
+     * @param string $ikm The input keying material.
+     * @param string $salt The salt to use.
+     * @param string $info The context/application-specific info.
+     * @param int $l The length of the derived key in bytes.
+     * @param string $prk The expected pseudo-random key.
+     * @param string $okm The expected output keying material.
      */
-    public function testHkdf($hash, $ikm, $salt, $info, $l, $prk, $okm)
-    {
+    public function testHkdf(
+        string $hash,
+        string $ikm,
+        string|null $salt,
+        string $info,
+        int $l,
+        string $prk,
+        string $okm
+    ): void {
         $dk = $this->security->hkdf(
             (string)$hash,
             hex2bin((string)$ikm),
@@ -1055,7 +1070,7 @@ TEXT;
         $this->assertEquals($okm, bin2hex($dk));
     }
 
-    public function dataProviderCompareStrings()
+    public static function dataProviderCompareStrings(): array
     {
         return [
             ['', ''],
@@ -1078,19 +1093,20 @@ TEXT;
     /**
      * @dataProvider dataProviderCompareStrings
      *
-     * @param $expected
-     * @param $actual
+     * @param string $expected The expected string.
+     * @param string $actual The actual string.
      */
-    public function testCompareStrings($expected, $actual)
+    public function testCompareStrings(string $expected, string $actual): void
     {
         $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
     }
 
     /**
      * @dataProvider maskProvider
-     * @param mixed $unmaskedToken
+     *
+     * @param string $unmaskedToken
      */
-    public function testMasking($unmaskedToken)
+    public function testMasking(string $unmaskedToken): void
     {
         $maskedToken = $this->security->maskToken($unmaskedToken);
         $this->assertGreaterThan(mb_strlen($unmaskedToken, '8bit') * 2, mb_strlen($maskedToken, '8bit'));
@@ -1103,18 +1119,18 @@ TEXT;
         $this->assertEquals('', $this->security->unmaskToken('1'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testMaskingInvalidStrings()
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('First parameter ($length) must be greater than 0');
+
         $this->security->maskToken('');
     }
 
     /**
      * @return array
      */
-    public function maskProvider()
+    public static function maskProvider(): array
     {
         return [
             ['1'],

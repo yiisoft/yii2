@@ -21,14 +21,14 @@ use yiiunit\TestCase;
  */
 class BlameableBehaviorTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -52,7 +52,7 @@ class BlameableBehaviorTest extends TestCase
         $this->getUser()->login(10);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -133,7 +133,7 @@ class BlameableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordBlameable([
             'as blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'attributes' => [
                     BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'created_by',
                     BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
@@ -161,7 +161,7 @@ class BlameableBehaviorTest extends TestCase
 
         $model = new ActiveRecordBlameable([
             'as blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'defaultValue' => 2
             ],
         ]);
@@ -193,7 +193,7 @@ class ActiveRecordBlameableWithDefaultValueClosure extends ActiveRecordBlameable
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'defaultValue' => function () {
                     return $this->created_by + 1;
                 }
@@ -217,7 +217,7 @@ class ActiveRecordBlameable extends ActiveRecord
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
             ],
         ];
     }

@@ -20,6 +20,6 @@ class Alpha extends ActiveRecord
 
     public function getBetas()
     {
-        return $this->hasMany(Beta::className(), ['alpha_string_identifier' => 'string_identifier']);
+        return $this->hasMany(Beta::class, ['alpha_string_identifier' => 'string_identifier']);
     }
 }

@@ -26,7 +26,7 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
     /**
      * @return array
      */
-    public function typesProvider()
+    public static function typesProvider(): array
     {
         return [
             ['integer NULL DEFAULT NULL', Schema::TYPE_INTEGER, null, [
@@ -49,12 +49,13 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider typesProvider
-     * @param string $expected
-     * @param string $type
-     * @param int|null $length
-     * @param mixed $calls
+     *
+     * @param string $expected The expected result.
+     * @param string $type The column type.
+     * @param int|null $length The column length.
+     * @param mixed $calls The method calls.
      */
-    public function testCustomTypes($expected, $type, $length, $calls)
+    public function testCustomTypes(string $expected, string $type, int|null $length, mixed $calls): void
     {
         $this->checkBuildString($expected, $type, $length, $calls);
     }

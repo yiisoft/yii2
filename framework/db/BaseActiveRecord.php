@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
@@ -1632,7 +1631,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
+                    } catch (InvalidArgumentException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
                     /* @var $modelClass ActiveRecordInterface */
@@ -1674,7 +1673,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
+                    } catch (InvalidArgumentException $e) {
                         return '';
                     }
                     /* @var $modelClass ActiveRecordInterface */

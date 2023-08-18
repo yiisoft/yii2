@@ -14,6 +14,7 @@ use yii\db\Transaction;
 /**
  * @group db
  * @group mysql
+ * @group deadlock
  */
 class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
 {
@@ -31,9 +32,6 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
-        if (PHP_VERSION_ID >= 70400 && PHP_VERSION_ID < 70500) {
-            $this->markTestSkipped('Stable failed in PHP 7.4');
-        }
         if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
         }

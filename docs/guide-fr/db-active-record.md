@@ -34,8 +34,6 @@ Yii assure la prise en charge de l'enregistrement actif (*Active Record*) pour l
 * SQLite 2 et 3 : via [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 ou versions postérieures : via [[yii\db\ActiveRecord]]
 * Oracle : via [[yii\db\ActiveRecord]]
-* CUBRID 9.3 ou versions postérieures : via [[yii\db\ActiveRecord]] 
-  (Notez que, à cause d'un [bogue](https://jira.cubrid.org/browse/APIS-658) dans l'extension CUBRID 9.3, l'entourage des valeurs par des marques de citation ne fonctionne pas, c'est pourquoi vous avez besoin de CUBRID 9.3 à la fois comme client et comme serveur)
 * Sphinx : via [[yii\sphinx\ActiveRecord]], requiert l'extension `yii2-sphinx`
 * ElasticSearch : via [[yii\elasticsearch\ActiveRecord]], requiert l'extension `yii2-elasticsearch`
 

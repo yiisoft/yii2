@@ -26,7 +26,7 @@ class ControllerTest extends TestCase
     /** @var FakeController */
     private $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -101,11 +101,6 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -122,10 +117,6 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -135,7 +126,7 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::className(), function() { throw new \RuntimeException('uh oh'); });
+        \Yii::$container->set(DummyService::class, function() { throw new \RuntimeException('uh oh'); });
 
         $this->expectException(get_class(new RuntimeException()));
         $this->expectExceptionMessage('uh oh');
@@ -144,10 +135,6 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -157,7 +144,7 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->clear(DummyService::className());
+        \Yii::$container->clear(DummyService::class);
         $this->expectException(get_class(new Exception()));
         $this->expectExceptionMessage('Could not load required service: dummyService');
         $this->controller->bindActionParams($injectionAction, $params);
@@ -165,10 +152,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -178,13 +161,13 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::className(), DummyService::className());
+        \Yii::$container->set(DummyService::class, DummyService::class);
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals($params['before'], $args[0]);
         $this->assertEquals(\Yii::$app->request, $args[1]);
         $this->assertEquals('Component: yii\console\Request $request', \Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
-        $this->assertInstanceOf(DummyService::className(), $args[3]);
+        $this->assertInstanceOf(DummyService::class, $args[3]);
         $this->assertEquals('Container DI: yiiunit\framework\console\stubs\DummyService $dummyService', \Yii::$app->requestedParams['dummyService']);
         $this->assertNull($args[4]);
         $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
@@ -193,16 +176,12 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParamsFromModule()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         $module = new \yii\base\Module('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
         ]));
         $module->set('yii\data\DataProviderInterface', [
-            'class' => \yii\data\ArrayDataProvider::className(),
+            'class' => \yii\data\ArrayDataProvider::class,
         ]);
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', $module);
@@ -210,7 +189,7 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
         $args = $this->controller->bindActionParams($injectionAction, []);
-        $this->assertInstanceOf(\yii\data\ArrayDataProvider::className(), $args[0]);
+        $this->assertInstanceOf(\yii\data\ArrayDataProvider::class, $args[0]);
         $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', \Yii::$app->requestedParams['dataProvider']);
     }
 
@@ -270,7 +249,7 @@ class ControllerTest extends TestCase
 
         $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
         $helpController->actionIndex('fake/aksi1');
-        $this->assertContains('--test-array, -ta', $helpController->outputString);
+        $this->assertStringContainsString('--test-array, -ta', $helpController->outputString);
     }
 
     /**
@@ -295,12 +274,7 @@ class ControllerTest extends TestCase
         $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
 
         $this->assertArrayHasKey('values', $help);
-        if (PHP_MAJOR_VERSION > 5) {
-            // declared type
-            $this->assertEquals('array', $help['values']['type']);
-        } else {
-            $this->markTestSkipped('Can not test declared type of parameter $values on PHP < 7.0');
-        }
+        $this->assertEquals('array', $help['values']['type']);
         $this->assertArrayHasKey('value', $help);
         // PHPDoc type
         $this->assertEquals('string', $help['value']['type']);

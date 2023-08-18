@@ -18,7 +18,7 @@ use yii\base\DynamicModel;
  */
 class ConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -153,7 +153,7 @@ class ConsoleTest extends TestCase
         }
     }*/
 
-    public function ansiFormats()
+    public static function ansiFormats(): array
     {
         return [
             ['test', 'test'],
@@ -197,10 +197,10 @@ class ConsoleTest extends TestCase
 
     /**
      * @dataProvider ansiFormats
-     * @param string $ansi
-     * @param string $html
+     * @param string $ansi ANSI string.
+     * @param string $html HTML string.
      */
-    public function testAnsi2Html($ansi, $html)
+    public function testAnsi2Html(string $ansi, string $html): void
     {
         $this->assertEquals($html, Console::ansiToHtml($ansi));
     }

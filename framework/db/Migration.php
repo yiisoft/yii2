@@ -87,7 +87,7 @@ class Migration extends Component implements MigrationInterface
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         $this->db->getSchema()->refresh();
         $this->db->enableSlaves = false;
     }
@@ -311,7 +311,7 @@ class Migration extends Component implements MigrationInterface
      *
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
      * put into the generated SQL.
-     * 
+     *
      * Example usage:
      * ```php
      * class m200000_000000_create_table_fruits extends \yii\db\Migration
@@ -319,7 +319,7 @@ class Migration extends Component implements MigrationInterface
      *     public function safeUp()
      *     {
      *          $this->createTable('{{%fruits}}', [
-     *              // ...              
+     *              // ...
      *              'column_name double precision null default null',
      * ```
 

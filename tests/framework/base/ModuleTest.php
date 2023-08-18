@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class ModuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -151,25 +151,25 @@ class ModuleTest extends TestCase
         $module->controllerNamespace = 'yiiunit\framework\base';
 
         $route = 'module-test';
-        $this->assertInstanceOf(ModuleTestController::className(), $module->createControllerByID($route));
+        $this->assertInstanceOf(ModuleTestController::class, $module->createControllerByID($route));
 
         $route = 'module-test-';
-        $this->assertNotInstanceOf(ModuleTestController::className(), $module->createControllerByID($route));
+        $this->assertNotInstanceOf(ModuleTestController::class, $module->createControllerByID($route));
 
         $route = '-module-test';
-        $this->assertNotInstanceOf(ModuleTestController::className(), $module->createControllerByID($route));
+        $this->assertNotInstanceOf(ModuleTestController::class, $module->createControllerByID($route));
 
         $route = 'very-complex-name-test';
-        $this->assertInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+        $this->assertInstanceOf(VeryComplexNameTestController::class, $module->createControllerByID($route));
 
         $route = 'very-complex-name-test--';
-        $this->assertNotInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+        $this->assertNotInstanceOf(VeryComplexNameTestController::class, $module->createControllerByID($route));
 
         $route = '--very-complex-name-test';
-        $this->assertNotInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+        $this->assertNotInstanceOf(VeryComplexNameTestController::class, $module->createControllerByID($route));
 
         $route = 'very---complex---name---test';
-        $this->assertNotInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+        $this->assertNotInstanceOf(VeryComplexNameTestController::class, $module->createControllerByID($route));
     }
 
     public function testCreateController()

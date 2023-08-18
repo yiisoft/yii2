@@ -16,14 +16,14 @@ use yiiunit\TestCase;
 
 class AuthMethodTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ]);
@@ -36,7 +36,7 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMockBuilder(AuthMethod::className())
+        $filter = $this->getMockBuilder(AuthMethod::class)
             ->setMethods(['authenticate'])
             ->getMock();
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
@@ -71,7 +71,7 @@ class AuthMethodTest extends TestCase
 
     public function testIsOptional()
     {
-        $reflection = new \ReflectionClass(AuthMethod::className());
+        $reflection = new \ReflectionClass(AuthMethod::class);
         $method = $reflection->getMethod('isOptional');
         $method->setAccessible(true);
 
